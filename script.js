@@ -10,10 +10,19 @@ form.addEventListener("submit", function(event) {
         body: formData
     })
     .then(() => {
-        alert("Thanks! You're connected. I'll be in touch soon.");
+
+        alert(
+            "Welcome. You have entered the journey. Thank you for joining The River Kept Flowing."
+        );
+
         form.reset();
+
     })
     .catch(() => {
-        alert("Something went wrong. Please try again.");
+
+        alert(
+            "Something went wrong. Please try again."
+        );
+
     });
 });
