@@ -7819,3 +7819,111 @@ grid-template-columns:1fr;
 }
 
 }
+
+/* AUTO INSURANCE HANDBOOK — append to public/styles.css */
+.auto-handbook-page {
+  --auto-forest: #173b31;
+  --auto-deep: #0d2922;
+  --auto-sage: #7f9a89;
+  --auto-gold: #c5a56a;
+  --auto-parchment: #f3eddf;
+  --auto-paper: #fbf8f0;
+  --auto-line: rgba(23, 59, 49, 0.16);
+}
+
+.auto-handbook-cover {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 83% 20%, rgba(197, 165, 106, 0.18), transparent 30%),
+    linear-gradient(135deg, var(--auto-deep), var(--auto-forest));
+}
+
+.auto-handbook-cover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.13;
+  background: repeating-linear-gradient(118deg, transparent 0, transparent 44px, rgba(255,255,255,0.18) 45px, transparent 46px);
+}
+
+.auto-handbook-cover .handbook-cover__inner { position: relative; z-index: 1; }
+.auto-handbook-cover .publication-label,
+.auto-handbook-cover .handbook-subtitle { color: #e8dcc1; }
+.auto-handbook-cover .handbook-deck { color: rgba(255,255,255,0.82); }
+.auto-handbook-cover .publication-meta span { border-color: rgba(255,255,255,0.22); }
+.auto-handbook-cover .handbook-start { background: var(--auto-gold); color: var(--auto-deep); }
+.auto-handbook-cover .handbook-start:hover,
+.auto-handbook-cover .handbook-start:focus-visible { background: #dbc18d; }
+.auto-handbook-page .reading-progress__bar { background: linear-gradient(90deg, var(--auto-gold), var(--auto-sage)); }
+.auto-handbook-page .chapter-number,
+.auto-handbook-page .part-number,
+.auto-handbook-page .card-label,
+.auto-handbook-page .eyebrow { color: var(--auto-forest); }
+.auto-handbook-page .part-divider { background: linear-gradient(rgba(13,41,34,.95), rgba(13,41,34,.95)), radial-gradient(circle at 80% 10%, rgba(197,165,106,.28), transparent 32%); }
+.auto-handbook-page .part-divider .part-number,
+.auto-handbook-page .part-divider h2 { color: #f7f1e5; }
+.auto-handbook-page .part-divider blockquote { border-left-color: var(--auto-gold); color: #e8dcc1; }
+.auto-handbook-page .takeaway-card { border-color: rgba(127,154,137,.45); background: #edf2eb; }
+.auto-handbook-page .notice-card { border-color: rgba(197,165,106,.42); background: #f7f0e2; }
+.auto-handbook-page .pull-quote { border-left-color: var(--auto-gold); background: var(--auto-parchment); }
+.auto-handbook-page .part-summary { border-color: var(--auto-line); background: var(--auto-paper); }
+
+.auto-handbook-page .principles-list {
+  display: grid;
+  gap: 1rem;
+  margin: 2rem 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: auto-principles;
+}
+
+.auto-handbook-page .principles-list > li {
+  position: relative;
+  padding: 1.35rem 1.4rem 1.35rem 4.5rem;
+  border: 1px solid var(--auto-line);
+  border-radius: 1rem;
+  background: var(--auto-paper);
+  counter-increment: auto-principles;
+}
+
+.auto-handbook-page .principles-list > li::before {
+  content: counter(auto-principles, decimal-leading-zero);
+  position: absolute;
+  top: 1.25rem;
+  left: 1.25rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  color: var(--auto-forest);
+}
+
+.auto-handbook-page .principles-list h3 { margin: 0 0 .35rem; }
+.auto-handbook-page .principles-list p { margin: 0; }
+
+/* Published insurance links on River Guides */
+.guide-publications { display: grid; gap: .8rem; margin-top: 1.5rem; }
+.guide-publication-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .95rem 1rem;
+  border: 1px solid rgba(28,58,48,.16);
+  border-radius: .85rem;
+  background: rgba(255,255,255,.62);
+  color: inherit;
+  text-decoration: none;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+.guide-publication-link:hover,
+.guide-publication-link:focus-visible { transform: translateY(-2px); border-color: rgba(28,58,48,.42); background: rgba(255,255,255,.9); }
+.guide-publication-link__text { display: grid; gap: .18rem; }
+.guide-publication-link__number { font-size: .72rem; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; opacity: .68; }
+.guide-publication-link__title { font-weight: 750; line-height: 1.3; }
+.guide-publication-link__arrow { flex: 0 0 auto; font-size: 1.1rem; }
+
+@media (max-width: 700px) {
+  .auto-handbook-page .principles-list > li { padding: 3.5rem 1.1rem 1.15rem; }
+  .auto-handbook-page .principles-list > li::before { top: 1rem; left: 1.1rem; }
+}
