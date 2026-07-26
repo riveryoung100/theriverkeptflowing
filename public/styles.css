@@ -7927,3 +7927,1424 @@ grid-template-columns:1fr;
   .auto-handbook-page .principles-list > li { padding: 3.5rem 1.1rem 1.15rem; }
   .auto-handbook-page .principles-list > li::before { top: 1rem; left: 1.1rem; }
 }
+/* ==========================================================
+   RIVER GUIDE NO. 003
+   THE RENTERS INSURANCE HANDBOOK
+   ========================================================== */
+
+
+/* ==========================================================
+   DESIGN TOKENS
+   ========================================================== */
+
+:root {
+
+    --renters-deep: #102630;
+
+    --renters-navy: #1c3a48;
+
+    --renters-blue: #7595a3;
+
+    --renters-copper: #c58b5a;
+
+    --renters-copper-light: #e0b48d;
+
+    --renters-sand: #efe4d6;
+
+    --renters-paper: #fbf8f3;
+
+    --renters-white: #ffffff;
+
+    --renters-text: #26343b;
+
+    --renters-muted: #64747b;
+
+    --renters-line: rgba(28, 58, 72, 0.16);
+
+    --renters-shadow: 0 20px 50px rgba(16, 38, 48, 0.10);
+
+    --renters-radius-small: 10px;
+
+    --renters-radius-medium: 18px;
+
+    --renters-radius-large: 28px;
+
+    --renters-reading-width: 760px;
+
+    --renters-page-width: 1180px;
+
+}
+
+
+/* ==========================================================
+   PAGE FOUNDATION
+   ========================================================== */
+
+html {
+
+    scroll-behavior: smooth;
+
+}
+
+
+body.renters-handbook-page {
+
+    margin: 0;
+
+    color: var(--renters-text);
+
+    background: var(--renters-paper);
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 18px;
+
+    line-height: 1.78;
+
+}
+
+
+body.renters-handbook-page *,
+body.renters-handbook-page *::before,
+body.renters-handbook-page *::after {
+
+    box-sizing: border-box;
+
+}
+
+
+body.renters-handbook-page a {
+
+    color: inherit;
+
+}
+
+
+body.renters-handbook-page img {
+
+    max-width: 100%;
+
+    display: block;
+
+}
+
+
+/* ==========================================================
+   ACCESSIBILITY
+   ========================================================== */
+
+.skip-link {
+
+    position: fixed;
+
+    top: 14px;
+
+    left: 14px;
+
+    z-index: 1000;
+
+    padding: 0.75rem 1rem;
+
+    color: var(--renters-white);
+
+    background: var(--renters-deep);
+
+    border-radius: 8px;
+
+    transform: translateY(-180%);
+
+    transition: transform 0.2s ease;
+
+}
+
+
+.skip-link:focus {
+
+    transform: translateY(0);
+
+}
+
+
+/* ==========================================================
+   READING PROGRESS
+   ========================================================== */
+
+.reading-progress {
+
+    position: fixed;
+
+    top: 0;
+
+    left: 0;
+
+    z-index: 999;
+
+    width: 100%;
+
+    height: 4px;
+
+    background: rgba(255, 255, 255, 0.18);
+
+}
+
+
+.reading-progress__bar {
+
+    width: 0;
+
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--renters-copper),
+            var(--renters-blue)
+        );
+
+}
+
+
+/* ==========================================================
+   SHARED LAYOUT
+   ========================================================== */
+
+.handbook-shell {
+
+    width: min(
+        calc(100% - 40px),
+        var(--renters-page-width)
+    );
+
+    margin-inline: auto;
+
+}
+
+
+.handbook-shell--narrow {
+
+    max-width: 860px;
+
+}
+
+
+.handbook-shell--reading {
+
+    max-width: var(--renters-reading-width);
+
+}
+
+
+.eyebrow,
+.publication-label,
+.part-number,
+.chapter-number,
+.card-label,
+.toc-part__number {
+
+    margin: 0 0 0.85rem;
+
+    color: var(--renters-copper);
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 0.77rem;
+
+    font-weight: 800;
+
+    letter-spacing: 0.15em;
+
+    line-height: 1.4;
+
+    text-transform: uppercase;
+
+}
+
+
+/* ==========================================================
+   NAVIGATION
+   ========================================================== */
+
+.renters-handbook-page .navbar {
+
+    position: relative;
+
+    z-index: 20;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 2rem;
+
+    width: 100%;
+
+    padding: 1.2rem clamp(1.25rem, 4vw, 4rem);
+
+    color: var(--renters-white);
+
+    background: var(--renters-deep);
+
+}
+
+
+.renters-handbook-page .logo {
+
+    color: var(--renters-white);
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 1.05rem;
+
+    font-weight: 700;
+
+    letter-spacing: 0.02em;
+
+    text-decoration: none;
+
+}
+
+
+.renters-handbook-page .nav-links {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    justify-content: flex-end;
+
+    gap: 1.25rem;
+
+}
+
+
+.renters-handbook-page .nav-links a {
+
+    color: rgba(255, 255, 255, 0.82);
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 0.84rem;
+
+    font-weight: 700;
+
+    letter-spacing: 0.03em;
+
+    text-decoration: none;
+
+}
+
+
+.renters-handbook-page .nav-links a:hover,
+.renters-handbook-page .nav-links a:focus-visible,
+.renters-handbook-page .nav-links a[aria-current="page"] {
+
+    color: var(--renters-copper-light);
+
+}
+
+
+/* ==========================================================
+   HANDBOOK COVER
+   ========================================================== */
+
+.handbook-cover {
+
+    position: relative;
+
+    overflow: hidden;
+
+    min-height: 78vh;
+
+    display: grid;
+
+    place-items: center;
+
+    padding:
+        clamp(5rem, 10vw, 9rem)
+        1.25rem;
+
+    color: var(--renters-white);
+
+    background:
+        radial-gradient(
+            circle at 84% 18%,
+            rgba(197, 139, 90, 0.24),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 12% 88%,
+            rgba(117, 149, 163, 0.20),
+            transparent 32%
+        ),
+        linear-gradient(
+            135deg,
+            var(--renters-deep),
+            var(--renters-navy)
+        );
+
+}
+
+
+.handbook-cover::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    opacity: 0.13;
+
+    background:
+        repeating-linear-gradient(
+            90deg,
+            transparent 0,
+            transparent 58px,
+            rgba(255, 255, 255, 0.18) 59px,
+            transparent 60px
+        );
+
+}
+
+
+.handbook-cover__inner {
+
+    position: relative;
+
+    z-index: 2;
+
+    width: min(100%, 980px);
+
+    text-align: center;
+
+}
+
+
+.handbook-cover h1 {
+
+    max-width: 880px;
+
+    margin: 0 auto;
+
+    color: var(--renters-white);
+
+    font-size:
+        clamp(3.2rem, 7.5vw, 7rem);
+
+    line-height: 0.98;
+
+    letter-spacing: -0.055em;
+
+}
+
+
+.handbook-subtitle {
+
+    max-width: 760px;
+
+    margin: 1.6rem auto 0;
+
+    color: var(--renters-copper-light);
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size:
+        clamp(1.05rem, 2.1vw, 1.5rem);
+
+    font-weight: 700;
+
+    line-height: 1.45;
+
+}
+
+
+.handbook-deck {
+
+    max-width: 760px;
+
+    margin: 1.5rem auto 0;
+
+    color: rgba(255, 255, 255, 0.82);
+
+    font-size:
+        clamp(1.05rem, 1.6vw, 1.25rem);
+
+}
+
+
+.publication-meta {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    justify-content: center;
+
+    gap: 0.75rem;
+
+    margin-top: 2rem;
+
+}
+
+
+.publication-meta span {
+
+    padding: 0.55rem 0.85rem;
+
+    color: rgba(255, 255, 255, 0.80);
+
+    border: 1px solid rgba(255, 255, 255, 0.22);
+
+    border-radius: 999px;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 0.78rem;
+
+    font-weight: 700;
+
+}
+
+
+.handbook-start {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-top: 2.2rem;
+
+    padding: 0.9rem 1.35rem;
+
+    color: var(--renters-deep);
+
+    background: var(--renters-copper);
+
+    border-radius: 999px;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 0.9rem;
+
+    font-weight: 800;
+
+    text-decoration: none;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+
+}
+
+
+.handbook-start:hover,
+.handbook-start:focus-visible {
+
+    background: var(--renters-copper-light);
+
+    transform: translateY(-2px);
+
+}
+
+
+/* ==========================================================
+   FRONT MATTER
+   ========================================================== */
+
+.handbook-frontmatter {
+
+    padding:
+        clamp(5rem, 9vw, 8rem)
+        0;
+
+    background: var(--renters-white);
+
+}
+
+
+.handbook-frontmatter h2,
+.handbook-toc h2,
+.handbook-introduction h2,
+.handbook-closing h2,
+.edition-history h2 {
+
+    margin:
+        0
+        0
+        1.35rem;
+
+    color: var(--renters-deep);
+
+    font-size:
+        clamp(2rem, 4vw, 3.5rem);
+
+    line-height: 1.12;
+
+    letter-spacing: -0.035em;
+
+}
+
+
+.notice-card,
+.takeaway-card,
+.pull-quote,
+.handbook-next-guide {
+
+    margin-top: 2rem;
+
+    padding:
+        clamp(1.25rem, 3vw, 2rem);
+
+    border-radius: var(--renters-radius-medium);
+
+}
+
+
+.notice-card {
+
+    border:
+        1px solid
+        rgba(197, 139, 90, 0.40);
+
+    background: #f7ede4;
+
+}
+
+
+.notice-card h3 {
+
+    margin-top: 0;
+
+}
+
+
+/* ==========================================================
+   TABLE OF CONTENTS
+   ========================================================== */
+
+.handbook-toc {
+
+    padding:
+        clamp(5rem, 9vw, 8rem)
+        0;
+
+    background: #f3ede5;
+
+}
+
+
+.toc-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        );
+
+    gap: 1.25rem;
+
+    margin-top: 2.5rem;
+
+}
+
+
+.toc-part {
+
+    padding: 1.5rem;
+
+    border: 1px solid var(--renters-line);
+
+    border-radius: var(--renters-radius-medium);
+
+    background: var(--renters-white);
+
+    box-shadow:
+        0 10px 24px
+        rgba(16, 38, 48, 0.05);
+
+}
+
+
+.toc-part h3 {
+
+    margin:
+        0
+        0
+        1rem;
+
+    color: var(--renters-deep);
+
+    font-size: 1.22rem;
+
+}
+
+
+.toc-part a {
+
+    display: block;
+
+    padding: 0.42rem 0;
+
+    color: var(--renters-muted);
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 0.9rem;
+
+    line-height: 1.45;
+
+    text-decoration: none;
+
+}
+
+
+.toc-part a:hover,
+.toc-part a:focus-visible {
+
+    color: var(--renters-copper);
+
+}
+
+
+/* ==========================================================
+   INTRODUCTION
+   ========================================================== */
+
+.handbook-introduction {
+
+    padding:
+        clamp(5rem, 9vw, 8rem)
+        0;
+
+    background: var(--renters-white);
+
+}
+
+
+.handbook-introduction .lead {
+
+    color: var(--renters-navy);
+
+    font-size:
+        clamp(1.2rem, 2.2vw, 1.55rem);
+
+    line-height: 1.65;
+
+}
+
+
+.pull-quote {
+
+    color: var(--renters-deep);
+
+    border-left: 5px solid var(--renters-copper);
+
+    background: var(--renters-sand);
+
+    font-size:
+        clamp(1.25rem, 2.5vw, 1.75rem);
+
+    font-style: italic;
+
+    line-height: 1.45;
+
+}
+
+
+/* ==========================================================
+   PART DIVIDERS
+   ========================================================== */
+
+.part-divider {
+
+    padding:
+        clamp(4.5rem, 9vw, 7rem)
+        0;
+
+    color: var(--renters-white);
+
+    background:
+        radial-gradient(
+            circle at 88% 10%,
+            rgba(197, 139, 90, 0.24),
+            transparent 32%
+        ),
+        linear-gradient(
+            135deg,
+            var(--renters-deep),
+            var(--renters-navy)
+        );
+
+}
+
+
+.part-divider .part-number {
+
+    color: var(--renters-copper-light);
+
+}
+
+
+.part-divider h2 {
+
+    margin: 0;
+
+    color: var(--renters-white);
+
+    font-size:
+        clamp(2.35rem, 5vw, 4.5rem);
+
+    line-height: 1.05;
+
+    letter-spacing: -0.045em;
+
+}
+
+
+.part-divider blockquote {
+
+    margin:
+        1.6rem
+        0
+        0;
+
+    padding-left: 1.2rem;
+
+    color: rgba(255, 255, 255, 0.78);
+
+    border-left: 4px solid var(--renters-copper);
+
+    font-size: 1.2rem;
+
+    font-style: italic;
+
+}
+
+
+/* ==========================================================
+   CHAPTERS
+   ========================================================== */
+
+.chapter {
+
+    padding:
+        clamp(4.5rem, 8vw, 7rem)
+        0;
+
+    background: var(--renters-paper);
+
+    border-bottom: 1px solid var(--renters-line);
+
+}
+
+
+.chapter:nth-of-type(even) {
+
+    background: var(--renters-white);
+
+}
+
+
+.chapter h2 {
+
+    margin:
+        0
+        0
+        1.4rem;
+
+    color: var(--renters-deep);
+
+    font-size:
+        clamp(2rem, 4vw, 3.25rem);
+
+    line-height: 1.12;
+
+    letter-spacing: -0.035em;
+
+}
+
+
+.chapter h3 {
+
+    margin:
+        2.25rem
+        0
+        0.65rem;
+
+    color: var(--renters-navy);
+
+    font-size: 1.28rem;
+
+    line-height: 1.35;
+
+}
+
+
+.chapter p {
+
+    margin:
+        0
+        0
+        1.35rem;
+
+}
+
+
+.clean-list,
+.checklist {
+
+    margin:
+        1.5rem
+        0
+        2rem;
+
+    padding-left: 1.3rem;
+
+}
+
+
+.clean-list li,
+.checklist li {
+
+    margin-bottom: 0.7rem;
+
+    padding-left: 0.35rem;
+
+}
+
+
+.checklist {
+
+    padding: 0;
+
+    list-style: none;
+
+}
+
+
+.checklist li {
+
+    position: relative;
+
+    padding-left: 2rem;
+
+}
+
+
+.checklist li::before {
+
+    content: "✓";
+
+    position: absolute;
+
+    top: 0;
+
+    left: 0;
+
+    color: var(--renters-copper);
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-weight: 900;
+
+}
+
+
+.takeaway-card {
+
+    border:
+        1px solid
+        rgba(117, 149, 163, 0.42);
+
+    background: #edf3f5;
+
+}
+
+
+.takeaway-card p:last-child,
+.notice-card p:last-child {
+
+    margin-bottom: 0;
+
+}
+
+
+.question-stack {
+
+    display: grid;
+
+    gap: 0.85rem;
+
+    margin-top: 2rem;
+
+}
+
+
+.question-stack p {
+
+    margin: 0;
+
+    padding: 1rem 1.1rem;
+
+    border-left: 4px solid var(--renters-blue);
+
+    background: var(--renters-white);
+
+    border-radius:
+        0
+        var(--renters-radius-small)
+        var(--renters-radius-small)
+        0;
+
+}
+
+
+/* ==========================================================
+   PRINCIPLES LIST
+   ========================================================== */
+
+.principles-list {
+
+    display: grid;
+
+    gap: 1rem;
+
+    margin:
+        2rem
+        0
+        0;
+
+    padding: 0;
+
+    list-style: none;
+
+    counter-reset: renters-principles;
+
+}
+
+
+.principles-list > li {
+
+    position: relative;
+
+    padding:
+        1.35rem
+        1.35rem
+        1.35rem
+        4.6rem;
+
+    border: 1px solid var(--renters-line);
+
+    border-radius: var(--renters-radius-medium);
+
+    background: var(--renters-white);
+
+    counter-increment: renters-principles;
+
+}
+
+
+.principles-list > li::before {
+
+    content:
+        counter(
+            renters-principles,
+            decimal-leading-zero
+        );
+
+    position: absolute;
+
+    top: 1.25rem;
+
+    left: 1.25rem;
+
+    color: var(--renters-copper);
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 0.86rem;
+
+    font-weight: 900;
+
+    letter-spacing: 0.08em;
+
+}
+
+
+.principles-list h3 {
+
+    margin: 0 0 0.35rem;
+
+}
+
+
+.principles-list p {
+
+    margin: 0;
+
+}
+
+
+/* ==========================================================
+   CHECKLIST SECTION
+   ========================================================== */
+
+.checklist-section {
+
+    background:
+        linear-gradient(
+            180deg,
+            #f4ece3,
+            var(--renters-paper)
+        );
+
+}
+
+
+/* ==========================================================
+   CLOSING
+   ========================================================== */
+
+.handbook-closing {
+
+    padding:
+        clamp(5rem, 10vw, 9rem)
+        0;
+
+    background: var(--renters-white);
+
+}
+
+
+.handbook-next-guide {
+
+    border: 1px solid var(--renters-line);
+
+    background:
+        linear-gradient(
+            145deg,
+            #f6ede4,
+            #edf3f5
+        );
+
+    box-shadow: var(--renters-shadow);
+
+}
+
+
+.handbook-next-guide h3 {
+
+    margin:
+        0
+        0
+        0.75rem;
+
+    color: var(--renters-deep);
+
+    font-size:
+        clamp(1.5rem, 3vw, 2.1rem);
+
+    line-height: 1.25;
+
+}
+
+
+.handbook-next-guide p:last-child {
+
+    margin-bottom: 0;
+
+}
+
+
+/* ==========================================================
+   EDITION HISTORY
+   ========================================================== */
+
+.edition-history {
+
+    padding:
+        4rem
+        0;
+
+    background: #efe7dd;
+
+}
+
+
+/* ==========================================================
+   FOOTER
+   ========================================================== */
+
+.renters-handbook-page footer {
+
+    padding:
+        4rem
+        clamp(1.25rem, 4vw, 4rem)
+        2rem;
+
+    color: var(--renters-white);
+
+    background: var(--renters-deep);
+
+}
+
+
+.footer-shell {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 3rem;
+
+    max-width: var(--renters-page-width);
+
+    margin: 0 auto;
+
+}
+
+
+.footer-logo {
+
+    color: var(--renters-white);
+
+    font-size: 1.2rem;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+}
+
+
+.footer-links {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 1.2rem;
+
+}
+
+
+.footer-links a {
+
+    color: rgba(255, 255, 255, 0.78);
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 0.88rem;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+}
+
+
+.footer-links a:hover,
+.footer-links a:focus-visible {
+
+    color: var(--renters-copper-light);
+
+}
+
+
+.footer-bottom {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 2rem;
+
+    max-width: var(--renters-page-width);
+
+    margin: 3rem auto 0;
+
+    padding-top: 1.5rem;
+
+    border-top:
+        1px solid
+        rgba(255, 255, 255, 0.14);
+
+    color: rgba(255, 255, 255, 0.62);
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 0.8rem;
+
+}
+
+
+.footer-bottom p {
+
+    margin: 0;
+
+}
+
+
+/* ==========================================================
+   FOCUS STATES
+   ========================================================== */
+
+.renters-handbook-page a:focus-visible {
+
+    outline: 3px solid var(--renters-copper-light);
+
+    outline-offset: 4px;
+
+}
+
+
+/* ==========================================================
+   RESPONSIVE DESIGN
+   ========================================================== */
+
+@media (max-width: 900px) {
+
+    .renters-handbook-page .navbar {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+    }
+
+
+    .renters-handbook-page .nav-links {
+
+        justify-content: flex-start;
+
+    }
+
+
+    .toc-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .footer-shell,
+    .footer-bottom {
+
+        flex-direction: column;
+
+    }
+
+}
+
+
+@media (max-width: 640px) {
+
+    body.renters-handbook-page {
+
+        font-size: 17px;
+
+    }
+
+
+    .handbook-shell {
+
+        width: min(
+            calc(100% - 28px),
+            var(--renters-page-width)
+        );
+
+    }
+
+
+    .renters-handbook-page .nav-links {
+
+        gap:
+            0.75rem
+            1rem;
+
+    }
+
+
+    .handbook-cover {
+
+        min-height: auto;
+
+        padding:
+            5.5rem
+            1rem;
+
+    }
+
+
+    .publication-meta {
+
+        align-items: center;
+
+        flex-direction: column;
+
+    }
+
+
+    .principles-list > li {
+
+        padding:
+            3.4rem
+            1.1rem
+            1.2rem;
+
+    }
+
+
+    .principles-list > li::before {
+
+        top: 1rem;
+
+        left: 1.1rem;
+
+    }
+
+}
