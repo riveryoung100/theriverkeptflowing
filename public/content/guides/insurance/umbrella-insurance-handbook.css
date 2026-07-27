@@ -552,40 +552,39 @@
 }
 
 .umbrella-handbook-page .final-thoughts {
-
-    .umbrella-handbook-page .final-thoughts p {
-    color: rgba(255, 255, 255, 0.88);
-}
-
-.umbrella-handbook-page .final-thoughts .section-label {
-    color: var(--umbrella-gold);
-}
-
-.umbrella-handbook-page .final-thoughts h3 {
-    color: #ffffff;
-}
-
-.umbrella-handbook-page .final-thoughts strong {
-    color: #ffffff;
-}
-
-
   scroll-margin-top: 110px;
   margin: 3rem 0;
   padding: clamp(1.5rem, 4vw, 2.5rem);
-  color: #fff;
+  color: #ffffff;
   background: var(--umbrella-deep);
   border-radius: 1.2rem;
 }
 
+.umbrella-handbook-page .final-thoughts p {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.umbrella-handbook-page .final-thoughts .section-label {
+  color: var(--umbrella-gold);
+}
+
 .umbrella-handbook-page .final-thoughts h3 {
   margin-top: 0;
+  color: #ffffff;
+}
+
+.umbrella-handbook-page .final-thoughts strong {
+  color: #ffffff;
 }
 
 .umbrella-handbook-page .final-thoughts blockquote {
   color: #f2dfb9;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.08);
   border-left-color: var(--umbrella-gold);
+}
+
+.umbrella-handbook-page .final-thoughts blockquote p {
+  color: #f2dfb9;
 }
 
 .umbrella-handbook-page .next-link,
