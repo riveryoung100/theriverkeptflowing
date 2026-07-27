@@ -1,0 +1,710 @@
+/* ==========================================================
+   UMBRELLA INSURANCE HANDBOOK
+   File: public/content/guides/insurance/umbrella-insurance-handbook.css
+   ========================================================== */
+
+.umbrella-handbook-page {
+  --umbrella-ink: #17251f;
+  --umbrella-deep: #10271f;
+  --umbrella-forest: #23463a;
+  --umbrella-sage: #7f9a89;
+  --umbrella-gold: #c8a866;
+  --umbrella-cream: #f4efe5;
+  --umbrella-paper: #fffdf8;
+  --umbrella-line: rgba(23, 37, 31, 0.16);
+  --umbrella-shadow: 0 22px 60px rgba(17, 39, 31, 0.12);
+
+  margin: 0;
+  color: var(--umbrella-ink);
+  background: var(--umbrella-cream);
+}
+
+.umbrella-handbook-page *,
+.umbrella-handbook-page *::before,
+.umbrella-handbook-page *::after {
+  box-sizing: border-box;
+}
+
+.umbrella-handbook-page img {
+  max-width: 100%;
+}
+
+.umbrella-handbook-page a {
+  color: inherit;
+}
+
+.umbrella-handbook-page .skip-link {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 20000;
+  transform: translateY(-180%);
+  padding: 0.75rem 1rem;
+  color: #fff;
+  background: var(--umbrella-deep);
+  border-radius: 0.5rem;
+}
+
+.umbrella-handbook-page .skip-link:focus {
+  transform: translateY(0);
+}
+
+.umbrella-handbook-page .reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 15000;
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+}
+
+.umbrella-handbook-page .reading-progress__bar {
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--umbrella-gold), var(--umbrella-sage));
+  transition: width 0.08s linear;
+}
+
+.umbrella-handbook-page .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 1.1rem clamp(1rem, 4vw, 3rem);
+  background: rgba(244, 239, 229, 0.95);
+  border-bottom: 1px solid var(--umbrella-line);
+  backdrop-filter: blur(14px);
+}
+
+.umbrella-handbook-page .brand {
+  font-size: 1.15rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.umbrella-handbook-page .site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.umbrella-handbook-page .site-nav a {
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.umbrella-handbook-page .hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 78vh;
+  display: grid;
+  place-items: center;
+  padding: clamp(6rem, 12vw, 10rem) 1.5rem;
+  color: #fff;
+  text-align: center;
+  background:
+    radial-gradient(circle at 82% 18%, rgba(200, 168, 102, 0.24), transparent 28%),
+    radial-gradient(circle at 15% 82%, rgba(127, 154, 137, 0.18), transparent 32%),
+    linear-gradient(140deg, #0c211a, #24483b 62%, #36594c);
+}
+
+.umbrella-handbook-page .hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.12;
+  background:
+    repeating-radial-gradient(
+      circle at 50% 115%,
+      transparent 0,
+      transparent 48px,
+      rgba(255, 255, 255, 0.28) 49px,
+      transparent 51px
+    );
+}
+
+.umbrella-handbook-page .hero-inner {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 980px);
+}
+
+.umbrella-handbook-page .eyebrow,
+.umbrella-handbook-page .section-label,
+.umbrella-handbook-page .part-number,
+.umbrella-handbook-page .scenario-label {
+  margin: 0 0 1rem;
+  color: var(--umbrella-gold);
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.umbrella-handbook-page .hero h1 {
+  margin: 0 auto 1.25rem;
+  max-width: 920px;
+  font-size: clamp(3.3rem, 8vw, 6.8rem);
+  line-height: 0.96;
+  letter-spacing: -0.06em;
+}
+
+.umbrella-handbook-page .subtitle {
+  margin: 0 auto 1.15rem;
+  max-width: 760px;
+  color: #ead9b7;
+  font-size: clamp(1.3rem, 3vw, 2rem);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.umbrella-handbook-page .intro {
+  max-width: 780px;
+  margin: 0 auto;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  line-height: 1.8;
+}
+
+.umbrella-handbook-page .publication-meta {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin: 2rem 0 0;
+}
+
+.umbrella-handbook-page .publication-meta span {
+  padding: 0.6rem 0.85rem;
+  color: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  font-size: 0.86rem;
+}
+
+.umbrella-handbook-page .hero-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-top: 2rem;
+}
+
+.umbrella-handbook-page .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0.8rem 1.4rem;
+  border: 1px solid transparent;
+  border-radius: 0.75rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.umbrella-handbook-page .button:hover,
+.umbrella-handbook-page .button:focus-visible {
+  transform: translateY(-3px);
+}
+
+.umbrella-handbook-page .button-primary {
+  color: var(--umbrella-deep);
+  background: var(--umbrella-gold);
+}
+
+.umbrella-handbook-page .button-secondary {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.umbrella-handbook-page .content-width {
+  width: min(calc(100% - 2rem), 1180px);
+  margin-inline: auto;
+}
+
+.umbrella-handbook-page .author-note {
+  padding: clamp(5rem, 9vw, 8rem) 0;
+  max-width: 840px;
+}
+
+.umbrella-handbook-page .author-note h2,
+.umbrella-handbook-page .toc-section h2,
+.umbrella-handbook-page .part > h2 {
+  margin: 0 0 1.5rem;
+  font-size: clamp(2.3rem, 5vw, 4.2rem);
+  line-height: 1.04;
+  letter-spacing: -0.045em;
+}
+
+.umbrella-handbook-page p,
+.umbrella-handbook-page li {
+  font-size: 1.05rem;
+  line-height: 1.82;
+}
+
+.umbrella-handbook-page .notice-card,
+.umbrella-handbook-page .callout,
+.umbrella-handbook-page .price-note,
+.umbrella-handbook-page .about-handbook,
+.umbrella-handbook-page .handbook-next-guide {
+  margin: 2rem 0;
+  padding: clamp(1.4rem, 3vw, 2rem);
+  background: #f8f1e3;
+  border: 1px solid rgba(200, 168, 102, 0.4);
+  border-radius: 1rem;
+}
+
+.umbrella-handbook-page .notice-card h3,
+.umbrella-handbook-page .callout strong,
+.umbrella-handbook-page .price-note h4 {
+  display: block;
+  margin: 0 0 0.6rem;
+}
+
+.umbrella-handbook-page .notice-card p,
+.umbrella-handbook-page .callout p,
+.umbrella-handbook-page .price-note p {
+  margin-bottom: 0;
+}
+
+.umbrella-handbook-page .toc-section {
+  padding: clamp(5rem, 9vw, 8rem) 0;
+  color: #fff;
+  background: var(--umbrella-deep);
+}
+
+.umbrella-handbook-page .toc-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+
+.umbrella-handbook-page .toc-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  min-height: 150px;
+  padding: 1.5rem;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 1rem;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.umbrella-handbook-page .toc-card:hover,
+.umbrella-handbook-page .toc-card:focus-visible {
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.umbrella-handbook-page .toc-card span {
+  color: var(--umbrella-gold);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.umbrella-handbook-page .toc-card strong {
+  font-size: 1.2rem;
+  line-height: 1.35;
+}
+
+.umbrella-handbook-page .reading-layout {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 760px);
+  justify-content: center;
+  gap: clamp(2rem, 6vw, 5rem);
+  padding: clamp(5rem, 9vw, 8rem) 0;
+}
+
+.umbrella-handbook-page .reading-nav {
+  position: sticky;
+  top: 110px;
+  align-self: start;
+  display: grid;
+  gap: 0.7rem;
+  padding: 1.25rem;
+  background: rgba(255, 253, 248, 0.78);
+  border: 1px solid var(--umbrella-line);
+  border-radius: 1rem;
+}
+
+.umbrella-handbook-page .reading-nav p {
+  margin: 0 0 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.umbrella-handbook-page .reading-nav a {
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.umbrella-handbook-page .handbook {
+  min-width: 0;
+}
+
+.umbrella-handbook-page .part {
+  scroll-margin-top: 110px;
+  padding: 0 0 clamp(5rem, 10vw, 8rem);
+  margin: 0 0 clamp(5rem, 10vw, 8rem);
+  border-bottom: 1px solid var(--umbrella-line);
+}
+
+.umbrella-handbook-page .part:last-child {
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+
+.umbrella-handbook-page .part h3 {
+  margin: 2.5rem 0 1rem;
+  font-size: clamp(1.7rem, 4vw, 2.4rem);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+
+.umbrella-handbook-page .part h4 {
+  margin: 1.75rem 0 0.65rem;
+  font-size: 1.2rem;
+  line-height: 1.35;
+}
+
+.umbrella-handbook-page blockquote {
+  margin: 2.5rem 0;
+  padding: 1.5rem 1.5rem 1.5rem 1.75rem;
+  color: var(--umbrella-forest);
+  background: #eee6d7;
+  border-left: 5px solid var(--umbrella-gold);
+  border-radius: 0 0.8rem 0.8rem 0;
+  font-size: clamp(1.2rem, 3vw, 1.55rem);
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.umbrella-handbook-page ul,
+.umbrella-handbook-page ol {
+  padding-left: 1.35rem;
+}
+
+.umbrella-handbook-page li + li {
+  margin-top: 0.45rem;
+}
+
+.umbrella-handbook-page .definition-grid,
+.umbrella-handbook-page .consider-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.umbrella-handbook-page .definition-card,
+.umbrella-handbook-page .consider-grid section,
+.umbrella-handbook-page .exclusion-list section {
+  padding: 1.35rem;
+  background: var(--umbrella-paper);
+  border: 1px solid var(--umbrella-line);
+  border-radius: 0.9rem;
+  box-shadow: 0 10px 28px rgba(17, 39, 31, 0.05);
+}
+
+.umbrella-handbook-page .definition-card h4,
+.umbrella-handbook-page .consider-grid h4,
+.umbrella-handbook-page .exclusion-list h4 {
+  margin-top: 0;
+}
+
+.umbrella-handbook-page .definition-card p,
+.umbrella-handbook-page .consider-grid p,
+.umbrella-handbook-page .exclusion-list p {
+  margin-bottom: 0;
+  font-size: 0.98rem;
+}
+
+.umbrella-handbook-page .limit-list {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.7rem;
+  padding: 0;
+  list-style: none;
+}
+
+.umbrella-handbook-page .limit-list li {
+  display: grid;
+  place-items: center;
+  min-height: 76px;
+  padding: 0.75rem;
+  text-align: center;
+  font-weight: 850;
+  background: var(--umbrella-paper);
+  border: 1px solid rgba(35, 70, 58, 0.22);
+  border-radius: 0.8rem;
+}
+
+.umbrella-handbook-page .scenario {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: #edf2ed;
+  border: 1px solid rgba(127, 154, 137, 0.42);
+  border-radius: 1rem;
+}
+
+.umbrella-handbook-page .scenario h4 {
+  margin-top: 0;
+}
+
+.umbrella-handbook-page .scenario-label {
+  color: var(--umbrella-forest);
+}
+
+.umbrella-handbook-page .exclusion-list {
+  display: grid;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.umbrella-handbook-page .faq-list {
+  display: grid;
+  gap: 0.8rem;
+  margin: 2rem 0;
+}
+
+.umbrella-handbook-page .faq-list details {
+  background: var(--umbrella-paper);
+  border: 1px solid var(--umbrella-line);
+  border-radius: 0.8rem;
+}
+
+.umbrella-handbook-page .faq-list summary {
+  cursor: pointer;
+  padding: 1.1rem 1.25rem;
+  font-weight: 800;
+}
+
+.umbrella-handbook-page .faq-list details p {
+  margin: 0;
+  padding: 0 1.25rem 1.25rem;
+}
+
+.umbrella-handbook-page .checklist {
+  padding: 0;
+  list-style: none;
+}
+
+.umbrella-handbook-page .checklist li {
+  position: relative;
+  padding: 0.75rem 0 0.75rem 2rem;
+  border-bottom: 1px solid var(--umbrella-line);
+}
+
+.umbrella-handbook-page .checklist li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--umbrella-forest);
+  font-weight: 900;
+}
+
+.umbrella-handbook-page .table-wrap {
+  overflow-x: auto;
+  margin: 2rem 0;
+  border: 1px solid var(--umbrella-line);
+  border-radius: 1rem;
+}
+
+.umbrella-handbook-page table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--umbrella-paper);
+}
+
+.umbrella-handbook-page th,
+.umbrella-handbook-page td {
+  padding: 1rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--umbrella-line);
+}
+
+.umbrella-handbook-page tr:last-child th,
+.umbrella-handbook-page tr:last-child td {
+  border-bottom: 0;
+}
+
+.umbrella-handbook-page th {
+  width: 34%;
+  color: var(--umbrella-deep);
+  background: #eee8dc;
+}
+
+.umbrella-handbook-page .final-thoughts {
+  scroll-margin-top: 110px;
+  margin: 3rem 0;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  color: #fff;
+  background: var(--umbrella-deep);
+  border-radius: 1.2rem;
+}
+
+.umbrella-handbook-page .final-thoughts h3 {
+  margin-top: 0;
+}
+
+.umbrella-handbook-page .final-thoughts blockquote {
+  color: #f2dfb9;
+  background: rgba(255, 255, 255, 0.06);
+  border-left-color: var(--umbrella-gold);
+}
+
+.umbrella-handbook-page .next-link,
+.umbrella-handbook-page .back-to-top {
+  display: inline-block;
+  margin-top: 2rem;
+  color: var(--umbrella-forest);
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.umbrella-handbook-page .site-footer {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2rem;
+  align-items: start;
+  padding: 3rem clamp(1rem, 5vw, 4rem);
+  color: rgba(255, 255, 255, 0.78);
+  background: #0b1d17;
+}
+
+.umbrella-handbook-page .footer-brand {
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.umbrella-handbook-page .footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.umbrella-handbook-page .footer-links a {
+  text-decoration: none;
+}
+
+.umbrella-handbook-page .copyright {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 900px) {
+  .umbrella-handbook-page .reading-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .umbrella-handbook-page .reading-nav {
+    position: static;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .umbrella-handbook-page .reading-nav p {
+    grid-column: 1 / -1;
+  }
+
+  .umbrella-handbook-page .limit-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .umbrella-handbook-page .site-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .umbrella-handbook-page .site-nav {
+    gap: 0.8rem;
+  }
+
+  .umbrella-handbook-page .hero {
+    min-height: auto;
+  }
+
+  .umbrella-handbook-page .toc-grid,
+  .umbrella-handbook-page .definition-grid,
+  .umbrella-handbook-page .consider-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .umbrella-handbook-page .reading-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .umbrella-handbook-page .limit-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .umbrella-handbook-page .site-footer {
+    grid-template-columns: 1fr;
+  }
+
+  .umbrella-handbook-page .copyright {
+    grid-column: 1;
+  }
+}
+
+@media print {
+  .umbrella-handbook-page .reading-progress,
+  .umbrella-handbook-page .site-header,
+  .umbrella-handbook-page .reading-nav,
+  .umbrella-handbook-page .hero-actions,
+  .umbrella-handbook-page .site-footer {
+    display: none;
+  }
+
+  .umbrella-handbook-page {
+    color: #000;
+    background: #fff;
+  }
+
+  .umbrella-handbook-page .hero {
+    min-height: auto;
+    padding: 2rem 0;
+    color: #000;
+    background: none;
+  }
+
+  .umbrella-handbook-page .hero .subtitle,
+  .umbrella-handbook-page .hero .intro,
+  .umbrella-handbook-page .publication-meta span {
+    color: #000;
+  }
+
+  .umbrella-handbook-page .reading-layout {
+    display: block;
+    width: 100%;
+    padding: 0;
+  }
+
+  .umbrella-handbook-page .part {
+    break-inside: avoid-page;
+  }
+}
