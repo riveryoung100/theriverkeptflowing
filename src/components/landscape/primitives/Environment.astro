@@ -1,0 +1,67 @@
+﻿---
+import AmbientGlow from "./AmbientGlow.astro";
+import MistBand from "./MistBand.astro";
+import CloudLayer from "./CloudLayer.astro";
+import SunLight from "./SunLight.astro";
+
+interface Props {
+    season?: "spring" | "summer" | "autumn" | "winter";
+    time?: "sunrise" | "day" | "sunset" | "night";
+    weather?: "clear" | "mist" | "wind";
+}
+
+const {
+    season = "autumn",
+    time = "sunrise",
+    weather = "mist"
+} = Astro.props;
+
+const isSunVisible = time !== "night";
+const showMist = weather === "mist";
+const showClouds = time !== "night";
+---
+
+{
+    isSunVisible && (
+        <SunLight
+            slot="background"
+            position="right"
+            size="large"
+            intensity="soft"
+            pulseDuration="22s"
+        />
+    )
+}
+
+<AmbientGlow
+    slot="background"
+    position="left"
+    size="large"
+    intensity="medium"
+    duration="18s"
+/>
+
+{
+    showClouds && (
+        <CloudLayer
+            slot="atmosphere"
+            count={6}
+            depth="far"
+            direction="right"
+            speed="slow"
+            opacity={0.38}
+        />
+    )
+}
+
+{
+    showMist && (
+        <MistBand
+            slot="atmosphere"
+            position="middle"
+            density="light"
+            direction="right"
+            duration="30s"
+        />
+    )
+}
