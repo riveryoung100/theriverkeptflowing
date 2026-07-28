@@ -1,44 +1,166 @@
 ﻿:root {
-    --font-body:
+    /*
+     * Typography
+     */
+
+    --font-display:
         Georgia,
         "Times New Roman",
+        Times,
+        serif;
+
+    --font-reading:
+        Georgia,
+        "Times New Roman",
+        Times,
         serif;
 
     --font-interface:
+        Inter,
         Arial,
         Helvetica,
         sans-serif;
 
-    --color-night:
-        #101612;
 
-    --color-earth:
-        #2d382f;
+    /*
+     * Core landscape colors
+     */
 
-    --color-mist:
-        #d8ddd5;
+    --color-night-deep: #090e0b;
+    --color-night: #101612;
+    --color-night-soft: #172019;
 
-    --color-river-light:
-        #eef2ec;
+    --color-forest-deep: #17231b;
+    --color-forest: #223126;
+    --color-forest-soft: #344438;
 
-    --color-parchment:
-        #f3efe4;
+    --color-earth-deep: #2a241d;
+    --color-earth: #443a2e;
+    --color-earth-soft: #665844;
 
-    --color-ink:
-        #172019;
+    --color-river-deep: #293a39;
+    --color-river: #526d69;
+    --color-river-soft: #86a09a;
+
+    --color-mist-deep: #aeb8ae;
+    --color-mist: #d8ddd5;
+    --color-mist-light: #edf0ea;
+
+    --color-parchment-deep: #d8cfbd;
+    --color-parchment: #eee8da;
+    --color-parchment-light: #f7f3ea;
+
+    --color-ember: #ad7654;
+    --color-ember-soft: #ca9875;
+
+    --color-ink: #172019;
+    --color-ink-soft: #3f4a42;
+
+
+    /*
+     * Semantic colors
+     */
+
+    --color-background: var(--color-night);
+    --color-background-deep: var(--color-night-deep);
+    --color-surface: var(--color-night-soft);
+
+    --color-text: var(--color-mist-light);
+    --color-text-soft: var(--color-mist);
+    --color-text-muted: var(--color-mist-deep);
+
+    --color-accent: var(--color-river-soft);
+    --color-accent-warm: var(--color-ember-soft);
+
+    --color-border:
+        rgba(216, 221, 213, 0.16);
+
+    --color-border-strong:
+        rgba(216, 221, 213, 0.3);
+
+    --color-glow:
+        rgba(216, 221, 213, 0.1);
+
+    --color-shadow:
+        rgba(0, 0, 0, 0.42);
+
+
+    /*
+     * Fluid spacing
+     */
 
     --space-1: 0.25rem;
     --space-2: 0.5rem;
     --space-3: 0.75rem;
     --space-4: 1rem;
+    --space-5: 1.25rem;
     --space-6: 1.5rem;
     --space-8: 2rem;
+    --space-10: 2.5rem;
     --space-12: 3rem;
     --space-16: 4rem;
+    --space-20: 5rem;
+    --space-24: 6rem;
+    --space-32: 8rem;
 
+    --page-gutter:
+        clamp(1.25rem, 4vw, 4rem);
+
+    --section-space:
+        clamp(5rem, 12vw, 10rem);
+
+
+    /*
+     * Content widths
+     */
+
+    --content-width-narrow: 34rem;
+    --content-width-reading: 46rem;
+    --content-width-medium: 62rem;
+    --content-width-wide: 82rem;
+    --content-width-world: 96rem;
+
+
+    /*
+     * Borders and shapes
+     */
+
+    --radius-small: 0.4rem;
+    --radius-medium: 0.85rem;
+    --radius-large: 1.5rem;
+    --radius-round: 999rem;
+
+    --line-thin: 1px;
+
+
+    /*
+     * Motion
+     */
+
+    --duration-quick: 180ms;
+    --duration-gentle: 450ms;
     --duration-breath: 1200ms;
+    --duration-reveal: 1800ms;
     --duration-threshold: 3000ms;
+    --duration-landscape: 12000ms;
 
-    --content-width-reading: 44rem;
-    --content-width-wide: 76rem;
+    --ease-natural:
+        cubic-bezier(0.22, 1, 0.36, 1);
+
+    --ease-breath:
+        cubic-bezier(0.37, 0, 0.63, 1);
+
+    --ease-threshold:
+        cubic-bezier(0.76, 0, 0.24, 1);
+
+
+    /*
+     * Layering
+     */
+
+    --z-landscape: 0;
+    --z-atmosphere: 10;
+    --z-content: 20;
+    --z-navigation: 40;
+    --z-overlay: 60;
 }

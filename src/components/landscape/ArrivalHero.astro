@@ -1,0 +1,179 @@
+---
+---
+
+<section class="arrival-hero">
+
+    <div class="arrival-hero__content">
+
+        <p class="eyebrow fade-up">
+            The landscape is being surveyed.
+        </p>
+
+        <h1 class="construction__title fade-up fade-delay-1">
+            The River
+            <span>Kept Flowing</span>
+        </h1>
+
+        <p class="construction__statement fade-up fade-delay-2">
+            A living reflective reality.
+        </p>
+
+        <div
+            class="construction__marker fade-up fade-delay-3"
+            aria-hidden="true"
+        >
+            <span></span>
+        </div>
+
+        <section class="arrival fade-up fade-delay-3">
+
+            <a
+                href="#headwaters"
+                class="button arrival__button"
+            >
+                Begin the journey
+            </a>
+
+        </section>
+
+    </div>
+
+</section>
+
+<style>
+
+.arrival-hero {
+    display: grid;
+    place-items: center;
+
+    min-height: 100svh;
+
+    padding:
+        var(--space-16)
+        var(--page-gutter);
+
+    text-align: center;
+}
+
+.arrival-hero__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: min(100%, 70rem);
+}
+
+.construction__title {
+    max-width: 12ch;
+
+    margin-top: var(--space-6);
+
+    font-size:
+        clamp(4rem, 12vw, 10rem);
+
+    line-height: 0.84;
+    letter-spacing: -0.06em;
+}
+
+.construction__title span {
+    display: block;
+
+    color: var(--color-text-soft);
+}
+
+.construction__statement {
+    margin-top: var(--space-10);
+
+    font-size:
+        clamp(1.05rem, 1.8vw, 1.35rem);
+
+    color: var(--color-text-muted);
+}
+
+.construction__marker {
+    display: grid;
+    place-items: center;
+
+    width: 2rem;
+    height: 4rem;
+
+    margin-top: var(--space-16);
+
+    border:
+        1px solid
+        var(--color-border);
+
+    border-radius:
+        var(--radius-round);
+}
+
+.construction__marker span {
+    width: 0.2rem;
+    height: 0.2rem;
+
+    border-radius: 50%;
+
+    background:
+        var(--color-text-soft);
+
+    animation:
+        marker-drift
+        2.8s
+        var(--ease-breath)
+        infinite;
+}
+
+.arrival {
+    margin-top: var(--space-16);
+}
+
+.arrival__button {
+    font-size: 0.95rem;
+}
+
+@keyframes marker-drift {
+    0% {
+        transform: translateY(-0.7rem);
+        opacity: 0;
+    }
+
+    35% {
+        opacity: 1;
+    }
+
+    70% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(0.7rem);
+        opacity: 0;
+    }
+}
+
+@media (max-width: 48rem) {
+    .construction__title {
+        font-size:
+            clamp(3.6rem, 17vw, 6.5rem);
+    }
+
+    .construction__statement {
+        margin-top: var(--space-8);
+    }
+
+    .construction__marker {
+        margin-top: var(--space-12);
+    }
+
+    .arrival {
+        margin-top: var(--space-12);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .construction__marker span {
+        animation: none;
+    }
+}
+
+</style>

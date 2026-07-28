@@ -1,45 +1,186 @@
 ﻿---
-import "../styles/reset.css";
-import "../styles/tokens.css";
-import "../styles/typography.css";
-import "../styles/world.css";
-
+import WorldLayout from "../layouts/WorldLayout.astro";
+import ArrivalHero from "../components/landscape/ArrivalHero.astro";
+import HeadwatersIntro from "../components/landscape/HeadwatersIntro.astro";
+import WalkTheRiver from "../components/landscape/WalkTheRiver.astro";
 const title = "The River Kept Flowing";
+
 const description =
     "A living reflective reality built to cultivate attention, stewardship, and wonder.";
 ---
 
-<!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
+<WorldLayout
+    title={title}
+    description={description}
+>
+    <main class="construction">
 
-        <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1"
-        />
+        <ArrivalHero />
 
-        <meta
-            name="description"
-            content={description}
-        />
+<HeadwatersIntro />
 
-        <title>{title}</title>
-    </head>
+<WalkTheRiver />
 
-    <body>
-        <main class="construction">
-            <p class="construction__eyebrow">
-                The landscape is being surveyed.
-            </p>
+    </main>
+</WorldLayout>
 
-            <h1>
-                The River Kept Flowing
-            </h1>
+<style>
+    .construction {
+        display: grid;
+        place-items: center;
 
-            <p class="construction__statement">
-                A living reflective reality.
-            </p>
-        </main>
-    </body>
-</html>
+        width: 100%;
+        min-height: 100svh;
+
+        padding:
+            var(--space-16)
+            var(--page-gutter);
+
+        text-align: center;
+    }
+
+    .construction__content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        width: min(100%, 70rem);
+    }
+
+    .construction__title {
+        margin-top: var(--space-6);
+
+        max-width: 12ch;
+
+        font-size:
+            clamp(4rem, 12vw, 10rem);
+
+        line-height: 0.84;
+        letter-spacing: -0.06em;
+    }
+
+    .construction__title span {
+        display: block;
+
+        color: var(--color-text-soft);
+    }
+
+    .construction__statement {
+        margin-top: var(--space-10);
+
+        font-size:
+            clamp(1.05rem, 1.8vw, 1.35rem);
+
+        color: var(--color-text-muted);
+    }
+
+    .construction__marker {
+        display: grid;
+        place-items: center;
+
+        width: 2rem;
+        height: 4rem;
+
+        margin-top: var(--space-16);
+
+        border:
+            1px solid
+            var(--color-border);
+
+        border-radius:
+            var(--radius-round);
+    }
+
+    .construction__marker span {
+        width: 0.2rem;
+        height: 0.2rem;
+
+        border-radius: 50%;
+
+        background:
+            var(--color-text-soft);
+
+        animation:
+            marker-drift
+            2.8s
+            var(--ease-breath)
+            infinite;
+    }
+
+    @keyframes marker-drift {
+        0% {
+            transform: translateY(-0.7rem);
+            opacity: 0;
+        }
+
+        35% {
+            opacity: 1;
+        }
+
+        70% {
+            opacity: 1;
+        }
+
+        100% {
+            transform: translateY(0.7rem);
+            opacity: 0;
+        }
+    }
+
+    @media (max-width: 48rem) {
+        .construction__title {
+            font-size:
+                clamp(3.6rem, 17vw, 6.5rem);
+        }
+
+        .construction__statement {
+            margin-top: var(--space-8);
+        }
+
+        .construction__marker {
+            margin-top: var(--space-12);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .construction__marker span {
+            animation: none;
+        }
+    }
+
+    .arrival {
+
+    margin-top: var(--space-16);
+
+}
+
+.arrival__button {
+
+    font-size: .95rem;
+
+}
+
+.headwaters {
+
+    display: flex;
+
+    align-items: center;
+
+    min-height: 100svh;
+
+    text-align: left;
+
+}
+
+.headwaters .container {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: var(--space-8);
+
+}
+
+
+</style>

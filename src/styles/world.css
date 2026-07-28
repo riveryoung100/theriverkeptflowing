@@ -1,38 +1,171 @@
-﻿body {
-    background:
-        radial-gradient(
-            circle at 50% 35%,
-            rgba(216, 221, 213, 0.08),
-            transparent 35%
-        ),
-        linear-gradient(
-            to bottom,
-            #182119,
-            var(--color-night)
-        );
+﻿/* ---------- Reset ---------- */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
 
-.construction {
-    display: flex;
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
     min-height: 100vh;
-    flex-direction: column;
+    overflow-x: hidden;
+
+    background: var(--color-background);
+
+    color: var(--color-text);
+}
+
+/* ---------- Layout ---------- */
+
+.world-shell {
+    position: relative;
+    z-index: var(--z-content);
+
+    min-height: 100vh;
+}
+
+main {
+    width: min(
+        var(--content-width-world),
+        calc(100% - (var(--page-gutter) * 2))
+    );
+
+    margin-inline: auto;
+}
+
+/* ---------- Sections ---------- */
+
+section {
+    padding-block: var(--section-space);
+}
+
+.container {
+    width: min(
+        var(--content-width-wide),
+        calc(100% - (var(--page-gutter) * 2))
+    );
+
+    margin-inline: auto;
+}
+
+/* ---------- Fade In ---------- */
+
+.fade-up {
+
+    opacity: 0;
+
+    transform:
+        translateY(2rem);
+
+    animation:
+
+        fade-up
+
+        var(--duration-reveal)
+
+        var(--ease-natural)
+
+        forwards;
+}
+
+.fade-delay-1 {
+    animation-delay: .25s;
+}
+
+.fade-delay-2 {
+    animation-delay: .55s;
+}
+
+.fade-delay-3 {
+    animation-delay: .9s;
+}
+
+@keyframes fade-up {
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0);
+
+    }
+
+}
+
+/* ---------- Buttons ---------- */
+
+.button {
+
+    display: inline-flex;
+
     align-items: center;
+
     justify-content: center;
-    padding: var(--space-8);
-    text-align: center;
+
+    gap: .75rem;
+
+    padding:
+        .95rem
+        1.6rem;
+
+    border-radius:
+        var(--radius-round);
+
+    border:
+        1px solid
+        var(--color-border);
+
+    background:
+        rgba(255,255,255,.03);
+
+    backdrop-filter:
+        blur(10px);
+
+    text-decoration: none;
+
+    transition:
+        transform .3s var(--ease-natural),
+        background .3s var(--ease-natural),
+        border-color .3s var(--ease-natural);
 }
 
-.construction__eyebrow {
-    margin-bottom: var(--space-6);
-    font-family: var(--font-interface);
-    font-size: 0.75rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    opacity: 0.65;
+.button:hover {
+
+    transform:
+        translateY(-2px);
+
+    border-color:
+        var(--color-border-strong);
+
+    background:
+        rgba(255,255,255,.06);
+
 }
 
-.construction__statement {
-    max-width: 32rem;
-    font-size: clamp(1rem, 2vw, 1.25rem);
-    opacity: 0.8;
+/* ---------- Accessibility ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    html {
+
+        scroll-behavior: auto;
+
+    }
+
+    .fade-up {
+
+        animation: none;
+
+        opacity: 1;
+
+        transform: none;
+
+    }
+
 }

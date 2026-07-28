@@ -1,0 +1,160 @@
+.world-background {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-landscape);
+    overflow: hidden;
+    pointer-events: none;
+    background:
+        radial-gradient(
+            circle at 50% 18%,
+            rgba(134, 160, 154, 0.1),
+            transparent 34%
+        ),
+        linear-gradient(
+            180deg,
+            var(--color-night-deep) 0%,
+            var(--color-night) 52%,
+            #0d130f 100%
+        );
+}
+
+.world-background::before {
+    content: "";
+    position: absolute;
+    inset: -20%;
+    background:
+        radial-gradient(
+            circle at 20% 35%,
+            rgba(82, 109, 105, 0.12),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 78% 28%,
+            rgba(102, 88, 68, 0.08),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 50% 80%,
+            rgba(34, 49, 38, 0.2),
+            transparent 40%
+        );
+    filter: blur(40px);
+    opacity: 0.85;
+    animation:
+        atmosphere-drift
+        var(--duration-landscape)
+        var(--ease-breath)
+        infinite alternate;
+}
+
+.mist {
+    position: absolute;
+    inset: -20%;
+    opacity: 0.2;
+    background:
+        radial-gradient(
+            ellipse at 25% 50%,
+            rgba(216, 221, 213, 0.13),
+            transparent 36%
+        ),
+        radial-gradient(
+            ellipse at 75% 40%,
+            rgba(216, 221, 213, 0.09),
+            transparent 34%
+        );
+    filter: blur(70px);
+    animation:
+        mist-breathe
+        18s
+        var(--ease-breath)
+        infinite alternate;
+}
+
+.light {
+    position: absolute;
+    top: -25%;
+    left: 50%;
+    width: min(90vw, 80rem);
+    height: min(90vw, 80rem);
+    transform: translateX(-50%);
+    border-radius: 50%;
+    opacity: 0.34;
+    background:
+        radial-gradient(
+            circle,
+            rgba(237, 240, 234, 0.11) 0%,
+            rgba(134, 160, 154, 0.06) 28%,
+            transparent 68%
+        );
+    filter: blur(24px);
+    animation:
+        light-breathe
+        12s
+        var(--ease-breath)
+        infinite alternate;
+}
+
+.grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.035;
+    background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 180px 180px;
+    mix-blend-mode: soft-light;
+}
+
+@keyframes atmosphere-drift {
+    from {
+        transform:
+            translate3d(-1.5%, -1%, 0)
+            scale(1);
+    }
+
+    to {
+        transform:
+            translate3d(1.5%, 1%, 0)
+            scale(1.04);
+    }
+}
+
+@keyframes mist-breathe {
+    from {
+        transform:
+            translate3d(-2%, 0, 0)
+            scale(1);
+        opacity: 0.14;
+    }
+
+    to {
+        transform:
+            translate3d(2%, -1.5%, 0)
+            scale(1.08);
+        opacity: 0.25;
+    }
+}
+
+@keyframes light-breathe {
+    from {
+        transform:
+            translateX(-50%)
+            scale(0.96);
+        opacity: 0.24;
+    }
+
+    to {
+        transform:
+            translateX(-50%)
+            scale(1.05);
+        opacity: 0.4;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .world-background::before,
+    .mist,
+    .light {
+        animation: none;
+    }
+}

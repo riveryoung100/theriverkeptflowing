@@ -1,26 +1,198 @@
 ﻿html {
-    font-family: var(--font-body);
-    color: var(--color-river-light);
-    background: var(--color-night);
+    font-size: 16px;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-    line-height: 1.6;
-    text-rendering: optimizeLegibility;
+    font-family: var(--font-reading);
+    color: var(--color-text);
+    line-height: 1.65;
+    letter-spacing: 0.01em;
 }
 
 h1,
 h2,
 h3,
-p {
-    margin-top: 0;
+h4,
+h5,
+h6 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
 }
 
 h1 {
+    font-size:
+        clamp(3.75rem, 10vw, 9rem);
+}
+
+h2 {
+    font-size:
+        clamp(2.5rem, 6vw, 5.5rem);
+}
+
+h3 {
+    font-size:
+        clamp(1.85rem, 3.5vw, 3.25rem);
+}
+
+h4 {
+    font-size:
+        clamp(1.35rem, 2vw, 2rem);
+}
+
+p {
+    margin: 0;
+    max-width: 68ch;
+    font-size:
+        clamp(1rem, 1.15vw, 1.15rem);
+}
+
+a {
+    color: inherit;
+    text-decoration-color:
+        rgba(216, 221, 213, 0.42);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.22em;
+    transition:
+        color var(--duration-quick) var(--ease-natural),
+        text-decoration-color var(--duration-quick) var(--ease-natural);
+}
+
+a:hover {
+    color: var(--color-mist-light);
+    text-decoration-color:
+        rgba(216, 221, 213, 0.8);
+}
+
+strong {
+    font-weight: 600;
+}
+
+em {
+    font-style: italic;
+}
+
+small {
+    font-family: var(--font-interface);
+    font-size: 0.8rem;
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+}
+
+::selection {
+    color: var(--color-night-deep);
+    background: var(--color-mist);
+}
+
+
+/*
+ * Reusable type roles
+ */
+
+.eyebrow {
+    font-family: var(--font-interface);
+    font-size:
+        clamp(0.68rem, 0.75vw, 0.8rem);
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+.display-title {
     max-width: 12ch;
-    margin-bottom: var(--space-6);
-    font-size: clamp(2.75rem, 8vw, 7rem);
-    font-weight: 400;
-    line-height: 0.98;
-    letter-spacing: -0.045em;
+    font-size:
+        clamp(4rem, 11vw, 10rem);
+    line-height: 0.9;
+    letter-spacing: -0.055em;
+}
+
+.section-title {
+    max-width: 14ch;
+    font-size:
+        clamp(2.75rem, 7vw, 6rem);
+    line-height: 0.94;
+}
+
+.lead {
+    max-width: 48ch;
+    font-size:
+        clamp(1.2rem, 2vw, 1.6rem);
+    line-height: 1.55;
+    color: var(--color-text-soft);
+}
+
+.interface-label {
+    font-family: var(--font-interface);
+    font-size: 0.76rem;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.reading-copy {
+    max-width: var(--content-width-reading);
+}
+
+.reading-copy p + p {
+    margin-top: 1.4em;
+}
+
+.reading-copy blockquote {
+    margin:
+        var(--space-12) 0;
+    padding-left: var(--space-6);
+    border-left:
+        1px solid var(--color-border-strong);
+    font-size:
+        clamp(1.35rem, 2.2vw, 2rem);
+    line-height: 1.45;
+    color: var(--color-text-soft);
+}
+
+.reading-copy ul,
+.reading-copy ol {
+    padding-left: 1.3em;
+}
+
+.reading-copy li + li {
+    margin-top: 0.6em;
+}
+
+
+/*
+ * Responsive refinements
+ */
+
+@media (max-width: 48rem) {
+    body {
+        line-height: 1.6;
+    }
+
+    .display-title {
+        max-width: 9ch;
+    }
+
+    .lead {
+        font-size: 1.1rem;
+    }
+}
+
+
+/*
+ * Accessibility
+ */
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
 }
