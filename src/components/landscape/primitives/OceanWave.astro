@@ -1,0 +1,136 @@
+﻿---
+interface Props {
+    layers?: number;
+    amplitude?: "low" | "medium" | "high";
+    speed?: string;
+    foam?: boolean;
+    opacity?: number;
+}
+
+const {
+    layers = 5,
+    amplitude = "medium",
+    speed = "12s",
+    foam = true,
+    opacity = 1
+} = Astro.props;
+---
+
+<div
+    class:list={[
+        "ocean-wave",
+        `ocean-wave--${amplitude}`
+    ]}
+    style={`
+        --wave-opacity:${opacity};
+        --wave-speed:${speed};
+    `}
+    aria-hidden="true"
+>
+{
+    Array.from({length:layers},(_,index)=>(
+        <span
+            class="ocean-wave__layer"
+            style={`
+                --layer:${index};
+                --delay:-${index*1.3}s;
+            `}
+        >
+            {foam && <span class="ocean-wave__foam"></span>}
+        </span>
+    ))
+}
+</div>
+
+<style>
+.ocean-wave{
+    position:absolute;
+    inset:0;
+    overflow:hidden;
+    opacity:var(--wave-opacity);
+    pointer-events:none;
+}
+
+.ocean-wave__layer{
+    position:absolute;
+    left:-10%;
+    width:120%;
+    border-radius:50%;
+    animation:
+        ocean-wave-motion
+        var(--wave-speed)
+        ease-in-out
+        infinite;
+    animation-delay:var(--delay);
+}
+
+.ocean-wave--low .ocean-wave__layer{
+    height:8%;
+    bottom:calc(var(--layer)*5%);
+}
+
+.ocean-wave--medium .ocean-wave__layer{
+    height:10%;
+    bottom:calc(var(--layer)*6%);
+}
+
+.ocean-wave--high .ocean-wave__layer{
+    height:13%;
+    bottom:calc(var(--layer)*7%);
+}
+
+.ocean-wave__layer{
+    background:
+        linear-gradient(
+            180deg,
+            rgba(96,176,214,.65),
+            rgba(32,103,150,.92)
+        );
+}
+
+.ocean-wave__foam{
+    position:absolute;
+    top:8%;
+    left:0;
+    right:0;
+    height:14%;
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.55),
+            transparent
+        );
+    opacity:.7;
+}
+
+@keyframes ocean-wave-motion{
+
+    0%{
+        transform:
+            translateX(0)
+            translateY(0);
+    }
+
+    50%{
+        transform:
+            translateX(-3%)
+            translateY(-6%);
+    }
+
+    100%{
+        transform:
+            translateX(0)
+            translateY(0);
+    }
+
+}
+
+@media(prefers-reduced-motion:reduce){
+
+    .ocean-wave__layer{
+        animation:none;
+    }
+
+}
+</style>

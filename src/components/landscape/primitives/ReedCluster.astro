@@ -1,0 +1,300 @@
+﻿---
+interface Props {
+    count?: number;
+    size?: "small" | "medium" | "large";
+    density?: "light" | "medium" | "thick";
+    tone?: "river" | "marsh" | "dry";
+    seedHeads?: boolean;
+    swayDuration?: string;
+    animationDelay?: string;
+    opacity?: number;
+}
+
+const {
+    count,
+    size = "medium",
+    density = "medium",
+    tone = "river",
+    seedHeads = true,
+    swayDuration = "8s",
+    animationDelay = "0s",
+    opacity = 1
+} = Astro.props;
+
+const densityCounts = {
+    light: 8,
+    medium: 14,
+    thick: 22
+} as const;
+
+const reedCount = count ?? densityCounts[density];
+---
+
+<div
+    class:list={[
+        "reed-cluster",
+        `reed-cluster--${size}`,
+        `reed-cluster--${density}`,
+        `reed-cluster--${tone}`
+    ]}
+    style={`
+        --reed-opacity: ${opacity};
+        --reed-sway-duration: ${swayDuration};
+        --reed-animation-delay: ${animationDelay};
+    `}
+    aria-hidden="true"
+>
+    {
+        Array.from(
+            { length: reedCount },
+            (_, index) => (
+                <span
+                    class="reed-cluster__reed"
+                    style={`
+                        --reed-left: ${4 + ((index * 17) % 92)}%;
+                        --reed-height: ${48 + ((index * 23) % 52)}%;
+                        --reed-lean: ${-6 + ((index * 11) % 13)}deg;
+                        --reed-width: ${1 + ((index * 7) % 2)}px;
+                        --reed-delay: -${index * 0.29}s;
+                        --reed-scale: ${0.78 + ((index * 9) % 23) / 100};
+                    `}
+                >
+                    {
+                        seedHeads && (
+                            <span class="reed-cluster__seed-head"></span>
+                        )
+                    }
+                </span>
+            )
+        )
+    }
+</div>
+
+<style>
+    .reed-cluster {
+        position: absolute;
+        bottom: 0;
+        width: 10rem;
+        height: 9rem;
+        opacity: var(--reed-opacity);
+        pointer-events: none;
+        transform-origin: bottom center;
+    }
+
+    .reed-cluster--small {
+        width: clamp(4.5rem, 7vw, 6rem);
+        height: clamp(4rem, 7vw, 6rem);
+    }
+
+    .reed-cluster--medium {
+        width: clamp(7rem, 11vw, 10rem);
+        height: clamp(6rem, 10vw, 9rem);
+    }
+
+    .reed-cluster--large {
+        width: clamp(10rem, 16vw, 15rem);
+        height: clamp(8rem, 14vw, 13rem);
+    }
+
+    .reed-cluster__reed {
+        position: absolute;
+        bottom: 0;
+        left: var(--reed-left);
+        width: var(--reed-width);
+        height: var(--reed-height);
+        transform:
+            translateX(-50%)
+            rotate(var(--reed-lean))
+            scaleY(var(--reed-scale));
+        transform-origin: bottom center;
+        border-radius: 999px;
+        animation:
+            reed-cluster-sway
+            var(--reed-sway-duration)
+            ease-in-out
+            infinite
+            alternate;
+        animation-delay:
+            calc(
+                var(--reed-animation-delay) +
+                var(--reed-delay)
+            );
+    }
+
+    .reed-cluster__reed::before,
+    .reed-cluster__reed::after {
+        content: "";
+        position: absolute;
+        width: 0.58rem;
+        height: 0.18rem;
+        border-radius:
+            90% 10% 90% 10%;
+        transform-origin: center right;
+    }
+
+    .reed-cluster__reed::before {
+        top: 42%;
+        left: 50%;
+        transform:
+            translateX(-100%)
+            rotate(28deg);
+    }
+
+    .reed-cluster__reed::after {
+        top: 58%;
+        left: 50%;
+        transform: rotate(152deg);
+    }
+
+    .reed-cluster__seed-head {
+        position: absolute;
+        top: -0.16rem;
+        left: 50%;
+        width: 0.32rem;
+        height: 1.05rem;
+        transform:
+            translateX(-50%)
+            rotate(-3deg);
+        border-radius: 60% 60% 42% 42%;
+        box-shadow:
+            0 0.08rem 0.12rem
+            rgba(17, 25, 18, 0.18);
+    }
+
+    .reed-cluster--river
+    .reed-cluster__reed {
+        background:
+            linear-gradient(
+                180deg,
+                rgba(133, 158, 97, 0.95),
+                rgba(63, 95, 59, 0.98)
+            );
+    }
+
+    .reed-cluster--river
+    .reed-cluster__reed::before,
+    .reed-cluster--river
+    .reed-cluster__reed::after {
+        background:
+            linear-gradient(
+                90deg,
+                rgba(120, 149, 86, 0.92),
+                rgba(55, 89, 54, 0.98)
+            );
+    }
+
+    .reed-cluster--river
+    .reed-cluster__seed-head {
+        background:
+            linear-gradient(
+                180deg,
+                rgba(112, 86, 54, 0.96),
+                rgba(68, 50, 36, 0.98)
+            );
+    }
+
+    .reed-cluster--marsh
+    .reed-cluster__reed {
+        background:
+            linear-gradient(
+                180deg,
+                rgba(109, 137, 75, 0.95),
+                rgba(47, 78, 48, 0.98)
+            );
+    }
+
+    .reed-cluster--marsh
+    .reed-cluster__reed::before,
+    .reed-cluster--marsh
+    .reed-cluster__reed::after {
+        background:
+            linear-gradient(
+                90deg,
+                rgba(101, 130, 70, 0.94),
+                rgba(42, 73, 45, 0.98)
+            );
+    }
+
+    .reed-cluster--marsh
+    .reed-cluster__seed-head {
+        background:
+            linear-gradient(
+                180deg,
+                rgba(91, 68, 43, 0.97),
+                rgba(48, 35, 27, 0.99)
+            );
+    }
+
+    .reed-cluster--dry
+    .reed-cluster__reed {
+        background:
+            linear-gradient(
+                180deg,
+                rgba(188, 162, 105, 0.92),
+                rgba(111, 87, 50, 0.98)
+            );
+    }
+
+    .reed-cluster--dry
+    .reed-cluster__reed::before,
+    .reed-cluster--dry
+    .reed-cluster__reed::after {
+        background:
+            linear-gradient(
+                90deg,
+                rgba(176, 148, 92, 0.9),
+                rgba(97, 74, 43, 0.98)
+            );
+    }
+
+    .reed-cluster--dry
+    .reed-cluster__seed-head {
+        background:
+            linear-gradient(
+                180deg,
+                rgba(137, 99, 59, 0.96),
+                rgba(78, 54, 36, 0.99)
+            );
+    }
+
+    .reed-cluster--light {
+        filter: blur(0.015rem);
+    }
+
+    .reed-cluster--thick
+    .reed-cluster__reed {
+        box-shadow:
+            0 0.12rem 0.16rem
+            rgba(11, 25, 16, 0.12);
+    }
+
+    @keyframes reed-cluster-sway {
+        from {
+            transform:
+                translateX(-50%)
+                rotate(
+                    calc(
+                        var(--reed-lean) - 2deg
+                    )
+                )
+                scaleY(var(--reed-scale));
+        }
+
+        to {
+            transform:
+                translateX(-50%)
+                rotate(
+                    calc(
+                        var(--reed-lean) + 4deg
+                    )
+                )
+                scaleY(var(--reed-scale));
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .reed-cluster__reed {
+            animation: none;
+        }
+    }
+</style>

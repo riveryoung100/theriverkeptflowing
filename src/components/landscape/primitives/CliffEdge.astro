@@ -1,0 +1,157 @@
+﻿---
+interface Props {
+    height?: "small" | "medium" | "large";
+    texture?: "granite" | "sandstone" | "limestone";
+    vegetation?: boolean;
+    erosion?: "light" | "medium" | "heavy";
+    opacity?: number;
+}
+
+const {
+    height = "medium",
+    texture = "granite",
+    vegetation = true,
+    erosion = "medium",
+    opacity = 1
+} = Astro.props;
+
+const ledges = {
+    small: 3,
+    medium: 5,
+    large: 7
+} as const;
+---
+
+<div
+    class:list={[
+        "cliff-edge",
+        `cliff-edge--${height}`,
+        `cliff-edge--${texture}`,
+        `cliff-edge--${erosion}`
+    ]}
+    style={`--cliff-opacity:${opacity};`}
+    aria-hidden="true"
+>
+    <div class="cliff-edge__face"></div>
+
+    {
+        Array.from({ length: ledges[height] }, (_, index) => (
+            <span
+                class="cliff-edge__ledge"
+                style={`
+                    --ledge-top:${10 + index * 12}%;
+                    --ledge-width:${50 + ((index * 9) % 30)}%;
+                    --ledge-left:${((index * 13) % 28)}%;
+                `}
+            ></span>
+        ))
+    }
+
+    {
+        vegetation &&
+        Array.from({ length: 6 }, (_, index) => (
+            <span
+                class="cliff-edge__tuft"
+                style={`
+                    --tuft-left:${8 + ((index * 17) % 82)}%;
+                    --tuft-top:${12 + ((index * 13) % 74)}%;
+                `}
+            ></span>
+        ))
+    }
+</div>
+
+<style>
+.cliff-edge{
+    position:absolute;
+    inset:0;
+    opacity:var(--cliff-opacity);
+    pointer-events:none;
+}
+
+.cliff-edge__face{
+    position:absolute;
+    inset:0;
+    clip-path:polygon(
+        0 0,
+        86% 0,
+        92% 12%,
+        83% 23%,
+        90% 39%,
+        82% 56%,
+        89% 73%,
+        80% 100%,
+        0 100%
+    );
+}
+
+.cliff-edge--granite .cliff-edge__face{
+    background:
+        linear-gradient(
+            90deg,
+            #7d8587,
+            #5f6668 45%,
+            #43484a
+        );
+}
+
+.cliff-edge--sandstone .cliff-edge__face{
+    background:
+        linear-gradient(
+            90deg,
+            #b98d62,
+            #986d49 45%,
+            #6f4d34
+        );
+}
+
+.cliff-edge--limestone .cliff-edge__face{
+    background:
+        linear-gradient(
+            90deg,
+            #bcbab3,
+            #99958d 45%,
+            #76726b
+        );
+}
+
+.cliff-edge__ledge{
+    position:absolute;
+    top:var(--ledge-top);
+    left:var(--ledge-left);
+    width:var(--ledge-width);
+    height:.45rem;
+    border-radius:999px;
+    background:rgba(0,0,0,.18);
+}
+
+.cliff-edge__tuft{
+    position:absolute;
+    left:var(--tuft-left);
+    top:var(--tuft-top);
+    width:.7rem;
+    height:1.3rem;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(103,142,83,.95),
+            rgba(42,71,41,.98)
+        );
+    clip-path:polygon(
+        50% 0,
+        68% 36%,
+        100% 100%,
+        0 100%,
+        32% 36%
+    );
+    opacity:.8;
+}
+
+.cliff-edge--light .cliff-edge__ledge{
+    opacity:.55;
+}
+
+.cliff-edge--heavy .cliff-edge__ledge{
+    transform:translateX(-3%);
+}
+</style>

@@ -1,0 +1,414 @@
+﻿---
+interface Props {
+    density?: "light" | "medium" | "dense";
+    season?: "spring" | "summer" | "autumn";
+    moss?: boolean;
+    branches?: boolean;
+    stones?: boolean;
+    opacity?: number;
+}
+
+const {
+    density = "medium",
+    season = "summer",
+    moss = true,
+    branches = true,
+    stones = true,
+    opacity = 1
+} = Astro.props;
+
+const densityCounts = {
+    light: {
+        leaves: 10,
+        moss: 3,
+        twigs: 2,
+        stones: 2
+    },
+    medium: {
+        leaves: 18,
+        moss: 5,
+        twigs: 4,
+        stones: 3
+    },
+    dense: {
+        leaves: 28,
+        moss: 7,
+        twigs: 6,
+        stones: 5
+    }
+} as const;
+
+const counts = densityCounts[density];
+---
+
+<div
+    class:list={[
+        "forest-floor",
+        `forest-floor--${density}`,
+        `forest-floor--${season}`
+    ]}
+    style={`--forest-floor-opacity: ${opacity};`}
+    aria-hidden="true"
+>
+    <div class="forest-floor__soil"></div>
+
+    <div class="forest-floor__shadow forest-floor__shadow--left"></div>
+
+    <div class="forest-floor__shadow forest-floor__shadow--right"></div>
+
+    {
+        moss &&
+        Array.from(
+            { length: counts.moss },
+            (_, index) => (
+                <span
+                    class="forest-floor__moss"
+                    style={`
+                        --moss-left: ${4 + ((index * 29) % 88)}%;
+                        --moss-bottom: ${5 + ((index * 17) % 54)}%;
+                        --moss-width: ${15 + ((index * 13) % 24)}%;
+                        --moss-height: ${9 + ((index * 11) % 17)}%;
+                        --moss-rotate: ${-8 + ((index * 7) % 17)}deg;
+                        --moss-opacity: ${0.46 + ((index * 9) % 34) / 100};
+                    `}
+                ></span>
+            )
+        )
+    }
+
+    {
+        Array.from(
+            { length: counts.leaves },
+            (_, index) => (
+                <span
+                    class="forest-floor__leaf"
+                    style={`
+                        --leaf-left: ${2 + ((index * 19) % 95)}%;
+                        --leaf-bottom: ${4 + ((index * 13) % 63)}%;
+                        --leaf-width: ${0.42 + ((index * 7) % 7) / 10}rem;
+                        --leaf-height: ${0.18 + ((index * 5) % 4) / 10}rem;
+                        --leaf-rotate: ${-78 + ((index * 31) % 157)}deg;
+                        --leaf-opacity: ${0.48 + ((index * 11) % 42) / 100};
+                    `}
+                ></span>
+            )
+        )
+    }
+
+    {
+        branches &&
+        Array.from(
+            { length: counts.twigs },
+            (_, index) => (
+                <span
+                    class="forest-floor__twig"
+                    style={`
+                        --twig-left: ${7 + ((index * 31) % 82)}%;
+                        --twig-bottom: ${8 + ((index * 23) % 49)}%;
+                        --twig-width: ${1.8 + ((index * 17) % 30) / 10}rem;
+                        --twig-rotate: ${-54 + ((index * 37) % 109)}deg;
+                        --twig-opacity: ${0.5 + ((index * 8) % 34) / 100};
+                    `}
+                >
+                    <span class="forest-floor__twig-branch"></span>
+                </span>
+            )
+        )
+    }
+
+    {
+        stones &&
+        Array.from(
+            { length: counts.stones },
+            (_, index) => (
+                <span
+                    class="forest-floor__stone"
+                    style={`
+                        --stone-left: ${9 + ((index * 37) % 78)}%;
+                        --stone-bottom: ${5 + ((index * 19) % 46)}%;
+                        --stone-width: ${0.65 + ((index * 11) % 10) / 10}rem;
+                        --stone-height: ${0.42 + ((index * 7) % 7) / 10}rem;
+                        --stone-rotate: ${-18 + ((index * 13) % 37)}deg;
+                        --stone-opacity: ${0.44 + ((index * 9) % 36) / 100};
+                    `}
+                ></span>
+            )
+        )
+    }
+
+    <span class="forest-floor__root forest-floor__root--left"></span>
+
+    <span class="forest-floor__root forest-floor__root--center"></span>
+
+    <span class="forest-floor__root forest-floor__root--right"></span>
+</div>
+
+<style>
+    .forest-floor {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: clamp(7rem, 18vw, 14rem);
+        overflow: hidden;
+        opacity: var(--forest-floor-opacity);
+        pointer-events: none;
+    }
+
+    .forest-floor__soil {
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(
+                ellipse at 14% 82%,
+                rgba(77, 92, 60, 0.42),
+                transparent 34%
+            ),
+            radial-gradient(
+                ellipse at 71% 77%,
+                rgba(55, 76, 51, 0.45),
+                transparent 39%
+            ),
+            radial-gradient(
+                ellipse at 44% 54%,
+                rgba(89, 80, 55, 0.22),
+                transparent 31%
+            ),
+            linear-gradient(
+                180deg,
+                rgba(48, 72, 48, 0.58),
+                rgba(27, 49, 34, 0.9) 48%,
+                rgba(14, 30, 22, 0.98)
+            );
+        clip-path:
+            polygon(
+                0 18%,
+                10% 11%,
+                22% 16%,
+                35% 8%,
+                49% 14%,
+                63% 7%,
+                76% 13%,
+                89% 8%,
+                100% 14%,
+                100% 100%,
+                0 100%
+            );
+    }
+
+    .forest-floor__shadow {
+        position: absolute;
+        bottom: 5%;
+        width: 38%;
+        height: 45%;
+        border-radius: 50%;
+        background:
+            radial-gradient(
+                ellipse,
+                rgba(8, 20, 14, 0.38),
+                transparent 70%
+            );
+        filter: blur(0.45rem);
+    }
+
+    .forest-floor__shadow--left {
+        left: -5%;
+        transform: rotate(-7deg);
+    }
+
+    .forest-floor__shadow--right {
+        right: -6%;
+        transform: rotate(8deg);
+    }
+
+    .forest-floor__moss {
+        position: absolute;
+        left: var(--moss-left);
+        bottom: var(--moss-bottom);
+        width: var(--moss-width);
+        height: var(--moss-height);
+        transform:
+            translateX(-50%)
+            rotate(var(--moss-rotate));
+        border-radius: 50%;
+        opacity: var(--moss-opacity);
+        background:
+            radial-gradient(
+                ellipse at 34% 35%,
+                rgba(132, 155, 91, 0.84),
+                rgba(68, 102, 61, 0.86) 48%,
+                rgba(36, 70, 43, 0.72) 76%,
+                transparent 100%
+            );
+        filter: blur(0.08rem);
+    }
+
+    .forest-floor__leaf {
+        position: absolute;
+        left: var(--leaf-left);
+        bottom: var(--leaf-bottom);
+        width: var(--leaf-width);
+        height: var(--leaf-height);
+        transform:
+            translateX(-50%)
+            rotate(var(--leaf-rotate));
+        border-radius:
+            90% 10% 85% 15% /
+            70% 20% 80% 30%;
+        opacity: var(--leaf-opacity);
+        box-shadow:
+            0 0.08rem 0.12rem
+            rgba(8, 18, 12, 0.24);
+    }
+
+    .forest-floor--spring
+    .forest-floor__leaf {
+        background:
+            linear-gradient(
+                135deg,
+                rgba(112, 135, 74, 0.9),
+                rgba(58, 88, 49, 0.96)
+            );
+    }
+
+    .forest-floor--summer
+    .forest-floor__leaf {
+        background:
+            linear-gradient(
+                135deg,
+                rgba(87, 105, 59, 0.9),
+                rgba(47, 70, 43, 0.96)
+            );
+    }
+
+    .forest-floor--autumn
+    .forest-floor__leaf {
+        background:
+            linear-gradient(
+                135deg,
+                rgba(156, 108, 55, 0.92),
+                rgba(91, 57, 35, 0.98)
+            );
+    }
+
+    .forest-floor__twig {
+        position: absolute;
+        left: var(--twig-left);
+        bottom: var(--twig-bottom);
+        width: var(--twig-width);
+        height: 0.14rem;
+        transform:
+            translateX(-50%)
+            rotate(var(--twig-rotate));
+        border-radius: 999px;
+        opacity: var(--twig-opacity);
+        background:
+            linear-gradient(
+                90deg,
+                rgba(64, 44, 30, 0.95),
+                rgba(111, 79, 48, 0.92),
+                rgba(49, 35, 25, 0.96)
+            );
+        box-shadow:
+            0 0.08rem 0.12rem
+            rgba(8, 15, 11, 0.28);
+    }
+
+    .forest-floor__twig-branch {
+        position: absolute;
+        top: 50%;
+        left: 58%;
+        width: 44%;
+        height: 0.1rem;
+        transform:
+            translateY(-50%)
+            rotate(-37deg);
+        transform-origin: left center;
+        border-radius: inherit;
+        background: inherit;
+    }
+
+    .forest-floor__stone {
+        position: absolute;
+        left: var(--stone-left);
+        bottom: var(--stone-bottom);
+        width: var(--stone-width);
+        height: var(--stone-height);
+        transform:
+            translateX(-50%)
+            rotate(var(--stone-rotate));
+        border-radius:
+            58% 42% 49% 51% /
+            52% 48% 57% 43%;
+        opacity: var(--stone-opacity);
+        background:
+            linear-gradient(
+                145deg,
+                rgba(111, 119, 105, 0.9),
+                rgba(54, 66, 58, 0.98)
+            );
+        box-shadow:
+            inset -0.15rem -0.18rem 0.22rem
+            rgba(12, 20, 16, 0.18),
+            0 0.1rem 0.18rem
+            rgba(8, 15, 11, 0.22);
+    }
+
+    .forest-floor__root {
+        position: absolute;
+        bottom: 3%;
+        height: 0.42rem;
+        border-radius: 999px;
+        background:
+            linear-gradient(
+                180deg,
+                rgba(104, 76, 49, 0.9),
+                rgba(51, 37, 27, 0.98)
+            );
+        box-shadow:
+            inset 0 0.08rem 0.1rem
+            rgba(255, 255, 255, 0.08),
+            0 0.18rem 0.26rem
+            rgba(7, 15, 10, 0.28);
+    }
+
+    .forest-floor__root--left {
+        left: -3%;
+        width: 31%;
+        transform: rotate(8deg);
+    }
+
+    .forest-floor__root--center {
+        left: 36%;
+        bottom: 12%;
+        width: 24%;
+        transform: rotate(-5deg);
+    }
+
+    .forest-floor__root--right {
+        right: -4%;
+        bottom: 7%;
+        width: 32%;
+        transform: rotate(-9deg);
+    }
+
+    .forest-floor--light
+    .forest-floor__soil {
+        opacity: 0.78;
+    }
+
+    .forest-floor--dense
+    .forest-floor__soil {
+        filter: saturate(1.08);
+    }
+
+    @media (max-width: 48rem) {
+        .forest-floor {
+            height: clamp(6rem, 24vw, 10rem);
+        }
+
+        .forest-floor__root--center {
+            opacity: 0.72;
+        }
+    }
+</style>

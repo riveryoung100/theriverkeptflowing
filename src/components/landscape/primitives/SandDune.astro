@@ -1,0 +1,190 @@
+﻿---
+interface Props {
+    count?: number;
+    height?: "low" | "medium" | "high";
+    tone?: "golden" | "pale" | "red";
+    ripples?: boolean;
+    windDirection?: "left" | "right";
+    opacity?: number;
+}
+
+const {
+    count = 4,
+    height = "medium",
+    tone = "golden",
+    ripples = true,
+    windDirection = "right",
+    opacity = 1
+} = Astro.props;
+---
+
+<div
+    class:list={[
+        "sand-dune",
+        `sand-dune--${height}`,
+        `sand-dune--${tone}`,
+        `sand-dune--wind-${windDirection}`
+    ]}
+    style={`--sand-dune-opacity: ${opacity};`}
+    aria-hidden="true"
+>
+    {
+        Array.from(
+            { length: count },
+            (_, index) => (
+                <span
+                    class="sand-dune__ridge"
+                    style={`
+                        --ridge-left: ${-8 + index * 24}%;
+                        --ridge-bottom: ${index * 5}%;
+                        --ridge-width: ${48 + ((index * 11) % 26)}%;
+                        --ridge-height: ${42 + ((index * 13) % 38)}%;
+                        --ridge-layer: ${index + 1};
+                        --ridge-opacity: ${0.72 + ((index * 7) % 22) / 100};
+                    `}
+                >
+                    {
+                        ripples && (
+                            <span class="sand-dune__ripples"></span>
+                        )
+                    }
+                </span>
+            )
+        )
+    }
+</div>
+
+<style>
+    .sand-dune {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: clamp(9rem, 24vw, 18rem);
+        overflow: hidden;
+        opacity: var(--sand-dune-opacity);
+        pointer-events: none;
+    }
+
+    .sand-dune--low {
+        height: clamp(6rem, 16vw, 11rem);
+    }
+
+    .sand-dune--medium {
+        height: clamp(9rem, 24vw, 18rem);
+    }
+
+    .sand-dune--high {
+        height: clamp(12rem, 32vw, 24rem);
+    }
+
+    .sand-dune__ridge {
+        position: absolute;
+        left: var(--ridge-left);
+        bottom: var(--ridge-bottom);
+        z-index: var(--ridge-layer);
+        width: var(--ridge-width);
+        height: var(--ridge-height);
+        opacity: var(--ridge-opacity);
+        border-radius: 58% 42% 0 0 / 72% 54% 0 0;
+        transform-origin: bottom center;
+    }
+
+    .sand-dune--wind-right
+    .sand-dune__ridge {
+        transform: skewX(-8deg);
+    }
+
+    .sand-dune--wind-left
+    .sand-dune__ridge {
+        transform: skewX(8deg);
+    }
+
+    .sand-dune--golden
+    .sand-dune__ridge {
+        background:
+            linear-gradient(
+                150deg,
+                rgba(232, 191, 112, 0.98),
+                rgba(186, 131, 68, 0.98) 58%,
+                rgba(130, 84, 44, 0.98)
+            );
+    }
+
+    .sand-dune--pale
+    .sand-dune__ridge {
+        background:
+            linear-gradient(
+                150deg,
+                rgba(226, 211, 172, 0.98),
+                rgba(189, 165, 120, 0.98) 58%,
+                rgba(132, 105, 72, 0.98)
+            );
+    }
+
+    .sand-dune--red
+    .sand-dune__ridge {
+        background:
+            linear-gradient(
+                150deg,
+                rgba(202, 126, 75, 0.98),
+                rgba(151, 79, 49, 0.98) 58%,
+                rgba(94, 48, 34, 0.98)
+            );
+    }
+
+    .sand-dune__ridge::before {
+        content: "";
+        position: absolute;
+        inset: 5% 18% 52% 8%;
+        border-radius: inherit;
+        background:
+            linear-gradient(
+                145deg,
+                rgba(255, 255, 255, 0.18),
+                transparent 72%
+            );
+    }
+
+    .sand-dune__ridge::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        width: 47%;
+        height: 72%;
+        border-radius: 50% 0 0 0;
+        background:
+            linear-gradient(
+                135deg,
+                transparent,
+                rgba(72, 43, 28, 0.18)
+            );
+    }
+
+    .sand-dune__ripples {
+        position: absolute;
+        inset: 18% 8% 14% 9%;
+        border-radius: inherit;
+        opacity: 0.34;
+        background:
+            repeating-linear-gradient(
+                166deg,
+                transparent 0 0.58rem,
+                rgba(77, 48, 29, 0.3) 0.62rem 0.68rem,
+                transparent 0.72rem 1.25rem
+            );
+        mask-image:
+            linear-gradient(
+                180deg,
+                rgba(0, 0, 0, 0.9),
+                transparent
+            );
+    }
+
+    @media (max-width: 48rem) {
+        .sand-dune {
+            height: clamp(7rem, 31vw, 13rem);
+        }
+    }
+</style>
