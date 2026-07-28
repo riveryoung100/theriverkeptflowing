@@ -1,46 +1,15 @@
----
-const stops = [
-    {
-        eyebrow: "The Source",
-        title: "Begin beneath the surface.",
-        description:
-            "Faith, purpose, wisdom, and the questions that shape a life.",
-        href: "/pages/source",
-        direction: "left"
-    },
-    {
-        eyebrow: "River Guides",
-        title: "Carry what helps.",
-        description:
-            "Practical lessons, tools, and handbooks for navigating the road ahead.",
-        href: "/pages/river-guides",
-        direction: "right"
-    },
-    {
-        eyebrow: "The Table",
-        title: "Gather and be nourished.",
-        description:
-            "Food, family, hospitality, and the quiet work of caring for one another.",
-        href: "/pages/table",
-        direction: "left"
-    },
-    {
-        eyebrow: "The Field",
-        title: "Strengthen what carries you.",
-        description:
-            "Health, recovery, discipline, movement, and stewardship of the body.",
-        href: "/pages/field",
-        direction: "right"
-    },
-    {
-        eyebrow: "The Current",
-        title: "Meet the journey where it is.",
-        description:
-            "Recent writings, reflections, conversations, and the river still unfolding.",
-        href: "/pages/current",
-        direction: "left"
-    }
-];
+﻿---
+import { places } from "../../data/places";
+
+const stops = places
+    .filter((place) => place.id !== "trailhead" && !place.visibility.hidden)
+    .map((place, index) => ({
+        eyebrow: place.name,
+        title: place.purpose,
+        description: place.emotionalTone.join(" · "),
+        href: place.path,
+        direction: index % 2 === 0 ? "left" : "right"
+    }));
 ---
 
 <section
@@ -92,7 +61,7 @@ const stops = [
                         <span class="stop__content">
 
                             <span class="stop__number">
-                                0{index + 1}
+                                {String(index + 1).padStart(2, "0")}
                             </span>
 
                             <span class="stop__eyebrow">
@@ -129,9 +98,7 @@ const stops = [
 
 .walk {
     position: relative;
-
     overflow: hidden;
-
     padding:
         var(--space-24)
         var(--page-gutter)
@@ -142,80 +109,60 @@ const stops = [
     position: absolute;
     top: 18rem;
     left: 50%;
-
     width: min(84vw, 62rem);
     height: 70rem;
-
     border-radius: 50%;
-
     background:
         radial-gradient(
             ellipse,
             rgba(155, 179, 159, 0.055),
             transparent 72%
         );
-
     content: "";
-
     pointer-events: none;
-
-    transform:
-        translateX(-50%);
+    transform: translateX(-50%);
 }
 
 .walk__heading {
     position: relative;
     z-index: 2;
-
     width: min(100%, 58rem);
-
     margin: 0 auto;
-
     text-align: center;
 }
 
 .walk__heading h2 {
     max-width: 11ch;
-
     margin:
         var(--space-6)
         auto
         0;
-
     font-size:
         clamp(3.6rem, 7vw, 7rem);
-
     line-height: 0.92;
     letter-spacing: -0.055em;
 }
 
 .walk__intro {
     max-width: 38rem;
-
     margin:
         var(--space-8)
         auto
         0;
-
     color:
         var(--color-text-muted);
-
     font-size:
         clamp(1.05rem, 1.8vw, 1.3rem);
-
     line-height: 1.7;
 }
 
 .walk__path {
     position: relative;
     z-index: 2;
-
     display: flex;
     flex-direction: column;
     gap: clamp(8rem, 14vw, 15rem);
-
     width: min(100%, 72rem);
-
     margin:
         var(--space-24)
         auto
@@ -227,9 +174,7 @@ const stops = [
     top: 1rem;
     bottom: 1rem;
     left: 50%;
-
     width: 1px;
-
     background:
         linear-gradient(
             to bottom,
@@ -239,16 +184,12 @@ const stops = [
             rgba(204, 217, 204, 0.18) 92%,
             transparent
         );
-
     content: "";
-
-    transform:
-        translateX(-50%);
+    transform: translateX(-50%);
 }
 
 .stop {
     display: flex;
-
     width: 100%;
 }
 
@@ -262,18 +203,12 @@ const stops = [
 
 .stop__link {
     display: grid;
-
     grid-template-columns:
         auto minmax(0, 1fr);
-
     gap: var(--space-6);
-
     width: min(100%, 31rem);
-
     color: inherit;
-
     text-decoration: none;
-
     transition:
         transform
         var(--duration-medium)
@@ -292,29 +227,21 @@ const stops = [
 
 .stop__marker {
     position: relative;
-
     display: grid;
     place-items: center;
-
     width: 4.25rem;
     height: 4.25rem;
-
     border:
         1px solid
         rgba(210, 221, 210, 0.14);
-
     border-radius: 50%;
-
     background:
         rgba(10, 15, 12, 0.76);
-
     box-shadow:
         0 0 0 0.75rem
         rgba(185, 201, 187, 0.02);
-
     backdrop-filter:
         blur(0.6rem);
-
     transition:
         border-color
         var(--duration-medium)
@@ -330,12 +257,9 @@ const stops = [
 .stop__marker span {
     width: 0.35rem;
     height: 0.35rem;
-
     border-radius: 50%;
-
     background:
         var(--color-text-soft);
-
     box-shadow:
         0 0 1rem
         rgba(220, 231, 220, 0.22);
@@ -344,90 +268,66 @@ const stops = [
 .stop__content {
     display: flex;
     flex-direction: column;
-
     padding-top: 0.2rem;
 }
 
 .stop__number {
     color:
         var(--color-text-faint);
-
     font-family:
         var(--font-interface);
-
     font-size: 0.68rem;
-
     letter-spacing: 0.18em;
 }
 
 .stop__eyebrow {
     margin-top:
         var(--space-4);
-
     color:
         var(--color-text-soft);
-
     font-family:
         var(--font-interface);
-
     font-size: 0.72rem;
-
     letter-spacing: 0.15em;
-
     text-transform: uppercase;
 }
 
 .stop__title {
     margin-top:
         var(--space-4);
-
     font-family:
         var(--font-display);
-
     font-size:
         clamp(2.7rem, 4.6vw, 4.5rem);
-
     line-height: 0.96;
-
     letter-spacing: -0.05em;
 }
 
 .stop__description {
     max-width: 26rem;
-
     margin-top:
         var(--space-5);
-
     color:
         var(--color-text-muted);
-
     font-size: 1rem;
-
     line-height: 1.75;
+    text-transform: capitalize;
 }
 
 .stop__invitation {
     display: flex;
     align-items: center;
     gap: 0.45rem;
-
     margin-top:
         var(--space-6);
-
     color:
         var(--color-text-soft);
-
     font-family:
         var(--font-interface);
-
     font-size: 0.7rem;
-
     letter-spacing: 0.13em;
-
     text-transform: uppercase;
-
     opacity: 0.56;
-
     transition:
         opacity
         var(--duration-medium)
@@ -447,11 +347,9 @@ const stops = [
 .stop__link:focus-visible .stop__marker {
     border-color:
         rgba(220, 230, 220, 0.32);
-
     box-shadow:
         0 0 0 1rem
         rgba(185, 201, 187, 0.055);
-
     transform:
         scale(1.04);
 }
@@ -459,7 +357,6 @@ const stops = [
 .stop__link:hover .stop__invitation,
 .stop__link:focus-visible .stop__invitation {
     opacity: 1;
-
     transform:
         translateX(0.25rem);
 }
@@ -468,7 +365,6 @@ const stops = [
     outline:
         1px solid
         var(--color-text-soft);
-
     outline-offset:
         1rem;
 }
@@ -482,7 +378,6 @@ const stops = [
     .walk__path {
         gap:
             var(--space-20);
-
         margin-top:
             var(--space-20);
     }
@@ -502,7 +397,6 @@ const stops = [
     .stop--left .stop__link,
     .stop--right .stop__link {
         width: 100%;
-
         margin-right: 0;
         margin-left: 0;
     }
