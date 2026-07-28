@@ -1,0 +1,179 @@
+﻿---
+import WorldLayout from "../../layouts/WorldLayout.astro";
+
+interface Props {
+    title: string;
+    eyebrow: string;
+    description: string;
+    purpose: string;
+    status?: string;
+}
+
+const {
+    title,
+    eyebrow,
+    description,
+    purpose,
+    status = "This place is being prepared."
+} = Astro.props;
+---
+
+<WorldLayout
+    title={`${title} | The River Kept Flowing`}
+    description={description}
+>
+    <main class="place-page">
+
+        <section class="place-page__hero">
+
+            <a
+                class="place-page__return"
+                href="/"
+            >
+                Return to the Trailhead
+            </a>
+
+            <p class="place-page__eyebrow">
+                {eyebrow}
+            </p>
+
+            <h1 class="place-page__title">
+                {title}
+            </h1>
+
+            <p class="place-page__description">
+                {description}
+            </p>
+
+        </section>
+
+        <section class="place-page__body">
+
+            <div class="place-page__content">
+
+                <p class="place-page__label">
+                    The purpose of this place
+                </p>
+
+                <p class="place-page__purpose">
+                    {purpose}
+                </p>
+
+                <p class="place-page__status">
+                    {status}
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+</WorldLayout>
+
+<style>
+    .place-page {
+        width: 100%;
+        min-height: 100svh;
+    }
+
+    .place-page__hero {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        width: min(
+            calc(100% - (var(--page-gutter) * 2)),
+            72rem
+        );
+
+        min-height: 78svh;
+        margin-inline: auto;
+        padding-block: var(--space-16);
+    }
+
+    .place-page__return {
+        align-self: flex-start;
+
+        margin-bottom: var(--space-16);
+
+        color: var(--color-text-muted);
+        font-size: 0.9rem;
+        text-decoration: none;
+    }
+
+    .place-page__return:hover,
+    .place-page__return:focus-visible {
+        color: var(--color-text);
+    }
+
+    .place-page__eyebrow,
+    .place-page__label {
+        color: var(--color-text-muted);
+        font-size: 0.78rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+    }
+
+    .place-page__title {
+        max-width: 11ch;
+        margin-top: var(--space-6);
+
+        font-size: clamp(4rem, 11vw, 9rem);
+        line-height: 0.9;
+        letter-spacing: -0.055em;
+    }
+
+    .place-page__description {
+        max-width: 42rem;
+        margin-top: var(--space-10);
+
+        color: var(--color-text-soft);
+        font-size: clamp(1.1rem, 2vw, 1.45rem);
+        line-height: 1.65;
+    }
+
+    .place-page__body {
+        display: flex;
+        align-items: center;
+
+        min-height: 70svh;
+        padding:
+            var(--space-16)
+            var(--page-gutter);
+
+        border-top: 1px solid var(--color-border);
+    }
+
+    .place-page__content {
+        width: min(100%, 52rem);
+        margin-inline: auto;
+    }
+
+    .place-page__purpose {
+        margin-top: var(--space-8);
+
+        font-size: clamp(1.7rem, 4vw, 3rem);
+        line-height: 1.25;
+        letter-spacing: -0.025em;
+    }
+
+    .place-page__status {
+        margin-top: var(--space-12);
+
+        color: var(--color-text-muted);
+    }
+
+    @media (max-width: 48rem) {
+        .place-page__hero {
+            min-height: 70svh;
+        }
+
+        .place-page__return {
+            margin-bottom: var(--space-12);
+        }
+
+        .place-page__title {
+            font-size: clamp(3.5rem, 18vw, 6rem);
+        }
+    }
+</style>
