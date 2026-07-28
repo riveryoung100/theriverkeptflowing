@@ -1,0 +1,196 @@
+﻿---
+interface Props {
+    count?: number;
+    depth?: "far" | "middle" | "near";
+    direction?: "left" | "right";
+    speed?: "slow" | "medium" | "fast";
+    opacity?: number;
+}
+
+const {
+    count = 5,
+    depth = "far",
+    direction = "right",
+    speed = "slow",
+    opacity = 0.5
+} = Astro.props;
+---
+
+<div
+    class:list={[
+        "cloud-layer",
+        `cloud-layer--${depth}`,
+        `cloud-layer--${direction}`,
+        `cloud-layer--${speed}`
+    ]}
+    style={`--cloud-layer-opacity: ${opacity};`}
+    aria-hidden="true"
+>
+    {
+        Array.from(
+            { length: count },
+            (_, index) => (
+                <span
+                    class="cloud-layer__cloud"
+                    style={`
+                        --cloud-top: ${8 + ((index * 17) % 42)}%;
+                        --cloud-start: ${-24 + ((index * 29) % 118)}%;
+                        --cloud-width: ${7 + ((index * 11) % 10)}rem;
+                        --cloud-delay: -${index * 4.3}s;
+                        --cloud-duration: ${38 + ((index * 13) % 28)}s;
+                    `}
+                >
+                    <span class="cloud-layer__puff cloud-layer__puff--one"></span>
+                    <span class="cloud-layer__puff cloud-layer__puff--two"></span>
+                    <span class="cloud-layer__puff cloud-layer__puff--three"></span>
+                </span>
+            )
+        )
+    }
+</div>
+
+<style>
+    .cloud-layer {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+        opacity: var(--cloud-layer-opacity);
+    }
+
+    .cloud-layer--far {
+        filter: blur(0.16rem);
+    }
+
+    .cloud-layer--middle {
+        filter: blur(0.08rem);
+    }
+
+    .cloud-layer--near {
+        filter: none;
+    }
+
+    .cloud-layer__cloud {
+        position: absolute;
+        top: var(--cloud-top);
+        left: var(--cloud-start);
+        width: var(--cloud-width);
+        height: calc(var(--cloud-width) * 0.34);
+        border-radius: 999px;
+        background:
+            linear-gradient(
+                180deg,
+                rgba(239, 238, 220, 0.78),
+                rgba(196, 205, 184, 0.42)
+            );
+        box-shadow:
+            0 0.5rem 1.2rem
+            rgba(74, 90, 70, 0.08);
+        animation-duration: var(--cloud-duration);
+        animation-delay: var(--cloud-delay);
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+    }
+
+    .cloud-layer__puff {
+        position: absolute;
+        display: block;
+        border-radius: 50%;
+        background:
+            radial-gradient(
+                circle at 42% 36%,
+                rgba(246, 245, 229, 0.92),
+                rgba(204, 213, 192, 0.62)
+            );
+    }
+
+    .cloud-layer__puff--one {
+        bottom: 12%;
+        left: 12%;
+        width: 38%;
+        aspect-ratio: 1;
+    }
+
+    .cloud-layer__puff--two {
+        bottom: 18%;
+        left: 38%;
+        width: 46%;
+        aspect-ratio: 1;
+    }
+
+    .cloud-layer__puff--three {
+        right: 8%;
+        bottom: 8%;
+        width: 34%;
+        aspect-ratio: 1;
+    }
+
+    .cloud-layer--right .cloud-layer__cloud {
+        animation-name: cloud-drift-right;
+    }
+
+    .cloud-layer--left .cloud-layer__cloud {
+        animation-name: cloud-drift-left;
+    }
+
+    .cloud-layer--slow .cloud-layer__cloud {
+        animation-duration:
+            calc(var(--cloud-duration) * 1.25);
+    }
+
+    .cloud-layer--medium .cloud-layer__cloud {
+        animation-duration:
+            var(--cloud-duration);
+    }
+
+    .cloud-layer--fast .cloud-layer__cloud {
+        animation-duration:
+            calc(var(--cloud-duration) * 0.72);
+    }
+
+    @keyframes cloud-drift-right {
+        from {
+            transform:
+                translate3d(-18vw, 0, 0)
+                scale(0.94);
+        }
+
+        50% {
+            transform:
+                translate3d(58vw, -0.35rem, 0)
+                scale(1);
+        }
+
+        to {
+            transform:
+                translate3d(142vw, 0.25rem, 0)
+                scale(0.96);
+        }
+    }
+
+    @keyframes cloud-drift-left {
+        from {
+            transform:
+                translate3d(118vw, 0, 0)
+                scale(0.94);
+        }
+
+        50% {
+            transform:
+                translate3d(48vw, -0.35rem, 0)
+                scale(1);
+        }
+
+        to {
+            transform:
+                translate3d(-42vw, 0.25rem, 0)
+                scale(0.96);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .cloud-layer__cloud {
+            animation: none;
+        }
+    }
+</style>
