@@ -1,0 +1,434 @@
+﻿---
+import SceneShell from "../primitives/SceneShell.astro";
+import AmbientGlow from "../primitives/AmbientGlow.astro";
+import MistBand from "../primitives/MistBand.astro";
+---
+
+<SceneShell
+    className="fire-scene"
+    label="A sheltered fire glowing beneath a dark smoky sky"
+>
+    <div
+        slot="background"
+        class="fire-scene__sky"
+    ></div>
+
+    <AmbientGlow
+        slot="background"
+        position="center"
+        size="large"
+        intensity="strong"
+        duration="9s"
+    />
+
+    <div
+        slot="distance"
+        class="fire-scene__ridge fire-scene__ridge--far"
+    ></div>
+
+    <div
+        slot="distance"
+        class="fire-scene__ridge fire-scene__ridge--near"
+    ></div>
+
+    <MistBand
+        slot="atmosphere"
+        position="high"
+        density="medium"
+        direction="right"
+        duration="20s"
+    />
+
+    <div
+        slot="midground"
+        class="fire-scene__clearing"
+    ></div>
+
+    <div
+        slot="midground"
+        class="fire-scene__fire"
+    >
+        <span class="fire-scene__flame fire-scene__flame--outer"></span>
+        <span class="fire-scene__flame fire-scene__flame--middle"></span>
+        <span class="fire-scene__flame fire-scene__flame--inner"></span>
+    </div>
+
+    <div
+        slot="foreground"
+        class="fire-scene__logs"
+    >
+        <span class="fire-scene__log fire-scene__log--left"></span>
+        <span class="fire-scene__log fire-scene__log--right"></span>
+    </div>
+
+    <div
+        slot="foreground"
+        class="fire-scene__embers"
+    >
+        {
+            Array.from(
+                { length: 22 },
+                (_, index) => (
+                    <span
+                        class="fire-scene__ember"
+                        style={`
+                            --ember-left: ${38 + ((index * 17) % 25)}%;
+                            --ember-delay: -${(index % 11) * 0.45}s;
+                            --ember-duration: ${4.5 + ((index * 7) % 6)}s;
+                            --ember-size: ${0.12 + ((index * 3) % 5) * 0.04}rem;
+                        `}
+                    ></span>
+                )
+            )
+        }
+    </div>
+
+    <div
+        slot="foreground"
+        class="fire-scene__ground"
+    ></div>
+</SceneShell>
+
+<style>
+    :global(.fire-scene) {
+        opacity: 0.96;
+    }
+
+    .fire-scene__sky {
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(
+                180deg,
+                rgba(34, 26, 30, 0.34) 0%,
+                rgba(47, 34, 31, 0.26) 42%,
+                rgba(75, 44, 29, 0.11) 70%,
+                transparent 88%
+            );
+    }
+
+    .fire-scene__ridge {
+        position: absolute;
+        right: -8%;
+        left: -8%;
+    }
+
+    .fire-scene__ridge--far {
+        bottom: 35%;
+        height: 28%;
+        opacity: 0.34;
+        background: #3f3433;
+        clip-path:
+            polygon(
+                0 70%,
+                13% 48%,
+                27% 61%,
+                41% 39%,
+                55% 63%,
+                69% 36%,
+                84% 57%,
+                100% 43%,
+                100% 100%,
+                0 100%
+            );
+        filter: blur(0.15rem);
+    }
+
+    .fire-scene__ridge--near {
+        bottom: 24%;
+        height: 25%;
+        opacity: 0.72;
+        background: #241f20;
+        clip-path:
+            polygon(
+                0 61%,
+                15% 43%,
+                31% 58%,
+                47% 31%,
+                63% 61%,
+                78% 39%,
+                90% 56%,
+                100% 46%,
+                100% 100%,
+                0 100%
+            );
+    }
+
+    .fire-scene__clearing {
+        position: absolute;
+        right: -5%;
+        bottom: -6%;
+        left: -5%;
+        height: 45%;
+        background:
+            radial-gradient(
+                ellipse at 50% 45%,
+                rgba(106, 65, 34, 0.2),
+                rgba(45, 31, 27, 0.82) 48%,
+                rgba(22, 20, 20, 0.98) 100%
+            );
+        clip-path:
+            polygon(
+                0 18%,
+                16% 11%,
+                34% 16%,
+                51% 8%,
+                69% 15%,
+                85% 10%,
+                100% 17%,
+                100% 100%,
+                0 100%
+            );
+    }
+
+    .fire-scene__fire {
+        position: absolute;
+        bottom: 14%;
+        left: 50%;
+        width: clamp(7rem, 15vw, 12rem);
+        height: clamp(9rem, 19vw, 15rem);
+        transform: translateX(-50%);
+        filter:
+            drop-shadow(0 0 1.2rem rgba(216, 112, 45, 0.34))
+            drop-shadow(0 0 2.4rem rgba(177, 69, 28, 0.18));
+    }
+
+    .fire-scene__flame {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        border-radius:
+            56% 44% 52% 48%
+            / 70% 64% 36% 30%;
+        transform-origin: bottom center;
+    }
+
+    .fire-scene__flame--outer {
+        width: 78%;
+        height: 100%;
+        transform: translateX(-50%) rotate(-3deg);
+        background:
+            linear-gradient(
+                180deg,
+                rgba(144, 46, 25, 0.78),
+                rgba(199, 78, 30, 0.9) 48%,
+                rgba(236, 126, 48, 0.84)
+            );
+        animation:
+            fire-outer
+            2.8s
+            ease-in-out
+            infinite alternate;
+    }
+
+    .fire-scene__flame--middle {
+        width: 54%;
+        height: 76%;
+        transform: translateX(-50%) rotate(4deg);
+        background:
+            linear-gradient(
+                180deg,
+                rgba(211, 91, 35, 0.84),
+                rgba(242, 151, 57, 0.94) 56%,
+                rgba(248, 192, 94, 0.9)
+            );
+        animation:
+            fire-middle
+            2.1s
+            ease-in-out
+            infinite alternate;
+    }
+
+    .fire-scene__flame--inner {
+        width: 31%;
+        height: 49%;
+        transform: translateX(-50%);
+        background:
+            linear-gradient(
+                180deg,
+                rgba(255, 194, 95, 0.92),
+                rgba(255, 220, 139, 0.98)
+            );
+        animation:
+            fire-inner
+            1.6s
+            ease-in-out
+            infinite alternate;
+    }
+
+    .fire-scene__logs {
+        position: absolute;
+        bottom: 11%;
+        left: 50%;
+        width: clamp(9rem, 20vw, 16rem);
+        height: 3rem;
+        transform: translateX(-50%);
+    }
+
+    .fire-scene__log {
+        position: absolute;
+        top: 0.9rem;
+        left: 50%;
+        width: 82%;
+        height: 1.35rem;
+        border-radius: 999px;
+        background:
+            linear-gradient(
+                180deg,
+                rgba(98, 58, 35, 0.95),
+                rgba(48, 31, 25, 0.98)
+            );
+        box-shadow:
+            inset 0 0 0 0.18rem rgba(133, 82, 47, 0.18);
+    }
+
+    .fire-scene__log--left {
+        transform:
+            translateX(-50%)
+            rotate(11deg);
+    }
+
+    .fire-scene__log--right {
+        transform:
+            translateX(-50%)
+            rotate(-11deg);
+    }
+
+    .fire-scene__embers {
+        position: absolute;
+        inset: 0;
+    }
+
+    .fire-scene__ember {
+        position: absolute;
+        bottom: 19%;
+        left: var(--ember-left);
+        width: var(--ember-size);
+        height: var(--ember-size);
+        border-radius: 50%;
+        background: rgba(243, 151, 67, 0.9);
+        box-shadow:
+            0 0 0.45rem rgba(225, 101, 39, 0.64);
+        animation:
+            fire-ember-rise
+            var(--ember-duration)
+            ease-out
+            infinite;
+        animation-delay: var(--ember-delay);
+    }
+
+    .fire-scene__ground {
+        position: absolute;
+        right: -8%;
+        bottom: -12%;
+        left: -8%;
+        height: 28%;
+        background:
+            linear-gradient(
+                180deg,
+                rgba(45, 31, 26, 0.68),
+                rgba(18, 17, 17, 0.98)
+            );
+        clip-path:
+            polygon(
+                0 22%,
+                11% 17%,
+                23% 23%,
+                37% 15%,
+                51% 22%,
+                65% 14%,
+                79% 21%,
+                91% 16%,
+                100% 22%,
+                100% 100%,
+                0 100%
+            );
+    }
+
+    @keyframes fire-outer {
+        from {
+            scale: 0.94 0.97;
+            rotate: -2deg;
+        }
+
+        to {
+            scale: 1.04 1.08;
+            rotate: 3deg;
+        }
+    }
+
+    @keyframes fire-middle {
+        from {
+            scale: 0.9 0.96;
+            rotate: 3deg;
+        }
+
+        to {
+            scale: 1.08 1.04;
+            rotate: -4deg;
+        }
+    }
+
+    @keyframes fire-inner {
+        from {
+            scale: 0.92 0.94;
+        }
+
+        to {
+            scale: 1.08 1.12;
+        }
+    }
+
+    @keyframes fire-ember-rise {
+        0% {
+            opacity: 0;
+            transform:
+                translate3d(0, 0, 0)
+                scale(0.7);
+        }
+
+        18% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+            transform:
+                translate3d(1.6rem, -12rem, 0)
+                scale(0.2);
+        }
+    }
+
+    @media (max-width: 48rem) {
+        :global(.fire-scene) {
+            opacity: 0.84;
+        }
+
+        .fire-scene__ridge--far {
+            bottom: 42%;
+        }
+
+        .fire-scene__ridge--near {
+            bottom: 33%;
+        }
+
+        .fire-scene__clearing {
+            height: 38%;
+        }
+
+        .fire-scene__fire {
+            bottom: 13%;
+        }
+
+        .fire-scene__logs {
+            bottom: 10%;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .fire-scene__flame,
+        .fire-scene__ember {
+            animation: none;
+        }
+    }
+</style>

@@ -2,6 +2,7 @@
 import HeadwatersScene from "./scenes/HeadwatersScene.astro";
 import RiverScene from "./scenes/RiverScene.astro";
 import FieldScene from "./scenes/FieldScene.astro";
+import FireScene from "./scenes/FireScene.astro";
 
 interface Props {
     placeId: string;
@@ -12,7 +13,8 @@ const { placeId } = Astro.props;
 const scenes = {
     headwaters: HeadwatersScene,
     river: RiverScene,
-    field: FieldScene
+    field: FieldScene,
+    fire: FireScene
 };
 
 const Scene =
