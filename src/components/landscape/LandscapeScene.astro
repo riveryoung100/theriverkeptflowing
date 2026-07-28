@@ -1,0 +1,15 @@
+﻿---
+import HeadwatersScene from "./scenes/HeadwatersScene.astro";
+
+interface Props {
+    placeId: string;
+}
+
+const { placeId } = Astro.props;
+---
+
+{
+    placeId === "headwaters" && (
+        <HeadwatersScene />
+    )
+}

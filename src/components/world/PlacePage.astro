@@ -1,5 +1,6 @@
 ﻿---
 import WorldLayout from "../../layouts/WorldLayout.astro";
+import LandscapeScene from "../landscape/LandscapeScene.astro";
 import { placesById } from "../../data/places";
 import { placeContent } from "../../data/placeContent";
 
@@ -192,6 +193,14 @@ const neighboringPlaces = place.neighbors
         padding-block: var(--space-16);
     }
 
+    .place-page__return,
+    .place-page__eyebrow,
+    .place-page__title,
+    .place-page__description {
+        position: relative;
+        z-index: 2;
+    }
+
     .place-page__return {
         align-self: flex-start;
         margin-bottom: var(--space-16);
@@ -331,7 +340,15 @@ const neighboringPlaces = place.neighbors
             min-height: 70svh;
         }
 
-        .place-page__return {
+        .place-page__return,
+    .place-page__eyebrow,
+    .place-page__title,
+    .place-page__description {
+        position: relative;
+        z-index: 2;
+    }
+
+    .place-page__return {
             margin-bottom: var(--space-12);
         }
 
@@ -351,4 +368,5 @@ const neighboringPlaces = place.neighbors
         }
     }
 </style>
+
 
