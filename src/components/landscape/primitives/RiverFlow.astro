@@ -1,16 +1,56 @@
 ﻿---
 interface Props {
     animate?: boolean;
+    variant?: "headwaters" | "river";
 }
 
 const {
-    animate = true
+    animate = true,
+    variant = "headwaters"
 } = Astro.props;
+
+const isRiver = variant === "river";
+
+const fillId = `river-flow-fill-${variant}`;
+const shineId = `river-flow-shine-${variant}`;
+
+const bodyPath = isRiver
+    ? `
+        M 520 225
+        C 430 300, 620 365, 470 430
+        C 290 510, 660 565, 210 700
+        L 905 700
+        C 690 560, 760 500, 620 425
+        C 500 360, 665 300, 575 225
+        Z
+    `
+    : `
+        M 515 250
+        C 500 320, 565 350, 520 410
+        C 455 500, 590 540, 430 700
+        L 785 700
+        C 700 580, 620 520, 650 430
+        C 672 360, 585 320, 565 250
+        Z
+    `;
+
+const shinePath = isRiver
+    ? `
+        M 550 250
+        C 475 315, 625 370, 520 440
+        C 430 500, 620 560, 420 675
+    `
+    : `
+        M 540 270
+        C 525 335, 575 365, 545 420
+        C 505 495, 600 545, 520 690
+    `;
 ---
 
 <svg
     class:list={[
         "river-flow",
+        `river-flow--${variant}`,
         {
             "river-flow--static": !animate
         }
@@ -21,78 +61,120 @@ const {
 >
     <defs>
 
-        <linearGradient
-            id="river-flow-fill"
-            x1="0"
-            y1="0"
-            x2="0"
-            y2="1"
-        >
-            <stop
-                offset="0%"
-                stop-color="rgba(176, 215, 210, 0.28)"
-            />
+        {
+            isRiver ? (
+                <>
+                    <linearGradient
+                        id={fillId}
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                    >
+                        <stop
+                            offset="0%"
+                            stop-color="rgba(157, 201, 193, 0.2)"
+                        />
 
-            <stop
-                offset="55%"
-                stop-color="rgba(105, 164, 158, 0.34)"
-            />
+                        <stop
+                            offset="48%"
+                            stop-color="rgba(91, 151, 143, 0.34)"
+                        />
 
-            <stop
-                offset="100%"
-                stop-color="rgba(58, 111, 106, 0.48)"
-            />
-        </linearGradient>
+                        <stop
+                            offset="100%"
+                            stop-color="rgba(42, 91, 83, 0.58)"
+                        />
+                    </linearGradient>
 
-        <linearGradient
-            id="river-flow-shine"
-            x1="0"
-            y1="0"
-            x2="1"
-            y2="1"
-        >
-            <stop
-                offset="0%"
-                stop-color="rgba(237, 245, 239, 0)"
-            />
+                    <linearGradient
+                        id={shineId}
+                        x1="0"
+                        y1="0"
+                        x2="1"
+                        y2="1"
+                    >
+                        <stop
+                            offset="0%"
+                            stop-color="rgba(235, 242, 226, 0)"
+                        />
 
-            <stop
-                offset="50%"
-                stop-color="rgba(237, 245, 239, 0.34)"
-            />
+                        <stop
+                            offset="50%"
+                            stop-color="rgba(235, 242, 226, 0.34)"
+                        />
 
-            <stop
-                offset="100%"
-                stop-color="rgba(237, 245, 239, 0)"
-            />
-        </linearGradient>
+                        <stop
+                            offset="100%"
+                            stop-color="rgba(235, 242, 226, 0)"
+                        />
+                    </linearGradient>
+                </>
+            ) : (
+                <>
+                    <linearGradient
+                        id={fillId}
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                    >
+                        <stop
+                            offset="0%"
+                            stop-color="rgba(176, 215, 210, 0.28)"
+                        />
+
+                        <stop
+                            offset="55%"
+                            stop-color="rgba(105, 164, 158, 0.34)"
+                        />
+
+                        <stop
+                            offset="100%"
+                            stop-color="rgba(58, 111, 106, 0.48)"
+                        />
+                    </linearGradient>
+
+                    <linearGradient
+                        id={shineId}
+                        x1="0"
+                        y1="0"
+                        x2="1"
+                        y2="1"
+                    >
+                        <stop
+                            offset="0%"
+                            stop-color="rgba(237, 245, 239, 0)"
+                        />
+
+                        <stop
+                            offset="50%"
+                            stop-color="rgba(237, 245, 239, 0.34)"
+                        />
+
+                        <stop
+                            offset="100%"
+                            stop-color="rgba(237, 245, 239, 0)"
+                        />
+                    </linearGradient>
+                </>
+            )
+        }
 
     </defs>
 
     <path
         class="river-flow__body"
-        d="
-            M 515 250
-            C 500 320, 565 350, 520 410
-            C 455 500, 590 540, 430 700
-            L 785 700
-            C 700 580, 620 520, 650 430
-            C 672 360, 585 320, 565 250
-            Z
-        "
-        fill="url(#river-flow-fill)"
+        d={bodyPath}
+        fill={`url(#${fillId})`}
     />
 
     <path
         class="river-flow__shine"
-        d="
-            M 540 270
-            C 525 335, 575 365, 545 420
-            C 505 495, 600 545, 520 690
-        "
+        d={shinePath}
         fill="none"
-        stroke="url(#river-flow-shine)"
-        stroke-width="12"
+        stroke={`url(#${shineId})`}
+        stroke-width={isRiver ? 15 : 12}
         stroke-linecap="round"
     />
 
@@ -105,11 +187,18 @@ const {
         bottom: -8%;
         left: 0;
         width: 100%;
-        height: 68%;
         overflow: visible;
     }
 
-    .river-flow__body {
+    .river-flow--headwaters {
+        height: 68%;
+    }
+
+    .river-flow--river {
+        height: 72%;
+    }
+
+    .river-flow--headwaters .river-flow__body {
         filter:
             drop-shadow(
                 0 0 1.5rem
@@ -117,30 +206,49 @@ const {
             );
     }
 
-    .river-flow__shine {
-        stroke-dasharray: 34 28;
-        animation:
-            river-flow-current
-            12s
-            linear
-            infinite;
+    .river-flow--river .river-flow__body {
+        filter:
+            drop-shadow(
+                0 0 1.8rem
+                rgba(91, 151, 143, 0.11)
+            );
     }
 
-    .river-flow--static
-        .river-flow__shine {
+    .river-flow__shine {
+        animation-name: river-flow-current;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+    }
+
+    .river-flow--headwaters .river-flow__shine {
+        stroke-dasharray: 34 28;
+        animation-duration: 12s;
+    }
+
+    .river-flow--river .river-flow__shine {
+        stroke-dasharray: 42 34;
+        animation-duration: 14s;
+    }
+
+    .river-flow--static .river-flow__shine {
         animation: none;
     }
 
     @keyframes river-flow-current {
         to {
-            stroke-dashoffset: -124;
+            stroke-dashoffset: -152;
         }
     }
 
     @media (max-width: 48rem) {
-        .river-flow {
+        .river-flow--headwaters {
             bottom: -2%;
             height: 60%;
+        }
+
+        .river-flow--river {
+            bottom: -1%;
+            height: 63%;
         }
     }
 
