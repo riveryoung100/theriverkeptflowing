@@ -1,0 +1,206 @@
+﻿---
+interface Props {
+    size?: "small" | "medium" | "large";
+    depth?: "far" | "middle" | "near";
+    tone?: "forest" | "evergreen" | "winter";
+    swayDuration?: string;
+    animationDelay?: string;
+}
+
+const {
+    size = "medium",
+    depth = "middle",
+    tone = "forest",
+    swayDuration = "11s",
+    animationDelay = "0s"
+} = Astro.props;
+---
+
+<div
+    class:list={[
+        "pine-tree",
+        `pine-tree--${size}`,
+        `pine-tree--${depth}`,
+        `pine-tree--${tone}`
+    ]}
+    style={`
+        --pine-sway-duration:${swayDuration};
+        --pine-animation-delay:${animationDelay};
+    `}
+    aria-hidden="true"
+>
+
+    <span class="pine-tree__trunk"></span>
+
+    <span class="pine-tree__layer pine-tree__layer--one"></span>
+    <span class="pine-tree__layer pine-tree__layer--two"></span>
+    <span class="pine-tree__layer pine-tree__layer--three"></span>
+    <span class="pine-tree__layer pine-tree__layer--four"></span>
+
+</div>
+
+<style>
+
+.pine-tree{
+    position:absolute;
+    bottom:0;
+    pointer-events:none;
+    transform-origin:bottom center;
+
+    animation:
+        pine-tree-sway
+        var(--pine-sway-duration)
+        ease-in-out
+        infinite
+        alternate;
+
+    animation-delay:var(--pine-animation-delay);
+}
+
+.pine-tree--small{
+    width:4rem;
+    height:7rem;
+}
+
+.pine-tree--medium{
+    width:6rem;
+    height:10rem;
+}
+
+.pine-tree--large{
+    width:8rem;
+    height:14rem;
+}
+
+.pine-tree--far{
+    opacity:.55;
+    filter:blur(.05rem);
+}
+
+.pine-tree--middle{
+    opacity:.82;
+}
+
+.pine-tree--near{
+    opacity:1;
+}
+
+.pine-tree__trunk{
+    position:absolute;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+    width:12%;
+    height:22%;
+    border-radius:999px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(110,78,52,.98),
+            rgba(71,46,28,.98)
+        );
+}
+
+.pine-tree__layer{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    clip-path:polygon(
+        50% 0,
+        100% 100%,
+        0 100%
+    );
+}
+
+.pine-tree__layer--one{
+    top:0;
+    width:48%;
+    height:28%;
+}
+
+.pine-tree__layer--two{
+    top:18%;
+    width:62%;
+    height:30%;
+}
+
+.pine-tree__layer--three{
+    top:38%;
+    width:76%;
+    height:30%;
+}
+
+.pine-tree__layer--four{
+    top:58%;
+    width:92%;
+    height:30%;
+}
+
+.pine-tree--forest
+.pine-tree__layer{
+    background:
+        linear-gradient(
+            180deg,
+            rgba(63,104,68,.98),
+            rgba(28,60,36,.98)
+        );
+}
+
+.pine-tree--evergreen
+.pine-tree__layer{
+    background:
+        linear-gradient(
+            180deg,
+            rgba(52,118,74,.98),
+            rgba(18,70,38,.98)
+        );
+}
+
+.pine-tree--winter
+.pine-tree__layer{
+    background:
+        linear-gradient(
+            180deg,
+            rgba(118,134,126,.98),
+            rgba(63,78,71,.98)
+        );
+}
+
+.pine-tree__layer::after{
+    content:"";
+    position:absolute;
+    inset:8% 18% auto 18%;
+    height:22%;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.18),
+            transparent
+        );
+
+    clip-path:inherit;
+}
+
+@keyframes pine-tree-sway{
+
+    from{
+        transform:rotate(-1.4deg);
+    }
+
+    to{
+        transform:rotate(1.8deg);
+    }
+
+}
+
+@media(prefers-reduced-motion:reduce){
+
+    .pine-tree{
+        animation:none;
+    }
+
+}
+
+</style>

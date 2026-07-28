@@ -1,0 +1,231 @@
+﻿---
+interface Props {
+    count?: number;
+    size?: "small" | "medium" | "large";
+    tone?: "forest" | "deep" | "soft";
+    swayDuration?: string;
+    animationDelay?: string;
+    opacity?: number;
+}
+
+const {
+    count = 7,
+    size = "medium",
+    tone = "forest",
+    swayDuration = "9s",
+    animationDelay = "0s",
+    opacity = 1
+} = Astro.props;
+---
+
+<div
+    class:list={[
+        "fern-cluster",
+        `fern-cluster--${size}`,
+        `fern-cluster--${tone}`
+    ]}
+    style={`
+        --fern-sway-duration: ${swayDuration};
+        --fern-animation-delay: ${animationDelay};
+        --fern-opacity: ${opacity};
+    `}
+    aria-hidden="true"
+>
+    {
+        Array.from(
+            { length: count },
+            (_, index) => (
+                <span
+                    class="fern-cluster__frond"
+                    style={`
+                        --frond-left: ${8 + ((index * 17) % 84)}%;
+                        --frond-height: ${52 + ((index * 19) % 46)}%;
+                        --frond-lean: ${-28 + ((index * 13) % 57)}deg;
+                        --frond-scale: ${0.74 + ((index * 7) % 25) / 100};
+                        --frond-delay: -${index * 0.42}s;
+                    `}
+                >
+                    <span class="fern-cluster__stem"></span>
+
+                    <span class="fern-cluster__leaf fern-cluster__leaf--one"></span>
+                    <span class="fern-cluster__leaf fern-cluster__leaf--two"></span>
+                    <span class="fern-cluster__leaf fern-cluster__leaf--three"></span>
+                    <span class="fern-cluster__leaf fern-cluster__leaf--four"></span>
+                    <span class="fern-cluster__leaf fern-cluster__leaf--five"></span>
+                    <span class="fern-cluster__leaf fern-cluster__leaf--six"></span>
+                </span>
+            )
+        )
+    }
+</div>
+
+<style>
+    .fern-cluster {
+        position: absolute;
+        bottom: 0;
+        width: 10rem;
+        height: 7rem;
+        opacity: var(--fern-opacity);
+        pointer-events: none;
+    }
+
+    .fern-cluster--small {
+        width: clamp(4.5rem, 7vw, 6rem);
+        height: clamp(3rem, 5vw, 4.5rem);
+    }
+
+    .fern-cluster--medium {
+        width: clamp(7rem, 11vw, 10rem);
+        height: clamp(5rem, 8vw, 7rem);
+    }
+
+    .fern-cluster--large {
+        width: clamp(10rem, 15vw, 14rem);
+        height: clamp(7rem, 11vw, 10rem);
+    }
+
+    .fern-cluster__frond {
+        position: absolute;
+        bottom: 0;
+        left: var(--frond-left);
+        width: 1.8rem;
+        height: var(--frond-height);
+        transform:
+            translateX(-50%)
+            rotate(var(--frond-lean))
+            scale(var(--frond-scale));
+        transform-origin: bottom center;
+        animation:
+            fern-cluster-sway
+            var(--fern-sway-duration)
+            ease-in-out
+            infinite
+            alternate;
+        animation-delay:
+            calc(
+                var(--fern-animation-delay) +
+                var(--frond-delay)
+            );
+    }
+
+    .fern-cluster__stem {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 2px;
+        height: 100%;
+        transform: translateX(-50%);
+        border-radius: 999px;
+        background:
+            linear-gradient(
+                180deg,
+                rgba(111, 145, 83, 0.92),
+                rgba(43, 77, 47, 0.98)
+            );
+    }
+
+    .fern-cluster__leaf {
+        position: absolute;
+        left: 50%;
+        width: 0.95rem;
+        height: 0.34rem;
+        border-radius:
+            90% 10% 90% 10%;
+        transform-origin: center right;
+    }
+
+    .fern-cluster__leaf:nth-of-type(even) {
+        transform:
+            translateX(-100%)
+            rotate(24deg);
+    }
+
+    .fern-cluster__leaf:nth-of-type(odd) {
+        transform:
+            rotate(156deg);
+    }
+
+    .fern-cluster__leaf--one {
+        bottom: 17%;
+    }
+
+    .fern-cluster__leaf--two {
+        bottom: 31%;
+    }
+
+    .fern-cluster__leaf--three {
+        bottom: 45%;
+    }
+
+    .fern-cluster__leaf--four {
+        bottom: 59%;
+    }
+
+    .fern-cluster__leaf--five {
+        bottom: 72%;
+    }
+
+    .fern-cluster__leaf--six {
+        bottom: 84%;
+    }
+
+    .fern-cluster--forest
+    .fern-cluster__leaf {
+        background:
+            linear-gradient(
+                90deg,
+                rgba(77, 120, 70, 0.98),
+                rgba(35, 77, 44, 0.98)
+            );
+    }
+
+    .fern-cluster--deep
+    .fern-cluster__leaf {
+        background:
+            linear-gradient(
+                90deg,
+                rgba(52, 94, 61, 0.98),
+                rgba(20, 55, 34, 0.98)
+            );
+    }
+
+    .fern-cluster--soft
+    .fern-cluster__leaf {
+        background:
+            linear-gradient(
+                90deg,
+                rgba(111, 144, 97, 0.95),
+                rgba(62, 99, 65, 0.98)
+            );
+    }
+
+    @keyframes fern-cluster-sway {
+        from {
+            transform:
+                translateX(-50%)
+                rotate(
+                    calc(
+                        var(--frond-lean) - 2deg
+                    )
+                )
+                scale(var(--frond-scale));
+        }
+
+        to {
+            transform:
+                translateX(-50%)
+                rotate(
+                    calc(
+                        var(--frond-lean) + 4deg
+                    )
+                )
+                scale(var(--frond-scale));
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .fern-cluster__frond {
+            animation: none;
+        }
+    }
+</style>

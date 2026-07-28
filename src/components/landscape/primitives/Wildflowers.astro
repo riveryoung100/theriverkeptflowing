@@ -1,0 +1,187 @@
+﻿---
+interface Props {
+    count?: number;
+    size?: "small" | "medium" | "large";
+    palette?: "meadow" | "golden" | "soft";
+    swayDuration?: string;
+    animationDelay?: string;
+    opacity?: number;
+}
+
+const {
+    count = 10,
+    size = "medium",
+    palette = "meadow",
+    swayDuration = "8s",
+    animationDelay = "0s",
+    opacity = 1
+} = Astro.props;
+---
+
+<div
+    class:list={[
+        "wildflowers",
+        `wildflowers--${size}`,
+        `wildflowers--${palette}`
+    ]}
+    style={`
+        --wildflower-sway-duration: ${swayDuration};
+        --wildflower-animation-delay: ${animationDelay};
+        --wildflower-opacity: ${opacity};
+    `}
+    aria-hidden="true"
+>
+    {
+        Array.from(
+            { length: count },
+            (_, index) => (
+                <span
+                    class="wildflowers__stem"
+                    style={`
+                        --flower-left: ${5 + ((index * 19) % 90)}%;
+                        --flower-height: ${42 + ((index * 17) % 56)}%;
+                        --flower-scale: ${0.72 + ((index * 9) % 29) / 100};
+                        --flower-lean: ${-7 + ((index * 13) % 15)}deg;
+                        --flower-delay: -${index * 0.37}s;
+                        --flower-tone: ${index % 3};
+                    `}
+                >
+                    <span class="wildflowers__bloom"></span>
+                </span>
+            )
+        )
+    }
+</div>
+
+<style>
+    .wildflowers {
+        position: absolute;
+        bottom: 0;
+        width: 10rem;
+        height: 7rem;
+        opacity: var(--wildflower-opacity);
+        pointer-events: none;
+    }
+
+    .wildflowers--small {
+        width: clamp(4rem, 7vw, 6rem);
+        height: clamp(3rem, 5vw, 4.5rem);
+    }
+
+    .wildflowers--medium {
+        width: clamp(7rem, 11vw, 10rem);
+        height: clamp(5rem, 8vw, 7rem);
+    }
+
+    .wildflowers--large {
+        width: clamp(10rem, 15vw, 14rem);
+        height: clamp(7rem, 11vw, 10rem);
+    }
+
+    .wildflowers__stem {
+        position: absolute;
+        bottom: 0;
+        left: var(--flower-left);
+        width: 2px;
+        height: var(--flower-height);
+        border-radius: 999px;
+        background:
+            linear-gradient(
+                180deg,
+                rgba(101, 132, 79, 0.9),
+                rgba(44, 76, 48, 0.96)
+            );
+        transform:
+            translateX(-50%)
+            rotate(var(--flower-lean))
+            scale(var(--flower-scale));
+        transform-origin: bottom center;
+        animation:
+            wildflower-sway
+            var(--wildflower-sway-duration)
+            ease-in-out
+            infinite
+            alternate;
+        animation-delay:
+            calc(
+                var(--wildflower-animation-delay) +
+                var(--flower-delay)
+            );
+    }
+
+    .wildflowers__bloom {
+        position: absolute;
+        top: -0.32rem;
+        left: 50%;
+        width: 0.7rem;
+        aspect-ratio: 1;
+        transform: translateX(-50%);
+        border-radius: 50%;
+        box-shadow:
+            0 -0.27rem 0 -0.08rem currentColor,
+            0.27rem 0 0 -0.08rem currentColor,
+            0 0.27rem 0 -0.08rem currentColor,
+            -0.27rem 0 0 -0.08rem currentColor;
+        background: rgba(231, 198, 92, 0.96);
+    }
+
+    .wildflowers--meadow
+    .wildflowers__stem:nth-child(3n + 1) {
+        color: rgba(235, 215, 116, 0.92);
+    }
+
+    .wildflowers--meadow
+    .wildflowers__stem:nth-child(3n + 2) {
+        color: rgba(210, 180, 203, 0.9);
+    }
+
+    .wildflowers--meadow
+    .wildflowers__stem:nth-child(3n + 3) {
+        color: rgba(214, 228, 203, 0.92);
+    }
+
+    .wildflowers--golden
+    .wildflowers__stem {
+        color: rgba(230, 186, 74, 0.94);
+    }
+
+    .wildflowers--soft
+    .wildflowers__stem:nth-child(2n + 1) {
+        color: rgba(222, 201, 214, 0.9);
+    }
+
+    .wildflowers--soft
+    .wildflowers__stem:nth-child(2n + 2) {
+        color: rgba(218, 224, 196, 0.9);
+    }
+
+    @keyframes wildflower-sway {
+        from {
+            transform:
+                translateX(-50%)
+                rotate(
+                    calc(
+                        var(--flower-lean) - 2deg
+                    )
+                )
+                scale(var(--flower-scale));
+        }
+
+        to {
+            transform:
+                translateX(-50%)
+                rotate(
+                    calc(
+                        var(--flower-lean) + 4deg
+                    )
+                )
+                scale(var(--flower-scale));
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .wildflowers__stem {
+            animation: none;
+        }
+    }
+</style>

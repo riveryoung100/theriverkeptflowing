@@ -1,0 +1,144 @@
+﻿---
+interface Props {
+    count?: number;
+    size?: "small" | "medium" | "large";
+    tone?: "forest" | "mountain" | "desert";
+    opacity?: number;
+}
+
+const {
+    count = 4,
+    size = "medium",
+    tone = "forest",
+    opacity = 1
+} = Astro.props;
+---
+
+<div
+    class:list={[
+        "boulder-cluster",
+        `boulder-cluster--${size}`,
+        `boulder-cluster--${tone}`
+    ]}
+    style={`--boulder-cluster-opacity: ${opacity};`}
+    aria-hidden="true"
+>
+    {
+        Array.from(
+            { length: count },
+            (_, index) => (
+                <span
+                    class="boulder-cluster__rock"
+                    style={`
+                        --rock-left: ${6 + ((index * 23) % 76)}%;
+                        --rock-bottom: ${((index * 11) % 18)}%;
+                        --rock-width: ${34 + ((index * 19) % 42)}%;
+                        --rock-height: ${32 + ((index * 17) % 38)}%;
+                        --rock-rotate: ${-8 + ((index * 13) % 17)}deg;
+                        --rock-layer: ${index + 1};
+                        --rock-light: ${0.82 + ((index * 7) % 16) / 100};
+                    `}
+                ></span>
+            )
+        )
+    }
+</div>
+
+<style>
+    .boulder-cluster {
+        position: absolute;
+        bottom: 0;
+        width: 11rem;
+        height: 7rem;
+        opacity: var(--boulder-cluster-opacity);
+        pointer-events: none;
+    }
+
+    .boulder-cluster--small {
+        width: clamp(5rem, 8vw, 7rem);
+        height: clamp(3rem, 5vw, 4.5rem);
+    }
+
+    .boulder-cluster--medium {
+        width: clamp(8rem, 12vw, 11rem);
+        height: clamp(5rem, 8vw, 7rem);
+    }
+
+    .boulder-cluster--large {
+        width: clamp(12rem, 17vw, 16rem);
+        height: clamp(7rem, 11vw, 10rem);
+    }
+
+    .boulder-cluster__rock {
+        position: absolute;
+        left: var(--rock-left);
+        bottom: var(--rock-bottom);
+        z-index: var(--rock-layer);
+        width: var(--rock-width);
+        height: var(--rock-height);
+        transform:
+            translateX(-50%)
+            rotate(var(--rock-rotate));
+        border-radius:
+            58% 42% 48% 52% /
+            54% 46% 58% 42%;
+        box-shadow:
+            inset -0.45rem -0.55rem 0.8rem
+            rgba(12, 20, 17, 0.2),
+            0 0.45rem 0.85rem
+            rgba(10, 18, 14, 0.14);
+    }
+
+    .boulder-cluster__rock::before {
+        content: "";
+        position: absolute;
+        inset: 9% 14% 48% 12%;
+        border-radius: inherit;
+        background:
+            linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.18),
+                transparent 72%
+            );
+        opacity: var(--rock-light);
+    }
+
+    .boulder-cluster--forest
+    .boulder-cluster__rock {
+        background:
+            linear-gradient(
+                145deg,
+                rgba(92, 105, 91, 0.98),
+                rgba(48, 63, 53, 0.98)
+            );
+    }
+
+    .boulder-cluster--mountain
+    .boulder-cluster__rock {
+        background:
+            linear-gradient(
+                145deg,
+                rgba(116, 124, 126, 0.98),
+                rgba(63, 71, 75, 0.98)
+            );
+    }
+
+    .boulder-cluster--desert
+    .boulder-cluster__rock {
+        background:
+            linear-gradient(
+                145deg,
+                rgba(161, 123, 82, 0.98),
+                rgba(97, 68, 46, 0.98)
+            );
+    }
+
+    @media (max-width: 48rem) {
+        .boulder-cluster {
+            opacity:
+                calc(
+                    var(--boulder-cluster-opacity) * 0.9
+                );
+        }
+    }
+</style>

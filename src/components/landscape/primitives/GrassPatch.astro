@@ -1,0 +1,176 @@
+﻿---
+interface Props {
+    size?: "small" | "medium" | "large";
+    density?: "light" | "medium" | "thick";
+    tone?: "meadow" | "forest" | "dry";
+    swayDuration?: string;
+    animationDelay?: string;
+    opacity?: number;
+}
+
+const {
+    size = "medium",
+    density = "medium",
+    tone = "meadow",
+    swayDuration = "7s",
+    animationDelay = "0s",
+    opacity = 1
+} = Astro.props;
+
+const bladeCounts = {
+    light: 8,
+    medium: 14,
+    thick: 20
+} as const;
+
+const bladeCount = bladeCounts[density];
+---
+
+<div
+    class:list={[
+        "grass-patch",
+        `grass-patch--${size}`,
+        `grass-patch--${density}`,
+        `grass-patch--${tone}`
+    ]}
+    style={`
+        --grass-sway-duration: ${swayDuration};
+        --grass-animation-delay: ${animationDelay};
+        --grass-opacity: ${opacity};
+    `}
+    aria-hidden="true"
+>
+    {
+        Array.from(
+            { length: bladeCount },
+            (_, index) => (
+                <span
+                    class="grass-patch__blade"
+                    style={`
+                        --blade-left: ${4 + ((index * 17) % 92)}%;
+                        --blade-height: ${46 + ((index * 23) % 54)}%;
+                        --blade-width: ${1 + ((index * 7) % 3)}px;
+                        --blade-lean: ${-8 + ((index * 11) % 17)}deg;
+                        --blade-delay: -${index * 0.31}s;
+                    `}
+                ></span>
+            )
+        )
+    }
+</div>
+
+<style>
+    .grass-patch {
+        position: absolute;
+        bottom: 0;
+        width: 9rem;
+        height: 6rem;
+        opacity: var(--grass-opacity);
+        pointer-events: none;
+        transform-origin: bottom center;
+    }
+
+    .grass-patch--small {
+        width: clamp(4rem, 7vw, 6rem);
+        height: clamp(3rem, 5vw, 4.5rem);
+    }
+
+    .grass-patch--medium {
+        width: clamp(6rem, 10vw, 9rem);
+        height: clamp(4rem, 7vw, 6rem);
+    }
+
+    .grass-patch--large {
+        width: clamp(9rem, 14vw, 13rem);
+        height: clamp(6rem, 10vw, 9rem);
+    }
+
+    .grass-patch__blade {
+        position: absolute;
+        bottom: 0;
+        left: var(--blade-left);
+        width: var(--blade-width);
+        height: var(--blade-height);
+        border-radius: 100% 100% 0 0;
+        transform:
+            translateX(-50%)
+            rotate(var(--blade-lean));
+        transform-origin: bottom center;
+        animation:
+            grass-patch-sway
+            var(--grass-sway-duration)
+            ease-in-out
+            infinite
+            alternate;
+        animation-delay:
+            calc(
+                var(--grass-animation-delay) +
+                var(--blade-delay)
+            );
+    }
+
+    .grass-patch--meadow .grass-patch__blade {
+        background:
+            linear-gradient(
+                180deg,
+                rgba(133, 160, 101, 0.92),
+                rgba(61, 91, 58, 0.96)
+            );
+    }
+
+    .grass-patch--forest .grass-patch__blade {
+        background:
+            linear-gradient(
+                180deg,
+                rgba(82, 116, 75, 0.9),
+                rgba(29, 55, 39, 0.98)
+            );
+    }
+
+    .grass-patch--dry .grass-patch__blade {
+        background:
+            linear-gradient(
+                180deg,
+                rgba(184, 158, 101, 0.88),
+                rgba(104, 82, 47, 0.96)
+            );
+    }
+
+    .grass-patch--light {
+        filter: blur(0.02rem);
+    }
+
+    .grass-patch--thick .grass-patch__blade {
+        box-shadow:
+            0 0.15rem 0.2rem
+            rgba(10, 24, 16, 0.12);
+    }
+
+    @keyframes grass-patch-sway {
+        from {
+            transform:
+                translateX(-50%)
+                rotate(
+                    calc(
+                        var(--blade-lean) - 2deg
+                    )
+                );
+        }
+
+        to {
+            transform:
+                translateX(-50%)
+                rotate(
+                    calc(
+                        var(--blade-lean) + 4deg
+                    )
+                );
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .grass-patch__blade {
+            animation: none;
+        }
+    }
+</style>
