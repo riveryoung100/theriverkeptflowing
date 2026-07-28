@@ -1,0 +1,154 @@
+﻿---
+interface Props {
+    strength?: "gentle" | "medium" | "strong";
+    direction?: "left" | "right";
+    duration?: string;
+}
+
+const {
+    strength = "gentle",
+    direction = "right",
+    duration = "12s"
+} = Astro.props;
+---
+
+<div
+    class:list={[
+        "wind-field",
+        `wind-field--${strength}`,
+        `wind-field--${direction}`
+    ]}
+    style={`--wind-duration: ${duration};`}
+    aria-hidden="true"
+>
+    <span class="wind-field__current wind-field__current--one"></span>
+    <span class="wind-field__current wind-field__current--two"></span>
+    <span class="wind-field__current wind-field__current--three"></span>
+</div>
+
+<style>
+    .wind-field {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .wind-field__current {
+        position: absolute;
+        left: -30%;
+        width: 34%;
+        height: 0.12rem;
+        border-radius: 999px;
+        background:
+            linear-gradient(
+                90deg,
+                transparent,
+                rgba(227, 232, 208, 0.22),
+                transparent
+            );
+        filter: blur(0.06rem);
+    }
+
+    .wind-field__current--one {
+        top: 28%;
+        animation-delay: -2s;
+    }
+
+    .wind-field__current--two {
+        top: 48%;
+        width: 24%;
+        animation-delay: -6s;
+    }
+
+    .wind-field__current--three {
+        top: 67%;
+        width: 40%;
+        animation-delay: -9s;
+    }
+
+    .wind-field--gentle {
+        opacity: 0.35;
+    }
+
+    .wind-field--medium {
+        opacity: 0.55;
+    }
+
+    .wind-field--strong {
+        opacity: 0.75;
+    }
+
+    .wind-field--right .wind-field__current {
+        animation:
+            wind-field-right
+            var(--wind-duration)
+            linear
+            infinite;
+    }
+
+    .wind-field--left .wind-field__current {
+        right: -30%;
+        left: auto;
+        animation:
+            wind-field-left
+            var(--wind-duration)
+            linear
+            infinite;
+    }
+
+    @keyframes wind-field-right {
+        from {
+            transform:
+                translate3d(-10vw, 0, 0)
+                scaleX(0.8);
+            opacity: 0;
+        }
+
+        18% {
+            opacity: 1;
+        }
+
+        82% {
+            opacity: 1;
+        }
+
+        to {
+            transform:
+                translate3d(145vw, -1rem, 0)
+                scaleX(1.25);
+            opacity: 0;
+        }
+    }
+
+    @keyframes wind-field-left {
+        from {
+            transform:
+                translate3d(10vw, 0, 0)
+                scaleX(0.8);
+            opacity: 0;
+        }
+
+        18% {
+            opacity: 1;
+        }
+
+        82% {
+            opacity: 1;
+        }
+
+        to {
+            transform:
+                translate3d(-145vw, -1rem, 0)
+                scaleX(1.25);
+            opacity: 0;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .wind-field__current {
+            animation: none !important;
+            opacity: 0;
+        }
+    }
+</style>

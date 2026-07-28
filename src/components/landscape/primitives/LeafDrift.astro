@@ -1,0 +1,166 @@
+﻿---
+interface Props {
+    count?: number;
+    direction?: "left" | "right";
+    density?: "light" | "medium" | "heavy";
+}
+
+const {
+    count = 16,
+    direction = "right",
+    density = "light"
+} = Astro.props;
+---
+
+<div
+    class:list={[
+        "leaf-drift",
+        `leaf-drift--${direction}`,
+        `leaf-drift--${density}`
+    ]}
+    aria-hidden="true"
+>
+    {
+        Array.from(
+            { length: count },
+            (_, index) => (
+                <span
+                    class="leaf-drift__leaf"
+                    style={`
+                        --leaf-start: ${-12 + ((index * 19) % 112)}%;
+                        --leaf-top: ${12 + ((index * 17) % 67)}%;
+                        --leaf-delay: -${(index % 12) * 1.1}s;
+                        --leaf-duration: ${13 + ((index * 7) % 11)}s;
+                        --leaf-size: ${0.38 + ((index * 3) % 5) * 0.08}rem;
+                        --leaf-turn: ${180 + ((index * 47) % 300)}deg;
+                        --leaf-drift: ${2 + ((index * 11) % 6)}rem;
+                    `}
+                ></span>
+            )
+        )
+    }
+</div>
+
+<style>
+    .leaf-drift {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .leaf-drift--light {
+        opacity: 0.42;
+    }
+
+    .leaf-drift--medium {
+        opacity: 0.66;
+    }
+
+    .leaf-drift--heavy {
+        opacity: 0.86;
+    }
+
+    .leaf-drift__leaf {
+        position: absolute;
+        top: var(--leaf-top);
+        left: var(--leaf-start);
+        width: var(--leaf-size);
+        height: calc(var(--leaf-size) * 0.58);
+        border-radius: 100% 0 100% 0;
+        background:
+            linear-gradient(
+                135deg,
+                rgba(139, 157, 79, 0.92),
+                rgba(84, 110, 56, 0.82)
+            );
+        transform-origin: center;
+        animation-duration: var(--leaf-duration);
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+        animation-delay: var(--leaf-delay);
+    }
+
+    .leaf-drift--right .leaf-drift__leaf {
+        animation-name: leaf-drift-right;
+    }
+
+    .leaf-drift--left .leaf-drift__leaf {
+        animation-name: leaf-drift-left;
+    }
+
+    @keyframes leaf-drift-right {
+        from {
+            transform:
+                translate3d(-12vw, 0, 0)
+                rotate(0deg);
+            opacity: 0;
+        }
+
+        12% {
+            opacity: 1;
+        }
+
+        55% {
+            transform:
+                translate3d(
+                    55vw,
+                    var(--leaf-drift),
+                    0
+                )
+                rotate(var(--leaf-turn));
+        }
+
+        to {
+            transform:
+                translate3d(
+                    125vw,
+                    calc(var(--leaf-drift) * -0.6),
+                    0
+                )
+                rotate(calc(var(--leaf-turn) * 2));
+            opacity: 0;
+        }
+    }
+
+    @keyframes leaf-drift-left {
+        from {
+            transform:
+                translate3d(112vw, 0, 0)
+                rotate(0deg);
+            opacity: 0;
+        }
+
+        12% {
+            opacity: 1;
+        }
+
+        55% {
+            transform:
+                translate3d(
+                    48vw,
+                    var(--leaf-drift),
+                    0
+                )
+                rotate(calc(var(--leaf-turn) * -1));
+        }
+
+        to {
+            transform:
+                translate3d(
+                    -25vw,
+                    calc(var(--leaf-drift) * -0.6),
+                    0
+                )
+                rotate(calc(var(--leaf-turn) * -2));
+            opacity: 0;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .leaf-drift__leaf {
+            animation: none;
+            opacity: 0;
+        }
+    }
+</style>

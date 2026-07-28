@@ -2,7 +2,502 @@
 import SceneShell from "../primitives/SceneShell.astro";
 import AmbientGlow from "../primitives/AmbientGlow.astro";
 import MistBand from "../primitives/MistBand.astro";
+import WindField from "../primitives/WindField.astro";
+import LeafDrift from "../primitives/LeafDrift.astro";
+
+const treeRows = [
+    {
+        className: "orchard-scene__row--far",
+        count: 7
+    },
+    {
+        className: "orchard-scene__row--middle",
+        count: 6
+    },
+    {
+        className: "orchard-scene__row--near",
+        count: 5
+    }
+];
 ---
 
-<!-- Orchard scene code will go here -->
+<SceneShell
+    className="orchard-scene"
+    label="Rows of fruit trees growing beside a quiet orchard path"
+>
+    <div
+        slot="background"
+        class="orchard-scene__sky"
+    ></div>
 
+    <AmbientGlow
+        slot="background"
+        position="left"
+        size="large"
+        intensity="medium"
+        duration="18s"
+    />
+
+    <div
+        slot="distance"
+        class="orchard-scene__hills orchard-scene__hills--far"
+    ></div>
+
+    <div
+        slot="distance"
+        class="orchard-scene__hills orchard-scene__hills--near"
+    ></div>
+
+    <MistBand
+        slot="atmosphere"
+        position="middle"
+        density="light"
+        direction="right"
+        duration="30s"
+    />
+
+    <WindField
+        slot="atmosphere"
+        strength="gentle"
+        direction="right"
+        duration="15s"
+    />
+
+    <div
+        slot="midground"
+        class="orchard-scene__ground"
+    ></div>
+
+    <div
+        slot="midground"
+        class="orchard-scene__path"
+    ></div>
+
+    {
+        treeRows.map(
+            (row, rowIndex) => (
+                <div
+                    slot="midground"
+                    class:list={[
+                        "orchard-scene__row",
+                        row.className
+                    ]}
+                >
+                    {
+                        Array.from(
+                            { length: row.count },
+                            (_, treeIndex) => (
+                                <div
+                                    class="orchard-scene__tree"
+                                    style={`
+                                        --tree-index: ${treeIndex};
+                                        --tree-delay: -${(
+                                            treeIndex +
+                                            rowIndex
+                                        ) * 0.7}s;
+                                    `}
+                                >
+                                    <span class="orchard-scene__trunk"></span>
+
+                                    <span class="orchard-scene__canopy orchard-scene__canopy--one"></span>
+                                    <span class="orchard-scene__canopy orchard-scene__canopy--two"></span>
+                                    <span class="orchard-scene__canopy orchard-scene__canopy--three"></span>
+
+                                    {
+                                        Array.from(
+                                            { length: 5 },
+                                            (_, fruitIndex) => (
+                                                <span
+                                                    class="orchard-scene__fruit"
+                                                    style={`
+                                                        --fruit-left: ${
+                                                            20 +
+                                                            ((fruitIndex * 19) % 60)
+                                                        }%;
+                                                        --fruit-top: ${
+                                                            18 +
+                                                            ((fruitIndex * 23) % 50)
+                                                        }%;
+                                                    `}
+                                                ></span>
+                                            )
+                                        )
+                                    }
+                                </div>
+                            )
+                        )
+                    }
+                </div>
+            )
+        )
+    }
+
+    <LeafDrift
+        slot="foreground"
+        count={18}
+        direction="right"
+        density="light"
+    />
+
+    <div
+        slot="foreground"
+        class="orchard-scene__fallen-fruit"
+    >
+        {
+            Array.from(
+                { length: 10 },
+                (_, index) => (
+                    <span
+                        class="orchard-scene__fallen-fruit-piece"
+                        style={`
+                            --fallen-left: ${5 + ((index * 29) % 90)}%;
+                            --fallen-bottom: ${3 + ((index * 11) % 17)}%;
+                            --fallen-size: ${0.42 + ((index * 5) % 4) * 0.08}rem;
+                        `}
+                    ></span>
+                )
+            )
+        }
+    </div>
+
+    <div
+        slot="foreground"
+        class="orchard-scene__foreground"
+    ></div>
+</SceneShell>
+
+<style>
+    :global(.orchard-scene) {
+        opacity: 0.95;
+    }
+
+    .orchard-scene__sky {
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(
+                180deg,
+                rgba(194, 202, 160, 0.13) 0%,
+                rgba(151, 171, 120, 0.09) 42%,
+                rgba(91, 124, 76, 0.05) 70%,
+                transparent 88%
+            );
+    }
+
+    .orchard-scene__hills {
+        position: absolute;
+        right: -8%;
+        left: -8%;
+    }
+
+    .orchard-scene__hills--far {
+        bottom: 37%;
+        height: 26%;
+        opacity: 0.28;
+        background: #778568;
+        clip-path:
+            polygon(
+                0 72%,
+                14% 51%,
+                29% 62%,
+                44% 43%,
+                60% 59%,
+                75% 40%,
+                89% 55%,
+                100% 46%,
+                100% 100%,
+                0 100%
+            );
+        filter: blur(0.14rem);
+    }
+
+    .orchard-scene__hills--near {
+        bottom: 28%;
+        height: 22%;
+        opacity: 0.54;
+        background: #52684b;
+        clip-path:
+            polygon(
+                0 64%,
+                17% 45%,
+                33% 57%,
+                49% 38%,
+                65% 61%,
+                81% 42%,
+                100% 55%,
+                100% 100%,
+                0 100%
+            );
+    }
+
+    .orchard-scene__ground {
+        position: absolute;
+        right: -6%;
+        bottom: -7%;
+        left: -6%;
+        height: 48%;
+        background:
+            linear-gradient(
+                180deg,
+                rgba(91, 117, 63, 0.72),
+                rgba(53, 78, 45, 0.9) 52%,
+                rgba(28, 48, 30, 0.98)
+            );
+        clip-path:
+            polygon(
+                0 15%,
+                13% 9%,
+                29% 14%,
+                45% 8%,
+                62% 14%,
+                79% 7%,
+                100% 13%,
+                100% 100%,
+                0 100%
+            );
+    }
+
+    .orchard-scene__path {
+        position: absolute;
+        bottom: -6%;
+        left: 50%;
+        width: 33%;
+        height: 53%;
+        transform:
+            translateX(-50%)
+            perspective(32rem)
+            rotateX(8deg);
+        transform-origin: bottom center;
+        background:
+            linear-gradient(
+                180deg,
+                rgba(190, 166, 115, 0.18),
+                rgba(139, 112, 74, 0.4) 52%,
+                rgba(89, 69, 45, 0.66)
+            );
+        clip-path:
+            polygon(
+                48% 0,
+                52% 0,
+                80% 100%,
+                18% 100%
+            );
+    }
+
+    .orchard-scene__row {
+        position: absolute;
+        right: 0;
+        left: 0;
+        display: flex;
+        justify-content: space-around;
+        align-items: flex-end;
+    }
+
+    .orchard-scene__row--far {
+        bottom: 33%;
+        padding-inline: 4%;
+        opacity: 0.48;
+        transform: scale(0.54);
+        transform-origin: bottom center;
+    }
+
+    .orchard-scene__row--middle {
+        bottom: 20%;
+        padding-inline: 1%;
+        opacity: 0.74;
+        transform: scale(0.76);
+        transform-origin: bottom center;
+    }
+
+    .orchard-scene__row--near {
+        bottom: 3%;
+        margin-inline: -4%;
+        opacity: 0.96;
+    }
+
+    .orchard-scene__tree {
+        position: relative;
+        width: clamp(6rem, 12vw, 10rem);
+        height: clamp(9rem, 19vw, 15rem);
+        animation:
+            orchard-tree-sway
+            9s
+            var(--ease-breath, ease-in-out)
+            infinite alternate;
+        animation-delay: var(--tree-delay);
+        transform-origin: bottom center;
+    }
+
+    .orchard-scene__trunk {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 11%;
+        height: 58%;
+        border-radius: 55% 45% 18% 20%;
+        transform: translateX(-50%);
+        background:
+            linear-gradient(
+                90deg,
+                rgba(76, 54, 36, 0.98),
+                rgba(122, 82, 48, 0.94),
+                rgba(65, 47, 34, 0.98)
+            );
+    }
+
+    .orchard-scene__canopy {
+        position: absolute;
+        border-radius: 50%;
+        background:
+            radial-gradient(
+                circle at 35% 30%,
+                rgba(112, 145, 76, 0.98),
+                rgba(62, 103, 58, 0.98) 58%,
+                rgba(41, 75, 47, 0.98)
+            );
+        box-shadow:
+            inset 0 -0.7rem 1.2rem rgba(30, 57, 37, 0.26);
+    }
+
+    .orchard-scene__canopy--one {
+        top: 8%;
+        left: 10%;
+        width: 62%;
+        height: 48%;
+    }
+
+    .orchard-scene__canopy--two {
+        top: 3%;
+        right: 7%;
+        width: 60%;
+        height: 52%;
+    }
+
+    .orchard-scene__canopy--three {
+        top: 23%;
+        left: 23%;
+        width: 58%;
+        height: 42%;
+    }
+
+    .orchard-scene__fruit {
+        position: absolute;
+        z-index: 2;
+        top: var(--fruit-top);
+        left: var(--fruit-left);
+        width: clamp(0.32rem, 0.7vw, 0.58rem);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background:
+            radial-gradient(
+                circle at 35% 30%,
+                rgba(224, 157, 74, 0.98),
+                rgba(169, 88, 45, 0.96)
+            );
+        box-shadow:
+            0 0.12rem 0.2rem rgba(44, 45, 24, 0.3);
+    }
+
+    .orchard-scene__fallen-fruit {
+        position: absolute;
+        inset: 0;
+    }
+
+    .orchard-scene__fallen-fruit-piece {
+        position: absolute;
+        bottom: var(--fallen-bottom);
+        left: var(--fallen-left);
+        width: var(--fallen-size);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background:
+            radial-gradient(
+                circle at 34% 28%,
+                rgba(211, 139, 66, 0.9),
+                rgba(139, 70, 40, 0.92)
+            );
+        opacity: 0.72;
+    }
+
+    .orchard-scene__foreground {
+        position: absolute;
+        right: -8%;
+        bottom: -14%;
+        left: -8%;
+        height: 27%;
+        background:
+            linear-gradient(
+                180deg,
+                rgba(40, 67, 39, 0.62),
+                rgba(22, 39, 27, 0.98)
+            );
+        clip-path:
+            polygon(
+                0 23%,
+                12% 16%,
+                26% 22%,
+                41% 14%,
+                55% 21%,
+                70% 13%,
+                86% 22%,
+                100% 15%,
+                100% 100%,
+                0 100%
+            );
+    }
+
+    @keyframes orchard-tree-sway {
+        from {
+            rotate: -0.8deg;
+            translate: -0.08rem 0;
+        }
+
+        to {
+            rotate: 1.3deg;
+            translate: 0.12rem 0;
+        }
+    }
+
+    @media (max-width: 48rem) {
+        :global(.orchard-scene) {
+            opacity: 0.84;
+        }
+
+        .orchard-scene__hills--far {
+            bottom: 43%;
+        }
+
+        .orchard-scene__hills--near {
+            bottom: 35%;
+        }
+
+        .orchard-scene__row--far {
+            bottom: 38%;
+        }
+
+        .orchard-scene__row--middle {
+            bottom: 24%;
+        }
+
+        .orchard-scene__row--near {
+            bottom: 5%;
+            margin-inline: -15%;
+        }
+
+        .orchard-scene__row--near
+        .orchard-scene__tree:nth-child(even) {
+            opacity: 0.52;
+        }
+
+        .orchard-scene__path {
+            width: 48%;
+            height: 46%;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .orchard-scene__tree {
+            animation: none;
+        }
+    }
+</style>
