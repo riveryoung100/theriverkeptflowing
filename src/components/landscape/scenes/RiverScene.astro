@@ -1,0 +1,424 @@
+﻿---
+---
+
+<div
+    class="river-scene"
+    aria-hidden="true"
+>
+
+    <div class="river-scene__sky"></div>
+
+    <div class="river-scene__light"></div>
+
+    <div class="river-scene__ridge river-scene__ridge--far"></div>
+
+    <div class="river-scene__ridge river-scene__ridge--middle"></div>
+
+    <div class="river-scene__mist river-scene__mist--one"></div>
+
+    <div class="river-scene__mist river-scene__mist--two"></div>
+
+    <svg
+        class="river-scene__water"
+        viewBox="0 0 1000 700"
+        preserveAspectRatio="none"
+    >
+        <defs>
+
+            <linearGradient
+                id="river-water-fill"
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="1"
+            >
+                <stop
+                    offset="0%"
+                    stop-color="rgba(157, 201, 193, 0.2)"
+                />
+
+                <stop
+                    offset="48%"
+                    stop-color="rgba(91, 151, 143, 0.34)"
+                />
+
+                <stop
+                    offset="100%"
+                    stop-color="rgba(42, 91, 83, 0.58)"
+                />
+
+            </linearGradient>
+
+            <linearGradient
+                id="river-water-shine"
+                x1="0"
+                y1="0"
+                x2="1"
+                y2="1"
+            >
+                <stop
+                    offset="0%"
+                    stop-color="rgba(235, 242, 226, 0)"
+                />
+
+                <stop
+                    offset="50%"
+                    stop-color="rgba(235, 242, 226, 0.34)"
+                />
+
+                <stop
+                    offset="100%"
+                    stop-color="rgba(235, 242, 226, 0)"
+                />
+
+            </linearGradient>
+
+        </defs>
+
+        <path
+            class="river-scene__water-body"
+            d="
+                M 520 225
+                C 430 300, 620 365, 470 430
+                C 290 510, 660 565, 210 700
+                L 905 700
+                C 690 560, 760 500, 620 425
+                C 500 360, 665 300, 575 225
+                Z
+            "
+            fill="url(#river-water-fill)"
+        />
+
+        <path
+            class="river-scene__water-shine"
+            d="
+                M 550 250
+                C 475 315, 625 370, 520 440
+                C 430 500, 620 560, 420 675
+            "
+            fill="none"
+            stroke="url(#river-water-shine)"
+            stroke-width="15"
+            stroke-linecap="round"
+        />
+
+    </svg>
+
+    <div class="river-scene__bank river-scene__bank--left"></div>
+
+    <div class="river-scene__bank river-scene__bank--right"></div>
+
+    <div class="river-scene__reeds river-scene__reeds--left"></div>
+
+    <div class="river-scene__reeds river-scene__reeds--right"></div>
+
+</div>
+
+<style>
+    .river-scene {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+        pointer-events: none;
+        opacity: 0.9;
+    }
+
+    .river-scene__sky {
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(
+                180deg,
+                rgba(151, 190, 181, 0.09) 0%,
+                rgba(90, 138, 130, 0.05) 38%,
+                transparent 72%
+            );
+    }
+
+    .river-scene__light {
+        position: absolute;
+        top: 5%;
+        left: 58%;
+        width: clamp(15rem, 30vw, 30rem);
+        aspect-ratio: 1;
+        transform: translateX(-50%);
+        border-radius: 50%;
+        background:
+            radial-gradient(
+                circle,
+                rgba(228, 235, 215, 0.14),
+                rgba(156, 192, 178, 0.06) 42%,
+                transparent 72%
+            );
+        filter: blur(0.7rem);
+        animation:
+            river-light-breathe
+            15s
+            var(--ease-breath)
+            infinite alternate;
+    }
+
+    .river-scene__ridge {
+        position: absolute;
+        right: -8%;
+        left: -8%;
+        transform-origin: bottom center;
+    }
+
+    .river-scene__ridge--far {
+        bottom: 34%;
+        height: 30%;
+        opacity: 0.27;
+        background: #526d67;
+        clip-path:
+            polygon(
+                0 72%,
+                14% 49%,
+                27% 64%,
+                42% 38%,
+                56% 60%,
+                70% 34%,
+                84% 56%,
+                100% 42%,
+                100% 100%,
+                0 100%
+            );
+        filter: blur(0.12rem);
+    }
+
+    .river-scene__ridge--middle {
+        bottom: 23%;
+        height: 27%;
+        opacity: 0.5;
+        background: #29443e;
+        clip-path:
+            polygon(
+                0 61%,
+                16% 35%,
+                31% 58%,
+                47% 27%,
+                61% 64%,
+                76% 40%,
+                89% 59%,
+                100% 39%,
+                100% 100%,
+                0 100%
+            );
+    }
+
+    .river-scene__mist {
+        position: absolute;
+        right: -15%;
+        left: -15%;
+        height: 19%;
+        border-radius: 50%;
+        filter: blur(3rem);
+        background:
+            radial-gradient(
+                ellipse,
+                rgba(211, 229, 222, 0.12),
+                transparent 69%
+            );
+    }
+
+    .river-scene__mist--one {
+        bottom: 30%;
+        animation:
+            river-mist-one
+            22s
+            var(--ease-breath)
+            infinite alternate;
+    }
+
+    .river-scene__mist--two {
+        bottom: 17%;
+        opacity: 0.62;
+        animation:
+            river-mist-two
+            27s
+            var(--ease-breath)
+            infinite alternate;
+    }
+
+    .river-scene__water {
+        position: absolute;
+        right: 0;
+        bottom: -8%;
+        left: 0;
+        width: 100%;
+        height: 72%;
+        overflow: visible;
+    }
+
+    .river-scene__water-body {
+        filter:
+            drop-shadow(
+                0 0 1.8rem rgba(91, 151, 143, 0.11)
+            );
+    }
+
+    .river-scene__water-shine {
+        stroke-dasharray: 42 34;
+        animation:
+            river-water-flow
+            14s
+            linear
+            infinite;
+    }
+
+    .river-scene__bank {
+        position: absolute;
+        bottom: -7%;
+        width: 55%;
+        height: 40%;
+        background:
+            linear-gradient(
+                180deg,
+                rgba(46, 70, 52, 0.74),
+                rgba(18, 34, 25, 0.96)
+            );
+    }
+
+    .river-scene__bank--left {
+        left: -12%;
+        clip-path:
+            polygon(
+                0 13%,
+                58% 27%,
+                77% 48%,
+                100% 100%,
+                0 100%
+            );
+    }
+
+    .river-scene__bank--right {
+        right: -12%;
+        clip-path:
+            polygon(
+                42% 27%,
+                100% 13%,
+                100% 100%,
+                0 100%,
+                24% 49%
+            );
+    }
+
+    .river-scene__reeds {
+        position: absolute;
+        bottom: 3%;
+        width: clamp(5rem, 12vw, 10rem);
+        height: clamp(7rem, 15vw, 13rem);
+        opacity: 0.72;
+        background:
+            repeating-linear-gradient(
+                78deg,
+                transparent 0 0.7rem,
+                rgba(121, 148, 101, 0.7) 0.75rem 0.93rem,
+                transparent 0.98rem 1.55rem
+            );
+        transform-origin: bottom center;
+        animation:
+            river-reeds-sway
+            7s
+            var(--ease-breath)
+            infinite alternate;
+    }
+
+    .river-scene__reeds--left {
+        left: 4%;
+    }
+
+    .river-scene__reeds--right {
+        right: 4%;
+        animation-delay: -3s;
+    }
+
+    @keyframes river-light-breathe {
+        from {
+            transform:
+                translateX(-50%)
+                scale(0.95);
+            opacity: 0.62;
+        }
+
+        to {
+            transform:
+                translateX(-50%)
+                scale(1.06);
+            opacity: 1;
+        }
+    }
+
+    @keyframes river-mist-one {
+        from {
+            transform: translate3d(-4%, 0, 0);
+        }
+
+        to {
+            transform: translate3d(4%, -4%, 0);
+        }
+    }
+
+    @keyframes river-mist-two {
+        from {
+            transform: translate3d(5%, 2%, 0);
+        }
+
+        to {
+            transform: translate3d(-5%, -2%, 0);
+        }
+    }
+
+    @keyframes river-water-flow {
+        to {
+            stroke-dashoffset: -152;
+        }
+    }
+
+    @keyframes river-reeds-sway {
+        from {
+            transform: rotate(-2deg);
+        }
+
+        to {
+            transform: rotate(3deg);
+        }
+    }
+
+    @media (max-width: 48rem) {
+        .river-scene {
+            opacity: 0.78;
+        }
+
+        .river-scene__ridge--far {
+            bottom: 40%;
+        }
+
+        .river-scene__ridge--middle {
+            bottom: 30%;
+        }
+
+        .river-scene__water {
+            bottom: -1%;
+            height: 63%;
+        }
+
+        .river-scene__bank {
+            height: 31%;
+        }
+
+        .river-scene__reeds {
+            opacity: 0.55;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .river-scene__light,
+        .river-scene__mist,
+        .river-scene__water-shine,
+        .river-scene__reeds {
+            animation: none;
+        }
+    }
+</style>

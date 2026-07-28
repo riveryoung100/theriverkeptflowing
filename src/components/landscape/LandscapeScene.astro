@@ -1,5 +1,6 @@
 ﻿---
 import HeadwatersScene from "./scenes/HeadwatersScene.astro";
+import RiverScene from "./scenes/RiverScene.astro";
 
 interface Props {
     placeId: string;
@@ -11,5 +12,11 @@ const { placeId } = Astro.props;
 {
     placeId === "headwaters" && (
         <HeadwatersScene />
+    )
+}
+
+{
+    placeId === "river" && (
+        <RiverScene />
     )
 }
