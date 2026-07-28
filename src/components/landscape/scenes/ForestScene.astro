@@ -1,0 +1,686 @@
+﻿---
+import SceneShell from "../primitives/SceneShell.astro";
+import Environment from "../primitives/Environment.astro";
+import CloudLayer from "../primitives/CloudLayer.astro";
+import GroundPath from "../primitives/GroundPath.astro";
+import WindField from "../primitives/WindField.astro";
+import LeafDrift from "../primitives/LeafDrift.astro";
+import PineTree from "../primitives/PineTree.astro";
+import GrassPatch from "../primitives/GrassPatch.astro";
+import FernCluster from "../primitives/FernCluster.astro";
+import BoulderCluster from "../primitives/BoulderCluster.astro";
+
+const distantTrees = [
+    {
+        left: "3%",
+        size: "small",
+        delay: "-1.2s",
+        duration: "13s"
+    },
+    {
+        left: "12%",
+        size: "small",
+        delay: "-3.8s",
+        duration: "15s"
+    },
+    {
+        left: "23%",
+        size: "small",
+        delay: "-2.1s",
+        duration: "12s"
+    },
+    {
+        left: "35%",
+        size: "small",
+        delay: "-5.2s",
+        duration: "16s"
+    },
+    {
+        left: "47%",
+        size: "small",
+        delay: "-1.8s",
+        duration: "14s"
+    },
+    {
+        left: "59%",
+        size: "small",
+        delay: "-4.4s",
+        duration: "13s"
+    },
+    {
+        left: "71%",
+        size: "small",
+        delay: "-2.7s",
+        duration: "15s"
+    },
+    {
+        left: "83%",
+        size: "small",
+        delay: "-5.8s",
+        duration: "12s"
+    },
+    {
+        left: "94%",
+        size: "small",
+        delay: "-3.1s",
+        duration: "14s"
+    }
+] as const;
+
+const middleTrees = [
+    {
+        left: "-1%",
+        size: "medium",
+        delay: "-2.5s",
+        duration: "14s"
+    },
+    {
+        left: "14%",
+        size: "medium",
+        delay: "-5.1s",
+        duration: "16s"
+    },
+    {
+        left: "30%",
+        size: "medium",
+        delay: "-1.6s",
+        duration: "13s"
+    },
+    {
+        left: "66%",
+        size: "medium",
+        delay: "-4.2s",
+        duration: "15s"
+    },
+    {
+        left: "82%",
+        size: "medium",
+        delay: "-2.9s",
+        duration: "12s"
+    },
+    {
+        left: "97%",
+        size: "medium",
+        delay: "-6.1s",
+        duration: "16s"
+    }
+] as const;
+
+const foregroundTrees = [
+    {
+        className: "forest-scene__tree-wrap--near-left",
+        delay: "-3.4s",
+        duration: "17s"
+    },
+    {
+        className: "forest-scene__tree-wrap--near-right",
+        delay: "-6.2s",
+        duration: "15s"
+    }
+] as const;
+---
+
+<SceneShell
+    className="forest-scene"
+    label="A quiet evergreen forest path surrounded by pines, ferns, moss, and drifting leaves"
+>
+    <div
+        slot="background"
+        class="forest-scene__sky"
+    ></div>
+
+    <CloudLayer
+        slot="background"
+        count={5}
+        depth="far"
+        direction="right"
+        speed="slow"
+        opacity={0.22}
+    />
+
+    <Environment
+        slot="background"
+        layer="background"
+        season="summer"
+        time="morning"
+        weather="mist"
+    />
+
+    <div
+        slot="distance"
+        class="
+            forest-scene__ridge
+            forest-scene__ridge--far
+        "
+    ></div>
+
+    <div
+        slot="distance"
+        class="
+            forest-scene__ridge
+            forest-scene__ridge--near
+        "
+    ></div>
+
+    <div
+        slot="distance"
+        class="
+            forest-scene__tree-line
+            forest-scene__tree-line--far
+        "
+    >
+        {
+            distantTrees.map(
+                (tree) => (
+                    <div
+                        class="
+                            forest-scene__tree-wrap
+                            forest-scene__tree-wrap--small
+                        "
+                        style={`--forest-tree-left: ${tree.left};`}
+                    >
+                        <PineTree
+                            size={tree.size}
+                            depth="far"
+                            tone="forest"
+                            swayDuration={tree.duration}
+                            animationDelay={tree.delay}
+                        />
+                    </div>
+                )
+            )
+        }
+    </div>
+
+    <Environment
+        slot="atmosphere"
+        layer="atmosphere"
+        season="summer"
+        time="morning"
+        weather="mist"
+    />
+
+    <WindField
+        slot="atmosphere"
+        strength="gentle"
+        direction="right"
+        duration="18s"
+    />
+
+    <div
+        slot="midground"
+        class="forest-scene__ground"
+    ></div>
+
+    <div
+        slot="midground"
+        class="
+            forest-scene__tree-line
+            forest-scene__tree-line--middle
+        "
+    >
+        {
+            middleTrees.map(
+                (tree) => (
+                    <div
+                        class="
+                            forest-scene__tree-wrap
+                            forest-scene__tree-wrap--medium
+                        "
+                        style={`--forest-tree-left: ${tree.left};`}
+                    >
+                        <PineTree
+                            size={tree.size}
+                            depth="middle"
+                            tone="evergreen"
+                            swayDuration={tree.duration}
+                            animationDelay={tree.delay}
+                        />
+                    </div>
+                )
+            )
+        }
+    </div>
+
+    <GroundPath
+        slot="midground"
+        width="narrow"
+        length="long"
+        tone="earth"
+        opacity={0.78}
+    />
+
+    <div
+        slot="midground"
+        class="
+            forest-scene__plant-wrap
+            forest-scene__plant-wrap--grass-left
+        "
+    >
+        <GrassPatch
+            size="large"
+            density="thick"
+            tone="forest"
+            swayDuration="8s"
+            animationDelay="-2s"
+            opacity={0.92}
+        />
+    </div>
+
+    <div
+        slot="midground"
+        class="
+            forest-scene__plant-wrap
+            forest-scene__plant-wrap--grass-right
+        "
+    >
+        <GrassPatch
+            size="large"
+            density="thick"
+            tone="forest"
+            swayDuration="9s"
+            animationDelay="-5s"
+            opacity={0.9}
+        />
+    </div>
+
+    <div
+        slot="midground"
+        class="
+            forest-scene__plant-wrap
+            forest-scene__plant-wrap--fern-left
+        "
+    >
+        <FernCluster
+            count={8}
+            size="large"
+            tone="deep"
+            swayDuration="10s"
+            animationDelay="-3s"
+            opacity={0.96}
+        />
+    </div>
+
+    <div
+        slot="midground"
+        class="
+            forest-scene__plant-wrap
+            forest-scene__plant-wrap--fern-right
+        "
+    >
+        <FernCluster
+            count={7}
+            size="large"
+            tone="forest"
+            swayDuration="9s"
+            animationDelay="-6s"
+            opacity={0.94}
+        />
+    </div>
+
+    <div
+        slot="midground"
+        class="
+            forest-scene__plant-wrap
+            forest-scene__plant-wrap--rocks
+        "
+    >
+        <BoulderCluster
+            count={5}
+            size="medium"
+            tone="forest"
+            opacity={0.88}
+        />
+    </div>
+
+    {
+        foregroundTrees.map(
+            (tree) => (
+                <div
+                    slot="foreground"
+                    class:list={[
+                        "forest-scene__tree-wrap",
+                        "forest-scene__tree-wrap--large",
+                        tree.className
+                    ]}
+                >
+                    <PineTree
+                        size="large"
+                        depth="near"
+                        tone="evergreen"
+                        swayDuration={tree.duration}
+                        animationDelay={tree.delay}
+                    />
+                </div>
+            )
+        )
+    }
+
+    <LeafDrift
+        slot="foreground"
+        count={16}
+        direction="right"
+        density="light"
+    />
+
+    <div
+        slot="foreground"
+        class="forest-scene__foreground-floor"
+    ></div>
+
+    <div
+        slot="foreground"
+        class="
+            forest-scene__plant-wrap
+            forest-scene__plant-wrap--foreground-fern
+        "
+    >
+        <FernCluster
+            count={9}
+            size="large"
+            tone="deep"
+            swayDuration="11s"
+            animationDelay="-4s"
+            opacity={1}
+        />
+    </div>
+</SceneShell>
+
+<style>
+    :global(.forest-scene) {
+        opacity: 0.97;
+    }
+
+    .forest-scene__sky {
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(
+                180deg,
+                rgba(162, 184, 174, 0.24) 0%,
+                rgba(112, 145, 127, 0.16) 38%,
+                rgba(62, 99, 75, 0.08) 67%,
+                transparent 88%
+            );
+    }
+
+    .forest-scene__ridge {
+        position: absolute;
+        right: -8%;
+        left: -8%;
+    }
+
+    .forest-scene__ridge--far {
+        bottom: 39%;
+        height: 27%;
+        opacity: 0.3;
+        background: #617866;
+        filter: blur(0.16rem);
+        clip-path:
+            polygon(
+                0 68%,
+                10% 54%,
+                21% 63%,
+                34% 43%,
+                47% 59%,
+                60% 39%,
+                73% 57%,
+                87% 42%,
+                100% 61%,
+                100% 100%,
+                0 100%
+            );
+    }
+
+    .forest-scene__ridge--near {
+        bottom: 31%;
+        height: 22%;
+        opacity: 0.58;
+        background: #3d5945;
+        clip-path:
+            polygon(
+                0 61%,
+                13% 45%,
+                26% 57%,
+                39% 38%,
+                53% 58%,
+                67% 42%,
+                82% 59%,
+                100% 43%,
+                100% 100%,
+                0 100%
+            );
+    }
+
+    .forest-scene__ground {
+        position: absolute;
+        right: -7%;
+        bottom: -8%;
+        left: -7%;
+        height: 51%;
+        background:
+            linear-gradient(
+                180deg,
+                rgba(68, 100, 67, 0.84),
+                rgba(35, 68, 45, 0.94) 48%,
+                rgba(19, 42, 29, 0.99)
+            );
+        clip-path:
+            polygon(
+                0 16%,
+                12% 10%,
+                26% 15%,
+                42% 8%,
+                57% 14%,
+                72% 7%,
+                86% 13%,
+                100% 9%,
+                100% 100%,
+                0 100%
+            );
+    }
+
+    .forest-scene__tree-line {
+        position: absolute;
+        inset-inline: 0;
+        pointer-events: none;
+    }
+
+    .forest-scene__tree-line--far {
+        bottom: 34%;
+        height: 10rem;
+        opacity: 0.76;
+    }
+
+    .forest-scene__tree-line--middle {
+        bottom: 19%;
+        height: 14rem;
+    }
+
+    .forest-scene__tree-wrap {
+        position: absolute;
+        bottom: 0;
+        left: var(--forest-tree-left);
+        pointer-events: none;
+    }
+
+    .forest-scene__tree-wrap--small {
+        width: 4rem;
+        height: 7rem;
+    }
+
+    .forest-scene__tree-wrap--medium {
+        width: 6rem;
+        height: 10rem;
+    }
+
+    .forest-scene__tree-wrap--large {
+        width: 8rem;
+        height: 14rem;
+    }
+
+    .forest-scene__tree-wrap :global(.pine-tree) {
+        left: 0;
+    }
+
+    .forest-scene__tree-wrap--near-left {
+        bottom: -1%;
+        left: -1.5rem;
+    }
+
+    .forest-scene__tree-wrap--near-right {
+        right: -1.5rem;
+        bottom: 1%;
+        left: auto;
+    }
+
+    .forest-scene__plant-wrap {
+        position: absolute;
+        pointer-events: none;
+    }
+
+    .forest-scene__plant-wrap :global(.grass-patch),
+    .forest-scene__plant-wrap :global(.fern-cluster),
+    .forest-scene__plant-wrap :global(.boulder-cluster) {
+        right: auto;
+        bottom: 0;
+        left: 0;
+    }
+
+    .forest-scene__plant-wrap--grass-left {
+        bottom: 9%;
+        left: 4%;
+        width: 13rem;
+        height: 9rem;
+    }
+
+    .forest-scene__plant-wrap--grass-right {
+        right: 4%;
+        bottom: 8%;
+        width: 13rem;
+        height: 9rem;
+    }
+
+    .forest-scene__plant-wrap--fern-left {
+        bottom: 5%;
+        left: 8%;
+        width: 14rem;
+        height: 10rem;
+    }
+
+    .forest-scene__plant-wrap--fern-right {
+        right: 7%;
+        bottom: 4%;
+        width: 14rem;
+        height: 10rem;
+    }
+
+    .forest-scene__plant-wrap--rocks {
+        right: 19%;
+        bottom: 5%;
+        width: 11rem;
+        height: 7rem;
+    }
+
+    .forest-scene__foreground-floor {
+        position: absolute;
+        right: -8%;
+        bottom: -16%;
+        left: -8%;
+        height: 29%;
+        background:
+            radial-gradient(
+                ellipse at 18% 8%,
+                rgba(66, 94, 61, 0.82),
+                transparent 38%
+            ),
+            radial-gradient(
+                ellipse at 77% 6%,
+                rgba(50, 82, 52, 0.8),
+                transparent 40%
+            ),
+            linear-gradient(
+                180deg,
+                rgba(39, 69, 44, 0.86),
+                rgba(15, 34, 23, 0.99)
+            );
+        clip-path:
+            polygon(
+                0 20%,
+                14% 11%,
+                28% 18%,
+                43% 8%,
+                58% 17%,
+                73% 9%,
+                87% 15%,
+                100% 8%,
+                100% 100%,
+                0 100%
+            );
+    }
+
+    .forest-scene__plant-wrap--foreground-fern {
+        bottom: -1%;
+        left: 38%;
+        width: 14rem;
+        height: 10rem;
+    }
+
+    @media (max-width: 48rem) {
+        .forest-scene__tree-line--far {
+            opacity: 0.64;
+        }
+
+        .forest-scene__tree-line--middle
+        .forest-scene__tree-wrap:nth-child(even) {
+            display: none;
+        }
+
+        .forest-scene__tree-wrap--near-left {
+            left: -3rem;
+        }
+
+        .forest-scene__tree-wrap--near-right {
+            right: -3rem;
+        }
+
+        .forest-scene__plant-wrap--grass-left {
+            left: -2%;
+        }
+
+        .forest-scene__plant-wrap--grass-right {
+            right: -3%;
+        }
+
+        .forest-scene__plant-wrap--fern-left {
+            left: 1%;
+        }
+
+        .forest-scene__plant-wrap--fern-right {
+            right: 0;
+        }
+
+        .forest-scene__plant-wrap--rocks {
+            right: 12%;
+        }
+
+        .forest-scene__plant-wrap--foreground-fern {
+            left: 31%;
+        }
+    }
+
+    @media (max-width: 32rem) {
+        .forest-scene__tree-line--far
+        .forest-scene__tree-wrap:nth-child(3n) {
+            display: none;
+        }
+
+        .forest-scene__plant-wrap--rocks {
+            display: none;
+        }
+
+        .forest-scene__plant-wrap--foreground-fern {
+            left: 25%;
+        }
+    }
+</style>
