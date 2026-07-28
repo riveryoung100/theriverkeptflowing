@@ -1,70 +1,100 @@
----
+﻿---
 import "../styles/tokens.css";
 import "../styles/typography.css";
 import "../styles/world.css";
 import "../styles/atmosphere.css";
 
 export interface Props {
-	title?: string;
-	description?: string;
+    title?: string;
+    description?: string;
+    theme?: string;
 }
 
 const {
-	title = "The River Kept Flowing",
-	description = "A place to explore faith, craft, stewardship, family, and the work of becoming."
+    title = "The River Kept Flowing",
+    description = "A place to explore faith, craft, stewardship, family, and the work of becoming.",
+    theme = "trailhead"
 } = Astro.props;
+
+const themeColors: Record<string, string> = {
+    trailhead: "#101612",
+    headwaters: "#102020",
+    river: "#152322",
+    field: "#1e281c",
+    fire: "#160e0b",
+    table: "#211912",
+    orchard: "#242317",
+    workshop: "#191b16",
+    guides: "#142222",
+    journal: "#15181c",
+    marketplace: "#201d17"
+};
+
+const themeColor = themeColors[theme] ?? themeColors.trailhead;
 ---
 
 <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
+<html
+    lang="en"
+    data-place-theme={theme}
+>
+    <head>
+        <meta charset="UTF-8" />
 
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+        />
 
-		<title>{title}</title>
+        <title>{title}</title>
 
-		<meta
-			name="description"
-			content={description} />
+        <meta
+            name="description"
+            content={description}
+        />
 
-		<meta
-			name="theme-color"
-			content="#101612" />
+        <meta
+            name="theme-color"
+            content={themeColor}
+        />
 
-		<link
-			rel="preconnect"
-			href="https://fonts.googleapis.com" />
+        <link
+            rel="preconnect"
+            href="https://fonts.googleapis.com"
+        />
 
-		<link
-			rel="preconnect"
-			href="https://fonts.gstatic.com"
-			crossorigin />
+        <link
+            rel="preconnect"
+            href="https://fonts.gstatic.com"
+            crossorigin
+        />
 
-		<link
-			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
-			rel="stylesheet" />
-	</head>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+            rel="stylesheet"
+        />
+    </head>
 
-	<body>
+    <body>
 
-		<div class="world-background">
+        <div
+            class="world-background"
+            aria-hidden="true"
+        >
 
-			<div class="mist"></div>
+            <div class="mist"></div>
 
-			<div class="light"></div>
+            <div class="light"></div>
 
-			<div class="grain"></div>
+            <div class="grain"></div>
 
-		</div>
+        </div>
 
-		<div class="world-shell">
+        <div class="world-shell">
 
-			<slot />
+            <slot />
 
-		</div>
+        </div>
 
-	</body>
+    </body>
 </html>

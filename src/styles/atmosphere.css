@@ -1,45 +1,472 @@
+﻿/*
+ * Shared atmosphere variables
+ *
+ * Every destination uses the same background structure.
+ * Individual places only redefine these environmental values.
+ */
+
+:root {
+    --atmosphere-background-top: var(--color-night-deep);
+    --atmosphere-background-middle: var(--color-night);
+    --atmosphere-background-bottom: #0d130f;
+
+    --atmosphere-glow-primary: rgba(134, 160, 154, 0.1);
+    --atmosphere-glow-left: rgba(82, 109, 105, 0.12);
+    --atmosphere-glow-right: rgba(102, 88, 68, 0.08);
+    --atmosphere-glow-ground: rgba(34, 49, 38, 0.2);
+
+    --atmosphere-mist-primary: rgba(216, 221, 213, 0.13);
+    --atmosphere-mist-secondary: rgba(216, 221, 213, 0.09);
+
+    --atmosphere-light-core: rgba(237, 240, 234, 0.11);
+    --atmosphere-light-edge: rgba(134, 160, 154, 0.06);
+
+    --atmosphere-mist-opacity: 0.2;
+    --atmosphere-light-opacity: 0.34;
+    --atmosphere-grain-opacity: 0.035;
+
+    --atmosphere-light-x: 50%;
+    --atmosphere-light-y: -25%;
+}
+
+
+/*
+ * Trailhead
+ */
+
+html[data-place-theme="trailhead"] {
+    --color-background: #101612;
+    --color-surface: #172019;
+    --color-accent: var(--color-river-soft);
+
+    --atmosphere-background-top: #090e0b;
+    --atmosphere-background-middle: #101612;
+    --atmosphere-background-bottom: #0d130f;
+
+    --atmosphere-glow-primary: rgba(134, 160, 154, 0.1);
+    --atmosphere-glow-left: rgba(82, 109, 105, 0.12);
+    --atmosphere-glow-right: rgba(102, 88, 68, 0.08);
+    --atmosphere-glow-ground: rgba(34, 49, 38, 0.2);
+}
+
+
+/*
+ * Headwaters
+ * Cool mountain spring, morning light, pale mist.
+ */
+
+html[data-place-theme="headwaters"] {
+    --color-background: #102020;
+    --color-surface: #172a29;
+    --color-accent: #9bb9b5;
+    --color-accent-warm: #d6c9aa;
+
+    --color-border: rgba(205, 227, 222, 0.17);
+    --color-border-strong: rgba(205, 227, 222, 0.32);
+
+    --atmosphere-background-top: #081314;
+    --atmosphere-background-middle: #102020;
+    --atmosphere-background-bottom: #152523;
+
+    --atmosphere-glow-primary: rgba(170, 211, 208, 0.16);
+    --atmosphere-glow-left: rgba(112, 169, 168, 0.14);
+    --atmosphere-glow-right: rgba(201, 213, 195, 0.1);
+    --atmosphere-glow-ground: rgba(53, 91, 84, 0.2);
+
+    --atmosphere-mist-primary: rgba(224, 239, 235, 0.18);
+    --atmosphere-mist-secondary: rgba(184, 213, 207, 0.12);
+
+    --atmosphere-light-core: rgba(235, 245, 237, 0.17);
+    --atmosphere-light-edge: rgba(150, 198, 192, 0.08);
+
+    --atmosphere-mist-opacity: 0.3;
+    --atmosphere-light-opacity: 0.42;
+}
+
+
+/*
+ * The River
+ * Broad valley light with deep water tones.
+ */
+
+html[data-place-theme="river"] {
+    --color-background: #152322;
+    --color-surface: #1c302e;
+    --color-accent: #91b4ae;
+
+    --color-border: rgba(190, 216, 210, 0.16);
+    --color-border-strong: rgba(190, 216, 210, 0.3);
+
+    --atmosphere-background-top: #0d1818;
+    --atmosphere-background-middle: #152726;
+    --atmosphere-background-bottom: #18231f;
+
+    --atmosphere-glow-primary: rgba(111, 166, 158, 0.14);
+    --atmosphere-glow-left: rgba(67, 125, 120, 0.14);
+    --atmosphere-glow-right: rgba(156, 137, 98, 0.08);
+    --atmosphere-glow-ground: rgba(39, 75, 66, 0.22);
+
+    --atmosphere-light-core: rgba(221, 233, 219, 0.13);
+    --atmosphere-light-edge: rgba(111, 166, 158, 0.08);
+
+    --atmosphere-light-x: 56%;
+}
+
+
+/*
+ * The Field
+ * Open grass, morning sun, dry moving air.
+ */
+
+html[data-place-theme="field"] {
+    --color-background: #1e281c;
+    --color-surface: #293326;
+    --color-accent: #b2ba83;
+    --color-accent-warm: #d6b77c;
+
+    --color-border: rgba(218, 220, 177, 0.17);
+    --color-border-strong: rgba(218, 220, 177, 0.3);
+
+    --atmosphere-background-top: #121a11;
+    --atmosphere-background-middle: #202b1d;
+    --atmosphere-background-bottom: #28271a;
+
+    --atmosphere-glow-primary: rgba(203, 210, 143, 0.14);
+    --atmosphere-glow-left: rgba(112, 139, 79, 0.15);
+    --atmosphere-glow-right: rgba(203, 165, 99, 0.13);
+    --atmosphere-glow-ground: rgba(81, 79, 42, 0.25);
+
+    --atmosphere-mist-primary: rgba(222, 220, 178, 0.08);
+    --atmosphere-mist-secondary: rgba(186, 196, 137, 0.07);
+
+    --atmosphere-light-core: rgba(241, 222, 169, 0.16);
+    --atmosphere-light-edge: rgba(202, 177, 111, 0.08);
+
+    --atmosphere-mist-opacity: 0.12;
+    --atmosphere-light-opacity: 0.46;
+    --atmosphere-light-x: 64%;
+    --atmosphere-light-y: -18%;
+}
+
+
+/*
+ * The Fire
+ * Cold pine darkness shaped by a concentrated ember glow.
+ */
+
+html[data-place-theme="fire"] {
+    --color-background: #160e0b;
+    --color-surface: #241712;
+    --color-accent: #db9a6e;
+    --color-accent-warm: #e7aa78;
+
+    --color-text: #f3e9de;
+    --color-text-soft: #d9c8b9;
+    --color-text-muted: #b7a394;
+
+    --color-border: rgba(226, 174, 135, 0.16);
+    --color-border-strong: rgba(226, 174, 135, 0.34);
+
+    --atmosphere-background-top: #070707;
+    --atmosphere-background-middle: #160e0b;
+    --atmosphere-background-bottom: #21130d;
+
+    --atmosphere-glow-primary: rgba(217, 120, 68, 0.18);
+    --atmosphere-glow-left: rgba(82, 49, 32, 0.14);
+    --atmosphere-glow-right: rgba(207, 98, 46, 0.18);
+    --atmosphere-glow-ground: rgba(174, 72, 31, 0.3);
+
+    --atmosphere-mist-primary: rgba(170, 141, 120, 0.06);
+    --atmosphere-mist-secondary: rgba(209, 133, 84, 0.08);
+
+    --atmosphere-light-core: rgba(255, 171, 105, 0.2);
+    --atmosphere-light-edge: rgba(207, 91, 44, 0.09);
+
+    --atmosphere-mist-opacity: 0.1;
+    --atmosphere-light-opacity: 0.52;
+    --atmosphere-light-x: 72%;
+    --atmosphere-light-y: 22%;
+    --atmosphere-grain-opacity: 0.045;
+}
+
+
+/*
+ * The Table
+ * Sheltered evening, wood, lamplight, and hospitality.
+ */
+
+html[data-place-theme="table"] {
+    --color-background: #211912;
+    --color-surface: #30251b;
+    --color-accent: #d4a874;
+    --color-accent-warm: #e2b781;
+
+    --color-text: #f5ecdf;
+    --color-text-soft: #ded0bc;
+    --color-text-muted: #b9aa96;
+
+    --color-border: rgba(225, 191, 145, 0.17);
+    --color-border-strong: rgba(225, 191, 145, 0.32);
+
+    --atmosphere-background-top: #120e0a;
+    --atmosphere-background-middle: #211912;
+    --atmosphere-background-bottom: #2b2117;
+
+    --atmosphere-glow-primary: rgba(218, 170, 105, 0.15);
+    --atmosphere-glow-left: rgba(115, 76, 45, 0.14);
+    --atmosphere-glow-right: rgba(223, 159, 87, 0.15);
+    --atmosphere-glow-ground: rgba(94, 66, 40, 0.26);
+
+    --atmosphere-mist-primary: rgba(235, 214, 183, 0.08);
+    --atmosphere-mist-secondary: rgba(207, 176, 137, 0.07);
+
+    --atmosphere-light-core: rgba(255, 218, 164, 0.18);
+    --atmosphere-light-edge: rgba(212, 152, 85, 0.09);
+
+    --atmosphere-mist-opacity: 0.12;
+    --atmosphere-light-opacity: 0.52;
+    --atmosphere-light-x: 66%;
+    --atmosphere-light-y: -8%;
+}
+
+
+/*
+ * The Orchard
+ * Cultivated earth, mature leaves, and late-afternoon warmth.
+ */
+
+html[data-place-theme="orchard"] {
+    --color-background: #242317;
+    --color-surface: #30301f;
+    --color-accent: #b8bd79;
+    --color-accent-warm: #d2a76e;
+
+    --color-border: rgba(213, 211, 158, 0.16);
+    --color-border-strong: rgba(213, 211, 158, 0.3);
+
+    --atmosphere-background-top: #15170f;
+    --atmosphere-background-middle: #252718;
+    --atmosphere-background-bottom: #30291a;
+
+    --atmosphere-glow-primary: rgba(190, 196, 115, 0.14);
+    --atmosphere-glow-left: rgba(91, 119, 65, 0.15);
+    --atmosphere-glow-right: rgba(209, 151, 88, 0.15);
+    --atmosphere-glow-ground: rgba(99, 83, 43, 0.24);
+
+    --atmosphere-mist-primary: rgba(214, 216, 169, 0.08);
+    --atmosphere-mist-secondary: rgba(180, 190, 126, 0.06);
+
+    --atmosphere-light-core: rgba(242, 206, 148, 0.18);
+    --atmosphere-light-edge: rgba(209, 156, 89, 0.1);
+
+    --atmosphere-mist-opacity: 0.12;
+    --atmosphere-light-opacity: 0.48;
+    --atmosphere-light-x: 72%;
+    --atmosphere-light-y: -10%;
+}
+
+
+/*
+ * The Workshop
+ * Wooded midday, practical light, timber and iron.
+ */
+
+html[data-place-theme="workshop"] {
+    --color-background: #191b16;
+    --color-surface: #24271f;
+    --color-accent: #a8aa8d;
+    --color-accent-warm: #c69b6a;
+
+    --color-border: rgba(202, 204, 177, 0.16);
+    --color-border-strong: rgba(202, 204, 177, 0.29);
+
+    --atmosphere-background-top: #10120f;
+    --atmosphere-background-middle: #1b1e18;
+    --atmosphere-background-bottom: #25231b;
+
+    --atmosphere-glow-primary: rgba(187, 190, 158, 0.11);
+    --atmosphere-glow-left: rgba(84, 100, 71, 0.13);
+    --atmosphere-glow-right: rgba(151, 115, 76, 0.12);
+    --atmosphere-glow-ground: rgba(77, 68, 48, 0.22);
+
+    --atmosphere-mist-primary: rgba(206, 210, 191, 0.07);
+    --atmosphere-mist-secondary: rgba(161, 174, 149, 0.06);
+
+    --atmosphere-light-core: rgba(226, 222, 190, 0.14);
+    --atmosphere-light-edge: rgba(171, 148, 109, 0.07);
+
+    --atmosphere-mist-opacity: 0.1;
+    --atmosphere-light-opacity: 0.4;
+    --atmosphere-light-x: 48%;
+}
+
+
+/*
+ * River Guides
+ * Clear traveling weather and reflective crossing water.
+ */
+
+html[data-place-theme="guides"] {
+    --color-background: #142222;
+    --color-surface: #1b2e2d;
+    --color-accent: #9fc4bd;
+    --color-accent-warm: #ccb98f;
+
+    --color-border: rgba(197, 223, 217, 0.17);
+    --color-border-strong: rgba(197, 223, 217, 0.31);
+
+    --atmosphere-background-top: #0b1616;
+    --atmosphere-background-middle: #142525;
+    --atmosphere-background-bottom: #1b2925;
+
+    --atmosphere-glow-primary: rgba(136, 190, 182, 0.15);
+    --atmosphere-glow-left: rgba(73, 132, 128, 0.14);
+    --atmosphere-glow-right: rgba(185, 170, 124, 0.1);
+    --atmosphere-glow-ground: rgba(52, 91, 79, 0.22);
+
+    --atmosphere-mist-primary: rgba(218, 236, 230, 0.12);
+    --atmosphere-mist-secondary: rgba(170, 210, 202, 0.09);
+
+    --atmosphere-light-core: rgba(232, 240, 221, 0.15);
+    --atmosphere-light-edge: rgba(130, 185, 176, 0.08);
+
+    --atmosphere-mist-opacity: 0.2;
+    --atmosphere-light-opacity: 0.44;
+    --atmosphere-light-x: 58%;
+}
+
+
+/*
+ * The Journal
+ * Dusk, quiet water, reflection, and soft overcast.
+ */
+
+html[data-place-theme="journal"] {
+    --color-background: #15181c;
+    --color-surface: #20242a;
+    --color-accent: #9eaebb;
+    --color-accent-warm: #bca687;
+
+    --color-text: #edf0ef;
+    --color-text-soft: #d0d7d7;
+    --color-text-muted: #a7b0b1;
+
+    --color-border: rgba(198, 208, 211, 0.16);
+    --color-border-strong: rgba(198, 208, 211, 0.29);
+
+    --atmosphere-background-top: #0c0e12;
+    --atmosphere-background-middle: #171b21;
+    --atmosphere-background-bottom: #1d2023;
+
+    --atmosphere-glow-primary: rgba(122, 148, 169, 0.13);
+    --atmosphere-glow-left: rgba(74, 91, 111, 0.13);
+    --atmosphere-glow-right: rgba(135, 113, 104, 0.09);
+    --atmosphere-glow-ground: rgba(44, 54, 62, 0.25);
+
+    --atmosphere-mist-primary: rgba(211, 220, 223, 0.14);
+    --atmosphere-mist-secondary: rgba(167, 184, 192, 0.1);
+
+    --atmosphere-light-core: rgba(213, 221, 224, 0.11);
+    --atmosphere-light-edge: rgba(117, 140, 159, 0.07);
+
+    --atmosphere-mist-opacity: 0.25;
+    --atmosphere-light-opacity: 0.3;
+    --atmosphere-light-x: 42%;
+    --atmosphere-light-y: -15%;
+}
+
+
+/*
+ * The Marketplace
+ * Open crossroads, active daylight, earth and provision.
+ */
+
+html[data-place-theme="marketplace"] {
+    --color-background: #201d17;
+    --color-surface: #2d2920;
+    --color-accent: #c0ad7e;
+    --color-accent-warm: #d5a76c;
+
+    --color-border: rgba(218, 203, 167, 0.17);
+    --color-border-strong: rgba(218, 203, 167, 0.31);
+
+    --atmosphere-background-top: #12110e;
+    --atmosphere-background-middle: #221f18;
+    --atmosphere-background-bottom: #30291d;
+
+    --atmosphere-glow-primary: rgba(204, 181, 125, 0.14);
+    --atmosphere-glow-left: rgba(112, 99, 68, 0.13);
+    --atmosphere-glow-right: rgba(214, 145, 78, 0.14);
+    --atmosphere-glow-ground: rgba(94, 74, 45, 0.25);
+
+    --atmosphere-mist-primary: rgba(223, 213, 188, 0.08);
+    --atmosphere-mist-secondary: rgba(190, 175, 141, 0.07);
+
+    --atmosphere-light-core: rgba(241, 219, 174, 0.16);
+    --atmosphere-light-edge: rgba(199, 153, 93, 0.08);
+
+    --atmosphere-mist-opacity: 0.1;
+    --atmosphere-light-opacity: 0.46;
+    --atmosphere-light-x: 61%;
+    --atmosphere-light-y: -16%;
+}
+
+
+/*
+ * Shared rendered environment
+ */
+
 .world-background {
     position: fixed;
     inset: 0;
     z-index: var(--z-landscape);
     overflow: hidden;
     pointer-events: none;
+
     background:
         radial-gradient(
             circle at 50% 18%,
-            rgba(134, 160, 154, 0.1),
+            var(--atmosphere-glow-primary),
             transparent 34%
         ),
         linear-gradient(
             180deg,
-            var(--color-night-deep) 0%,
-            var(--color-night) 52%,
-            #0d130f 100%
+            var(--atmosphere-background-top) 0%,
+            var(--atmosphere-background-middle) 52%,
+            var(--atmosphere-background-bottom) 100%
         );
+
+    transition:
+        background
+        var(--duration-breath)
+        var(--ease-natural);
 }
 
 .world-background::before {
     content: "";
     position: absolute;
     inset: -20%;
+
     background:
         radial-gradient(
             circle at 20% 35%,
-            rgba(82, 109, 105, 0.12),
+            var(--atmosphere-glow-left),
             transparent 30%
         ),
         radial-gradient(
             circle at 78% 28%,
-            rgba(102, 88, 68, 0.08),
+            var(--atmosphere-glow-right),
             transparent 28%
         ),
         radial-gradient(
             circle at 50% 80%,
-            rgba(34, 49, 38, 0.2),
+            var(--atmosphere-glow-ground),
             transparent 40%
         );
+
     filter: blur(40px);
     opacity: 0.85;
+
     animation:
         atmosphere-drift
         var(--duration-landscape)
@@ -50,19 +477,23 @@
 .mist {
     position: absolute;
     inset: -20%;
-    opacity: 0.2;
+
+    opacity: var(--atmosphere-mist-opacity);
+
     background:
         radial-gradient(
             ellipse at 25% 50%,
-            rgba(216, 221, 213, 0.13),
+            var(--atmosphere-mist-primary),
             transparent 36%
         ),
         radial-gradient(
             ellipse at 75% 40%,
-            rgba(216, 221, 213, 0.09),
+            var(--atmosphere-mist-secondary),
             transparent 34%
         );
+
     filter: blur(70px);
+
     animation:
         mist-breathe
         18s
@@ -72,21 +503,26 @@
 
 .light {
     position: absolute;
-    top: -25%;
-    left: 50%;
+    top: var(--atmosphere-light-y);
+    left: var(--atmosphere-light-x);
+
     width: min(90vw, 80rem);
     height: min(90vw, 80rem);
+
     transform: translateX(-50%);
     border-radius: 50%;
-    opacity: 0.34;
+    opacity: var(--atmosphere-light-opacity);
+
     background:
         radial-gradient(
             circle,
-            rgba(237, 240, 234, 0.11) 0%,
-            rgba(134, 160, 154, 0.06) 28%,
+            var(--atmosphere-light-core) 0%,
+            var(--atmosphere-light-edge) 28%,
             transparent 68%
         );
+
     filter: blur(24px);
+
     animation:
         light-breathe
         12s
@@ -97,13 +533,21 @@
 .grain {
     position: absolute;
     inset: 0;
-    opacity: 0.035;
+
+    opacity: var(--atmosphere-grain-opacity);
+
     background-image:
         url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+
     background-repeat: repeat;
     background-size: 180px 180px;
     mix-blend-mode: soft-light;
 }
+
+
+/*
+ * Movement
+ */
 
 @keyframes atmosphere-drift {
     from {
@@ -124,14 +568,22 @@
         transform:
             translate3d(-2%, 0, 0)
             scale(1);
-        opacity: 0.14;
+
+        opacity:
+            calc(
+                var(--atmosphere-mist-opacity) * 0.7
+            );
     }
 
     to {
         transform:
             translate3d(2%, -1.5%, 0)
             scale(1.08);
-        opacity: 0.25;
+
+        opacity:
+            calc(
+                var(--atmosphere-mist-opacity) * 1.2
+            );
     }
 }
 
@@ -140,16 +592,27 @@
         transform:
             translateX(-50%)
             scale(0.96);
-        opacity: 0.24;
+
+        opacity:
+            calc(
+                var(--atmosphere-light-opacity) * 0.7
+            );
     }
 
     to {
         transform:
             translateX(-50%)
             scale(1.05);
-        opacity: 0.4;
+
+        opacity:
+            var(--atmosphere-light-opacity);
     }
 }
+
+
+/*
+ * Reduced motion
+ */
 
 @media (prefers-reduced-motion: reduce) {
     .world-background::before,
