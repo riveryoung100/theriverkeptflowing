@@ -1,0 +1,340 @@
+﻿---
+import SceneShell from "../primitives/SceneShell.astro";
+import AmbientGlow from "../primitives/AmbientGlow.astro";
+import MistBand from "../primitives/MistBand.astro";
+---
+
+<SceneShell
+    className="field-scene"
+    label="A broad living field beneath a warm open sky"
+>
+    <div
+        slot="background"
+        class="field-scene__sky"
+    ></div>
+
+    <AmbientGlow
+        slot="background"
+        position="right"
+        size="large"
+        intensity="medium"
+        duration="17s"
+    />
+
+    <div
+        slot="distance"
+        class="field-scene__horizon field-scene__horizon--far"
+    ></div>
+
+    <div
+        slot="distance"
+        class="field-scene__horizon field-scene__horizon--near"
+    ></div>
+
+    <MistBand
+        slot="atmosphere"
+        position="middle"
+        density="light"
+        direction="left"
+        duration="28s"
+    />
+
+    <div
+        slot="midground"
+        class="field-scene__meadow"
+    ></div>
+
+    <div
+        slot="midground"
+        class="field-scene__path"
+    ></div>
+
+    <div
+        slot="foreground"
+        class="field-scene__grasses"
+    >
+        {
+            Array.from(
+                { length: 34 },
+                (_, index) => (
+                    <span
+                        class="field-scene__grass"
+                        style={`
+                            --grass-index: ${index};
+                            --grass-left: ${2 + ((index * 17) % 96)}%;
+                            --grass-height: ${4 + ((index * 7) % 8)}rem;
+                            --grass-delay: -${(index % 9) * 0.7}s;
+                            --grass-angle: ${-7 + ((index * 5) % 14)}deg;
+                        `}
+                    ></span>
+                )
+            )
+        }
+    </div>
+
+    <div
+        slot="foreground"
+        class="field-scene__flowers"
+    >
+        {
+            Array.from(
+                { length: 14 },
+                (_, index) => (
+                    <span
+                        class="field-scene__flower"
+                        style={`
+                            --flower-left: ${4 + ((index * 23) % 91)}%;
+                            --flower-bottom: ${5 + ((index * 13) % 21)}%;
+                            --flower-delay: -${(index % 7) * 0.8}s;
+                        `}
+                    ></span>
+                )
+            )
+        }
+    </div>
+</SceneShell>
+
+<style>
+    :global(.field-scene) {
+        opacity: 0.94;
+    }
+
+    .field-scene__sky {
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(
+                180deg,
+                rgba(188, 198, 157, 0.1) 0%,
+                rgba(141, 161, 118, 0.07) 40%,
+                rgba(81, 111, 76, 0.04) 67%,
+                transparent 82%
+            );
+    }
+
+    .field-scene__horizon {
+        position: absolute;
+        right: -8%;
+        left: -8%;
+        transform-origin: bottom center;
+    }
+
+    .field-scene__horizon--far {
+        bottom: 31%;
+        height: 26%;
+        opacity: 0.3;
+        background: #66785c;
+        clip-path:
+            polygon(
+                0 68%,
+                12% 52%,
+                25% 61%,
+                38% 43%,
+                51% 59%,
+                65% 40%,
+                78% 56%,
+                90% 45%,
+                100% 61%,
+                100% 100%,
+                0 100%
+            );
+        filter: blur(0.14rem);
+    }
+
+    .field-scene__horizon--near {
+        bottom: 22%;
+        height: 22%;
+        opacity: 0.62;
+        background: #3f5940;
+        clip-path:
+            polygon(
+                0 61%,
+                13% 44%,
+                27% 57%,
+                42% 35%,
+                57% 60%,
+                72% 39%,
+                86% 55%,
+                100% 42%,
+                100% 100%,
+                0 100%
+            );
+    }
+
+    .field-scene__meadow {
+        position: absolute;
+        right: -6%;
+        bottom: -8%;
+        left: -6%;
+        height: 48%;
+        background:
+            linear-gradient(
+                180deg,
+                rgba(92, 119, 73, 0.66) 0%,
+                rgba(57, 82, 50, 0.88) 48%,
+                rgba(29, 48, 31, 0.98) 100%
+            );
+        clip-path:
+            polygon(
+                0 16%,
+                14% 10%,
+                29% 15%,
+                46% 8%,
+                63% 14%,
+                81% 7%,
+                100% 15%,
+                100% 100%,
+                0 100%
+            );
+    }
+
+    .field-scene__path {
+        position: absolute;
+        bottom: -5%;
+        left: 50%;
+        width: 34%;
+        height: 47%;
+        transform:
+            translateX(-50%)
+            perspective(30rem)
+            rotateX(9deg);
+        transform-origin: bottom center;
+        background:
+            linear-gradient(
+                180deg,
+                rgba(171, 151, 108, 0.16),
+                rgba(130, 107, 72, 0.34) 52%,
+                rgba(83, 67, 45, 0.55)
+            );
+        clip-path:
+            polygon(
+                47% 0,
+                53% 0,
+                76% 100%,
+                18% 100%
+            );
+        filter: blur(0.04rem);
+    }
+
+    .field-scene__grasses,
+    .field-scene__flowers {
+        position: absolute;
+        inset: 0;
+    }
+
+    .field-scene__grass {
+        position: absolute;
+        bottom: -1%;
+        left: var(--grass-left);
+        width: 0.19rem;
+        height: var(--grass-height);
+        border-radius: 999px;
+        background:
+            linear-gradient(
+                180deg,
+                rgba(157, 175, 101, 0.9),
+                rgba(72, 102, 57, 0.72)
+            );
+        transform:
+            rotate(var(--grass-angle));
+        transform-origin: bottom center;
+        animation:
+            field-grass-sway
+            7s
+            var(--ease-breath, ease-in-out)
+            infinite alternate;
+        animation-delay: var(--grass-delay);
+    }
+
+    .field-scene__grass::after {
+        content: "";
+        position: absolute;
+        top: 25%;
+        left: 50%;
+        width: 1.2rem;
+        height: 0.28rem;
+        border-radius: 100% 0;
+        background: rgba(126, 153, 81, 0.66);
+        transform: rotate(-28deg);
+        transform-origin: left center;
+    }
+
+    .field-scene__flower {
+        position: absolute;
+        bottom: var(--flower-bottom);
+        left: var(--flower-left);
+        width: 0.42rem;
+        height: 0.42rem;
+        border-radius: 50%;
+        background: rgba(224, 214, 160, 0.78);
+        box-shadow:
+            0.25rem 0 rgba(224, 214, 160, 0.56),
+            -0.25rem 0 rgba(224, 214, 160, 0.56),
+            0 0.25rem rgba(224, 214, 160, 0.56),
+            0 -0.25rem rgba(224, 214, 160, 0.56);
+        animation:
+            field-flower-breathe
+            8s
+            var(--ease-breath, ease-in-out)
+            infinite alternate;
+        animation-delay: var(--flower-delay);
+    }
+
+    @keyframes field-grass-sway {
+        from {
+            translate: -0.08rem 0;
+            rotate: -2deg;
+        }
+
+        to {
+            translate: 0.12rem 0;
+            rotate: 4deg;
+        }
+    }
+
+    @keyframes field-flower-breathe {
+        from {
+            opacity: 0.55;
+            scale: 0.88;
+        }
+
+        to {
+            opacity: 1;
+            scale: 1.08;
+        }
+    }
+
+    @media (max-width: 48rem) {
+        :global(.field-scene) {
+            opacity: 0.82;
+        }
+
+        .field-scene__horizon--far {
+            bottom: 39%;
+        }
+
+        .field-scene__horizon--near {
+            bottom: 31%;
+        }
+
+        .field-scene__meadow {
+            height: 40%;
+        }
+
+        .field-scene__path {
+            width: 48%;
+            height: 39%;
+        }
+
+        .field-scene__grass:nth-child(even) {
+            opacity: 0.55;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .field-scene__grass,
+        .field-scene__flower {
+            animation: none;
+        }
+    }
+</style>

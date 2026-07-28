@@ -1,0 +1,108 @@
+﻿---
+interface Props {
+    position?: "high" | "middle" | "low";
+    density?: "light" | "medium" | "heavy";
+    direction?: "left" | "right";
+    duration?: string;
+}
+
+const {
+    position = "middle",
+    density = "light",
+    direction = "left",
+    duration = "24s"
+} = Astro.props;
+---
+
+<div
+    class:list={[
+        "mist-band",
+        `mist-band--${position}`,
+        `mist-band--${density}`,
+        `mist-band--${direction}`
+    ]}
+    style={`--mist-duration: ${duration};`}
+></div>
+
+<style>
+    .mist-band {
+        position: absolute;
+        right: -16%;
+        left: -16%;
+        height: 21%;
+        border-radius: 50%;
+        filter: blur(3rem);
+        background:
+            radial-gradient(
+                ellipse,
+                rgba(224, 231, 210, 0.14),
+                transparent 69%
+            );
+    }
+
+    .mist-band--high {
+        bottom: 42%;
+    }
+
+    .mist-band--middle {
+        bottom: 27%;
+    }
+
+    .mist-band--low {
+        bottom: 13%;
+    }
+
+    .mist-band--light {
+        opacity: 0.42;
+    }
+
+    .mist-band--medium {
+        opacity: 0.65;
+    }
+
+    .mist-band--heavy {
+        opacity: 0.88;
+    }
+
+    .mist-band--left {
+        animation:
+            mist-band-drift-left
+            var(--mist-duration)
+            var(--ease-breath, ease-in-out)
+            infinite alternate;
+    }
+
+    .mist-band--right {
+        animation:
+            mist-band-drift-right
+            var(--mist-duration)
+            var(--ease-breath, ease-in-out)
+            infinite alternate;
+    }
+
+    @keyframes mist-band-drift-left {
+        from {
+            transform: translate3d(-4%, 1%, 0);
+        }
+
+        to {
+            transform: translate3d(4%, -4%, 0);
+        }
+    }
+
+    @keyframes mist-band-drift-right {
+        from {
+            transform: translate3d(5%, 0, 0);
+        }
+
+        to {
+            transform: translate3d(-5%, -3%, 0);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .mist-band {
+            animation: none;
+        }
+    }
+</style>

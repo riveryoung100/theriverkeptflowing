@@ -1,22 +1,28 @@
 ﻿---
 import HeadwatersScene from "./scenes/HeadwatersScene.astro";
 import RiverScene from "./scenes/RiverScene.astro";
+import FieldScene from "./scenes/FieldScene.astro";
 
 interface Props {
     placeId: string;
 }
 
 const { placeId } = Astro.props;
+
+const scenes = {
+    headwaters: HeadwatersScene,
+    river: RiverScene,
+    field: FieldScene
+};
+
+const Scene =
+    scenes[
+        placeId as keyof typeof scenes
+    ];
 ---
 
 {
-    placeId === "headwaters" && (
-        <HeadwatersScene />
-    )
-}
-
-{
-    placeId === "river" && (
-        <RiverScene />
+    Scene && (
+        <Scene />
     )
 }

@@ -1,0 +1,89 @@
+﻿---
+interface Props {
+    className?: string;
+    label?: string;
+}
+
+const {
+    className = "",
+    label = "Decorative landscape"
+} = Astro.props;
+---
+
+<div
+    class:list={[
+        "scene-shell",
+        className
+    ]}
+    role="img"
+    aria-label={label}
+>
+    <div class="scene-shell__background">
+        <slot name="background" />
+    </div>
+
+    <div class="scene-shell__distance">
+        <slot name="distance" />
+    </div>
+
+    <div class="scene-shell__atmosphere">
+        <slot name="atmosphere" />
+    </div>
+
+    <div class="scene-shell__midground">
+        <slot name="midground" />
+    </div>
+
+    <div class="scene-shell__water">
+        <slot name="water" />
+    </div>
+
+    <div class="scene-shell__foreground">
+        <slot name="foreground" />
+    </div>
+</div>
+
+<style>
+    .scene-shell {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        isolation: isolate;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .scene-shell__background,
+    .scene-shell__distance,
+    .scene-shell__atmosphere,
+    .scene-shell__midground,
+    .scene-shell__water,
+    .scene-shell__foreground {
+        position: absolute;
+        inset: 0;
+    }
+
+    .scene-shell__background {
+        z-index: 1;
+    }
+
+    .scene-shell__distance {
+        z-index: 2;
+    }
+
+    .scene-shell__atmosphere {
+        z-index: 3;
+    }
+
+    .scene-shell__midground {
+        z-index: 4;
+    }
+
+    .scene-shell__water {
+        z-index: 5;
+    }
+
+    .scene-shell__foreground {
+        z-index: 6;
+    }
+</style>
