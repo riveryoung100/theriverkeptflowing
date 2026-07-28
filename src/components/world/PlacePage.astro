@@ -1,26 +1,33 @@
 ﻿---
 import WorldLayout from "../../layouts/WorldLayout.astro";
+import { placesById } from "../../data/places";
+import { placeContent } from "../../data/placeContent";
 
 interface Props {
-    title: string;
-    eyebrow: string;
-    description: string;
-    purpose: string;
-    status?: string;
+    placeId: string;
 }
 
-const {
-    title,
-    eyebrow,
-    description,
-    purpose,
-    status = "This place is being prepared."
-} = Astro.props;
+const { placeId } = Astro.props;
+
+const place = placesById[placeId];
+const content = placeContent[placeId];
+
+if (!place) {
+    throw new Error(`Unknown place: ${placeId}`);
+}
+
+if (!content) {
+    throw new Error(`Missing page content for place: ${placeId}`);
+}
+
+const neighboringPlaces = place.neighbors
+    .map((neighborId) => placesById[neighborId])
+    .filter(Boolean);
 ---
 
 <WorldLayout
-    title={`${title} | The River Kept Flowing`}
-    description={description}
+    title={`${place.name} | The River Kept Flowing`}
+    description={content.description}
 >
     <main class="place-page">
 
@@ -34,15 +41,15 @@ const {
             </a>
 
             <p class="place-page__eyebrow">
-                {eyebrow}
+                {content.eyebrow}
             </p>
 
             <h1 class="place-page__title">
-                {title}
+                {place.name}
             </h1>
 
             <p class="place-page__description">
-                {description}
+                {content.description}
             </p>
 
         </section>
@@ -56,16 +63,112 @@ const {
                 </p>
 
                 <p class="place-page__purpose">
-                    {purpose}
+                    {content.purpose}
                 </p>
 
                 <p class="place-page__status">
-                    {status}
+                    {content.status ?? "This place is being prepared."}
                 </p>
 
             </div>
 
         </section>
+
+        <section
+            class="place-page__landscape"
+            aria-labelledby="landscape-title"
+        >
+
+            <div class="place-page__landscape-inner">
+
+                <p class="place-page__label">
+                    The landscape
+                </p>
+
+                <h2 id="landscape-title">
+                    The character of this place
+                </h2>
+
+                <dl class="place-page__details">
+
+                    <div>
+                        <dt>Region</dt>
+                        <dd>{place.region.replaceAll("-", " ")}</dd>
+                    </div>
+
+                    <div>
+                        <dt>Biome</dt>
+                        <dd>{place.environment.biome.replaceAll("-", " ")}</dd>
+                    </div>
+
+                    <div>
+                        <dt>Water</dt>
+                        <dd>{place.environment.waterCharacter}</dd>
+                    </div>
+
+                    <div>
+                        <dt>Time</dt>
+                        <dd>{place.atmosphere.defaultTime.replaceAll("-", " ")}</dd>
+                    </div>
+
+                    <div>
+                        <dt>Weather</dt>
+                        <dd>{place.atmosphere.weatherProfile.replaceAll("-", " ")}</dd>
+                    </div>
+
+                    <div>
+                        <dt>Elevation</dt>
+                        <dd>{place.coordinates.elevation.toLocaleString()} feet</dd>
+                    </div>
+
+                </dl>
+
+            </div>
+
+        </section>
+
+        {
+            neighboringPlaces.length > 0 && (
+
+                <nav
+                    class="place-page__journey"
+                    aria-labelledby="journey-title"
+                >
+
+                    <div class="place-page__journey-inner">
+
+                        <p class="place-page__label">
+                            Continue the river
+                        </p>
+
+                        <h2 id="journey-title">
+                            Nearby places
+                        </h2>
+
+                        <div class="place-page__neighbors">
+
+                            {
+                                neighboringPlaces.map((neighbor) => (
+
+                                    <a
+                                        href={neighbor.path}
+                                        class="place-page__neighbor"
+                                    >
+                                        <span>{neighbor.name}</span>
+                                        <span aria-hidden="true">→</span>
+                                    </a>
+
+                                ))
+                            }
+
+                        </div>
+
+                    </div>
+
+                </nav>
+
+            )
+        }
 
     </main>
 </WorldLayout>
@@ -80,12 +183,10 @@ const {
         display: flex;
         flex-direction: column;
         justify-content: center;
-
         width: min(
             calc(100% - (var(--page-gutter) * 2)),
             72rem
         );
-
         min-height: 78svh;
         margin-inline: auto;
         padding-block: var(--space-16);
@@ -93,9 +194,7 @@ const {
 
     .place-page__return {
         align-self: flex-start;
-
         margin-bottom: var(--space-16);
-
         color: var(--color-text-muted);
         font-size: 0.9rem;
         text-decoration: none;
@@ -117,7 +216,6 @@ const {
     .place-page__title {
         max-width: 11ch;
         margin-top: var(--space-6);
-
         font-size: clamp(4rem, 11vw, 9rem);
         line-height: 0.9;
         letter-spacing: -0.055em;
@@ -126,32 +224,35 @@ const {
     .place-page__description {
         max-width: 42rem;
         margin-top: var(--space-10);
-
         color: var(--color-text-soft);
         font-size: clamp(1.1rem, 2vw, 1.45rem);
         line-height: 1.65;
     }
 
-    .place-page__body {
-        display: flex;
-        align-items: center;
-
-        min-height: 70svh;
+    .place-page__body,
+    .place-page__landscape,
+    .place-page__journey {
         padding:
             var(--space-16)
             var(--page-gutter);
-
         border-top: 1px solid var(--color-border);
     }
 
-    .place-page__content {
+    .place-page__body {
+        display: flex;
+        align-items: center;
+        min-height: 70svh;
+    }
+
+    .place-page__content,
+    .place-page__landscape-inner,
+    .place-page__journey-inner {
         width: min(100%, 52rem);
         margin-inline: auto;
     }
 
     .place-page__purpose {
         margin-top: var(--space-8);
-
         font-size: clamp(1.7rem, 4vw, 3rem);
         line-height: 1.25;
         letter-spacing: -0.025em;
@@ -159,8 +260,70 @@ const {
 
     .place-page__status {
         margin-top: var(--space-12);
-
         color: var(--color-text-muted);
+    }
+
+    .place-page__landscape h2,
+    .place-page__journey h2 {
+        margin-top: var(--space-6);
+        font-size: clamp(2.4rem, 6vw, 4.5rem);
+        line-height: 1;
+        letter-spacing: -0.045em;
+    }
+
+    .place-page__details {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--space-10);
+        margin-top: var(--space-12);
+    }
+
+    .place-page__details div {
+        padding-top: var(--space-5);
+        border-top: 1px solid var(--color-border);
+    }
+
+    .place-page__details dt {
+        color: var(--color-text-muted);
+        font-size: 0.76rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+    }
+
+    .place-page__details dd {
+        margin-top: var(--space-4);
+        color: var(--color-text-soft);
+        line-height: 1.6;
+        text-transform: capitalize;
+    }
+
+    .place-page__neighbors {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--space-4);
+        margin-top: var(--space-12);
+    }
+
+    .place-page__neighbor {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-5);
+        padding: var(--space-6);
+        border: 1px solid var(--color-border);
+        color: var(--color-text-soft);
+        text-decoration: none;
+        transition:
+            color var(--duration-medium) var(--ease-soft),
+            border-color var(--duration-medium) var(--ease-soft),
+            transform var(--duration-medium) var(--ease-soft);
+    }
+
+    .place-page__neighbor:hover,
+    .place-page__neighbor:focus-visible {
+        color: var(--color-text);
+        border-color: var(--color-text-muted);
+        transform: translateY(-0.2rem);
     }
 
     @media (max-width: 48rem) {
@@ -174,6 +337,17 @@ const {
 
         .place-page__title {
             font-size: clamp(3.5rem, 18vw, 6rem);
+        }
+
+        .place-page__details,
+        .place-page__neighbors {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .place-page__neighbor {
+            transition: none;
         }
     }
 </style>
