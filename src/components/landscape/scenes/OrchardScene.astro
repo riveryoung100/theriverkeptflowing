@@ -1,13 +1,10 @@
 ﻿---
 import SceneShell from "../primitives/SceneShell.astro";
-import AmbientGlow from "../primitives/AmbientGlow.astro";
-import MistBand from "../primitives/MistBand.astro";
+import Environment from "../primitives/Environment.astro";
 import WindField from "../primitives/WindField.astro";
 import LeafDrift from "../primitives/LeafDrift.astro";
 import Tree from "../primitives/Tree.astro";
 import GroundPath from "../primitives/GroundPath.astro";
-import CloudLayer from "../primitives/CloudLayer.astro";
-import SunLight from "../primitives/SunLight.astro";
 
 const treeRows = [
     {
@@ -43,29 +40,12 @@ const treeRows = [
         class="orchard-scene__sky"
     ></div>
 
-    <AmbientGlow
+    <Environment
         slot="background"
-        position="left"
-        size="large"
-        intensity="medium"
-        duration="18s"
-    />
-
-    <SunLight
-        slot="background"
-        position="right"
-        size="large"
-        intensity="soft"
-        pulseDuration="22s"
-    />
-
-    <CloudLayer
-        slot="atmosphere"
-        count={6}
-        depth="far"
-        direction="right"
-        speed="slow"
-        opacity={0.38}
+        layer="background"
+        season="autumn"
+        time="sunrise"
+        weather="mist"
     />
 
     <div
@@ -84,12 +64,12 @@ const treeRows = [
         "
     ></div>
 
-    <MistBand
+    <Environment
         slot="atmosphere"
-        position="middle"
-        density="light"
-        direction="right"
-        duration="30s"
+        layer="atmosphere"
+        season="autumn"
+        time="sunrise"
+        weather="mist"
     />
 
     <WindField
@@ -401,4 +381,3 @@ const treeRows = [
         }
     }
 </style>
-
