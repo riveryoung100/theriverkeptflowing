@@ -1,0 +1,44 @@
+﻿:root {
+    --font-body:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    --font-interface:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    --color-night:
+        #101612;
+
+    --color-earth:
+        #2d382f;
+
+    --color-mist:
+        #d8ddd5;
+
+    --color-river-light:
+        #eef2ec;
+
+    --color-parchment:
+        #f3efe4;
+
+    --color-ink:
+        #172019;
+
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+
+    --duration-breath: 1200ms;
+    --duration-threshold: 3000ms;
+
+    --content-width-reading: 44rem;
+    --content-width-wide: 76rem;
+}

@@ -1,0 +1,26 @@
+﻿html {
+    font-family: var(--font-body);
+    color: var(--color-river-light);
+    background: var(--color-night);
+}
+
+body {
+    line-height: 1.6;
+    text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+p {
+    margin-top: 0;
+}
+
+h1 {
+    max-width: 12ch;
+    margin-bottom: var(--space-6);
+    font-size: clamp(2.75rem, 8vw, 7rem);
+    font-weight: 400;
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+}
