@@ -1,4 +1,8 @@
 ﻿---
+import MountainRange from "../primitives/MountainRange.astro";
+import RiverFlow from "../primitives/RiverFlow.astro";
+import SpringSource from "../primitives/SpringSource.astro";
+import TerrainForeground from "../primitives/TerrainForeground.astro";
 ---
 
 <div
@@ -12,129 +16,33 @@
 
     <div class="headwaters-scene__mountains">
 
-        <div class="headwaters-scene__mountain headwaters-scene__mountain--far"></div>
+        <MountainRange depth="far" />
 
-        <div class="headwaters-scene__mountain headwaters-scene__mountain--middle"></div>
+        <MountainRange depth="middle" />
 
-        <div class="headwaters-scene__mountain headwaters-scene__mountain--near"></div>
-
-    </div>
-
-    <div class="headwaters-scene__mist headwaters-scene__mist--one"></div>
-
-    <div class="headwaters-scene__mist headwaters-scene__mist--two"></div>
-
-    <div class="headwaters-scene__spring">
-
-        <div class="headwaters-scene__spring-glow"></div>
-
-        <div class="headwaters-scene__spring-water"></div>
+        <MountainRange depth="near" />
 
     </div>
 
-    <svg
-        class="headwaters-scene__river"
-        viewBox="0 0 1000 700"
-        preserveAspectRatio="none"
-    >
-        <defs>
+    <div
+        class="
+            headwaters-scene__mist
+            headwaters-scene__mist--one
+        "
+    ></div>
 
-            <linearGradient
-                id="headwaters-river-fill"
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="1"
-            >
-                <stop
-                    offset="0%"
-                    stop-color="rgba(176, 215, 210, 0.28)"
-                />
+    <div
+        class="
+            headwaters-scene__mist
+            headwaters-scene__mist--two
+        "
+    ></div>
 
-                <stop
-                    offset="55%"
-                    stop-color="rgba(105, 164, 158, 0.34)"
-                />
+    <SpringSource />
 
-                <stop
-                    offset="100%"
-                    stop-color="rgba(58, 111, 106, 0.48)"
-                />
+    <RiverFlow />
 
-            </linearGradient>
-
-            <linearGradient
-                id="headwaters-river-shine"
-                x1="0"
-                y1="0"
-                x2="1"
-                y2="1"
-            >
-                <stop
-                    offset="0%"
-                    stop-color="rgba(237, 245, 239, 0)"
-                />
-
-                <stop
-                    offset="50%"
-                    stop-color="rgba(237, 245, 239, 0.34)"
-                />
-
-                <stop
-                    offset="100%"
-                    stop-color="rgba(237, 245, 239, 0)"
-                />
-
-            </linearGradient>
-
-        </defs>
-
-        <path
-            class="headwaters-scene__river-body"
-            d="
-                M 515 250
-                C 500 320, 565 350, 520 410
-                C 455 500, 590 540, 430 700
-                L 785 700
-                C 700 580, 620 520, 650 430
-                C 672 360, 585 320, 565 250
-                Z
-            "
-            fill="url(#headwaters-river-fill)"
-        />
-
-        <path
-            class="headwaters-scene__river-shine"
-            d="
-                M 540 270
-                C 525 335, 575 365, 545 420
-                C 505 495, 600 545, 520 690
-            "
-            fill="none"
-            stroke="url(#headwaters-river-shine)"
-            stroke-width="12"
-            stroke-linecap="round"
-        />
-
-    </svg>
-
-    <div class="headwaters-scene__foreground">
-
-        <div class="headwaters-scene__bank headwaters-scene__bank--left"></div>
-
-        <div class="headwaters-scene__bank headwaters-scene__bank--right"></div>
-
-        <div class="headwaters-scene__rock headwaters-scene__rock--one"></div>
-
-        <div class="headwaters-scene__rock headwaters-scene__rock--two"></div>
-
-        <div class="headwaters-scene__grass headwaters-scene__grass--one"></div>
-
-        <div class="headwaters-scene__grass headwaters-scene__grass--two"></div>
-
-        <div class="headwaters-scene__grass headwaters-scene__grass--three"></div>
-
-    </div>
+    <TerrainForeground />
 
 </div>
 
@@ -187,80 +95,6 @@
         inset: 0;
     }
 
-    .headwaters-scene__mountain {
-        position: absolute;
-        right: -8%;
-        left: -8%;
-        transform-origin: bottom center;
-    }
-
-    .headwaters-scene__mountain--far {
-        bottom: 35%;
-        height: 45%;
-        opacity: 0.25;
-        background: #58736f;
-        clip-path:
-            polygon(
-                0 78%,
-                8% 61%,
-                17% 68%,
-                29% 35%,
-                38% 57%,
-                49% 20%,
-                57% 46%,
-                68% 27%,
-                78% 55%,
-                88% 38%,
-                100% 67%,
-                100% 100%,
-                0 100%
-            );
-        filter: blur(0.15rem);
-    }
-
-    .headwaters-scene__mountain--middle {
-        bottom: 25%;
-        height: 42%;
-        opacity: 0.39;
-        background: #344f49;
-        clip-path:
-            polygon(
-                0 71%,
-                12% 43%,
-                20% 56%,
-                32% 23%,
-                45% 62%,
-                57% 31%,
-                67% 55%,
-                79% 20%,
-                90% 58%,
-                100% 43%,
-                100% 100%,
-                0 100%
-            );
-    }
-
-    .headwaters-scene__mountain--near {
-        bottom: 14%;
-        height: 37%;
-        opacity: 0.62;
-        background: #203a34;
-        clip-path:
-            polygon(
-                0 58%,
-                11% 32%,
-                24% 61%,
-                37% 25%,
-                49% 67%,
-                63% 37%,
-                76% 62%,
-                89% 31%,
-                100% 54%,
-                100% 100%,
-                0 100%
-            );
-    }
-
     .headwaters-scene__mist {
         position: absolute;
         right: -15%;
@@ -295,205 +129,6 @@
             infinite alternate;
     }
 
-    .headwaters-scene__spring {
-        position: absolute;
-        bottom: 31%;
-        left: 54%;
-        width: clamp(4rem, 8vw, 8rem);
-        aspect-ratio: 1.5;
-        transform: translateX(-50%);
-    }
-
-    .headwaters-scene__spring-glow {
-        position: absolute;
-        inset: -70%;
-        border-radius: 50%;
-        background:
-            radial-gradient(
-                circle,
-                rgba(222, 242, 237, 0.2),
-                transparent 64%
-            );
-        filter: blur(0.8rem);
-        animation:
-            headwaters-spring-glow
-            7s
-            var(--ease-breath)
-            infinite alternate;
-    }
-
-    .headwaters-scene__spring-water {
-        position: absolute;
-        inset: 38% 10% 10%;
-        border-radius: 50%;
-        background:
-            radial-gradient(
-                ellipse,
-                rgba(207, 237, 231, 0.46),
-                rgba(104, 170, 162, 0.27) 48%,
-                transparent 74%
-            );
-        transform: rotate(-4deg);
-    }
-
-    .headwaters-scene__river {
-        position: absolute;
-        right: 0;
-        bottom: -8%;
-        left: 0;
-        width: 100%;
-        height: 68%;
-        overflow: visible;
-    }
-
-    .headwaters-scene__river-body {
-        filter:
-            drop-shadow(
-                0 0 1.5rem rgba(111, 178, 169, 0.1)
-            );
-    }
-
-    .headwaters-scene__river-shine {
-        stroke-dasharray: 34 28;
-        animation:
-            headwaters-water-flow
-            12s
-            linear
-            infinite;
-    }
-
-    .headwaters-scene__foreground {
-        position: absolute;
-        inset: 0;
-    }
-
-    .headwaters-scene__bank {
-        position: absolute;
-        bottom: -8%;
-        width: 53%;
-        height: 42%;
-        background:
-            linear-gradient(
-                180deg,
-                rgba(32, 56, 44, 0.78),
-                rgba(15, 30, 23, 0.96)
-            );
-    }
-
-    .headwaters-scene__bank--left {
-        left: -11%;
-        clip-path:
-            polygon(
-                0 17%,
-                62% 29%,
-                78% 49%,
-                100% 100%,
-                0 100%
-            );
-    }
-
-    .headwaters-scene__bank--right {
-        right: -11%;
-        clip-path:
-            polygon(
-                38% 28%,
-                100% 14%,
-                100% 100%,
-                0 100%,
-                22% 48%
-            );
-    }
-
-    .headwaters-scene__rock {
-        position: absolute;
-        border-radius:
-            58% 42% 46% 54% /
-            44% 51% 49% 56%;
-        background:
-            linear-gradient(
-                145deg,
-                rgba(97, 116, 101, 0.75),
-                rgba(38, 53, 43, 0.92)
-            );
-        box-shadow:
-            inset 0.4rem 0.4rem 1rem rgba(210, 226, 212, 0.05);
-    }
-
-    .headwaters-scene__rock--one {
-        right: 14%;
-        bottom: 8%;
-        width: clamp(5rem, 12vw, 11rem);
-        height: clamp(3rem, 7vw, 7rem);
-        transform: rotate(-8deg);
-    }
-
-    .headwaters-scene__rock--two {
-        bottom: 13%;
-        left: 10%;
-        width: clamp(3rem, 8vw, 7rem);
-        height: clamp(2rem, 5vw, 4.5rem);
-        transform: rotate(7deg);
-    }
-
-    .headwaters-scene__grass {
-        position: absolute;
-        bottom: 5%;
-        width: 0.25rem;
-        height: clamp(3rem, 8vw, 7rem);
-        border-radius: var(--radius-round);
-        background:
-            linear-gradient(
-                180deg,
-                rgba(143, 176, 135, 0.82),
-                rgba(57, 91, 64, 0.38)
-            );
-        transform-origin: bottom center;
-        animation:
-            headwaters-grass-sway
-            6s
-            var(--ease-breath)
-            infinite alternate;
-    }
-
-    .headwaters-scene__grass::before,
-    .headwaters-scene__grass::after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        height: 76%;
-        border-radius: inherit;
-        background: inherit;
-        transform-origin: bottom center;
-    }
-
-    .headwaters-scene__grass::before {
-        transform: rotate(-19deg);
-    }
-
-    .headwaters-scene__grass::after {
-        transform: rotate(23deg);
-    }
-
-    .headwaters-scene__grass--one {
-        bottom: 4%;
-        left: 7%;
-    }
-
-    .headwaters-scene__grass--two {
-        right: 8%;
-        bottom: 3%;
-        height: clamp(4rem, 10vw, 9rem);
-        animation-delay: -2s;
-    }
-
-    .headwaters-scene__grass--three {
-        right: 21%;
-        bottom: 8%;
-        height: clamp(2.5rem, 7vw, 6rem);
-        animation-delay: -4s;
-    }
-
     @keyframes headwaters-light-breathe {
         from {
             transform: scale(0.94);
@@ -526,71 +161,33 @@
         }
     }
 
-    @keyframes headwaters-spring-glow {
-        from {
-            transform: scale(0.88);
-            opacity: 0.58;
-        }
-
-        to {
-            transform: scale(1.12);
-            opacity: 1;
-        }
-    }
-
-    @keyframes headwaters-water-flow {
-        to {
-            stroke-dashoffset: -124;
-        }
-    }
-
-    @keyframes headwaters-grass-sway {
-        from {
-            transform: rotate(-2deg);
-        }
-
-        to {
-            transform: rotate(4deg);
-        }
-    }
-
     @media (max-width: 48rem) {
         .headwaters-scene {
             opacity: 0.78;
         }
 
-        .headwaters-scene__mountain--far {
+        .headwaters-scene__mountains :global(
+            .mountain-range--far
+        ) {
             bottom: 39%;
         }
 
-        .headwaters-scene__mountain--middle {
+        .headwaters-scene__mountains :global(
+            .mountain-range--middle
+        ) {
             bottom: 31%;
         }
 
-        .headwaters-scene__mountain--near {
+        .headwaters-scene__mountains :global(
+            .mountain-range--near
+        ) {
             bottom: 23%;
-        }
-
-        .headwaters-scene__spring {
-            bottom: 36%;
-        }
-
-        .headwaters-scene__river {
-            bottom: -2%;
-            height: 60%;
-        }
-
-        .headwaters-scene__bank {
-            height: 32%;
         }
     }
 
     @media (prefers-reduced-motion: reduce) {
         .headwaters-scene__sun,
-        .headwaters-scene__mist,
-        .headwaters-scene__spring-glow,
-        .headwaters-scene__river-shine,
-        .headwaters-scene__grass {
+        .headwaters-scene__mist {
             animation: none;
         }
     }

@@ -1,0 +1,229 @@
+﻿---
+interface Props {
+    animate?: boolean;
+}
+
+const {
+    animate = true
+} = Astro.props;
+---
+
+<div
+    class:list={[
+        "terrain-foreground",
+        {
+            "terrain-foreground--static": !animate
+        }
+    ]}
+>
+    <div
+        class="
+            terrain-foreground__bank
+            terrain-foreground__bank--left
+        "
+    ></div>
+
+    <div
+        class="
+            terrain-foreground__bank
+            terrain-foreground__bank--right
+        "
+    ></div>
+
+    <div
+        class="
+            terrain-foreground__rock
+            terrain-foreground__rock--one
+        "
+    ></div>
+
+    <div
+        class="
+            terrain-foreground__rock
+            terrain-foreground__rock--two
+        "
+    ></div>
+
+    <div
+        class="
+            terrain-foreground__grass
+            terrain-foreground__grass--one
+        "
+    ></div>
+
+    <div
+        class="
+            terrain-foreground__grass
+            terrain-foreground__grass--two
+        "
+    ></div>
+
+    <div
+        class="
+            terrain-foreground__grass
+            terrain-foreground__grass--three
+        "
+    ></div>
+</div>
+
+<style>
+    .terrain-foreground {
+        position: absolute;
+        inset: 0;
+    }
+
+    .terrain-foreground__bank {
+        position: absolute;
+        bottom: -8%;
+        width: 53%;
+        height: 42%;
+        background:
+            linear-gradient(
+                180deg,
+                rgba(32, 56, 44, 0.78),
+                rgba(15, 30, 23, 0.96)
+            );
+    }
+
+    .terrain-foreground__bank--left {
+        left: -11%;
+        clip-path:
+            polygon(
+                0 17%,
+                62% 29%,
+                78% 49%,
+                100% 100%,
+                0 100%
+            );
+    }
+
+    .terrain-foreground__bank--right {
+        right: -11%;
+        clip-path:
+            polygon(
+                38% 28%,
+                100% 14%,
+                100% 100%,
+                0 100%,
+                22% 48%
+            );
+    }
+
+    .terrain-foreground__rock {
+        position: absolute;
+        border-radius:
+            58% 42% 46% 54% /
+            44% 51% 49% 56%;
+        background:
+            linear-gradient(
+                145deg,
+                rgba(97, 116, 101, 0.75),
+                rgba(38, 53, 43, 0.92)
+            );
+        box-shadow:
+            inset 0.4rem 0.4rem 1rem
+            rgba(210, 226, 212, 0.05);
+    }
+
+    .terrain-foreground__rock--one {
+        right: 14%;
+        bottom: 8%;
+        width: clamp(5rem, 12vw, 11rem);
+        height: clamp(3rem, 7vw, 7rem);
+        transform: rotate(-8deg);
+    }
+
+    .terrain-foreground__rock--two {
+        bottom: 13%;
+        left: 10%;
+        width: clamp(3rem, 8vw, 7rem);
+        height: clamp(2rem, 5vw, 4.5rem);
+        transform: rotate(7deg);
+    }
+
+    .terrain-foreground__grass {
+        position: absolute;
+        bottom: 5%;
+        width: 0.25rem;
+        height: clamp(3rem, 8vw, 7rem);
+        border-radius: var(--radius-round);
+        background:
+            linear-gradient(
+                180deg,
+                rgba(143, 176, 135, 0.82),
+                rgba(57, 91, 64, 0.38)
+            );
+        transform-origin: bottom center;
+        animation:
+            terrain-grass-sway
+            6s
+            var(--ease-breath)
+            infinite alternate;
+    }
+
+    .terrain-foreground__grass::before,
+    .terrain-foreground__grass::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 76%;
+        border-radius: inherit;
+        background: inherit;
+        transform-origin: bottom center;
+    }
+
+    .terrain-foreground__grass::before {
+        transform: rotate(-19deg);
+    }
+
+    .terrain-foreground__grass::after {
+        transform: rotate(23deg);
+    }
+
+    .terrain-foreground__grass--one {
+        bottom: 4%;
+        left: 7%;
+    }
+
+    .terrain-foreground__grass--two {
+        right: 8%;
+        bottom: 3%;
+        height: clamp(4rem, 10vw, 9rem);
+        animation-delay: -2s;
+    }
+
+    .terrain-foreground__grass--three {
+        right: 21%;
+        bottom: 8%;
+        height: clamp(2.5rem, 7vw, 6rem);
+        animation-delay: -4s;
+    }
+
+    .terrain-foreground--static
+        .terrain-foreground__grass {
+        animation: none;
+    }
+
+    @keyframes terrain-grass-sway {
+        from {
+            transform: rotate(-2deg);
+        }
+
+        to {
+            transform: rotate(4deg);
+        }
+    }
+
+    @media (max-width: 48rem) {
+        .terrain-foreground__bank {
+            height: 32%;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .terrain-foreground__grass {
+            animation: none;
+        }
+    }
+</style>

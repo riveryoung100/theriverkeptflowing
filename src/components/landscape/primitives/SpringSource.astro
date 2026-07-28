@@ -1,0 +1,89 @@
+﻿---
+interface Props {
+    glow?: boolean;
+}
+
+const {
+    glow = true
+} = Astro.props;
+---
+
+<div class="spring-source">
+
+    {
+        glow && (
+            <div class="spring-source__glow"></div>
+        )
+    }
+
+    <div class="spring-source__water"></div>
+
+</div>
+
+<style>
+.spring-source{
+    position:absolute;
+    bottom:31%;
+    left:54%;
+    width:clamp(4rem,8vw,8rem);
+    aspect-ratio:1.5;
+    transform:translateX(-50%);
+}
+
+.spring-source__glow{
+    position:absolute;
+    inset:-70%;
+    border-radius:50%;
+    background:
+        radial-gradient(
+            circle,
+            rgba(222,242,237,.20),
+            transparent 64%
+        );
+    filter:blur(.8rem);
+
+    animation:
+        spring-glow
+        7s
+        var(--ease-breath)
+        infinite alternate;
+}
+
+.spring-source__water{
+    position:absolute;
+    inset:38% 10% 10%;
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(207,237,231,.46),
+            rgba(104,170,162,.27) 48%,
+            transparent 74%
+        );
+
+    transform:rotate(-4deg);
+}
+
+@keyframes spring-glow{
+
+    from{
+        transform:scale(.88);
+        opacity:.58;
+    }
+
+    to{
+        transform:scale(1.12);
+        opacity:1;
+    }
+
+}
+
+@media (prefers-reduced-motion:reduce){
+
+    .spring-source__glow{
+        animation:none;
+    }
+
+}
+</style>

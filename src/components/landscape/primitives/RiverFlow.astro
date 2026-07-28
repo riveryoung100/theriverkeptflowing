@@ -1,0 +1,152 @@
+﻿---
+interface Props {
+    animate?: boolean;
+}
+
+const {
+    animate = true
+} = Astro.props;
+---
+
+<svg
+    class:list={[
+        "river-flow",
+        {
+            "river-flow--static": !animate
+        }
+    ]}
+    viewBox="0 0 1000 700"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+>
+    <defs>
+
+        <linearGradient
+            id="river-flow-fill"
+            x1="0"
+            y1="0"
+            x2="0"
+            y2="1"
+        >
+            <stop
+                offset="0%"
+                stop-color="rgba(176, 215, 210, 0.28)"
+            />
+
+            <stop
+                offset="55%"
+                stop-color="rgba(105, 164, 158, 0.34)"
+            />
+
+            <stop
+                offset="100%"
+                stop-color="rgba(58, 111, 106, 0.48)"
+            />
+        </linearGradient>
+
+        <linearGradient
+            id="river-flow-shine"
+            x1="0"
+            y1="0"
+            x2="1"
+            y2="1"
+        >
+            <stop
+                offset="0%"
+                stop-color="rgba(237, 245, 239, 0)"
+            />
+
+            <stop
+                offset="50%"
+                stop-color="rgba(237, 245, 239, 0.34)"
+            />
+
+            <stop
+                offset="100%"
+                stop-color="rgba(237, 245, 239, 0)"
+            />
+        </linearGradient>
+
+    </defs>
+
+    <path
+        class="river-flow__body"
+        d="
+            M 515 250
+            C 500 320, 565 350, 520 410
+            C 455 500, 590 540, 430 700
+            L 785 700
+            C 700 580, 620 520, 650 430
+            C 672 360, 585 320, 565 250
+            Z
+        "
+        fill="url(#river-flow-fill)"
+    />
+
+    <path
+        class="river-flow__shine"
+        d="
+            M 540 270
+            C 525 335, 575 365, 545 420
+            C 505 495, 600 545, 520 690
+        "
+        fill="none"
+        stroke="url(#river-flow-shine)"
+        stroke-width="12"
+        stroke-linecap="round"
+    />
+
+</svg>
+
+<style>
+    .river-flow {
+        position: absolute;
+        right: 0;
+        bottom: -8%;
+        left: 0;
+        width: 100%;
+        height: 68%;
+        overflow: visible;
+    }
+
+    .river-flow__body {
+        filter:
+            drop-shadow(
+                0 0 1.5rem
+                rgba(111, 178, 169, 0.1)
+            );
+    }
+
+    .river-flow__shine {
+        stroke-dasharray: 34 28;
+        animation:
+            river-flow-current
+            12s
+            linear
+            infinite;
+    }
+
+    .river-flow--static
+        .river-flow__shine {
+        animation: none;
+    }
+
+    @keyframes river-flow-current {
+        to {
+            stroke-dashoffset: -124;
+        }
+    }
+
+    @media (max-width: 48rem) {
+        .river-flow {
+            bottom: -2%;
+            height: 60%;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .river-flow__shine {
+            animation: none;
+        }
+    }
+</style>

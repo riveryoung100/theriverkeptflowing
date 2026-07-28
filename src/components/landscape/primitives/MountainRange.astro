@@ -1,0 +1,89 @@
+﻿---
+interface Props {
+    depth?: "far" | "middle" | "near";
+}
+
+const {
+    depth = "middle"
+} = Astro.props;
+
+const classes = [
+    "mountain-range",
+    `mountain-range--${depth}`
+];
+---
+
+<div class={classes.join(" ")}></div>
+
+<style>
+.mountain-range {
+    position: absolute;
+    right: -8%;
+    left: -8%;
+    transform-origin: bottom center;
+}
+
+.mountain-range--far {
+    bottom: 35%;
+    height: 45%;
+    opacity: 0.25;
+    background: #58736f;
+    clip-path: polygon(
+        0 78%,
+        8% 61%,
+        17% 68%,
+        29% 35%,
+        38% 57%,
+        49% 20%,
+        57% 46%,
+        68% 27%,
+        78% 55%,
+        88% 38%,
+        100% 67%,
+        100% 100%,
+        0 100%
+    );
+    filter: blur(0.15rem);
+}
+
+.mountain-range--middle {
+    bottom: 25%;
+    height: 42%;
+    opacity: 0.39;
+    background: #344f49;
+    clip-path: polygon(
+        0 71%,
+        12% 43%,
+        20% 56%,
+        32% 23%,
+        45% 62%,
+        57% 31%,
+        67% 55%,
+        79% 20%,
+        90% 58%,
+        100% 43%,
+        100% 100%,
+        0 100%
+    );
+}
+
+.mountain-range--near {
+    bottom: 14%;
+    height: 37%;
+    opacity: 0.62;
+    background: #203a34;
+    clip-path: polygon(
+        0 58%,
+        11% 32%,
+        24% 61%,
+        37% 25%,
+        49% 67%,
+        63% 37%,
+        76% 62%,
+        89% 31%,
+        100% 54%,
+        100% 100%,
+        0 100%
+    );
+}
+</style>
