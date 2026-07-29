@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -27,7 +27,7 @@
         gtag("config", "G-KFMXEZR98E");
     </script>
 
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/styles.css">
 </head>
 
 <body>
@@ -157,7 +157,7 @@
                             being built here.
                         </p>
 
-                        <span class="card-link">Begin here →</span>
+                        <span class="card-link">Begin here </span>
 
                     </a>
 
@@ -173,7 +173,7 @@
                             points that shaped the river.
                         </p>
 
-                        <span class="card-link">Read the story →</span>
+                        <span class="card-link">Read the story </span>
 
                     </a>
 
@@ -189,7 +189,7 @@
                             season unfolding now.
                         </p>
 
-                        <span class="card-link">See what is current →</span>
+                        <span class="card-link">See what is current </span>
 
                     </a>
 
@@ -205,7 +205,7 @@
                             river as it continues forward.
                         </p>
 
-                        <span class="card-link">Follow the journey →</span>
+                        <span class="card-link">Follow the journey </span>
 
                     </a>
 
@@ -221,7 +221,7 @@
                             walking through similar waters.
                         </p>
 
-                        <span class="card-link">Read the letters →</span>
+                        <span class="card-link">Read the letters </span>
 
                     </a>
 
@@ -237,7 +237,7 @@
                             have proven useful along the way.
                         </p>
 
-                        <span class="card-link">Explore resources →</span>
+                        <span class="card-link">Explore resources </span>
 
                     </a>
 
@@ -416,7 +416,7 @@
                     </div>
 
                     <a href="pages/current.html" class="text-link">
-                        View everything →
+                        View everything ->
                     </a>
 
                 </div>
@@ -437,7 +437,7 @@
                             faith, and becoming.
                         </p>
 
-                        <span class="card-link">Read the entry →</span>
+                        <span class="card-link">Read the entry -></span>
 
                     </a>
 
@@ -455,7 +455,7 @@
                             achievement alone.
                         </p>
 
-                        <span class="card-link">Read the article →</span>
+                        <span class="card-link">Read the article -></span>
 
                     </a>
 
@@ -473,7 +473,7 @@
                             shaping the person behind the work.
                         </p>
 
-                        <span class="card-link">Explore the project →</span>
+                        <span class="card-link">Explore the project -></span>
 
                     </a>
 
@@ -592,7 +592,7 @@
     </footer>
 
 
-    <script src="script.js"></script>
+    <script is:inline src="/script.js"></script>
 
 </body>
 
