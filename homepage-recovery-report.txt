@@ -1,0 +1,605 @@
+============================================================
+HOMEPAGE RECOVERY REPORT
+Generated: 07/29/2026 11:14:20
+Current branch: main
+============================================================
+
+======================== BRANCHES ========================
+
+  build/living-reflective-reality
+  feature/living-landscapes
+* main
+  remotes/origin/HEAD -> origin/main
+  remotes/origin/build/living-reflective-reality
+  remotes/origin/cloudflare/workers-autoconfig
+  remotes/origin/feature/living-landscapes
+  remotes/origin/main
+  remotes/origin/update_worker_name_to_theriverkeptflowing
+
+================ INDEX.ASTRO HISTORY =====================
+
+cf26a35 Add project roadmap v1.0
+f2d0258 Establish Astro foundation and living world architecture
+4210fe9 (HEAD -> main, tag: pre-world-architecture, origin/main, origin/HEAD) Checkpoint before Astro world architecture normalization
+ffb77a0 Publish Homeowners Insurance Handbook v1.0
+
+================ OLD INDEX.HTML HISTORY ==================
+
+c895dc1 Make public the primary website directory
+5b98868 Make homepage logo clickable
+79daf0f Restore final homepage
+733ecfb Expand platform architecture and homepage navigation
+7b86ca2 (tag: v1.0-personal-platform) Rebranded website around personal platform
+005328f Test automatic deployment
+48ebe9d Initial website version
+
+================ CURRENT TRACKED FILES ===================
+
+public/content/guides/insurance/homeowners-insurance-handbook.html
+public/index.html
+public/pages/tributaries.html
+public/styles.css
+src/layouts/PlaceLayout.astro
+src/layouts/QuietLayout.astro
+src/layouts/ReadingLayout.astro
+src/layouts/WorldLayout.astro
+src/pages/index.astro
+src/styles/accessibility.css
+src/styles/atmosphere.css
+src/styles/places.css
+src/styles/reset.css
+src/styles/tokens.css
+src/styles/transitions.css
+src/styles/typography.css
+src/styles/world.css
+
+================ BUILT HOMEPAGE ==========================
+
+Found dist/index.html
+Length: 10900 bytes
+
+---------------- DIST/INDEX.HTML ----------------
+
+<!DOCTYPE html><html lang="en" data-place-theme="trailhead"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>The River Kept Flowing</title><meta name="description" content="A living reflective reality built to cultivate attention, stewardship, and wonder."><meta name="theme-color" content="#101612"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="/_assets/places.7UpOVo-6.css"><link rel="stylesheet" href="/_assets/index.BfoqxkAM.css"></head> <body> <div class="world-background" aria-hidden="true"> <div class="mist"></div> <div class="light"></div> <div class="grain"></div> </div> <div class="world-shell">  <main class="construction" data-astro-cid-j7pv25f6> <section class="arrival-hero" data-astro-cid-npsv4exl> <div class="arrival-hero__content" data-astro-cid-npsv4exl> <p class="eyebrow fade-up" data-astro-cid-npsv4exl>
+The landscape is being surveyed.
+</p> <h1 class="construction__title fade-up fade-delay-1" data-astro-cid-npsv4exl>
+The River
+<span data-astro-cid-npsv4exl>Kept Flowing</span> </h1> <p class="construction__statement fade-up fade-delay-2" data-astro-cid-npsv4exl>
+A living reflective reality.
+</p> <div class="construction__marker fade-up fade-delay-3" aria-hidden="true" data-astro-cid-npsv4exl> <span data-astro-cid-npsv4exl></span> </div> <section class="arrival fade-up fade-delay-3" data-astro-cid-npsv4exl> <a href="#headwaters" class="button arrival__button" data-astro-cid-npsv4exl>
+Begin the journey
+</a> </section> </div> </section> <section id="headwaters" class="headwaters" data-astro-cid-6opumxzy> <div class="container" data-astro-cid-6opumxzy> <p class="eyebrow" data-astro-cid-6opumxzy>
+Headwaters
+</p> <h2 data-astro-cid-6opumxzy>
+Every river begins somewhere.
+</h2> <p class="headwaters__statement" data-astro-cid-6opumxzy>
+This is a place to slow down, look honestly at the life behind us,
+            and follow the current toward what matters most.
+</p> </div> </section> <section class="walk" aria-labelledby="walk-title" data-astro-cid-zlpgfziw> <header class="walk__heading" data-astro-cid-zlpgfziw> <p class="eyebrow" data-astro-cid-zlpgfziw>
+Walk the River
+</p> <h2 id="walk-title" data-astro-cid-zlpgfziw>
+Some places are found slowly.
+</h2> <p class="walk__intro" data-astro-cid-zlpgfziw>
+There is no right place to begin.
+            Follow the part of the river that feels nearest today.
+</p> </header> <div class="walk__path" data-astro-cid-zlpgfziw> <article class="stop stop--left" data-astro-cid-zlpgfziw> <a href="/headwaters/" class="stop__link" data-astro-cid-zlpgfziw> <span class="stop__marker" aria-hidden="true" data-astro-cid-zlpgfziw> <span data-astro-cid-zlpgfziw></span> </span> <span class="stop__content" data-astro-cid-zlpgfziw> <span class="stop__number" data-astro-cid-zlpgfziw> 01 </span> <span class="stop__eyebrow" data-astro-cid-zlpgfziw> Headwaters </span> <span class="stop__title" data-astro-cid-zlpgfziw> Origins, faith, first principles, and the Source. </span> <span class="stop__description" data-astro-cid-zlpgfziw> clarity · awakening · reverence </span> <span class="stop__invitation" data-astro-cid-zlpgfziw>
+Enter this place
+<span aria-hidden="true" data-astro-cid-zlpgfziw>→</span> </span> </span> </a> </article><article class="stop stop--right" data-astro-cid-zlpgfziw> <a href="/river/" class="stop__link" data-astro-cid-zlpgfziw> <span class="stop__marker" aria-hidden="true" data-astro-cid-zlpgfziw> <span data-astro-cid-zlpgfziw></span> </span> <span class="stop__content" data-astro-cid-zlpgfziw> <span class="stop__number" data-astro-cid-zlpgfziw> 02 </span> <span class="stop__eyebrow" data-astro-cid-zlpgfziw> The River </span> <span class="stop__title" data-astro-cid-zlpgfziw> The continuing current of reflections, films, stories, and daily life. </span> <span class="stop__description" data-astro-cid-zlpgfziw> continuity · presence · movement </span> <span class="stop__invitation" data-astro-cid-zlpgfziw>
+Enter this place
+<span aria-hidden="true" data-astro-cid-zlpgfziw>→</span> </span> </span> </a> </article><article class="stop stop--left" data-astro-cid-zlpgfziw> <a href="/field/" class="stop__link" data-astro-cid-zlpgfziw> <span class="stop__marker" aria-hidden="true" data-astro-cid-zlpgfziw> <span data-astro-cid-zlpgfziw></span> </span> <span class="stop__content" data-astro-cid-zlpgfziw> <span class="stop__number" data-astro-cid-zlpgfziw> 03 </span> <span class="stop__eyebrow" data-astro-cid-zlpgfziw> The Field </span> <span class="stop__title" data-astro-cid-zlpgfziw> Strength, movement, discipline, recovery, and stewardship of the body. </span> <span class="stop__description" data-astro-cid-zlpgfziw> strength · discipline · renewal </span> <span class="stop__invitation" data-astro-cid-zlpgfziw>
+Enter this place
+<span aria-hidden="true" data-astro-cid-zlpgfziw>→</span> </span> </span> </a> </article><article class="stop stop--right" data-astro-cid-zlpgfziw> <a href="/fire/" class="stop__link" data-astro-cid-zlpgfziw> <span class="stop__marker" aria-hidden="true" data-astro-cid-zlpgfziw> <span data-astro-cid-zlpgfziw></span> </span> <span class="stop__content" data-astro-cid-zlpgfziw> <span class="stop__number" data-astro-cid-zlpgfziw> 04 </span> <span class="stop__eyebrow" data-astro-cid-zlpgfziw> The Fire </span> <span class="stop__title" data-astro-cid-zlpgfziw> Faith, formation, conviction, refinement, and the inner life. </span> <span class="stop__description" data-astro-cid-zlpgfziw> reverence · conviction · warmth </span> <span class="stop__invitation" data-astro-cid-zlpgfziw>
+Enter this place
+<span aria-hidden="true" data-astro-cid-zlpgfziw>→</span> </span> </span> </a> </article><article class="stop stop--left" data-astro-cid-zlpgfziw> <a href="/table/" class="stop__link" data-astro-cid-zlpgfziw> <span class="stop__marker" aria-hidden="true" data-astro-cid-zlpgfziw> <span data-astro-cid-zlpgfziw></span> </span> <span class="stop__content" data-astro-cid-zlpgfziw> <span class="stop__number" data-astro-cid-zlpgfziw> 05 </span> <span class="stop__eyebrow" data-astro-cid-zlpgfziw> The Table </span> <span class="stop__title" data-astro-cid-zlpgfziw> Food, family, hospitality, nourishment, and shared life. </span> <span class="stop__description" data-astro-cid-zlpgfziw> welcome · gratitude · belonging </span> <span class="stop__invitation" data-astro-cid-zlpgfziw>
+Enter this place
+<span aria-hidden="true" data-astro-cid-zlpgfziw>→</span> </span> </span> </a> </article><article class="stop stop--right" data-astro-cid-zlpgfziw> <a href="/orchard/" class="stop__link" data-astro-cid-zlpgfziw> <span class="stop__marker" aria-hidden="true" data-astro-cid-zlpgfziw> <span data-astro-cid-zlpgfziw></span> </span> <span class="stop__content" data-astro-cid-zlpgfziw> <span class="stop__number" data-astro-cid-zlpgfziw> 06 </span> <span class="stop__eyebrow" data-astro-cid-zlpgfziw> The Orchard </span> <span class="stop__title" data-astro-cid-zlpgfziw> Growth, family stewardship, cultivation, patience, and lasting fruit. </span> <span class="stop__description" data-astro-cid-zlpgfziw> patience · hope · abundance </span> <span class="stop__invitation" data-astro-cid-zlpgfziw>
+Enter this place
+<span aria-hidden="true" data-astro-cid-zlpgfziw>→</span> </span> </span> </a> </article><article class="stop stop--left" data-astro-cid-zlpgfziw> <a href="/workshop/" class="stop__link" data-astro-cid-zlpgfziw> <span class="stop__marker" aria-hidden="true" data-astro-cid-zlpgfziw> <span data-astro-cid-zlpgfziw></span> </span> <span class="stop__content" data-astro-cid-zlpgfziw> <span class="stop__number" data-astro-cid-zlpgfziw> 07 </span> <span class="stop__eyebrow" data-astro-cid-zlpgfziw> The Workshop </span> <span class="stop__title" data-astro-cid-zlpgfziw> Craft, websites, systems, business, building, and practical work. </span> <span class="stop__description" data-astro-cid-zlpgfziw> focus · craftsmanship · possibility </span> <span class="stop__invitation" data-astro-cid-zlpgfziw>
+Enter this place
+<span aria-hidden="true" data-astro-cid-zlpgfziw>→</span> </span> </span> </a> </article><article class="stop stop--right" data-astro-cid-zlpgfziw> <a href="/guides/" class="stop__link" data-astro-cid-zlpgfziw> <span class="stop__marker" aria-hidden="true" data-astro-cid-zlpgfziw> <span data-astro-cid-zlpgfziw></span> </span> <span class="stop__content" data-astro-cid-zlpgfziw> <span class="stop__number" data-astro-cid-zlpgfziw> 08 </span> <span class="stop__eyebrow" data-astro-cid-zlpgfziw> River Guides </span> <span class="stop__title" data-astro-cid-zlpgfziw> Practical lessons, tools, resources, and guidance for the road ahead. </span> <span class="stop__description" data-astro-cid-zlpgfziw> clarity · readiness · companionship </span> <span class="stop__invitation" data-astro-cid-zlpgfziw>
+Enter this place
+<span aria-hidden="true" data-astro-cid-zlpgfziw>→</span> </span> </span> </a> </article><article class="stop stop--left" data-astro-cid-zlpgfziw> <a href="/journal/" class="stop__link" data-astro-cid-zlpgfziw> <span class="stop__marker" aria-hidden="true" data-astro-cid-zlpgfziw> <span data-astro-cid-zlpgfziw></span> </span> <span class="stop__content" data-astro-cid-zlpgfziw> <span class="stop__number" data-astro-cid-zlpgfziw> 09 </span> <span class="stop__eyebrow" data-astro-cid-zlpgfziw> The Journal </span> <span class="stop__title" data-astro-cid-zlpgfziw> Writings, observations, stories, reflections, and the unfolding record. </span> <span class="stop__description" data-astro-cid-zlpgfziw> reflection · honesty · attention </span> <span class="stop__invitation" data-astro-cid-zlpgfziw>
+Enter this place
+<span aria-hidden="true" data-astro-cid-zlpgfziw>→</span> </span> </span> </a> </article><article class="stop stop--right" data-astro-cid-zlpgfziw> <a href="/marketplace/" class="stop__link" data-astro-cid-zlpgfziw> <span class="stop__marker" aria-hidden="true" data-astro-cid-zlpgfziw> <span data-astro-cid-zlpgfziw></span> </span> <span class="stop__content" data-astro-cid-zlpgfziw> <span class="stop__number" data-astro-cid-zlpgfziw> 10 </span> <span class="stop__eyebrow" data-astro-cid-zlpgfziw> The Marketplace </span> <span class="stop__title" data-astro-cid-zlpgfziw> Products, services, partnerships, support, commerce, and contribution. </span> <span class="stop__description" data-astro-cid-zlpgfziw> exchange · service · stewardship </span> <span class="stop__invitation" data-astro-cid-zlpgfziw>
+Enter this place
+<span aria-hidden="true" data-astro-cid-zlpgfziw>→</span> </span> </span> </a> </article> </div> </section> </main>  </div> </body></html>
+
+================ BUILT CSS FILES =========================
+
+
+================ PHRASE SEARCH ===========================
+
+
+Path                                                                               LineNumber Line                       
+----                                                                               ---------- ----                       
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\card-diagnostic.txt                        9 const title = "The River   
+                                                                                              Kept Flowing";             
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\card-diagnostic.txt                     5920     title = "The River     
+                                                                                              Kept Flowing",             
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\homepage-complete-review.txt               2 THE RIVER KEPT FLOWING ?   
+                                                                                              COMPLETE HOMEPAGE SOURCE   
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\homepage-recovery-report.txt              63 <!DOCTYPE html><html       
+                                                                                              lang="en" data-place-theme=
+                                                                                              "trailhead"> <head><meta   
+                                                                                              charset="UTF-8"><meta      
+                                                                                              name="viewport" content="wi
+                                                                                              dth=device-width, initial-s
+                                                                                              cale=1.0"><title>The River 
+                                                                                              Kept Flowing</title><meta  
+                                                                                              name="description"         
+                                                                                              content="A living          
+                                                                                              reflective reality built   
+                                                                                              to cultivate attention,    
+                                                                                              stewardship, and           
+                                                                                              wonder."><meta             
+                                                                                              name="theme-color"         
+                                                                                              content="#101612"><link    
+                                                                                              rel="preconnect" href="http
+                                                                                              s://fonts.googleapis.com"><
+                                                                                              link rel="preconnect" href=
+                                                                                              "https://fonts.gstatic.com"
+                                                                                               crossorigin><link href="ht
+                                                                                              tps://fonts.googleapis.com/
+                                                                                              css2?family=Inter:wght@400;
+                                                                                              500;600&display=swap"      
+                                                                                              rel="stylesheet"><link     
+                                                                                              rel="stylesheet" href="/_as
+                                                                                              sets/places.7UpOVo-6.css"><
+                                                                                              link rel="stylesheet" href=
+                                                                                              "/_assets/index.BfoqxkAM.cs
+                                                                                              s"></head> <body> <div     
+                                                                                              class="world-background"   
+                                                                                              aria-hidden="true"> <div   
+                                                                                              class="mist"></div> <div   
+                                                                                              class="light"></div> <div  
+                                                                                              class="grain"></div>       
+                                                                                              </div> <div                
+                                                                                              class="world-shell">       
+                                                                                              <main class="construction" 
+                                                                                              data-astro-cid-j7pv25f6>   
+                                                                                              <section                   
+                                                                                              class="arrival-hero"       
+                                                                                              data-astro-cid-npsv4exl>   
+                                                                                              <div class="arrival-hero__c
+                                                                                              ontent"                    
+                                                                                              data-astro-cid-npsv4exl>   
+                                                                                              <p class="eyebrow fade-up" 
+                                                                                              data-astro-cid-npsv4exl>   
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\homepage-source.txt                        2 THE RIVER KEPT FLOWING ?   
+                                                                                              ASTRO HOMEPAGE             
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\readability-diagnostic.txt                80     title={`${place.name}  
+                                                                                              | The River Kept Flowing`} 
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\savable yeah.txt                          80     title={`${place.name}  
+                                                                                              | The River Kept Flowing`} 
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\archive\timeline\life-timeline.md         51 ## The River Kept Flowing  
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\index.html                          8     <title>The River Kept  
+                                                                                              Flowing | Build a Life     
+                                                                                              That Lasts</title>         
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\index.html                         12         content="The River 
+                                                                                              Kept Flowing is a living   
+                                                                                              archive of faith, family,  
+                                                                                              stewardship, perseverance, 
+                                                                                              creativity, and the        
+                                                                                              lifelong work of becoming."
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\index.html                         38             The River Kept 
+                                                                                              Flowing                    
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\index.html                         69                     The    
+                                                                                              River Kept Flowing         
+                                                                                              documents the lessons,     
+                                                                                              failures,                  
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\index.html                        266                            
+                                                                                              The River Kept Flowing     
+                                                                                              exists to help people      
+                                                                                              build lives of             
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\index.html                        331                            
+                                                                                              The tributaries            
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\index.html                        335                         A  
+                                                                                              meaningful life is fed by  
+                                                                                              many streams.              
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\index.html                        432                            
+                                                                                               The River Kept Flowing    
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\index.html                        557                     The    
+                                                                                              River Kept Flowing         
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\index.html                        583                 � 2026 The 
+                                                                                              River Kept Flowing. All    
+                                                                                              rights reserved.           
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\script.js                           5         THE RIVER KEPT     
+                                                                                              FLOWING                    
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\styles.css                          2 THE RIVER KEPT FLOWING     
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\styles.css                       3134 THE TRIBUTARIES PAGE       
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\styles.css                       5458    The River Kept Flowing  
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\articles\first-post.html           11 <title>The Work Of         
+                                                                                              Becoming | The River Kept  
+                                                                                              Flowing</title>            
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\articles\first-post.html           17 <meta name="author"        
+                                                                                              content="The River Kept    
+                                                                                              Flowing">                  
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\articles\first-post.html           35 The River Kept Flowing     
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\articles\first-post.html          384 The river kept flowing     
+                                                                                              because it never required  
+                                                                                              every obstacle to          
+                                                                                              disappear before moving    
+                                                                                              forward.                   
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\first-entry.html           11 <title>Why The River Kept  
+                                                                                              Flowing | The River Kept   
+                                                                                              Flowing</title>            
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\first-entry.html           14 <meta name="description"   
+                                                                                              content="The story behind  
+                                                                                              The River Kept Flowing � a 
+                                                                                              journey of perseverance,   
+                                                                                              faith, transformation,     
+                                                                                              stewardship, family, and   
+                                                                                              building a life that       
+                                                                                              lasts.">                   
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\first-entry.html           17 <meta name="author"        
+                                                                                              content="The River Kept    
+                                                                                              Flowing">                  
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\first-entry.html           35 The River Kept Flowing     
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\first-entry.html           86 Why The River Kept Flowing 
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\first-entry.html          185 The River Kept Flowing was 
+                                                                                              born from the              
+                                                                                              understanding that life is 
+                                                                                              not measured only by what  
+                                                                                              we achieve.                
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\first-entry.html          252 The River Kept Flowing     
+                                                                                              represents the decision to 
+                                                                                              continue becoming.         
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\a         17   <meta                    
+uto-insurance-handbook.html                                                                   property="og:site_name"    
+                                                                                              content="The River Kept    
+                                                                                              Flowing">                  
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\a         28     "publisher": {"@type": 
+uto-insurance-handbook.html                                                                   "Organization", "name":    
+                                                                                              "The River Kept Flowing"}, 
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\a         42     <a                     
+uto-insurance-handbook.html                                                                   href="../../../index.html" 
+                                                                                              class="logo">The River     
+                                                                                              Kept Flowing</a>           
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\a        339       <div><a              
+uto-insurance-handbook.html                                                                   href="../../../index.html" 
+                                                                                              class="footer-logo">The    
+                                                                                              River Kept                 
+                                                                                              Flowing</a><p>Building a   
+                                                                                              life that is worth         
+                                                                                              remembering.</p></div>     
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\a        342     <div                   
+uto-insurance-handbook.html                                                                   class="footer-bottom"><p>� 
+                                                                                              2026 The River Kept        
+                                                                                              Flowing. All rights        
+                                                                                              reserved.</p><p>Useful     
+                                                                                              knowledge should keep      
+                                                                                              moving.</p></div>          
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\h         19   <meta                    
+omeowners-insurance-handbook.html                                                             property="og:site_name"    
+                                                                                              content="The River Kept    
+                                                                                              Flowing">                  
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\h         37       "name": "The River   
+omeowners-insurance-handbook.html                                                             Kept Flowing"              
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\h         57     <a                     
+omeowners-insurance-handbook.html                                                             href="../../../index.html" 
+                                                                                              class="logo">The River     
+                                                                                              Kept Flowing</a>           
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\h       1399             <div><dt>Publis
+omeowners-insurance-handbook.html                                                             her</dt><dd>The River Kept 
+                                                                                              Flowing</dd></div>         
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\h       1429     <p>&copy; 2026 The     
+omeowners-insurance-handbook.html                                                             River Kept Flowing. All    
+                                                                                              rights reserved.</p>       
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\l          7    The Landlord Insurance  
+andlord-insurance-handbook.html                                                               Handbook | The River Kept  
+                                                                                              Flowing                    
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\l         17     The River Kept Flowing 
+andlord-insurance-handbook.html                                                                                          
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\l       1105     &copy; 2026 The River  
+andlord-insurance-handbook.html                                                               Kept Flowing               
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\l         12    rest of The River Kept  
+ife-insurance-handbook.css                                                                    Flowing website.           
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\l         17 <meta                      
+ife-insurance-handbook.html                                                                   property="og:site_name"    
+                                                                                              content="The River Kept    
+                                                                                              Flowing">                  
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\l         20 {"@context":"https://schema
+ife-insurance-handbook.html                                                                   .org","@type":"Article","he
+                                                                                              adline":"The Life          
+                                                                                              Insurance Handbook","author
+                                                                                              ":{"@type":"Person","name":
+                                                                                              "River Young"},"publisher":
+                                                                                              {"@type":"Organization","na
+                                                                                              me":"The River Kept Flowing
+                                                                                              "},"datePublished":"2026-07
+                                                                                              -26","dateModified":"2026-0
+                                                                                              7-26","mainEntityOfPage":"h
+                                                                                              ttps://theriverkeptflowing.
+                                                                                              com/content/guides/insuranc
+                                                                                              e/life-insurance-handbook.h
+                                                                                              tml","articleSection":"Rive
+                                                                                              r Guides:                  
+                                                                                              Insurance","version":"1.0"}
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\l         28 <a                         
+ife-insurance-handbook.html                                                                   href="../../../index.html" 
+                                                                                              class="logo">The River     
+                                                                                              Kept Flowing</a>           
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\l         59 <aside class="originality-c
+ife-insurance-handbook.html                                                                   ard"><p                    
+                                                                                              class="card-label">The     
+                                                                                              River Guides standard</p><h
+                                                                                              3>Hard-earned knowledge    
+                                                                                              should be made useful      
+                                                                                              without pretending it      
+                                                                                              began with us.</h3><p>The  
+                                                                                              insurance concepts in this 
+                                                                                              handbook belong to a       
+                                                                                              long-established body of   
+                                                                                              public, professional,      
+                                                                                              contractual, and legal     
+                                                                                              knowledge. The             
+                                                                                              organization,              
+                                                                                              explanations, analogies,   
+                                                                                              scenarios, reflections,    
+                                                                                              and written expression     
+                                                                                              here are original to       
+                                                                                              <em>The River Kept         
+                                                                                              Flowing</em>. Carrier      
+                                                                                              brochures and third-party  
+                                                                                              training language should   
+                                                                                              never be copied into       
+                                                                                              future                     
+                                                                                              editions.</p></aside>      
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\l        263 <footer class="handbook-foo
+ife-insurance-handbook.html                                                                   ter"><div                  
+                                                                                              class="handbook-shell handb
+                                                                                              ook-footer__inner"><div><p 
+                                                                                              class="footer-brand">The   
+                                                                                              River Kept                 
+                                                                                              Flowing</p><p>Build a life 
+                                                                                              worth remembering. Send    
+                                                                                              something useful           
+                                                                                              downstream.</p></div><div c
+                                                                                              lass="handbook-footer__link
+                                                                                              s"><a href="../../../pages/
+                                                                                              river-guides.html">River   
+                                                                                              Guides</a><a href="../../..
+                                                                                              /pages/tributaries.html">Tr
+                                                                                              ibutaries</a><a href="../..
+                                                                                              /../pages/letters-from-the-
+                                                                                              river.html">Letters</a><a h
+                                                                                              ref="../../../index.html">H
+                                                                                              ome</a></div></div></footer
+                                                                                              >                          
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\r         46           content="The     
+enters-insurance-handbook.html                                                                River Kept Flowing">       
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\r         69             "name": "The   
+enters-insurance-handbook.html                                                                River Kept Flowing"        
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\r        116             The River Kept 
+enters-insurance-handbook.html                                                                Flowing                    
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\r       2939                     The    
+enters-insurance-handbook.html                                                                River Kept Flowing         
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\r       2979                 � 2026 The 
+enters-insurance-handbook.html                                                                River Kept Flowing.        
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\u          7   <title>The Umbrella      
+mbrella-insurance-handbook.html                                                               Insurance Handbook | The   
+                                                                                              River Kept Flowing</title> 
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\u         20   <meta                    
+mbrella-insurance-handbook.html                                                               property="og:site_name"    
+                                                                                              content="The River Kept    
+                                                                                              Flowing">                  
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\u         38       "name": "The River   
+mbrella-insurance-handbook.html                                                               Kept Flowing"              
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\u         58     <a class="brand" href="
+mbrella-insurance-handbook.html                                                               ../../../index.html">The   
+                                                                                              River Kept Flowing</a>     
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\u        728               This guide   
+mbrella-insurance-handbook.html                                                               is part of <strong>The     
+                                                                                              River Kept Flowing         
+                                                                                              Insurance Handbook         
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\u        744               guides from  
+mbrella-insurance-handbook.html                                                               The River Kept Flowing.    
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\u        758       <a                   
+mbrella-insurance-handbook.html                                                               href="../../../index.html" 
+                                                                                              class="footer-brand">The   
+                                                                                              River Kept Flowing</a>     
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\content\guides\insurance\u        767     <p                     
+mbrella-insurance-handbook.html                                                               class="copyright">&copy;   
+                                                                                              2026 The River Kept        
+                                                                                              Flowing. All rights        
+                                                                                              reserved.</p>              
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\current.html                  9     <title>The Current |   
+                                                                                              The River Kept             
+                                                                                              Flowing</title>            
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\current.html                 29             The River Kept 
+                                                                                              Flowing                    
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\current.html                192                            
+                                                                                               The River Kept Flowing    
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\current.html               1218                            
+                                                                                               beneath The River Kept    
+                                                                                              Flowing.                   
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\current.html               1326                     The    
+                                                                                              River Kept Flowing         
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\current.html               1366                 � 2026 The 
+                                                                                              River Kept Flowing. All    
+                                                                                              rights reserved.           
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\headwaters.html               8     <title>The Headwaters  
+                                                                                              | The River Kept           
+                                                                                              Flowing</title>            
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\headwaters.html              12         content="The       
+                                                                                              Headwaters is the          
+                                                                                              foundation of The River    
+                                                                                              Kept Flowing: the beliefs, 
+                                                                                              principles, and            
+                                                                                              convictions guiding a life 
+                                                                                              of faith, stewardship,     
+                                                                                              service, family, and       
+                                                                                              legacy."                   
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\headwaters.html              25             The River Kept 
+                                                                                              Flowing                    
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\headwaters.html             103                     The    
+                                                                                              River Kept Flowing exists  
+                                                                                              to document the pursuit of 
+                                                                                              a deeper                   
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\headwaters.html             380                     This   
+                                                                                              is the posture behind The  
+                                                                                              River Kept Flowing:        
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\headwaters.html             437                     The    
+                                                                                              River Kept Flowing         
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\headwaters.html             460                 � 2026 The 
+                                                                                              River Kept Flowing. All    
+                                                                                              rights reserved.           
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\journey.html                  9     <title>The Journey |   
+                                                                                              The River Kept             
+                                                                                              Flowing</title>            
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\journey.html                 13         content="The       
+                                                                                              Journey follows the        
+                                                                                              unfolding direction of The 
+                                                                                              River Kept Flowing �       
+                                                                                              faith, family, work,       
+                                                                                              stewardship, creation,     
+                                                                                              service, and the lifelong  
+                                                                                              process of becoming."      
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\journey.html                 29             The River Kept 
+                                                                                              Flowing                    
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\journey.html                631                            
+                                                                                                   The River Kept        
+                                                                                              Flowing moved from an idea 
+                                                                                              into a                     
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\journey.html               1248                            
+                                                                                               Explore the Tributaries   
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\journey.html               1299                     The    
+                                                                                              river kept flowing not     
+                                                                                              because it knew every turn,
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\journey.html               1330                     The    
+                                                                                              River Kept Flowing         
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\journey.html               1370                 � 2026 The 
+                                                                                              River Kept Flowing. All    
+                                                                                              rights reserved.           
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\letters-from-the-riv          9     <title>Letters From    
+er.html                                                                                       the River | The River Kept 
+                                                                                              Flowing</title>            
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\letters-from-the-riv         29             The River Kept 
+er.html                                                                                       Flowing                    
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\letters-from-the-riv       1188                     The    
+er.html                                                                                       River Kept Flowing         
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\letters-from-the-riv       1236                 � 2026 The 
+er.html                                                                                       River Kept Flowing. All    
+                                                                                              rights reserved.           
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\river-guides.html             7    River Guides | The      
+                                                                                              River Kept Flowing         
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\river-guides.html             9   <meta content="River     
+                                                                                              Guides is the practical    
+                                                                                              library of The River Kept  
+                                                                                              Flowing &mdash; structured 
+                                                                                              lessons, tools, systems,   
+                                                                                              explanations,              
+                                                                                              recommendations, and       
+                                                                                              resources for building a   
+                                                                                              meaningful life."          
+                                                                                              name="description"/>       
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\river-guides.html            16   <meta content="River     
+                                                                                              Guides | The River Kept    
+                                                                                              Flowing"                   
+                                                                                              property="og:title"/>      
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\river-guides.html            19   <meta content="The River 
+                                                                                              Kept Flowing"              
+                                                                                              property="og:site_name"/>  
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\river-guides.html            24     The River Kept Flowing 
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\river-guides.html          1251         Explore the        
+                                                                                              Tributaries                
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\river-guides.html          1339        Explore the         
+                                                                                              Tributaries                
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\river-guides.html          1352       The River Kept       
+                                                                                              Flowing                    
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\river-guides.html          1384      &copy; 2026 The River 
+                                                                                              Kept Flowing. All rights   
+                                                                                              reserved.                  
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\source.html                   8     <title>The Source |    
+                                                                                              The River Kept             
+                                                                                              Flowing</title>            
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\source.html                  12         content="The       
+                                                                                              Source tells the story     
+                                                                                              behind The River Kept      
+                                                                                              Flowing: childhood         
+                                                                                              imagination, music,        
+                                                                                              competition, work, sales,  
+                                                                                              perseverance, ambition,    
+                                                                                              and the experiences that   
+                                                                                              shaped the journey."       
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\source.html                  25             The River Kept 
+                                                                                              Flowing                    
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\source.html                1168                     The    
+                                                                                              River Kept Flowing         
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\source.html                1189                 � 2026 The 
+                                                                                              River Kept Flowing. All    
+                                                                                              rights reserved.           
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\tributaries.html              9     <title>The Tributaries 
+                                                                                              | The River Kept           
+                                                                                              Flowing</title>            
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\tributaries.html             13         content="The       
+                                                                                              Tributaries organize the   
+                                                                                              many streams feeding The   
+                                                                                              River Kept Flowing �       
+                                                                                              faith, family, work,       
+                                                                                              insurance, finance,        
+                                                                                              health, food, philosophy,  
+                                                                                              creation, and service."    
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\tributaries.html             29             The River Kept 
+                                                                                              Flowing                    
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\tributaries.html             84                            
+                                                                                              service, and experience    
+                                                                                              all enter the same life.   
+                                                                                              The Tributaries            
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\tributaries.html             91                            
+                                                                                              Explore the Tributaries    
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\tributaries.html            142                     The    
+                                                                                              Tributaries exist to       
+                                                                                              organize those different   
+                                                                                              streams                    
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\tributaries.html            147                     This   
+                                                                                              is the map of what The     
+                                                                                              River Kept Flowing is      
+                                                                                              becoming.                  
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\tributaries.html            685                            
+                                                                                              Principles of the          
+                                                                                              tributaries                
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\tributaries.html            830                            
+                                                                                              The Tributaries are the    
+                                                                                              publishing structure of    
+                                                                                              the platform.              
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\tributaries.html           1187                     The    
+                                                                                              River Kept Flowing         
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\tributaries.html           1231                 � 2026 The 
+                                                                                              River Kept Flowing. All    
+                                                                                              rights reserved.           
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\work-of-becoming.htm          6     <title>The Work of     
+l                                                                                             Becoming | The River Kept  
+                                                                                              Flowing</title>            
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\work-of-becoming.htm         15         The River Kept     
+l                                                                                             Flowing                    
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\work-of-becoming.htm         30         one of the         
+l                                                                                             foundational chapters of   
+                                                                                              <strong>Why the River Kept 
+                                                                                              Flowing</strong>.          
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\public\pages\work-of-becoming.htm         38         The River kept     
+l                                                                                             flowing.                   
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\templates\universal-content-page.         13     <title>Page Title |    
+html                                                                                          The River Kept             
+                                                                                              Flowing</title>            
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\templates\universal-content-page.         30         content="Page      
+html                                                                                          Title | The River Kept     
+                                                                                              Flowing"                   
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\templates\universal-content-page.         48     <meta                  
+html                                                                                          property="og:site_name"    
+                                                                                              content="The River Kept    
+                                                                                              Flowing">                  
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\templates\universal-content-page.         56         content="Page      
+html                                                                                          Title | The River Kept     
+                                                                                              Flowing"                   
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\templates\universal-content-page.        109             "name": "The   
+html                                                                                          River Kept Flowing",       
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\templates\universal-content-page.        132             The River Kept 
+html                                                                                          Flowing                    
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\templates\universal-content-page.       1424                            
+html                                                                                          The River Kept Flowing     
+C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\templates\universal-content-page.       1477                     The    
+html                                                                                          River Kept Flowing.        
+
+
+

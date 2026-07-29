@@ -1,0 +1,25 @@
+============================================================
+THE RIVER KEPT FLOWING — ASTRO HOMEPAGE
+Generated: 07/29/2026 11:10:59
+Branch: main
+============================================================
+
+===================== SRC/PAGES/INDEX.ASTRO =====================
+
+
+============================================================
+GLOBAL STYLES AND LAYOUT CANDIDATES
+============================================================
+
+
+-------------------- C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\src\layouts\PlaceLayout.astro --------------------
+
+
+-------------------- C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\src\layouts\QuietLayout.astro --------------------
+
+
+-------------------- C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\src\layouts\ReadingLayout.astro --------------------
+
+
+-------------------- C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\src\layouts\WorldLayout.astro --------------------
+

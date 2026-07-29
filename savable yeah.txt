@@ -1,0 +1,969 @@
+﻿==================================================
+TEXT SOURCE: STEWARDSHIP
+==================================================
+
+
+Path       : C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\src\data\placeContent.ts
+LineNumber : 12
+Line       :             "Explore physical stewardship through strength, movement, recovery, discipline, health, and sustainable training.",
+Context    : Microsoft.PowerShell.Commands.MatchInfoContext
+
+Path       : C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\src\data\placeContent.ts
+LineNumber : 60
+Line       :             "Explore work that grows slowly: stewardship, family provision, long-term thinking, cultivation, multiplication, and inheritance.",
+Context    : Microsoft.PowerShell.Commands.MatchInfoContext
+
+Path       : C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\src\data\places.ts
+LineNumber : 159
+Line       :         purpose: "Strength, movement, discipline, recovery, and stewardship of the body.",
+Context    : Microsoft.PowerShell.Commands.MatchInfoContext
+
+Path       : C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\src\data\places.ts
+LineNumber : 288
+Line       :         purpose: "Growth, family stewardship, cultivation, patience, and lasting fruit.",
+Context    : Microsoft.PowerShell.Commands.MatchInfoContext
+
+Path       : C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\src\data\places.ts
+LineNumber : 461
+Line       :         emotionalTone: ["exchange", "service", "stewardship"],
+Context    : Microsoft.PowerShell.Commands.MatchInfoContext
+
+Path       : C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\src\layouts\WorldLayout.astro
+LineNumber : 15
+Line       :     description = "A place to explore faith, craft, stewardship, family, and the work of becoming.",
+Context    : Microsoft.PowerShell.Commands.MatchInfoContext
+
+Path       : C:\Users\river\OneDrive\Desktop\RIVERKEPTFLOWING\src\pages\index.astro
+LineNumber : 9
+Line       :     "A living reflective reality built to cultivate attention, stewardship, and wonder.";
+Context    : Microsoft.PowerShell.Commands.MatchInfoContext
+
+
+
+
+==================================================
+TEXT SOURCE: QUOTE
+==================================================
+
+==================================================
+PLACE PAGE CSS AND MARKUP
+==================================================
+---
+import WorldLayout from "../../layouts/WorldLayout.astro";
+import LandscapeScene from "../landscape/LandscapeScene.astro";
+import { placesById } from "../../data/places";
+import { placeContent } from "../../data/placeContent";
+
+interface Props {
+    placeId: string;
+}
+
+const { placeId } = Astro.props;
+
+const place = placesById[placeId];
+const content = placeContent[placeId];
+
+if (!place) {
+    throw new Error(`Unknown place: ${placeId}`);
+}
+
+if (!content) {
+    throw new Error(`Missing page content for place: ${placeId}`);
+}
+
+const neighboringPlaces = place.neighbors
+    .map((neighborId) => placesById[neighborId])
+    .filter(Boolean);
+---
+
+<WorldLayout
+    title={`${place.name} | The River Kept Flowing`}
+    description={content.description}
+>
+    <main class="place-page">
+
+        <section class="place-page__hero">
+
+            <a
+                class="place-page__return"
+                href="/"
+            >
+                Return to the Trailhead
+            </a>
+
+            <p class="place-page__eyebrow">
+                {content.eyebrow}
+            </p>
+
+            <h1 class="place-page__title">
+                {place.name}
+            </h1>
+
+            <p class="place-page__description">
+                {content.description}
+            </p>
+
+        </section>
+
+        <section class="place-page__body">
+
+            <div class="place-page__content">
+
+                <p class="place-page__label">
+                    The purpose of this place
+                </p>
+
+                <p class="place-page__purpose">
+                    {content.purpose}
+                </p>
+
+                <p class="place-page__status">
+                    {content.status ?? "This place is being prepared."}
+                </p>
+
+            </div>
+
+        </section>
+
+        <section
+            class="place-page__landscape"
+            aria-labelledby="landscape-title"
+        >
+
+            <div class="place-page__landscape-inner">
+
+                <p class="place-page__label">
+                    The landscape
+                </p>
+
+                <h2 id="landscape-title">
+                    The character of this place
+                </h2>
+
+                <dl class="place-page__details">
+
+                    <div>
+                        <dt>Region</dt>
+                        <dd>{place.region.replaceAll("-", " ")}</dd>
+                    </div>
+
+                    <div>
+                        <dt>Biome</dt>
+                        <dd>{place.environment.biome.replaceAll("-", " ")}</dd>
+                    </div>
+
+                    <div>
+                        <dt>Water</dt>
+                        <dd>{place.environment.waterCharacter}</dd>
+                    </div>
+
+                    <div>
+                        <dt>Time</dt>
+                        <dd>{place.atmosphere.defaultTime.replaceAll("-", " ")}</dd>
+                    </div>
+
+                    <div>
+                        <dt>Weather</dt>
+                        <dd>{place.atmosphere.weatherProfile.replaceAll("-", " ")}</dd>
+                    </div>
+
+                    <div>
+                        <dt>Elevation</dt>
+                        <dd>{place.coordinates.elevation.toLocaleString()} feet</dd>
+                    </div>
+
+                </dl>
+
+            </div>
+
+        </section>
+
+        {
+            neighboringPlaces.length > 0 && (
+
+                <nav
+                    class="place-page__journey"
+                    aria-labelledby="journey-title"
+                >
+
+                    <div class="place-page__journey-inner">
+
+                        <p class="place-page__label">
+                            Continue the river
+                        </p>
+
+                        <h2 id="journey-title">
+                            Nearby places
+                        </h2>
+
+                        <div class="place-page__neighbors">
+
+                            {
+                                neighboringPlaces.map((neighbor) => (
+
+                                    <a
+                                        href={neighbor.path}
+                                        class="place-page__neighbor"
+                                    >
+                                        <span>{neighbor.name}</span>
+                                        <span aria-hidden="true">→</span>
+                                    </a>
+
+                                ))
+                            }
+
+                        </div>
+
+                    </div>
+
+                </nav>
+
+            )
+        }
+
+    </main>
+</WorldLayout>
+
+<style>
+    .place-page {
+        width: 100%;
+        min-height: 100svh;
+    }
+
+    .place-page__hero {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: min(
+            calc(100% - (var(--page-gutter) * 2)),
+            72rem
+        );
+        min-height: 78svh;
+        margin-inline: auto;
+        padding-block: var(--space-16);
+    }
+
+    .place-page__return,
+    .place-page__eyebrow,
+    .place-page__title,
+    .place-page__description {
+        position: relative;
+        z-index: 2;
+    }
+
+    .place-page__return {
+        align-self: flex-start;
+        margin-bottom: var(--space-16);
+        color: var(--color-text-muted);
+        font-size: 0.9rem;
+        text-decoration: none;
+    }
+
+    .place-page__return:hover,
+    .place-page__return:focus-visible {
+        color: var(--color-text);
+    }
+
+    .place-page__eyebrow,
+    .place-page__label {
+        color: var(--color-text-muted);
+        font-size: 0.78rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+    }
+
+    .place-page__title {
+        max-width: 11ch;
+        margin-top: var(--space-6);
+        font-size: clamp(4rem, 11vw, 9rem);
+        line-height: 0.9;
+        letter-spacing: -0.055em;
+    }
+
+    .place-page__description {
+        max-width: 42rem;
+        margin-top: var(--space-10);
+        color: var(--color-text-soft);
+        font-size: clamp(1.1rem, 2vw, 1.45rem);
+        line-height: 1.65;
+    }
+
+    .place-page__body,
+    .place-page__landscape,
+    .place-page__journey {
+        padding:
+            var(--space-16)
+            var(--page-gutter);
+        border-top: 1px solid var(--color-border);
+    }
+
+    .place-page__body {
+        display: flex;
+        align-items: center;
+        min-height: 70svh;
+    }
+
+    .place-page__content,
+    .place-page__landscape-inner,
+    .place-page__journey-inner {
+        width: min(100%, 52rem);
+        margin-inline: auto;
+    }
+
+    .place-page__purpose {
+        margin-top: var(--space-8);
+        font-size: clamp(1.7rem, 4vw, 3rem);
+        line-height: 1.25;
+        letter-spacing: -0.025em;
+    }
+
+    .place-page__status {
+        margin-top: var(--space-12);
+        color: var(--color-text-muted);
+    }
+
+    .place-page__landscape h2,
+    .place-page__journey h2 {
+        margin-top: var(--space-6);
+        font-size: clamp(2.4rem, 6vw, 4.5rem);
+        line-height: 1;
+        letter-spacing: -0.045em;
+    }
+
+    .place-page__details {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--space-10);
+        margin-top: var(--space-12);
+    }
+
+    .place-page__details div {
+        padding-top: var(--space-5);
+        border-top: 1px solid var(--color-border);
+    }
+
+    .place-page__details dt {
+        color: var(--color-text-muted);
+        font-size: 0.76rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+    }
+
+    .place-page__details dd {
+        margin-top: var(--space-4);
+        color: var(--color-text-soft);
+        line-height: 1.6;
+        text-transform: capitalize;
+    }
+
+    .place-page__neighbors {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--space-4);
+        margin-top: var(--space-12);
+    }
+
+    .place-page__neighbor {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-5);
+        padding: var(--space-6);
+        border: 1px solid var(--color-border);
+        color: var(--color-text-soft);
+        text-decoration: none;
+        transition:
+            color var(--duration-medium) var(--ease-soft),
+            border-color var(--duration-medium) var(--ease-soft),
+            transform var(--duration-medium) var(--ease-soft);
+    }
+
+    .place-page__neighbor:hover,
+    .place-page__neighbor:focus-visible {
+        color: var(--color-text);
+        border-color: var(--color-text-muted);
+        transform: translateY(-0.2rem);
+    }
+
+    @media (max-width: 48rem) {
+        .place-page__hero {
+            min-height: 70svh;
+        }
+
+        .place-page__return,
+    .place-page__eyebrow,
+    .place-page__title,
+    .place-page__description {
+        position: relative;
+        z-index: 2;
+    }
+
+    .place-page__return {
+            margin-bottom: var(--space-12);
+        }
+
+        .place-page__title {
+            font-size: clamp(3.5rem, 18vw, 6rem);
+        }
+
+        .place-page__details,
+        .place-page__neighbors {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .place-page__neighbor {
+            transition: none;
+        }
+    }
+</style>
+
+
+
+==================================================
+WORLD CSS
+==================================================
+/* ---------- Reset ---------- */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+
+    background: var(--color-background);
+
+    color: var(--color-text);
+}
+
+/* ---------- Layout ---------- */
+
+.world-shell {
+    position: relative;
+    z-index: var(--z-content);
+
+    min-height: 100vh;
+}
+
+main {
+    width: min(
+        var(--content-width-world),
+        calc(100% - (var(--page-gutter) * 2))
+    );
+
+    margin-inline: auto;
+}
+
+/* ---------- Sections ---------- */
+
+section {
+    padding-block: var(--section-space);
+}
+
+.container {
+    width: min(
+        var(--content-width-wide),
+        calc(100% - (var(--page-gutter) * 2))
+    );
+
+    margin-inline: auto;
+}
+
+/* ---------- Fade In ---------- */
+
+.fade-up {
+
+    opacity: 0;
+
+    transform:
+        translateY(2rem);
+
+    animation:
+
+        fade-up
+
+        var(--duration-reveal)
+
+        var(--ease-natural)
+
+        forwards;
+}
+
+.fade-delay-1 {
+    animation-delay: .25s;
+}
+
+.fade-delay-2 {
+    animation-delay: .55s;
+}
+
+.fade-delay-3 {
+    animation-delay: .9s;
+}
+
+@keyframes fade-up {
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0);
+
+    }
+
+}
+
+/* ---------- Buttons ---------- */
+
+.button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: .75rem;
+
+    padding:
+        .95rem
+        1.6rem;
+
+    border-radius:
+        var(--radius-round);
+
+    border:
+        1px solid
+        var(--color-border);
+
+    background:
+        rgba(255,255,255,.03);
+
+    backdrop-filter:
+        blur(10px);
+
+    text-decoration: none;
+
+    transition:
+        transform .3s var(--ease-natural),
+        background .3s var(--ease-natural),
+        border-color .3s var(--ease-natural);
+}
+
+.button:hover {
+
+    transform:
+        translateY(-2px);
+
+    border-color:
+        var(--color-border-strong);
+
+    background:
+        rgba(255,255,255,.06);
+
+}
+
+/* ---------- Accessibility ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    html {
+
+        scroll-behavior: auto;
+
+    }
+
+    .fade-up {
+
+        animation: none;
+
+        opacity: 1;
+
+        transform: none;
+
+    }
+
+}
+
+==================================================
+TYPOGRAPHY CSS
+==================================================
+html {
+    font-size: 16px;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: var(--font-reading);
+    color: var(--color-text);
+    line-height: 1.65;
+    letter-spacing: 0.01em;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+}
+
+h1 {
+    font-size:
+        clamp(3.75rem, 10vw, 9rem);
+}
+
+h2 {
+    font-size:
+        clamp(2.5rem, 6vw, 5.5rem);
+}
+
+h3 {
+    font-size:
+        clamp(1.85rem, 3.5vw, 3.25rem);
+}
+
+h4 {
+    font-size:
+        clamp(1.35rem, 2vw, 2rem);
+}
+
+p {
+    margin: 0;
+    max-width: 68ch;
+    font-size:
+        clamp(1rem, 1.15vw, 1.15rem);
+}
+
+a {
+    color: inherit;
+    text-decoration-color:
+        rgba(216, 221, 213, 0.42);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.22em;
+    transition:
+        color var(--duration-quick) var(--ease-natural),
+        text-decoration-color var(--duration-quick) var(--ease-natural);
+}
+
+a:hover {
+    color: var(--color-mist-light);
+    text-decoration-color:
+        rgba(216, 221, 213, 0.8);
+}
+
+strong {
+    font-weight: 600;
+}
+
+em {
+    font-style: italic;
+}
+
+small {
+    font-family: var(--font-interface);
+    font-size: 0.8rem;
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+}
+
+::selection {
+    color: var(--color-night-deep);
+    background: var(--color-mist);
+}
+
+
+/*
+ * Reusable type roles
+ */
+
+.eyebrow {
+    font-family: var(--font-interface);
+    font-size:
+        clamp(0.68rem, 0.75vw, 0.8rem);
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+.display-title {
+    max-width: 12ch;
+    font-size:
+        clamp(4rem, 11vw, 10rem);
+    line-height: 0.9;
+    letter-spacing: -0.055em;
+}
+
+.section-title {
+    max-width: 14ch;
+    font-size:
+        clamp(2.75rem, 7vw, 6rem);
+    line-height: 0.94;
+}
+
+.lead {
+    max-width: 48ch;
+    font-size:
+        clamp(1.2rem, 2vw, 1.6rem);
+    line-height: 1.55;
+    color: var(--color-text-soft);
+}
+
+.interface-label {
+    font-family: var(--font-interface);
+    font-size: 0.76rem;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.reading-copy {
+    max-width: var(--content-width-reading);
+}
+
+.reading-copy p + p {
+    margin-top: 1.4em;
+}
+
+.reading-copy blockquote {
+    margin:
+        var(--space-12) 0;
+    padding-left: var(--space-6);
+    border-left:
+        1px solid var(--color-border-strong);
+    font-size:
+        clamp(1.35rem, 2.2vw, 2rem);
+    line-height: 1.45;
+    color: var(--color-text-soft);
+}
+
+.reading-copy ul,
+.reading-copy ol {
+    padding-left: 1.3em;
+}
+
+.reading-copy li + li {
+    margin-top: 0.6em;
+}
+
+
+/*
+ * Responsive refinements
+ */
+
+@media (max-width: 48rem) {
+    body {
+        line-height: 1.6;
+    }
+
+    .display-title {
+        max-width: 9ch;
+    }
+
+    .lead {
+        font-size: 1.1rem;
+    }
+}
+
+
+/*
+ * Accessibility
+ */
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+==================================================
+TOKENS CSS
+==================================================
+:root {
+    /*
+     * Typography
+     */
+
+    --font-display:
+        Georgia,
+        "Times New Roman",
+        Times,
+        serif;
+
+    --font-reading:
+        Georgia,
+        "Times New Roman",
+        Times,
+        serif;
+
+    --font-interface:
+        Inter,
+        Arial,
+        Helvetica,
+        sans-serif;
+
+
+    /*
+     * Core landscape colors
+     */
+
+    --color-night-deep: #090e0b;
+    --color-night: #101612;
+    --color-night-soft: #172019;
+
+    --color-forest-deep: #17231b;
+    --color-forest: #223126;
+    --color-forest-soft: #344438;
+
+    --color-earth-deep: #2a241d;
+    --color-earth: #443a2e;
+    --color-earth-soft: #665844;
+
+    --color-river-deep: #293a39;
+    --color-river: #526d69;
+    --color-river-soft: #86a09a;
+
+    --color-mist-deep: #aeb8ae;
+    --color-mist: #d8ddd5;
+    --color-mist-light: #edf0ea;
+
+    --color-parchment-deep: #d8cfbd;
+    --color-parchment: #eee8da;
+    --color-parchment-light: #f7f3ea;
+
+    --color-ember: #ad7654;
+    --color-ember-soft: #ca9875;
+
+    --color-ink: #172019;
+    --color-ink-soft: #3f4a42;
+
+
+    /*
+     * Semantic colors
+     */
+
+    --color-background: var(--color-night);
+    --color-background-deep: var(--color-night-deep);
+    --color-surface: var(--color-night-soft);
+
+    --color-text: var(--color-mist-light);
+    --color-text-soft: var(--color-mist);
+    --color-text-muted: var(--color-mist-deep);
+
+    --color-accent: var(--color-river-soft);
+    --color-accent-warm: var(--color-ember-soft);
+
+    --color-border:
+        rgba(216, 221, 213, 0.16);
+
+    --color-border-strong:
+        rgba(216, 221, 213, 0.3);
+
+    --color-glow:
+        rgba(216, 221, 213, 0.1);
+
+    --color-shadow:
+        rgba(0, 0, 0, 0.42);
+
+
+    /*
+     * Fluid spacing
+     */
+
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+    --space-20: 5rem;
+    --space-24: 6rem;
+    --space-32: 8rem;
+
+    --page-gutter:
+        clamp(1.25rem, 4vw, 4rem);
+
+    --section-space:
+        clamp(5rem, 12vw, 10rem);
+
+
+    /*
+     * Content widths
+     */
+
+    --content-width-narrow: 34rem;
+    --content-width-reading: 46rem;
+    --content-width-medium: 62rem;
+    --content-width-wide: 82rem;
+    --content-width-world: 96rem;
+
+
+    /*
+     * Borders and shapes
+     */
+
+    --radius-small: 0.4rem;
+    --radius-medium: 0.85rem;
+    --radius-large: 1.5rem;
+    --radius-round: 999rem;
+
+    --line-thin: 1px;
+
+
+    /*
+     * Motion
+     */
+
+    --duration-quick: 180ms;
+    --duration-gentle: 450ms;
+    --duration-breath: 1200ms;
+    --duration-reveal: 1800ms;
+    --duration-threshold: 3000ms;
+    --duration-landscape: 12000ms;
+
+    --ease-natural:
+        cubic-bezier(0.22, 1, 0.36, 1);
+
+    --ease-breath:
+        cubic-bezier(0.37, 0, 0.63, 1);
+
+    --ease-threshold:
+        cubic-bezier(0.76, 0, 0.24, 1);
+
+
+    /*
+     * Layering
+     */
+
+    --z-landscape: 0;
+    --z-atmosphere: 10;
+    --z-content: 20;
+    --z-navigation: 40;
+    --z-overlay: 60;
+}

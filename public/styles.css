@@ -491,7 +491,7 @@ PATHS
 
 .path-card h3,
 .latest-card h3,
-.tributary-card h3 {
+.home-tributary-card h3 {
     margin: 34px 0 12px;
     font-size: 29px;
     line-height: 1.12;
@@ -501,7 +501,7 @@ PATHS
 
 .path-card p,
 .latest-card p,
-.tributary-card p {
+.home-tributary-card p {
     color: var(--muted);
     font-size: 16px;
 }
@@ -5930,7 +5930,7 @@ GUIDES RESPONSIVE
 }
 
 .content-article blockquote::before {
-    content: "“";
+    content: "â€œ";
     position: absolute;
     top: 0.25rem;
     left: 0.8rem;
@@ -6518,7 +6518,7 @@ GUIDES RESPONSIVE
 }
 
 .content-text-link::after {
-    content: "→";
+    content: "â†’";
     transition: transform 160ms ease;
 }
 
@@ -7093,7 +7093,7 @@ GUIDES RESPONSIVE
 }
 
 .handbook-page .publication-meta span:not(:last-child)::after {
-  content: "•";
+  content: "â€¢";
   margin-left: 1.4rem;
   opacity: .45;
 }
@@ -7820,7 +7820,7 @@ grid-template-columns:1fr;
 
 }
 
-/* AUTO INSURANCE HANDBOOK — append to public/styles.css */
+/* AUTO INSURANCE HANDBOOK â€” append to public/styles.css */
 .auto-handbook-page {
   --auto-forest: #173b31;
   --auto-deep: #0d2922;
@@ -8865,7 +8865,7 @@ body.renters-handbook-page img {
 
 .checklist li::before {
 
-    content: "✓";
+    content: "âœ“";
 
     position: absolute;
 
@@ -9930,5 +9930,52 @@ blockquote {
     color:#000;
     text-decoration:none
   }
+
+}
+
+/* Homepage tributary cards */
+.home-tributary-card {
+    padding: 34px;
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.92);
+    border-radius: var(--radius-medium);
+}
+
+.home-tributary-card h3 {
+    margin: 0 0 12px;
+    color: var(--ink);
+    font-size: 29px;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+}
+
+.home-tributary-card p {
+    margin-bottom: 0;
+    color: var(--muted);
+    font-size: 16px;
+}
+/* Homepage tributary-card isolation */
+@media (max-width: 760px) {
+
+    .home-tributary-card {
+        padding: 28px 25px;
+        color: var(--ink);
+        background: rgba(255, 255, 255, 0.88);
+    }
+
+    .home-tributary-card h3 {
+        margin: 0 0 12px;
+        color: var(--ink);
+        font-size: 27px;
+        line-height: 1.15;
+    }
+
+    .home-tributary-card p {
+        margin-bottom: 0;
+        color: var(--ink-soft);
+        font-size: 16px;
+        line-height: 1.7;
+    }
 
 }
