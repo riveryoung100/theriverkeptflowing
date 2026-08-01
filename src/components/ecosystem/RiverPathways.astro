@@ -1,0 +1,60 @@
+---
+import PathwayCard from "./PathwayCard.astro";
+
+const pathways = [
+
+{
+title:"Explore The River",
+description:
+"Read the archive, guides, stories, and lessons collected along the journey.",
+action:"Enter the Library",
+href:"/library/",
+type:"Knowledge"
+},
+
+{
+title:"Support The River",
+description:
+"Help continue the work through contributions, community care, and shared resources.",
+action:"Contribute",
+href:"/contribute/",
+type:"Mission"
+},
+
+{
+title:"Build With The River",
+description:
+"Work together through coaching, digital foundations, and practical services.",
+action:"Explore Services",
+href:"/services/",
+type:"Services"
+},
+
+{
+title:"Walk Alongside The River",
+description:
+"Partner through aligned organizations, sponsorships, and collaboration.",
+action:"Partner",
+href:"/partner/",
+type:"Partnership"
+}
+
+];
+
+---
+
+<div class="pathway-grid">
+
+{
+pathways.map((item)=>(
+<PathwayCard
+    title={item.title}
+    description={item.description}
+    action={item.action}
+    href={item.href}
+    type={item.type}
+/>
+))
+}
+
+</div>
