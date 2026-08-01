@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import MainLayout from "../../../layouts/MainLayout.astro";
 import LibraryHero from "../../../components/library/LibraryHero.astro";
 import LibraryGrid from "../../../components/library/LibraryGrid.astro";
+import LibraryCollectionHeader from "../../../components/library/LibraryCollectionHeader.astro";
 
 const films = await getCollection(
     "films",
@@ -47,26 +48,14 @@ const filmItems = films
 
         <div class="library-shell">
 
-            <div class="library-section__heading">
+            <LibraryCollectionHeader
+    label="Published films"
+    title="The collection"
+    count={filmItems.length}
+    singular="film"
+    plural="films"
+/>
 
-                <div>
-
-                    <p class="section-label">
-                        Published films
-                    </p>
-
-                    <h2>
-                        The collection
-                    </h2>
-
-                </div>
-
-                <p>
-                    {filmItems.length}
-                    {filmItems.length===1 ? " film" : " films"}
-                </p>
-
-            </div>
 
             <LibraryGrid
                 items={filmItems}
