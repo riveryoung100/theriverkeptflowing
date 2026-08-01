@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import MainLayout from "../../layouts/MainLayout.astro";
 import LibraryHero from "../../components/library/LibraryHero.astro";
+import LibrarySectionCard from "../../components/library/LibrarySectionCard.astro";
 
 const collectionDefinitions = [
     {
@@ -139,67 +140,16 @@ const librarySections = await Promise.all(
                     {
                         librarySections.map((section) => (
 
-                            <article class="library-hub-card">
-
-                                <p class="eyebrow">
-                                    {section.eyebrow}
-                                </p>
-
-                                <h3>
-                                    {section.title}
-                                </h3>
-
-                                <p class="library-hub-card__description">
-                                    {section.description}
-                                </p>
-
-                                <div class="library-hub-card__meta">
-
-                                    <span>
-                                        {section.count}
-                                        {
-                                            section.count === 1
-                                                ? " published entry"
-                                                : " published entries"
-                                        }
-                                    </span>
-
-                                    {
-                                        section.latestTitle && (
-                                            <span>
-                                                Latest: {section.latestTitle}
-                                            </span>
-                                        )
-                                    }
-
-                                </div>
-
-                                <div class="library-hub-card__actions">
-
-                                    <a
-                                        href={section.href}
-                                        class="library-entry-card__link"
-                                    >
-                                        {section.action}
-                                        <span aria-hidden="true">
-                                            &rarr;
-                                        </span>
-                                    </a>
-
-                                    {
-                                        section.latestHref && (
-                                            <a
-                                                href={section.latestHref}
-                                                class="library-hub-card__latest"
-                                            >
-                                                Read the latest
-                                            </a>
-                                        )
-                                    }
-
-                                </div>
-
-                            </article>
+                            <LibrarySectionCard
+    eyebrow={section.eyebrow}
+    title={section.title}
+    description={section.description}
+    count={section.count}
+    latestTitle={section.latestTitle}
+    href={section.href}
+    latestHref={section.latestHref}
+    action={section.action}
+/>
 
                         ))
                     }
