@@ -1,0 +1,83 @@
+---
+import { getCollection } from "astro:content";
+import MainLayout from "../../../layouts/MainLayout.astro";
+import LibraryHero from "../../../components/library/LibraryHero.astro";
+import LibraryGrid from "../../../components/library/LibraryGrid.astro";
+
+const essays = await getCollection(
+    "essays",
+    ({ data }) => !data.draft
+);
+
+const essayItems = essays
+    .sort(
+        (a, b) =>
+            b.data.published.getTime() -
+            a.data.published.getTime()
+    )
+    .map((essay) => ({
+        title: essay.data.title,
+        description: essay.data.description,
+        href: `/library/essays/${essay.id}/`,
+        label: essay.data.category ?? "Essay",
+        action: "Read the essay",
+        published: essay.data.published,
+        tags: essay.data.tags,
+        featured: essay.data.featured
+    }));
+---
+
+<MainLayout
+    title="Essay Library | The River Kept Flowing"
+    description="Essays exploring faith, philosophy, stewardship, work, purpose, and becoming."
+    stylesheet="/library.css"
+>
+
+<main class="library-page">
+
+    <LibraryHero
+        eyebrow="Essays"
+        title="Long-form ideas worth wrestling with."
+        description="Thoughtful essays exploring faith, philosophy, work, stewardship, legacy, responsibility, and becoming."
+    />
+
+    <section class="library-section">
+
+        <div class="library-shell">
+
+            <div class="library-section__heading">
+
+                <div>
+
+                    <p class="section-label">
+                        Published essays
+                    </p>
+
+                    <h2>
+                        The collection
+                    </h2>
+
+                </div>
+
+                <p>
+                    {essayItems.length}
+                    {essayItems.length === 1 ? " essay" : " essays"}
+                </p>
+
+            </div>
+
+            <LibraryGrid
+                items={essayItems}
+                emptyTitle="No essays have been published yet."
+                emptyDescription="Published Markdown essays will automatically appear here."
+                emptyHref="/journey/"
+                emptyAction="Explore the Journey"
+            />
+
+        </div>
+
+    </section>
+
+</main>
+
+</MainLayout>
