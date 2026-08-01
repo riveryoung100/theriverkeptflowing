@@ -18,23 +18,37 @@ const {
 
 <article class="pathway-card">
 
-    <p class="content-type">
-        {type}
-    </p>
+    <div class="pathway-content">
 
-    <h3>
-        {title}
-    </h3>
+        <p class="content-type">
+            {type}
+        </p>
 
-    <p>
-        {description}
-    </p>
 
-    <a
-        href={href}
-        class="card-link"
-    >
-        {action} &rarr;
-    </a>
+        <h3>
+            {title}
+        </h3>
+
+
+        <p class="pathway-description">
+            {description}
+        </p>
+
+
+        <a
+            href={href}
+            class="card-link"
+        >
+            <span>
+                {action}
+            </span>
+
+            <span aria-hidden="true">
+                →
+            </span>
+
+        </a>
+
+    </div>
 
 </article>
