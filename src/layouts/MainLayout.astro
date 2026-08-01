@@ -5,13 +5,15 @@ import Footer from "../components/Footer.astro";
 interface Props {
     title?: string;
     description?: string;
-    author?: string;`r`n    stylesheet?: string;
+    author?: string;
+    stylesheet?: string;
 }
 
 const {
     title = "The River Kept Flowing",
     description = "A living archive of faith, family, stewardship, perseverance, creativity, and the lifelong work of becoming.",
-    author = "River Young",`r`n    stylesheet
+    author = "River Young",
+    stylesheet
 } = Astro.props;
 ---
 
@@ -61,6 +63,8 @@ const {
             rel="stylesheet"
             href="/styles.css"
         >
+
+        {stylesheet && <link rel="stylesheet" href={stylesheet} />}
 
     </head>
 
