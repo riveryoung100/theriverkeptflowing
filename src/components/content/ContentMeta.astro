@@ -1,0 +1,51 @@
+---
+interface Props {
+    type:string;
+    published?:Date;
+    readingTime?:string;
+    category?:string;
+}
+
+const {
+    type,
+    published,
+    readingTime,
+    category
+} = Astro.props;
+---
+
+<div class="content-meta">
+
+    <span class="content-type">
+        {type}
+    </span>
+
+
+    {
+        category &&
+        <span>
+            {category}
+        </span>
+    }
+
+
+    {
+        published &&
+        <time datetime={published.toISOString()}>
+            {published.toLocaleDateString("en-US", {
+                year:"numeric",
+                month:"long",
+                day:"numeric"
+            })}
+        </time>
+    }
+
+
+    {
+        readingTime &&
+        <span>
+            {readingTime}
+        </span>
+    }
+
+</div>
