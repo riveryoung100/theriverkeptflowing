@@ -1,83 +1,170 @@
+---
+import { getCollection } from "astro:content";
+
+const collectionDefinitions = [
+    {
+        name: "guides",
+        label: "River Guide",
+        route: "/library/guides/",
+        action: "Read the guide"
+    },
+    {
+        name: "letters",
+        label: "Letter",
+        route: "/library/letters/",
+        action: "Read the letter"
+    },
+    {
+        name: "essays",
+        label: "Essay",
+        route: "/library/essays/",
+        action: "Read the essay"
+    },
+    {
+        name: "journal",
+        label: "Journal",
+        route: "/library/journal/",
+        action: "Read the entry"
+    },
+    {
+        name: "recipes",
+        label: "Recipe",
+        route: "/library/recipes/",
+        action: "View the recipe"
+    },
+    {
+        name: "films",
+        label: "Video Journey",
+        route: "/library/films/",
+        action: "Read the transcript"
+    }
+] as const;
+
+const collectionResults = await Promise.all(
+    collectionDefinitions.map(async (definition) => {
+        const entries = await getCollection(
+            definition.name,
+            ({ data }) => !data.draft
+        );
+
+        return entries.map((entry) => ({
+            id: entry.id,
+            title: entry.data.title,
+            description: entry.data.description,
+            published: entry.data.published,
+            featured: entry.data.featured,
+            label: definition.label,
+            href: `${definition.route}${entry.id}/`,
+            action: definition.action
+        }));
+    })
+);
+
+const publishedEntries = collectionResults
+    .flat()
+    .sort((a, b) => {
+        if (a.featured !== b.featured) {
+            return a.featured ? -1 : 1;
+        }
+
+        return b.published.getTime() - a.published.getTime();
+    })
+    .slice(0, 3);
+
+const fallbackEntries = [
+    {
+        label: "The Current",
+        title: "Where the River Is Flowing Now",
+        description:
+            "A living record of what I am building, learning, questioning, creating, and becoming in this season.",
+        href: "/current/",
+        action: "Enter the Current"
+    },
+    {
+        label: "The Journey",
+        title: "A Life Still Unfolding",
+        description:
+            "The continuing story of faith, family, work, stewardship, creation, service, and becoming.",
+        href: "/journey/",
+        action: "Follow the journey"
+    },
+    {
+        label: "River Guides",
+        title: "Practical Knowledge for the Road Ahead",
+        description:
+            "Clear explanations, useful systems, and lessons designed to help people care well for what they carry.",
+        href: "/river-guides/",
+        action: "Explore the guides"
+    }
+];
+
+const displayEntries =
+    publishedEntries.length > 0
+        ? publishedEntries
+        : fallbackEntries;
+---
+
 <section class="latest-section">
 
-            <div class="section-shell">
+    <div class="section-shell">
 
-                <div class="section-heading">
+        <div class="section-heading">
 
-                    <div>
-                        <p class="section-label">
-                            From the current
-                        </p>
+            <div>
 
-                        <h2>
-                            Recent work from the river.
-                        </h2>
-                    </div>
+                <p class="section-label">
+                    From the current
+                </p>
 
-                    <a href="pages/current.html" class="text-link">
-                        View everything &rarr;
-                    </a>
-
-                </div>
-
-
-                <div class="latest-grid">
-
-                    <a href="content/first-entry.html" class="latest-card">
-
-                        <span class="content-type">Journal</span>
-
-                        <h3>
-                            The River Kept Flowing
-                        </h3>
-
-                        <p>
-                            The first entry in a living archive of lessons, reflection,
-                            faith, and becoming.
-                        </p>
-
-                        <span class="card-link">Read the entry &rarr;</span>
-
-                    </a>
-
-
-                    <a href="articles/first-post.html" class="latest-card">
-
-                        <span class="content-type">Article</span>
-
-                        <h3>
-                            The Beginning of Something That Lasts
-                        </h3>
-
-                        <p>
-                            Why this platform exists and what it means to build beyond
-                            achievement alone.
-                        </p>
-
-                        <span class="card-link">Read the article &rarr;</span>
-
-                    </a>
-
-
-                    <a href="pages/work-of-becoming.html" class="latest-card">
-
-                        <span class="content-type">Ongoing Project</span>
-
-                        <h3>
-                            The Work of Becoming
-                        </h3>
-
-                        <p>
-                            A growing record of the choices, disciplines, and convictions
-                            shaping the person behind the work.
-                        </p>
-
-                        <span class="card-link">Explore the project &rarr;</span>
-
-                    </a>
-
-                </div>
+                <h2>
+                    Recent work from the river.
+                </h2>
 
             </div>
 
-        </section>
+            <a
+                href="/current/"
+                class="text-link"
+            >
+                View everything &rarr;
+            </a>
+
+        </div>
+
+
+        <div class="latest-grid">
+
+            {
+                displayEntries.map((entry) => (
+
+                    <a
+                        href={entry.href}
+                        class="latest-card"
+                    >
+
+                        <span class="content-type">
+                            {entry.label}
+                        </span>
+
+                        <h3>
+                            {entry.title}
+                        </h3>
+
+                        <p>
+                            {entry.description}
+                        </p>
+
+                        <span class="card-link">
+                            {entry.action} &rarr;
+                        </span>
+
+                    </a>
+
+                ))
+            }
+
+        </div>
+
+    </div>
+
+</section>
