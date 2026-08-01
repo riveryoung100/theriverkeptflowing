@@ -1,4 +1,5 @@
 ---
+import SectionHeader from "../shared/SectionHeader.astro";
 import RiverPathways from "../ecosystem/RiverPathways.astro";
 ---
 
@@ -6,20 +7,11 @@ import RiverPathways from "../ecosystem/RiverPathways.astro";
 
     <div class="home-shell">
 
-        <p class="section-label">
-            The Ecosystem
-        </p>
-
-
-        <h2>
-            Follow the River.
-        </h2>
-
-
-        <p>
-            There are many ways to walk alongside this journey:
-            learning, supporting, building, and participating in the work.
-        </p>
+        <SectionHeader
+            label="The Ecosystem"
+            title="Follow the River."
+            description="There are many ways to walk alongside this journey: learning, supporting, building, and participating in the work."
+        />
 
 
         <RiverPathways />
