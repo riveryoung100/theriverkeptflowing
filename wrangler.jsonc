@@ -3,6 +3,7 @@
   "name": "theriverkeptflowing-site",
   "compatibility_date": "2026-07-24",
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    "html_handling": "auto-trailing-slash"
   }
 }
