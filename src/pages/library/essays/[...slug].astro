@@ -1,0 +1,107 @@
+---
+import { getCollection, render } from "astro:content";
+import ReadingLayout from "../../../layouts/ReadingLayout.astro";
+
+export async function getStaticPaths() {
+    const essays = await getCollection("essays", ({ data }) => {
+        return import.meta.env.PROD ? !data.draft : true;
+    });
+
+    return essays
+        .filter((essay) => !essay.data.draft)
+        .map((essay) => ({
+            params: {
+                slug: essay.id
+            },
+            props: {
+                essay
+            }
+        }));
+}
+
+const { essay } = Astro.props;
+const { Content } = await render(essay);
+
+const canonical = new URL(
+    `/library/essays/${essay.id}/`,
+    Astro.site ?? Astro.url
+).toString();
+---
+
+<ReadingLayout
+    title={`${essay.data.title} | The River Kept Flowing`}
+    description={essay.data.description}
+    author={essay.data.author}
+    canonical={canonical}
+    bodyClass="reading-page essay-reading-page"
+>
+
+    <article class="content-entry essay-entry">
+
+        <header class="content-entry__header">
+
+            <p class="eyebrow">
+                {essay.data.category ?? "Essays From the River"}
+            </p>
+
+            <h1>
+                {essay.data.title}
+            </h1>
+
+            <p class="content-entry__description">
+                {essay.data.description}
+            </p>
+
+            <div class="content-entry__meta">
+
+                <span>
+                    By {essay.data.author}
+                </span>
+
+                <span>
+                    {essay.data.published.toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric"
+                    })}
+                </span>
+
+                {essay.data.readingMinutes && (
+                    <span>
+                        {essay.data.readingMinutes} min read
+                    </span>
+                )}
+
+            </div>
+
+        </header>
+
+
+        <div class="content-entry__body">
+
+            <Content />
+
+        </div>
+
+
+        {essay.data.tags.length > 0 && (
+
+            <footer class="content-entry__tags">
+
+                <p class="section-label">
+                    Filed under
+                </p>
+
+                <ul>
+                    {essay.data.tags.map((tag) => (
+                        <li>{tag}</li>
+                    ))}
+                </ul>
+
+            </footer>
+
+        )}
+
+    </article>
+
+</ReadingLayout>
