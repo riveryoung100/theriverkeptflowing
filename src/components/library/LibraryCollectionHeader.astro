@@ -1,0 +1,40 @@
+---
+interface Props {
+    label:string;
+    title:string;
+    count:number;
+    singular:string;
+    plural:string;
+}
+
+const {
+    label,
+    title,
+    count,
+    singular,
+    plural
+} = Astro.props;
+---
+
+<div class="library-section__heading">
+
+    <div>
+
+        <p class="section-label">
+            {label}
+        </p>
+
+
+        <h2>
+            {title}
+        </h2>
+
+    </div>
+
+
+    <p>
+        {count}
+        {count === 1 ? ` ${singular}` : ` ${plural}`}
+    </p>
+
+</div>
