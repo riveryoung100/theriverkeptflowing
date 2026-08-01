@@ -1,0 +1,30 @@
+---
+interface Props {
+    title?: string;
+    tone?: "neutral" | "important" | "warning";
+}
+
+const {
+    title,
+    tone = "neutral"
+} = Astro.props;
+---
+
+<aside
+    class:list={[
+        "publication-notice",
+        `publication-notice--${tone}`
+    ]}
+>
+
+    {title && (
+        <h3>
+            {title}
+        </h3>
+    )}
+
+    <div class="publication-notice__body">
+        <slot />
+    </div>
+
+</aside>

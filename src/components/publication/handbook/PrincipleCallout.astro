@@ -1,0 +1,21 @@
+---
+interface Props {
+    label?: string;
+}
+
+const {
+    label = "A principle worth carrying"
+} = Astro.props;
+---
+
+<aside class="publication-principle">
+
+    <p class="publication-principle__label">
+        {label}
+    </p>
+
+    <div class="publication-principle__body">
+        <slot />
+    </div>
+
+</aside>

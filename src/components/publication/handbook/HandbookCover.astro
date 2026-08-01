@@ -1,0 +1,87 @@
+---
+interface Props {
+    publicationNumber?: number;
+    title: string;
+    subtitle?: string;
+    description?: string;
+    author?: string;
+    version?: string;
+    published?: string;
+    readingTime?: string;
+    startHref?: string;
+}
+
+const {
+    publicationNumber,
+    title,
+    subtitle,
+    description,
+    author = "River Young",
+    version = "1.0",
+    published,
+    readingTime,
+    startHref = "#introduction"
+} = Astro.props;
+---
+
+<header class="publication-cover">
+
+    <div class="publication-cover__inner">
+
+        <p class="publication-cover__label">
+
+            River Guides
+
+            {publicationNumber && (
+                <>
+                    <span aria-hidden="true">&middot;</span>
+                    Publication No. {String(publicationNumber).padStart(3, "0")}
+                </>
+            )}
+
+        </p>
+
+        <h1>
+            {title}
+        </h1>
+
+        {subtitle && (
+            <p class="publication-cover__subtitle">
+                {subtitle}
+            </p>
+        )}
+
+        {description && (
+            <p class="publication-cover__description">
+                {description}
+            </p>
+        )}
+
+        <div
+            class="publication-cover__meta"
+            aria-label="Publication details"
+        >
+
+            <span>By {author}</span>
+            <span>Version {version}</span>
+
+            {published && (
+                <span>{published}</span>
+            )}
+
+            {readingTime && (
+                <span>{readingTime}</span>
+            )}
+
+        </div>
+
+        <a
+            class="publication-cover__start"
+            href={startHref}
+        >
+            Begin reading
+        </a>
+
+    </div>
+
+</header>

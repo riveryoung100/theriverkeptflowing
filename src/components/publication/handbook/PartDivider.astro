@@ -1,0 +1,42 @@
+---
+interface Props {
+    number?: string;
+    title: string;
+    description?: string;
+    id?: string;
+}
+
+const {
+    number,
+    title,
+    description,
+    id
+} = Astro.props;
+---
+
+<section
+    id={id}
+    class="publication-part-divider"
+>
+
+    <div class="publication-reading-shell">
+
+        {number && (
+            <p class="publication-part-divider__number">
+                {number}
+            </p>
+        )}
+
+        <h2>
+            {title}
+        </h2>
+
+        {description && (
+            <p>
+                {description}
+            </p>
+        )}
+
+    </div>
+
+</section>

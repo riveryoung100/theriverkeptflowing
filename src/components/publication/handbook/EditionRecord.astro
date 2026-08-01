@@ -1,0 +1,34 @@
+---
+interface Props {
+    version: string;
+    published: string;
+    summary?: string;
+}
+
+const {
+    version,
+    published,
+    summary
+} = Astro.props;
+---
+
+<div
+    class="publication-edition-record"
+    role="row"
+>
+
+    <div role="cell">
+        Version {version}
+    </div>
+
+    <div role="cell">
+        {published}
+    </div>
+
+    {summary && (
+        <div role="cell">
+            {summary}
+        </div>
+    )}
+
+</div>

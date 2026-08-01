@@ -1,0 +1,47 @@
+---
+interface Props {
+    title?: string;
+    leftTitle: string;
+    rightTitle: string;
+}
+
+const {
+    title,
+    leftTitle,
+    rightTitle
+} = Astro.props;
+---
+
+<section class="publication-comparison">
+
+    {title && (
+        <h3>
+            {title}
+        </h3>
+    )}
+
+    <div class="publication-comparison__grid">
+
+        <div class="publication-comparison__column">
+
+            <h4>
+                {leftTitle}
+            </h4>
+
+            <slot name="left" />
+
+        </div>
+
+        <div class="publication-comparison__column">
+
+            <h4>
+                {rightTitle}
+            </h4>
+
+            <slot name="right" />
+
+        </div>
+
+    </div>
+
+</section>
