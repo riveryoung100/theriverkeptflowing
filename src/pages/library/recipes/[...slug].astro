@@ -1,0 +1,85 @@
+---
+import { getCollection, render } from "astro:content";
+import ReadingLayout from "../../../layouts/ReadingLayout.astro";
+
+export async function getStaticPaths() {
+
+    const recipes = await getCollection("recipes", ({ data }) => {
+        return import.meta.env.PROD ? !data.draft : true;
+    });
+
+    return recipes
+        .filter((recipe) => !recipe.data.draft)
+        .map((recipe) => ({
+            params: {
+                slug: recipe.id
+            },
+            props: {
+                recipe
+            }
+        }));
+
+}
+
+const { recipe } = Astro.props;
+
+const { Content } = await render(recipe);
+
+const canonical = new URL(
+    `/library/recipes/${recipe.id}/`,
+    Astro.site ?? Astro.url
+).toString();
+
+---
+
+<ReadingLayout
+    title={`${recipe.data.title} | The River Table`}
+    description={recipe.data.description}
+    author={recipe.data.author}
+    canonical={canonical}
+    bodyClass="reading-page recipe-reading-page"
+>
+
+<article class="content-entry recipe-entry">
+
+<header class="content-entry__header">
+
+<p class="eyebrow">
+The River Table
+</p>
+
+<h1>{recipe.data.title}</h1>
+
+<p class="content-entry__description">
+{recipe.data.description}
+</p>
+
+<div class="content-entry__meta">
+
+<span>
+{recipe.data.published.toLocaleDateString("en-US")}
+</span>
+
+{recipe.data.prepTime && (
+<span>Prep: {recipe.data.prepTime}</span>
+)}
+
+{recipe.data.cookTime && (
+<span>Cook: {recipe.data.cookTime}</span>
+)}
+
+{recipe.data.servings && (
+<span>{recipe.data.servings} servings</span>
+)}
+
+</div>
+
+</header>
+
+<div class="content-entry__body">
+<Content />
+</div>
+
+</article>
+
+</ReadingLayout>
