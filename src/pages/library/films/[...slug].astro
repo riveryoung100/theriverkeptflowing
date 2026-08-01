@@ -1,25 +1,31 @@
 ---
 import { getCollection, render } from "astro:content";
 import ReadingLayout from "../../../layouts/ReadingLayout.astro";
+import ContentEntry from "../../../components/content/ContentEntry.astro";
 
 export async function getStaticPaths() {
-    const films = await getCollection("films", ({ data }) => {
-        return import.meta.env.PROD ? !data.draft : true;
-    });
+
+    const films = await getCollection(
+        "films",
+        ({ data }) => {
+            return import.meta.env.PROD ? !data.draft : true;
+        }
+    );
 
     return films
         .filter((film) => !film.data.draft)
         .map((film) => ({
-            params: {
-                slug: film.id
+            params:{
+                slug:film.id
             },
-            props: {
+            props:{
                 film
             }
         }));
 }
 
 const { film } = Astro.props;
+
 const { Content } = await render(film);
 
 const canonical = new URL(
@@ -33,98 +39,20 @@ const canonical = new URL(
     description={film.data.description}
     author={film.data.author}
     canonical={canonical}
-    bodyClass="reading-page film-reading-page"
 >
 
-    <article class="content-entry film-entry">
+    <ContentEntry
+        eyebrow={film.data.platform ?? "Films From the River"}
+        title={film.data.title}
+        description={film.data.description}
+        author={film.data.author}
+        published={film.data.published}
+        readingMinutes={film.data.durationMinutes}
+        tags={film.data.tags}
+    >
 
-        <header class="content-entry__header">
+        <Content />
 
-            <p class="eyebrow">
-                The Video Journey
-            </p>
-
-            <h1>
-                {film.data.title}
-            </h1>
-
-            <p class="content-entry__description">
-                {film.data.description}
-            </p>
-
-            <div class="content-entry__meta">
-
-                <span>
-                    By {film.data.author}
-                </span>
-
-                <span>
-                    {film.data.published.toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric"
-                    })}
-                </span>
-
-                {film.data.platform && (
-                    <span>
-                        {film.data.platform}
-                    </span>
-                )}
-
-                {film.data.durationMinutes && (
-                    <span>
-                        {film.data.durationMinutes} min
-                    </span>
-                )}
-
-            </div>
-
-            {film.data.videoUrl && (
-
-                <p class="film-entry__watch">
-
-                    <a
-                        href={film.data.videoUrl}
-                        class="button page-button-primary"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Watch the Video
-                    </a>
-
-                </p>
-
-            )}
-
-        </header>
-
-
-        <div class="content-entry__body">
-
-            <Content />
-
-        </div>
-
-
-        {film.data.tags.length > 0 && (
-
-            <footer class="content-entry__tags">
-
-                <p class="section-label">
-                    Filed under
-                </p>
-
-                <ul>
-                    {film.data.tags.map((tag) => (
-                        <li>{tag}</li>
-                    ))}
-                </ul>
-
-            </footer>
-
-        )}
-
-    </article>
+    </ContentEntry>
 
 </ReadingLayout>
