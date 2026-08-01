@@ -6,6 +6,10 @@ interface Props {
     href:string;
     published?:Date;
     featured?:boolean;
+    number?:string;
+    readingMinutes?:number;
+    tags?:string[];
+    action?:string;
 }
 
 const {
@@ -14,7 +18,11 @@ const {
     description,
     href,
     published,
-    featured=false
+    featured=false,
+    number,
+    readingMinutes,
+    tags,
+    action="Continue reading"
 } = Astro.props;
 ---
 
@@ -25,9 +33,22 @@ const {
 
     <a href={href}>
 
-        <p class="content-type">
-            {type}
-        </p>
+
+        <div class="content-card-meta">
+
+            {
+                number &&
+                <span>
+                    {number}
+                </span>
+            }
+
+
+            <span class="content-type">
+                {type}
+            </span>
+
+        </div>
 
 
         <h3>
@@ -41,20 +62,52 @@ const {
 
 
         {
-            published &&
-            <time datetime={published.toISOString()}>
-                {published.toLocaleDateString("en-US", {
-                    year:"numeric",
-                    month:"long",
-                    day:"numeric"
-                })}
-            </time>
+            tags &&
+            tags.length > 0 &&
+            <div class="content-tags">
+
+                {
+                    tags.slice(0,4).map((tag) => (
+                        <span>
+                            {tag}
+                        </span>
+                    ))
+                }
+
+            </div>
         }
 
 
+        <div class="content-card-footer">
+
+
+            {
+                published &&
+                <time datetime={published.toISOString()}>
+                    {published.toLocaleDateString("en-US", {
+                        year:"numeric",
+                        month:"long",
+                        day:"numeric"
+                    })}
+                </time>
+            }
+
+
+            {
+                readingMinutes &&
+                <span>
+                    {readingMinutes} min read
+                </span>
+            }
+
+
+        </div>
+
+
         <span class="card-link">
-            Continue reading →
+            {action} →
         </span>
+
 
     </a>
 
