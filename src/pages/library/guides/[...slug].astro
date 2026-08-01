@@ -1,23 +1,29 @@
 ---
 import { getCollection, render } from "astro:content";
 import ReadingLayout from "../../../layouts/ReadingLayout.astro";
+import ContentEntry from "../../../components/content/ContentEntry.astro";
 
 export async function getStaticPaths() {
-    const guides = await getCollection("guides", ({ data }) => {
-        return import.meta.env.PROD ? !data.draft : true;
-    });
+
+    const guides = await getCollection(
+        "guides",
+        ({ data }) => {
+            return import.meta.env.PROD ? !data.draft : true;
+        }
+    );
 
     return guides.map((guide) => ({
-        params: {
-            slug: guide.id
+        params:{
+            slug:guide.id
         },
-        props: {
+        props:{
             guide
         }
     }));
 }
 
 const { guide } = Astro.props;
+
 const { Content } = await render(guide);
 
 const canonical = new URL(
@@ -32,74 +38,19 @@ const canonical = new URL(
     canonical={canonical}
 >
 
-    <article class="content-entry guide-entry">
+    <ContentEntry
+        eyebrow={guide.data.category}
+        title={guide.data.title}
+        description={guide.data.description}
+        author={guide.data.author}
+        published={guide.data.published}
+        readingMinutes={guide.data.readingMinutes}
+        version={guide.data.version}
+        tags={guide.data.tags}
+    >
 
-        <header class="content-entry__header">
+        <Content />
 
-            <p class="eyebrow">
-                {guide.data.category}
-            </p>
-
-            <h1>
-                {guide.data.title}
-            </h1>
-
-            <p class="content-entry__description">
-                {guide.data.description}
-            </p>
-
-            <div class="content-entry__meta">
-
-                <span>
-                    By {guide.data.author}
-                </span>
-
-                <span>
-                    {guide.data.published.toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric"
-                    })}
-                </span>
-
-                {guide.data.readingMinutes && (
-                    <span>
-                        {guide.data.readingMinutes} min read
-                    </span>
-                )}
-
-                <span>
-                    Version {guide.data.version}
-                </span>
-
-            </div>
-
-        </header>
-
-
-        <div class="content-entry__body">
-
-            <Content />
-
-        </div>
-
-
-        {guide.data.tags.length > 0 && (
-            <footer class="content-entry__tags">
-
-                <p class="section-label">
-                    Filed under
-                </p>
-
-                <ul>
-                    {guide.data.tags.map((tag) => (
-                        <li>{tag}</li>
-                    ))}
-                </ul>
-
-            </footer>
-        )}
-
-    </article>
+    </ContentEntry>
 
 </ReadingLayout>
