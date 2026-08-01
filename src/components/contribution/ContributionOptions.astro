@@ -1,0 +1,55 @@
+---
+import ContributionGrid from "./ContributionGrid.astro";
+
+const options = [
+
+    {
+        title:"Support The Mission",
+        description:
+            "Help sustain the work of building, teaching, creating, and serving through The River Kept Flowing.",
+        action:"Support the mission",
+        href:"#support",
+        type:"Direct Contribution"
+    },
+
+    {
+        title:"Feed The Community",
+        description:
+            "Contribute toward meals, outreach, and practical care for people in need.",
+        action:"Support community work",
+        href:"#community",
+        type:"Community"
+    },
+
+    {
+        title:"Build Through Products",
+        description:
+            "Purchase creations, resources, food products, and merchandise that help fuel the journey.",
+        action:"Explore products",
+        href:"#products",
+        type:"Products"
+    },
+
+    {
+        title:"Work With The River",
+        description:
+            "Explore coaching, consulting, education, and services built from years of experience.",
+        action:"Work together",
+        href:"#services",
+        type:"Services"
+    },
+
+    {
+        title:"Partner With The River",
+        description:
+            "Businesses and organizations can contribute through partnerships and collaborations.",
+        action:"Partner",
+        href:"#partners",
+        type:"Partnership"
+    }
+
+];
+
+---
+
+<ContributionGrid items={options} />

@@ -1,0 +1,40 @@
+---
+interface Props {
+    title: string;
+    description: string;
+    action: string;
+    href: string;
+    type?: string;
+}
+
+const {
+    title,
+    description,
+    action,
+    href,
+    type = "Contribution"
+} = Astro.props;
+---
+
+<article class="contribution-card">
+
+    <p class="content-type">
+        {type}
+    </p>
+
+    <h3>
+        {title}
+    </h3>
+
+    <p>
+        {description}
+    </p>
+
+    <a
+        href={href}
+        class="card-link"
+    >
+        {action} &rarr;
+    </a>
+
+</article>

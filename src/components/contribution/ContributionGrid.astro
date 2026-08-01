@@ -1,0 +1,37 @@
+---
+import ContributionCard from "./ContributionCard.astro";
+
+interface Item {
+    title:string;
+    description:string;
+    action:string;
+    href:string;
+    type?:string;
+}
+
+interface Props {
+    items:Item[];
+}
+
+const {
+    items
+}=Astro.props;
+---
+
+<div class="contribution-grid">
+
+    {
+        items.map((item)=>(
+            
+            <ContributionCard
+                title={item.title}
+                description={item.description}
+                action={item.action}
+                href={item.href}
+                type={item.type}
+            />
+
+        ))
+    }
+
+</div>
