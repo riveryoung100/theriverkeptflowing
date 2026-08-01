@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import MainLayout from "../../../layouts/MainLayout.astro";
 import LibraryGrid from "../../../components/library/LibraryGrid.astro";
+import LibraryHero from "../../../components/library/LibraryHero.astro";
 
 const guides = await getCollection(
     "guides",
@@ -40,34 +41,13 @@ const guideItems = guides
 
     <main class="library-page">
 
-        <header class="library-hero">
-
-            <div class="library-shell">
-
-                <p class="eyebrow">
-                    The practical library
-                </p>
-
-                <h1>
-                    River Guides
-                </h1>
-
-                <p class="library-hero__lead">
-                    Clear explanations, practical systems, and durable
-                    lessons for building a meaningful life and caring
-                    well for what has been entrusted to us.
-                </p>
-
-                <a
-                    href="/river-guides/"
-                    class="button page-button-secondary"
-                >
-                    Explore the Complete River Guides Page
-                </a>
-
-            </div>
-
-        </header>
+        <LibraryHero
+            eyebrow="The practical library"
+            title="River Guides"
+            description="Clear explanations, practical systems, and durable lessons for building a meaningful life and caring well for what has been entrusted to us."
+            buttonText="Explore the Complete River Guides Page"
+            buttonHref="/river-guides/"
+        />
 
 
         <section class="library-section">
