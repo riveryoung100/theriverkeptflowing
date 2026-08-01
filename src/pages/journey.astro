@@ -1,70 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
+---
+import MainLayout from "../layouts/MainLayout.astro";
+---
 
-<head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>The Journey | The River Kept Flowing</title>
-
-    <meta
-        name="description"
-        content="The Journey follows the unfolding direction of The River Kept Flowing — faith, family, work, stewardship, creation, service, and the lifelong process of becoming."
-    >
-
-    <meta name="author" content="River Young">
-
-    <link rel="stylesheet" href="../styles.css">
-
-</head>
-
-
-<body>
-
-
-    <nav class="navbar" aria-label="Primary navigation">
-
-        <a href="../index.html" class="logo">
-            The River Kept Flowing
-        </a>
-
-        <div class="nav-links">
-
-            <a href="headwaters.html">
-                Headwaters
-            </a>
-
-            <a href="source.html">
-                The Source
-            </a>
-
-            <a href="tributaries.html">
-                Tributaries
-            </a>
-
-            <a href="current.html">
-                The Current
-            </a>
-
-            <a href="journey.html" class="active">
-                The Journey
-            </a>
-
-            <a href="letters-from-the-river.html">
-                Letters
-            </a>
-
-            <a href="river-guides.html">
-                River Guides
-            </a>
-
-        </div>
-
-    </nav>
-
-
-    <main>
+<MainLayout
+    title="The Journey | The River Kept Flowing"
+    description="The Journey follows the unfolding direction of The River Kept Flowing: faith, family, work, stewardship, creation, service, and the lifelong process of becoming."
+>
+<main>
 
 
         <header class="journey-hero">
@@ -197,7 +139,7 @@
                             the platform.
                         </p>
 
-                        <a href="headwaters.html" class="journey-text-link">
+                        <a href="/headwaters/" class="journey-text-link">
                             Visit Headwaters
                             <span aria-hidden="true">→</span>
                         </a>
@@ -224,7 +166,7 @@
                             lessons that shaped the person entering this journey.
                         </p>
 
-                        <a href="source.html" class="journey-text-link">
+                        <a href="/source/" class="journey-text-link">
                             Read the Story
                             <span aria-hidden="true">→</span>
                         </a>
@@ -251,7 +193,7 @@
                             and carrying right now.
                         </p>
 
-                        <a href="current.html" class="journey-text-link">
+                        <a href="/current/" class="journey-text-link">
                             Enter the Current
                             <span aria-hidden="true">→</span>
                         </a>
@@ -1173,7 +1115,7 @@
                             carrying in this present season.
                         </p>
 
-                        <a href="current.html" class="journey-text-link light-text-link">
+                        <a href="/current/" class="journey-text-link light-text-link">
                             Follow the Current
                             <span aria-hidden="true">→</span>
                         </a>
@@ -1196,7 +1138,7 @@
                             walking through similar questions, seasons, and struggles.
                         </p>
 
-                        <a href="letters-from-the-river.html" class="journey-text-link">
+                        <a href="/pages/letters-from-the-river.html" class="journey-text-link">
                             Read the Letters
                             <span aria-hidden="true">→</span>
                         </a>
@@ -1220,7 +1162,7 @@
                             communication, and becoming.
                         </p>
 
-                        <a href="river-guides.html" class="journey-text-link">
+                        <a href="/pages/river-guides.html" class="journey-text-link">
                             Explore the Guides
                             <span aria-hidden="true">→</span>
                         </a>
@@ -1244,7 +1186,7 @@
                             financial education, and service.
                         </p>
 
-                        <a href="tributaries.html" class="journey-text-link">
+                        <a href="/tributaries/" class="journey-text-link">
                             Explore the Tributaries
                             <span aria-hidden="true">→</span>
                         </a>
@@ -1302,11 +1244,11 @@
 
                 <div class="page-actions">
 
-                    <a href="letters-from-the-river.html" class="button page-button-primary">
+                    <a href="/pages/letters-from-the-river.html" class="button page-button-primary">
                         Read the Letters
                     </a>
 
-                    <a href="river-guides.html" class="button page-button-secondary">
+                    <a href="/pages/river-guides.html" class="button page-button-secondary">
                         Explore River Guides
                     </a>
 
@@ -1319,69 +1261,4 @@
 
     </main>
 
-
-    <footer>
-
-        <div class="footer-shell">
-
-            <div>
-
-                <a href="../index.html" class="footer-logo">
-                    The River Kept Flowing
-                </a>
-
-                <p>
-                    Building a life that is worth remembering.
-                </p>
-
-            </div>
-
-
-            <div class="footer-links">
-
-                <a href="headwaters.html">
-                    Headwaters
-                </a>
-
-                <a href="source.html">
-                    The Source
-                </a>
-
-                <a href="current.html">
-                    The Current
-                </a>
-
-                <a href="journey.html">
-                    The Journey
-                </a>
-
-                <a href="river-guides.html">
-                    River Guides
-                </a>
-
-            </div>
-
-        </div>
-
-
-        <div class="footer-bottom">
-
-            <p>
-                © 2026 The River Kept Flowing. All rights reserved.
-            </p>
-
-            <p>
-                The journey continues.
-            </p>
-
-        </div>
-
-    </footer>
-
-
-    <script src="../script.js"></script>
-
-
-</body>
-
-</html>
+</MainLayout>
