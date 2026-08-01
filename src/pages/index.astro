@@ -1,57 +1,12 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+---
+import MainLayout from "../layouts/MainLayout.astro";
+---
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>The River Kept Flowing | Build a Life That Lasts</title>
-
-    <meta
-        name="description"
-        content="The River Kept Flowing is a living archive of faith, family, stewardship, perseverance, creativity, and the lifelong work of becoming."
-    >
-
-    <meta name="author" content="River Young">
-
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KFMXEZR98E"></script>
-
-    <script>
-        window.dataLayer = window.dataLayer || [];
-
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-
-        gtag("js", new Date());
-        gtag("config", "G-KFMXEZR98E");
-    </script>
-
-    <link rel="stylesheet" href="/styles.css">
-</head>
-
-<body>
-
-    <nav class="navbar" aria-label="Primary navigation">
-
-        <a href="index.html" class="logo">
-            The River Kept Flowing
-        </a>
-
-        <div class="nav-links">
-            <a href="pages/headwaters.html">Headwaters</a>
-            <a href="pages/source.html">The Source</a>
-            <a href="pages/tributaries.html">Tributaries</a>
-            <a href="pages/current.html">The Current</a>
-            <a href="pages/journey.html">The Journey</a>
-            <a href="pages/letters-from-the-river.html">Letters</a>
-            <a href="pages/river-guides.html">River Guides</a>
-        </div>
-
-    </nav>
-
-
-    <main>
+<MainLayout
+    title="The River Kept Flowing | Build a Life That Lasts"
+    description="The River Kept Flowing is a living archive of faith, family, stewardship, perseverance, creativity, and the lifelong work of becoming."
+>
+<main>
 
         <section class="hero">
 
@@ -545,55 +500,4 @@
         </section>
 
     </main>
-
-
-    <footer>
-
-        <div class="footer-shell">
-
-            <div>
-
-                <a href="index.html" class="footer-logo">
-                    The River Kept Flowing
-                </a>
-
-                <p>
-                    Building a life that lasts.
-                </p>
-
-            </div>
-
-
-            <div class="footer-links">
-
-                <a href="pages/headwaters.html">Headwaters</a>
-                <a href="pages/source.html">The Source</a>
-                <a href="pages/current.html">The Current</a>
-                <a href="pages/journey.html">The Journey</a>
-                <a href="pages/river-guides.html">River Guides</a>
-
-            </div>
-
-        </div>
-
-
-        <div class="footer-bottom">
-
-            <p>
-                Â© 2026 The River Kept Flowing. All rights reserved.
-            </p>
-
-            <p>
-                The journey continues.
-            </p>
-
-        </div>
-
-    </footer>
-
-
-    <script is:inline src="/script.js"></script>
-
-</body>
-
-</html>
+</MainLayout>
