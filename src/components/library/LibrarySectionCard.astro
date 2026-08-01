@@ -1,0 +1,86 @@
+---
+interface Props {
+    eyebrow:string;
+    title:string;
+    description:string;
+    count:number;
+    latestTitle?:string;
+    href:string;
+    latestHref?:string;
+    action:string;
+}
+
+const {
+    eyebrow,
+    title,
+    description,
+    count,
+    latestTitle,
+    href,
+    latestHref,
+    action
+} = Astro.props;
+---
+
+<article class="library-hub-card">
+
+    <p class="eyebrow">
+        {eyebrow}
+    </p>
+
+
+    <h3>
+        {title}
+    </h3>
+
+
+    <p class="library-hub-card__description">
+        {description}
+    </p>
+
+
+    <div class="library-hub-card__meta">
+
+        <span>
+            {count}
+            {count === 1 ? " published entry" : " published entries"}
+        </span>
+
+
+        {
+            latestTitle &&
+            <span>
+                Latest: {latestTitle}
+            </span>
+        }
+
+    </div>
+
+
+    <div class="library-hub-card__actions">
+
+        <a
+            href={href}
+            class="library-entry-card__link"
+        >
+            {action}
+
+            <span aria-hidden="true">
+                →
+            </span>
+        </a>
+
+
+        {
+            latestHref &&
+            <a
+                href={latestHref}
+                class="library-hub-card__latest"
+            >
+                Read the latest
+            </a>
+        }
+
+    </div>
+
+</article>
