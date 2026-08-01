@@ -60,16 +60,16 @@ The River Table
 {recipe.data.published.toLocaleDateString("en-US")}
 </span>
 
-{recipe.data.prepTime && (
-<span>Prep: {recipe.data.prepTime}</span>
+{recipe.data.prepMinutes && (
+<span>Prep: {recipe.data.prepMinutes} min</span>
 )}
 
-{recipe.data.cookTime && (
-<span>Cook: {recipe.data.cookTime}</span>
+{recipe.data.cookMinutes && (
+<span>Cook: {recipe.data.cookMinutes} min</span>
 )}
 
 {recipe.data.servings && (
-<span>{recipe.data.servings} servings</span>
+<span>{recipe.data.servings}</span>
 )}
 
 </div>
