@@ -1,0 +1,134 @@
+/* =========================================================
+   CONTENT LIBRARY
+   ========================================================= */
+
+.library-page {
+    min-height: 70vh;
+    background: #f6f2e9;
+    color: #253126;
+}
+
+.library-shell {
+    width: min(1120px, calc(100% - 3rem));
+    margin: 0 auto;
+}
+
+.library-hero {
+    padding: clamp(5rem, 11vw, 9rem) 0;
+    border-bottom: 1px solid rgba(37, 49, 38, 0.14);
+}
+
+.library-hero h1 {
+    max-width: 10ch;
+    margin: 0.75rem 0 1.5rem;
+    font-size: clamp(3.5rem, 10vw, 7rem);
+    line-height: 0.94;
+}
+
+.library-hero__lead {
+    max-width: 62ch;
+    margin-bottom: 2rem;
+    font-size: 1.15rem;
+    line-height: 1.8;
+}
+
+.library-section {
+    padding: clamp(4rem, 8vw, 7rem) 0;
+}
+
+.library-section__heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+}
+
+.library-section__heading h2 {
+    margin-top: 0.5rem;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+}
+
+.library-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+}
+
+.library-card {
+    display: flex;
+    flex-direction: column;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    background: #fffdf8;
+    border: 1px solid rgba(37, 49, 38, 0.13);
+    border-radius: 1rem;
+    box-shadow: 0 1rem 3rem rgba(37, 49, 38, 0.06);
+}
+
+.library-card__meta,
+.library-card__footer > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    color: rgba(37, 49, 38, 0.68);
+    font-size: 0.85rem;
+}
+
+.library-card h3 {
+    margin: 1.25rem 0 1rem;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    line-height: 1.1;
+}
+
+.library-card > p {
+    margin-bottom: 2rem;
+    line-height: 1.75;
+}
+
+.library-card__footer {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-top: auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(37, 49, 38, 0.12);
+}
+
+.library-empty {
+    padding: clamp(2rem, 6vw, 5rem);
+    background: #fffdf8;
+    border: 1px solid rgba(37, 49, 38, 0.13);
+    border-radius: 1rem;
+    text-align: center;
+}
+
+.library-empty h2 {
+    max-width: 22ch;
+    margin: 0.75rem auto 1.25rem;
+    font-size: clamp(1.8rem, 5vw, 3rem);
+}
+
+.library-empty > p:last-child {
+    max-width: 62ch;
+    margin: 0 auto;
+    line-height: 1.75;
+}
+
+@media (max-width: 760px) {
+
+    .library-shell {
+        width: min(100% - 2rem, 1120px);
+    }
+
+    .library-section__heading,
+    .library-card__footer {
+        align-items: start;
+        flex-direction: column;
+    }
+
+    .library-grid {
+        grid-template-columns: 1fr;
+    }
+
+}

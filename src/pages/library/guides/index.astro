@@ -1,0 +1,189 @@
+---
+import { getCollection } from "astro:content";
+import MainLayout from "../../../layouts/MainLayout.astro";
+
+const guides = await getCollection("guides", ({ data }) => {
+    return import.meta.env.PROD ? !data.draft : true;
+});
+
+const publishedGuides = guides
+    .filter((guide) => !guide.data.draft)
+    .sort(
+        (a, b) =>
+            b.data.published.getTime() -
+            a.data.published.getTime()
+    );
+---
+
+<MainLayout
+    title="Guide Library | The River Kept Flowing"
+    description="Explore practical River Guides covering stewardship, insurance, faith, family, work, health, finances, creativity, service, and the lifelong work of becoming."
+    stylesheet="/library.css"
+>
+
+    <main class="library-page">
+
+        <header class="library-hero">
+
+            <div class="library-shell">
+
+                <p class="eyebrow">
+                    The practical library
+                </p>
+
+                <h1>
+                    River Guides
+                </h1>
+
+                <p class="library-hero__lead">
+                    Clear explanations, practical systems, and durable lessons
+                    for building a meaningful life and caring well for what has
+                    been entrusted to us.
+                </p>
+
+                <a
+                    href="/river-guides/"
+                    class="button page-button-secondary"
+                >
+                    View the Complete Guide Collection
+                </a>
+
+            </div>
+
+        </header>
+
+
+        <section class="library-section">
+
+            <div class="library-shell">
+
+                <div class="library-section__heading">
+
+                    <div>
+
+                        <p class="section-label">
+                            Published guides
+                        </p>
+
+                        <h2>
+                            The growing collection
+                        </h2>
+
+                    </div>
+
+                    <p>
+                        {publishedGuides.length}
+                        {publishedGuides.length === 1 ? " guide" : " guides"}
+                    </p>
+
+                </div>
+
+
+                {
+                    publishedGuides.length > 0 ? (
+
+                        <div class="library-grid">
+
+                            {
+                                publishedGuides.map((guide) => (
+
+                                    <article class="library-card">
+
+                                        <div class="library-card__meta">
+
+                                            <span>
+                                                {guide.data.category}
+                                            </span>
+
+                                            {
+                                                guide.data.guideNumber && (
+                                                    <span>
+                                                        Guide {String(
+                                                            guide.data.guideNumber
+                                                        ).padStart(3, "0")}
+                                                    </span>
+                                                )
+                                            }
+
+                                        </div>
+
+                                        <h3>
+                                            {guide.data.title}
+                                        </h3>
+
+                                        <p>
+                                            {guide.data.description}
+                                        </p>
+
+                                        <div class="library-card__footer">
+
+                                            <div>
+
+                                                <span>
+                                                    {guide.data.published.toLocaleDateString(
+                                                        "en-US",
+                                                        {
+                                                            year: "numeric",
+                                                            month: "short",
+                                                            day: "numeric"
+                                                        }
+                                                    )}
+                                                </span>
+
+                                                {
+                                                    guide.data.readingMinutes && (
+                                                        <span>
+                                                            {guide.data.readingMinutes} min read
+                                                        </span>
+                                                    )
+                                                }
+
+                                            </div>
+
+                                            <a
+                                                href={`/library/guides/${guide.id}/`}
+                                                class="text-link"
+                                            >
+                                                Read guide &rarr;
+                                            </a>
+
+                                        </div>
+
+                                    </article>
+
+                                ))
+                            }
+
+                        </div>
+
+                    ) : (
+
+                        <div class="library-empty">
+
+                            <p class="section-label">
+                                The collection is being prepared
+                            </p>
+
+                            <h2>
+                                New Markdown guides will appear here automatically.
+                            </h2>
+
+                            <p>
+                                The publishing system is active. When a guide is
+                                added to the content collection and marked for
+                                publication, it will be listed here without manually
+                                editing this page.
+                            </p>
+
+                        </div>
+
+                    )
+                }
+
+            </div>
+
+        </section>
+
+    </main>
+
+</MainLayout>
