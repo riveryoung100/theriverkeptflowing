@@ -1,70 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
+---
+import MainLayout from "../layouts/MainLayout.astro";
+---
 
-<head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Letters From the River | The River Kept Flowing</title>
-
-    <meta
-        name="description"
-        content="Letters From the River is a growing archive of personal letters about fatherhood, marriage, faith, forgiveness, memory, responsibility, ordinary life, and the lessons carried downstream."
-    >
-
-    <meta name="author" content="River Young">
-
-    <link rel="stylesheet" href="../styles.css">
-
-</head>
-
-
-<body>
-
-
-    <nav class="navbar" aria-label="Primary navigation">
-
-        <a href="../index.html" class="logo">
-            The River Kept Flowing
-        </a>
-
-        <div class="nav-links">
-
-            <a href="headwaters.html">
-                Headwaters
-            </a>
-
-            <a href="source.html">
-                The Source
-            </a>
-
-            <a href="tributaries.html">
-                Tributaries
-            </a>
-
-            <a href="current.html">
-                The Current
-            </a>
-
-            <a href="journey.html">
-                The Journey
-            </a>
-
-            <a href="letters-from-the-river.html" class="active">
-                Letters
-            </a>
-
-            <a href="river-guides.html">
-                River Guides
-            </a>
-
-        </div>
-
-    </nav>
-
-
-    <main>
+<MainLayout
+    title="Letters From the River | The River Kept Flowing"
+    description="Letters From the River is a growing archive of personal letters about fatherhood, marriage, faith, forgiveness, memory, responsibility, ordinary life, and the lessons carried downstream."
+>
+<main>
 
 
         <header class="letters-hero">
@@ -1026,7 +968,7 @@
                             turning points behind the voice writing these letters.
                         </p>
 
-                        <a href="source.html" class="letter-link light-letter-link">
+                        <a href="/source/" class="letter-link light-letter-link">
                             Read the Story
                             <span aria-hidden="true">→</span>
                         </a>
@@ -1049,7 +991,7 @@
                             carrying in this season of life.
                         </p>
 
-                        <a href="current.html" class="letter-link">
+                        <a href="/current/" class="letter-link">
                             Enter the Current
                             <span aria-hidden="true">→</span>
                         </a>
@@ -1072,7 +1014,7 @@
                             and direction taking shape downstream.
                         </p>
 
-                        <a href="journey.html" class="letter-link">
+                        <a href="/journey/" class="letter-link">
                             Continue the Journey
                             <span aria-hidden="true">→</span>
                         </a>
@@ -1095,7 +1037,7 @@
                             resources, explanations, and tools.
                         </p>
 
-                        <a href="river-guides.html" class="letter-link">
+                        <a href="/pages/river-guides.html" class="letter-link">
                             Explore River Guides
                             <span aria-hidden="true">→</span>
                         </a>
@@ -1160,11 +1102,11 @@
 
                 <div class="page-actions">
 
-                    <a href="current.html" class="button page-button-primary">
+                    <a href="/current/" class="button page-button-primary">
                         Enter the Current
                     </a>
 
-                    <a href="river-guides.html" class="button page-button-secondary">
+                    <a href="/pages/river-guides.html" class="button page-button-secondary">
                         Explore River Guides
                     </a>
 
@@ -1177,77 +1119,4 @@
 
     </main>
 
-
-    <footer>
-
-        <div class="footer-shell">
-
-            <div>
-
-                <a href="../index.html" class="footer-logo">
-                    The River Kept Flowing
-                </a>
-
-                <p>
-                    Building a life that is worth remembering.
-                </p>
-
-            </div>
-
-
-            <div class="footer-links">
-
-                <a href="headwaters.html">
-                    Headwaters
-                </a>
-
-                <a href="source.html">
-                    The Source
-                </a>
-
-                <a href="tributaries.html">
-                    Tributaries
-                </a>
-
-                <a href="current.html">
-                    The Current
-                </a>
-
-                <a href="journey.html">
-                    The Journey
-                </a>
-
-                <a href="letters-from-the-river.html">
-                    Letters
-                </a>
-
-                <a href="river-guides.html">
-                    River Guides
-                </a>
-
-            </div>
-
-        </div>
-
-
-        <div class="footer-bottom">
-
-            <p>
-                © 2026 The River Kept Flowing. All rights reserved.
-            </p>
-
-            <p>
-                Some words are meant to travel farther than we do.
-            </p>
-
-        </div>
-
-    </footer>
-
-
-    <script src="../script.js"></script>
-
-
-</body>
-
-</html>
+</MainLayout>
