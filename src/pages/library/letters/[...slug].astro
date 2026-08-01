@@ -1,25 +1,31 @@
 ---
 import { getCollection, render } from "astro:content";
 import ReadingLayout from "../../../layouts/ReadingLayout.astro";
+import ContentEntry from "../../../components/content/ContentEntry.astro";
 
 export async function getStaticPaths() {
-    const letters = await getCollection("letters", ({ data }) => {
-        return import.meta.env.PROD ? !data.draft : true;
-    });
+
+    const letters = await getCollection(
+        "letters",
+        ({ data }) => {
+            return import.meta.env.PROD ? !data.draft : true;
+        }
+    );
 
     return letters
         .filter((letter) => !letter.data.draft)
         .map((letter) => ({
-            params: {
-                slug: letter.id
+            params:{
+                slug:letter.id
             },
-            props: {
+            props:{
                 letter
             }
         }));
 }
 
 const { letter } = Astro.props;
+
 const { Content } = await render(letter);
 
 const canonical = new URL(
@@ -29,82 +35,23 @@ const canonical = new URL(
 ---
 
 <ReadingLayout
-    title={`${letter.data.title} | Letters From the River`}
+    title={`${letter.data.title} | The River Kept Flowing`}
     description={letter.data.description}
     author={letter.data.author}
     canonical={canonical}
-    bodyClass="reading-page letter-reading-page"
 >
 
-    <article class="content-entry letter-entry">
+    <ContentEntry
+        eyebrow={letter.data.recipient ?? "Letters From the River"}
+        title={letter.data.title}
+        description={letter.data.description}
+        author={letter.data.author}
+        published={letter.data.published}
+        tags={letter.data.tags}
+    >
 
-        <header class="content-entry__header">
+        <Content />
 
-            <p class="eyebrow">
-                Letters From the River
-            </p>
-
-            <h1>
-                {letter.data.title}
-            </h1>
-
-            <p class="content-entry__description">
-                {letter.data.description}
-            </p>
-
-            <div class="content-entry__meta">
-
-                {letter.data.letterNumber && (
-                    <span>
-                        Letter {String(letter.data.letterNumber).padStart(3, "0")}
-                    </span>
-                )}
-
-                {letter.data.recipient && (
-                    <span>
-                        Written to {letter.data.recipient}
-                    </span>
-                )}
-
-                <span>
-                    {letter.data.published.toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric"
-                    })}
-                </span>
-
-            </div>
-
-        </header>
-
-
-        <div class="content-entry__body">
-
-            <Content />
-
-        </div>
-
-
-        <footer class="content-entry__tags">
-
-            <p class="letters-signature">
-                Until the next bend,<br>
-                River
-            </p>
-
-            {letter.data.tags.length > 0 && (
-
-                <ul>
-                    {letter.data.tags.map((tag) => (
-                        <li>{tag}</li>
-                    ))}
-                </ul>
-
-            )}
-
-        </footer>
-
-    </article>
+    </ContentEntry>
 
 </ReadingLayout>
