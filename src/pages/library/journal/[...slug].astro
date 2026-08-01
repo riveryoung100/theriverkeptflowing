@@ -1,0 +1,109 @@
+---
+import { getCollection, render } from "astro:content";
+import ReadingLayout from "../../../layouts/ReadingLayout.astro";
+
+export async function getStaticPaths() {
+    const entries = await getCollection("journal", ({ data }) => {
+        return import.meta.env.PROD ? !data.draft : true;
+    });
+
+    return entries
+        .filter((entry) => !entry.data.draft)
+        .map((entry) => ({
+            params: {
+                slug: entry.id
+            },
+            props: {
+                entry
+            }
+        }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const canonical = new URL(
+    `/library/journal/${entry.id}/`,
+    Astro.site ?? Astro.url
+).toString();
+---
+
+<ReadingLayout
+    title={`${entry.data.title} | The River Journal`}
+    description={entry.data.description}
+    author={entry.data.author}
+    canonical={canonical}
+    bodyClass="reading-page journal-reading-page"
+>
+
+    <article class="content-entry journal-entry">
+
+        <header class="content-entry__header">
+
+            <p class="eyebrow">
+                The River Journal
+            </p>
+
+            <h1>
+                {entry.data.title}
+            </h1>
+
+            <p class="content-entry__description">
+                {entry.data.description}
+            </p>
+
+            <div class="content-entry__meta">
+
+                <span>
+                    {entry.data.published.toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric"
+                    })}
+                </span>
+
+                {entry.data.season && (
+                    <span>
+                        {entry.data.season}
+                    </span>
+                )}
+
+                {entry.data.location && (
+                    <span>
+                        {entry.data.location}
+                    </span>
+                )}
+
+            </div>
+
+        </header>
+
+
+        <div class="content-entry__body">
+
+            <Content />
+
+        </div>
+
+
+        {entry.data.tags.length > 0 && (
+
+            <footer class="content-entry__tags">
+
+                <p class="section-label">
+                    Filed under
+                </p>
+
+                <ul>
+                    {entry.data.tags.map((tag) => (
+                        <li>{tag}</li>
+                    ))}
+                </ul>
+
+            </footer>
+
+        )}
+
+    </article>
+
+</ReadingLayout>
