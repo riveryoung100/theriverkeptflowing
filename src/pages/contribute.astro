@@ -1,0 +1,255 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+
+const supportUrl =
+    import.meta.env.PUBLIC_STRIPE_RIVER_SUPPORT_URL ?? "";
+
+const communityUrl =
+    import.meta.env.PUBLIC_STRIPE_COMMUNITY_TABLE_URL ?? "";
+
+const monthlyUrl =
+    import.meta.env.PUBLIC_STRIPE_MONTHLY_SUPPORT_URL ?? "";
+
+const contributionPaths = [
+    {
+        eyebrow: "Support the work",
+        title: "Contribute to the River",
+        description:
+            "Help sustain the writing, filming, publishing, technology, equipment, research, and practical work required to keep The River Kept Flowing moving.",
+        href: supportUrl,
+        action: "Make a contribution",
+        recurring: false
+    },
+    {
+        eyebrow: "Serve the community",
+        title: "The Community Table",
+        description:
+            "Help provide meals, supplies, direct care, and practical support for people in the community who need help—whether or not they are already connected to a formal assistance system.",
+        href: communityUrl,
+        action: "Support community care",
+        recurring: false
+    },
+    {
+        eyebrow: "Walk with the River",
+        title: "Monthly Stewardship",
+        description:
+            "Provide steady monthly support for the continued development of the platform, its educational work, community service, and the stories still waiting to be told.",
+        href: monthlyUrl,
+        action: "Become a monthly supporter",
+        recurring: true
+    }
+];
+
+const configuredCount = contributionPaths.filter(
+    (path) => Boolean(path.href)
+).length;
+---
+
+<MainLayout
+    title="Contribute to the River | The River Kept Flowing"
+    description="Support the writing, educational work, community care, publishing, and continued development of The River Kept Flowing."
+    stylesheet="/contribute.css"
+>
+
+    <main class="contribute-page">
+
+        <header class="contribute-hero">
+
+            <div class="contribute-shell">
+
+                <p class="eyebrow">
+                    Contribute to the journey
+                </p>
+
+                <h1>
+                    Help the river keep flowing.
+                </h1>
+
+                <p class="contribute-hero__lead">
+                    This work exists to preserve useful knowledge, tell the
+                    truth about a life still unfolding, serve people directly,
+                    and build something that can continue helping long after
+                    any single season has passed.
+                </p>
+
+                <a
+                    href="#contribution-paths"
+                    class="button contribute-button-primary"
+                >
+                    Choose where to contribute
+                </a>
+
+            </div>
+
+        </header>
+
+
+        <section
+            id="contribution-paths"
+            class="contribute-section"
+        >
+
+            <div class="contribute-shell">
+
+                <div class="contribute-section__heading">
+
+                    <div>
+
+                        <p class="section-label">
+                            Three ways to help
+                        </p>
+
+                        <h2>
+                            Give toward the part of the river you believe in.
+                        </h2>
+
+                    </div>
+
+                    <p>
+                        {configuredCount} of 3 payment paths configured
+                    </p>
+
+                </div>
+
+
+                <div class="contribute-grid">
+
+                    {
+                        contributionPaths.map((path) => (
+
+                            <article class="contribute-card">
+
+                                <p class="eyebrow">
+                                    {path.eyebrow}
+                                </p>
+
+                                <h3>
+                                    {path.title}
+                                </h3>
+
+                                <p class="contribute-card__description">
+                                    {path.description}
+                                </p>
+
+                                {
+                                    path.recurring && (
+                                        <p class="contribute-card__note">
+                                            Recurring monthly support
+                                        </p>
+                                    )
+                                }
+
+                                {
+                                    path.href ? (
+
+                                        <a
+                                            href={path.href}
+                                            class="button contribute-button-primary"
+                                            rel="external"
+                                        >
+                                            {path.action}
+                                        </a>
+
+                                    ) : (
+
+                                        <span
+                                            class="button contribute-button-disabled"
+                                            aria-disabled="true"
+                                        >
+                                            Payment link being prepared
+                                        </span>
+
+                                    )
+                                }
+
+                            </article>
+
+                        ))
+                    }
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="contribute-section contribute-section--quiet">
+
+            <div class="contribute-shell contribute-shell--reading">
+
+                <p class="section-label">
+                    Financial clarity
+                </p>
+
+                <h2>
+                    Every contribution should have a clear purpose.
+                </h2>
+
+                <p>
+                    Contributions may support publishing costs, equipment,
+                    website operations, educational resources, food,
+                    community assistance, ministry activity, and the direct
+                    labor required to continue this work.
+                </p>
+
+                <p>
+                    Payments are processed through a secure third-party
+                    checkout. Payment-card and bank information are not
+                    collected or stored directly by this website.
+                </p>
+
+                <div class="contribute-notice">
+
+                    <h3>
+                        Tax and charitable status
+                    </h3>
+
+                    <p>
+                        Contributions through this page are not represented
+                        as tax-deductible charitable donations unless and
+                        until they are received by a legally qualified
+                        charitable organization and the contributor is given
+                        the appropriate documentation.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="contribute-closing">
+
+            <div class="contribute-shell contribute-shell--reading">
+
+                <p class="eyebrow">
+                    More than money
+                </p>
+
+                <h2>
+                    Contribution can also mean participation.
+                </h2>
+
+                <p>
+                    Share the work. Feed someone. Teach what you know.
+                    Recommend a trusted resource. Help another person find
+                    their footing. The river moves through every person who
+                    carries something useful downstream.
+                </p>
+
+                <a
+                    href="/journey/"
+                    class="text-link"
+                >
+                    Continue through the Journey &rarr;
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</MainLayout>
