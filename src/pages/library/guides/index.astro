@@ -1,18 +1,35 @@
 ---
 import { getCollection } from "astro:content";
 import MainLayout from "../../../layouts/MainLayout.astro";
+import LibraryGrid from "../../../components/library/LibraryGrid.astro";
 
-const guides = await getCollection("guides", ({ data }) => {
-    return import.meta.env.PROD ? !data.draft : true;
-});
+const guides = await getCollection(
+    "guides",
+    ({ data }) => !data.draft
+);
 
-const publishedGuides = guides
-    .filter((guide) => !guide.data.draft)
+const guideItems = guides
     .sort(
         (a, b) =>
             b.data.published.getTime() -
             a.data.published.getTime()
-    );
+    )
+    .map((guide) => ({
+        title: guide.data.title,
+        description: guide.data.description,
+        href: `/library/guides/${guide.id}/`,
+        label: guide.data.category,
+        action: "Read the guide",
+        number: guide.data.guideNumber
+            ? `River Guide No. ${String(
+                guide.data.guideNumber
+            ).padStart(3, "0")}`
+            : undefined,
+        published: guide.data.published,
+        readingMinutes: guide.data.readingMinutes,
+        tags: guide.data.tags,
+        featured: guide.data.featured
+    }));
 ---
 
 <MainLayout
@@ -36,16 +53,16 @@ const publishedGuides = guides
                 </h1>
 
                 <p class="library-hero__lead">
-                    Clear explanations, practical systems, and durable lessons
-                    for building a meaningful life and caring well for what has
-                    been entrusted to us.
+                    Clear explanations, practical systems, and durable
+                    lessons for building a meaningful life and caring
+                    well for what has been entrusted to us.
                 </p>
 
                 <a
                     href="/river-guides/"
                     class="button page-button-secondary"
                 >
-                    View the Complete Guide Collection
+                    Explore the Complete River Guides Page
                 </a>
 
             </div>
@@ -72,113 +89,22 @@ const publishedGuides = guides
                     </div>
 
                     <p>
-                        {publishedGuides.length}
-                        {publishedGuides.length === 1 ? " guide" : " guides"}
+                        {guideItems.length}
+                        {guideItems.length === 1
+                            ? " guide"
+                            : " guides"}
                     </p>
 
                 </div>
 
 
-                {
-                    publishedGuides.length > 0 ? (
-
-                        <div class="library-grid">
-
-                            {
-                                publishedGuides.map((guide) => (
-
-                                    <article class="library-card">
-
-                                        <div class="library-card__meta">
-
-                                            <span>
-                                                {guide.data.category}
-                                            </span>
-
-                                            {
-                                                guide.data.guideNumber && (
-                                                    <span>
-                                                        Guide {String(
-                                                            guide.data.guideNumber
-                                                        ).padStart(3, "0")}
-                                                    </span>
-                                                )
-                                            }
-
-                                        </div>
-
-                                        <h3>
-                                            {guide.data.title}
-                                        </h3>
-
-                                        <p>
-                                            {guide.data.description}
-                                        </p>
-
-                                        <div class="library-card__footer">
-
-                                            <div>
-
-                                                <span>
-                                                    {guide.data.published.toLocaleDateString(
-                                                        "en-US",
-                                                        {
-                                                            year: "numeric",
-                                                            month: "short",
-                                                            day: "numeric"
-                                                        }
-                                                    )}
-                                                </span>
-
-                                                {
-                                                    guide.data.readingMinutes && (
-                                                        <span>
-                                                            {guide.data.readingMinutes} min read
-                                                        </span>
-                                                    )
-                                                }
-
-                                            </div>
-
-                                            <a
-                                                href={`/library/guides/${guide.id}/`}
-                                                class="text-link"
-                                            >
-                                                Read guide &rarr;
-                                            </a>
-
-                                        </div>
-
-                                    </article>
-
-                                ))
-                            }
-
-                        </div>
-
-                    ) : (
-
-                        <div class="library-empty">
-
-                            <p class="section-label">
-                                The collection is being prepared
-                            </p>
-
-                            <h2>
-                                New Markdown guides will appear here automatically.
-                            </h2>
-
-                            <p>
-                                The publishing system is active. When a guide is
-                                added to the content collection and marked for
-                                publication, it will be listed here without manually
-                                editing this page.
-                            </p>
-
-                        </div>
-
-                    )
-                }
+                <LibraryGrid
+                    items={guideItems}
+                    emptyTitle="No Markdown River Guides have been published yet."
+                    emptyDescription="The existing insurance handbooks remain available through the complete River Guides page. Future collection-based guides will appear here automatically when they are published."
+                    emptyHref="/river-guides/"
+                    emptyAction="Explore the existing guides"
+                />
 
             </div>
 
