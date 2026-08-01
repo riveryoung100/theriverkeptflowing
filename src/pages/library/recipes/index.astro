@@ -1,0 +1,85 @@
+---
+import { getCollection } from "astro:content";
+import MainLayout from "../../../layouts/MainLayout.astro";
+import LibraryHero from "../../../components/library/LibraryHero.astro";
+import LibraryGrid from "../../../components/library/LibraryGrid.astro";
+
+const recipes = await getCollection(
+    "recipes",
+    ({ data }) => !data.draft
+);
+
+const recipeItems = recipes
+    .sort(
+        (a,b)=>
+            b.data.published.getTime()-
+            a.data.published.getTime()
+    )
+    .map((recipe)=>({
+        title:recipe.data.title,
+        description:recipe.data.description,
+        href:`/library/recipes/${recipe.id}/`,
+        label:recipe.data.cuisine ?? "Recipe",
+        action:"Cook this recipe",
+        published:recipe.data.published,
+        tags:recipe.data.tags,
+        featured:recipe.data.featured
+    }));
+---
+
+<MainLayout
+    title="The River Table | The River Kept Flowing"
+    description="Recipes worth gathering around."
+    stylesheet="/library.css"
+>
+
+<main class="library-page">
+
+    <LibraryHero
+        eyebrow="The River Table"
+        title="Meals worth gathering around."
+        description="Recipes collected, refined, and shared from the River."
+        buttonText="Visit The Table"
+        buttonHref="/table/"
+    />
+
+    <section class="library-section">
+
+        <div class="library-shell">
+
+            <div class="library-section__heading">
+
+                <div>
+
+                    <p class="section-label">
+                        Published recipes
+                    </p>
+
+                    <h2>
+                        The collection
+                    </h2>
+
+                </div>
+
+                <p>
+                    {recipeItems.length}
+                    {recipeItems.length===1 ? " recipe" : " recipes"}
+                </p>
+
+            </div>
+
+            <LibraryGrid
+                items={recipeItems}
+                emptyTitle="No recipes have been published yet."
+                emptyDescription="Published Markdown recipes will automatically appear here."
+                emptyHref="/journey/"
+                emptyAction="Return to the Journey"
+            />
+
+        </div>
+
+    </section>
+
+</main>
+
+</MainLayout>
