@@ -1,24 +1,27 @@
 ---
 import { getCollection, render } from "astro:content";
 import ReadingLayout from "../../../layouts/ReadingLayout.astro";
+import ContentEntry from "../../../components/content/ContentEntry.astro";
 
 export async function getStaticPaths() {
 
-    const recipes = await getCollection("recipes", ({ data }) => {
-        return import.meta.env.PROD ? !data.draft : true;
-    });
+    const recipes = await getCollection(
+        "recipes",
+        ({ data }) => {
+            return import.meta.env.PROD ? !data.draft : true;
+        }
+    );
 
     return recipes
         .filter((recipe) => !recipe.data.draft)
         .map((recipe) => ({
-            params: {
-                slug: recipe.id
+            params:{
+                slug:recipe.id
             },
-            props: {
+            props:{
                 recipe
             }
         }));
-
 }
 
 const { recipe } = Astro.props;
@@ -29,57 +32,26 @@ const canonical = new URL(
     `/library/recipes/${recipe.id}/`,
     Astro.site ?? Astro.url
 ).toString();
-
 ---
 
 <ReadingLayout
-    title={`${recipe.data.title} | The River Table`}
+    title={`${recipe.data.title} | The River Kept Flowing`}
     description={recipe.data.description}
     author={recipe.data.author}
     canonical={canonical}
-    bodyClass="reading-page recipe-reading-page"
 >
 
-<article class="content-entry recipe-entry">
+    <ContentEntry
+        eyebrow={recipe.data.cuisine ?? "The River Table"}
+        title={recipe.data.title}
+        description={recipe.data.description}
+        author={recipe.data.author}
+        published={recipe.data.published}
+        tags={recipe.data.tags}
+    >
 
-<header class="content-entry__header">
+        <Content />
 
-<p class="eyebrow">
-The River Table
-</p>
-
-<h1>{recipe.data.title}</h1>
-
-<p class="content-entry__description">
-{recipe.data.description}
-</p>
-
-<div class="content-entry__meta">
-
-<span>
-{recipe.data.published.toLocaleDateString("en-US")}
-</span>
-
-{recipe.data.prepMinutes && (
-<span>Prep: {recipe.data.prepMinutes} min</span>
-)}
-
-{recipe.data.cookMinutes && (
-<span>Cook: {recipe.data.cookMinutes} min</span>
-)}
-
-{recipe.data.servings && (
-<span>{recipe.data.servings}</span>
-)}
-
-</div>
-
-</header>
-
-<div class="content-entry__body">
-<Content />
-</div>
-
-</article>
+    </ContentEntry>
 
 </ReadingLayout>
