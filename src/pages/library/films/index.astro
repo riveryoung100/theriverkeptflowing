@@ -1,0 +1,85 @@
+---
+import { getCollection } from "astro:content";
+import MainLayout from "../../../layouts/MainLayout.astro";
+import LibraryHero from "../../../components/library/LibraryHero.astro";
+import LibraryGrid from "../../../components/library/LibraryGrid.astro";
+
+const films = await getCollection(
+    "films",
+    ({ data }) => !data.draft
+);
+
+const filmItems = films
+    .sort(
+        (a,b)=>
+            b.data.published.getTime()-
+            a.data.published.getTime()
+    )
+    .map((film)=>({
+        title:film.data.title,
+        description:film.data.description,
+        href:`/library/films/${film.id}/`,
+        label:film.data.platform ?? "Video",
+        action:"Read transcript",
+        published:film.data.published,
+        tags:film.data.tags,
+        featured:film.data.featured
+    }));
+---
+
+<MainLayout
+    title="Film Library | The River Kept Flowing"
+    description="Video essays and visual stories from the River."
+    stylesheet="/library.css"
+>
+
+<main class="library-page">
+
+    <LibraryHero
+        eyebrow="Films"
+        title="Stories told through film."
+        description="Video essays, documentaries, reflections, and conversations published from The River Kept Flowing."
+        buttonText="Visit Current"
+        buttonHref="/current/"
+    />
+
+    <section class="library-section">
+
+        <div class="library-shell">
+
+            <div class="library-section__heading">
+
+                <div>
+
+                    <p class="section-label">
+                        Published films
+                    </p>
+
+                    <h2>
+                        The collection
+                    </h2>
+
+                </div>
+
+                <p>
+                    {filmItems.length}
+                    {filmItems.length===1 ? " film" : " films"}
+                </p>
+
+            </div>
+
+            <LibraryGrid
+                items={filmItems}
+                emptyTitle="No films have been published yet."
+                emptyDescription="Published Markdown film transcripts will automatically appear here."
+                emptyHref="/journey/"
+                emptyAction="Return to the Journey"
+            />
+
+        </div>
+
+    </section>
+
+</main>
+
+</MainLayout>
