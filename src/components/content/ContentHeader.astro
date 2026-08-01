@@ -1,0 +1,48 @@
+---
+interface Props {
+    type:string;
+    title:string;
+    description?:string;
+    published?:Date;
+}
+
+const {
+    type,
+    title,
+    description,
+    published
+} = Astro.props;
+---
+
+<header class="content-header">
+
+    <p class="content-type">
+        {type}
+    </p>
+
+
+    <h1>
+        {title}
+    </h1>
+
+
+    {
+        description &&
+        <p class="content-description">
+            {description}
+        </p>
+    }
+
+
+    {
+        published &&
+        <time datetime={published.toISOString()}>
+            {published.toLocaleDateString("en-US", {
+                year:"numeric",
+                month:"long",
+                day:"numeric"
+            })}
+        </time>
+    }
+
+</header>
