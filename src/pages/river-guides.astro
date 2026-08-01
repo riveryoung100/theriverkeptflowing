@@ -1,53 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>
-   River Guides | The River Kept Flowing
-  </title>
-  <meta content="River Guides is the practical library of The River Kept Flowing &mdash; structured lessons, tools, systems, explanations, recommendations, and resources for building a meaningful life." name="description"/>
-  <meta content="River Young" name="author"/>
-  <link href="../styles.css" rel="stylesheet"/>
-  <link href="../river-guides.css" rel="stylesheet"/>
-  <link href="https://theriverkeptflowing.com/pages/river-guides.html" rel="canonical"/>
-  <meta content="index, follow" name="robots"/>
-  <meta content="website" property="og:type"/>
-  <meta content="River Guides | The River Kept Flowing" property="og:title"/>
-  <meta content="Original handbooks, structured lessons, tools, systems, and practical explanations for the waters ahead." property="og:description"/>
-  <meta content="https://theriverkeptflowing.com/pages/river-guides.html" property="og:url"/>
-  <meta content="The River Kept Flowing" property="og:site_name"/>
- </head>
- <body class="river-guides-page">
-  <nav aria-label="Primary navigation" class="navbar">
-   <a class="logo" href="../index.html">
-    The River Kept Flowing
-   </a>
-   <div class="nav-links">
-    <a href="headwaters.html">
-     Headwaters
-    </a>
-    <a href="source.html">
-     The Source
-    </a>
-    <a href="tributaries.html">
-     Tributaries
-    </a>
-    <a href="current.html">
-     The Current
-    </a>
-    <a href="journey.html">
-     The Journey
-    </a>
-    <a href="letters-from-the-river.html">
-     Letters
-    </a>
-    <a aria-current="page" class="active" href="river-guides.html">
-     River Guides
-    </a>
-   </div>
-  </nav>
-  <main>
+---
+import MainLayout from "../layouts/MainLayout.astro";
+---
+
+<MainLayout
+    title="River Guides | The River Kept Flowing"
+    description="River Guides is the practical library of The River Kept Flowing — structured lessons, tools, systems, explanations, recommendations, and resources for building a meaningful life."
+>
+<main>
    <header class="guides-hero">
     <div class="guides-hero-content">
      <p class="eyebrow">
@@ -1247,7 +1206,7 @@
         Explore the major streams of life, work, knowledge,
                             service, and responsibility that feed this library.
        </p>
-       <a class="guide-link light-guide-link" href="tributaries.html">
+       <a class="guide-link light-guide-link" href="/tributaries/">
         Explore the Tributaries
         <span aria-hidden="true">
          &rarr;
@@ -1265,7 +1224,7 @@
         Read the memories, questions, relationships, convictions,
                             and emotions beneath the practical lessons.
        </p>
-       <a class="guide-link" href="letters-from-the-river.html">
+       <a class="guide-link" href="/letters-from-the-river/">
         Read the Letters
         <span aria-hidden="true">
          &rarr;
@@ -1283,7 +1242,7 @@
         See what is currently being built, studied, tested,
                             questioned, and developed.
        </p>
-       <a class="guide-link" href="current.html">
+       <a class="guide-link" href="/current/">
         Enter the Current
         <span aria-hidden="true">
          &rarr;
@@ -1301,7 +1260,7 @@
         Follow the goals, commitments, milestones, uncertainty,
                             and long-term destination behind the work.
        </p>
-       <a class="guide-link" href="journey.html">
+       <a class="guide-link" href="/journey/">
         Continue the Journey
         <span aria-hidden="true">
          &rarr;
@@ -1335,60 +1294,15 @@
                     It is to send useful knowledge downstream.
      </blockquote>
      <div class="page-actions">
-      <a class="button guides-button-primary" href="tributaries.html">
+      <a class="button guides-button-primary" href="/tributaries/">
        Explore the Tributaries
       </a>
-      <a class="button guides-button-secondary" href="letters-from-the-river.html">
+      <a class="button guides-button-secondary" href="/letters-from-the-river/">
        Read the Letters
       </a>
      </div>
     </div>
    </section>
   </main>
-  <footer>
-   <div class="footer-shell">
-    <div>
-     <a class="footer-logo" href="../index.html">
-      The River Kept Flowing
-     </a>
-     <p>
-      Building a life that is worth remembering.
-     </p>
-    </div>
-    <div class="footer-links">
-     <a href="headwaters.html">
-      Headwaters
-     </a>
-     <a href="source.html">
-      The Source
-     </a>
-     <a href="tributaries.html">
-      Tributaries
-     </a>
-     <a href="current.html">
-      The Current
-     </a>
-     <a href="journey.html">
-      The Journey
-     </a>
-     <a href="letters-from-the-river.html">
-      Letters
-     </a>
-     <a href="river-guides.html">
-      River Guides
-     </a>
-    </div>
-   </div>
-   <div class="footer-bottom">
-    <p>
-     &copy; 2026 The River Kept Flowing. All rights reserved.
-    </p>
-    <p>
-     Useful knowledge should keep moving.
-    </p>
-   </div>
-  </footer>
-  <script src="../script.js">
-  </script>
- </body>
-</html>
+
+</MainLayout>
