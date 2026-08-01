@@ -1,25 +1,31 @@
 ---
 import { getCollection, render } from "astro:content";
 import ReadingLayout from "../../../layouts/ReadingLayout.astro";
+import ContentEntry from "../../../components/content/ContentEntry.astro";
 
 export async function getStaticPaths() {
-    const entries = await getCollection("journal", ({ data }) => {
-        return import.meta.env.PROD ? !data.draft : true;
-    });
+
+    const entries = await getCollection(
+        "journal",
+        ({ data }) => {
+            return import.meta.env.PROD ? !data.draft : true;
+        }
+    );
 
     return entries
         .filter((entry) => !entry.data.draft)
         .map((entry) => ({
-            params: {
-                slug: entry.id
+            params:{
+                slug:entry.id
             },
-            props: {
+            props:{
                 entry
             }
         }));
 }
 
 const { entry } = Astro.props;
+
 const { Content } = await render(entry);
 
 const canonical = new URL(
@@ -29,81 +35,23 @@ const canonical = new URL(
 ---
 
 <ReadingLayout
-    title={`${entry.data.title} | The River Journal`}
+    title={`${entry.data.title} | The River Kept Flowing`}
     description={entry.data.description}
     author={entry.data.author}
     canonical={canonical}
-    bodyClass="reading-page journal-reading-page"
 >
 
-    <article class="content-entry journal-entry">
+    <ContentEntry
+        eyebrow={entry.data.season ?? "The River Journal"}
+        title={entry.data.title}
+        description={entry.data.description}
+        author={entry.data.author}
+        published={entry.data.published}
+        tags={entry.data.tags}
+    >
 
-        <header class="content-entry__header">
+        <Content />
 
-            <p class="eyebrow">
-                The River Journal
-            </p>
-
-            <h1>
-                {entry.data.title}
-            </h1>
-
-            <p class="content-entry__description">
-                {entry.data.description}
-            </p>
-
-            <div class="content-entry__meta">
-
-                <span>
-                    {entry.data.published.toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric"
-                    })}
-                </span>
-
-                {entry.data.season && (
-                    <span>
-                        {entry.data.season}
-                    </span>
-                )}
-
-                {entry.data.location && (
-                    <span>
-                        {entry.data.location}
-                    </span>
-                )}
-
-            </div>
-
-        </header>
-
-
-        <div class="content-entry__body">
-
-            <Content />
-
-        </div>
-
-
-        {entry.data.tags.length > 0 && (
-
-            <footer class="content-entry__tags">
-
-                <p class="section-label">
-                    Filed under
-                </p>
-
-                <ul>
-                    {entry.data.tags.map((tag) => (
-                        <li>{tag}</li>
-                    ))}
-                </ul>
-
-            </footer>
-
-        )}
-
-    </article>
+    </ContentEntry>
 
 </ReadingLayout>
