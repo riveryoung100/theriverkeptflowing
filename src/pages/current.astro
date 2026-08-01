@@ -1,70 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
+---
+import MainLayout from "../layouts/MainLayout.astro";
+---
 
-<head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>The Current | The River Kept Flowing</title>
-
-    <meta
-        name="description"
-        content="The Current is a living record of what River Young is building, learning, questioning, creating, and becoming in this season of life."
-    >
-
-    <meta name="author" content="River Young">
-
-    <link rel="stylesheet" href="../styles.css">
-
-</head>
-
-
-<body>
-
-
-    <nav class="navbar" aria-label="Primary navigation">
-
-        <a href="../index.html" class="logo">
-            The River Kept Flowing
-        </a>
-
-        <div class="nav-links">
-
-            <a href="headwaters.html">
-                Headwaters
-            </a>
-
-            <a href="source.html">
-                The Source
-            </a>
-
-            <a href="tributaries.html">
-                Tributaries
-            </a>
-
-            <a href="current.html" class="active">
-                The Current
-            </a>
-
-            <a href="journey.html">
-                The Journey
-            </a>
-
-            <a href="letters-from-the-river.html">
-                Letters
-            </a>
-
-            <a href="river-guides.html">
-                River Guides
-            </a>
-
-        </div>
-
-    </nav>
-
-
-    <main>
+<MainLayout
+    title="The Current | The River Kept Flowing"
+    description="The Current is a living record of what River Young is building, learning, questioning, creating, and becoming in this season of life."
+>
+<main>
 
 
         <header class="current-hero">
@@ -1195,7 +1137,7 @@
                             ambition, endurance, and the pursuit of freedom.
                         </p>
 
-                        <a href="source.html" class="text-link">
+                        <a href="/source/" class="text-link">
                             Read the story
                             <span aria-hidden="true">→</span>
                         </a>
@@ -1218,7 +1160,7 @@
                             beneath The River Kept Flowing.
                         </p>
 
-                        <a href="headwaters.html" class="text-link">
+                        <a href="/headwaters/" class="text-link">
                             Return to the beginning
                             <span aria-hidden="true">→</span>
                         </a>
@@ -1264,7 +1206,7 @@
                             family, leadership, peace, purpose, work, and becoming.
                         </p>
 
-                        <a href="journey.html" class="text-link">
+                        <a href="/pages/journey.html" class="text-link">
                             Follow the journey
                             <span aria-hidden="true">→</span>
                         </a>
@@ -1298,11 +1240,11 @@
 
                 <div class="page-actions">
 
-                    <a href="journey.html" class="button page-button-primary">
+                    <a href="/pages/journey.html" class="button page-button-primary">
                         Continue the Journey
                     </a>
 
-                    <a href="letters-from-the-river.html" class="button page-button-secondary">
+                    <a href="/pages/letters-from-the-river.html" class="button page-button-secondary">
                         Read the Letters
                     </a>
 
@@ -1315,69 +1257,4 @@
 
     </main>
 
-
-    <footer>
-
-        <div class="footer-shell">
-
-            <div>
-
-                <a href="../index.html" class="footer-logo">
-                    The River Kept Flowing
-                </a>
-
-                <p>
-                    Building a life that is worth remembering.
-                </p>
-
-            </div>
-
-
-            <div class="footer-links">
-
-                <a href="headwaters.html">
-                    Headwaters
-                </a>
-
-                <a href="source.html">
-                    The Source
-                </a>
-
-                <a href="current.html">
-                    The Current
-                </a>
-
-                <a href="journey.html">
-                    The Journey
-                </a>
-
-                <a href="river-guides.html">
-                    River Guides
-                </a>
-
-            </div>
-
-        </div>
-
-
-        <div class="footer-bottom">
-
-            <p>
-                © 2026 The River Kept Flowing. All rights reserved.
-            </p>
-
-            <p>
-                The journey continues.
-            </p>
-
-        </div>
-
-    </footer>
-
-
-    <script src="../script.js"></script>
-
-
-</body>
-
-</html>
+</MainLayout>
