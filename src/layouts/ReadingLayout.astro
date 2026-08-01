@@ -1,0 +1,212 @@
+---
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+    title: string;
+    description: string;
+    author?: string;
+    canonical?: string;
+    bodyClass?: string;
+    robots?: string;
+}
+
+const {
+    title,
+    description,
+    author = "River Young",
+    canonical,
+    bodyClass = "reading-page",
+    robots = "index, follow"
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+        >
+
+        <title>{title}</title>
+
+        <meta
+            name="description"
+            content={description}
+        >
+
+        <meta
+            name="author"
+            content={author}
+        >
+
+        <meta
+            name="robots"
+            content={robots}
+        >
+
+        {canonical && (
+            <link
+                rel="canonical"
+                href={canonical}
+            />
+        )}
+
+        <meta
+            property="og:type"
+            content="article"
+        >
+
+        <meta
+            property="og:title"
+            content={title}
+        >
+
+        <meta
+            property="og:description"
+            content={description}
+        >
+
+        {canonical && (
+            <meta
+                property="og:url"
+                content={canonical}
+            />
+        )}
+
+        <meta
+            property="og:site_name"
+            content="The River Kept Flowing"
+        >
+
+        <meta
+            name="twitter:card"
+            content="summary_large_image"
+        >
+
+        <meta
+            name="twitter:title"
+            content={title}
+        >
+
+        <meta
+            name="twitter:description"
+            content={description}
+        >
+
+        <link
+            rel="stylesheet"
+            href="/styles.css"
+        >
+
+        <link
+            rel="stylesheet"
+            href="/reading.css"
+        >
+
+        <script
+            is:inline
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-KFMXEZR98E"
+        ></script>
+
+        <script is:inline>
+            window.dataLayer = window.dataLayer || [];
+
+            function gtag() {
+                window.dataLayer.push(arguments);
+            }
+
+            gtag("js", new Date());
+            gtag("config", "G-KFMXEZR98E");
+        </script>
+
+    </head>
+
+
+    <body class={bodyClass}>
+
+        <div
+            class="reading-progress"
+            aria-hidden="true"
+        >
+            <div class="reading-progress__bar"></div>
+        </div>
+
+        <a
+            class="skip-link"
+            href="#main-content"
+        >
+            Skip to the article
+        </a>
+
+        <Navbar />
+
+        <main
+            id="main-content"
+            class="reading-main"
+        >
+
+            <div class="reading-page-shell">
+
+                <slot />
+
+            </div>
+
+        </main>
+
+        <Footer />
+
+        <script
+            is:inline
+            src="/script.js"
+        ></script>
+
+        <script is:inline>
+            const progressBar =
+                document.querySelector(".reading-progress__bar");
+
+            function updateReadingProgress() {
+                if (!progressBar) {
+                    return;
+                }
+
+                const scrollTop =
+                    document.documentElement.scrollTop ||
+                    document.body.scrollTop;
+
+                const scrollHeight =
+                    document.documentElement.scrollHeight -
+                    document.documentElement.clientHeight;
+
+                const progress =
+                    scrollHeight > 0
+                        ? (scrollTop / scrollHeight) * 100
+                        : 0;
+
+                progressBar.style.width = `${progress}%`;
+            }
+
+            window.addEventListener(
+                "scroll",
+                updateReadingProgress,
+                { passive: true }
+            );
+
+            window.addEventListener(
+                "resize",
+                updateReadingProgress
+            );
+
+            updateReadingProgress();
+        </script>
+
+    </body>
+
+</html>
