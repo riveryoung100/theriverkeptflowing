@@ -1,0 +1,127 @@
+---
+interface Props {
+    eyebrow?: string;
+    title: string;
+    description?: string;
+    author?: string;
+    published?: Date;
+    readingMinutes?: number;
+    version?: string;
+    tags?: string[];
+    bodyClass?: string;
+}
+
+const {
+    eyebrow,
+    title,
+    description,
+    author = "River Young",
+    published,
+    readingMinutes,
+    version,
+    tags = []
+} = Astro.props;
+---
+
+<article class="content-entry">
+
+    <header class="content-entry__header">
+
+        {
+            eyebrow && (
+                <p class="eyebrow">
+                    {eyebrow}
+                </p>
+            )
+        }
+
+
+        <h1>
+            {title}
+        </h1>
+
+
+        {
+            description && (
+                <p class="content-entry__description">
+                    {description}
+                </p>
+            )
+        }
+
+
+        <div class="content-entry__meta">
+
+            <span>
+                By {author}
+            </span>
+
+
+            {
+                published && (
+                    <span>
+                        {published.toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric"
+                        })}
+                    </span>
+                )
+            }
+
+
+            {
+                readingMinutes && (
+                    <span>
+                        {readingMinutes} min read
+                    </span>
+                )
+            }
+
+
+            {
+                version && (
+                    <span>
+                        Version {version}
+                    </span>
+                )
+            }
+
+        </div>
+
+    </header>
+
+
+    <div class="content-entry__body">
+
+        <slot />
+
+    </div>
+
+
+    {
+        tags.length > 0 && (
+            <footer class="content-entry__tags">
+
+                <p class="section-label">
+                    Filed under
+                </p>
+
+
+                <ul>
+
+                    {
+                        tags.map((tag) => (
+                            <li>
+                                {tag}
+                            </li>
+                        ))
+                    }
+
+                </ul>
+
+            </footer>
+        )
+    }
+
+</article>
