@@ -1,8 +1,8 @@
 ---
 import { getCollection } from "astro:content";
 import MainLayout from "../../../layouts/MainLayout.astro";
-import LibraryGrid from "../../../components/library/LibraryGrid.astro";
 import LibraryHero from "../../../components/library/LibraryHero.astro";
+import LibraryGrid from "../../../components/library/LibraryGrid.astro";
 
 const letters = await getCollection(
     "letters",
@@ -11,86 +11,75 @@ const letters = await getCollection(
 
 const letterItems = letters
     .sort(
-        (a, b) =>
-            b.data.published.getTime() -
+        (a,b)=>
+            b.data.published.getTime()-
             a.data.published.getTime()
     )
-    .map((letter) => ({
-        title: letter.data.title,
-        description: letter.data.description,
-        href: `/library/letters/${letter.id}/`,
-        label: letter.data.recipient
-            ? `Written to ${letter.data.recipient}`
-            : "Letters From the River",
-        action: "Read the letter",
-        number: letter.data.letterNumber
-            ? `Letter ${String(
-                letter.data.letterNumber
-            ).padStart(3, "0")}`
-            : undefined,
-        published: letter.data.published,
-        tags: letter.data.tags,
-        featured: letter.data.featured
+    .map((letter)=>({
+        title:letter.data.title,
+        description:letter.data.description,
+        href:`/library/letters/${letter.id}/`,
+        label:letter.data.recipient ?? "Letter",
+        action:"Read the letter",
+        published:letter.data.published,
+        tags:letter.data.tags,
+        featured:letter.data.featured
     }));
 ---
 
 <MainLayout
-    title="Letters Library | The River Kept Flowing"
-    description="Read personal letters about family, faith, memory, responsibility, love, loss, becoming, and the truths worth carrying forward."
+    title="Letters | The River Kept Flowing"
+    description="Letters written across seasons of life."
     stylesheet="/library.css"
 >
 
-    <main class="library-page">
+<main class="library-page">
 
-        <LibraryHero
-            eyebrow="Letters From the River"
-            title="Words written to be carried forward."
-            description="Personal letters about family, faith, memory, responsibility, love, loss, becoming, and the things I do not want time to erase."
-            buttonText="Visit the Complete Letters Page"
-            buttonHref="/letters-from-the-river/"
-        />
+    <LibraryHero
+        eyebrow="Letters"
+        title="Words written to people who mattered."
+        description="Letters to family, friends, future generations, and anyone walking beside the river."
+        buttonText="View Current"
+        buttonHref="/current/"
+    />
 
+    <section class="library-section">
 
-        <section class="library-section">
+        <div class="library-shell">
 
-            <div class="library-shell">
+            <div class="library-section__heading">
 
-                <div class="library-section__heading">
+                <div>
 
-                    <div>
-
-                        <p class="section-label">
-                            Published letters
-                        </p>
-
-                        <h2>
-                            The growing archive
-                        </h2>
-
-                    </div>
-
-                    <p>
-                        {letterItems.length}
-                        {letterItems.length === 1
-                            ? " letter"
-                            : " letters"}
+                    <p class="section-label">
+                        Published letters
                     </p>
+
+                    <h2>
+                        The collection
+                    </h2>
 
                 </div>
 
-
-                <LibraryGrid
-                    items={letterItems}
-                    emptyTitle="No letters have been published yet."
-                    emptyDescription="The Letters publishing system is ready. Published Markdown letters will appear here automatically."
-                    emptyHref="/letters-from-the-river/"
-                    emptyAction="Read why these letters exist"
-                />
+                <p>
+                    {letterItems.length}
+                    {letterItems.length===1 ? " letter" : " letters"}
+                </p>
 
             </div>
 
-        </section>
+            <LibraryGrid
+                items={letterItems}
+                emptyTitle="No letters have been published yet."
+                emptyDescription="Published Markdown letters will automatically appear here."
+                emptyHref="/journey/"
+                emptyAction="Explore the Journey"
+            />
 
-    </main>
+        </div>
+
+    </section>
+
+</main>
 
 </MainLayout>
