@@ -1,25 +1,25 @@
 ---
+import ContentCard from "../content/ContentCard.astro";
+
 interface LibraryItem {
-    title: string;
-    description: string;
-    href: string;
-    label: string;
-    action?: string;
-    number?: string;
-    published?: Date;
-    readingMinutes?: number;
-    tags?: string[];
-    featured?: boolean;
+    title:string;
+    description:string;
+    href:string;
+    label:string;
+    action?:string;
+    number?:string;
+    published?:Date;
+    readingMinutes?:number;
+    tags?:string[];
+    featured?:boolean;
 }
 
 interface Props {
-    items: LibraryItem[];
-    emptyTitle?: string;
-    emptyDescription?: string;
-    emptyHref?: string;
-    emptyAction?: string;
-    cardClass?: string;
-    gridClass?: string;
+    items:LibraryItem[];
+    emptyTitle?:string;
+    emptyDescription?:string;
+    emptyHref?:string;
+    emptyAction?:string;
 }
 
 const {
@@ -28,105 +28,30 @@ const {
     emptyDescription =
         "Published entries will appear here automatically as the library grows.",
     emptyHref,
-    emptyAction = "Learn more",
-    cardClass = "library-entry-card",
-    gridClass = "library-entry-grid"
+    emptyAction = "Learn more"
 } = Astro.props;
 ---
 
 {
     items.length > 0 ? (
 
-        <div class={gridClass}>
+        <div class="library-entry-grid">
 
             {
-                items.map((item, index) => (
+                items.map((item) => (
 
-                    <article
-                        class:list={[
-                            cardClass,
-                            item.featured && `${cardClass}--featured`
-                        ]}
-                    >
-
-                        <div class="library-entry-card__meta">
-
-                            {item.number && (
-                                <span class="library-entry-card__number">
-                                    {item.number}
-                                </span>
-                            )}
-
-                            <span class="library-entry-card__label">
-                                {item.label}
-                            </span>
-
-                        </div>
-
-
-                        <h3>
-                            {item.title}
-                        </h3>
-
-
-                        <p class="library-entry-card__description">
-                            {item.description}
-                        </p>
-
-
-                        {
-                            item.tags && item.tags.length > 0 && (
-
-                                <div class="library-entry-card__tags">
-
-                                    {
-                                        item.tags.slice(0, 4).map((tag) => (
-                                            <span>{tag}</span>
-                                        ))
-                                    }
-
-                                </div>
-
-                            )
-                        }
-
-
-                        <div class="library-entry-card__footer">
-
-                            <div class="library-entry-card__details">
-
-                                {item.published && (
-                                    <span>
-                                        {item.published.toLocaleDateString(
-                                            "en-US",
-                                            {
-                                                year: "numeric",
-                                                month: "short",
-                                                day: "numeric"
-                                            }
-                                        )}
-                                    </span>
-                                )}
-
-                                {item.readingMinutes && (
-                                    <span>
-                                        {item.readingMinutes} min read
-                                    </span>
-                                )}
-
-                            </div>
-
-                            <a
-                                href={item.href}
-                                class="library-entry-card__link"
-                            >
-                                {item.action ?? "Read more"}
-                                <span aria-hidden="true">&rarr;</span>
-                            </a>
-
-                        </div>
-
-                    </article>
+                    <ContentCard
+                        type={item.label}
+                        title={item.title}
+                        description={item.description}
+                        href={item.href}
+                        published={item.published}
+                        featured={item.featured}
+                        number={item.number}
+                        readingMinutes={item.readingMinutes}
+                        tags={item.tags}
+                        action={item.action}
+                    />
 
                 ))
             }
@@ -149,15 +74,19 @@ const {
                 {emptyDescription}
             </p>
 
-            {emptyHref && (
-                <a
-                    href={emptyHref}
-                    class="library-entry-card__link"
-                >
-                    {emptyAction}
-                    <span aria-hidden="true">&rarr;</span>
-                </a>
-            )}
+            {
+                emptyHref && (
+                    <a
+                        href={emptyHref}
+                        class="library-entry-card__link"
+                    >
+                        {emptyAction}
+                        <span aria-hidden="true">
+                            &rarr;
+                        </span>
+                    </a>
+                )
+            }
 
         </article>
 
