@@ -1,0 +1,89 @@
+---
+import { getCollection } from "astro:content";
+import MainLayout from "../../../layouts/MainLayout.astro";
+import LibraryHero from "../../../components/library/LibraryHero.astro";
+import LibraryGrid from "../../../components/library/LibraryGrid.astro";
+
+const entries = await getCollection(
+    "journal",
+    ({ data }) => !data.draft
+);
+
+const journalItems = entries
+    .sort(
+        (a, b) =>
+            b.data.published.getTime() -
+            a.data.published.getTime()
+    )
+    .map((entry) => ({
+        title: entry.data.title,
+        description: entry.data.description,
+        href: `/library/journal/${entry.id}/`,
+        label: entry.data.season ?? "The River Journal",
+        action: "Read the entry",
+        published: entry.data.published,
+        tags: entry.data.tags,
+        featured: entry.data.featured
+    }));
+---
+
+<MainLayout
+    title="Journal Library | The River Kept Flowing"
+    description="Read journal entries documenting seasons, questions, lessons, places, responsibilities, and the continuing work of becoming."
+    stylesheet="/library.css"
+>
+
+    <main class="library-page">
+
+        <LibraryHero
+            eyebrow="The River Journal"
+            title="A record of the life still unfolding."
+            description="Journal entries documenting seasons, questions, lessons, places, responsibilities, and the continuing work of becoming."
+            buttonText="Enter the Current"
+            buttonHref="/current/"
+        />
+
+
+        <section class="library-section">
+
+            <div class="library-shell">
+
+                <div class="library-section__heading">
+
+                    <div>
+
+                        <p class="section-label">
+                            Published entries
+                        </p>
+
+                        <h2>
+                            The journal archive
+                        </h2>
+
+                    </div>
+
+                    <p>
+                        {journalItems.length}
+                        {journalItems.length === 1
+                            ? " entry"
+                            : " entries"}
+                    </p>
+
+                </div>
+
+
+                <LibraryGrid
+                    items={journalItems}
+                    emptyTitle="No journal entries have been published yet."
+                    emptyDescription="Published Markdown journal entries will appear here automatically."
+                    emptyHref="/current/"
+                    emptyAction="See what is happening now"
+                />
+
+            </div>
+
+        </section>
+
+    </main>
+
+</MainLayout>
