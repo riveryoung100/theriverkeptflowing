@@ -1,0 +1,22 @@
+---
+interface Props {
+    label:string;
+    href:string;
+    provider?:string;
+}
+
+const {
+    label,
+    href,
+    provider="Secure Payment"
+}=Astro.props;
+---
+
+<a
+    href={href}
+    class="button payment-button"
+>
+
+    {label}
+
+</a>

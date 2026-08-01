@@ -1,0 +1,23 @@
+---
+interface Props {
+    title:string;
+    description:string;
+}
+
+const {
+    title,
+    description
+}=Astro.props;
+---
+
+<article class="fund-card">
+
+<h3>
+{title}
+</h3>
+
+<p>
+{description}
+</p>
+
+</article>
