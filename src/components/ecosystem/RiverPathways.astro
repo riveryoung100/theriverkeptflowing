@@ -4,39 +4,52 @@ import PathwayCard from "./PathwayCard.astro";
 const pathways = [
 
 {
-title:"Explore The River",
+title:"Learn From The River",
 description:
-"Read the archive, guides, stories, and lessons collected along the journey.",
+"Explore stories, guides, lessons, and resources collected through years of experience and reflection.",
 action:"Enter the Library",
 href:"/library/",
 type:"Knowledge"
 },
 
+
 {
-title:"Support The River",
+title:"Protect What Matters",
 description:
-"Help continue the work through contributions, community care, and shared resources.",
-action:"Contribute",
-href:"/contribute/",
+"Understand practical systems, stewardship, and tools designed to help protect the things you have built.",
+action:"Explore Guides",
+href:"/river-guides/",
+type:"Stewardship"
+},
+
+
+{
+title:"Support The Mission",
+description:
+"Help continue the work of creating, teaching, serving, and caring for people through practical action.",
+action:"Visit The River Fund",
+href:"/river-fund/",
 type:"Mission"
 },
 
+
 {
-title:"Build With The River",
+title:"Build Something Together",
 description:
-"Work together through coaching, digital foundations, and practical services.",
+"Work alongside The River through services, collaboration, and meaningful partnerships.",
 action:"Explore Services",
 href:"/services/",
 type:"Services"
 },
 
+
 {
-title:"Walk Alongside The River",
+title:"Participate In The Journey",
 description:
-"Partner through aligned organizations, sponsorships, and collaboration.",
-action:"Partner",
-href:"/partner/",
-type:"Partnership"
+"Support creations, products, and resources that allow the work to continue flowing.",
+action:"Visit The Shop",
+href:"/shop/",
+type:"Commerce"
 }
 
 ];
@@ -47,6 +60,7 @@ type:"Partnership"
 
 {
 pathways.map((item)=>(
+
 <PathwayCard
     title={item.title}
     description={item.description}
@@ -54,6 +68,7 @@ pathways.map((item)=>(
     href={item.href}
     type={item.type}
 />
+
 ))
 }
 
