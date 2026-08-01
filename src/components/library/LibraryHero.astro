@@ -1,0 +1,50 @@
+---
+interface Props {
+    eyebrow: string;
+    title: string;
+    description: string;
+    buttonText?: string;
+    buttonHref?: string;
+}
+
+const {
+    eyebrow,
+    title,
+    description,
+    buttonText,
+    buttonHref
+} = Astro.props;
+---
+
+<header class="library-hero">
+
+    <div class="library-shell">
+
+        <p class="eyebrow">
+            {eyebrow}
+        </p>
+
+        <h1>
+            {title}
+        </h1>
+
+        <p class="library-hero__lead">
+            {description}
+        </p>
+
+        {
+            buttonText && buttonHref && (
+
+                <a
+                    href={buttonHref}
+                    class="button page-button-secondary"
+                >
+                    {buttonText}
+                </a>
+
+            )
+        }
+
+    </div>
+
+</header>
