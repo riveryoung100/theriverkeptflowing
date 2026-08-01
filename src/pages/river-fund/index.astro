@@ -1,0 +1,139 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import FundCard from "../../components/payments/FundCard.astro";
+import DonationButton from "../../components/payments/DonationButton.astro";
+
+const funds = [
+
+{
+title:"Community Care",
+description:
+"Supporting practical needs, meals, outreach, and opportunities to serve people directly."
+},
+
+{
+title:"Creation and Resources",
+description:
+"Helping create guides, stories, products, and educational resources that can continue the mission."
+},
+
+{
+title:"Teaching and Growth",
+description:
+"Developing lessons, mentorship, and tools designed to help people build meaningful lives."
+},
+
+{
+title:"Future Projects",
+description:
+"Providing the foundation for future ideas, initiatives, and ways to serve."
+}
+
+];
+
+---
+
+<MainLayout
+
+title="The River Fund | The River Kept Flowing"
+
+description="A place to understand how resources help continue the mission of The River Kept Flowing."
+
+>
+
+<main class="contribute-page">
+
+
+<section class="contribute-hero">
+
+<div class="contribute-shell">
+
+<p class="section-label">
+The River Fund
+</p>
+
+
+<h1>
+Help keep the river flowing.
+</h1>
+
+
+<p>
+The River Fund exists to provide a clear place where people can
+support the work of creating, teaching, serving, and caring for others.
+</p>
+
+
+<DonationButton />
+
+</div>
+
+</section>
+
+
+
+<section class="contribute-options">
+
+<div class="contribute-shell">
+
+
+<h2>
+Where resources flow
+</h2>
+
+
+<div class="fund-grid">
+
+{
+funds.map((fund)=>(
+
+<FundCard
+title={fund.title}
+description={fund.description}
+/>
+
+))
+}
+
+</div>
+
+
+</div>
+
+</section>
+
+
+
+<section class="contribute-section">
+
+<div class="contribute-shell">
+
+
+<h2>
+Transparency and stewardship
+</h2>
+
+
+<p>
+Resources received through The River Fund are intended to support
+the mission, operations, projects, and community impact of
+The River Kept Flowing.
+</p>
+
+
+<p>
+Future systems will provide clear separation between contributions,
+purchases, services, and partnerships so every resource has a purpose.
+</p>
+
+
+</div>
+
+</section>
+
+
+
+</main>
+
+
+</MainLayout>
