@@ -1,0 +1,105 @@
+---
+import { getCollection, render } from "astro:content";
+import ReadingLayout from "../../../layouts/ReadingLayout.astro";
+
+export async function getStaticPaths() {
+    const guides = await getCollection("guides", ({ data }) => {
+        return import.meta.env.PROD ? !data.draft : true;
+    });
+
+    return guides.map((guide) => ({
+        params: {
+            slug: guide.id
+        },
+        props: {
+            guide
+        }
+    }));
+}
+
+const { guide } = Astro.props;
+const { Content } = await render(guide);
+
+const canonical = new URL(
+    `/library/guides/${guide.id}/`,
+    Astro.site ?? Astro.url
+).toString();
+---
+
+<ReadingLayout
+    title={`${guide.data.title} | The River Kept Flowing`}
+    description={guide.data.description}
+    canonical={canonical}
+>
+
+    <article class="content-entry guide-entry">
+
+        <header class="content-entry__header">
+
+            <p class="eyebrow">
+                {guide.data.category}
+            </p>
+
+            <h1>
+                {guide.data.title}
+            </h1>
+
+            <p class="content-entry__description">
+                {guide.data.description}
+            </p>
+
+            <div class="content-entry__meta">
+
+                <span>
+                    By {guide.data.author}
+                </span>
+
+                <span>
+                    {guide.data.published.toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric"
+                    })}
+                </span>
+
+                {guide.data.readingMinutes && (
+                    <span>
+                        {guide.data.readingMinutes} min read
+                    </span>
+                )}
+
+                <span>
+                    Version {guide.data.version}
+                </span>
+
+            </div>
+
+        </header>
+
+
+        <div class="content-entry__body">
+
+            <Content />
+
+        </div>
+
+
+        {guide.data.tags.length > 0 && (
+            <footer class="content-entry__tags">
+
+                <p class="section-label">
+                    Filed under
+                </p>
+
+                <ul>
+                    {guide.data.tags.map((tag) => (
+                        <li>{tag}</li>
+                    ))}
+                </ul>
+
+            </footer>
+        )}
+
+    </article>
+
+</ReadingLayout>
