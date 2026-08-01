@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import MainLayout from "../../../layouts/MainLayout.astro";
 import LibraryGrid from "../../../components/library/LibraryGrid.astro";
 import LibraryHero from "../../../components/library/LibraryHero.astro";
+import LibraryCollectionHeader from "../../../components/library/LibraryCollectionHeader.astro";
 
 const guides = await getCollection(
     "guides",
@@ -54,28 +55,13 @@ const guideItems = guides
 
             <div class="library-shell">
 
-                <div class="library-section__heading">
-
-                    <div>
-
-                        <p class="section-label">
-                            Published guides
-                        </p>
-
-                        <h2>
-                            The growing collection
-                        </h2>
-
-                    </div>
-
-                    <p>
-                        {guideItems.length}
-                        {guideItems.length === 1
-                            ? " guide"
-                            : " guides"}
-                    </p>
-
-                </div>
+                <LibraryCollectionHeader
+    label="Published guides"
+    title="The growing collection"
+    count={guideItems.length}
+    singular="guide"
+    plural="guides"
+/>
 
 
                 <LibraryGrid
