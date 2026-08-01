@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import MainLayout from "../../../layouts/MainLayout.astro";
 import LibraryHero from "../../../components/library/LibraryHero.astro";
 import LibraryGrid from "../../../components/library/LibraryGrid.astro";
+import LibraryCollectionHeader from "../../../components/library/LibraryCollectionHeader.astro";
 
 const recipes = await getCollection(
     "recipes",
@@ -47,28 +48,16 @@ const recipeItems = recipes
 
         <div class="library-shell">
 
-            <div class="library-section__heading">
+            <LibraryCollectionHeader
+    label="Published recipes"
+    title="The collection"
+    count={recipeItems.length}
+    singular="recipe"
+    plural="recipes"
+ />
 
-                <div>
 
-                    <p class="section-label">
-                        Published recipes
-                    </p>
-
-                    <h2>
-                        The collection
-                    </h2>
-
-                </div>
-
-                <p>
-                    {recipeItems.length}
-                    {recipeItems.length===1 ? " recipe" : " recipes"}
-                </p>
-
-            </div>
-
-            <LibraryGrid
+                <LibraryGrid
                 items={recipeItems}
                 emptyTitle="No recipes have been published yet."
                 emptyDescription="Published Markdown recipes will automatically appear here."
