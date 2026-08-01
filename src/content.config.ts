@@ -12,7 +12,8 @@ const sharedSchema = z.object({
     featured: z.boolean().default(false),
     tags: z.array(z.string()).default([]),
     image: z.string().optional(),
-    imageAlt: z.string().optional()
+    imageAlt: z.string().optional(),
+    readingMinutes: z.number().int().positive().optional()
 });
 
 const guides = defineCollection({
@@ -24,7 +25,7 @@ const guides = defineCollection({
         category: z.string(),
         guideNumber: z.number().int().positive().optional(),
         version: z.string().default("1.0"),
-        readingMinutes: z.number().int().positive().optional()
+
     })
 });
 
@@ -46,7 +47,7 @@ const essays = defineCollection({
     }),
     schema: sharedSchema.extend({
         category: z.string().optional(),
-        readingMinutes: z.number().int().positive().optional()
+
     })
 });
 
