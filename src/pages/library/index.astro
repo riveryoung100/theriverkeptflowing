@@ -1,0 +1,215 @@
+---
+import { getCollection } from "astro:content";
+import MainLayout from "../../layouts/MainLayout.astro";
+import LibraryHero from "../../components/library/LibraryHero.astro";
+
+const collectionDefinitions = [
+    {
+        name: "guides",
+        title: "River Guides",
+        description:
+            "Practical explanations, systems, and lessons for caring well for what has been entrusted to us.",
+        href: "/library/guides/",
+        eyebrow: "Practical knowledge",
+        action: "Explore the guides"
+    },
+    {
+        name: "letters",
+        title: "Letters",
+        description:
+            "Personal words written to family, future generations, and the people who helped shape the journey.",
+        href: "/library/letters/",
+        eyebrow: "Words carried forward",
+        action: "Read the letters"
+    },
+    {
+        name: "essays",
+        title: "Essays",
+        description:
+            "Long-form reflections on faith, philosophy, work, stewardship, purpose, and becoming.",
+        href: "/library/essays/",
+        eyebrow: "Ideas worth wrestling with",
+        action: "Read the essays"
+    },
+    {
+        name: "journal",
+        title: "Journal",
+        description:
+            "A living record of seasons, questions, places, lessons, responsibilities, and change.",
+        href: "/library/journal/",
+        eyebrow: "The life still unfolding",
+        action: "Enter the journal"
+    },
+    {
+        name: "recipes",
+        title: "Recipes",
+        description:
+            "Meals collected, refined, and shared for families, tables, gatherings, and ordinary life.",
+        href: "/library/recipes/",
+        eyebrow: "The River Table",
+        action: "Explore the recipes"
+    },
+    {
+        name: "films",
+        title: "Films",
+        description:
+            "Video essays, reflections, transcripts, documentaries, and conversations from the River.",
+        href: "/library/films/",
+        eyebrow: "Stories told through film",
+        action: "Explore the films"
+    }
+] as const;
+
+const librarySections = await Promise.all(
+    collectionDefinitions.map(async (definition) => {
+        const entries = await getCollection(
+            definition.name,
+            ({ data }) => !data.draft
+        );
+
+        const sortedEntries = entries.sort(
+            (a, b) =>
+                b.data.published.getTime() -
+                a.data.published.getTime()
+        );
+
+        const latestEntry = sortedEntries[0];
+
+        return {
+            ...definition,
+            count: sortedEntries.length,
+            latestTitle: latestEntry?.data.title,
+            latestHref: latestEntry
+                ? `${definition.href}${latestEntry.id}/`
+                : undefined
+        };
+    })
+);
+---
+
+<MainLayout
+    title="The Library | The River Kept Flowing"
+    description="Explore River Guides, letters, essays, journal entries, recipes, and films from The River Kept Flowing."
+    stylesheet="/library.css"
+>
+
+    <main class="library-page">
+
+        <LibraryHero
+            eyebrow="The living archive"
+            title="The Library"
+            description="A growing collection of practical knowledge, personal writing, reflection, food, film, and the lessons gathered along the way."
+            buttonText="See What Is Current"
+            buttonHref="/current/"
+        />
+
+
+        <section class="library-section">
+
+            <div class="library-shell">
+
+                <div class="library-section__heading">
+
+                    <div>
+
+                        <p class="section-label">
+                            Explore the archive
+                        </p>
+
+                        <h2>
+                            Six paths through the river
+                        </h2>
+
+                    </div>
+
+                    <p>
+                        {librarySections.reduce(
+                            (total, section) =>
+                                total + section.count,
+                            0
+                        )}
+                        {" published entries"}
+                    </p>
+
+                </div>
+
+
+                <div class="library-hub-grid">
+
+                    {
+                        librarySections.map((section) => (
+
+                            <article class="library-hub-card">
+
+                                <p class="eyebrow">
+                                    {section.eyebrow}
+                                </p>
+
+                                <h3>
+                                    {section.title}
+                                </h3>
+
+                                <p class="library-hub-card__description">
+                                    {section.description}
+                                </p>
+
+                                <div class="library-hub-card__meta">
+
+                                    <span>
+                                        {section.count}
+                                        {
+                                            section.count === 1
+                                                ? " published entry"
+                                                : " published entries"
+                                        }
+                                    </span>
+
+                                    {
+                                        section.latestTitle && (
+                                            <span>
+                                                Latest: {section.latestTitle}
+                                            </span>
+                                        )
+                                    }
+
+                                </div>
+
+                                <div class="library-hub-card__actions">
+
+                                    <a
+                                        href={section.href}
+                                        class="library-entry-card__link"
+                                    >
+                                        {section.action}
+                                        <span aria-hidden="true">
+                                            &rarr;
+                                        </span>
+                                    </a>
+
+                                    {
+                                        section.latestHref && (
+                                            <a
+                                                href={section.latestHref}
+                                                class="library-hub-card__latest"
+                                            >
+                                                Read the latest
+                                            </a>
+                                        )
+                                    }
+
+                                </div>
+
+                            </article>
+
+                        ))
+                    }
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</MainLayout>
