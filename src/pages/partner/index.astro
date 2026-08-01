@@ -1,0 +1,100 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import ContributionGrid from "../../components/contribution/ContributionGrid.astro";
+
+const partners = [
+
+    {
+        title:"Mission Alignment",
+        description:
+            "Partner with The River Kept Flowing through shared values, resources, and meaningful projects.",
+        action:"Start a conversation",
+        href:"#conversation",
+        type:"Partnership"
+    },
+
+    {
+        title:"Business Partnerships",
+        description:
+            "Organizations can collaborate through referrals, sponsorships, services, and aligned opportunities.",
+        action:"Explore partnership",
+        href:"#business",
+        type:"Business"
+    },
+
+    {
+        title:"Community Impact",
+        description:
+            "Help support projects focused on practical service, care, and strengthening communities.",
+        action:"Support impact",
+        href:"#impact",
+        type:"Community"
+    }
+
+];
+---
+
+<MainLayout
+    title="Partner | The River Kept Flowing"
+    description="Partner with The River Kept Flowing through collaboration, sponsorship, and shared purpose."
+>
+
+<main class="contribute-page">
+
+<section class="contribute-hero">
+
+<div class="contribute-shell">
+
+<p class="section-label">
+Partnership
+</p>
+
+<h1>
+Build something meaningful together.
+</h1>
+
+<p>
+The River Kept Flowing is designed to grow through relationships,
+collaboration, and people who believe meaningful work is worth supporting.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="contribute-options">
+
+<div class="contribute-shell">
+
+<ContributionGrid items={partners} />
+
+</div>
+
+</section>
+
+
+<section
+id="conversation"
+class="contribute-section"
+>
+
+<div class="contribute-shell">
+
+<h2>
+Start the conversation
+</h2>
+
+<p>
+Future partnership requests, sponsorship opportunities,
+and collaborations will connect here.
+</p>
+
+</div>
+
+</section>
+
+
+</main>
+
+</MainLayout>

@@ -1,0 +1,78 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import ProductGrid from "../../components/commerce/ProductGrid.astro";
+
+const products = [
+
+    {
+        title:"River Creations",
+        description:
+            "Food, handmade products, merchandise, and resources created through The River Kept Flowing.",
+        action:"Explore creations",
+        href:"#products",
+        type:"Products"
+    },
+
+    {
+        title:"Guides and Resources",
+        description:
+            "Practical knowledge, written resources, and tools created to help people build meaningful lives.",
+        action:"View resources",
+        href:"/library/",
+        type:"Resources"
+    },
+
+    {
+        title:"Future Publications",
+        description:
+            "Books, editions, and long-form works developed from the River archive.",
+        action:"Coming soon",
+        href:"#future",
+        type:"Publications"
+    }
+
+];
+---
+
+<MainLayout
+    title="Shop | The River Kept Flowing"
+    description="Products, resources, and creations from The River Kept Flowing."
+>
+
+<main class="library-page">
+
+<section class="library-hero">
+
+<div class="library-shell">
+
+<p class="section-label">
+The Marketplace
+</p>
+
+<h1>
+Things created with purpose.
+</h1>
+
+<p>
+Support the River by participating in creations built from years of learning,
+crafting, teaching, and serving.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="library-section">
+
+<div class="library-shell">
+
+<ProductGrid items={products} />
+
+</div>
+
+</section>
+
+</main>
+
+</MainLayout>

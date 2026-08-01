@@ -1,0 +1,37 @@
+---
+import ServiceCard from "./ServiceCard.astro";
+
+interface Item {
+    title:string;
+    description:string;
+    action:string;
+    href:string;
+    type?:string;
+}
+
+interface Props {
+    items:Item[];
+}
+
+const {
+    items
+}=Astro.props;
+---
+
+<div class="service-grid">
+
+{
+    items.map((item)=>(
+
+        <ServiceCard
+            title={item.title}
+            description={item.description}
+            action={item.action}
+            href={item.href}
+            type={item.type}
+        />
+
+    ))
+}
+
+</div>

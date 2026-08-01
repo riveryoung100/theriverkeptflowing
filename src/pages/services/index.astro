@@ -1,0 +1,77 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import ServiceGrid from "../../components/services/ServiceGrid.astro";
+
+const services = [
+
+{
+title:"Coaching and Mentorship",
+description:
+"Personal guidance focused on growth, discipline, stewardship, and intentional living.",
+action:"Learn more",
+href:"#coaching",
+type:"Coaching"
+},
+
+{
+title:"Digital Foundations",
+description:
+"Website development, digital systems, and online foundations for people building something meaningful.",
+action:"Work together",
+href:"#digital",
+type:"Digital"
+},
+
+{
+title:"Education and Consulting",
+description:
+"Practical knowledge built from experience in sales, insurance, business, and personal development.",
+action:"Explore",
+href:"#consulting",
+type:"Consulting"
+}
+
+];
+---
+
+<MainLayout
+title="Services | The River Kept Flowing"
+description="Services and guidance offered through The River Kept Flowing."
+>
+
+<main class="library-page">
+
+<section class="library-hero">
+
+<div class="library-shell">
+
+<p class="section-label">
+Services
+</p>
+
+<h1>
+Helping people build what matters.
+</h1>
+
+<p>
+Experience, lessons, and systems transformed into practical help.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="library-section">
+
+<div class="library-shell">
+
+<ServiceGrid items={services} />
+
+</div>
+
+</section>
+
+</main>
+
+</MainLayout>
