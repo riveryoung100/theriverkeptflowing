@@ -1,44 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
+---
+import MainLayout from "../layouts/MainLayout.astro";
+---
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>The Headwaters | The River Kept Flowing</title>
-
-    <meta
-        name="description"
-        content="The Headwaters is the foundation of The River Kept Flowing: the beliefs, principles, and convictions guiding a life of faith, stewardship, service, family, and legacy."
-    >
-
-    <meta name="author" content="River Young">
-
-    <link rel="stylesheet" href="../styles.css">
-</head>
-
-<body>
-
-    <nav class="navbar" aria-label="Primary navigation">
-
-        <a href="../index.html" class="logo">
-            The River Kept Flowing
-        </a>
-
-        <div class="nav-links">
-            <a href="headwaters.html" class="active">Headwaters</a>
-            <a href="source.html">The Source</a>
-            <a href="tributaries.html">Tributaries</a>
-            <a href="current.html">The Current</a>
-            <a href="journey.html">The Journey</a>
-            <a href="letters-from-the-river.html">Letters</a>
-            <a href="river-guides.html">River Guides</a>
-        </div>
-
-    </nav>
-
-
-    <main>
+<MainLayout
+    title="The Headwaters | The River Kept Flowing"
+    description="The Headwaters is the foundation of The River Kept Flowing: the beliefs, principles, and convictions guiding a life of faith, stewardship, service, family, and legacy."
+>
+<main>
 
         <header class="page-hero headwaters-hero">
 
@@ -411,11 +379,11 @@
 
                 <div class="page-actions">
 
-                    <a href="source.html" class="button page-button-primary">
+                    <a href="/pages/source.html" class="button page-button-primary">
                         Continue to The Source
                     </a>
 
-                    <a href="../index.html" class="button page-button-secondary">
+                    <a href="/" class="button page-button-secondary">
                         Return Home
                     </a>
 
@@ -426,51 +394,4 @@
         </section>
 
     </main>
-
-
-    <footer>
-
-        <div class="footer-shell">
-
-            <div>
-                <a href="../index.html" class="footer-logo">
-                    The River Kept Flowing
-                </a>
-
-                <p>
-                    Building a life that lasts.
-                </p>
-            </div>
-
-
-            <div class="footer-links">
-                <a href="headwaters.html">Headwaters</a>
-                <a href="source.html">The Source</a>
-                <a href="current.html">The Current</a>
-                <a href="journey.html">The Journey</a>
-                <a href="river-guides.html">River Guides</a>
-            </div>
-
-        </div>
-
-
-        <div class="footer-bottom">
-
-            <p>
-                © 2026 The River Kept Flowing. All rights reserved.
-            </p>
-
-            <p>
-                The journey continues.
-            </p>
-
-        </div>
-
-    </footer>
-
-
-    <script src="../script.js"></script>
-
-</body>
-
-</html>
+</MainLayout>
