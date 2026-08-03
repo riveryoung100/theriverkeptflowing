@@ -10,7 +10,9 @@
     "preview": "astro preview",
     "astro": "astro",
     "deploy": "wrangler deploy",
-    "publish": "npm run build && npm run deploy"
+    "publish": "npm run build && npm run deploy",
+    "verify:production": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify-production.ps1",
+    "release": "npm run publish && npm run verify:production"
   },
   "dependencies": {
     "@astrojs/mdx": "^6.0.3",
