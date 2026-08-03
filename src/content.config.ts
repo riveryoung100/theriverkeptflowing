@@ -82,7 +82,7 @@ const films = defineCollection({
     }),
     schema: sharedSchema.extend({
         platform: z.string().optional(),
-        videoUrl: z.string().url().optional(),
+        videoUrl: z.url().optional(),
         durationMinutes: z.number().positive().optional()
     })
 });

@@ -143,6 +143,7 @@ const websiteSchema = {
         {
             isHomepage && (
                 <script
+                    is:inline
                     type="application/ld+json"
                     set:html={JSON.stringify(websiteSchema)}
                 />
