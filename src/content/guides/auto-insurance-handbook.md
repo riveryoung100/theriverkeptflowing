@@ -1,21 +1,24 @@
 ---
-import GuideLayout from "../../../../layouts/GuideLayout.astro";
+title: "The Auto Insurance Handbook"
+description: "Understanding your policy, protecting your family, and buying auto coverage with confidence."
+published: 2026-07-25
+updated: 2026-07-25
+author: "River Young"
+draft: false
+featured: false
+tags:
+  - Insurance
+  - Auto Insurance
+  - Liability
+  - Collision
+  - Comprehensive
+  - Uninsured Motorist
+category: "Insurance Education"
+guideNumber: 2
+version: "1.0"
+readingMinutes: 35
 ---
-
-<GuideLayout
-    title="The Auto Insurance Handbook | River Guides"
-    description="A clear, practical guide to liability, collision, comprehensive, uninsured motorists, deductibles, discounts, claims, policy changes, and buying auto insurance with confidence."
-    articleTitle="The Auto Insurance Handbook"
-    articleDescription="Understanding your policy, protecting your family, and buying auto coverage with confidence."
-    bodyClass="handbook-page auto-handbook-page"
-    canonical="https://theriverkeptflowing.com/content/guides/insurance/auto-insurance-handbook/"
-    published="2026-07-25"
-    modified="2026-07-25"
-    articleSection="River Guides: Insurance"
-    version="1.0"
->
-
-<header slot="cover" class="handbook-cover auto-handbook-cover">
+<header class="handbook-cover auto-handbook-cover">
     <div class="handbook-cover__inner">
       <p class="publication-label">River Guides · Publication No. 002</p>
       <h1>The Auto Insurance Handbook</h1>
@@ -296,6 +299,3 @@ import GuideLayout from "../../../../layouts/GuideLayout.astro";
         <a href="/river-guides/"><span>Return to</span><strong>River Guides Library</strong></a>
       </nav>
     </article>
-  
-
-</GuideLayout>

@@ -1,21 +1,23 @@
 ---
-import GuideLayout from "../../../../layouts/GuideLayout.astro";
+title: "The Renters Insurance Handbook"
+description: "A practical guide to understanding renters insurance before you need it."
+published: 2026-07-26
+updated: 2026-07-26
+author: "River Young"
+draft: false
+featured: false
+tags:
+  - Insurance
+  - Renters Insurance
+  - Personal Property
+  - Liability
+  - Loss of Use
+category: "Insurance Education"
+guideNumber: 3
+version: "1.0"
+readingMinutes: 25
 ---
-
-<GuideLayout
-    title="The Renters Insurance Handbook | River Guides"
-    description="A practical guide to personal property, liability, living expenses, claims, discounts, and buying renters insurance with confidence."
-    articleTitle="The Renters Insurance Handbook"
-    articleDescription="A practical guide to understanding renters insurance before you need it."
-    bodyClass="renters-handbook-page"
-    canonical="https://theriverkeptflowing.com/content/guides/insurance/renters-insurance-handbook/"
-    published="2026-07-26"
-    modified="2026-07-26"
-    articleSection="River Guides: Insurance"
-    version="1.0"
->
-
-<header slot="cover" class="handbook-cover">
+<header class="handbook-cover">
 
 
         <div class="handbook-cover__inner">
@@ -2768,8 +2770,3 @@ import GuideLayout from "../../../../layouts/GuideLayout.astro";
 
 
         </article>
-
-
-    
-
-</GuideLayout>

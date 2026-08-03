@@ -1,21 +1,23 @@
 ---
-import GuideLayout from "../../../../layouts/GuideLayout.astro";
+title: "The Homeowners Insurance Handbook"
+description: "Everything you need to understand before you buy or renew a homeowners insurance policy."
+published: 2026-07-25
+updated: 2026-07-25
+author: "River Young"
+draft: false
+featured: true
+tags:
+  - Insurance
+  - Homeowners
+  - Property Protection
+  - Liability
+  - Deductibles
+category: "Insurance Education"
+guideNumber: 1
+version: "1.0"
+readingMinutes: 35
 ---
-
-<GuideLayout
-    title="The Homeowners Insurance Handbook | River Guides"
-    description="A clear, practical guide to dwelling coverage, personal property, liability, deductibles, loss of use, valuable items, discounts, and owning your homeowners insurance policy with confidence."
-    articleTitle="The Homeowners Insurance Handbook"
-    articleDescription="Everything you need to understand before you buy or renew a homeowners insurance policy."
-    bodyClass="handbook-page"
-    canonical="https://theriverkeptflowing.com/content/guides/insurance/homeowners-insurance-handbook/"
-    published="2026-07-25"
-    modified="2026-07-25"
-    articleSection="River Guides: Insurance"
-    version="1.0"
->
-
-<header slot="cover" class="handbook-cover">
+<header class="handbook-cover">
     <div class="handbook-cover__inner">
       <p class="publication-label">River Guides · Publication No. 001</p>
       <h1>The Homeowners Insurance Handbook</h1>
@@ -1370,6 +1372,3 @@ import GuideLayout from "../../../../layouts/GuideLayout.astro";
       </section>
 
     </article>
-  
-
-</GuideLayout>

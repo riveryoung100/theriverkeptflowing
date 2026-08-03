@@ -1,22 +1,23 @@
 ---
-import GuideLayout from "../../../../layouts/GuideLayout.astro";
+title: "The Life Insurance Handbook"
+description: "Understand life insurance before you buy it—and before the people you love ever need it."
+published: 2026-07-26
+updated: 2026-07-26
+author: "River Young"
+draft: false
+featured: false
+tags:
+  - Insurance
+  - Life Insurance
+  - Family Protection
+  - Beneficiaries
+  - Financial Planning
+category: "Insurance Education"
+guideNumber: 6
+version: "1.0"
+readingMinutes: 35
 ---
-
-<GuideLayout
-    title="The Life Insurance Handbook | River Guides"
-    description="A practical, human guide to life insurance: why it exists, how policies work, term and permanent coverage, cash value, taxes, beneficiaries, claims, and choosing protection responsibly."
-    articleTitle="The Life Insurance Handbook"
-    articleDescription="Understand life insurance before you buy it—and before the people you love ever need it."
-    bodyClass="handbook-page life-handbook-page"
-    stylesheet="/content/guides/insurance/life-insurance-handbook.css"
-    canonical="https://theriverkeptflowing.com/content/guides/insurance/life-insurance-handbook/"
-    published="2026-07-26"
-    modified="2026-07-26"
-    articleSection="River Guides: Insurance"
-    version="1.0"
->
-
-<header slot="cover" class="handbook-cover life-handbook-cover">
+<header class="handbook-cover life-handbook-cover">
 <div class="handbook-cover__inner">
 <p class="publication-label">River Guides · Publication No. 004</p>
 <h1>The Life Insurance Handbook</h1>
@@ -237,6 +238,3 @@ import GuideLayout from "../../../../layouts/GuideLayout.astro";
 
 <section class="next-edition"><div class="handbook-shell next-edition-grid"><div><p class="eyebrow">Coming next in River Guides</p><p class="publication-label">River Guide · Publication No. 005</p><h2>The Umbrella Insurance Handbook</h2><p>A practical guide to excess liability, underlying home and auto requirements, covered exposures, exclusions, limits, and when another layer of protection may be worth carrying.</p></div><a class="handbook-return" href="/river-guides/">Return to River Guides →</a></div></section>
 </article>
-
-
-</GuideLayout>

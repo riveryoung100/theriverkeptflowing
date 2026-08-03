@@ -1,22 +1,23 @@
 ---
-import GuideLayout from "../../../../layouts/GuideLayout.astro";
+title: "The Landlord Insurance Handbook"
+description: "Everything you should understand before purchasing or renewing landlord insurance."
+published: 2026-07-25
+updated: 2026-07-25
+author: "River Young"
+draft: false
+featured: false
+tags:
+  - Insurance
+  - Landlord Insurance
+  - Rental Property
+  - Liability
+  - Property Protection
+category: "Insurance Education"
+guideNumber: 4
+version: "1.0"
+readingMinutes: 30
 ---
-
-<GuideLayout
-    title="The Landlord Insurance Handbook | River Guides"
-    description="A practical, plain-English guide to landlord insurance, reconstruction cost, coverage choices, underwriting, discounts, exclusions, and claims."
-    articleTitle="The Landlord Insurance Handbook"
-    articleDescription="Everything you should understand before purchasing or renewing landlord insurance."
-    bodyClass="landlord-handbook-page"
-    stylesheet="/content/guides/insurance/landlord-insurance-handbook.css"
-    canonical="https://theriverkeptflowing.com/content/guides/insurance/landlord-insurance-handbook/"
-    published="2026-07-25"
-    modified="2026-07-25"
-    articleSection="River Guides: Insurance"
-    version="1.0"
->
-
-<section slot="cover" class="hero">
+<section class="hero">
 
     <div class="hero-inner">
      <p class="eyebrow">
@@ -1086,6 +1087,3 @@ import GuideLayout from "../../../../layouts/GuideLayout.astro";
      </section>
     </article>
    </div>
-  
-
-</GuideLayout>

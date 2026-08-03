@@ -1,22 +1,23 @@
 ---
-import GuideLayout from "../../../../layouts/GuideLayout.astro";
+title: "The Umbrella Insurance Handbook"
+description: "Understanding the additional liability protection that begins when an underlying policy reaches its covered limit."
+published: 2026-07-26
+updated: 2026-07-26
+author: "River Young"
+draft: false
+featured: false
+tags:
+  - Insurance
+  - Umbrella Insurance
+  - Liability
+  - Asset Protection
+  - Coverage Limits
+category: "Insurance Education"
+guideNumber: 5
+version: "1.0"
+readingMinutes: 25
 ---
-
-<GuideLayout
-    title="The Umbrella Insurance Handbook | The River Kept Flowing"
-    description="A practical, plain-English guide to excess liability, bodily injury, property damage, personal injury, umbrella limits, exclusions, costs, and choosing additional liability protection."
-    articleTitle="The Umbrella Insurance Handbook"
-    articleDescription="Understanding the additional liability protection that begins when an underlying policy reaches its covered limit."
-    bodyClass="umbrella-handbook-page"
-    stylesheet="/content/guides/insurance/umbrella-insurance-handbook.css"
-    canonical="https://theriverkeptflowing.com/content/guides/insurance/umbrella-insurance-handbook/"
-    published="2026-07-26"
-    modified="2026-07-26"
-    articleSection="River Guides: Insurance"
-    version="1.0"
->
-
-<section slot="cover" class="hero">
+<section class="hero">
       <div class="hero-inner">
         <p class="eyebrow">River Guide No. 005</p>
         <h1>The Umbrella Insurance Handbook</h1>
@@ -705,6 +706,3 @@ import GuideLayout from "../../../../layouts/GuideLayout.astro";
 
       </article>
     </div>
-  
-
-</GuideLayout>
