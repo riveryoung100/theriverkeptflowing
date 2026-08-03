@@ -5930,7 +5930,7 @@ GUIDES RESPONSIVE
 }
 
 .content-article blockquote::before {
-    content: "â€œ";
+    content: "\201C";
     position: absolute;
     top: 0.25rem;
     left: 0.8rem;
@@ -6518,7 +6518,7 @@ GUIDES RESPONSIVE
 }
 
 .content-text-link::after {
-    content: "â†’";
+    content: "\2192";
     transition: transform 160ms ease;
 }
 
@@ -7093,7 +7093,7 @@ GUIDES RESPONSIVE
 }
 
 .handbook-page .publication-meta span:not(:last-child)::after {
-  content: "â€¢";
+    content: "\2022";
   margin-left: 1.4rem;
   opacity: .45;
 }
@@ -7820,7 +7820,7 @@ grid-template-columns:1fr;
 
 }
 
-/* AUTO INSURANCE HANDBOOK â€” append to public/styles.css */
+/* AUTO INSURANCE HANDBOOK - append to public/styles.css */
 .auto-handbook-page {
   --auto-forest: #173b31;
   --auto-deep: #0d2922;
@@ -8865,7 +8865,7 @@ body.renters-handbook-page img {
 
 .checklist li::before {
 
-    content: "âœ“";
+    content: "\2713";
 
     position: absolute;
 
