@@ -12,24 +12,26 @@
     "deploy": "wrangler deploy",
     "publish": "npm run build && npm run deploy",
     "verify:production": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify-production.ps1",
-    "release": "npm run lint && npm run publish && npm run verify:production",
+    "release": "npm run lint && npm run typecheck && npm run publish && npm run verify:production",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "check": "npm run lint && npm run build"
+    "check": "npm run lint && npm run typecheck && npm run build",
+    "typecheck": "astro check"
   },
   "dependencies": {
-    "@astrojs/mdx": "^6.0.3",
+    "@astrojs/mdx": "^7.0.5",
     "@astrojs/sitemap": "^3.7.3",
-    "astro": "^6.4.8"
+    "astro": "^7.1.6"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.10",
     "@eslint/js": "^10.0.1",
     "@typescript-eslint/parser": "^8.65.0",
     "astro-eslint-parser": "^3.0.0",
     "eslint": "^10.8.0",
     "eslint-plugin-astro": "^3.1.0",
     "globals": "^17.9.0",
-    "typescript": "^5.9.2",
+    "typescript": "^5.9.3",
     "typescript-eslint": "^8.65.0",
     "wrangler": "^4.118.0"
   }
