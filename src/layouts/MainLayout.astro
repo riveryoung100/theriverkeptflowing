@@ -37,6 +37,19 @@ const resolvedImage = new URL(
     image,
     siteOrigin
 ).toString();
+const isHomepage =
+    Astro.url.pathname === "/";
+
+const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${siteOrigin}/#website`,
+    url: `${siteOrigin}/`,
+    name: "The River Kept Flowing",
+    description:
+        "A living public knowledge ecosystem for helping people build, protect, steward, and live a meaningful life.",
+    inLanguage: "en-US"
+};
 ---
 
 <!DOCTYPE html>
@@ -127,6 +140,14 @@ const resolvedImage = new URL(
             name="twitter:image"
             content={resolvedImage}
         >
+        {
+            isHomepage && (
+                <script
+                    type="application/ld+json"
+                    set:html={JSON.stringify(websiteSchema)}
+                />
+            )
+        }
 
         <script
             is:inline
