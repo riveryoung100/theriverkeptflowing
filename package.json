@@ -12,9 +12,10 @@
     "deploy": "wrangler deploy",
     "publish": "npm run build && npm run deploy",
     "verify:production": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify-production.ps1",
-    "release": "npm run publish && npm run verify:production",
+    "release": "npm run lint && npm run publish && npm run verify:production",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "check": "npm run lint && npm run build"
   },
   "dependencies": {
     "@astrojs/mdx": "^6.0.3",
