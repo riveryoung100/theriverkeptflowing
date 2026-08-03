@@ -31,7 +31,7 @@ $productionChecks = @(
     },
     @{
         Name = "Auto handbook"
-        Url = "$siteOrigin/content/guides/insurance/auto-insurance-handbook/"
+        Url = "$siteOrigin/library/guides/auto-insurance-handbook/"
     }
 )
 
@@ -143,7 +143,7 @@ Write-Host "`n=== Guide Schema Verification ==="
 $guide = (
     curl.exe `
         -s `
-        "$siteOrigin/content/guides/insurance/auto-insurance-handbook/"
+        "$siteOrigin/library/guides/auto-insurance-handbook/"
 ) -join "`n"
 
 $guideChecks = @(

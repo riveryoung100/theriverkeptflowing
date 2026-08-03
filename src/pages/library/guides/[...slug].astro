@@ -37,6 +37,14 @@ const canonical = new URL(
     title={`${guide.data.title} | The River Kept Flowing`}
     description={guide.data.description}
     canonical={canonical}
+    articleTitle={guide.data.title}
+    articleDescription={guide.data.description}
+    published={guide.data.published.toISOString()}
+    modified={(guide.data.updated ?? guide.data.published).toISOString()}
+    articleSection={guide.data.category}
+    version={guide.data.version}
+    breadcrumbParentName="River Guides"
+    breadcrumbParentUrl="/river-guides/"
 >
 
     <ContentEntry
