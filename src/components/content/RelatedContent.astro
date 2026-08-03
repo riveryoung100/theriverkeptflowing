@@ -1,0 +1,311 @@
+---
+import { getCollection } from "astro:content";
+import ContentCard from "./ContentCard.astro";
+
+
+type CollectionName =
+    | "guides"
+    | "essays"
+    | "letters"
+    | "journal"
+    | "recipes"
+    | "films";
+
+
+interface Props {
+    currentCollection: CollectionName;
+    currentId: string;
+    currentTags?: string[];
+    limit?: number;
+}
+
+
+interface MinimalEntry {
+    id: string;
+
+    data: {
+        title: string;
+        description: string;
+        published: Date;
+        tags?: string[];
+        featured?: boolean;
+        draft?: boolean;
+    };
+}
+
+
+interface RelatedEntry {
+    collection: CollectionName;
+    collectionLabel: string;
+    id: string;
+    title: string;
+    description: string;
+    published: Date;
+    tags: string[];
+    featured: boolean;
+    href: string;
+    score: number;
+}
+
+
+const {
+    currentCollection,
+    currentId,
+    currentTags = [],
+    limit = 3
+} = Astro.props;
+
+
+const collectionSettings: Record<
+    CollectionName,
+    {
+        label: string;
+        route: string;
+    }
+> = {
+    guides: {
+        label: "Guide",
+        route: "/library/guides/"
+    },
+
+    essays: {
+        label: "Essay",
+        route: "/library/essays/"
+    },
+
+    letters: {
+        label: "Letter",
+        route: "/library/letters/"
+    },
+
+    journal: {
+        label: "Journal",
+        route: "/library/journal/"
+    },
+
+    recipes: {
+        label: "Recipe",
+        route: "/library/recipes/"
+    },
+
+    films: {
+        label: "Film",
+        route: "/library/films/"
+    }
+};
+
+
+function normalizeTag(tag: string) {
+
+    return tag
+        .trim()
+        .toLocaleLowerCase();
+
+}
+
+
+function normalizeEntries(
+    collection: CollectionName,
+    entries: MinimalEntry[]
+): RelatedEntry[] {
+
+    const settings =
+        collectionSettings[collection];
+
+    return entries.map((entry) => ({
+        collection,
+        collectionLabel: settings.label,
+        id: entry.id,
+        title: entry.data.title,
+        description: entry.data.description,
+        published: entry.data.published,
+        tags: entry.data.tags ?? [],
+        featured: entry.data.featured ?? false,
+        href: `${settings.route}${entry.id}/`,
+        score: 0
+    }));
+
+}
+
+
+const [
+    guideEntries,
+    essayEntries,
+    letterEntries,
+    journalEntries,
+    recipeEntries,
+    filmEntries
+] = await Promise.all([
+    getCollection(
+        "guides",
+        ({ data }) => !data.draft
+    ),
+
+    getCollection(
+        "essays",
+        ({ data }) => !data.draft
+    ),
+
+    getCollection(
+        "letters",
+        ({ data }) => !data.draft
+    ),
+
+    getCollection(
+        "journal",
+        ({ data }) => !data.draft
+    ),
+
+    getCollection(
+        "recipes",
+        ({ data }) => !data.draft
+    ),
+
+    getCollection(
+        "films",
+        ({ data }) => !data.draft
+    )
+]);
+
+
+const normalizedCurrentTags =
+    new Set(
+        currentTags.map(normalizeTag)
+    );
+
+
+const allEntries: RelatedEntry[] = [
+    ...normalizeEntries(
+        "guides",
+        guideEntries as unknown as MinimalEntry[]
+    ),
+
+    ...normalizeEntries(
+        "essays",
+        essayEntries as unknown as MinimalEntry[]
+    ),
+
+    ...normalizeEntries(
+        "letters",
+        letterEntries as unknown as MinimalEntry[]
+    ),
+
+    ...normalizeEntries(
+        "journal",
+        journalEntries as unknown as MinimalEntry[]
+    ),
+
+    ...normalizeEntries(
+        "recipes",
+        recipeEntries as unknown as MinimalEntry[]
+    ),
+
+    ...normalizeEntries(
+        "films",
+        filmEntries as unknown as MinimalEntry[]
+    )
+];
+
+
+const relatedEntries = allEntries
+    .filter((entry) => {
+
+        return !(
+            entry.collection === currentCollection &&
+            entry.id === currentId
+        );
+
+    })
+    .map((entry) => {
+
+        const sharedTagCount =
+            entry.tags
+                .map(normalizeTag)
+                .filter((tag) => {
+                    return normalizedCurrentTags.has(tag);
+                })
+                .length;
+
+        const sameCollectionBonus =
+            entry.collection === currentCollection
+                ? 3
+                : 0;
+
+        const featuredBonus =
+            entry.featured
+                ? 1
+                : 0;
+
+        return {
+            ...entry,
+
+            score:
+                sharedTagCount * 10 +
+                sameCollectionBonus +
+                featuredBonus
+        };
+
+    })
+    .sort((first, second) => {
+
+        if (second.score !== first.score) {
+
+            return second.score - first.score;
+
+        }
+
+        return (
+            second.published.getTime() -
+            first.published.getTime()
+        );
+
+    })
+    .slice(0, limit);
+---
+
+
+{
+    relatedEntries.length > 0 && (
+        <section
+            class="related-content"
+            aria-labelledby="related-content-title"
+        >
+
+            <header class="related-content__header">
+
+                <p class="section-label">
+                    Continue through the River
+                </p>
+
+                <h2 id="related-content-title">
+                    Related reading
+                </h2>
+
+                <p>
+                    Explore more from across the River Library.
+                </p>
+
+            </header>
+
+
+            <div class="related-content__grid">
+
+                {
+                    relatedEntries.map((entry) => (
+                        <ContentCard
+                            type={entry.collectionLabel}
+                            title={entry.title}
+                            description={entry.description}
+                            href={entry.href}
+                            published={entry.published}
+                            tags={entry.tags}
+                            action="Continue reading"
+                        />
+                    ))
+                }
+
+            </div>
+
+        </section>
+    )
+}

@@ -2,6 +2,7 @@
 import { getCollection, render } from "astro:content";
 import ReadingLayout from "../../../layouts/ReadingLayout.astro";
 import ContentEntry from "../../../components/content/ContentEntry.astro";
+import RelatedContent from "../../../components/content/RelatedContent.astro";
 
 export async function getStaticPaths() {
 
@@ -53,5 +54,10 @@ const canonical = new URL(
         <Content />
 
     </ContentEntry>
+    <RelatedContent
+        currentCollection="letters"
+        currentId={letter.id}
+        currentTags={letter.data.tags}
+    />
 
 </ReadingLayout>
