@@ -1,7 +1,0 @@
-﻿The River Kept Flowing
-Deployment verification
-
-Source branch: main
-Previous commit: afedef5
-Generated: 2026-08-03T10:07:43-05:00
-Expected build output: dist
