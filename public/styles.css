@@ -9979,3 +9979,37 @@ blockquote {
     }
 
 }
+
+/* =========================================
+HOMEPAGE ECOSYSTEM
+========================================= */
+
+.home-ecosystem {
+    padding: 130px 0;
+    background: var(--paper);
+}
+
+
+.home-shell {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+}
+
+
+.home-ecosystem .section-heading {
+    margin-bottom: 62px;
+}
+
+
+@media (max-width: 760px) {
+
+    .home-ecosystem {
+        padding: 90px 0;
+    }
+
+
+    .home-shell {
+        width: min(100% - 36px, 1180px);
+    }
+
+}
