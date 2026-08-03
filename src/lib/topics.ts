@@ -37,11 +37,30 @@ export function normalizeTopicName(
 }
 
 export function createTopicSlug(
-    value: string
+    value: unknown
 ): string {
 
-    return value
-        .trim()
+    if (
+        typeof value !== "string"
+    ) {
+
+        return "";
+
+    }
+
+
+    const normalizedValue =
+        value.trim();
+
+
+    if (!normalizedValue) {
+
+        return "";
+
+    }
+
+
+    return normalizedValue
         .normalize("NFKD")
         .replace(
             /[\u0300-\u036f]/g,

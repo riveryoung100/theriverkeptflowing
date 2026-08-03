@@ -1,4 +1,7 @@
 ---
+import {
+    createTopicSlug
+} from "../../lib/topics";
 interface Props {
     eyebrow?: string;
     title: string;
@@ -21,8 +24,20 @@ const {
     version,
     tags = []
 } = Astro.props;
+const validTags = (
+    tags ?? []
+).filter(
+    (tag): tag is string => {
+        return (
+            typeof tag === "string" &&
+            createTopicSlug(tag).length > 0
+        );
+    }
+);
 ---
-
+import {
+    createTopicSlug
+} from "../../lib/topics";
 <article class="content-entry">
 
     <header class="content-entry__header">
@@ -100,7 +115,7 @@ const {
 
 
     {
-        tags.length > 0 && (
+        validTags.length > 0 && (
             <footer class="content-entry__tags">
 
                 <p class="section-label">
@@ -111,9 +126,13 @@ const {
                 <ul>
 
                     {
-                        tags.map((tag) => (
+                        validTags.map((tag) => (
                             <li>
-                                {tag}
+                                <a
+                                    href={`/topics/${createTopicSlug(tag)}/`}
+                                >
+                                    {tag}
+                                </a>
                             </li>
                         ))
                     }
