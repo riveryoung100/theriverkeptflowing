@@ -1,4 +1,7 @@
 ---
+import {
+    createTopicSlug
+} from "../../lib/topics";
 interface Props {
     type:string;
     title:string;
@@ -24,8 +27,20 @@ const {
     tags,
     action="Continue reading"
 } = Astro.props;
+const validTags = (
+    tags ?? []
+).filter(
+    (tag): tag is string => {
+        return (
+            typeof tag === "string" &&
+            createTopicSlug(tag).length > 0
+        );
+    }
+);
 ---
-
+import {
+    createTopicSlug
+} from "../../lib/topics";
 <article class:list={[
     "content-card",
     featured && "content-card-featured"
@@ -62,15 +77,18 @@ const {
 
 
         {
-            tags &&
-            tags.length > 0 &&
+            validTags.length > 0 &&
+            validTags.length > 0 &&
             <div class="content-tags">
 
                 {
-                    tags.slice(0,4).map((tag) => (
-                        <span>
+                    validTags.slice(0, 4).map((tag) => (
+                        <a
+                            href={`/topics/${createTopicSlug(tag)}/`}
+                            aria-label={`Explore the ${tag} topic`}
+                        >
                             {tag}
-                        </span>
+                        </a>
                     ))
                 }
 
