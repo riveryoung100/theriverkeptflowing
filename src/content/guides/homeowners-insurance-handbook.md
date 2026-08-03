@@ -4,7 +4,7 @@ description: "Everything you need to understand before you buy or renew a homeow
 published: 2026-07-25
 updated: 2026-07-25
 author: "River Young"
-draft: true
+draft: false
 featured: true
 tags:
   - Insurance
