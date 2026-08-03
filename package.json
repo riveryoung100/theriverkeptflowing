@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
+    "build": "astro build && npm run search:index",
     "preview": "astro preview",
     "astro": "astro",
     "deploy": "wrangler deploy",
@@ -16,7 +16,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "check": "npm run lint && npm run typecheck && npm run build",
-    "typecheck": "astro check"
+    "typecheck": "astro check",
+    "search:index": "pagefind --site dist",
+    "preview:search": "pagefind --site dist --serve"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.5",
@@ -31,6 +33,7 @@
     "eslint": "^10.8.0",
     "eslint-plugin-astro": "^3.1.0",
     "globals": "^17.9.0",
+    "pagefind": "^1.5.2",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.65.0",
     "wrangler": "^4.118.0"
