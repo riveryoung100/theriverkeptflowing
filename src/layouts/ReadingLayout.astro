@@ -3,7 +3,8 @@ import ReadingNavigation from "../components/content/ReadingNavigation.astro";
 
 import ReadingProgress from "../components/content/ReadingProgress.astro";
 import Navbar from "../components/Navbar.astro";
-import Footer from "../components/Footer.astro";
+import Footer from "../components/Footer.astro";
+import ReadingResume from "../components/content/ReadingResume.astro";
 
 interface Props {
     title: string;
@@ -263,6 +264,8 @@ const breadcrumbSchema =
         </a>
 
         <Navbar />
+
+        <ReadingResume />
 
         <ReadingNavigation />
 

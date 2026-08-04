@@ -400,3 +400,123 @@
     }
 
 }
+
+/* =========================================================
+   READING RESUME
+   ========================================================= */
+
+.reading-resume {
+    width: min(100% - 3rem, 860px);
+    margin: 2rem auto 0;
+    padding: 1.25rem 1.4rem;
+    border: 1px solid rgba(37, 49, 38, 0.16);
+    border-radius: 1rem;
+    background: #fffdf8;
+    box-shadow: 0 1rem 3rem rgba(37, 49, 38, 0.07);
+}
+
+.reading-resume[hidden] {
+    display: none;
+}
+
+.reading-resume {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
+.reading-resume__content {
+    min-width: 0;
+}
+
+.reading-resume__eyebrow {
+    margin: 0 0 0.35rem;
+    color: rgba(37, 49, 38, 0.64);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.reading-resume h2 {
+    margin: 0;
+    font-size: clamp(1.2rem, 3vw, 1.55rem);
+    line-height: 1.2;
+}
+
+.reading-resume__content > p:last-child {
+    margin: 0.55rem 0 0;
+    color: rgba(37, 49, 38, 0.74);
+    font-size: 0.92rem;
+    line-height: 1.55;
+}
+
+.reading-resume__actions {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.reading-resume__actions button {
+    min-height: 2.65rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: 999px;
+    font: inherit;
+    font-size: 0.84rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.reading-resume__continue {
+    border: 1px solid #253126;
+    color: #fffdf8;
+    background: #253126;
+}
+
+.reading-resume__continue:hover,
+.reading-resume__continue:focus-visible {
+    background: #344637;
+}
+
+.reading-resume__dismiss {
+    border: 1px solid rgba(37, 49, 38, 0.18);
+    color: #253126;
+    background: transparent;
+}
+
+.reading-resume__dismiss:hover,
+.reading-resume__dismiss:focus-visible {
+    border-color: rgba(37, 49, 38, 0.42);
+    background: rgba(37, 49, 38, 0.05);
+}
+
+@media (max-width: 700px) {
+
+    .reading-resume {
+        width: min(100% - 2rem, 860px);
+        align-items: stretch;
+        flex-direction: column;
+        margin-top: 1.5rem;
+        padding: 1.1rem;
+    }
+
+    .reading-resume__actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .reading-resume__actions button {
+        width: 100%;
+    }
+
+}
+
+@media print {
+
+    .reading-resume {
+        display: none !important;
+    }
+
+}
