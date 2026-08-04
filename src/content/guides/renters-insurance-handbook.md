@@ -1,4 +1,6 @@
 ---
+series: "Insurance Handbook Series"
+seriesOrder: 2
 title: "The Renters Insurance Handbook"
 description: "A practical guide to understanding renters insurance before you need it."
 published: 2026-07-26

@@ -1,4 +1,6 @@
 ---
+series: "Insurance Handbook Series"
+seriesOrder: 3
 title: "The Landlord Insurance Handbook"
 description: "Everything you should understand before purchasing or renewing landlord insurance."
 published: 2026-07-25

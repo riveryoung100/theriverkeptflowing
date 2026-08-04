@@ -1,4 +1,6 @@
 ---
+series: "Insurance Handbook Series"
+seriesOrder: 6
 title: "The Life Insurance Handbook"
 description: "Understand life insurance before you buy it—and before the people you love ever need it."
 published: 2026-07-26

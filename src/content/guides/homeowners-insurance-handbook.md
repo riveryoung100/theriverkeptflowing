@@ -1,4 +1,6 @@
 ---
+series: "Insurance Handbook Series"
+seriesOrder: 1
 title: "The Homeowners Insurance Handbook"
 description: "Everything you need to understand before you buy or renew a homeowners insurance policy."
 published: 2026-07-25

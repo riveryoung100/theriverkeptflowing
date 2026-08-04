@@ -1,4 +1,6 @@
 ---
+series: "Insurance Handbook Series"
+seriesOrder: 5
 title: "The Umbrella Insurance Handbook"
 description: "Understanding the additional liability protection that begins when an underlying policy reaches its covered limit."
 published: 2026-07-26
