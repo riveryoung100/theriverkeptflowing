@@ -1,0 +1,304 @@
+<div
+    class="reading-progress"
+    data-reading-progress
+    role="progressbar"
+    aria-label="Reading progress"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    aria-valuenow="0"
+    aria-valuetext="0% read"
+>
+
+    <div
+        class="reading-progress__bar"
+        data-reading-progress-bar
+        aria-hidden="true"
+    >
+    </div>
+
+</div>
+
+
+<script>
+
+    interface ReadingProgressState {
+        frameRequested: boolean;
+        progressElement: HTMLElement;
+        progressBar: HTMLElement;
+        article: HTMLElement;
+    }
+
+
+    function clamp(
+        value: number,
+        minimum: number,
+        maximum: number
+    ): number {
+
+        return Math.min(
+            maximum,
+            Math.max(
+                minimum,
+                value
+            )
+        );
+
+    }
+
+
+    function calculateArticleProgress(
+        article: HTMLElement
+    ): number {
+
+        const articleRect =
+            article.getBoundingClientRect();
+
+        const viewportHeight =
+            window.innerHeight ||
+            document.documentElement.clientHeight;
+
+        const articleTop =
+            articleRect.top +
+            window.scrollY;
+
+        const articleHeight =
+            article.offsetHeight;
+
+        const readingStart =
+            articleTop -
+            Math.min(
+                viewportHeight * 0.22,
+                180
+            );
+
+        const readingEnd =
+            articleTop +
+            articleHeight -
+            viewportHeight * 0.72;
+
+        const availableDistance =
+            Math.max(
+                1,
+                readingEnd -
+                readingStart
+            );
+
+        const traveledDistance =
+            window.scrollY -
+            readingStart;
+
+
+        return clamp(
+            traveledDistance /
+                availableDistance,
+            0,
+            1
+        );
+
+    }
+
+
+    function updateProgress(
+        state: ReadingProgressState
+    ): void {
+
+        state.frameRequested =
+            false;
+
+
+        const progress =
+            calculateArticleProgress(
+                state.article
+            );
+
+        const percentage =
+            Math.round(
+                progress * 100
+            );
+
+
+        state.progressBar.style.transform =
+            `scaleX(${progress})`;
+
+
+        state.progressElement.setAttribute(
+            "aria-valuenow",
+            String(
+                percentage
+            )
+        );
+
+
+        state.progressElement.setAttribute(
+            "aria-valuetext",
+            `${percentage}% read`
+        );
+
+
+        state.progressElement.dataset.progress =
+            String(
+                percentage
+            );
+
+    }
+
+
+    function requestProgressUpdate(
+        state: ReadingProgressState
+    ): void {
+
+        if (
+            state.frameRequested
+        ) {
+
+            return;
+
+        }
+
+
+        state.frameRequested =
+            true;
+
+
+        window.requestAnimationFrame(
+            () => {
+
+                updateProgress(
+                    state
+                );
+
+            }
+        );
+
+    }
+
+
+    function initializeReadingProgress(
+        progressElement: Element
+    ): void {
+
+        if (
+            !(
+                progressElement instanceof
+                HTMLElement
+            ) ||
+            progressElement.dataset.readingProgressReady ===
+                "true"
+        ) {
+
+            return;
+
+        }
+
+
+        const progressBar =
+            progressElement.querySelector<HTMLElement>(
+                "[data-reading-progress-bar]"
+            );
+
+        const article =
+            document.querySelector<HTMLElement>(
+                ".content-entry"
+            );
+
+
+        if (
+            !progressBar ||
+            !article
+        ) {
+
+            return;
+
+        }
+
+
+        progressElement.dataset.readingProgressReady =
+            "true";
+
+
+        const state: ReadingProgressState = {
+            frameRequested:
+                false,
+            progressElement,
+            progressBar,
+            article
+        };
+
+
+        const handleViewportChange =
+            () => {
+
+                requestProgressUpdate(
+                    state
+                );
+
+            };
+
+
+        window.addEventListener(
+            "scroll",
+            handleViewportChange,
+            {
+                passive:
+                    true
+            }
+        );
+
+
+        window.addEventListener(
+            "resize",
+            handleViewportChange,
+            {
+                passive:
+                    true
+            }
+        );
+
+
+        if (
+            "ResizeObserver" in
+            window
+        ) {
+
+            const resizeObserver =
+                new ResizeObserver(
+                    handleViewportChange
+                );
+
+
+            resizeObserver.observe(
+                article
+            );
+
+        }
+
+
+        requestProgressUpdate(
+            state
+        );
+
+    }
+
+
+    function initializeReadingProgressBars(): void {
+
+        document
+            .querySelectorAll(
+                "[data-reading-progress]"
+            )
+            .forEach(
+                initializeReadingProgress
+            );
+
+    }
+
+
+    initializeReadingProgressBars();
+
+
+    document.addEventListener(
+        "astro:page-load",
+        initializeReadingProgressBars
+    );
+
+</script>

@@ -1,0 +1,852 @@
+<section
+    class="reading-resume"
+    data-reading-resume
+    aria-labelledby="reading-resume-title"
+    hidden
+>
+
+    <div class="reading-resume__content">
+
+        <p class="reading-resume__eyebrow">
+            Welcome back
+        </p>
+
+        <h2 id="reading-resume-title">
+            Continue where you left off?
+        </h2>
+
+        <p data-reading-resume-message>
+            Your reading position was saved on this device.
+        </p>
+
+    </div>
+
+
+    <div class="reading-resume__actions">
+
+        <button
+            class="reading-resume__continue"
+            type="button"
+            data-reading-resume-continue
+        >
+            Continue reading
+        </button>
+
+        <button
+            class="reading-resume__dismiss"
+            type="button"
+            data-reading-resume-dismiss
+        >
+            Start from here
+        </button>
+
+    </div>
+
+</section>
+
+
+<script>
+
+    interface ReadingMemory {
+        version: number;
+        pathname: string;
+        progress: number;
+        scrollY: number;
+        sectionId: string;
+        sectionLabel: string;
+        completed: boolean;
+        updatedAt: number;
+    }
+
+
+    interface ReadingMemoryState {
+        root: HTMLElement;
+        article: HTMLElement;
+        message: HTMLElement;
+        continueButton: HTMLButtonElement;
+        dismissButton: HTMLButtonElement;
+        storageKey: string;
+        saveTimer: number | null;
+        lastSavedProgress: number;
+    }
+
+
+    const STORAGE_PREFIX =
+        "river-reading-memory:";
+
+    const STORAGE_VERSION =
+        1;
+
+    const MINIMUM_RESUME_PROGRESS =
+        5;
+
+    const MAXIMUM_RESUME_PROGRESS =
+        96;
+
+    const COMPLETION_PROGRESS =
+        96;
+
+    const SAVE_INTERVAL =
+        1800;
+
+    const MAX_MEMORY_AGE =
+        1000 *
+        60 *
+        60 *
+        24 *
+        180;
+
+
+    function clamp(
+        value: number,
+        minimum: number,
+        maximum: number
+    ): number {
+
+        return Math.min(
+            maximum,
+            Math.max(
+                minimum,
+                value
+            )
+        );
+
+    }
+
+
+    function getStorageKey(): string {
+
+        return (
+            STORAGE_PREFIX +
+            window.location.pathname
+        );
+
+    }
+
+
+    function readMemory(
+        storageKey: string
+    ): ReadingMemory | null {
+
+        try {
+
+            const storedValue =
+                window.localStorage.getItem(
+                    storageKey
+                );
+
+
+            if (!storedValue) {
+
+                return null;
+
+            }
+
+
+            const parsed =
+                JSON.parse(
+                    storedValue
+                ) as Partial<ReadingMemory>;
+
+
+            if (
+                parsed.version !==
+                    STORAGE_VERSION ||
+                parsed.pathname !==
+                    window.location.pathname ||
+                typeof parsed.progress !==
+                    "number" ||
+                typeof parsed.scrollY !==
+                    "number" ||
+                typeof parsed.updatedAt !==
+                    "number"
+            ) {
+
+                return null;
+
+            }
+
+
+            if (
+                Date.now() -
+                    parsed.updatedAt >
+                MAX_MEMORY_AGE
+            ) {
+
+                window.localStorage.removeItem(
+                    storageKey
+                );
+
+                return null;
+
+            }
+
+
+            return {
+                version:
+                    STORAGE_VERSION,
+                pathname:
+                    parsed.pathname,
+                progress:
+                    clamp(
+                        parsed.progress,
+                        0,
+                        100
+                    ),
+                scrollY:
+                    Math.max(
+                        0,
+                        parsed.scrollY
+                    ),
+                sectionId:
+                    parsed.sectionId ??
+                    "",
+                sectionLabel:
+                    parsed.sectionLabel ??
+                    "",
+                completed:
+                    parsed.completed ??
+                    false,
+                updatedAt:
+                    parsed.updatedAt
+            };
+
+        }
+        catch {
+
+            return null;
+
+        }
+
+    }
+
+
+    function writeMemory(
+        storageKey: string,
+        memory: ReadingMemory
+    ): void {
+
+        try {
+
+            window.localStorage.setItem(
+                storageKey,
+                JSON.stringify(
+                    memory
+                )
+            );
+
+        }
+        catch {
+
+            // Reading memory is optional.
+            // The page continues normally if storage is unavailable.
+
+        }
+
+    }
+
+
+    function removeMemory(
+        storageKey: string
+    ): void {
+
+        try {
+
+            window.localStorage.removeItem(
+                storageKey
+            );
+
+        }
+        catch {
+
+            // Storage may be disabled by the browser.
+
+        }
+
+    }
+
+
+    function getProgressPercentage(
+        article: HTMLElement
+    ): number {
+
+        const articleRect =
+            article.getBoundingClientRect();
+
+        const articleTop =
+            articleRect.top +
+            window.scrollY;
+
+        const viewportHeight =
+            window.innerHeight ||
+            document.documentElement.clientHeight;
+
+        const readingStart =
+            articleTop -
+            Math.min(
+                viewportHeight * 0.22,
+                180
+            );
+
+        const readingEnd =
+            articleTop +
+            article.offsetHeight -
+            viewportHeight * 0.72;
+
+        const distance =
+            Math.max(
+                1,
+                readingEnd -
+                readingStart
+            );
+
+        const traveled =
+            window.scrollY -
+            readingStart;
+
+
+        return Math.round(
+            clamp(
+                traveled /
+                    distance,
+                0,
+                1
+            ) *
+            100
+        );
+
+    }
+
+
+    function getCurrentSection(): {
+        id: string;
+        label: string;
+    } {
+
+        const activeNavigationLink =
+            document.querySelector<HTMLAnchorElement>(
+                "[data-reading-navigation-link][aria-current]"
+            );
+
+
+        if (activeNavigationLink) {
+
+            return {
+                id:
+                    activeNavigationLink.dataset
+                        .readingNavigationLink ??
+                    "",
+                label:
+                    activeNavigationLink.textContent
+                        ?.replace(
+                            /\s+/g,
+                            " "
+                        )
+                        .trim() ??
+                    ""
+            };
+
+        }
+
+
+        const headings =
+            Array.from(
+                document.querySelectorAll<HTMLElement>(
+                    ".content-entry__body h2[id], " +
+                    ".content-entry__body h3[id], " +
+                    ".content-entry__body section[id]"
+                )
+            );
+
+
+        const threshold =
+            Math.min(
+                window.innerHeight *
+                    0.3,
+                220
+            );
+
+
+        let currentElement:
+            HTMLElement |
+            null =
+            null;
+
+
+        for (
+            const element of headings
+        ) {
+
+            if (
+                element.getBoundingClientRect().top <=
+                threshold
+            ) {
+
+                currentElement =
+                    element;
+
+            }
+            else {
+
+                break;
+
+            }
+
+        }
+
+
+        if (!currentElement) {
+
+            return {
+                id:
+                    "",
+                label:
+                    ""
+            };
+
+        }
+
+
+        const heading =
+            /^H[2-3]$/.test(
+                currentElement.tagName
+            )
+                ? currentElement
+                : currentElement.querySelector<HTMLElement>(
+                    "h2, h3"
+                );
+
+
+        return {
+            id:
+                currentElement.id,
+            label:
+                heading?.textContent
+                    ?.replace(
+                        /\s+/g,
+                        " "
+                    )
+                    .trim() ??
+                ""
+        };
+
+    }
+
+
+    function createMemory(
+        state: ReadingMemoryState
+    ): ReadingMemory {
+
+        const progress =
+            getProgressPercentage(
+                state.article
+            );
+
+        const currentSection =
+            getCurrentSection();
+
+
+        return {
+            version:
+                STORAGE_VERSION,
+            pathname:
+                window.location.pathname,
+            progress,
+            scrollY:
+                Math.max(
+                    0,
+                    window.scrollY
+                ),
+            sectionId:
+                currentSection.id,
+            sectionLabel:
+                currentSection.label,
+            completed:
+                progress >=
+                COMPLETION_PROGRESS,
+            updatedAt:
+                Date.now()
+        };
+
+    }
+
+
+    function saveReadingMemory(
+        state: ReadingMemoryState,
+        force = false
+    ): void {
+
+        const memory =
+            createMemory(
+                state
+            );
+
+
+        if (
+            !force &&
+            Math.abs(
+                memory.progress -
+                state.lastSavedProgress
+            ) <
+                1
+        ) {
+
+            return;
+
+        }
+
+
+        state.lastSavedProgress =
+            memory.progress;
+
+
+        writeMemory(
+            state.storageKey,
+            memory
+        );
+
+    }
+
+
+    function scheduleSave(
+        state: ReadingMemoryState
+    ): void {
+
+        if (
+            state.saveTimer !==
+            null
+        ) {
+
+            return;
+
+        }
+
+
+        state.saveTimer =
+            window.setTimeout(
+                () => {
+
+                    state.saveTimer =
+                        null;
+
+                    saveReadingMemory(
+                        state
+                    );
+
+                },
+                SAVE_INTERVAL
+            );
+
+    }
+
+
+    function formatResumeMessage(
+        memory: ReadingMemory
+    ): string {
+
+        if (
+            memory.sectionLabel
+        ) {
+
+            return (
+                `You stopped near “${memory.sectionLabel}” ` +
+                `at ${memory.progress}% complete.`
+            );
+
+        }
+
+
+        return (
+            `You were ${memory.progress}% ` +
+            "through this reading."
+        );
+
+    }
+
+
+    function scrollToMemory(
+        memory: ReadingMemory
+    ): void {
+
+        const reducedMotion =
+            window.matchMedia(
+                "(prefers-reduced-motion: reduce)"
+            ).matches;
+
+        const behavior:
+            ScrollBehavior =
+            reducedMotion
+                ? "auto"
+                : "smooth";
+
+
+        if (
+            memory.sectionId
+        ) {
+
+            const section =
+                document.getElementById(
+                    memory.sectionId
+                );
+
+
+            if (section) {
+
+                section.scrollIntoView({
+                    behavior,
+                    block:
+                        "start"
+                });
+
+
+                const url =
+                    new URL(
+                        window.location.href
+                    );
+
+
+                url.hash =
+                    memory.sectionId;
+
+
+                window.history.replaceState(
+                    null,
+                    "",
+                    url
+                );
+
+
+                return;
+
+            }
+
+        }
+
+
+        window.scrollTo({
+            top:
+                memory.scrollY,
+            behavior
+        });
+
+    }
+
+
+    function shouldOfferResume(
+        memory: ReadingMemory
+    ): boolean {
+
+        return (
+            !memory.completed &&
+            memory.progress >=
+                MINIMUM_RESUME_PROGRESS &&
+            memory.progress <
+                MAXIMUM_RESUME_PROGRESS &&
+            window.scrollY <
+                120 &&
+            window.location.hash.length ===
+                0
+        );
+
+    }
+
+
+    function initializeReadingResume(
+        element: Element
+    ): void {
+
+        if (
+            !(
+                element instanceof
+                HTMLElement
+            ) ||
+            element.dataset.readingResumeReady ===
+                "true"
+        ) {
+
+            return;
+
+        }
+
+
+        const article =
+            document.querySelector<HTMLElement>(
+                ".content-entry"
+            );
+
+        const message =
+            element.querySelector<HTMLElement>(
+                "[data-reading-resume-message]"
+            );
+
+        const continueButton =
+            element.querySelector<HTMLButtonElement>(
+                "[data-reading-resume-continue]"
+            );
+
+        const dismissButton =
+            element.querySelector<HTMLButtonElement>(
+                "[data-reading-resume-dismiss]"
+            );
+
+
+        if (
+            !article ||
+            !message ||
+            !continueButton ||
+            !dismissButton
+        ) {
+
+            return;
+
+        }
+
+
+        element.dataset.readingResumeReady =
+            "true";
+
+
+        const state:
+            ReadingMemoryState = {
+            root:
+                element,
+            article,
+            message,
+            continueButton,
+            dismissButton,
+            storageKey:
+                getStorageKey(),
+            saveTimer:
+                null,
+            lastSavedProgress:
+                -1
+        };
+
+
+        const storedMemory =
+            readMemory(
+                state.storageKey
+            );
+
+
+        if (
+            storedMemory &&
+            shouldOfferResume(
+                storedMemory
+            )
+        ) {
+
+            state.message.textContent =
+                formatResumeMessage(
+                    storedMemory
+                );
+
+            state.root.hidden =
+                false;
+
+
+            state.continueButton.addEventListener(
+                "click",
+                () => {
+
+                    state.root.hidden =
+                        true;
+
+                    scrollToMemory(
+                        storedMemory
+                    );
+
+                }
+            );
+
+
+            state.dismissButton.addEventListener(
+                "click",
+                () => {
+
+                    state.root.hidden =
+                        true;
+
+                    removeMemory(
+                        state.storageKey
+                    );
+
+                }
+            );
+
+        }
+
+
+        window.addEventListener(
+            "scroll",
+            () => {
+
+                scheduleSave(
+                    state
+                );
+
+            },
+            {
+                passive:
+                    true
+            }
+        );
+
+
+        window.addEventListener(
+            "pagehide",
+            () => {
+
+                saveReadingMemory(
+                    state,
+                    true
+                );
+
+            }
+        );
+
+
+        document.addEventListener(
+            "visibilitychange",
+            () => {
+
+                if (
+                    document.visibilityState ===
+                    "hidden"
+                ) {
+
+                    saveReadingMemory(
+                        state,
+                        true
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    function initializeReadingResumeControls(): void {
+
+        document
+            .querySelectorAll(
+                "[data-reading-resume]"
+            )
+            .forEach(
+                initializeReadingResume
+            );
+
+    }
+
+
+    initializeReadingResumeControls();
+
+
+    document.addEventListener(
+        "astro:page-load",
+        initializeReadingResumeControls
+    );
+
+</script>

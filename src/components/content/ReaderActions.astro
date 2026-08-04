@@ -1,0 +1,889 @@
+<section
+    class="reader-actions"
+    data-reader-actions
+    aria-labelledby="reader-actions-title"
+>
+
+    <div class="reader-actions__header">
+
+        <div>
+
+            <p class="reader-actions__eyebrow">
+                Reader tools
+            </p>
+
+            <h2 id="reader-actions-title">
+                Save, share, or print this reading
+            </h2>
+
+        </div>
+
+
+        <p
+            class="reader-actions__status"
+            data-reader-actions-status
+            aria-live="polite"
+            aria-atomic="true"
+        >
+        </p>
+
+    </div>
+
+
+    <div
+        class="reader-actions__controls"
+        role="group"
+        aria-label="Reader actions"
+    >
+
+        <button
+            class="reader-actions__button"
+            type="button"
+            data-reader-share
+        >
+            Share
+        </button>
+
+
+        <button
+            class="reader-actions__button"
+            type="button"
+            data-reader-copy
+        >
+            Copy link
+        </button>
+
+
+        <button
+            class="reader-actions__button"
+            type="button"
+            data-reader-print
+        >
+            Print
+        </button>
+
+
+        <button
+            class="reader-actions__button"
+            type="button"
+            data-reader-bookmark
+            aria-pressed="false"
+        >
+            Save reading
+        </button>
+
+
+        <button
+            class="reader-actions__button"
+            type="button"
+            data-reader-complete
+            aria-pressed="false"
+        >
+            Mark complete
+        </button>
+
+    </div>
+
+</section>
+
+
+<script>
+
+    interface ReaderActionState {
+        status: HTMLElement;
+        shareButton: HTMLButtonElement;
+        copyButton: HTMLButtonElement;
+        printButton: HTMLButtonElement;
+        bookmarkButton: HTMLButtonElement;
+        completeButton: HTMLButtonElement;
+        bookmarkKey: string;
+        readingMemoryKey: string;
+        statusTimer: number | null;
+    }
+
+
+    interface ReadingMemoryRecord {
+        version?: number;
+        pathname?: string;
+        progress?: number;
+        scrollY?: number;
+        sectionId?: string;
+        sectionLabel?: string;
+        completed?: boolean;
+        updatedAt?: number;
+    }
+
+
+    const BOOKMARK_PREFIX =
+        "river-reading-bookmark:";
+
+    const READING_MEMORY_PREFIX =
+        "river-reading-memory:";
+
+
+    function getPageTitle(): string {
+
+        const openGraphTitle =
+            document.querySelector<HTMLMetaElement>(
+                'meta[property="og:title"]'
+            )?.content.trim();
+
+
+        if (openGraphTitle) {
+
+            return openGraphTitle;
+
+        }
+
+
+        return document.title
+            .replace(
+                /\s*\|\s*The River Kept Flowing\s*$/i,
+                ""
+            )
+            .trim();
+
+    }
+
+
+    function getCanonicalUrl(): string {
+
+        const canonical =
+            document.querySelector<HTMLLinkElement>(
+                'link[rel="canonical"]'
+            )?.href;
+
+
+        return (
+            canonical ||
+            window.location.href
+        );
+
+    }
+
+
+    function getStorageKey(
+        prefix: string
+    ): string {
+
+        return (
+            prefix +
+            window.location.pathname
+        );
+
+    }
+
+
+    function safelyReadStorage(
+        key: string
+    ): string | null {
+
+        try {
+
+            return window.localStorage.getItem(
+                key
+            );
+
+        }
+        catch {
+
+            return null;
+
+        }
+
+    }
+
+
+    function safelyWriteStorage(
+        key: string,
+        value: string
+    ): boolean {
+
+        try {
+
+            window.localStorage.setItem(
+                key,
+                value
+            );
+
+            return true;
+
+        }
+        catch {
+
+            return false;
+
+        }
+
+    }
+
+
+    function safelyRemoveStorage(
+        key: string
+    ): boolean {
+
+        try {
+
+            window.localStorage.removeItem(
+                key
+            );
+
+            return true;
+
+        }
+        catch {
+
+            return false;
+
+        }
+
+    }
+
+
+    function announce(
+        state: ReaderActionState,
+        message: string
+    ): void {
+
+        state.status.textContent =
+            message;
+
+
+        if (
+            state.statusTimer !==
+            null
+        ) {
+
+            window.clearTimeout(
+                state.statusTimer
+            );
+
+        }
+
+
+        state.statusTimer =
+            window.setTimeout(
+                () => {
+
+                    state.status.textContent =
+                        "";
+
+                    state.statusTimer =
+                        null;
+
+                },
+                2600
+            );
+
+    }
+
+
+    async function copyText(
+        value: string
+    ): Promise<boolean> {
+
+        try {
+
+            await navigator.clipboard.writeText(
+                value
+            );
+
+            return true;
+
+        }
+        catch {
+
+            const textArea =
+                document.createElement(
+                    "textarea"
+                );
+
+
+            textArea.value =
+                value;
+
+            textArea.setAttribute(
+                "readonly",
+                ""
+            );
+
+            textArea.style.position =
+                "fixed";
+
+            textArea.style.opacity =
+                "0";
+
+
+            document.body.appendChild(
+                textArea
+            );
+
+            textArea.select();
+
+
+            try {
+
+                return document.execCommand(
+                    "copy"
+                );
+
+            }
+            catch {
+
+                return false;
+
+            }
+            finally {
+
+                textArea.remove();
+
+            }
+
+        }
+
+    }
+
+
+    function updateBookmarkButton(
+        state: ReaderActionState
+    ): void {
+
+        const bookmarked =
+            safelyReadStorage(
+                state.bookmarkKey
+            ) !==
+            null;
+
+
+        state.bookmarkButton.setAttribute(
+            "aria-pressed",
+            String(
+                bookmarked
+            )
+        );
+
+
+        state.bookmarkButton.textContent =
+            bookmarked
+                ? "Saved"
+                : "Save reading";
+
+    }
+
+
+    function readReadingMemory(
+        state: ReaderActionState
+    ): ReadingMemoryRecord {
+
+        const stored =
+            safelyReadStorage(
+                state.readingMemoryKey
+            );
+
+
+        if (!stored) {
+
+            return {};
+
+        }
+
+
+        try {
+
+            return JSON.parse(
+                stored
+            ) as ReadingMemoryRecord;
+
+        }
+        catch {
+
+            return {};
+
+        }
+
+    }
+
+
+    function writeCompletionState(
+        state: ReaderActionState,
+        completed: boolean
+    ): boolean {
+
+        const existingMemory =
+            readReadingMemory(
+                state
+            );
+
+
+        const updatedMemory:
+            ReadingMemoryRecord = {
+            ...existingMemory,
+            version:
+                existingMemory.version ??
+                1,
+            pathname:
+                window.location.pathname,
+            progress:
+                completed
+                    ? 100
+                    : Math.min(
+                        existingMemory.progress ??
+                        0,
+                        95
+                    ),
+            scrollY:
+                existingMemory.scrollY ??
+                window.scrollY,
+            sectionId:
+                existingMemory.sectionId ??
+                "",
+            sectionLabel:
+                existingMemory.sectionLabel ??
+                "",
+            completed,
+            updatedAt:
+                Date.now()
+        };
+
+
+        return safelyWriteStorage(
+            state.readingMemoryKey,
+            JSON.stringify(
+                updatedMemory
+            )
+        );
+
+    }
+
+
+    function updateCompletionButton(
+        state: ReaderActionState
+    ): void {
+
+        const memory =
+            readReadingMemory(
+                state
+            );
+
+        const completed =
+            memory.completed ===
+            true;
+
+
+        state.completeButton.setAttribute(
+            "aria-pressed",
+            String(
+                completed
+            )
+        );
+
+
+        state.completeButton.textContent =
+            completed
+                ? "Completed"
+                : "Mark complete";
+
+    }
+
+
+    function initializeReaderActions(
+        element: Element
+    ): void {
+
+        if (
+            !(
+                element instanceof
+                HTMLElement
+            ) ||
+            element.dataset.readerActionsReady ===
+                "true"
+        ) {
+
+            return;
+
+        }
+
+
+        const status =
+            element.querySelector<HTMLElement>(
+                "[data-reader-actions-status]"
+            );
+
+        const shareButton =
+            element.querySelector<HTMLButtonElement>(
+                "[data-reader-share]"
+            );
+
+        const copyButton =
+            element.querySelector<HTMLButtonElement>(
+                "[data-reader-copy]"
+            );
+
+        const printButton =
+            element.querySelector<HTMLButtonElement>(
+                "[data-reader-print]"
+            );
+
+        const bookmarkButton =
+            element.querySelector<HTMLButtonElement>(
+                "[data-reader-bookmark]"
+            );
+
+        const completeButton =
+            element.querySelector<HTMLButtonElement>(
+                "[data-reader-complete]"
+            );
+
+
+        if (
+            !status ||
+            !shareButton ||
+            !copyButton ||
+            !printButton ||
+            !bookmarkButton ||
+            !completeButton
+        ) {
+
+            return;
+
+        }
+
+
+        element.dataset.readerActionsReady =
+            "true";
+
+
+        const state:
+            ReaderActionState = {
+            status,
+            shareButton,
+            copyButton,
+            printButton,
+            bookmarkButton,
+            completeButton,
+            bookmarkKey:
+                getStorageKey(
+                    BOOKMARK_PREFIX
+                ),
+            readingMemoryKey:
+                getStorageKey(
+                    READING_MEMORY_PREFIX
+                ),
+            statusTimer:
+                null
+        };
+
+
+        updateBookmarkButton(
+            state
+        );
+
+        updateCompletionButton(
+            state
+        );
+
+
+        state.shareButton.addEventListener(
+            "click",
+            async () => {
+
+                const title =
+                    getPageTitle();
+
+                const url =
+                    getCanonicalUrl();
+
+
+                if (
+                    typeof navigator.share ===
+                    "function"
+                ) {
+
+                    try {
+
+                        await navigator.share({
+                            title,
+                            text:
+                                `Read ${title} from The River Kept Flowing.`,
+                            url
+                        });
+
+
+                        announce(
+                            state,
+                            "Share options opened."
+                        );
+
+
+                        return;
+
+                    }
+                    catch (
+                        error
+                    ) {
+
+                        if (
+                            error instanceof
+                                DOMException &&
+                            error.name ===
+                                "AbortError"
+                        ) {
+
+                            return;
+
+                        }
+
+                    }
+
+                }
+
+
+                const copied =
+                    await copyText(
+                        url
+                    );
+
+
+                announce(
+                    state,
+                    copied
+                        ? "Link copied."
+                        : "Unable to copy the link."
+                );
+
+            }
+        );
+
+
+        state.copyButton.addEventListener(
+            "click",
+            async () => {
+
+                const copied =
+                    await copyText(
+                        getCanonicalUrl()
+                    );
+
+
+                announce(
+                    state,
+                    copied
+                        ? "Article link copied."
+                        : "Unable to copy the article link."
+                );
+
+            }
+        );
+
+
+        state.printButton.addEventListener(
+            "click",
+            () => {
+
+                announce(
+                    state,
+                    "Opening print options."
+                );
+
+
+                window.print();
+
+            }
+        );
+
+
+        state.bookmarkButton.addEventListener(
+            "click",
+            () => {
+
+                const currentlySaved =
+                    safelyReadStorage(
+                        state.bookmarkKey
+                    ) !==
+                    null;
+
+
+                if (currentlySaved) {
+
+                    const removed =
+                        safelyRemoveStorage(
+                            state.bookmarkKey
+                        );
+
+
+                    if (!removed) {
+
+                        announce(
+                            state,
+                            "Unable to remove the saved reading."
+                        );
+
+                        return;
+
+                    }
+
+
+                    updateBookmarkButton(
+                        state
+                    );
+
+
+                    announce(
+                        state,
+                        "Reading removed from this device."
+                    );
+
+
+                    return;
+
+                }
+
+
+                const saved =
+                    safelyWriteStorage(
+                        state.bookmarkKey,
+                        JSON.stringify({
+                            pathname:
+                                window.location.pathname,
+                            title:
+                                getPageTitle(),
+                            url:
+                                getCanonicalUrl(),
+                            savedAt:
+                                Date.now()
+                        })
+                    );
+
+
+                if (!saved) {
+
+                    announce(
+                        state,
+                        "Unable to save this reading."
+                    );
+
+                    return;
+
+                }
+
+
+                updateBookmarkButton(
+                    state
+                );
+
+
+                announce(
+                    state,
+                    "Reading saved on this device."
+                );
+
+            }
+        );
+
+
+        state.completeButton.addEventListener(
+            "click",
+            () => {
+
+                const memory =
+                    readReadingMemory(
+                        state
+                    );
+
+                const nextCompleted =
+                    memory.completed !==
+                    true;
+
+
+                const updated =
+                    writeCompletionState(
+                        state,
+                        nextCompleted
+                    );
+
+
+                if (!updated) {
+
+                    announce(
+                        state,
+                        "Unable to update completion."
+                    );
+
+                    return;
+
+                }
+
+
+                updateCompletionButton(
+                    state
+                );
+
+
+                announce(
+                    state,
+                    nextCompleted
+                        ? "Reading marked complete."
+                        : "Reading marked incomplete."
+                );
+
+            }
+        );
+
+
+        window.addEventListener(
+            "storage",
+            (
+                event: StorageEvent
+            ) => {
+
+                if (
+                    event.key ===
+                    state.bookmarkKey
+                ) {
+
+                    updateBookmarkButton(
+                        state
+                    );
+
+                }
+
+
+                if (
+                    event.key ===
+                    state.readingMemoryKey
+                ) {
+
+                    updateCompletionButton(
+                        state
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    function initializeAllReaderActions(): void {
+
+        document
+            .querySelectorAll(
+                "[data-reader-actions]"
+            )
+            .forEach(
+                initializeReaderActions
+            );
+
+    }
+
+
+    initializeAllReaderActions();
+
+
+    document.addEventListener(
+        "astro:page-load",
+        initializeAllReaderActions
+    );
+
+</script>
