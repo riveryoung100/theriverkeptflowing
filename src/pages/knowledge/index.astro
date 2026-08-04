@@ -137,7 +137,7 @@ const breadcrumbSchema = {
                 </span>
 
                 <span aria-hidden="true">
-                    ·
+                    Â·
                 </span>
 
                 <span>
@@ -150,7 +150,7 @@ const breadcrumbSchema = {
                 </span>
 
                 <span aria-hidden="true">
-                    ·
+                    Â·
                 </span>
 
                 <span>
@@ -290,13 +290,18 @@ const breadcrumbSchema = {
 
                                         <article
                                             class="knowledge-connection"
+                                            data-knowledge-connection
+                                            data-relationship={
+                                                connection
+                                                    .relationshipType
+                                            }
                                             data-pagefind-ignore
                                         >
 
                                             <div class="knowledge-connection-score">
 
                                                 <span>
-                                                    Relationship
+                                                    Weight
                                                 </span>
 
                                                 <strong>
@@ -304,6 +309,19 @@ const breadcrumbSchema = {
                                                         connection.weight
                                                     }
                                                 </strong>
+
+                                                <span
+                                                    class="knowledge-relationship-badge"
+                                                    data-relationship={
+                                                        connection
+                                                            .relationshipType
+                                                    }
+                                                >
+                                                    {
+                                                        connection
+                                                            .relationshipLabel
+                                                    }
+                                                </span>
 
                                             </div>
 
@@ -324,8 +342,15 @@ const breadcrumbSchema = {
                                                     }
                                                 </a>
 
-                                                <span aria-hidden="true">
-                                                    ↔
+                                                <span
+                                                    class="knowledge-connection-direction"
+                                                    aria-hidden="true"
+                                                >
+                                                    {
+                                                        connection.directed
+                                                            ? "→"
+                                                            : "↔"
+                                                    }
                                                 </span>
 
                                                 <a
@@ -443,11 +468,11 @@ const breadcrumbSchema = {
         <footer class="knowledge-footer">
 
             <a href="/library/">
-                ← Visit the Library
+                â† Visit the Library
             </a>
 
             <a href="/topics/">
-                Browse all topics →
+                Browse all topics â†’
             </a>
 
         </footer>
@@ -632,6 +657,44 @@ const breadcrumbSchema = {
     }
 
 
+    .knowledge-relationship-badge {
+        display: inline-flex;
+        width: fit-content;
+        margin-top: 6px;
+        padding: 5px 8px;
+        border: 1px solid
+            color-mix(
+                in srgb,
+                currentColor 18%,
+                transparent
+            );
+        border-radius: 999px;
+        font-size: 0.66rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        line-height: 1.2;
+        text-transform: uppercase;
+    }
+
+
+    .knowledge-relationship-badge[
+        data-relationship="prerequisite"
+    ],
+    .knowledge-relationship-badge[
+        data-relationship="next-reading"
+    ],
+    .knowledge-relationship-badge[
+        data-relationship="learning-path"
+    ] {
+        background:
+            color-mix(
+                in srgb,
+                currentColor 7%,
+                transparent
+            );
+    }
+
+
     .knowledge-connection-work {
         display: flex;
         align-items: center;
@@ -645,6 +708,16 @@ const breadcrumbSchema = {
         color: inherit;
         text-decoration-thickness: 1px;
         text-underline-offset: 4px;
+    }
+
+
+    .knowledge-connection-direction {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 24px;
+        font-size: 1.1rem;
+        opacity: 0.72;
     }
 
 
