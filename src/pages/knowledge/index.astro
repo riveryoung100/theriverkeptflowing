@@ -137,7 +137,7 @@ const breadcrumbSchema = {
                 </span>
 
                 <span aria-hidden="true">
-                    Â·
+                    Ã‚Â·
                 </span>
 
                 <span>
@@ -150,7 +150,7 @@ const breadcrumbSchema = {
                 </span>
 
                 <span aria-hidden="true">
-                    Â·
+                    Ã‚Â·
                 </span>
 
                 <span>
@@ -279,6 +279,70 @@ const breadcrumbSchema = {
             </div>
 
 
+            <div
+                class="knowledge-explorer-controls"
+                data-knowledge-explorer
+            >
+
+                <label class="knowledge-explorer-field">
+
+                    <span>
+                        Search connections
+                    </span>
+
+                    <input
+                        type="search"
+                        placeholder="Search works or topics"
+                        autocomplete="off"
+                        data-knowledge-search
+                    />
+
+                </label>
+
+
+                <label class="knowledge-explorer-field">
+
+                    <span>
+                        Relationship
+                    </span>
+
+                    <select
+                        data-knowledge-relationship-filter
+                    >
+
+                        <option value="all">
+                            All relationships
+                        </option>
+
+                        <option value="prerequisite">
+                            Prerequisite
+                        </option>
+
+                        <option value="next-reading">
+                            Next reading
+                        </option>
+
+                        <option value="learning-path">
+                            Learning path
+                        </option>
+
+                    </select>
+
+                </label>
+
+
+                <p
+                    class="knowledge-explorer-results"
+                    aria-live="polite"
+                    data-knowledge-results
+                >
+                    Showing {strongestConnections.length}
+                    connections
+                </p>
+
+            </div>
+
+
             {
                 strongestConnections.length > 0
                     ? (
@@ -294,6 +358,22 @@ const breadcrumbSchema = {
                                             data-relationship={
                                                 connection
                                                     .relationshipType
+                                            }
+                                            data-search-text={
+                                                [
+                                                    connection
+                                                        .sourceEntry
+                                                        .title,
+                                                    connection
+                                                        .targetEntry
+                                                        .title,
+                                                    connection
+                                                        .relationshipLabel,
+                                                    ...connection
+                                                        .sharedTopics
+                                                ]
+                                                    .join(" ")
+                                                    .toLowerCase()
                                             }
                                             data-pagefind-ignore
                                         >
@@ -348,8 +428,8 @@ const breadcrumbSchema = {
                                                 >
                                                     {
                                                         connection.directed
-                                                            ? "→"
-                                                            : "↔"
+                                                            ? "â†’"
+                                                            : "â†”"
                                                     }
                                                 </span>
 
@@ -392,6 +472,17 @@ const breadcrumbSchema = {
                                 )
                             }
 
+
+
+                            <p
+                                class="knowledge-empty"
+                                hidden
+                                data-knowledge-no-results
+                            >
+                                No connections match
+                                the current search and
+                                relationship filter.
+                            </p>
                         </div>
                     )
                     : (
@@ -468,11 +559,11 @@ const breadcrumbSchema = {
         <footer class="knowledge-footer">
 
             <a href="/library/">
-                â† Visit the Library
+                Ã¢â€ Â Visit the Library
             </a>
 
             <a href="/topics/">
-                Browse all topics â†’
+                Browse all topics Ã¢â€ â€™
             </a>
 
         </footer>
@@ -480,6 +571,156 @@ const breadcrumbSchema = {
     </main>
 
 </MainLayout>
+
+
+<script>
+    function knowledgeExplorer() {
+
+        const explorer =
+            document.querySelector<HTMLElement>(
+                "[data-knowledge-explorer]"
+            );
+
+
+        if (
+            !explorer ||
+            explorer.dataset.initialized ===
+                "true"
+        ) {
+
+            return;
+
+        }
+
+
+        const searchInput =
+            explorer.querySelector<HTMLInputElement>(
+                "[data-knowledge-search]"
+            );
+
+        const relationshipFilter =
+            explorer.querySelector<HTMLSelectElement>(
+                "[data-knowledge-relationship-filter]"
+            );
+
+        const results =
+            explorer.querySelector<HTMLElement>(
+                "[data-knowledge-results]"
+            );
+
+        const noResults =
+            document.querySelector<HTMLElement>(
+                "[data-knowledge-no-results]"
+            );
+
+        const cards =
+            Array.from(
+                document.querySelectorAll<HTMLElement>(
+                    "[data-knowledge-connection]"
+                )
+            );
+
+
+        if (
+            !searchInput ||
+            !relationshipFilter ||
+            !results ||
+            !noResults
+        ) {
+
+            return;
+
+        }
+
+
+        explorer.dataset.initialized =
+            "true";
+
+
+        const applyFilters = () => {
+
+            const query =
+                searchInput.value
+                    .trim()
+                    .toLowerCase();
+
+            const selectedRelationship =
+                relationshipFilter.value;
+
+            let visibleCount =
+                0;
+
+
+            for (const card of cards) {
+
+                const searchText =
+                    card.dataset.searchText ??
+                    "";
+
+                const relationship =
+                    card.dataset.relationship ??
+                    "";
+
+                const matchesSearch =
+                    !query ||
+                    searchText.includes(query);
+
+                const matchesRelationship =
+                    selectedRelationship ===
+                        "all" ||
+                    relationship ===
+                        selectedRelationship;
+
+                const isVisible =
+                    matchesSearch &&
+                    matchesRelationship;
+
+
+                card.hidden =
+                    !isVisible;
+
+
+                if (isVisible) {
+
+                    visibleCount += 1;
+
+                }
+
+            }
+
+
+            results.textContent =
+                `Showing ${visibleCount} of ${cards.length} connections`;
+
+            noResults.hidden =
+                visibleCount !== 0;
+
+        };
+
+
+        searchInput.addEventListener(
+            "input",
+            applyFilters
+        );
+
+        relationshipFilter.addEventListener(
+            "change",
+            applyFilters
+        );
+
+
+        applyFilters();
+
+    }
+
+
+    knowledgeExplorer();
+
+    document.addEventListener(
+        "astro:page-load",
+        knowledgeExplorer
+    );
+</script>
 
 
 <style>
@@ -607,6 +848,82 @@ const breadcrumbSchema = {
         letter-spacing: 0.08em;
         text-transform: uppercase;
         opacity: 0.68;
+    }
+
+
+    .knowledge-explorer-controls {
+        display: grid;
+        grid-template-columns:
+            repeat(
+                auto-fit,
+                minmax(220px, 1fr)
+            );
+        align-items: end;
+        gap: 16px;
+        margin-bottom: 24px;
+        padding: 20px;
+        border: 1px solid
+            color-mix(
+                in srgb,
+                currentColor 16%,
+                transparent
+            );
+        border-radius: 18px;
+    }
+
+
+    .knowledge-explorer-field {
+        display: grid;
+        gap: 8px;
+    }
+
+
+    .knowledge-explorer-field > span {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        opacity: 0.7;
+    }
+
+
+    .knowledge-explorer-field input,
+    .knowledge-explorer-field select {
+        width: 100%;
+        min-height: 46px;
+        padding: 10px 12px;
+        border: 1px solid
+            color-mix(
+                in srgb,
+                currentColor 22%,
+                transparent
+            );
+        border-radius: 10px;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+    }
+
+
+    .knowledge-explorer-field input:focus-visible,
+    .knowledge-explorer-field select:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 2px;
+    }
+
+
+    .knowledge-explorer-results {
+        align-self: center;
+        margin: 0;
+        font-size: 0.86rem;
+        font-weight: 700;
+        opacity: 0.72;
+    }
+
+
+    .knowledge-connection[hidden],
+    .knowledge-empty[hidden] {
+        display: none;
     }
 
 
