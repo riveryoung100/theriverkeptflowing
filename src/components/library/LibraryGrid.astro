@@ -1,94 +1,1010 @@
 ---
 import ContentCard from "../content/ContentCard.astro";
 
+
 interface LibraryItem {
-    title:string;
-    description:string;
-    href:string;
-    label:string;
-    action?:string;
-    number?:string;
-    published?:Date;
-    readingMinutes?:number;
-    tags?:string[];
-    featured?:boolean;
+    title: string;
+    description: string;
+    href: string;
+    label: string;
+    action?: string;
+    number?: string;
+    published?: Date;
+    readingMinutes?: number;
+    tags?: string[];
+    featured?: boolean;
 }
 
+
 interface Props {
-    items:LibraryItem[];
-    emptyTitle?:string;
-    emptyDescription?:string;
-    emptyHref?:string;
-    emptyAction?:string;
+    items: LibraryItem[];
+    emptyTitle?: string;
+    emptyDescription?: string;
+    emptyHref?: string;
+    emptyAction?: string;
 }
+
 
 const {
     items,
-    emptyTitle = "The collection is being prepared.",
+    emptyTitle =
+        "The collection is being prepared.",
     emptyDescription =
         "Published entries will appear here automatically as the library grows.",
     emptyHref,
-    emptyAction = "Learn more"
+    emptyAction =
+        "Learn more"
 } = Astro.props;
+
+
+function normalizeValue(
+    value: string
+): string {
+
+    return value
+        .trim()
+        .toLocaleLowerCase();
+
+}
+
+
+const availableTags =
+    Array.from(
+        new Set(
+            items.flatMap((item) => {
+                return item.tags ?? [];
+            })
+        )
+    )
+        .filter((tag) => {
+            return (
+                typeof tag === "string" &&
+                tag.trim().length > 0
+            );
+        })
+        .sort((first, second) => {
+            return first.localeCompare(
+                second
+            );
+        });
+
+
+const showControls =
+    items.length > 1;
 ---
 
+
 {
-    items.length > 0 ? (
+    items.length > 0
+        ? (
+            <section
+                class="library-collection"
+                data-library-collection
+            >
 
-        <div class="library-entry-grid">
+                {
+                    showControls && (
+                        <div
+                            class="library-collection-controls"
+                            aria-label="Collection controls"
+                        >
 
-            {
-                items.map((item) => (
+                            <div class="library-collection-search">
 
-                    <ContentCard
-                        type={item.label}
-                        title={item.title}
-                        description={item.description}
-                        href={item.href}
-                        published={item.published}
-                        featured={item.featured}
-                        number={item.number}
-                        readingMinutes={item.readingMinutes}
-                        tags={item.tags}
-                        action={item.action}
-                    />
+                                <label
+                                    for="library-collection-search"
+                                >
+                                    Search this collection
+                                </label>
 
-                ))
-            }
+                                <input
+                                    id="library-collection-search"
+                                    type="search"
+                                    placeholder="Search titles, descriptions, and tags"
+                                    autocomplete="off"
+                                    data-library-search
+                                />
 
-        </div>
+                            </div>
 
-    ) : (
 
-        <article class="library-entry-empty">
+                            {
+                                availableTags.length > 0 && (
+                                    <div class="library-collection-filter">
 
-            <p class="section-label">
-                The archive is growing
-            </p>
+                                        <label
+                                            for="library-collection-tag"
+                                        >
+                                            Filter by topic
+                                        </label>
 
-            <h3>
-                {emptyTitle}
-            </h3>
+                                        <select
+                                            id="library-collection-tag"
+                                            data-library-tag
+                                        >
 
-            <p>
-                {emptyDescription}
-            </p>
+                                            <option value="">
+                                                All topics
+                                            </option>
 
-            {
-                emptyHref && (
-                    <a
-                        href={emptyHref}
-                        class="library-empty__link"
+                                            {
+                                                availableTags.map(
+                                                    (tag) => (
+
+                                                        <option
+                                                            value={
+                                                                normalizeValue(
+                                                                    tag
+                                                                )
+                                                            }
+                                                        >
+                                                            {tag}
+                                                        </option>
+
+                                                    )
+                                                )
+                                            }
+
+                                        </select>
+
+                                    </div>
+                                )
+                            }
+
+
+                            <div class="library-collection-sort">
+
+                                <label
+                                    for="library-collection-sort"
+                                >
+                                    Sort collection
+                                </label>
+
+                                <select
+                                    id="library-collection-sort"
+                                    data-library-sort
+                                >
+
+                                    <option value="newest">
+                                        Newest first
+                                    </option>
+
+                                    <option value="oldest">
+                                        Oldest first
+                                    </option>
+
+                                    <option value="title">
+                                        Title A–Z
+                                    </option>
+
+                                    <option value="featured">
+                                        Featured first
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+                    )
+                }
+
+
+                <div
+                    class="library-collection-summary"
+                    aria-live="polite"
+                >
+
+                    <span data-library-count>
+                        {items.length}
+                    </span>
+
+                    <span>
+                        {
+                            items.length === 1
+                                ? "entry"
+                                : "entries"
+                        }
+                    </span>
+
+                    <button
+                        type="button"
+                        data-library-reset
+                        hidden
                     >
-                        {emptyAction}
-                        <span aria-hidden="true">
-                            &rarr;
-                        </span>
-                    </a>
+                        Clear filters
+                    </button>
+
+                </div>
+
+
+                <div
+                    class="library-entry-grid"
+                    data-library-grid
+                >
+
+                    {
+                        items.map(
+                            (
+                                item,
+                                index
+                            ) => {
+
+                                const normalizedTags =
+                                    (
+                                        item.tags ?? []
+                                    )
+                                        .map(normalizeValue)
+                                        .join("|");
+
+                                const searchableText =
+                                    normalizeValue(
+                                        [
+                                            item.title,
+                                            item.description,
+                                            item.label,
+                                            item.number ?? "",
+                                            ...(item.tags ?? [])
+                                        ].join(" ")
+                                    );
+
+                                const publishedTime =
+                                    item.published
+                                        ? item.published.getTime()
+                                        : 0;
+
+
+                                return (
+                                    <div
+                                        class="library-entry-item"
+                                        data-library-item
+                                        data-title={
+                                            normalizeValue(
+                                                item.title
+                                            )
+                                        }
+                                        data-search={
+                                            searchableText
+                                        }
+                                        data-tags={
+                                            normalizedTags
+                                        }
+                                        data-published={
+                                            publishedTime
+                                        }
+                                        data-featured={
+                                            item.featured
+                                                ? "1"
+                                                : "0"
+                                        }
+                                        data-original-order={
+                                            index
+                                        }
+                                    >
+
+                                        <ContentCard
+                                            type={item.label}
+                                            title={item.title}
+                                            description={
+                                                item.description
+                                            }
+                                            href={item.href}
+                                            published={
+                                                item.published
+                                            }
+                                            featured={
+                                                item.featured
+                                            }
+                                            number={item.number}
+                                            readingMinutes={
+                                                item.readingMinutes
+                                            }
+                                            tags={item.tags}
+                                            action={item.action}
+                                        />
+
+                                    </div>
+                                );
+
+                            }
+                        )
+                    }
+
+                </div>
+
+
+                <article
+                    class="library-collection-empty"
+                    data-library-no-results
+                    hidden
+                >
+
+                    <p class="section-label">
+                        No matching entries
+                    </p>
+
+                    <h3>
+                        Nothing matched those filters.
+                    </h3>
+
+                    <p>
+                        Try another search term, choose a different
+                        topic, or clear the collection filters.
+                    </p>
+
+                    <button
+                        type="button"
+                        data-library-reset
+                    >
+                        Clear filters
+                    </button>
+
+                </article>
+
+            </section>
+        )
+        : (
+            <article class="library-entry-empty">
+
+                <p class="section-label">
+                    The archive is growing
+                </p>
+
+                <h3>
+                    {emptyTitle}
+                </h3>
+
+                <p>
+                    {emptyDescription}
+                </p>
+
+                {
+                    emptyHref && (
+                        <a
+                            href={emptyHref}
+                            class="library-empty__link"
+                        >
+                            {emptyAction}
+
+                            <span aria-hidden="true">
+                                &rarr;
+                            </span>
+                        </a>
+                    )
+                }
+
+            </article>
+        )
+}
+
+
+<script>
+
+    function initializeLibraryCollection(
+        collection: Element
+    ): void {
+
+        if (
+            !(collection instanceof HTMLElement) ||
+            collection.dataset.libraryReady === "true"
+        ) {
+
+            return;
+
+        }
+
+
+        collection.dataset.libraryReady =
+            "true";
+
+
+        const grid =
+            collection.querySelector<HTMLElement>(
+                "[data-library-grid]"
+            );
+
+        const searchInput =
+            collection.querySelector<HTMLInputElement>(
+                "[data-library-search]"
+            );
+
+        const tagSelect =
+            collection.querySelector<HTMLSelectElement>(
+                "[data-library-tag]"
+            );
+
+        const sortSelect =
+            collection.querySelector<HTMLSelectElement>(
+                "[data-library-sort]"
+            );
+
+        const count =
+            collection.querySelector<HTMLElement>(
+                "[data-library-count]"
+            );
+
+        const noResults =
+            collection.querySelector<HTMLElement>(
+                "[data-library-no-results]"
+            );
+
+        const resetButtons =
+            Array.from(
+                collection.querySelectorAll<HTMLButtonElement>(
+                    "[data-library-reset]"
                 )
+            );
+
+        const items =
+            Array.from(
+                collection.querySelectorAll<HTMLElement>(
+                    "[data-library-item]"
+                )
+            );
+
+
+        if (
+            !grid ||
+            items.length === 0
+        ) {
+
+            return;
+
+        }
+
+
+        const collectionGrid =
+            grid;
+
+
+        function normalizeValue(
+            value: unknown
+        ): string {
+
+            return String(
+                value ?? ""
+            )
+                .trim()
+                .toLocaleLowerCase();
+
+        }
+
+
+        function getSearchValue(): string {
+
+            return normalizeValue(
+                searchInput?.value
+            );
+
+        }
+
+
+        function getTagValue(): string {
+
+            return normalizeValue(
+                tagSelect?.value
+            );
+
+        }
+
+
+        function getSortValue(): string {
+
+            return (
+                sortSelect?.value ??
+                "newest"
+            );
+
+        }
+
+
+        function sortItems(): void {
+
+            const sortValue =
+                getSortValue();
+
+
+            const orderedItems =
+                [...items].sort(
+                    (
+                        first,
+                        second
+                    ) => {
+
+                        const firstTitle =
+                            first.dataset.title ?? "";
+
+                        const secondTitle =
+                            second.dataset.title ?? "";
+
+                        const firstPublished =
+                            Number(
+                                first.dataset.published ?? 0
+                            );
+
+                        const secondPublished =
+                            Number(
+                                second.dataset.published ?? 0
+                            );
+
+                        const firstFeatured =
+                            Number(
+                                first.dataset.featured ?? 0
+                            );
+
+                        const secondFeatured =
+                            Number(
+                                second.dataset.featured ?? 0
+                            );
+
+                        const firstOriginal =
+                            Number(
+                                first.dataset.originalOrder ?? 0
+                            );
+
+                        const secondOriginal =
+                            Number(
+                                second.dataset.originalOrder ?? 0
+                            );
+
+
+                        if (
+                            sortValue === "oldest"
+                        ) {
+
+                            return (
+                                firstPublished -
+                                secondPublished
+                            );
+
+                        }
+
+
+                        if (
+                            sortValue === "title"
+                        ) {
+
+                            return firstTitle.localeCompare(
+                                secondTitle
+                            );
+
+                        }
+
+
+                        if (
+                            sortValue === "featured"
+                        ) {
+
+                            if (
+                                firstFeatured !==
+                                secondFeatured
+                            ) {
+
+                                return (
+                                    secondFeatured -
+                                    firstFeatured
+                                );
+
+                            }
+
+
+                            return (
+                                secondPublished -
+                                firstPublished
+                            );
+
+                        }
+
+
+                        if (
+                            firstPublished ===
+                            secondPublished
+                        ) {
+
+                            return (
+                                firstOriginal -
+                                secondOriginal
+                            );
+
+                        }
+
+
+                        return (
+                            secondPublished -
+                            firstPublished
+                        );
+
+                    }
+                );
+
+
+            for (
+                const item of orderedItems
+            ) {
+
+                collectionGrid.appendChild(
+                    item
+                );
+
             }
 
-        </article>
+        }
 
-    )
-}
+
+        function updateCollection(): void {
+
+            const searchValue =
+                getSearchValue();
+
+            const tagValue =
+                getTagValue();
+
+
+            let visibleCount =
+                0;
+
+
+            for (
+                const item of items
+            ) {
+
+                const searchableText =
+                    normalizeValue(
+                        item.dataset.search
+                    );
+
+                const tags =
+                    normalizeValue(
+                        item.dataset.tags
+                    )
+                        .split("|")
+                        .filter(Boolean);
+
+
+                const matchesSearch =
+                    searchValue.length === 0 ||
+                    searchableText.includes(
+                        searchValue
+                    );
+
+                const matchesTag =
+                    tagValue.length === 0 ||
+                    tags.includes(
+                        tagValue
+                    );
+
+                const visible =
+                    matchesSearch &&
+                    matchesTag;
+
+
+                item.hidden =
+                    !visible;
+
+
+                if (visible) {
+
+                    visibleCount += 1;
+
+                }
+
+            }
+
+
+            sortItems();
+
+
+            if (count) {
+
+                count.textContent =
+                    String(
+                        visibleCount
+                    );
+
+            }
+
+
+            if (noResults) {
+
+                noResults.hidden =
+                    visibleCount > 0;
+
+            }
+
+
+            const filtersActive =
+                searchValue.length > 0 ||
+                tagValue.length > 0 ||
+                getSortValue() !== "newest";
+
+
+            for (
+                const button of resetButtons
+            ) {
+
+                button.hidden =
+                    !filtersActive &&
+                    visibleCount > 0;
+
+            }
+
+        }
+
+
+        function resetCollection(): void {
+
+            if (searchInput) {
+
+                searchInput.value =
+                    "";
+
+            }
+
+
+            if (tagSelect) {
+
+                tagSelect.value =
+                    "";
+
+            }
+
+
+            if (sortSelect) {
+
+                sortSelect.value =
+                    "newest";
+
+            }
+
+
+            updateCollection();
+
+
+            searchInput?.focus();
+
+        }
+
+
+        searchInput?.addEventListener(
+            "input",
+            updateCollection
+        );
+
+
+        tagSelect?.addEventListener(
+            "change",
+            updateCollection
+        );
+
+
+        sortSelect?.addEventListener(
+            "change",
+            updateCollection
+        );
+
+
+        for (
+            const button of resetButtons
+        ) {
+
+            button.addEventListener(
+                "click",
+                resetCollection
+            );
+
+        }
+
+
+        updateCollection();
+
+    }
+
+
+    function initializeLibraryCollections(): void {
+
+        document
+            .querySelectorAll(
+                "[data-library-collection]"
+            )
+            .forEach(
+                initializeLibraryCollection
+            );
+
+    }
+
+
+    initializeLibraryCollections();
+
+
+    document.addEventListener(
+        "astro:page-load",
+        initializeLibraryCollections
+    );
+
+</script>
+
+
+<style>
+
+    .library-collection {
+        display: grid;
+        gap: 24px;
+    }
+
+
+    .library-collection-controls {
+        display: grid;
+        grid-template-columns:
+            minmax(220px, 1.5fr)
+            minmax(160px, 0.8fr)
+            minmax(160px, 0.8fr);
+        gap: 16px;
+        align-items: end;
+        padding: 20px;
+        border: 1px solid
+            color-mix(
+                in srgb,
+                currentColor 14%,
+                transparent
+            );
+        border-radius: 18px;
+    }
+
+
+    .library-collection-search,
+    .library-collection-filter,
+    .library-collection-sort {
+        display: grid;
+        gap: 8px;
+    }
+
+
+    .library-collection-controls label {
+        font-size: 0.74rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        opacity: 0.72;
+    }
+
+
+    .library-collection-controls input,
+    .library-collection-controls select {
+        width: 100%;
+        min-height: 46px;
+        padding: 10px 12px;
+        border: 1px solid
+            color-mix(
+                in srgb,
+                currentColor 18%,
+                transparent
+            );
+        border-radius: 10px;
+        color: inherit;
+        background: transparent;
+        font: inherit;
+    }
+
+
+    .library-collection-controls input:focus-visible,
+    .library-collection-controls select:focus-visible,
+    .library-collection-summary button:focus-visible,
+    .library-collection-empty button:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 3px;
+    }
+
+
+    .library-collection-summary {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        min-height: 34px;
+        font-size: 0.88rem;
+        opacity: 0.76;
+    }
+
+
+    .library-collection-summary button,
+    .library-collection-empty button {
+        margin-left: auto;
+        padding: 0;
+        border: 0;
+        color: inherit;
+        background: transparent;
+        font: inherit;
+        font-weight: 700;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+
+    .library-entry-item {
+        min-width: 0;
+    }
+
+
+    .library-entry-item[hidden] {
+        display: none;
+    }
+
+
+    .library-collection-empty {
+        padding: 34px;
+        border: 1px solid
+            color-mix(
+                in srgb,
+                currentColor 14%,
+                transparent
+            );
+        border-radius: 18px;
+        text-align: center;
+    }
+
+
+    .library-collection-empty h3 {
+        margin: 8px 0 12px;
+    }
+
+
+    .library-collection-empty p {
+        max-width: 620px;
+        margin:
+            0 auto
+            18px;
+    }
+
+
+    .library-collection-empty button {
+        margin: 0;
+    }
+
+
+    @media (max-width: 820px) {
+
+        .library-collection-controls {
+            grid-template-columns:
+                1fr
+                1fr;
+        }
+
+
+        .library-collection-search {
+            grid-column:
+                1 / -1;
+        }
+
+    }
+
+
+    @media (max-width: 560px) {
+
+        .library-collection-controls {
+            grid-template-columns:
+                1fr;
+            padding: 16px;
+        }
+
+
+        .library-collection-search {
+            grid-column:
+                auto;
+        }
+
+
+        .library-collection-summary {
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+
+        .library-collection-summary button {
+            width: 100%;
+            margin:
+                8px 0 0;
+            text-align: left;
+        }
+
+    }
+
+</style>
