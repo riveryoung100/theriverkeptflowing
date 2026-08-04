@@ -1,0 +1,434 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+
+import {
+    getContentSeries
+} from "../../lib/series";
+
+const series =
+    await getContentSeries();
+
+const canonical =
+    new URL(
+        "/series/",
+        Astro.site ?? Astro.url
+    ).toString();
+
+const description =
+    "Browse ordered collections of guides, essays, letters, journal entries, recipes, films, and other work from The River Kept Flowing.";
+
+const collectionSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name:
+        "River Library Series",
+    description,
+    url:
+        canonical,
+    mainEntity: {
+        "@type": "ItemList",
+        numberOfItems:
+            series.length,
+        itemListElement:
+            series.map(
+                (item, index) => ({
+                    "@type": "ListItem",
+                    position:
+                        index + 1,
+                    name:
+                        item.name,
+                    url:
+                        new URL(
+                            `/series/${item.slug}/`,
+                            canonical
+                        ).toString()
+                })
+            )
+    }
+};
+
+const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+        {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item:
+                "https://theriverkeptflowing.com/"
+        },
+        {
+            "@type": "ListItem",
+            position: 2,
+            name: "Library",
+            item:
+                "https://theriverkeptflowing.com/library/"
+        },
+        {
+            "@type": "ListItem",
+            position: 3,
+            name: "Series",
+            item:
+                canonical
+        }
+    ]
+};
+---
+
+<MainLayout
+    title="River Library Series | The River Kept Flowing"
+    description={description}
+    canonical={canonical}
+>
+
+    <script
+        is:inline
+        type="application/ld+json"
+        set:html={JSON.stringify(
+            collectionSchema
+        )}
+    ></script>
+
+    <script
+        is:inline
+        type="application/ld+json"
+        set:html={JSON.stringify(
+            breadcrumbSchema
+        )}
+    ></script>
+
+
+    <main
+        class="series-page"
+        data-pagefind-body
+    >
+
+        <header class="series-hero">
+
+            <p class="series-eyebrow">
+                The River Library
+            </p>
+
+            <h1>
+                Series
+            </h1>
+
+            <p>
+                Follow ordered collections of work from
+                beginning to end. Each series gathers
+                related guides, essays, letters, journal
+                entries, recipes, or films into a clear
+                path.
+            </p>
+
+        </header>
+
+
+        <section
+            class="series-list"
+            aria-labelledby="published-series-title"
+        >
+
+            <div class="series-heading">
+
+                <p>
+                    Published collections
+                </p>
+
+                <h2 id="published-series-title">
+                    Explore the Series
+                </h2>
+
+            </div>
+
+
+            {
+                series.length > 0
+                    ? series.map((item) => (
+
+                        <article class="series-card">
+
+                            <div class="series-card__number">
+                                {
+                                    item.entryCount
+                                }
+                                {
+                                    item.entryCount === 1
+                                        ? " work"
+                                        : " works"
+                                }
+                            </div>
+
+                            <div class="series-card__content">
+
+                                <h3>
+                                    <a
+                                        href={`/series/${item.slug}/`}
+                                    >
+                                        {item.name}
+                                    </a>
+                                </h3>
+
+                                <p>
+                                    {item.description}
+                                </p>
+
+                                <div class="series-card__collections">
+
+                                    {
+                                        item.collections.map(
+                                            (collection) => (
+
+                                                <span>
+                                                    {collection}
+                                                </span>
+
+                                            )
+                                        )
+                                    }
+
+                                </div>
+
+                            </div>
+
+                            <a
+                                class="series-card__action"
+                                href={`/series/${item.slug}/`}
+                            >
+                                View series →
+                            </a>
+
+                        </article>
+
+                    ))
+                    : (
+                        <p>
+                            Ordered River Library series
+                            will appear here as they are
+                            published.
+                        </p>
+                    )
+            }
+
+        </section>
+
+
+        <footer class="series-footer">
+
+            <a href="/library/">
+                ← Return to the Library
+            </a>
+
+            <a href="/topics/">
+                Browse topics →
+            </a>
+
+        </footer>
+
+    </main>
+
+</MainLayout>
+
+
+<style>
+
+    .series-page {
+        width:
+            min(
+                1080px,
+                calc(100% - 32px)
+            );
+        margin: 0 auto;
+        padding: 88px 0 120px;
+    }
+
+
+    .series-hero {
+        max-width: 780px;
+        margin-bottom: 80px;
+    }
+
+
+    .series-eyebrow,
+    .series-heading > p {
+        margin: 0 0 14px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        opacity: 0.7;
+    }
+
+
+    .series-hero h1 {
+        margin: 0;
+        font-size:
+            clamp(
+                3rem,
+                8vw,
+                6rem
+            );
+        line-height: 1;
+    }
+
+
+    .series-hero > p:last-child {
+        margin: 28px 0 0;
+        font-size: 1.16rem;
+        line-height: 1.75;
+    }
+
+
+    .series-heading {
+        margin-bottom: 30px;
+    }
+
+
+    .series-heading h2 {
+        margin: 0;
+        font-size:
+            clamp(
+                2rem,
+                4vw,
+                3.2rem
+            );
+    }
+
+
+    .series-list {
+        display: grid;
+        gap: 24px;
+    }
+
+
+    .series-card {
+        display: grid;
+        grid-template-columns:
+            100px
+            minmax(0, 1fr)
+            auto;
+        align-items: center;
+        gap: 28px;
+        padding: 30px;
+        border: 1px solid
+            color-mix(
+                in srgb,
+                currentColor 16%,
+                transparent
+            );
+        border-radius: 20px;
+    }
+
+
+    .series-card__number {
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        opacity: 0.65;
+    }
+
+
+    .series-card h3 {
+        margin: 0;
+        font-size:
+            clamp(
+                1.45rem,
+                3vw,
+                2.1rem
+            );
+    }
+
+
+    .series-card h3 a,
+    .series-card__action,
+    .series-footer a {
+        color: inherit;
+    }
+
+
+    .series-card p {
+        margin: 14px 0 0;
+        line-height: 1.7;
+    }
+
+
+    .series-card__collections {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 18px;
+    }
+
+
+    .series-card__collections span {
+        padding: 6px 10px;
+        border: 1px solid
+            color-mix(
+                in srgb,
+                currentColor 15%,
+                transparent
+            );
+        border-radius: 999px;
+        font-size: 0.76rem;
+    }
+
+
+    .series-card__action {
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+
+    .series-footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        margin-top: 80px;
+        padding-top: 28px;
+        border-top: 1px solid
+            color-mix(
+                in srgb,
+                currentColor 16%,
+                transparent
+            );
+    }
+
+
+    @media (max-width: 760px) {
+
+        .series-card {
+            grid-template-columns:
+                1fr;
+        }
+
+
+        .series-card__action {
+            justify-self: start;
+        }
+
+    }
+
+
+    @media (max-width: 560px) {
+
+        .series-page {
+            width:
+                min(
+                    100% - 24px,
+                    1080px
+                );
+            padding:
+                64px 0 88px;
+        }
+
+
+        .series-footer {
+            flex-direction:
+                column;
+        }
+
+    }
+
+</style>

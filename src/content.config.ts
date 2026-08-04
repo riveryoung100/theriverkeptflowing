@@ -11,6 +11,8 @@ const sharedSchema = z.object({
     draft: z.boolean().default(false),
     featured: z.boolean().default(false),
     tags: z.array(z.string()).default([]),
+    series: z.string().optional(),
+    seriesOrder: z.number().int().positive().optional(),
     image: z.string().optional(),
     imageAlt: z.string().optional(),
     readingMinutes: z.number().int().positive().optional()

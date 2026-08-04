@@ -1,4 +1,6 @@
 ---
+series: "Insurance Handbook Series"
+seriesOrder: 4
 title: "The Auto Insurance Handbook"
 description: "Understanding your policy, protecting your family, and buying auto coverage with confidence."
 published: 2026-07-25
