@@ -14,6 +14,15 @@ tags:
   - Rental Property
   - Liability
   - Property Protection
+related:
+  - "/library/guides/homeowners-insurance-handbook/"
+  - "/library/guides/umbrella-insurance-handbook/"
+prerequisites:
+  - "/library/guides/homeowners-insurance-handbook/"
+nextReading:
+  - "/library/guides/umbrella-insurance-handbook/"
+learningPath:
+  - "/library/guides/umbrella-insurance-handbook/"
 category: "Insurance Education"
 guideNumber: 4
 version: "1.0"

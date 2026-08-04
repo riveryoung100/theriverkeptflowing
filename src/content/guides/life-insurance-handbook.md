@@ -14,6 +14,15 @@ tags:
   - Family Protection
   - Beneficiaries
   - Financial Planning
+related:
+  - "/library/guides/homeowners-insurance-handbook/"
+  - "/library/guides/renters-insurance-handbook/"
+  - "/library/guides/landlord-insurance-handbook/"
+  - "/library/guides/auto-insurance-handbook/"
+  - "/library/guides/umbrella-insurance-handbook/"
+prerequisites: []
+nextReading: []
+learningPath: []
 category: "Insurance Education"
 guideNumber: 6
 version: "1.0"

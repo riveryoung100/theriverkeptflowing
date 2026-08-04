@@ -14,6 +14,14 @@ tags:
   - Personal Property
   - Liability
   - Loss of Use
+related:
+  - "/library/guides/homeowners-insurance-handbook/"
+  - "/library/guides/auto-insurance-handbook/"
+prerequisites: []
+nextReading:
+  - "/library/guides/homeowners-insurance-handbook/"
+learningPath:
+  - "/library/guides/homeowners-insurance-handbook/"
 category: "Insurance Education"
 guideNumber: 3
 version: "1.0"
