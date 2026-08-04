@@ -520,3 +520,130 @@
     }
 
 }
+
+/* =========================================================
+   READER ACTIONS
+   ========================================================= */
+
+.reader-actions {
+    width: min(100% - 3rem, 860px);
+    margin: 1.25rem auto 0;
+    padding: 1.2rem 1.35rem;
+    border: 1px solid rgba(37, 49, 38, 0.14);
+    border-radius: 1rem;
+    background: #fffdf8;
+    box-shadow: 0 0.8rem 2.5rem rgba(37, 49, 38, 0.05);
+}
+
+.reader-actions__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.reader-actions__eyebrow {
+    margin: 0 0 0.3rem;
+    color: rgba(37, 49, 38, 0.64);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.reader-actions__header h2 {
+    margin: 0;
+    font-size: clamp(1.15rem, 3vw, 1.45rem);
+    line-height: 1.25;
+}
+
+.reader-actions__status {
+    min-width: 9rem;
+    min-height: 1.2rem;
+    margin: 0;
+    color: rgba(37, 49, 38, 0.72);
+    font-size: 0.84rem;
+    line-height: 1.4;
+    text-align: right;
+}
+
+.reader-actions__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.reader-actions__button {
+    min-height: 2.55rem;
+    padding: 0.58rem 0.88rem;
+    border: 1px solid rgba(37, 49, 38, 0.18);
+    border-radius: 999px;
+    color: #253126;
+    background: transparent;
+    font: inherit;
+    font-size: 0.84rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.reader-actions__button:hover,
+.reader-actions__button:focus-visible {
+    border-color: rgba(37, 49, 38, 0.46);
+    background: rgba(37, 49, 38, 0.055);
+}
+
+.reader-actions__button[aria-pressed="true"] {
+    border-color: #253126;
+    color: #fffdf8;
+    background: #253126;
+}
+
+.reader-actions__button[aria-pressed="true"]:hover,
+.reader-actions__button[aria-pressed="true"]:focus-visible {
+    background: #344637;
+}
+
+@media (max-width: 700px) {
+
+    .reader-actions {
+        width: min(100% - 2rem, 860px);
+        margin-top: 1rem;
+        padding: 1.05rem;
+    }
+
+    .reader-actions__header {
+        flex-direction: column;
+    }
+
+    .reader-actions__status {
+        min-width: 0;
+        text-align: left;
+    }
+
+    .reader-actions__controls {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .reader-actions__button {
+        width: 100%;
+    }
+
+}
+
+@media (max-width: 420px) {
+
+    .reader-actions__controls {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media print {
+
+    .reader-actions {
+        display: none !important;
+    }
+
+}
