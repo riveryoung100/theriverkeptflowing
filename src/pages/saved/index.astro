@@ -1,0 +1,23 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import SavedLibrary from "../../components/saved/SavedLibrary.astro";
+---
+
+
+<MainLayout
+    title="Saved Library | The River Kept Flowing"
+    description="Return to readings you saved from across The River Kept Flowing. Saved readings remain private to this browser."
+    canonical="https://theriverkeptflowing.com/saved/"
+    stylesheet="/saved.css"
+>
+
+    <main
+        class="saved-library-page"
+        data-pagefind-body
+    >
+
+        <SavedLibrary />
+
+    </main>
+
+</MainLayout>
