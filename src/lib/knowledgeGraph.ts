@@ -11,6 +11,13 @@ extends TopicEntry {
     totalWeight: number;
 }
 
+export type KnowledgeGraphRelationshipType =
+    | "shared-topic"
+    | "related"
+    | "prerequisite"
+    | "next-reading"
+    | "learning-path";
+
 export interface KnowledgeGraphEdge {
     key: string;
     source: string;
@@ -18,6 +25,10 @@ export interface KnowledgeGraphEdge {
     sourceEntry: TopicEntry;
     targetEntry: TopicEntry;
     sharedTopics: string[];
+    relationshipType:
+        KnowledgeGraphRelationshipType;
+    relationshipLabel: string;
+    directed: boolean;
     weight: number;
 }
 
@@ -93,6 +104,114 @@ function getNormalizedTopics(
 
 }
 
+function normalizeEntryReference(
+    value: string
+): string {
+
+    let normalized =
+        value.trim();
+
+
+    if (!normalized) {
+
+        return "";
+
+    }
+
+
+    try {
+
+        if (
+            normalized.startsWith(
+                "http://"
+            ) ||
+            normalized.startsWith(
+                "https://"
+            )
+        ) {
+
+            normalized =
+                new URL(
+                    normalized
+                ).pathname;
+
+        }
+
+    }
+    catch {
+
+        return "";
+
+    }
+
+
+    normalized =
+        normalized
+            .replace(
+                /\\/g,
+                "/"
+            )
+            .replace(
+                /\/index\.html$/i,
+                "/"
+            )
+            .replace(
+                /\/+/g,
+                "/"
+            );
+
+
+    if (
+        normalized.startsWith(
+            "/"
+        ) &&
+        normalized.length > 1
+    ) {
+
+        normalized =
+            normalized.replace(
+                /\/+$/,
+                ""
+            );
+
+    }
+
+
+    return normalized;
+
+}
+
+function getRelationshipLabel(
+    relationshipType:
+        KnowledgeGraphRelationshipType
+): string {
+
+    switch (relationshipType) {
+
+        case "shared-topic":
+
+            return "Shared topic";
+
+        case "related":
+
+            return "Related";
+
+        case "prerequisite":
+
+            return "Prerequisite";
+
+        case "next-reading":
+
+            return "Next reading";
+
+        case "learning-path":
+
+            return "Learning path";
+
+    }
+
+}
+
 export async function getKnowledgeGraph():
 Promise<KnowledgeGraph> {
 
@@ -110,6 +229,159 @@ Promise<KnowledgeGraph> {
 
     const edges: KnowledgeGraphEdge[] =
         [];
+
+    const entriesByKey =
+        new Map<string, TopicEntry>();
+
+    const entriesByHref =
+        new Map<string, TopicEntry>();
+
+    const entriesById =
+        new Map<string, TopicEntry[]>();
+
+
+    for (const entry of entries) {
+
+        const entryKey =
+            createEntryKey(
+                entry
+            );
+
+        const normalizedHref =
+            normalizeEntryReference(
+                entry.href
+            );
+
+
+        entriesByKey.set(
+            entryKey,
+            entry
+        );
+
+
+        if (normalizedHref) {
+
+            entriesByHref.set(
+                normalizedHref,
+                entry
+            );
+
+        }
+
+
+        const idEntries =
+            entriesById.get(
+                entry.id
+            ) ?? [];
+
+
+        idEntries.push(
+            entry
+        );
+
+
+        entriesById.set(
+            entry.id,
+            idEntries
+        );
+
+    }
+
+
+    function resolveRelationshipReference(
+        reference: string
+    ): TopicEntry | null {
+
+        const normalizedReference =
+            normalizeEntryReference(
+                reference
+            );
+
+
+        if (!normalizedReference) {
+
+            return null;
+
+        }
+
+
+        const keyEntry =
+            entriesByKey.get(
+                normalizedReference
+            );
+
+
+        if (keyEntry) {
+
+            return keyEntry;
+
+        }
+
+
+        const hrefEntry =
+            entriesByHref.get(
+                normalizedReference
+            );
+
+
+        if (hrefEntry) {
+
+            return hrefEntry;
+
+        }
+
+
+        const referenceWithoutSlash =
+            normalizedReference.replace(
+                /^\/+/,
+                ""
+            );
+
+        const directIdEntries =
+            entriesById.get(
+                referenceWithoutSlash
+            ) ?? [];
+
+
+        if (
+            directIdEntries.length === 1
+        ) {
+
+            return directIdEntries[0];
+
+        }
+
+
+        const pathParts =
+            referenceWithoutSlash
+                .split(
+                    "/"
+                )
+                .filter(Boolean);
+
+        const finalPathPart =
+            pathParts[
+                pathParts.length - 1
+            ] ?? "";
+
+        const finalPathEntries =
+            entriesById.get(
+                finalPathPart
+            ) ?? [];
+
+
+        if (
+            finalPathEntries.length === 1
+        ) {
+
+            return finalPathEntries[0];
+
+        }
+
+
+        return null;
+
+    }
 
 
     for (
@@ -221,6 +493,12 @@ Promise<KnowledgeGraph> {
                 sourceEntry,
                 targetEntry,
                 sharedTopics,
+                relationshipType:
+                    "shared-topic",
+                relationshipLabel:
+                    "Shared topic",
+                directed:
+                    false,
                 weight
             });
 
@@ -263,6 +541,264 @@ Promise<KnowledgeGraph> {
                 targetKey,
                 targetTotals
             );
+
+        }
+
+    }
+
+
+    const manualRelationshipDefinitions = [
+        {
+            field:
+                "related",
+            relationshipType:
+                "related",
+            relationshipLabel:
+                getRelationshipLabel(
+                    "related"
+                ),
+            weight:
+                4,
+            directed:
+                false,
+            reverseDirection:
+                false
+        },
+        {
+            field:
+                "prerequisites",
+            relationshipType:
+                "prerequisite",
+            relationshipLabel:
+                getRelationshipLabel(
+                    "prerequisite"
+                ),
+            weight:
+                7,
+            directed:
+                true,
+            reverseDirection:
+                true
+        },
+        {
+            field:
+                "nextReading",
+            relationshipType:
+                "next-reading",
+            relationshipLabel:
+                getRelationshipLabel(
+                    "next-reading"
+                ),
+            weight:
+                6,
+            directed:
+                true,
+            reverseDirection:
+                false
+        },
+        {
+            field:
+                "learningPath",
+            relationshipType:
+                "learning-path",
+            relationshipLabel:
+                getRelationshipLabel(
+                    "learning-path"
+                ),
+            weight:
+                5,
+            directed:
+                true,
+            reverseDirection:
+                false
+        }
+    ] as const;
+
+    const manualEdgeKeys =
+        new Set<string>();
+
+
+    for (const declaringEntry of entries) {
+
+        for (
+            const relationship of
+            manualRelationshipDefinitions
+        ) {
+
+            const references =
+                declaringEntry[
+                    relationship.field
+                ] ?? [];
+
+
+            for (const reference of references) {
+
+                const referencedEntry =
+                    resolveRelationshipReference(
+                        reference
+                    );
+
+
+                if (!referencedEntry) {
+
+                    continue;
+
+                }
+
+
+                let sourceEntry =
+                    relationship.reverseDirection
+                        ? referencedEntry
+                        : declaringEntry;
+
+                let targetEntry =
+                    relationship.reverseDirection
+                        ? declaringEntry
+                        : referencedEntry;
+
+                let sourceKey =
+                    createEntryKey(
+                        sourceEntry
+                    );
+
+                let targetKey =
+                    createEntryKey(
+                        targetEntry
+                    );
+
+
+                if (
+                    sourceKey ===
+                    targetKey
+                ) {
+
+                    continue;
+
+                }
+
+
+                if (
+                    !relationship.directed &&
+                    sourceKey.localeCompare(
+                        targetKey
+                    ) > 0
+                ) {
+
+                    [
+                        sourceEntry,
+                        targetEntry
+                    ] = [
+                        targetEntry,
+                        sourceEntry
+                    ];
+
+                    [
+                        sourceKey,
+                        targetKey
+                    ] = [
+                        targetKey,
+                        sourceKey
+                    ];
+
+                }
+
+
+                const edgeKey =
+                    relationship.relationshipType +
+                    ":" +
+                    sourceKey +
+                    "--" +
+                    targetKey;
+
+
+                if (
+                    manualEdgeKeys.has(
+                        edgeKey
+                    )
+                ) {
+
+                    continue;
+
+                }
+
+
+                manualEdgeKeys.add(
+                    edgeKey
+                );
+
+
+                edges.push({
+                    key:
+                        edgeKey,
+                    source:
+                        sourceKey,
+                    target:
+                        targetKey,
+                    sourceEntry,
+                    targetEntry,
+                    sharedTopics:
+                        [],
+                    relationshipType:
+                        relationship
+                            .relationshipType,
+                    relationshipLabel:
+                        relationship
+                            .relationshipLabel,
+                    directed:
+                        relationship.directed,
+                    weight:
+                        relationship.weight
+                });
+
+
+                const sourceTotals =
+                    connectionTotals.get(
+                        sourceKey
+                    ) ?? {
+                        connectionCount:
+                            0,
+                        totalWeight:
+                            0
+                    };
+
+
+                sourceTotals.connectionCount +=
+                    1;
+
+                sourceTotals.totalWeight +=
+                    relationship.weight;
+
+
+                connectionTotals.set(
+                    sourceKey,
+                    sourceTotals
+                );
+
+
+                const targetTotals =
+                    connectionTotals.get(
+                        targetKey
+                    ) ?? {
+                        connectionCount:
+                            0,
+                        totalWeight:
+                            0
+                    };
+
+
+                targetTotals.connectionCount +=
+                    1;
+
+                targetTotals.totalWeight +=
+                    relationship.weight;
+
+
+                connectionTotals.set(
+                    targetKey,
+                    targetTotals
+                );
+
+            }
 
         }
 
