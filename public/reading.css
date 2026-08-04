@@ -152,14 +152,18 @@
     inset: 0 0 auto;
     z-index: 1000;
     height: 4px;
+    overflow: hidden;
     pointer-events: none;
+    background: rgba(37, 49, 38, 0.08);
 }
 
 .reading-progress__bar {
-    width: 0;
+    width: 100%;
     height: 100%;
     background: currentColor;
-    transition: width 80ms linear;
+    transform: scaleX(0);
+    transform-origin: left center;
+    will-change: transform;
 }
 
 @media (max-width: 700px) {
@@ -385,6 +389,14 @@
     .content-entry__body table,
     .content-entry__body img {
         break-inside: avoid;
+    }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .reading-progress__bar {
+        transition: none;
     }
 
 }

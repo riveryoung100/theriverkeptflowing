@@ -1,5 +1,7 @@
 ---
 import ReadingNavigation from "../components/content/ReadingNavigation.astro";
+
+import ReadingProgress from "../components/content/ReadingProgress.astro";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
 
@@ -251,12 +253,7 @@ const breadcrumbSchema =
 
     <body class={bodyClass}>
 
-        <div
-            class="reading-progress"
-            aria-hidden="true"
-        >
-            <div class="reading-progress__bar"></div>
-        </div>
+        <ReadingProgress />
 
         <a
             class="skip-link"
@@ -289,44 +286,6 @@ const breadcrumbSchema =
             src="/script.js"
         ></script>
 
-        <script is:inline>
-            const progressBar =
-                document.querySelector(".reading-progress__bar");
-
-            function updateReadingProgress() {
-                if (!progressBar) {
-                    return;
-                }
-
-                const scrollTop =
-                    document.documentElement.scrollTop ||
-                    document.body.scrollTop;
-
-                const scrollHeight =
-                    document.documentElement.scrollHeight -
-                    document.documentElement.clientHeight;
-
-                const progress =
-                    scrollHeight > 0
-                        ? (scrollTop / scrollHeight) * 100
-                        : 0;
-
-                progressBar.style.width = `${progress}%`;
-            }
-
-            window.addEventListener(
-                "scroll",
-                updateReadingProgress,
-                { passive: true }
-            );
-
-            window.addEventListener(
-                "resize",
-                updateReadingProgress
-            );
-
-            updateReadingProgress();
-        </script>
 
     </body>
 
