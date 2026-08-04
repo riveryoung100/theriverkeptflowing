@@ -1,0 +1,1388 @@
+<section
+    class="saved-library"
+    data-saved-library
+    aria-labelledby="saved-library-title"
+>
+
+    <div class="saved-library__shell">
+
+        <header class="saved-library__hero">
+
+            <p class="saved-library__eyebrow">
+                Your private reading collection
+            </p>
+
+            <h1 id="saved-library-title">
+                Saved Library
+            </h1>
+
+            <p>
+                Readings saved on this device appear here with their
+                latest progress and completion status.
+            </p>
+
+            <p class="saved-library__privacy">
+                Nothing on this page is uploaded or shared. Your saved
+                library remains in this browser.
+            </p>
+
+        </header>
+
+
+        <section
+            class="saved-library__controls"
+            aria-labelledby="saved-library-controls-title"
+        >
+
+            <h2
+                id="saved-library-controls-title"
+                class="visually-hidden"
+            >
+                Filter and sort saved readings
+            </h2>
+
+
+            <div class="saved-library__search">
+
+                <label for="saved-library-search">
+                    Search saved readings
+                </label>
+
+                <input
+                    id="saved-library-search"
+                    type="search"
+                    autocomplete="off"
+                    placeholder="Search by title..."
+                    data-saved-library-search
+                />
+
+            </div>
+
+
+            <div class="saved-library__sort">
+
+                <label for="saved-library-sort">
+                    Sort
+                </label>
+
+                <select
+                    id="saved-library-sort"
+                    data-saved-library-sort
+                >
+
+                    <option value="newest">
+                        Recently saved
+                    </option>
+
+                    <option value="oldest">
+                        Oldest saved
+                    </option>
+
+                    <option value="progress">
+                        Most progress
+                    </option>
+
+                    <option value="completed">
+                        Completed first
+                    </option>
+
+                    <option value="title">
+                        Title
+                    </option>
+
+                </select>
+
+            </div>
+
+        </section>
+
+
+        <div class="saved-library__summary">
+
+            <p
+                data-saved-library-summary
+                aria-live="polite"
+                aria-atomic="true"
+            >
+                Loading your saved readings...
+            </p>
+
+            <p
+                class="saved-library__status"
+                data-saved-library-status
+                aria-live="polite"
+                aria-atomic="true"
+            >
+            </p>
+
+        </div>
+
+
+        <div
+            class="saved-library__grid"
+            data-saved-library-grid
+        >
+        </div>
+
+
+        <section
+            class="saved-library__empty"
+            data-saved-library-empty
+            hidden
+        >
+
+            <p class="saved-library__empty-eyebrow">
+                Your collection is open
+            </p>
+
+            <h2>
+                Nothing has been saved yet.
+            </h2>
+
+            <p>
+                Open a guide or another reading and choose
+                <strong>Save reading</strong>. It will appear here
+                automatically.
+            </p>
+
+            <a href="/library/">
+                Explore the River Library
+            </a>
+
+        </section>
+
+
+        <section
+            class="saved-library__no-results"
+            data-saved-library-no-results
+            hidden
+        >
+
+            <h2>
+                No saved readings match that search.
+            </h2>
+
+            <p>
+                Try a different title or clear the search field.
+            </p>
+
+        </section>
+
+    </div>
+
+</section>
+
+
+<script>
+
+    interface BookmarkRecord {
+        pathname: string;
+        title: string;
+        url: string;
+        savedAt: number;
+    }
+
+
+    interface ReadingMemoryRecord {
+        version?: number;
+        pathname?: string;
+        progress?: number;
+        scrollY?: number;
+        sectionId?: string;
+        sectionLabel?: string;
+        completed?: boolean;
+        updatedAt?: number;
+    }
+
+
+    interface SavedReading {
+        bookmarkKey: string;
+        memoryKey: string;
+        pathname: string;
+        title: string;
+        url: string;
+        savedAt: number;
+        progress: number;
+        completed: boolean;
+        sectionId: string;
+        sectionLabel: string;
+        updatedAt: number;
+    }
+
+
+    interface SavedLibraryState {
+        root: HTMLElement;
+        grid: HTMLElement;
+        emptyState: HTMLElement;
+        noResultsState: HTMLElement;
+        searchInput: HTMLInputElement;
+        sortSelect: HTMLSelectElement;
+        summary: HTMLElement;
+        status: HTMLElement;
+        statusTimer: number | null;
+        readings: SavedReading[];
+    }
+
+
+    const BOOKMARK_PREFIX =
+        "river-reading-bookmark:";
+
+    const MEMORY_PREFIX =
+        "river-reading-memory:";
+
+
+    function clamp(
+        value: number,
+        minimum: number,
+        maximum: number
+    ): number {
+
+        return Math.min(
+            maximum,
+            Math.max(
+                minimum,
+                value
+            )
+        );
+
+    }
+
+
+    function safelyReadStorage(
+        key: string
+    ): string | null {
+
+        try {
+
+            return window.localStorage.getItem(
+                key
+            );
+
+        }
+        catch {
+
+            return null;
+
+        }
+
+    }
+
+
+    function safelyRemoveStorage(
+        key: string
+    ): boolean {
+
+        try {
+
+            window.localStorage.removeItem(
+                key
+            );
+
+            return true;
+
+        }
+        catch {
+
+            return false;
+
+        }
+
+    }
+
+
+    function parseBookmark(
+        key: string,
+        value: string
+    ): BookmarkRecord | null {
+
+        try {
+
+            const parsed =
+                JSON.parse(
+                    value
+                ) as Partial<BookmarkRecord>;
+
+
+            if (
+                typeof parsed.pathname !==
+                    "string" ||
+                typeof parsed.title !==
+                    "string" ||
+                typeof parsed.url !==
+                    "string" ||
+                typeof parsed.savedAt !==
+                    "number"
+            ) {
+
+                return null;
+
+            }
+
+
+            return {
+                pathname:
+                    parsed.pathname,
+                title:
+                    parsed.title,
+                url:
+                    parsed.url,
+                savedAt:
+                    parsed.savedAt
+            };
+
+        }
+        catch {
+
+            safelyRemoveStorage(
+                key
+            );
+
+            return null;
+
+        }
+
+    }
+
+
+    function parseMemory(
+        value: string | null
+    ): ReadingMemoryRecord {
+
+        if (!value) {
+
+            return {};
+
+        }
+
+
+        try {
+
+            return JSON.parse(
+                value
+            ) as ReadingMemoryRecord;
+
+        }
+        catch {
+
+            return {};
+
+        }
+
+    }
+
+
+    function getSavedReadings(): SavedReading[] {
+
+        const readings:
+            SavedReading[] =
+            [];
+
+
+        try {
+
+            for (
+                let index = 0;
+                index < window.localStorage.length;
+                index += 1
+            ) {
+
+                const key =
+                    window.localStorage.key(
+                        index
+                    );
+
+
+                if (
+                    !key ||
+                    !key.startsWith(
+                        BOOKMARK_PREFIX
+                    )
+                ) {
+
+                    continue;
+
+                }
+
+
+                const storedBookmark =
+                    safelyReadStorage(
+                        key
+                    );
+
+
+                if (!storedBookmark) {
+
+                    continue;
+
+                }
+
+
+                const bookmark =
+                    parseBookmark(
+                        key,
+                        storedBookmark
+                    );
+
+
+                if (!bookmark) {
+
+                    continue;
+
+                }
+
+
+                const memoryKey =
+                    MEMORY_PREFIX +
+                    bookmark.pathname;
+
+                const memory =
+                    parseMemory(
+                        safelyReadStorage(
+                            memoryKey
+                        )
+                    );
+
+
+                readings.push({
+                    bookmarkKey:
+                        key,
+                    memoryKey,
+                    pathname:
+                        bookmark.pathname,
+                    title:
+                        bookmark.title,
+                    url:
+                        bookmark.url,
+                    savedAt:
+                        bookmark.savedAt,
+                    progress:
+                        clamp(
+                            typeof memory.progress ===
+                                "number"
+                                ? memory.progress
+                                : 0,
+                            0,
+                            100
+                        ),
+                    completed:
+                        memory.completed ===
+                        true,
+                    sectionId:
+                        typeof memory.sectionId ===
+                            "string"
+                            ? memory.sectionId
+                            : "",
+                    sectionLabel:
+                        typeof memory.sectionLabel ===
+                            "string"
+                            ? memory.sectionLabel
+                            : "",
+                    updatedAt:
+                        typeof memory.updatedAt ===
+                            "number"
+                            ? memory.updatedAt
+                            : bookmark.savedAt
+                });
+
+            }
+
+        }
+        catch {
+
+            return [];
+
+        }
+
+
+        return readings;
+
+    }
+
+
+    function formatDate(
+        timestamp: number
+    ): string {
+
+        return new Intl.DateTimeFormat(
+            undefined,
+            {
+                year:
+                    "numeric",
+                month:
+                    "short",
+                day:
+                    "numeric"
+            }
+        ).format(
+            new Date(
+                timestamp
+            )
+        );
+
+    }
+
+
+    function getResumeUrl(
+        reading: SavedReading
+    ): string {
+
+        if (
+            reading.sectionId
+        ) {
+
+            return (
+                reading.pathname +
+                "#" +
+                encodeURIComponent(
+                    reading.sectionId
+                )
+            );
+
+        }
+
+
+        return (
+            reading.pathname ||
+            reading.url
+        );
+
+    }
+
+
+    function announce(
+        state: SavedLibraryState,
+        message: string
+    ): void {
+
+        state.status.textContent =
+            message;
+
+
+        if (
+            state.statusTimer !==
+            null
+        ) {
+
+            window.clearTimeout(
+                state.statusTimer
+            );
+
+        }
+
+
+        state.statusTimer =
+            window.setTimeout(
+                () => {
+
+                    state.status.textContent =
+                        "";
+
+                    state.statusTimer =
+                        null;
+
+                },
+                2800
+            );
+
+    }
+
+
+    function createStatusBadge(
+        reading: SavedReading
+    ): HTMLElement {
+
+        const badge =
+            document.createElement(
+                "span"
+            );
+
+
+        badge.className =
+            "saved-reading-card__status";
+
+
+        if (
+            reading.completed
+        ) {
+
+            badge.textContent =
+                "Completed";
+
+            badge.dataset.state =
+                "completed";
+
+
+            return badge;
+
+        }
+
+
+        if (
+            reading.progress > 0
+        ) {
+
+            badge.textContent =
+                `${Math.round(
+                    reading.progress
+                )}% read`;
+
+            badge.dataset.state =
+                "in-progress";
+
+
+            return badge;
+
+        }
+
+
+        badge.textContent =
+            "Saved";
+
+        badge.dataset.state =
+            "saved";
+
+
+        return badge;
+
+    }
+
+
+    function createProgress(
+        reading: SavedReading
+    ): HTMLElement {
+
+        const wrapper =
+            document.createElement(
+                "div"
+            );
+
+        wrapper.className =
+            "saved-reading-card__progress";
+
+
+        const label =
+            document.createElement(
+                "span"
+            );
+
+        label.className =
+            "saved-reading-card__progress-label";
+
+        label.textContent =
+            reading.completed
+                ? "Reading complete"
+                : `${Math.round(
+                    reading.progress
+                )}% complete`;
+
+
+        const track =
+            document.createElement(
+                "div"
+            );
+
+        track.className =
+            "saved-reading-card__progress-track";
+
+        track.setAttribute(
+            "role",
+            "progressbar"
+        );
+
+        track.setAttribute(
+            "aria-label",
+            `Reading progress for ${reading.title}`
+        );
+
+        track.setAttribute(
+            "aria-valuemin",
+            "0"
+        );
+
+        track.setAttribute(
+            "aria-valuemax",
+            "100"
+        );
+
+        track.setAttribute(
+            "aria-valuenow",
+            String(
+                Math.round(
+                    reading.progress
+                )
+            )
+        );
+
+
+        const value =
+            document.createElement(
+                "span"
+            );
+
+        value.className =
+            "saved-reading-card__progress-value";
+
+        value.style.transform =
+            `scaleX(${reading.progress / 100})`;
+
+
+        track.appendChild(
+            value
+        );
+
+        wrapper.append(
+            label,
+            track
+        );
+
+
+        return wrapper;
+
+    }
+
+
+    function createSavedCard(
+        state: SavedLibraryState,
+        reading: SavedReading
+    ): HTMLElement {
+
+        const article =
+            document.createElement(
+                "article"
+            );
+
+        article.className =
+            "content-card saved-reading-card";
+
+        article.dataset.savedReading =
+            reading.pathname;
+
+        article.dataset.title =
+            reading.title.toLocaleLowerCase();
+
+        article.dataset.progress =
+            String(
+                reading.progress
+            );
+
+        article.dataset.completed =
+            String(
+                reading.completed
+            );
+
+        article.dataset.savedAt =
+            String(
+                reading.savedAt
+            );
+
+
+        const meta =
+            document.createElement(
+                "div"
+            );
+
+        meta.className =
+            "saved-reading-card__meta";
+
+
+        const type =
+            document.createElement(
+                "span"
+            );
+
+        type.className =
+            "saved-reading-card__type";
+
+        type.textContent =
+            "Saved reading";
+
+
+        const savedDate =
+            document.createElement(
+                "span"
+            );
+
+        savedDate.className =
+            "saved-reading-card__date";
+
+        savedDate.textContent =
+            `Saved ${formatDate(
+                reading.savedAt
+            )}`;
+
+
+        meta.append(
+            type,
+            savedDate
+        );
+
+
+        const heading =
+            document.createElement(
+                "h2"
+            );
+
+        heading.className =
+            "saved-reading-card__title";
+
+
+        const titleLink =
+            document.createElement(
+                "a"
+            );
+
+        titleLink.href =
+            reading.pathname ||
+            reading.url;
+
+        titleLink.textContent =
+            reading.title;
+
+
+        heading.appendChild(
+            titleLink
+        );
+
+
+        const statusRow =
+            document.createElement(
+                "div"
+            );
+
+        statusRow.className =
+            "saved-reading-card__status-row";
+
+        statusRow.appendChild(
+            createStatusBadge(
+                reading
+            )
+        );
+
+
+        if (
+            reading.sectionLabel
+        ) {
+
+            const section =
+                document.createElement(
+                    "span"
+                );
+
+            section.className =
+                "saved-reading-card__section";
+
+            section.textContent =
+                `Last near: ${reading.sectionLabel}`;
+
+            statusRow.appendChild(
+                section
+            );
+
+        }
+
+
+        const actions =
+            document.createElement(
+                "div"
+            );
+
+        actions.className =
+            "saved-reading-card__actions";
+
+
+        const resumeLink =
+            document.createElement(
+                "a"
+            );
+
+        resumeLink.className =
+            "saved-reading-card__resume";
+
+        resumeLink.href =
+            getResumeUrl(
+                reading
+            );
+
+        resumeLink.textContent =
+            reading.completed
+                ? "Read again"
+                : reading.progress > 0
+                    ? "Continue reading"
+                    : "Start reading";
+
+
+        const removeButton =
+            document.createElement(
+                "button"
+            );
+
+        removeButton.className =
+            "saved-reading-card__remove";
+
+        removeButton.type =
+            "button";
+
+        removeButton.textContent =
+            "Remove";
+
+        removeButton.setAttribute(
+            "aria-label",
+            `Remove ${reading.title} from saved readings`
+        );
+
+
+        removeButton.addEventListener(
+            "click",
+            () => {
+
+                const removed =
+                    safelyRemoveStorage(
+                        reading.bookmarkKey
+                    );
+
+
+                if (!removed) {
+
+                    announce(
+                        state,
+                        "Unable to remove this reading."
+                    );
+
+                    return;
+
+                }
+
+
+                announce(
+                    state,
+                    `${reading.title} was removed.`
+                );
+
+
+                refreshSavedLibrary(
+                    state
+                );
+
+            }
+        );
+
+
+        actions.append(
+            resumeLink,
+            removeButton
+        );
+
+
+        article.append(
+            meta,
+            heading,
+            statusRow,
+            createProgress(
+                reading
+            ),
+            actions
+        );
+
+
+        return article;
+
+    }
+
+
+    function getFilteredReadings(
+        state: SavedLibraryState
+    ): SavedReading[] {
+
+        const query =
+            state.searchInput.value
+                .trim()
+                .toLocaleLowerCase();
+
+
+        const filtered =
+            state.readings.filter(
+                (
+                    reading
+                ) => {
+
+                    return (
+                        query.length ===
+                            0 ||
+                        reading.title
+                            .toLocaleLowerCase()
+                            .includes(
+                                query
+                            ) ||
+                        reading.sectionLabel
+                            .toLocaleLowerCase()
+                            .includes(
+                                query
+                            )
+                    );
+
+                }
+            );
+
+
+        const sort =
+            state.sortSelect.value;
+
+
+        return filtered.sort(
+            (
+                first,
+                second
+            ) => {
+
+                if (
+                    sort ===
+                    "oldest"
+                ) {
+
+                    return (
+                        first.savedAt -
+                        second.savedAt
+                    );
+
+                }
+
+
+                if (
+                    sort ===
+                    "progress"
+                ) {
+
+                    return (
+                        second.progress -
+                        first.progress
+                    );
+
+                }
+
+
+                if (
+                    sort ===
+                    "completed"
+                ) {
+
+                    if (
+                        first.completed !==
+                        second.completed
+                    ) {
+
+                        return first.completed
+                            ? -1
+                            : 1;
+
+                    }
+
+
+                    return (
+                        second.progress -
+                        first.progress
+                    );
+
+                }
+
+
+                if (
+                    sort ===
+                    "title"
+                ) {
+
+                    return first.title.localeCompare(
+                        second.title
+                    );
+
+                }
+
+
+                return (
+                    second.savedAt -
+                    first.savedAt
+                );
+
+            }
+        );
+
+    }
+
+
+    function renderSavedLibrary(
+        state: SavedLibraryState
+    ): void {
+
+        const visibleReadings =
+            getFilteredReadings(
+                state
+            );
+
+
+        state.grid.replaceChildren();
+
+
+        const hasSavedReadings =
+            state.readings.length >
+            0;
+
+        const hasVisibleReadings =
+            visibleReadings.length >
+            0;
+
+
+        state.emptyState.hidden =
+            hasSavedReadings;
+
+        state.noResultsState.hidden =
+            !hasSavedReadings ||
+            hasVisibleReadings;
+
+        state.grid.hidden =
+            !hasVisibleReadings;
+
+
+        state.summary.textContent =
+            hasSavedReadings
+                ? visibleReadings.length ===
+                    state.readings.length
+                    ? `${state.readings.length} saved ${
+                        state.readings.length === 1
+                            ? "reading"
+                            : "readings"
+                    }`
+                    : `${visibleReadings.length} of ${state.readings.length} saved readings`
+                : "No saved readings on this device.";
+
+
+        if (!hasVisibleReadings) {
+
+            return;
+
+        }
+
+
+        const fragment =
+            document.createDocumentFragment();
+
+
+        visibleReadings.forEach(
+            (
+                reading
+            ) => {
+
+                fragment.appendChild(
+                    createSavedCard(
+                        state,
+                        reading
+                    )
+                );
+
+            }
+        );
+
+
+        state.grid.appendChild(
+            fragment
+        );
+
+    }
+
+
+    function refreshSavedLibrary(
+        state: SavedLibraryState
+    ): void {
+
+        state.readings =
+            getSavedReadings();
+
+
+        renderSavedLibrary(
+            state
+        );
+
+    }
+
+
+    function initializeSavedLibrary(
+        element: Element
+    ): void {
+
+        if (
+            !(
+                element instanceof
+                HTMLElement
+            ) ||
+            element.dataset.savedLibraryReady ===
+                "true"
+        ) {
+
+            return;
+
+        }
+
+
+        const grid =
+            element.querySelector<HTMLElement>(
+                "[data-saved-library-grid]"
+            );
+
+        const emptyState =
+            element.querySelector<HTMLElement>(
+                "[data-saved-library-empty]"
+            );
+
+        const noResultsState =
+            element.querySelector<HTMLElement>(
+                "[data-saved-library-no-results]"
+            );
+
+        const searchInput =
+            element.querySelector<HTMLInputElement>(
+                "[data-saved-library-search]"
+            );
+
+        const sortSelect =
+            element.querySelector<HTMLSelectElement>(
+                "[data-saved-library-sort]"
+            );
+
+        const summary =
+            element.querySelector<HTMLElement>(
+                "[data-saved-library-summary]"
+            );
+
+        const status =
+            element.querySelector<HTMLElement>(
+                "[data-saved-library-status]"
+            );
+
+
+        if (
+            !grid ||
+            !emptyState ||
+            !noResultsState ||
+            !searchInput ||
+            !sortSelect ||
+            !summary ||
+            !status
+        ) {
+
+            return;
+
+        }
+
+
+        element.dataset.savedLibraryReady =
+            "true";
+
+
+        const state:
+            SavedLibraryState = {
+            root:
+                element,
+            grid,
+            emptyState,
+            noResultsState,
+            searchInput,
+            sortSelect,
+            summary,
+            status,
+            statusTimer:
+                null,
+            readings:
+                []
+        };
+
+
+        state.searchInput.addEventListener(
+            "input",
+            () => {
+
+                renderSavedLibrary(
+                    state
+                );
+
+            }
+        );
+
+
+        state.sortSelect.addEventListener(
+            "change",
+            () => {
+
+                renderSavedLibrary(
+                    state
+                );
+
+            }
+        );
+
+
+        window.addEventListener(
+            "storage",
+            (
+                event: StorageEvent
+            ) => {
+
+                if (
+                    event.key ===
+                        null ||
+                    event.key.startsWith(
+                        BOOKMARK_PREFIX
+                    ) ||
+                    event.key.startsWith(
+                        MEMORY_PREFIX
+                    )
+                ) {
+
+                    refreshSavedLibrary(
+                        state
+                    );
+
+                }
+
+            }
+        );
+
+
+        window.addEventListener(
+            "pageshow",
+            () => {
+
+                refreshSavedLibrary(
+                    state
+                );
+
+            }
+        );
+
+
+        refreshSavedLibrary(
+            state
+        );
+
+    }
+
+
+    function initializeSavedLibraries(): void {
+
+        document
+            .querySelectorAll(
+                "[data-saved-library]"
+            )
+            .forEach(
+                initializeSavedLibrary
+            );
+
+    }
+
+
+    initializeSavedLibraries();
+
+
+    document.addEventListener(
+        "astro:page-load",
+        initializeSavedLibraries
+    );
+
+</script>
