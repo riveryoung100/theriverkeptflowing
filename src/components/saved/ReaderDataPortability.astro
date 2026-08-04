@@ -1,0 +1,1559 @@
+<section
+    class="reader-data-portability"
+    data-reader-data-portability
+    aria-labelledby="reader-data-portability-title"
+>
+
+    <div class="reader-data-portability__header">
+
+        <div>
+
+            <p class="reader-data-portability__eyebrow">
+                Reader data
+            </p>
+
+            <h2 id="reader-data-portability-title">
+                Back up or restore your reading data
+            </h2>
+
+            <p>
+                Export your saved readings and reading progress as a JSON
+                backup file. Imports are processed only in this browser.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="reader-data-portability__controls"
+        role="group"
+        aria-label="Reader data backup controls"
+    >
+
+        <button
+            class="reader-data-portability__button"
+            type="button"
+            data-reader-data-export
+        >
+            Export reader data
+        </button>
+
+
+        <label
+            class="reader-data-portability__button reader-data-portability__button--secondary"
+            for="reader-data-import-file"
+        >
+            Choose backup file
+        </label>
+
+
+        <input
+            id="reader-data-import-file"
+            class="visually-hidden"
+            type="file"
+            accept="application/json,.json"
+            data-reader-data-import-file
+        />
+
+    </div>
+
+
+    <section
+        class="reader-data-portability__preview"
+        data-reader-data-preview
+        hidden
+        aria-labelledby="reader-data-preview-title"
+    >
+
+        <h3 id="reader-data-preview-title">
+            Import preview
+        </h3>
+
+
+        <dl class="reader-data-portability__preview-grid">
+
+            <div>
+
+                <dt>
+                    Bookmarks
+                </dt>
+
+                <dd data-reader-data-preview-bookmarks>
+                    0
+                </dd>
+
+            </div>
+
+
+            <div>
+
+                <dt>
+                    Reading records
+                </dt>
+
+                <dd data-reader-data-preview-memory>
+                    0
+                </dd>
+
+            </div>
+
+
+            <div>
+
+                <dt>
+                    Newer records
+                </dt>
+
+                <dd data-reader-data-preview-newer>
+                    0
+                </dd>
+
+            </div>
+
+
+            <div>
+
+                <dt>
+                    Skipped records
+                </dt>
+
+                <dd data-reader-data-preview-skipped>
+                    0
+                </dd>
+
+            </div>
+
+        </dl>
+
+
+        <div class="reader-data-portability__preview-actions">
+
+            <button
+                class="reader-data-portability__button"
+                type="button"
+                data-reader-data-import-confirm
+            >
+                Import backup
+            </button>
+
+
+            <button
+                class="reader-data-portability__button reader-data-portability__button--secondary"
+                type="button"
+                data-reader-data-import-cancel
+            >
+                Cancel
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <p
+        class="reader-data-portability__status"
+        data-reader-data-status
+        aria-live="polite"
+        aria-atomic="true"
+    >
+    </p>
+
+</section>
+
+
+<script>
+
+    interface BookmarkRecord {
+        pathname: string;
+        title: string;
+        url: string;
+        savedAt: number;
+    }
+
+
+    interface ReadingMemoryRecord {
+        version?: number;
+        pathname?: string;
+        progress?: number;
+        scrollY?: number;
+        sectionId?: string;
+        sectionLabel?: string;
+        completed?: boolean;
+        updatedAt?: number;
+    }
+
+
+    interface ReaderDataBackup {
+        format:
+            "the-river-kept-flowing-reader-data";
+        version:
+            1;
+        exportedAt:
+            number;
+        origin:
+            string;
+        bookmarks:
+            BookmarkRecord[];
+        readingMemory:
+            ReadingMemoryRecord[];
+    }
+
+
+    interface ImportPreview {
+        backup:
+            ReaderDataBackup;
+        bookmarks:
+            number;
+        memory:
+            number;
+        newer:
+            number;
+        skipped:
+            number;
+    }
+
+
+    interface PortabilityState {
+        root:
+            HTMLElement;
+        exportButton:
+            HTMLButtonElement;
+        importInput:
+            HTMLInputElement;
+        preview:
+            HTMLElement;
+        previewBookmarks:
+            HTMLElement;
+        previewMemory:
+            HTMLElement;
+        previewNewer:
+            HTMLElement;
+        previewSkipped:
+            HTMLElement;
+        confirmButton:
+            HTMLButtonElement;
+        cancelButton:
+            HTMLButtonElement;
+        status:
+            HTMLElement;
+        pendingPreview:
+            ImportPreview | null;
+        statusTimer:
+            number | null;
+    }
+
+
+    const BOOKMARK_PREFIX =
+        "river-reading-bookmark:";
+
+    const MEMORY_PREFIX =
+        "river-reading-memory:";
+
+    const BACKUP_FORMAT =
+        "the-river-kept-flowing-reader-data";
+
+    const BACKUP_VERSION =
+        1;
+
+
+    function safelyReadStorage(
+        key: string
+    ): string | null {
+
+        try {
+
+            return window.localStorage.getItem(
+                key
+            );
+
+        }
+        catch {
+
+            return null;
+
+        }
+
+    }
+
+
+    function safelyWriteStorage(
+        key: string,
+        value: string
+    ): boolean {
+
+        try {
+
+            window.localStorage.setItem(
+                key,
+                value
+            );
+
+            return true;
+
+        }
+        catch {
+
+            return false;
+
+        }
+
+    }
+
+
+    function announce(
+        state: PortabilityState,
+        message: string
+    ): void {
+
+        state.status.textContent =
+            message;
+
+
+        if (
+            state.statusTimer !==
+            null
+        ) {
+
+            window.clearTimeout(
+                state.statusTimer
+            );
+
+        }
+
+
+        state.statusTimer =
+            window.setTimeout(
+                () => {
+
+                    state.status.textContent =
+                        "";
+
+                    state.statusTimer =
+                        null;
+
+                },
+                3600
+            );
+
+    }
+
+
+    function isFiniteNumber(
+        value: unknown
+    ): value is number {
+
+        return (
+            typeof value ===
+                "number" &&
+            Number.isFinite(
+                value
+            )
+        );
+
+    }
+
+
+    function parseBookmarkRecord(
+        value: unknown
+    ): BookmarkRecord | null {
+
+        if (
+            typeof value !==
+                "object" ||
+            value ===
+                null
+        ) {
+
+            return null;
+
+        }
+
+
+        const record =
+            value as Partial<BookmarkRecord>;
+
+
+        if (
+            typeof record.pathname !==
+                "string" ||
+            typeof record.title !==
+                "string" ||
+            typeof record.url !==
+                "string" ||
+            !isFiniteNumber(
+                record.savedAt
+            )
+        ) {
+
+            return null;
+
+        }
+
+
+        if (
+            !record.pathname.startsWith(
+                "/"
+            )
+        ) {
+
+            return null;
+
+        }
+
+
+        return {
+            pathname:
+                record.pathname,
+            title:
+                record.title,
+            url:
+                record.url,
+            savedAt:
+                record.savedAt
+        };
+
+    }
+
+
+    function parseMemoryRecord(
+        value: unknown
+    ): ReadingMemoryRecord | null {
+
+        if (
+            typeof value !==
+                "object" ||
+            value ===
+                null
+        ) {
+
+            return null;
+
+        }
+
+
+        const record =
+            value as ReadingMemoryRecord;
+
+
+        if (
+            typeof record.pathname !==
+                "string" ||
+            !record.pathname.startsWith(
+                "/"
+            ) ||
+            !isFiniteNumber(
+                record.updatedAt
+            )
+        ) {
+
+            return null;
+
+        }
+
+
+        if (
+            record.progress !==
+                undefined &&
+            !isFiniteNumber(
+                record.progress
+            )
+        ) {
+
+            return null;
+
+        }
+
+
+        if (
+            record.scrollY !==
+                undefined &&
+            !isFiniteNumber(
+                record.scrollY
+            )
+        ) {
+
+            return null;
+
+        }
+
+
+        return {
+            version:
+                isFiniteNumber(
+                    record.version
+                )
+                    ? record.version
+                    : 1,
+            pathname:
+                record.pathname,
+            progress:
+                isFiniteNumber(
+                    record.progress
+                )
+                    ? Math.min(
+                        100,
+                        Math.max(
+                            0,
+                            record.progress
+                        )
+                    )
+                    : 0,
+            scrollY:
+                isFiniteNumber(
+                    record.scrollY
+                )
+                    ? Math.max(
+                        0,
+                        record.scrollY
+                    )
+                    : 0,
+            sectionId:
+                typeof record.sectionId ===
+                    "string"
+                    ? record.sectionId
+                    : "",
+            sectionLabel:
+                typeof record.sectionLabel ===
+                    "string"
+                    ? record.sectionLabel
+                    : "",
+            completed:
+                record.completed ===
+                true,
+            updatedAt:
+                record.updatedAt
+        };
+
+    }
+
+
+    function collectReaderData(): ReaderDataBackup {
+
+        const bookmarks:
+            BookmarkRecord[] =
+            [];
+
+        const readingMemory:
+            ReadingMemoryRecord[] =
+            [];
+
+
+        try {
+
+            for (
+                let index = 0;
+                index <
+                    window.localStorage.length;
+                index += 1
+            ) {
+
+                const key =
+                    window.localStorage.key(
+                        index
+                    );
+
+
+                if (!key) {
+
+                    continue;
+
+                }
+
+
+                const stored =
+                    safelyReadStorage(
+                        key
+                    );
+
+
+                if (!stored) {
+
+                    continue;
+
+                }
+
+
+                let parsed:
+                    unknown;
+
+
+                try {
+
+                    parsed =
+                        JSON.parse(
+                            stored
+                        );
+
+                }
+                catch {
+
+                    continue;
+
+                }
+
+
+                if (
+                    key.startsWith(
+                        BOOKMARK_PREFIX
+                    )
+                ) {
+
+                    const bookmark =
+                        parseBookmarkRecord(
+                            parsed
+                        );
+
+
+                    if (bookmark) {
+
+                        bookmarks.push(
+                            bookmark
+                        );
+
+                    }
+
+
+                    continue;
+
+                }
+
+
+                if (
+                    key.startsWith(
+                        MEMORY_PREFIX
+                    )
+                ) {
+
+                    const memory =
+                        parseMemoryRecord(
+                            parsed
+                        );
+
+
+                    if (memory) {
+
+                        readingMemory.push(
+                            memory
+                        );
+
+                    }
+
+                }
+
+            }
+
+        }
+        catch {
+
+            return {
+                format:
+                    BACKUP_FORMAT,
+                version:
+                    BACKUP_VERSION,
+                exportedAt:
+                    Date.now(),
+                origin:
+                    window.location.origin,
+                bookmarks:
+                    [],
+                readingMemory:
+                    []
+            };
+
+        }
+
+
+        bookmarks.sort(
+            (
+                first,
+                second
+            ) => {
+
+                return (
+                    second.savedAt -
+                    first.savedAt
+                );
+
+            }
+        );
+
+
+        readingMemory.sort(
+            (
+                first,
+                second
+            ) => {
+
+                return (
+                    (
+                        second.updatedAt ??
+                        0
+                    ) -
+                    (
+                        first.updatedAt ??
+                        0
+                    )
+                );
+
+            }
+        );
+
+
+        return {
+            format:
+                BACKUP_FORMAT,
+            version:
+                BACKUP_VERSION,
+            exportedAt:
+                Date.now(),
+            origin:
+                window.location.origin,
+            bookmarks,
+            readingMemory
+        };
+
+    }
+
+
+    function downloadBackup(
+        backup: ReaderDataBackup
+    ): void {
+
+        const serialized =
+            JSON.stringify(
+                backup,
+                null,
+                2
+            );
+
+        const blob =
+            new Blob(
+                [
+                    serialized
+                ],
+                {
+                    type:
+                        "application/json"
+                }
+            );
+
+        const url =
+            URL.createObjectURL(
+                blob
+            );
+
+        const anchor =
+            document.createElement(
+                "a"
+            );
+
+        const date =
+            new Date()
+                .toISOString()
+                .slice(
+                    0,
+                    10
+                );
+
+
+        anchor.href =
+            url;
+
+        anchor.download =
+            `river-reader-data-${date}.json`;
+
+        anchor.hidden =
+            true;
+
+
+        document.body.appendChild(
+            anchor
+        );
+
+        anchor.click();
+
+        anchor.remove();
+
+
+        window.setTimeout(
+            () => {
+
+                URL.revokeObjectURL(
+                    url
+                );
+
+            },
+            0
+        );
+
+    }
+
+
+    function parseBackup(
+        value: unknown
+    ): ReaderDataBackup | null {
+
+        if (
+            typeof value !==
+                "object" ||
+            value ===
+                null
+        ) {
+
+            return null;
+
+        }
+
+
+        const candidate =
+            value as Partial<ReaderDataBackup>;
+
+
+        if (
+            candidate.format !==
+                BACKUP_FORMAT ||
+            candidate.version !==
+                BACKUP_VERSION ||
+            !Array.isArray(
+                candidate.bookmarks
+            ) ||
+            !Array.isArray(
+                candidate.readingMemory
+            )
+        ) {
+
+            return null;
+
+        }
+
+
+        const bookmarks =
+            candidate.bookmarks
+                .map(
+                    parseBookmarkRecord
+                )
+                .filter(
+                    (
+                        record
+                    ): record is BookmarkRecord => {
+
+                        return record !==
+                            null;
+
+                    }
+                );
+
+
+        const readingMemory =
+            candidate.readingMemory
+                .map(
+                    parseMemoryRecord
+                )
+                .filter(
+                    (
+                        record
+                    ): record is ReadingMemoryRecord => {
+
+                        return record !==
+                            null;
+
+                    }
+                );
+
+
+        return {
+            format:
+                BACKUP_FORMAT,
+            version:
+                BACKUP_VERSION,
+            exportedAt:
+                isFiniteNumber(
+                    candidate.exportedAt
+                )
+                    ? candidate.exportedAt
+                    : Date.now(),
+            origin:
+                typeof candidate.origin ===
+                    "string"
+                    ? candidate.origin
+                    : "",
+            bookmarks,
+            readingMemory
+        };
+
+    }
+
+
+    function readExistingTimestamp(
+        key: string,
+        field:
+            "savedAt" |
+            "updatedAt"
+    ): number {
+
+        const stored =
+            safelyReadStorage(
+                key
+            );
+
+
+        if (!stored) {
+
+            return 0;
+
+        }
+
+
+        try {
+
+            const parsed =
+                JSON.parse(
+                    stored
+                ) as Record<string, unknown>;
+
+            const value =
+                parsed[field];
+
+
+            return isFiniteNumber(
+                value
+            )
+                ? value
+                : 0;
+
+        }
+        catch {
+
+            return 0;
+
+        }
+
+    }
+
+
+    function createImportPreview(
+        backup: ReaderDataBackup
+    ): ImportPreview {
+
+        let newer =
+            0;
+
+        let skipped =
+            0;
+
+
+        backup.bookmarks.forEach(
+            (
+                bookmark
+            ) => {
+
+                const key =
+                    BOOKMARK_PREFIX +
+                    bookmark.pathname;
+
+                const existingTimestamp =
+                    readExistingTimestamp(
+                        key,
+                        "savedAt"
+                    );
+
+
+                if (
+                    bookmark.savedAt >
+                    existingTimestamp
+                ) {
+
+                    newer +=
+                        1;
+
+                }
+                else {
+
+                    skipped +=
+                        1;
+
+                }
+
+            }
+        );
+
+
+        backup.readingMemory.forEach(
+            (
+                memory
+            ) => {
+
+                const pathname =
+                    memory.pathname ??
+                    "";
+
+                const key =
+                    MEMORY_PREFIX +
+                    pathname;
+
+                const existingTimestamp =
+                    readExistingTimestamp(
+                        key,
+                        "updatedAt"
+                    );
+
+                const importedTimestamp =
+                    memory.updatedAt ??
+                    0;
+
+
+                if (
+                    importedTimestamp >
+                    existingTimestamp
+                ) {
+
+                    newer +=
+                        1;
+
+                }
+                else {
+
+                    skipped +=
+                        1;
+
+                }
+
+            }
+        );
+
+
+        return {
+            backup,
+            bookmarks:
+                backup.bookmarks.length,
+            memory:
+                backup.readingMemory.length,
+            newer,
+            skipped
+        };
+
+    }
+
+
+    function showPreview(
+        state: PortabilityState,
+        preview: ImportPreview
+    ): void {
+
+        state.pendingPreview =
+            preview;
+
+        state.previewBookmarks.textContent =
+            String(
+                preview.bookmarks
+            );
+
+        state.previewMemory.textContent =
+            String(
+                preview.memory
+            );
+
+        state.previewNewer.textContent =
+            String(
+                preview.newer
+            );
+
+        state.previewSkipped.textContent =
+            String(
+                preview.skipped
+            );
+
+        state.preview.hidden =
+            false;
+
+        state.confirmButton.focus();
+
+    }
+
+
+    function clearPreview(
+        state: PortabilityState
+    ): void {
+
+        state.pendingPreview =
+            null;
+
+        state.preview.hidden =
+            true;
+
+        state.importInput.value =
+            "";
+
+    }
+
+
+    function importBackup(
+        state: PortabilityState,
+        preview: ImportPreview
+    ): void {
+
+        let imported =
+            0;
+
+        let skipped =
+            0;
+
+        let failed =
+            0;
+
+
+        preview.backup.bookmarks.forEach(
+            (
+                bookmark
+            ) => {
+
+                const key =
+                    BOOKMARK_PREFIX +
+                    bookmark.pathname;
+
+                const existingTimestamp =
+                    readExistingTimestamp(
+                        key,
+                        "savedAt"
+                    );
+
+
+                if (
+                    bookmark.savedAt <=
+                    existingTimestamp
+                ) {
+
+                    skipped +=
+                        1;
+
+                    return;
+
+                }
+
+
+                const written =
+                    safelyWriteStorage(
+                        key,
+                        JSON.stringify(
+                            bookmark
+                        )
+                    );
+
+
+                if (written) {
+
+                    imported +=
+                        1;
+
+                }
+                else {
+
+                    failed +=
+                        1;
+
+                }
+
+            }
+        );
+
+
+        preview.backup.readingMemory.forEach(
+            (
+                memory
+            ) => {
+
+                const pathname =
+                    memory.pathname ??
+                    "";
+
+                const key =
+                    MEMORY_PREFIX +
+                    pathname;
+
+                const existingTimestamp =
+                    readExistingTimestamp(
+                        key,
+                        "updatedAt"
+                    );
+
+                const importedTimestamp =
+                    memory.updatedAt ??
+                    0;
+
+
+                if (
+                    importedTimestamp <=
+                    existingTimestamp
+                ) {
+
+                    skipped +=
+                        1;
+
+                    return;
+
+                }
+
+
+                const written =
+                    safelyWriteStorage(
+                        key,
+                        JSON.stringify(
+                            memory
+                        )
+                    );
+
+
+                if (written) {
+
+                    imported +=
+                        1;
+
+                }
+                else {
+
+                    failed +=
+                        1;
+
+                }
+
+            }
+        );
+
+
+        clearPreview(
+            state
+        );
+
+
+        window.dispatchEvent(
+            new StorageEvent(
+                "storage",
+                {
+                    key:
+                        null
+                }
+            )
+        );
+
+
+        announce(
+            state,
+            failed > 0
+                ? `Imported ${imported} records, skipped ${skipped}, and could not write ${failed}.`
+                : `Imported ${imported} newer records and skipped ${skipped}.`
+        );
+
+    }
+
+
+    async function readImportFile(
+        state: PortabilityState,
+        file: File
+    ): Promise<void> {
+
+        if (
+            file.size >
+            5 * 1024 * 1024
+        ) {
+
+            announce(
+                state,
+                "That backup is larger than the 5 MB import limit."
+            );
+
+            state.importInput.value =
+                "";
+
+            return;
+
+        }
+
+
+        try {
+
+            const text =
+                await file.text();
+
+            const parsed =
+                JSON.parse(
+                    text
+                ) as unknown;
+
+            const backup =
+                parseBackup(
+                    parsed
+                );
+
+
+            if (!backup) {
+
+                announce(
+                    state,
+                    "That file is not a supported River reader-data backup."
+                );
+
+                state.importInput.value =
+                    "";
+
+                return;
+
+            }
+
+
+            const preview =
+                createImportPreview(
+                    backup
+                );
+
+
+            showPreview(
+                state,
+                preview
+            );
+
+
+            announce(
+                state,
+                "Backup validated. Review the import preview."
+            );
+
+        }
+        catch {
+
+            announce(
+                state,
+                "The selected file could not be read as JSON."
+            );
+
+            state.importInput.value =
+                "";
+
+        }
+
+    }
+
+
+    function initializePortability(
+        element: Element
+    ): void {
+
+        if (
+            !(
+                element instanceof
+                HTMLElement
+            ) ||
+            element.dataset.readerDataPortabilityReady ===
+                "true"
+        ) {
+
+            return;
+
+        }
+
+
+        const exportButton =
+            element.querySelector<HTMLButtonElement>(
+                "[data-reader-data-export]"
+            );
+
+        const importInput =
+            element.querySelector<HTMLInputElement>(
+                "[data-reader-data-import-file]"
+            );
+
+        const preview =
+            element.querySelector<HTMLElement>(
+                "[data-reader-data-preview]"
+            );
+
+        const previewBookmarks =
+            element.querySelector<HTMLElement>(
+                "[data-reader-data-preview-bookmarks]"
+            );
+
+        const previewMemory =
+            element.querySelector<HTMLElement>(
+                "[data-reader-data-preview-memory]"
+            );
+
+        const previewNewer =
+            element.querySelector<HTMLElement>(
+                "[data-reader-data-preview-newer]"
+            );
+
+        const previewSkipped =
+            element.querySelector<HTMLElement>(
+                "[data-reader-data-preview-skipped]"
+            );
+
+        const confirmButton =
+            element.querySelector<HTMLButtonElement>(
+                "[data-reader-data-import-confirm]"
+            );
+
+        const cancelButton =
+            element.querySelector<HTMLButtonElement>(
+                "[data-reader-data-import-cancel]"
+            );
+
+        const status =
+            element.querySelector<HTMLElement>(
+                "[data-reader-data-status]"
+            );
+
+
+        if (
+            !exportButton ||
+            !importInput ||
+            !preview ||
+            !previewBookmarks ||
+            !previewMemory ||
+            !previewNewer ||
+            !previewSkipped ||
+            !confirmButton ||
+            !cancelButton ||
+            !status
+        ) {
+
+            return;
+
+        }
+
+
+        element.dataset.readerDataPortabilityReady =
+            "true";
+
+
+        const state:
+            PortabilityState = {
+            root:
+                element,
+            exportButton,
+            importInput,
+            preview,
+            previewBookmarks,
+            previewMemory,
+            previewNewer,
+            previewSkipped,
+            confirmButton,
+            cancelButton,
+            status,
+            pendingPreview:
+                null,
+            statusTimer:
+                null
+        };
+
+
+        state.exportButton.addEventListener(
+            "click",
+            () => {
+
+                const backup =
+                    collectReaderData();
+
+
+                downloadBackup(
+                    backup
+                );
+
+
+                announce(
+                    state,
+                    `Exported ${backup.bookmarks.length} bookmarks and ${backup.readingMemory.length} reading records.`
+                );
+
+            }
+        );
+
+
+        state.importInput.addEventListener(
+            "change",
+            () => {
+
+                const file =
+                    state.importInput.files?.[0];
+
+
+                if (!file) {
+
+                    return;
+
+                }
+
+
+                void readImportFile(
+                    state,
+                    file
+                );
+
+            }
+        );
+
+
+        state.confirmButton.addEventListener(
+            "click",
+            () => {
+
+                if (
+                    !state.pendingPreview
+                ) {
+
+                    return;
+
+                }
+
+
+                importBackup(
+                    state,
+                    state.pendingPreview
+                );
+
+            }
+        );
+
+
+        state.cancelButton.addEventListener(
+            "click",
+            () => {
+
+                clearPreview(
+                    state
+                );
+
+
+                announce(
+                    state,
+                    "Import canceled."
+                );
+
+            }
+        );
+
+    }
+
+
+    function initializeAllPortability(): void {
+
+        document
+            .querySelectorAll(
+                "[data-reader-data-portability]"
+            )
+            .forEach(
+                initializePortability
+            );
+
+    }
+
+
+    initializeAllPortability();
+
+
+    document.addEventListener(
+        "astro:page-load",
+        initializeAllPortability
+    );
+
+</script>
