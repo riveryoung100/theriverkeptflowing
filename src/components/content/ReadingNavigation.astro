@@ -1,0 +1,996 @@
+<aside
+    class="reading-navigation"
+    data-reading-navigation
+    aria-labelledby="reading-navigation-title"
+    hidden
+>
+
+    <div class="reading-navigation__header">
+
+        <div>
+
+            <p class="reading-navigation__eyebrow">
+                On this page
+            </p>
+
+            <h2 id="reading-navigation-title">
+                Continue through this reading
+            </h2>
+
+        </div>
+
+
+        <button
+            class="reading-navigation__toggle"
+            type="button"
+            data-reading-navigation-toggle
+            aria-expanded="true"
+            aria-controls="reading-navigation-list"
+        >
+            Hide
+        </button>
+
+    </div>
+
+
+    <nav
+        id="reading-navigation-list"
+        class="reading-navigation__body"
+        aria-label="Article sections"
+        data-reading-navigation-body
+    >
+
+        <ol
+            class="reading-navigation__list"
+            data-reading-navigation-list
+        >
+        </ol>
+
+    </nav>
+
+</aside>
+
+
+<script>
+
+    interface ReadingNavigationEntry {
+        id: string;
+        label: string;
+        level: number;
+        element: HTMLElement;
+    }
+
+
+    function normalizeHeadingText(
+        value: string
+    ): string {
+
+        return value
+            .replace(/\s+/g, " ")
+            .trim();
+
+    }
+
+
+    function slugifyHeading(
+        value: string
+    ): string {
+
+        const normalized =
+            value
+                .normalize("NFKD")
+                .replace(
+                    /[\u0300-\u036f]/g,
+                    ""
+                )
+                .toLocaleLowerCase()
+                .replace(
+                    /&/g,
+                    " and "
+                )
+                .replace(
+                    /[^a-z0-9]+/g,
+                    "-"
+                )
+                .replace(
+                    /^-+|-+$/g,
+                    "");
+
+
+        return (
+            normalized ||
+            "section"
+        );
+
+    }
+
+
+    function createUniqueId(
+        baseId: string,
+        usedIds: Set<string>
+    ): string {
+
+        let candidate =
+            baseId;
+
+        let suffix =
+            2;
+
+
+        while (
+            usedIds.has(
+                candidate
+            )
+        ) {
+
+            candidate =
+                `${baseId}-${suffix}`;
+
+            suffix +=
+                1;
+
+        }
+
+
+        usedIds.add(
+            candidate
+        );
+
+
+        return candidate;
+
+    }
+
+
+    function getDirectHeading(
+        section: HTMLElement
+    ): HTMLElement | null {
+
+        const directChildren =
+            Array.from(
+                section.children
+            );
+
+
+        for (
+            const child of directChildren
+        ) {
+
+            if (
+                child instanceof HTMLElement &&
+                /^H[2-4]$/.test(
+                    child.tagName
+                )
+            ) {
+
+                return child;
+
+            }
+
+
+            if (
+                child instanceof HTMLElement
+            ) {
+
+                const nestedHeading =
+                    child.querySelector<HTMLElement>(
+                        ":scope > h2, :scope > h3, :scope > h4"
+                    );
+
+
+                if (nestedHeading) {
+
+                    return nestedHeading;
+
+                }
+
+            }
+
+        }
+
+
+        return section.querySelector<HTMLElement>(
+            "h2, h3, h4"
+        );
+
+    }
+
+
+    function getSectionEntries(
+        articleBody: HTMLElement,
+        usedIds: Set<string>
+    ): ReadingNavigationEntry[] {
+
+        const structuralSelectors = [
+            "section.chapter[id]",
+            "section.part-divider[id]",
+            "section.part[id]",
+            "section.resource-section[id]",
+            "section.final-reflection[id]",
+            "section.final-section[id]",
+            "section.final-thoughts[id]",
+            "section.handbook-closing[id]",
+            "section.handbook-conclusion[id]",
+            "section[id^='chapter-']",
+            "section[id^='part-']"
+        ];
+
+
+        const structuralSections =
+            Array.from(
+                articleBody.querySelectorAll<HTMLElement>(
+                    structuralSelectors.join(
+                        ","
+                    )
+                )
+            );
+
+
+        const seenElements =
+            new Set<HTMLElement>();
+
+
+        const entries: ReadingNavigationEntry[] =
+            [];
+
+
+        for (
+            const section of structuralSections
+        ) {
+
+            if (
+                seenElements.has(
+                    section
+                )
+            ) {
+
+                continue;
+
+            }
+
+
+            seenElements.add(
+                section
+            );
+
+
+            const heading =
+                getDirectHeading(
+                    section
+                );
+
+
+            if (!heading) {
+
+                continue;
+
+            }
+
+
+            const label =
+                normalizeHeadingText(
+                    heading.textContent ??
+                    ""
+                );
+
+
+            if (
+                label.length === 0
+            ) {
+
+                continue;
+
+            }
+
+
+            let id =
+                section.id.trim();
+
+
+            if (
+                id.length === 0
+            ) {
+
+                id =
+                    createUniqueId(
+                        slugifyHeading(
+                            label
+                        ),
+                        usedIds
+                    );
+
+                section.id =
+                    id;
+
+            }
+            else {
+
+                usedIds.add(
+                    id
+                );
+
+            }
+
+
+            const level =
+                section.classList.contains(
+                    "part"
+                ) ||
+                section.classList.contains(
+                    "part-divider"
+                )
+                    ? 2
+                    : 3;
+
+
+            entries.push({
+                id,
+                label,
+                level,
+                element: section
+            });
+
+        }
+
+
+        return entries;
+
+    }
+
+
+    function getFallbackHeadingEntries(
+        articleBody: HTMLElement,
+        usedIds: Set<string>
+    ): ReadingNavigationEntry[] {
+
+        const excludedSelectors = [
+            ".handbook-cover",
+            ".handbook-frontmatter",
+            ".handbook-toc",
+            ".toc-section",
+            ".toc-card",
+            ".toc-grid",
+            ".content-entry__header",
+            ".content-entry__tags",
+            ".series-navigation",
+            ".related-content",
+            "aside"
+        ].join(",");
+
+
+        const headings =
+            Array.from(
+                articleBody.querySelectorAll<HTMLElement>(
+                    "h2, h3"
+                )
+            );
+
+
+        const entries: ReadingNavigationEntry[] =
+            [];
+
+
+        for (
+            const heading of headings
+        ) {
+
+            if (
+                heading.closest(
+                    excludedSelectors
+                )
+            ) {
+
+                continue;
+
+            }
+
+
+            const label =
+                normalizeHeadingText(
+                    heading.textContent ??
+                    ""
+                );
+
+
+            if (
+                label.length === 0
+            ) {
+
+                continue;
+
+            }
+
+
+            let target =
+                heading;
+
+
+            const structuralParent =
+                heading.closest<HTMLElement>(
+                    "section[id], article[id]"
+                );
+
+
+            if (structuralParent) {
+
+                target =
+                    structuralParent;
+
+            }
+
+
+            let id =
+                target.id.trim();
+
+
+            if (
+                id.length === 0
+            ) {
+
+                id =
+                    createUniqueId(
+                        slugifyHeading(
+                            label
+                        ),
+                        usedIds
+                    );
+
+                target.id =
+                    id;
+
+            }
+            else {
+
+                usedIds.add(
+                    id
+                );
+
+            }
+
+
+            entries.push({
+                id,
+                label,
+                level:
+                    heading.tagName === "H2"
+                        ? 2
+                        : 3,
+                element: target
+            });
+
+        }
+
+
+        return entries;
+
+    }
+
+
+    function addHeadingLinks(
+        articleBody: HTMLElement,
+        usedIds: Set<string>
+    ): void {
+
+        const headings =
+            Array.from(
+                articleBody.querySelectorAll<HTMLElement>(
+                    "h2, h3"
+                )
+            );
+
+
+        for (
+            const heading of headings
+        ) {
+
+            if (
+                heading.querySelector(
+                    "[data-heading-link]"
+                )
+            ) {
+
+                continue;
+
+            }
+
+
+            const label =
+                normalizeHeadingText(
+                    heading.textContent ??
+                    ""
+                );
+
+
+            if (
+                label.length === 0
+            ) {
+
+                continue;
+
+            }
+
+
+            let target =
+                heading;
+
+
+            const section =
+                heading.closest<HTMLElement>(
+                    "section[id], article[id]"
+                );
+
+
+            if (section) {
+
+                target =
+                    section;
+
+            }
+
+
+            let id =
+                target.id.trim();
+
+
+            if (
+                id.length === 0
+            ) {
+
+                id =
+                    createUniqueId(
+                        slugifyHeading(
+                            label
+                        ),
+                        usedIds
+                    );
+
+                target.id =
+                    id;
+
+            }
+
+
+            const link =
+                document.createElement(
+                    "a"
+                );
+
+
+            link.className =
+                "reading-heading-link";
+
+            link.href =
+                `#${id}`;
+
+            link.dataset.headingLink =
+                "true";
+
+            link.setAttribute(
+                "aria-label",
+                `Copy link to ${label}`
+            );
+
+            link.title =
+                "Copy link to this section";
+
+            link.textContent =
+                "#";
+
+
+            link.addEventListener(
+                "click",
+                async (
+                    event: MouseEvent
+                ) => {
+
+                    event.preventDefault();
+
+
+                    const url =
+                        new URL(
+                            window.location.href
+                        );
+
+
+                    url.hash =
+                        id;
+
+
+                    window.history.replaceState(
+                        null,
+                        "",
+                        url
+                    );
+
+
+                    target.scrollIntoView({
+                        behavior:
+                            "smooth",
+                        block:
+                            "start"
+                    });
+
+
+                    try {
+
+                        await navigator.clipboard.writeText(
+                            url.toString()
+                        );
+
+
+                        link.dataset.copied =
+                            "true";
+
+                        link.textContent =
+                            "Copied";
+
+
+                        window.setTimeout(
+                            () => {
+
+                                delete link.dataset.copied;
+
+                                link.textContent =
+                                    "#";
+
+                            },
+                            1400
+                        );
+
+                    }
+                    catch {
+
+                        link.textContent =
+                            "#";
+
+                    }
+
+                }
+            );
+
+
+            heading.appendChild(
+                link
+            );
+
+        }
+
+    }
+
+
+    function initializeReadingNavigation(
+        navigation: Element
+    ): void {
+
+        if (
+            !(navigation instanceof HTMLElement) ||
+            navigation.dataset.readingNavigationReady ===
+                "true"
+        ) {
+
+            return;
+
+        }
+
+
+        navigation.dataset.readingNavigationReady =
+            "true";
+
+
+        const articleBody =
+            document.querySelector<HTMLElement>(
+                ".content-entry__body"
+            );
+
+        const list =
+            navigation.querySelector<HTMLOListElement>(
+                "[data-reading-navigation-list]"
+            );
+
+        const body =
+            navigation.querySelector<HTMLElement>(
+                "[data-reading-navigation-body]"
+            );
+
+        const toggle =
+            navigation.querySelector<HTMLButtonElement>(
+                "[data-reading-navigation-toggle]"
+            );
+
+
+        if (
+            !articleBody ||
+            !list ||
+            !body ||
+            !toggle
+        ) {
+
+            return;
+
+        }
+
+
+        const usedIds =
+            new Set(
+                Array.from(
+                    document.querySelectorAll<HTMLElement>(
+                        "[id]"
+                    )
+                )
+                    .map(
+                        (
+                            element
+                        ) => {
+                            return element.id;
+                        }
+                    )
+                    .filter(Boolean)
+            );
+
+
+        let entries =
+            getSectionEntries(
+                articleBody,
+                usedIds
+            );
+
+
+        if (
+            entries.length < 3
+        ) {
+
+            entries =
+                getFallbackHeadingEntries(
+                    articleBody,
+                    usedIds
+                );
+
+        }
+
+
+        const uniqueEntries =
+            entries.filter(
+                (
+                    entry,
+                    index,
+                    allEntries
+                ) => {
+
+                    return (
+                        allEntries.findIndex(
+                            (
+                                candidate
+                            ) => {
+                                return (
+                                    candidate.id ===
+                                    entry.id
+                                );
+                            }
+                        ) === index
+                    );
+
+                }
+            );
+
+
+        addHeadingLinks(
+            articleBody,
+            usedIds
+        );
+
+
+        if (
+            uniqueEntries.length < 3
+        ) {
+
+            return;
+
+        }
+
+
+        const fragment =
+            document.createDocumentFragment();
+
+
+        for (
+            const entry of uniqueEntries
+        ) {
+
+            const item =
+                document.createElement(
+                    "li"
+                );
+
+
+            item.className =
+                "reading-navigation__item";
+
+            item.dataset.level =
+                String(
+                    entry.level
+                );
+
+
+            const link =
+                document.createElement(
+                    "a"
+                );
+
+
+            link.href =
+                `#${entry.id}`;
+
+            link.textContent =
+                entry.label;
+
+            link.dataset.readingNavigationLink =
+                entry.id;
+
+
+            item.appendChild(
+                link
+            );
+
+            fragment.appendChild(
+                item
+            );
+
+        }
+
+
+        list.replaceChildren(
+            fragment
+        );
+
+        navigation.hidden =
+            false;
+
+
+        toggle.addEventListener(
+            "click",
+            () => {
+
+                const expanded =
+                    toggle.getAttribute(
+                        "aria-expanded"
+                    ) ===
+                    "true";
+
+
+                toggle.setAttribute(
+                    "aria-expanded",
+                    String(
+                        !expanded
+                    )
+                );
+
+
+                toggle.textContent =
+                    expanded
+                        ? "Show"
+                        : "Hide";
+
+                body.hidden =
+                    expanded;
+
+            }
+        );
+
+
+        const links =
+            Array.from(
+                navigation.querySelectorAll<HTMLAnchorElement>(
+                    "[data-reading-navigation-link]"
+                )
+            );
+
+
+        if (
+            "IntersectionObserver" in
+            window
+        ) {
+
+            const observer =
+                new IntersectionObserver(
+                    (
+                        observations
+                    ) => {
+
+                        const visible =
+                            observations
+                                .filter(
+                                    (
+                                        observation
+                                    ) => {
+                                        return observation.isIntersecting;
+                                    }
+                                )
+                                .sort(
+                                    (
+                                        first,
+                                        second
+                                    ) => {
+                                        return (
+                                            first.boundingClientRect.top -
+                                            second.boundingClientRect.top
+                                        );
+                                    }
+                                )[0];
+
+
+                        if (
+                            !visible ||
+                            !(
+                                visible.target instanceof
+                                HTMLElement
+                            )
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        for (
+                            const link of links
+                        ) {
+
+                            const active =
+                                link.dataset.readingNavigationLink ===
+                                visible.target.id;
+
+
+                            link.toggleAttribute(
+                                "aria-current",
+                                active
+                            );
+
+                        }
+
+                    },
+                    {
+                        rootMargin:
+                            "-18% 0px -70% 0px",
+                        threshold:
+                            0
+                    }
+                );
+
+
+            for (
+                const entry of uniqueEntries
+            ) {
+
+                observer.observe(
+                    entry.element
+                );
+
+            }
+
+        }
+
+    }
+
+
+    function initializeReadingNavigations(): void {
+
+        document
+            .querySelectorAll(
+                "[data-reading-navigation]"
+            )
+            .forEach(
+                initializeReadingNavigation
+            );
+
+    }
+
+
+    initializeReadingNavigations();
+
+
+    document.addEventListener(
+        "astro:page-load",
+        initializeReadingNavigations
+    );
+
+</script>
