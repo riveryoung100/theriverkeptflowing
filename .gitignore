@@ -13,3 +13,6 @@ Thumbs.db
 .env.local
 .env.*.local
 !.env.example
+
+# Obsolete pre-Astro page restored by OneDrive
+/public/pages/tributaries.html

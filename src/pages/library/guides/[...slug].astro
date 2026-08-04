@@ -3,7 +3,11 @@ import { getCollection, render } from "astro:content";
 import ReadingLayout from "../../../layouts/ReadingLayout.astro";
 import ContentEntry from "../../../components/content/ContentEntry.astro";
 import RelatedContent from "../../../components/content/RelatedContent.astro";
+import SeriesNavigation from "../../../components/content/SeriesNavigation.astro";
 
+import {
+    getSeriesNavigation
+} from "../../../lib/series";
 export async function getStaticPaths() {
 
     const guides = await getCollection(
@@ -26,6 +30,13 @@ export async function getStaticPaths() {
 const { guide } = Astro.props;
 
 const { Content } = await render(guide);
+
+
+const seriesNavigation =
+    await getSeriesNavigation(
+        "guides",
+        guide.id
+    );
 
 const canonical = new URL(
     `/library/guides/${guide.id}/`,
@@ -61,6 +72,17 @@ const canonical = new URL(
         <Content />
 
     </ContentEntry>
+    
+
+    {
+        seriesNavigation && (
+            <SeriesNavigation
+                navigation={seriesNavigation}
+            />
+        )
+    }
+
+
     <RelatedContent
         currentCollection="guides"
         currentId={guide.id}
