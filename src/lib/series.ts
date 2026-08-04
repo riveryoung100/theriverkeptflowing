@@ -487,3 +487,74 @@ export async function getContentSeriesBySlug(
     });
 
 }
+
+export interface SeriesNavigationResult {
+    series: ContentSeries;
+    current: SeriesEntry;
+    previous?: SeriesEntry;
+    next?: SeriesEntry;
+    position: number;
+    total: number;
+    seriesHref: string;
+}
+
+export async function getSeriesNavigation(
+    collection: SeriesCollectionName,
+    id: string
+): Promise<SeriesNavigationResult | undefined> {
+
+    const allSeries =
+        await getContentSeries();
+
+
+    for (const series of allSeries) {
+
+        const currentIndex =
+            series.entries.findIndex(
+                (entry) => {
+                    return (
+                        entry.collection === collection &&
+                        entry.id === id
+                    );
+                }
+            );
+
+
+        if (currentIndex === -1) {
+
+            continue;
+
+        }
+
+
+        return {
+            series,
+            current:
+                series.entries[currentIndex],
+            previous:
+                currentIndex > 0
+                    ? series.entries[
+                        currentIndex - 1
+                    ]
+                    : undefined,
+            next:
+                currentIndex <
+                    series.entries.length - 1
+                    ? series.entries[
+                        currentIndex + 1
+                    ]
+                    : undefined,
+            position:
+                currentIndex + 1,
+            total:
+                series.entries.length,
+            seriesHref:
+                `/series/${series.slug}/`
+        };
+
+    }
+
+
+    return undefined;
+
+}

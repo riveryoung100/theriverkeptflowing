@@ -1,0 +1,383 @@
+---
+import type {
+    SeriesNavigationResult
+} from "../../lib/series";
+
+
+interface Props {
+    navigation: SeriesNavigationResult;
+}
+
+
+const {
+    navigation
+} = Astro.props;
+
+
+const {
+    series,
+    current,
+    previous,
+    next,
+    position,
+    total,
+    seriesHref
+} = navigation;
+---
+
+
+<nav
+    class="series-navigation"
+    aria-labelledby="series-navigation-title"
+>
+
+    <header class="series-navigation__header">
+
+        <div>
+
+            <p class="series-navigation__eyebrow">
+                Part {position} of {total}
+            </p>
+
+            <h2 id="series-navigation-title">
+                {series.name}
+            </h2>
+
+        </div>
+
+
+        <a
+            class="series-navigation__series-link"
+            href={seriesHref}
+        >
+            View complete series
+        </a>
+
+    </header>
+
+
+    <div class="series-navigation__current">
+
+        <span>
+            You are reading
+        </span>
+
+        <strong>
+            {current.title}
+        </strong>
+
+    </div>
+
+
+    <div class="series-navigation__links">
+
+        {
+            previous
+                ? (
+                    <a
+                        class="
+                            series-navigation__link
+                            series-navigation__link--previous
+                        "
+                        href={previous.href}
+                        rel="prev"
+                    >
+
+                        <span>
+                            ← Previous in series
+                        </span>
+
+                        <strong>
+                            {previous.title}
+                        </strong>
+
+                        <small>
+                            Part {previous.seriesOrder}
+                        </small>
+
+                    </a>
+                )
+                : (
+                    <div
+                        class="
+                            series-navigation__boundary
+                            series-navigation__boundary--start
+                        "
+                    >
+
+                        <span>
+                            Beginning of series
+                        </span>
+
+                        <strong>
+                            This is the first part.
+                        </strong>
+
+                    </div>
+                )
+        }
+
+
+        {
+            next
+                ? (
+                    <a
+                        class="
+                            series-navigation__link
+                            series-navigation__link--next
+                        "
+                        href={next.href}
+                        rel="next"
+                    >
+
+                        <span>
+                            Next in series →
+                        </span>
+
+                        <strong>
+                            {next.title}
+                        </strong>
+
+                        <small>
+                            Part {next.seriesOrder}
+                        </small>
+
+                    </a>
+                )
+                : (
+                    <div
+                        class="
+                            series-navigation__boundary
+                            series-navigation__boundary--end
+                        "
+                    >
+
+                        <span>
+                            End of series
+                        </span>
+
+                        <strong>
+                            This is the final part.
+                        </strong>
+
+                    </div>
+                )
+        }
+
+    </div>
+
+</nav>
+
+
+<style>
+
+    .series-navigation {
+        width:
+            min(
+                100%,
+                980px
+            );
+        margin:
+            56px auto
+            72px;
+        padding: 28px;
+        border: 1px solid
+            color-mix(
+                in srgb,
+                currentColor 16%,
+                transparent
+            );
+        border-radius: 22px;
+    }
+
+
+    .series-navigation__header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 24px;
+        padding-bottom: 22px;
+        border-bottom: 1px solid
+            color-mix(
+                in srgb,
+                currentColor 14%,
+                transparent
+            );
+    }
+
+
+    .series-navigation__eyebrow {
+        margin: 0 0 8px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        opacity: 0.68;
+    }
+
+
+    .series-navigation h2 {
+        margin: 0;
+        font-size:
+            clamp(
+                1.35rem,
+                3vw,
+                2rem
+            );
+    }
+
+
+    .series-navigation__series-link {
+        color: inherit;
+        font-size: 0.86rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+
+    .series-navigation__current {
+        display: grid;
+        gap: 5px;
+        padding: 22px 0;
+    }
+
+
+    .series-navigation__current span {
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        opacity: 0.62;
+    }
+
+
+    .series-navigation__current strong {
+        font-size: 1.08rem;
+    }
+
+
+    .series-navigation__links {
+        display: grid;
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+        gap: 16px;
+    }
+
+
+    .series-navigation__link,
+    .series-navigation__boundary {
+        display: grid;
+        align-content: start;
+        gap: 8px;
+        min-height: 138px;
+        padding: 20px;
+        border: 1px solid
+            color-mix(
+                in srgb,
+                currentColor 14%,
+                transparent
+            );
+        border-radius: 16px;
+    }
+
+
+    .series-navigation__link {
+        color: inherit;
+        text-decoration: none;
+        transition:
+            transform 160ms ease,
+            border-color 160ms ease;
+    }
+
+
+    .series-navigation__link:hover {
+        transform:
+            translateY(-2px);
+        border-color:
+            color-mix(
+                in srgb,
+                currentColor 34%,
+                transparent
+            );
+    }
+
+
+    .series-navigation__link--next {
+        text-align: right;
+    }
+
+
+    .series-navigation__link span,
+    .series-navigation__boundary span {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        opacity: 0.68;
+    }
+
+
+    .series-navigation__link strong,
+    .series-navigation__boundary strong {
+        font-size: 1rem;
+        line-height: 1.45;
+    }
+
+
+    .series-navigation__link small {
+        margin-top: auto;
+        font-size: 0.75rem;
+        opacity: 0.62;
+    }
+
+
+    .series-navigation__boundary {
+        opacity: 0.62;
+    }
+
+
+    .series-navigation__boundary--end {
+        text-align: right;
+    }
+
+
+    @media (max-width: 720px) {
+
+        .series-navigation__header {
+            flex-direction: column;
+        }
+
+
+        .series-navigation__series-link {
+            white-space: normal;
+        }
+
+
+        .series-navigation__links {
+            grid-template-columns: 1fr;
+        }
+
+
+        .series-navigation__link--next,
+        .series-navigation__boundary--end {
+            text-align: left;
+        }
+
+    }
+
+
+    @media (max-width: 520px) {
+
+        .series-navigation {
+            margin:
+                42px auto
+                56px;
+            padding: 20px;
+            border-radius: 18px;
+        }
+
+    }
+
+</style>
