@@ -19,7 +19,7 @@ import type {
 } from "../types";
 
 
-const SAMPLE_DERIVATIVE_ID =
+export const SAMPLE_DERIVATIVE_ID =
     createDerivativeId();
 
 
@@ -117,3 +117,4 @@ DerivationRequest = {
         "2026-08-05T14:00:00.000Z"
 
 };
+
