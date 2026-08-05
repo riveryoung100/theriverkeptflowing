@@ -2,6 +2,3 @@
 export * from "./identifiers";
 export * from "./validation";
 export * from "./engine";
-export * from "./query";
-export * from "./reasoning";
-export * from "./insight";
