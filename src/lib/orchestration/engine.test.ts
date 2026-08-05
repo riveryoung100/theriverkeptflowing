@@ -6,6 +6,14 @@ import {
 } from "./engine";
 
 import {
+    createWorkflowStepHandlerRegistry
+} from "./handlers/registry";
+
+import {
+    sampleHandlers
+} from "./handlers/fixtures/sampleHandlers";
+
+import {
     sampleWorkflowRunRequest
 } from "./fixtures/sampleWorkflow";
 
@@ -14,26 +22,23 @@ test(
     "creates workflow engine",
     () => {
 
-        const engine =
-            createWorkflowEngine();
-
-        assert.ok(engine);
+        assert.ok(
+            createWorkflowEngine()
+        );
 
     }
 );
 
 
 test(
-    "runs workflow",
+    "runs workflow with default handlers",
     () => {
 
-        const engine =
-            createWorkflowEngine();
-
         const result =
-            engine.run(
-                sampleWorkflowRunRequest
-            );
+            createWorkflowEngine()
+                .run(
+                    sampleWorkflowRunRequest
+                );
 
         assert.equal(
             result.run.status,
@@ -48,13 +53,11 @@ test(
     "creates one execution per workflow step",
     () => {
 
-        const engine =
-            createWorkflowEngine();
-
         const result =
-            engine.run(
-                sampleWorkflowRunRequest
-            );
+            createWorkflowEngine()
+                .run(
+                    sampleWorkflowRunRequest
+                );
 
         assert.equal(
             result.run.steps.length,
@@ -72,13 +75,11 @@ test(
     "preserves workflow identifier",
     () => {
 
-        const engine =
-            createWorkflowEngine();
-
         const result =
-            engine.run(
-                sampleWorkflowRunRequest
-            );
+            createWorkflowEngine()
+                .run(
+                    sampleWorkflowRunRequest
+                );
 
         assert.equal(
             result.run.workflowId,
@@ -92,7 +93,7 @@ test(
 
 
 test(
-    "returns deterministic execution",
+    "returns deterministic executions",
     () => {
 
         const engine =
@@ -108,14 +109,79 @@ test(
                 sampleWorkflowRunRequest
             );
 
-        assert.equal(
-            first.run.workflowId,
-            second.run.workflowId
+        assert.deepEqual(
+            first,
+            second
         );
 
-        assert.equal(
-            first.run.steps.length,
-            second.run.steps.length
+    }
+);
+
+
+test(
+    "dispatches workflow steps through registered handlers",
+    () => {
+
+        const registry =
+            createWorkflowStepHandlerRegistry();
+
+        for (
+            const handler of
+            sampleHandlers
+        ) {
+            registry.register(
+                handler
+            );
+        }
+
+        const result =
+            createWorkflowEngine(
+                registry
+            )
+                .run(
+                    sampleWorkflowRunRequest
+                );
+
+        for (
+            const execution of
+            result.run.steps
+        ) {
+
+            assert.equal(
+                execution.outputs.some(
+                    (output) => {
+                        return (
+                            output.key ===
+                            "handlerType"
+                        );
+                    }
+                ),
+                true
+            );
+
+        }
+
+    }
+);
+
+
+test(
+    "rejects workflows without registered handlers",
+    () => {
+
+        const emptyRegistry =
+            createWorkflowStepHandlerRegistry();
+
+        assert.throws(
+            () => {
+                createWorkflowEngine(
+                    emptyRegistry
+                )
+                    .run(
+                        sampleWorkflowRunRequest
+                    );
+            },
+            TypeError
         );
 
     }
