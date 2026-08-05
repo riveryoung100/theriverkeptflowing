@@ -14,6 +14,17 @@ tags:
   - Property Protection
   - Liability
   - Deductibles
+related:
+  - "/library/guides/renters-insurance-handbook/"
+  - "/library/guides/landlord-insurance-handbook/"
+  - "/library/guides/umbrella-insurance-handbook/"
+prerequisites: []
+nextReading:
+  - "/library/guides/renters-insurance-handbook/"
+learningPath:
+  - "/library/guides/renters-insurance-handbook/"
+  - "/library/guides/landlord-insurance-handbook/"
+  - "/library/guides/umbrella-insurance-handbook/"
 category: "Insurance Education"
 guideNumber: 1
 version: "1.0"

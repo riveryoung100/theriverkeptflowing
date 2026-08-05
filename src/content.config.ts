@@ -11,6 +11,13 @@ const sharedSchema = z.object({
     draft: z.boolean().default(false),
     featured: z.boolean().default(false),
     tags: z.array(z.string()).default([]),
+    related: z.array(z.string()).optional(),
+
+    prerequisites: z.array(z.string()).optional(),
+
+    nextReading: z.array(z.string()).optional(),
+
+    learningPath: z.array(z.string()).optional(),
     series: z.string().optional(),
     seriesOrder: z.number().int().positive().optional(),
     image: z.string().optional(),

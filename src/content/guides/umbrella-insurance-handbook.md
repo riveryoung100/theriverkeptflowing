@@ -14,6 +14,18 @@ tags:
   - Liability
   - Asset Protection
   - Coverage Limits
+related:
+  - "/library/guides/homeowners-insurance-handbook/"
+  - "/library/guides/landlord-insurance-handbook/"
+  - "/library/guides/auto-insurance-handbook/"
+  - "/library/guides/life-insurance-handbook/"
+prerequisites:
+  - "/library/guides/homeowners-insurance-handbook/"
+  - "/library/guides/auto-insurance-handbook/"
+nextReading:
+  - "/library/guides/life-insurance-handbook/"
+learningPath:
+  - "/library/guides/life-insurance-handbook/"
 category: "Insurance Education"
 guideNumber: 5
 version: "1.0"

@@ -15,6 +15,10 @@ export interface TopicEntry {
     href: string;
     number?: string;
     tags: string[];
+    related: string[];
+    prerequisites: string[];
+    nextReading: string[];
+    learningPath: string[];
     published: Date;
     readingMinutes?: number;
     featured: boolean;
@@ -102,6 +106,10 @@ Promise<TopicEntry[]> {
             "0"
         )}`,
         tags: guide.data.tags,
+        related: guide.data.related ?? [],
+        prerequisites: guide.data.prerequisites ?? [],
+        nextReading: guide.data.nextReading ?? [],
+        learningPath: guide.data.learningPath ?? [],
         published: guide.data.published,
         readingMinutes:
             guide.data.readingMinutes,
@@ -124,6 +132,10 @@ Promise<TopicEntry[]> {
         description: essay.data.description,
         href: `/library/essays/${essay.id}/`,
         tags: essay.data.tags,
+        related: essay.data.related ?? [],
+        prerequisites: essay.data.prerequisites ?? [],
+        nextReading: essay.data.nextReading ?? [],
+        learningPath: essay.data.learningPath ?? [],
         published: essay.data.published,
         readingMinutes:
             essay.data.readingMinutes,
@@ -146,6 +158,10 @@ Promise<TopicEntry[]> {
         description: letter.data.description,
         href: `/library/letters/${letter.id}/`,
         tags: letter.data.tags,
+        related: letter.data.related ?? [],
+        prerequisites: letter.data.prerequisites ?? [],
+        nextReading: letter.data.nextReading ?? [],
+        learningPath: letter.data.learningPath ?? [],
         published: letter.data.published,
         readingMinutes:
             letter.data.readingMinutes,
@@ -168,6 +184,10 @@ Promise<TopicEntry[]> {
         description: entry.data.description,
         href: `/library/journal/${entry.id}/`,
         tags: entry.data.tags,
+        related: entry.data.related ?? [],
+        prerequisites: entry.data.prerequisites ?? [],
+        nextReading: entry.data.nextReading ?? [],
+        learningPath: entry.data.learningPath ?? [],
         published: entry.data.published,
         readingMinutes:
             entry.data.readingMinutes,
@@ -190,6 +210,10 @@ Promise<TopicEntry[]> {
         description: recipe.data.description,
         href: `/library/recipes/${recipe.id}/`,
         tags: recipe.data.tags,
+        related: recipe.data.related ?? [],
+        prerequisites: recipe.data.prerequisites ?? [],
+        nextReading: recipe.data.nextReading ?? [],
+        learningPath: recipe.data.learningPath ?? [],
         published: recipe.data.published,
         readingMinutes:
             recipe.data.readingMinutes,
@@ -212,6 +236,10 @@ Promise<TopicEntry[]> {
         description: film.data.description,
         href: `/library/films/${film.id}/`,
         tags: film.data.tags,
+        related: film.data.related ?? [],
+        prerequisites: film.data.prerequisites ?? [],
+        nextReading: film.data.nextReading ?? [],
+        learningPath: film.data.learningPath ?? [],
         published: film.data.published,
         readingMinutes:
             film.data.readingMinutes,

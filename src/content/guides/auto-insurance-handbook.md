@@ -15,6 +15,15 @@ tags:
   - Collision
   - Comprehensive
   - Uninsured Motorist
+related:
+  - "/library/guides/renters-insurance-handbook/"
+  - "/library/guides/umbrella-insurance-handbook/"
+  - "/library/guides/life-insurance-handbook/"
+prerequisites: []
+nextReading:
+  - "/library/guides/umbrella-insurance-handbook/"
+learningPath:
+  - "/library/guides/umbrella-insurance-handbook/"
 category: "Insurance Education"
 guideNumber: 2
 version: "1.0"
