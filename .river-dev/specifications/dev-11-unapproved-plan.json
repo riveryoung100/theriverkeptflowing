@@ -1,0 +1,33 @@
+﻿{
+  "version": "1.0.0",
+  "planId": "plan:dev-11-cli-unapproved",
+  "phase": "DEV-11 Unapproved CLI Persistence",
+  "branch": "dev-11-artifact-persistence",
+  "commitMessage": "DEV-11 unapproved CLI persistence fixture",
+  "objective": "Persist an unapproved proposal without creating a manifest or applying implementation operations.",
+  "generatedAt": "2026-08-06T23:00:00.000Z",
+  "allowedPaths": [
+    "tools/river-dev/src/generated/dev-11-unapproved-example.ts"
+  ],
+  "excludedPaths": [
+    ".env",
+    ".git"
+  ],
+  "acceptanceCriteria": [
+    "One unapproved proposal artifact is persisted.",
+    "No manifest artifact is persisted.",
+    "No implementation operation is applied."
+  ],
+  "requiredTests": [],
+  "requiredQualityGates": [
+    "typecheck",
+    "tests"
+  ],
+  "approvedCommands": [
+    "typecheck"
+  ],
+  "maximumRepairAttempts": 3,
+  "scopeExpansionAllowed": false,
+  "approvalBoundaries": [],
+  "steps": []
+}

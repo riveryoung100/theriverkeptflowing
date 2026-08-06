@@ -1,0 +1,33 @@
+﻿{
+  "version": "1.0.0",
+  "planId": "plan:dev-11-cli-approved",
+  "phase": "DEV-11 Approved CLI Persistence",
+  "branch": "dev-11-artifact-persistence",
+  "commitMessage": "DEV-11 approved CLI persistence fixture",
+  "objective": "Persist an approved proposal and manifest without applying implementation operations.",
+  "generatedAt": "2026-08-06T23:05:00.000Z",
+  "allowedPaths": [
+    "tools/river-dev/src/generated/dev-11-approved-example.ts"
+  ],
+  "excludedPaths": [
+    ".env",
+    ".git"
+  ],
+  "acceptanceCriteria": [
+    "An approved proposal artifact is persisted.",
+    "A deterministic manifest artifact is persisted.",
+    "No implementation operation is applied."
+  ],
+  "requiredTests": [],
+  "requiredQualityGates": [
+    "typecheck",
+    "tests"
+  ],
+  "approvedCommands": [
+    "typecheck"
+  ],
+  "maximumRepairAttempts": 3,
+  "scopeExpansionAllowed": false,
+  "approvalBoundaries": [],
+  "steps": []
+}

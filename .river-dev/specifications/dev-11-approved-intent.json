@@ -1,0 +1,16 @@
+﻿{
+  "version": "1.0.0",
+  "intentId": "intent:dev-11-cli-approved",
+  "planId": "plan:dev-11-cli-approved",
+  "branch": "dev-11-artifact-persistence",
+  "objective": "Prepare an approved example operation for deterministic artifact persistence.",
+  "operations": [
+    {
+      "type": "write-file",
+      "path": "tools/river-dev/src/generated/dev-11-approved-example.ts",
+      "content": "export const dev11ApprovedExample = true;\n",
+      "overwrite": false,
+      "reason": "Provide an operation for the approved persistence fixture."
+    }
+  ]
+}

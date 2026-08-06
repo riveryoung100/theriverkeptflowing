@@ -13,6 +13,10 @@ import {
     getDefaultCommitSpecificationPath
 } from "./commands/commit";
 import {
+    formatGeneratedArtifactPersistenceResult,
+    persistGeneratedArtifactsRiverDev
+} from "./commands/persist-artifacts";
+import {
     formatArtifactPipelineResult,
     generateArtifactsRiverDev
 } from "./commands/generate-artifacts";
@@ -77,6 +81,7 @@ function parseCommand(
         case "inspect":
         case "plan":
         case "generate-artifacts":
+        case "persist-artifacts":
         case "generate-proposal":
         case "generate-manifest":
         case "implement":
@@ -143,6 +148,60 @@ async function run(): Promise<void> {
 
             process.stdout.write(
                 `${formatImplementationPlan(plan)}\n`
+            );
+
+            return;
+
+        }
+
+        case "persist-artifacts": {
+
+            const commandArguments =
+                process.argv.slice(
+                    3
+                );
+
+            const positionalArguments =
+                commandArguments.filter(
+                    (argument) => {
+                        return !argument.startsWith(
+                            "--"
+                        );
+                    }
+                );
+
+            const planPath =
+                positionalArguments[0];
+
+            const intentPath =
+                positionalArguments[1];
+
+            if (
+                planPath ===
+                    undefined ||
+                intentPath ===
+                    undefined
+            ) {
+                throw new TypeError(
+                    "Usage: persist-artifacts <plan-path> <intent-path> [--approve-proposal]"
+                );
+            }
+
+            const approveProposal =
+                commandArguments.includes(
+                    "--approve-proposal"
+                );
+
+            const result =
+                await persistGeneratedArtifactsRiverDev(
+                    configuration,
+                    planPath,
+                    intentPath,
+                    approveProposal
+                );
+
+            process.stdout.write(
+                `${formatGeneratedArtifactPersistenceResult(result)}\n`
             );
 
             return;
@@ -738,6 +797,7 @@ run().catch(
 
     }
 );
+
 
 
 

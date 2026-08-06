@@ -1,0 +1,65 @@
+﻿{
+    "version":  "1.0.0",
+    "id":  "dev-11-artifact-persistence",
+    "name":  "Controlled Artifact Persistence",
+    "objective":  "Persist generated implementation proposals and manifests as deterministic River Dev artifacts without applying implementation operations or expanding repository scope.",
+    "branch":  "dev-11-artifact-persistence",
+    "commitMessage":  "DEV-11: Build controlled artifact persistence",
+    "allowedPaths":  [
+                         ".river-dev/artifacts/manifest/implementation-proposal-intent-dev-11-cli-approved.json",
+                         ".river-dev/artifacts/proposal/proposal-intent-dev-11-cli-approved.json",
+                         ".river-dev/artifacts/proposal/proposal-intent-dev-11-cli-unapproved.json",
+                         ".river-dev/specifications/dev-11-approved-intent.json",
+                         ".river-dev/specifications/dev-11-approved-plan.json",
+                         ".river-dev/specifications/dev-11-artifact-persistence.json",
+                         ".river-dev/specifications/dev-11-unapproved-intent.json",
+                         ".river-dev/specifications/dev-11-unapproved-plan.json",
+                         "tools/river-dev/src/commands/persist-artifacts.test.ts",
+                         "tools/river-dev/src/commands/persist-artifacts.ts",
+                         "tools/river-dev/src/core/artifact-persistence.test.ts",
+                         "tools/river-dev/src/core/artifact-persistence.ts",
+                         "tools/river-dev/src/index.ts",
+                         "tools/river-dev/src/types.ts"
+                     ],
+    "artifactRoot":  ".river-dev/artifacts",
+    "artifactTypes":  [
+                          "proposal",
+                          "manifest"
+                      ],
+    "requirements":  {
+                         "approvedPlanRequired":  true,
+                         "explicitImplementationIntentRequired":  true,
+                         "proposalPersistenceAllowed":  true,
+                         "manifestPersistenceRequiresApproval":  true,
+                         "deterministicPathsRequired":  true,
+                         "deterministicSerializationRequired":  true,
+                         "artifactRootRequired":  true,
+                         "overwriteAllowed":  false,
+                         "scopeExpansionAllowed":  false,
+                         "protectedPathsAllowed":  false,
+                         "outsideRepositoryAllowed":  false,
+                         "implementationWritesAllowed":  false,
+                         "commitAllowed":  false,
+                         "pushAllowed":  false
+                     },
+    "outcomes":  [
+                     "proposal-persisted",
+                     "artifacts-persisted",
+                     "approval-required",
+                     "artifact-exists",
+                     "invalid-artifact",
+                     "scope-blocked",
+                     "stopped"
+                 ],
+    "qualityGates":  [
+                         "expected-branch",
+                         "artifact-root",
+                         "deterministic-path",
+                         "deterministic-serialization",
+                         "proposal-approval",
+                         "scope-check",
+                         "typecheck",
+                         "tests",
+                         "review"
+                     ]
+}

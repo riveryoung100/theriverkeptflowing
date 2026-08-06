@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "proposalId": "proposal:intent:dev-11-cli-unapproved",
+  "planId": "plan:dev-11-cli-unapproved",
+  "branch": "dev-11-artifact-persistence",
+  "objective": "Prepare an example operation while preserving the proposal approval wall.",
+  "approved": false,
+  "operations": [
+    {
+      "type": "write-file",
+      "path": "tools/river-dev/src/generated/dev-11-unapproved-example.ts",
+      "content": "export const dev11UnapprovedExample = true;\n",
+      "overwrite": false,
+      "reason": "Provide an operation for the unapproved persistence fixture."
+    }
+  ]
+}
