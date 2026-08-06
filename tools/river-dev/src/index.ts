@@ -20,6 +20,11 @@ import {
 } from "./commands/plan";
 
 import {
+    formatVerificationResult,
+    getDefaultVerificationSpecificationPath,
+    verifyRiverDev
+} from "./commands/verify";
+import {
     formatResumeReport,
     resumeRiverDev
 } from "./commands/resume";
@@ -152,7 +157,36 @@ async function run(): Promise<void> {
 
         }
 
-        case "verify":
+        case "verify": {
+
+            const verificationPath =
+                process.argv[3] ??
+                getDefaultVerificationSpecificationPath(
+                    configuration
+                );
+
+            const result =
+                await verifyRiverDev(
+                    configuration,
+                    verificationPath
+                );
+
+            process.stdout.write(
+                `${formatVerificationResult(result)}\n`
+            );
+
+            if (
+                result.passed ===
+                false
+            ) {
+                process.exitCode =
+                    1;
+            }
+
+            return;
+
+        }
+
         case "review":
         case "commit":
             throw new TypeError(
@@ -183,3 +217,4 @@ run().catch(
 
     }
 );
+

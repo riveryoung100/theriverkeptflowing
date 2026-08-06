@@ -1,0 +1,15 @@
+﻿{
+  "version": "1.0.0",
+  "verificationId": "dev-03-verification-engine",
+  "branch": "dev-03-verification-engine",
+  "commands": [
+    {
+      "name": "git-branch-current",
+      "required": true
+    },
+    {
+      "name": "typecheck",
+      "required": true
+    }
+  ]
+}

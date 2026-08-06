@@ -234,6 +234,11 @@ test(
                 repositoryRoot
             );
 
+        const independentlyReadBranch =
+            await getCurrentBranch(
+                repositoryRoot
+            );
+
         assert.equal(
             branch.length > 0,
             true
@@ -241,7 +246,7 @@ test(
 
         assert.equal(
             branch,
-            "dev-02-safe-implementation-engine"
+            independentlyReadBranch
         );
 
     }
@@ -326,9 +331,14 @@ test(
                 capturedAt
             );
 
+        const currentBranch =
+            await getCurrentBranch(
+                repositoryRoot
+            );
+
         assert.equal(
             snapshot.branch,
-            "dev-02-safe-implementation-engine"
+            currentBranch
         );
 
         assert.equal(
@@ -420,5 +430,6 @@ test(
 
     }
 );
+
 
 
