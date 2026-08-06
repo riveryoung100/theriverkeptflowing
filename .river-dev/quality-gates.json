@@ -1,0 +1,56 @@
+﻿{
+  "version": "1.0.0",
+  "requiredBeforeCommit": [
+    {
+      "id": "expected-branch",
+      "description": "The active branch matches the approved plan."
+    },
+    {
+      "id": "scope-check",
+      "description": "Only approved paths were modified."
+    },
+    {
+      "id": "tests",
+      "description": "All plan-required tests pass."
+    },
+    {
+      "id": "typecheck",
+      "description": "The project typecheck passes."
+    },
+    {
+      "id": "build-when-required",
+      "description": "The production build passes when the plan requires it."
+    },
+    {
+      "id": "documentation",
+      "description": "Required architecture and decision documentation is updated."
+    },
+    {
+      "id": "exports",
+      "description": "New modules are exported through required index files."
+    },
+    {
+      "id": "secret-scan",
+      "description": "The diff contains no secret material."
+    },
+    {
+      "id": "review",
+      "description": "The final diff review reports no blocking findings."
+    },
+    {
+      "id": "staged-diff",
+      "description": "The staged diff matches the approved implementation plan."
+    }
+  ],
+  "existingNonBlockingHints": [
+    {
+      "path": "src/components/content/ReaderActions.astro",
+      "description": "Deprecated document.execCommand signature."
+    },
+    {
+      "path": "src/lib/assimilation/extraction/engine.ts",
+      "description": "Unused asset parameter."
+    }
+  ],
+  "failureBehavior": "stop"
+}

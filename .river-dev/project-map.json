@@ -1,0 +1,44 @@
+﻿{
+  "version": "1.0.0",
+  "project": {
+    "name": "The River Kept Flowing",
+    "repositoryType": "Astro and TypeScript monorepository",
+    "defaultBranch": "main",
+    "packageManager": "npm"
+  },
+  "paths": {
+    "publicApplication": "src",
+    "publicAssets": "public",
+    "documentation": "docs",
+    "assimilation": "src/lib/assimilation",
+    "knowledge": "src/lib/knowledge",
+    "orchestration": "src/lib/orchestration",
+    "developmentAgent": "tools/river-dev",
+    "developmentAgentPolicy": ".river-dev"
+  },
+  "commands": {
+    "typecheck": "npm run typecheck",
+    "build": "npm run build",
+    "tests": "npx tsx --test"
+  },
+  "conventions": {
+    "language": "TypeScript",
+    "moduleSystem": "ES modules",
+    "testFramework": "node:test",
+    "assertionLibrary": "node:assert/strict",
+    "documentation": [
+      "docs/architecture",
+      "docs/decisions"
+    ],
+    "phaseBranches": true,
+    "phaseCommits": true,
+    "deterministicFoundations": true
+  },
+  "protectedPaths": [
+    ".git",
+    ".env",
+    ".env.*",
+    "node_modules",
+    "dist"
+  ]
+}

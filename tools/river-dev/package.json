@@ -1,0 +1,18 @@
+﻿{
+  "name": "@river/river-dev",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Repository-local development agent for The River Kept Flowing.",
+  "scripts": {
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "test": "tsx --test src/index.test.ts",
+    "inspect": "tsx src/index.ts inspect",
+    "plan": "tsx src/index.ts plan",
+    "implement": "tsx src/index.ts implement",
+    "verify": "tsx src/index.ts verify",
+    "review": "tsx src/index.ts review",
+    "commit": "tsx src/index.ts commit",
+    "resume": "tsx src/index.ts resume"
+  }
+}

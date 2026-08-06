@@ -1,0 +1,87 @@
+﻿{
+  "version": "1.0.0",
+  "allowedCommands": [
+    {
+      "name": "git-status",
+      "executable": "git",
+      "arguments": [
+        "status",
+        "--short"
+      ]
+    },
+    {
+      "name": "git-branch-current",
+      "executable": "git",
+      "arguments": [
+        "branch",
+        "--show-current"
+      ]
+    },
+    {
+      "name": "git-diff",
+      "executable": "git",
+      "arguments": [
+        "diff"
+      ]
+    },
+    {
+      "name": "git-diff-staged",
+      "executable": "git",
+      "arguments": [
+        "diff",
+        "--cached"
+      ]
+    },
+    {
+      "name": "git-log-latest",
+      "executable": "git",
+      "arguments": [
+        "log",
+        "--oneline",
+        "-1"
+      ]
+    },
+    {
+      "name": "typecheck",
+      "executable": "npm",
+      "arguments": [
+        "run",
+        "typecheck"
+      ]
+    },
+    {
+      "name": "build",
+      "executable": "npm",
+      "arguments": [
+        "run",
+        "build"
+      ]
+    },
+    {
+      "name": "test-tsx",
+      "executable": "npx",
+      "argumentsPrefix": [
+        "tsx",
+        "--test"
+      ]
+    }
+  ],
+  "deniedExecutables": [
+    "curl",
+    "wget",
+    "Invoke-WebRequest",
+    "Invoke-RestMethod",
+    "ssh",
+    "scp",
+    "ftp"
+  ],
+  "deniedGitArguments": [
+    "push",
+    "reset",
+    "--hard",
+    "clean",
+    "rebase",
+    "filter-branch",
+    "filter-repo"
+  ]
+}

@@ -1,0 +1,77 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-01 Planning Engine",
+  "branch": "dev-01-river-development-agent",
+  "commitMessage": "DEV-01: Build deterministic development planning engine",
+  "objective": "Create a deterministic planning engine that converts an approved phase specification into a safe executable implementation plan.",
+  "architecturalContext": [
+    "River Dev configuration loader",
+    "Repository inspector",
+    "Safety policy engine",
+    "Persistent state store",
+    "Run lifecycle"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/core/planner.ts",
+      "tools/river-dev/src/commands/plan.ts",
+      "tools/river-dev/src/index.ts"
+    ],
+    "creatablePaths": [
+      "tools/river-dev/src/core/planner.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "The agent loads and validates a phase specification.",
+    "The same specification and timestamp produce the same plan.",
+    "Protected and out-of-repository paths are rejected.",
+    "The plan lists implementation steps, tests, commands, quality gates, and repair limits.",
+    "The plan command produces a readable report."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/planner.test.ts",
+    "tools/river-dev/src/index.test.ts",
+    "tools/river-dev/src/state/store.test.ts",
+    "tools/river-dev/src/commands/resume.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  },
+  "approvalBoundaries": [
+    "push",
+    "deploy",
+    "package-install",
+    "dependency-upgrade",
+    "file-delete",
+    "database-migration",
+    "production-data-change",
+    "infrastructure-change",
+    "secret-access",
+    "scope-expansion"
+  ]
+}

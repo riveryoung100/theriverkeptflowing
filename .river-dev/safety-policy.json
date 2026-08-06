@@ -1,0 +1,67 @@
+﻿{
+  "version": "1.0.0",
+  "defaultMode": "approval-required",
+  "repositoryBoundary": {
+    "allowOutsideRepository": false,
+    "allowParentDirectoryTraversal": false,
+    "allowAbsolutePathsOutsideRepository": false
+  },
+  "git": {
+    "allowBranchCreation": true,
+    "allowStage": true,
+    "allowLocalCommit": true,
+    "allowPush": false,
+    "allowForcePush": false,
+    "allowHistoryRewrite": false,
+    "allowHardReset": false,
+    "allowClean": false
+  },
+  "filesystem": {
+    "allowRead": true,
+    "allowCreate": true,
+    "allowModify": true,
+    "allowSingleFileDeleteWithApproval": true,
+    "allowDirectoryDelete": false,
+    "allowBroadMove": false
+  },
+  "commands": {
+    "allowShell": true,
+    "allowNetworkCommands": false,
+    "allowDownloadedScripts": false,
+    "allowPackageInstall": false,
+    "allowProductionCommands": false,
+    "maximumCommandSeconds": 300
+  },
+  "secrets": {
+    "denyPatterns": [
+      ".env",
+      ".env.*",
+      "**/secrets/**",
+      "**/*credential*",
+      "**/*private-key*",
+      "**/*.pem",
+      "**/*.p12",
+      "**/*.key"
+    ],
+    "allowReadingSecretFiles": false,
+    "allowWritingSecretFiles": false,
+    "allowReportingSecretValues": false
+  },
+  "repairs": {
+    "maximumAttempts": 3,
+    "requireFailureEvidence": true,
+    "allowScopeExpansion": false
+  },
+  "approvalRequiredFor": [
+    "push",
+    "deploy",
+    "package-install",
+    "dependency-upgrade",
+    "file-delete",
+    "database-migration",
+    "production-data-change",
+    "infrastructure-change",
+    "secret-access",
+    "scope-expansion"
+  ]
+}
