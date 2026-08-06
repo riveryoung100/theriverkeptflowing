@@ -30,6 +30,11 @@ import {
     verifyRiverDev
 } from "./commands/verify";
 import {
+    formatRepairResult,
+    getDefaultRepairSpecificationPath,
+    repairRiverDev
+} from "./commands/repair";
+import {
     formatReviewResult,
     getDefaultReviewSpecificationPath,
     reviewRiverDev
@@ -58,6 +63,7 @@ function parseCommand(
         case "verify":
         case "review":
         case "commit":
+        case "repair":
         case "resume":
             return value;
 
@@ -147,6 +153,58 @@ async function run(): Promise<void> {
             process.stdout.write(
                 `${formatImplementationResult(result)}\n`
             );
+
+            return;
+
+        }
+
+        case "repair": {
+
+            const commandArguments =
+                process.argv.slice(
+                    3
+                );
+
+            const specificationArgument =
+                commandArguments.find(
+                    (argument) => {
+                        return !argument.startsWith(
+                            "--"
+                        );
+                    }
+                );
+
+            const specificationPath =
+                specificationArgument ??
+                getDefaultRepairSpecificationPath(
+                    configuration
+                );
+
+            const apply =
+                commandArguments.includes(
+                    "--apply"
+                );
+
+            const result =
+                await repairRiverDev(
+                    configuration,
+                    specificationPath,
+                    apply
+                );
+
+            process.stdout.write(
+                `${formatRepairResult(result)}\n`
+            );
+
+            if (
+                result.passed ===
+                    false &&
+                result.outcome !==
+                    "blocked"
+            ) {
+                process.exitCode =
+                    1;
+            }
 
             return;
 
@@ -301,6 +359,7 @@ run().catch(
 
     }
 );
+
 
 
 

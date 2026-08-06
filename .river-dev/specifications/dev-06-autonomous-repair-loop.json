@@ -1,0 +1,46 @@
+﻿{
+    "version":  "1.0.0",
+    "id":  "dev-06-autonomous-repair-loop",
+    "name":  "Autonomous Repair Loop",
+    "objective":  "Retry approved deterministic repairs after verification failures while enforcing strict scope, attempt limits, and safe stopping conditions.",
+    "branch":  "dev-06-autonomous-repair-loop",
+    "maximumRepairAttempts":  3,
+    "allowedPaths":  [
+                         ".river-dev/specifications/dev-06-autonomous-repair-loop.json",
+                         "tools/river-dev/src/commands/repair.ts",
+                         "tools/river-dev/src/execution/repair-loop.ts",
+                         "tools/river-dev/src/execution/repair-loop.test.ts",
+                         "tools/river-dev/src/index.ts",
+                         "tools/river-dev/src/types.ts"
+                     ],
+    "requirements":  {
+                         "verificationRequiredBeforeRepair":  true,
+                         "repairManifestRequired":  true,
+                         "scopeValidationRequired":  true,
+                         "reviewRequiredAfterRepair":  true,
+                         "verificationRequiredAfterRepair":  true,
+                         "dryRunDefault":  true,
+                         "pushAllowed":  false,
+                         "commitAllowed":  false,
+                         "outsideRepositoryAllowed":  false,
+                         "stopOnUnknownFailure":  true,
+                         "stopWhenAttemptsExhausted":  true
+                     },
+    "repairOutcomes":  [
+                           "repaired",
+                           "already-passing",
+                           "attempts-exhausted",
+                           "blocked",
+                           "unsupported-failure"
+                       ],
+    "qualityGates":  [
+                         "expected-branch",
+                         "scope-check",
+                         "verification",
+                         "repair-manifest",
+                         "typecheck",
+                         "tests",
+                         "review",
+                         "staged-diff"
+                     ]
+}
