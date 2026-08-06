@@ -1,0 +1,52 @@
+﻿{
+    "version":  "1.0.0",
+    "id":  "dev-13-execution-package-persistence",
+    "name":  "Controlled Execution Package Persistence",
+    "objective":  "Persist validated execution packages immutably under a deterministic repository-local path without applying implementation operations, expanding scope, committing, or pushing.",
+    "branch":  "dev-13-execution-package-persistence",
+    "commitMessage":  "DEV-13: Build controlled execution package persistence",
+    "allowedPaths":  [
+                         ".river-dev/execution-packages/execution-package-implementation-proposal-intent-dev-13-cli.json",
+                         ".river-dev/specifications/dev-13-cli-execution-package.json",
+                         ".river-dev/specifications/dev-13-execution-package-persistence.json",
+                         "tools/river-dev/src/commands/persist-execution-package.test.ts",
+                         "tools/river-dev/src/commands/persist-execution-package.ts",
+                         "tools/river-dev/src/core/execution-package-persistence.test.ts",
+                         "tools/river-dev/src/core/execution-package-persistence.ts",
+                         "tools/river-dev/src/index.ts",
+                         "tools/river-dev/src/types.ts"
+                     ],
+    "packageRoot":  ".river-dev/execution-packages",
+    "requirements":  {
+                         "validatedExecutionPackageRequired":  true,
+                         "deterministicPathRequired":  true,
+                         "deterministicSerializationRequired":  true,
+                         "immutablePersistenceRequired":  true,
+                         "overwriteAllowed":  false,
+                         "scopeExpansionAllowed":  false,
+                         "protectedPathsAllowed":  false,
+                         "outsideRepositoryAllowed":  false,
+                         "implementationAllowed":  false,
+                         "implementationWritesAllowed":  false,
+                         "commitAllowed":  false,
+                         "pushAllowed":  false
+                     },
+    "outcomes":  [
+                     "package-persisted",
+                     "package-exists",
+                     "invalid-package",
+                     "scope-blocked",
+                     "stopped"
+                 ],
+    "qualityGates":  [
+                         "expected-branch",
+                         "validated-package",
+                         "deterministic-path",
+                         "deterministic-serialization",
+                         "overwrite-protection",
+                         "scope-check",
+                         "typecheck",
+                         "tests",
+                         "review"
+                     ]
+}

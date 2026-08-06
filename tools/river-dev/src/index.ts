@@ -17,6 +17,10 @@ import {
     formatExecutionPackageResult
 } from "./commands/create-execution-package";
 import {
+    formatExecutionPackagePersistenceResult,
+    persistExecutionPackageFileRiverDev
+} from "./commands/persist-execution-package";
+import {
     formatGeneratedArtifactPersistenceResult,
     persistGeneratedArtifactsRiverDev
 } from "./commands/persist-artifacts";
@@ -86,6 +90,7 @@ function parseCommand(
         case "plan":
         case "generate-artifacts":
         case "create-execution-package":
+        case "persist-execution-package":
         case "persist-artifacts":
         case "generate-proposal":
         case "generate-manifest":
@@ -161,43 +166,67 @@ async function run(): Promise<void> {
 
         case "create-execution-package": {
 
-            const proposalPath =
-                process.argv[3];
+    const proposalPath =
+        process.argv[3];
 
-            const manifestPath =
-                process.argv[4];
+    const manifestPath =
+        process.argv[4];
 
-            const verificationPath =
-                process.argv[5];
+    const verificationPath =
+        process.argv[5];
 
-            if (
-                proposalPath ===
-                    undefined ||
-                manifestPath ===
-                    undefined ||
-                verificationPath ===
-                    undefined
-            ) {
-                throw new TypeError(
-                    "Usage: create-execution-package <proposal-path> <manifest-path> <verification-path>"
-                );
-            }
+    if (
+        proposalPath === undefined ||
+        manifestPath === undefined ||
+        verificationPath === undefined
+    ) {
+        throw new TypeError(
+            "Usage: create-execution-package <proposal-path> <manifest-path> <verification-path>"
+        );
+    }
 
-            const result =
-                await createExecutionPackageRiverDev(
-                    configuration,
-                    proposalPath,
-                    manifestPath,
-                    verificationPath
-                );
+    const result =
+        await createExecutionPackageRiverDev(
+            configuration,
+            proposalPath,
+            manifestPath,
+            verificationPath
+        );
 
-            process.stdout.write(
-                `${formatExecutionPackageResult(result)}\n`
-            );
+    process.stdout.write(
+        `${formatExecutionPackageResult(result)}\n`
+    );
 
-            return;
+    return;
 
-        }
+}
+
+case "persist-execution-package": {
+
+    const packagePath =
+        process.argv[3];
+
+    if (
+        packagePath === undefined
+    ) {
+        throw new TypeError(
+            "Usage: persist-execution-package <execution-package-path>"
+        );
+    }
+
+    const result =
+        await persistExecutionPackageFileRiverDev(
+            configuration,
+            packagePath
+        );
+
+    process.stdout.write(
+        `${formatExecutionPackagePersistenceResult(result)}\n`
+    );
+
+    return;
+
+}
 
         case "persist-artifacts": {
 
@@ -842,6 +871,10 @@ run().catch(
 
     }
 );
+
+
+
+
 
 
 
