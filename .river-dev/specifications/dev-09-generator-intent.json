@@ -1,0 +1,23 @@
+﻿{
+  "version": "1.0.0",
+  "intentId": "intent:dev-09-cli-execution",
+  "planId": "plan:dev-09-cli-execution",
+  "branch": "dev-09-autonomous-planning-engine",
+  "objective": "Propose an example implementation and its test.",
+  "operations": [
+    {
+      "type": "write-file",
+      "path": "tools/river-dev/src/generated/dev-09-example.test.ts",
+      "content": "import { strict as assert } from \"node:assert\";\nimport { test } from \"node:test\";\nimport { dev09Example } from \"./dev-09-example\";\n\ntest(\"exports the DEV-09 example value\", () => {\n    assert.equal(dev09Example, true);\n});\n",
+      "overwrite": false,
+      "reason": "Propose the approved example test."
+    },
+    {
+      "type": "write-file",
+      "path": "tools/river-dev/src/generated/dev-09-example.ts",
+      "content": "export const dev09Example = true;\n",
+      "overwrite": false,
+      "reason": "Propose the approved example implementation."
+    }
+  ]
+}

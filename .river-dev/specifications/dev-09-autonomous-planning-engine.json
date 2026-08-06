@@ -1,0 +1,62 @@
+﻿{
+    "version":  "1.0.0",
+    "id":  "dev-09-autonomous-planning-engine",
+    "name":  "Autonomous Planning Engine",
+    "objective":  "Transform an approved implementation plan and explicit implementation intent into a deterministic implementation proposal without applying repository changes.",
+    "branch":  "dev-09-autonomous-planning-engine",
+    "commitMessage":  "DEV-09: Build autonomous implementation proposal generator",
+    "allowedPaths":  [
+                         ".river-dev/specifications/dev-09-autonomous-planning-engine.json",
+                         ".river-dev/specifications/dev-09-generator-intent.json",
+                         ".river-dev/specifications/dev-09-generator-plan.json",
+                         "tools/river-dev/src/commands/generate-proposal.test.ts",
+                         "tools/river-dev/src/commands/generate-proposal.ts",
+                         "tools/river-dev/src/core/implementation-intent.test.ts",
+                         "tools/river-dev/src/core/implementation-intent.ts",
+                         "tools/river-dev/src/core/proposal-generator.test.ts",
+                         "tools/river-dev/src/core/proposal-generator.ts",
+                         "tools/river-dev/src/index.ts",
+                         "tools/river-dev/src/types.ts"
+                     ],
+    "requirements":  {
+                         "approvedPlanRequired":  true,
+                         "explicitImplementationIntentRequired":  true,
+                         "deterministicOutputRequired":  true,
+                         "proposalApprovalDefault":  false,
+                         "scopeExpansionAllowed":  false,
+                         "protectedPathsAllowed":  false,
+                         "outsideRepositoryAllowed":  false,
+                         "emptyOperationsAllowed":  false,
+                         "duplicateOperationPathsAllowed":  false,
+                         "unsupportedOperationTypesAllowed":  false,
+                         "repositoryWritesAllowed":  false,
+                         "manifestGenerationAllowed":  false,
+                         "implementationAllowed":  false,
+                         "commitAllowed":  false,
+                         "pushAllowed":  false
+                     },
+    "supportedOperationTypes":  [
+                                    "write-file"
+                                ],
+    "generatorOutcomes":  [
+                              "generated",
+                              "invalid-plan",
+                              "invalid-intent",
+                              "unsupported-operation",
+                              "scope-blocked",
+                              "empty-proposal",
+                              "stopped"
+                          ],
+    "qualityGates":  [
+                         "expected-branch",
+                         "approved-plan",
+                         "explicit-intent",
+                         "scope-check",
+                         "protected-path-check",
+                         "duplicate-path-check",
+                         "deterministic-output",
+                         "typecheck",
+                         "tests",
+                         "review"
+                     ]
+}

@@ -1,0 +1,39 @@
+﻿{
+  "version": "1.0.0",
+  "planId": "plan:dev-09-cli-execution",
+  "phase": "DEV-09 CLI Execution",
+  "branch": "dev-09-autonomous-planning-engine",
+  "commitMessage": "DEV-09: Build autonomous implementation proposal generator",
+  "objective": "Generate a deterministic unapproved implementation proposal from explicit implementation intent.",
+  "generatedAt": "2026-08-06T19:15:00.000Z",
+  "allowedPaths": [
+    "tools/river-dev/src/generated/dev-09-example.ts",
+    "tools/river-dev/src/generated/dev-09-example.test.ts"
+  ],
+  "excludedPaths": [
+    ".env",
+    ".git"
+  ],
+  "acceptanceCriteria": [
+    "The proposal contains exactly two approved-scope write-file operations.",
+    "The generated proposal remains unapproved.",
+    "Operations are sorted deterministically by path.",
+    "No implementation files are written during proposal generation."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/proposal-generator.test.ts",
+    "tools/river-dev/src/commands/generate-proposal.test.ts"
+  ],
+  "requiredQualityGates": [
+    "typecheck",
+    "tests",
+    "review"
+  ],
+  "approvedCommands": [
+    "typecheck"
+  ],
+  "maximumRepairAttempts": 3,
+  "scopeExpansionAllowed": false,
+  "approvalBoundaries": [],
+  "steps": []
+}
