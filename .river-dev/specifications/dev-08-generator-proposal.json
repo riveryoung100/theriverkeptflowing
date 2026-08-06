@@ -1,0 +1,24 @@
+﻿{
+  "version": "1.0.0",
+  "proposalId": "proposal:dev-08-cli-execution",
+  "planId": "plan:dev-08-cli-execution",
+  "branch": "dev-08-autonomous-manifest-generation",
+  "objective": "Create an example implementation and its test.",
+  "approved": true,
+  "operations": [
+    {
+      "type": "write-file",
+      "path": "tools/river-dev/src/generated/dev-08-example.test.ts",
+      "content": "import { strict as assert } from \"node:assert\";\nimport { test } from \"node:test\";\nimport { dev08Example } from \"./dev-08-example\";\n\ntest(\"exports the DEV-08 example value\", () => {\n    assert.equal(dev08Example, true);\n});\n",
+      "overwrite": false,
+      "reason": "Create the approved example test."
+    },
+    {
+      "type": "write-file",
+      "path": "tools/river-dev/src/generated/dev-08-example.ts",
+      "content": "export const dev08Example = true;\n",
+      "overwrite": false,
+      "reason": "Create the approved example implementation."
+    }
+  ]
+}

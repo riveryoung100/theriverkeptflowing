@@ -1,0 +1,38 @@
+﻿{
+  "version": "1.0.0",
+  "planId": "plan:dev-08-cli-execution",
+  "phase": "DEV-08 CLI Execution",
+  "branch": "dev-08-autonomous-manifest-generation",
+  "commitMessage": "DEV-08: Build autonomous implementation manifest generator",
+  "objective": "Generate a deterministic manifest from an approved implementation proposal.",
+  "generatedAt": "2026-08-06T18:00:00.000Z",
+  "allowedPaths": [
+    "tools/river-dev/src/generated/dev-08-example.ts",
+    "tools/river-dev/src/generated/dev-08-example.test.ts"
+  ],
+  "excludedPaths": [
+    ".env",
+    ".git"
+  ],
+  "acceptanceCriteria": [
+    "The manifest contains exactly two approved write-file operations.",
+    "Operations are sorted deterministically by path.",
+    "No repository files are written during generation."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/manifest-generator.test.ts",
+    "tools/river-dev/src/commands/generate-manifest.test.ts"
+  ],
+  "requiredQualityGates": [
+    "typecheck",
+    "tests",
+    "review"
+  ],
+  "approvedCommands": [
+    "typecheck"
+  ],
+  "maximumRepairAttempts": 3,
+  "scopeExpansionAllowed": false,
+  "approvalBoundaries": [],
+  "steps": []
+}

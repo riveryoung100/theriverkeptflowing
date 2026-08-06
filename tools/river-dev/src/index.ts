@@ -13,6 +13,10 @@ import {
     getDefaultCommitSpecificationPath
 } from "./commands/commit";
 import {
+    formatManifestGenerationResult,
+    generateManifestRiverDev
+} from "./commands/generate-manifest";
+import {
     formatImplementationResult,
     getDefaultImplementationManifestPath,
     implementRiverDevPlan
@@ -64,6 +68,7 @@ function parseCommand(
 
         case "inspect":
         case "plan":
+        case "generate-manifest":
         case "implement":
         case "orchestrate":
         case "verify":
@@ -128,6 +133,54 @@ async function run(): Promise<void> {
 
             process.stdout.write(
                 `${formatImplementationPlan(plan)}\n`
+            );
+
+            return;
+
+        }
+
+        case "generate-manifest": {
+
+            const commandArguments =
+                process.argv.slice(
+                    3
+                );
+
+            const positionalArguments =
+                commandArguments.filter(
+                    (argument) => {
+                        return !argument.startsWith(
+                            "--"
+                        );
+                    }
+                );
+
+            const planPath =
+                positionalArguments[0];
+
+            const proposalPath =
+                positionalArguments[1];
+
+            if (
+                planPath ===
+                    undefined ||
+                proposalPath ===
+                    undefined
+            ) {
+                throw new TypeError(
+                    "Usage: generate-manifest <plan-path> <proposal-path>"
+                );
+            }
+
+            const result =
+                await generateManifestRiverDev(
+                    configuration,
+                    planPath,
+                    proposalPath
+                );
+
+            process.stdout.write(
+                `${formatManifestGenerationResult(result)}\n`
             );
 
             return;
@@ -573,6 +626,7 @@ run().catch(
 
     }
 );
+
 
 
 

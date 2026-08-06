@@ -1,0 +1,55 @@
+﻿{
+    "version":  "1.0.0",
+    "id":  "dev-08-autonomous-manifest-generation",
+    "name":  "Autonomous Manifest Generation",
+    "objective":  "Convert an approved implementation proposal into a deterministic implementation manifest without expanding scope or performing repository writes.",
+    "branch":  "dev-08-autonomous-manifest-generation",
+    "commitMessage":  "DEV-08: Build autonomous implementation manifest generator",
+    "allowedPaths":  [
+                         ".river-dev/specifications/dev-08-autonomous-manifest-generation.json",
+                         ".river-dev/specifications/dev-08-generator-plan.json",
+                         ".river-dev/specifications/dev-08-generator-proposal.json",
+                         "tools/river-dev/src/commands/generate-manifest.test.ts",
+                         "tools/river-dev/src/commands/generate-manifest.ts",
+                         "tools/river-dev/src/core/implementation-proposal.test.ts",
+                         "tools/river-dev/src/core/implementation-proposal.ts",
+                         "tools/river-dev/src/core/manifest-generator.test.ts",
+                         "tools/river-dev/src/core/manifest-generator.ts",
+                         "tools/river-dev/src/index.ts",
+                         "tools/river-dev/src/types.ts"
+                     ],
+    "requirements":  {
+                         "approvedPlanRequired":  true,
+                         "deterministicOutputRequired":  true,
+                         "scopeExpansionAllowed":  false,
+                         "protectedPathsAllowed":  false,
+                         "outsideRepositoryAllowed":  false,
+                         "emptyOperationsAllowed":  false,
+                         "duplicateOperationPathsAllowed":  false,
+                         "overwriteMustBeExplicit":  true,
+                         "dryRunDefault":  true,
+                         "repositoryWritesAllowed":  false,
+                         "commitAllowed":  false,
+                         "pushAllowed":  false,
+                         "approvedProposalRequired":  true
+                     },
+    "generatorOutcomes":  [
+                              "generated",
+                              "invalid-plan",
+                              "unsupported-operation",
+                              "scope-blocked",
+                              "empty-manifest",
+                              "stopped"
+                          ],
+    "qualityGates":  [
+                         "expected-branch",
+                         "approved-plan",
+                         "scope-check",
+                         "protected-path-check",
+                         "duplicate-path-check",
+                         "deterministic-output",
+                         "typecheck",
+                         "tests",
+                         "review"
+                     ]
+}
