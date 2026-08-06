@@ -1,0 +1,64 @@
+﻿{
+    "version":  "1.0.0",
+    "id":  "dev-14-controlled-package-execution",
+    "name":  "Controlled Execution Package Implementation",
+    "objective":  "Load a persisted and verified execution package, revalidate its approval and readiness boundaries, and hand its manifest to the existing implementation engine only when explicit apply authorization is present.",
+    "branch":  "dev-14-controlled-package-execution",
+    "commitMessage":  "DEV-14: Build controlled execution package implementation",
+    "allowedPaths":  [
+                         ".river-dev/specifications/dev-14-cli-execution-package.json",
+                         ".river-dev/specifications/dev-14-controlled-package-execution.json",
+                         "tools/river-dev/src/commands/execute-package.test.ts",
+                         "tools/river-dev/src/commands/execute-package.ts",
+                         "tools/river-dev/src/core/package-executor.test.ts",
+                         "tools/river-dev/src/core/package-executor.ts",
+                         "tools/river-dev/src/generated/dev-14-cli-example.ts",
+                         "tools/river-dev/src/index.ts",
+                         "tools/river-dev/src/types.ts"
+                     ],
+    "requirements":  {
+                         "persistedExecutionPackageRequired":  true,
+                         "approvedProposalRequired":  true,
+                         "verifiedPackageRequired":  true,
+                         "implementationReadyRequired":  true,
+                         "expectedBranchRequired":  true,
+                         "manifestConsistencyRequired":  true,
+                         "explicitApplyRequired":  true,
+                         "dryRunDefault":  true,
+                         "scopeExpansionAllowed":  false,
+                         "protectedPathsAllowed":  false,
+                         "outsideRepositoryAllowed":  false,
+                         "unverifiedExecutionAllowed":  false,
+                         "blockedPackageExecutionAllowed":  false,
+                         "commitAllowed":  false,
+                         "pushAllowed":  false
+                     },
+    "modes":  [
+                  "dry-run",
+                  "apply"
+              ],
+    "outcomes":  [
+                     "dry-run-complete",
+                     "implementation-complete",
+                     "approval-required",
+                     "verification-required",
+                     "package-blocked",
+                     "branch-mismatch",
+                     "invalid-package",
+                     "scope-blocked",
+                     "stopped"
+                 ],
+    "qualityGates":  [
+                         "expected-branch",
+                         "persisted-package",
+                         "proposal-approval",
+                         "verification-passed",
+                         "implementation-ready",
+                         "manifest-consistency",
+                         "explicit-apply",
+                         "scope-check",
+                         "typecheck",
+                         "tests",
+                         "review"
+                     ]
+}

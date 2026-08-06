@@ -1,0 +1,51 @@
+﻿{
+  "version": "1.0.0",
+  "packageId": "execution-package:implementation:proposal:intent:dev-14-cli",
+  "planId": "plan:dev-14-cli",
+  "branch": "dev-14-controlled-package-execution",
+  "state": "ready-for-implementation",
+  "proposal": {
+    "version": "1.0.0",
+    "proposalId": "proposal:intent:dev-14-cli",
+    "planId": "plan:dev-14-cli",
+    "branch": "dev-14-controlled-package-execution",
+    "objective": "Execute a controlled DEV-14 CLI package.",
+    "approved": true,
+    "operations": [
+      {
+        "type": "write-file",
+        "path": "tools/river-dev/src/generated/dev-14-cli-example.ts",
+        "content": "export const dev14CliExample = true;\n",
+        "overwrite": false,
+        "reason": "Create the DEV-14 CLI execution example."
+      }
+    ]
+  },
+  "manifest": {
+    "version": "1.0.0",
+    "implementationId": "implementation:proposal:intent:dev-14-cli",
+    "planId": "plan:dev-14-cli",
+    "branch": "dev-14-controlled-package-execution",
+    "description": "Execute a controlled DEV-14 CLI package.",
+    "operations": [
+      {
+        "type": "write-file",
+        "path": "tools/river-dev/src/generated/dev-14-cli-example.ts",
+        "content": "export const dev14CliExample = true;\n",
+        "overwrite": false
+      }
+    ]
+  },
+  "verification": {
+    "verificationId": "verification:dev-14-cli",
+    "passed": true,
+    "verifiedAt": "2026-08-06T23:15:00.000Z",
+    "commands": [
+      "typecheck",
+      "tests"
+    ],
+    "warnings": []
+  },
+  "implementationReady": true,
+  "implementationWritesPerformed": false
+}

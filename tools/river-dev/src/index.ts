@@ -17,6 +17,10 @@ import {
     formatExecutionPackageResult
 } from "./commands/create-execution-package";
 import {
+    executePackageRiverDev,
+    formatPackageExecutionResult
+} from "./commands/execute-package";
+import {
     formatExecutionPackagePersistenceResult,
     persistExecutionPackageFileRiverDev
 } from "./commands/persist-execution-package";
@@ -91,6 +95,7 @@ function parseCommand(
         case "generate-artifacts":
         case "create-execution-package":
         case "persist-execution-package":
+        case "execute-package":
         case "persist-artifacts":
         case "generate-proposal":
         case "generate-manifest":
@@ -195,6 +200,53 @@ async function run(): Promise<void> {
 
     process.stdout.write(
         `${formatExecutionPackageResult(result)}\n`
+    );
+
+    return;
+
+}
+
+case "execute-package": {
+
+    const commandArguments =
+        process.argv.slice(
+            3
+        );
+
+    const packagePath =
+        commandArguments.find(
+            (argument) => {
+                return !argument.startsWith(
+                    "--"
+                );
+            }
+        );
+
+    if (
+        packagePath ===
+        undefined
+    ) {
+        throw new TypeError(
+            "Usage: execute-package <execution-package-path> [--apply]"
+        );
+    }
+
+    const mode =
+        commandArguments.includes(
+            "--apply"
+        )
+            ? "apply"
+            : "dry-run";
+
+    const result =
+        await executePackageRiverDev(
+            configuration,
+            packagePath,
+            mode
+        );
+
+    process.stdout.write(
+        `${formatPackageExecutionResult(result)}\n`
     );
 
     return;
@@ -871,6 +923,8 @@ run().catch(
 
     }
 );
+
+
 
 
 
