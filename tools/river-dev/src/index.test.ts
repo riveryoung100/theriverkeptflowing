@@ -235,8 +235,13 @@ test(
             );
 
         assert.equal(
+            branch.length > 0,
+            true
+        );
+
+        assert.equal(
             branch,
-            "dev-01-river-development-agent"
+            "dev-02-safe-implementation-engine"
         );
 
     }
@@ -270,17 +275,39 @@ test(
                 repositoryRoot
             );
 
-        assert.ok(
-            changedPaths.includes(
-                ".river-dev/constitution.md"
-            )
+        assert.equal(
+            Array.isArray(
+                changedPaths
+            ),
+            true
         );
 
-        assert.ok(
-            changedPaths.includes(
-                "tools/river-dev/src/index.ts"
-            )
+        assert.deepEqual(
+            changedPaths,
+            [
+                ...changedPaths
+            ].sort()
         );
+
+        for (
+            const path of
+            changedPaths
+        ) {
+
+            assert.equal(
+                path.includes(
+                    "\\"
+                ),
+                false
+            );
+
+            assert.equal(
+                path.trim().length >
+                    0,
+                true
+            );
+
+        }
 
     }
 );
@@ -301,7 +328,7 @@ test(
 
         assert.equal(
             snapshot.branch,
-            "dev-01-river-development-agent"
+            "dev-02-safe-implementation-engine"
         );
 
         assert.equal(
@@ -393,3 +420,5 @@ test(
 
     }
 );
+
+

@@ -1,0 +1,15 @@
+﻿{
+  "version": "1.0.0",
+  "implementationId": "dev-02-safe-implementation-engine",
+  "planId": "plan:dev-02-safe-implementation-engine",
+  "branch": "dev-02-safe-implementation-engine",
+  "description": "Validate a safe repository-local implementation manifest without applying changes by default.",
+  "operations": [
+    {
+      "type": "write-file",
+      "path": ".river-dev/reports/dev-02-dry-run-report.txt",
+      "content": "River Dev safe implementation engine dry run completed.\n",
+      "overwrite": true
+    }
+  ]
+}

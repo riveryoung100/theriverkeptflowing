@@ -8,6 +8,12 @@ import {
 } from "./commands/inspect";
 
 import {
+    formatImplementationResult,
+    getDefaultImplementationManifestPath,
+    implementRiverDevPlan
+} from "./commands/implement";
+
+import {
     formatImplementationPlan,
     getDefaultSpecificationPath,
     planRiverDevPhase
@@ -101,6 +107,36 @@ async function run(): Promise<void> {
 
         }
 
+        case "implement": {
+
+            const manifestPath =
+                process.argv[3] ??
+                getDefaultImplementationManifestPath(
+                    configuration
+                );
+
+            const mode =
+                process.argv.includes(
+                    "--apply"
+                )
+                    ? "apply" as const
+                    : "dry-run" as const;
+
+            const result =
+                await implementRiverDevPlan(
+                    configuration,
+                    manifestPath,
+                    mode
+                );
+
+            process.stdout.write(
+                `${formatImplementationResult(result)}\n`
+            );
+
+            return;
+
+        }
+
         case "resume": {
 
             const report =
@@ -116,7 +152,6 @@ async function run(): Promise<void> {
 
         }
 
-        case "implement":
         case "verify":
         case "review":
         case "commit":
