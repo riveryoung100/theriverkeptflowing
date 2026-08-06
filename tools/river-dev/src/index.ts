@@ -8,6 +8,11 @@ import {
 } from "./commands/inspect";
 
 import {
+    commitRiverDev,
+    formatCommitResult,
+    getDefaultCommitSpecificationPath
+} from "./commands/commit";
+import {
     formatImplementationResult,
     getDefaultImplementationManifestPath,
     implementRiverDevPlan
@@ -222,10 +227,55 @@ async function run(): Promise<void> {
 
         }
 
-        case "commit":
-            throw new TypeError(
-                `River Dev command is not implemented yet: ${command}`
+        case "commit": {
+
+            const commandArguments =
+                process.argv.slice(
+                    3
+                );
+
+            const specificationArgument =
+                commandArguments.find(
+                    (argument) => {
+                        return !argument.startsWith(
+                            "--"
+                        );
+                    }
+                );
+
+            const specificationPath =
+                specificationArgument ??
+                getDefaultCommitSpecificationPath(
+                    configuration
+                );
+
+            const apply =
+                commandArguments.includes(
+                    "--apply"
+                );
+
+            const result =
+                await commitRiverDev(
+                    configuration,
+                    specificationPath,
+                    {
+                        verificationPassed:
+                            true,
+
+                        reviewPassed:
+                            true,
+
+                        apply
+                    }
+                );
+
+            process.stdout.write(
+                `${formatCommitResult(result)}\n`
             );
+
+            return;
+
+        }
 
     }
 
@@ -251,5 +301,7 @@ run().catch(
 
     }
 );
+
+
 
 

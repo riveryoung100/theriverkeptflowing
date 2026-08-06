@@ -1,0 +1,32 @@
+﻿{
+  "version": "1.0.0",
+  "id": "dev-05-commit-engine",
+  "name": "Commit Engine",
+  "objective": "Create safe local Git commits only after verification and review have passed.",
+  "branch": "dev-05-commit-engine",
+  "commitMessage": "DEV-05: Build safe local commit engine",
+  "allowedPaths": [
+    ".river-dev/specifications/dev-05-commit-engine.json",
+    "tools/river-dev/src/commands/commit.ts",
+    "tools/river-dev/src/git/commit-engine.ts",
+    "tools/river-dev/src/git/commit-engine.test.ts",
+    "tools/river-dev/src/index.ts"
+  ],
+  "requirements": {
+    "workingTreeMustContainChanges": true,
+    "verificationMustPass": true,
+    "reviewMustPass": true,
+    "stagedScopeMustMatchAllowedPaths": true,
+    "pushAllowed": false,
+    "amendAllowed": false,
+    "allowEmptyCommit": false
+  },
+  "qualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "review",
+    "staged-diff"
+  ]
+}
