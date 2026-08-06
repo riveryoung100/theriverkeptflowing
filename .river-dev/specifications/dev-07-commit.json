@@ -1,0 +1,40 @@
+﻿{
+  "version": "1.0.0",
+  "id": "dev-07-commit",
+  "name": "DEV-07 Orchestrator Commit",
+  "objective": "Create the safe local DEV-07 commit only after orchestration verification and review pass.",
+  "branch": "dev-07-end-to-end-orchestrator",
+  "commitMessage": "DEV-07: Build end-to-end development orchestrator",
+  "allowedPaths": [
+    ".river-dev/specifications/dev-07-end-to-end-orchestrator.json",
+    ".river-dev/specifications/dev-07-planning.json",
+    ".river-dev/specifications/dev-07-implementation-manifest.json",
+    ".river-dev/specifications/dev-07-verification.json",
+    ".river-dev/specifications/dev-07-repair.json",
+    ".river-dev/specifications/dev-07-review.json",
+    ".river-dev/specifications/dev-07-commit.json",
+    ".river-dev/reports/dev-07-orchestrator-execution.txt",
+    "tools/river-dev/src/commands/orchestrate.ts",
+    "tools/river-dev/src/execution/orchestrator.ts",
+    "tools/river-dev/src/execution/orchestrator.test.ts",
+    "tools/river-dev/src/index.ts",
+    "tools/river-dev/src/types.ts"
+  ],
+  "requirements": {
+    "workingTreeMustContainChanges": true,
+    "verificationMustPass": true,
+    "reviewMustPass": true,
+    "stagedScopeMustMatchAllowedPaths": true,
+    "pushAllowed": false,
+    "amendAllowed": false,
+    "allowEmptyCommit": false
+  },
+  "qualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "review",
+    "staged-diff"
+  ]
+}

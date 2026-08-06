@@ -1,0 +1,88 @@
+﻿{
+    "version":  "1.0.0",
+    "phase":  "DEV-07 End-to-End Orchestrator",
+    "branch":  "dev-07-end-to-end-orchestrator",
+    "commitMessage":  "DEV-07: Build end-to-end development orchestrator",
+    "objective":  "Coordinate inspection, planning, implementation, verification, repair, review, and safe local commit through one deterministic orchestration lifecycle.",
+    "architecturalContext":  [
+                                 "DEV-01 provides deterministic planning.",
+                                 "DEV-02 provides scoped implementation.",
+                                 "DEV-03 provides verification.",
+                                 "DEV-04 provides repository review.",
+                                 "DEV-05 provides safe local commits.",
+                                 "DEV-06 provides bounded autonomous repair.",
+                                 "DEV-07 coordinates these engines without autonomous push."
+                             ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "tools/river-dev/src/index.ts",
+                                                  "tools/river-dev/src/types.ts"
+                                              ],
+                          "creatablePaths":  [
+                                                 ".river-dev/specifications/dev-07-end-to-end-orchestrator.json",
+                                                 ".river-dev/specifications/dev-07-planning.json",
+                                                 "tools/river-dev/src/commands/orchestrate.ts",
+                                                 "tools/river-dev/src/execution/orchestrator.ts",
+                                                 "tools/river-dev/src/execution/orchestrator.test.ts",
+                                                 ".river-dev/specifications/dev-07-implementation-manifest.json",
+                                                 ".river-dev/reports/dev-07-orchestrator-execution.txt",
+                                                 ".river-dev/specifications/dev-07-verification.json",
+                                                 ".river-dev/specifications/dev-07-repair.json",
+                                                 ".river-dev/specifications/dev-07-review.json",
+                                                 ".river-dev/specifications/dev-07-commit.json"
+                                             ],
+                          "excludedPaths":  [
+                                                ".env",
+                                                ".git",
+                                                "node_modules",
+                                                "dist"
+                                            ]
+                      },
+    "acceptanceCriteria":  [
+                               "The orchestrator enforces the expected branch.",
+                               "The orchestrator coordinates seven ordered lifecycle stages.",
+                               "Dry-run mode never creates a commit.",
+                               "Repair is invoked only after failed verification.",
+                               "Review must pass before commit.",
+                               "Commit requires explicit apply mode.",
+                               "Autonomous push remains disabled.",
+                               "All River Dev tests and typechecks pass."
+                           ],
+    "requiredTests":  [
+                          "tools/river-dev/src/execution/orchestrator.test.ts"
+                      ],
+    "requiredQualityGates":  [
+                                 "expected-branch",
+                                 "scope-check",
+                                 "tests",
+                                 "typecheck",
+                                 "documentation",
+                                 "exports",
+                                 "secret-scan",
+                                 "review",
+                                 "staged-diff"
+                             ],
+    "approvedCommands":  [
+                             "git-status",
+                             "git-branch-current",
+                             "git-diff",
+                             "typecheck",
+                             "test-tsx"
+                         ],
+    "repairLimits":  {
+                         "maximumAttempts":  3,
+                         "allowScopeExpansion":  false
+                     },
+    "approvalBoundaries":  [
+                               "push",
+                               "deploy",
+                               "package-install",
+                               "dependency-upgrade",
+                               "file-delete",
+                               "database-migration",
+                               "production-data-change",
+                               "infrastructure-change",
+                               "secret-access",
+                               "scope-expansion"
+                           ]
+}

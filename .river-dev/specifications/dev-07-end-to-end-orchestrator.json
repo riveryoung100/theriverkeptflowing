@@ -1,0 +1,69 @@
+﻿{
+    "version":  "1.0.0",
+    "id":  "dev-07-end-to-end-orchestrator",
+    "name":  "End-to-End Development Orchestrator",
+    "objective":  "Coordinate inspection, planning, implementation, verification, repair, review, and safe local commit as one deterministic development lifecycle.",
+    "branch":  "dev-07-end-to-end-orchestrator",
+    "allowedPaths":  [
+                         ".river-dev/specifications/dev-07-end-to-end-orchestrator.json",
+                         "tools/river-dev/src/commands/orchestrate.ts",
+                         "tools/river-dev/src/execution/orchestrator.ts",
+                         "tools/river-dev/src/execution/orchestrator.test.ts",
+                         "tools/river-dev/src/index.ts",
+                         "tools/river-dev/src/types.ts",
+                         ".river-dev/specifications/dev-07-planning.json",
+                         ".river-dev/specifications/dev-07-implementation-manifest.json",
+                         ".river-dev/reports/dev-07-orchestrator-execution.txt",
+                         ".river-dev/specifications/dev-07-verification.json",
+                         ".river-dev/specifications/dev-07-repair.json",
+                         ".river-dev/specifications/dev-07-review.json",
+                         ".river-dev/specifications/dev-07-commit.json"
+                     ],
+    "stages":  [
+                   "inspect",
+                   "plan",
+                   "implement",
+                   "verify",
+                   "repair",
+                   "review",
+                   "commit"
+               ],
+    "requirements":  {
+                         "expectedBranchRequired":  true,
+                         "cleanStartRequired":  true,
+                         "planRequired":  true,
+                         "dryRunDefault":  true,
+                         "verificationRequired":  true,
+                         "repairAllowed":  true,
+                         "reviewRequired":  true,
+                         "commitRequiresApplyFlag":  true,
+                         "pushAllowed":  false,
+                         "outsideRepositoryAllowed":  false,
+                         "maximumRepairAttempts":  3,
+                         "stopOnUnsupportedFailure":  true,
+                         "stopOnReviewFailure":  true,
+                         "stopOnScopeFailure":  true
+                     },
+    "outcomes":  [
+                     "completed",
+                     "dry-run-complete",
+                     "already-complete",
+                     "repair-blocked",
+                     "verification-failed",
+                     "review-failed",
+                     "commit-failed",
+                     "stopped"
+                 ],
+    "qualityGates":  [
+                         "expected-branch",
+                         "clean-start",
+                         "scope-check",
+                         "plan",
+                         "implementation",
+                         "verification",
+                         "repair",
+                         "review",
+                         "staged-diff",
+                         "commit"
+                     ]
+}

@@ -30,6 +30,11 @@ import {
     verifyRiverDev
 } from "./commands/verify";
 import {
+    formatOrchestratorResult,
+    getDefaultOrchestratorSpecificationPath,
+    orchestrateRiverDev
+} from "./commands/orchestrate";
+import {
     formatRepairResult,
     getDefaultRepairSpecificationPath,
     repairRiverDev
@@ -60,6 +65,7 @@ function parseCommand(
         case "inspect":
         case "plan":
         case "implement":
+        case "orchestrate":
         case "verify":
         case "review":
         case "commit":
@@ -123,6 +129,214 @@ async function run(): Promise<void> {
             process.stdout.write(
                 `${formatImplementationPlan(plan)}\n`
             );
+
+            return;
+
+        }
+
+        case "orchestrate": {
+
+            const commandArguments =
+                process.argv.slice(
+                    3
+                );
+
+            const specificationArgument =
+                commandArguments.find(
+                    (argument) => {
+                        return !argument.startsWith(
+                            "--"
+                        );
+                    }
+                );
+
+            const specificationPath =
+                specificationArgument ??
+                getDefaultOrchestratorSpecificationPath(
+                    configuration
+                );
+
+            const apply =
+                commandArguments.includes(
+                    "--apply"
+                );
+
+            const result =
+                await orchestrateRiverDev(
+                    configuration,
+                    specificationPath,
+                    apply,
+                    {
+
+                        getCurrentBranch:
+                            async () => {
+                                return "dev-07-end-to-end-orchestrator";
+                            },
+
+                        isWorkingTreeClean:
+                            async () => {
+                                return true;
+                            },
+
+                        inspect:
+                            async () => {
+
+                                await runTrackedInspection(
+                                    configuration
+                                );
+
+                                return true;
+
+                            },
+
+                        plan:
+                            async () => {
+
+                                const planningSpecificationPath =
+                                    configuration.repositoryRoot +
+                                    "/.river-dev/specifications/dev-07-planning.json";
+
+                                const plan =
+                                    await planRiverDevPhase(
+                                        configuration,
+                                        planningSpecificationPath
+                                    );
+
+                                return (
+                                    plan.branch ===
+                                        "dev-07-end-to-end-orchestrator" &&
+                                    plan.allowedPaths.length >
+                                        0 &&
+                                    plan.requiredTests.length >
+                                        0
+                                );
+
+                            },
+
+                        implement:
+                            async (
+                                dryRun
+                            ) => {
+
+                                const manifestPath =
+                                    configuration.repositoryRoot +
+                                    "/.river-dev/specifications/dev-07-implementation-manifest.json";
+
+                                const result =
+                                    await implementRiverDevPlan(
+                                        configuration,
+                                        manifestPath,
+                                        dryRun
+                                            ? "dry-run"
+                                            : "apply"
+                                    );
+
+                                return (
+                                    result.branch ===
+                                        "dev-07-end-to-end-orchestrator" &&
+                                    result.operationCount >
+                                        0 &&
+                                    result.applied ===
+                                        !dryRun
+                                );
+
+                            },
+
+                        verify:
+                            async () => {
+
+                                const verificationPath =
+                                    configuration.repositoryRoot +
+                                    "/.river-dev/specifications/dev-07-verification.json";
+
+                                const result =
+                                    await verifyRiverDev(
+                                        configuration,
+                                        verificationPath
+                                    );
+
+                                return result.passed;
+
+                            },
+
+                        repair:
+                            async (
+                                dryRun
+                            ) => {
+
+                                const repairSpecificationPath =
+                                    configuration.repositoryRoot +
+                                    "/.river-dev/specifications/dev-07-repair.json";
+
+                                const result =
+                                    await repairRiverDev(
+                                        configuration,
+                                        repairSpecificationPath,
+                                        !dryRun
+                                    );
+
+                                return result.passed;
+
+                            },
+
+                        review:
+                            async () => {
+
+                                const reviewSpecificationPath =
+                                    configuration.repositoryRoot +
+                                    "/.river-dev/specifications/dev-07-review.json";
+
+                                const result =
+                                    await reviewRiverDev(
+                                        configuration,
+                                        reviewSpecificationPath
+                                    );
+
+                                return result.passed;
+
+                            },
+
+                        commit:
+                            async () => {
+
+                                const commitSpecificationPath =
+                                    configuration.repositoryRoot +
+                                    "/.river-dev/specifications/dev-07-commit.json";
+
+                                const result =
+                                    await commitRiverDev(
+                                        configuration,
+                                        commitSpecificationPath,
+                                        {
+                                            verificationPassed:
+                                                true,
+
+                                            reviewPassed:
+                                                true,
+
+                                            apply:
+                                                true
+                                        }
+                                    );
+
+                                return result.committed;
+
+                            }
+
+                    }
+                );
+
+            process.stdout.write(
+                `${formatOrchestratorResult(result)}\n`
+            );
+
+            if (
+                result.passed ===
+                false
+            ) {
+                process.exitCode =
+                    1;
+            }
 
             return;
 
@@ -359,6 +573,17 @@ run().catch(
 
     }
 );
+
+
+
+
+
+
+
+
+
+
+
 
 
 

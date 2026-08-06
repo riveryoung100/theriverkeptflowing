@@ -1,0 +1,36 @@
+﻿{
+    "id":  "dev-07-review",
+    "name":  "DEV-07 Orchestrator Review",
+    "objective":  "Review the end-to-end River Development Agent orchestrator before any local commit.",
+    "allowedPaths":  [
+                         ".river-dev/specifications/dev-07-end-to-end-orchestrator.json",
+                         ".river-dev/specifications/dev-07-planning.json",
+                         ".river-dev/specifications/dev-07-implementation-manifest.json",
+                         ".river-dev/specifications/dev-07-verification.json",
+                         ".river-dev/specifications/dev-07-repair.json",
+                         ".river-dev/specifications/dev-07-review.json",
+                         ".river-dev/reports/dev-07-orchestrator-execution.txt",
+                         "tools/river-dev/src/commands/orchestrate.ts",
+                         "tools/river-dev/src/execution/orchestrator.ts",
+                         "tools/river-dev/src/execution/orchestrator.test.ts",
+                         "tools/river-dev/src/index.ts",
+                         "tools/river-dev/src/types.ts",
+                         ".river-dev/specifications/dev-07-commit.json"
+                     ],
+    "qualityGates":  [
+                         "scope",
+                         "tests",
+                         "typecheck",
+                         "documentation",
+                         "exports",
+                         "secret-scan"
+                     ],
+    "reviewChecks":  [
+                         "working-tree",
+                         "approved-files",
+                         "unexpected-files",
+                         "git-diff",
+                         "quality-gates",
+                         "documentation"
+                     ]
+}

@@ -1,0 +1,15 @@
+﻿{
+    "version":  "1.0.0",
+    "verificationId":  "dev-07-verification",
+    "branch":  "dev-07-end-to-end-orchestrator",
+    "commands":  [
+                     {
+                         "name":  "git-branch-current",
+                         "required":  true
+                     },
+                     {
+                         "name":  "typecheck",
+                         "required":  true
+                     }
+                 ]
+}

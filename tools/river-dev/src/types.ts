@@ -13,6 +13,7 @@ export type RiverDevCommandName =
     | "verify"
     | "review"
     | "commit"
+    | "orchestrate"
     | "repair"
     | "resume";
 
@@ -349,4 +350,5 @@ export interface RiverDevStateStore {
         Promise<RiverDevStoredState>;
 
 }
+
 
