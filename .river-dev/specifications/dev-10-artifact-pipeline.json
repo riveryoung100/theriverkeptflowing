@@ -1,0 +1,67 @@
+﻿{
+    "version":  "1.0.0",
+    "id":  "dev-10-artifact-pipeline",
+    "name":  "Controlled Artifact Pipeline",
+    "objective":  "Transform an approved plan and explicit implementation intent into an unapproved proposal and deterministic manifest while preserving approval boundaries and performing no implementation writes.",
+    "branch":  "dev-10-artifact-pipeline",
+    "commitMessage":  "DEV-10: Build controlled artifact pipeline",
+    "allowedPaths":  [
+                         ".river-dev/specifications/dev-10-artifact-pipeline.json",
+                         ".river-dev/specifications/dev-10-generator-intent.json",
+                         ".river-dev/specifications/dev-10-generator-plan.json",
+                         "tools/river-dev/src/commands/generate-artifacts.test.ts",
+                         "tools/river-dev/src/commands/generate-artifacts.ts",
+                         "tools/river-dev/src/core/artifact-pipeline.test.ts",
+                         "tools/river-dev/src/core/artifact-pipeline.ts",
+                         "tools/river-dev/src/index.ts",
+                         "tools/river-dev/src/types.ts"
+                     ],
+    "stages":  [
+                   "load-plan",
+                   "load-intent",
+                   "validate-intent",
+                   "generate-proposal",
+                   "approve-proposal",
+                   "generate-manifest"
+               ],
+    "requirements":  {
+                         "approvedPlanRequired":  true,
+                         "explicitImplementationIntentRequired":  true,
+                         "proposalGeneratedUnapproved":  true,
+                         "explicitProposalApprovalRequired":  true,
+                         "deterministicOutputRequired":  true,
+                         "scopeExpansionAllowed":  false,
+                         "protectedPathsAllowed":  false,
+                         "outsideRepositoryAllowed":  false,
+                         "repositoryWritesAllowed":  false,
+                         "implementationAllowed":  false,
+                         "commitAllowed":  false,
+                         "pushAllowed":  false,
+                         "stopWhenProposalUnapproved":  true,
+                         "stopOnScopeFailure":  true,
+                         "stopOnUnsupportedOperation":  true
+                     },
+    "outcomes":  [
+                     "proposal-generated",
+                     "manifest-generated",
+                     "approval-required",
+                     "invalid-plan",
+                     "invalid-intent",
+                     "scope-blocked",
+                     "unsupported-operation",
+                     "stopped"
+                 ],
+    "qualityGates":  [
+                         "expected-branch",
+                         "approved-plan",
+                         "explicit-intent",
+                         "scope-check",
+                         "proposal-generation",
+                         "proposal-approval",
+                         "manifest-generation",
+                         "deterministic-output",
+                         "typecheck",
+                         "tests",
+                         "review"
+                     ]
+}

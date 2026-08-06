@@ -1,0 +1,24 @@
+﻿{
+  "version": "1.0.0",
+  "planId": "plan:dev-10-cli",
+  "phase": "DEV-10 CLI",
+  "branch": "dev-10-artifact-pipeline",
+  "commitMessage": "DEV-10 CLI verification",
+  "objective": "Verify the artifact pipeline CLI.",
+  "generatedAt": "2026-08-06T21:00:00.000Z",
+  "allowedPaths": [
+    "tools/river-dev/src/generated/dev-10-example.ts",
+    "tools/river-dev/src/generated/dev-10-example.test.ts"
+  ],
+  "excludedPaths": [],
+  "acceptanceCriteria": [],
+  "requiredTests": [],
+  "requiredQualityGates": [],
+  "approvedCommands": [
+    "typecheck"
+  ],
+  "maximumRepairAttempts": 3,
+  "scopeExpansionAllowed": false,
+  "approvalBoundaries": [],
+  "steps": []
+}

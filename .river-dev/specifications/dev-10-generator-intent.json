@@ -1,0 +1,23 @@
+﻿{
+  "version": "1.0.0",
+  "intentId": "intent:dev-10-cli",
+  "planId": "plan:dev-10-cli",
+  "branch": "dev-10-artifact-pipeline",
+  "objective": "Generate an approved proposal example.",
+  "operations": [
+    {
+      "type": "write-file",
+      "path": "tools/river-dev/src/generated/dev-10-example.test.ts",
+      "content": "export const dev10Test = true;\n",
+      "overwrite": false,
+      "reason": "Example test."
+    },
+    {
+      "type": "write-file",
+      "path": "tools/river-dev/src/generated/dev-10-example.ts",
+      "content": "export const dev10Example = true;\n",
+      "overwrite": false,
+      "reason": "Example implementation."
+    }
+  ]
+}

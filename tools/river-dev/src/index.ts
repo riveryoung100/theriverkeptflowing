@@ -13,6 +13,10 @@ import {
     getDefaultCommitSpecificationPath
 } from "./commands/commit";
 import {
+    formatArtifactPipelineResult,
+    generateArtifactsRiverDev
+} from "./commands/generate-artifacts";
+import {
     formatProposalGenerationResult,
     generateProposalRiverDev
 } from "./commands/generate-proposal";
@@ -72,6 +76,7 @@ function parseCommand(
 
         case "inspect":
         case "plan":
+        case "generate-artifacts":
         case "generate-proposal":
         case "generate-manifest":
         case "implement":
@@ -138,6 +143,60 @@ async function run(): Promise<void> {
 
             process.stdout.write(
                 `${formatImplementationPlan(plan)}\n`
+            );
+
+            return;
+
+        }
+
+        case "generate-artifacts": {
+
+            const commandArguments =
+                process.argv.slice(
+                    3
+                );
+
+            const positionalArguments =
+                commandArguments.filter(
+                    (argument) => {
+                        return !argument.startsWith(
+                            "--"
+                        );
+                    }
+                );
+
+            const planPath =
+                positionalArguments[0];
+
+            const intentPath =
+                positionalArguments[1];
+
+            if (
+                planPath ===
+                    undefined ||
+                intentPath ===
+                    undefined
+            ) {
+                throw new TypeError(
+                    "Usage: generate-artifacts <plan-path> <intent-path> [--approve-proposal]"
+                );
+            }
+
+            const approveProposal =
+                commandArguments.includes(
+                    "--approve-proposal"
+                );
+
+            const result =
+                await generateArtifactsRiverDev(
+                    configuration,
+                    planPath,
+                    intentPath,
+                    approveProposal
+                );
+
+            process.stdout.write(
+                `${formatArtifactPipelineResult(result)}\n`
             );
 
             return;
@@ -679,6 +738,7 @@ run().catch(
 
     }
 );
+
 
 
 
