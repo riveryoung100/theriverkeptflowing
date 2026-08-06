@@ -9,6 +9,7 @@ export type RiverDevVersion =
 export type RiverDevCommandName =
     | "inspect"
     | "plan"
+    | "create-execution-package"
     | "persist-artifacts"
     | "generate-artifacts"
     | "generate-proposal"
@@ -354,6 +355,7 @@ export interface RiverDevStateStore {
         Promise<RiverDevStoredState>;
 
 }
+
 
 
 

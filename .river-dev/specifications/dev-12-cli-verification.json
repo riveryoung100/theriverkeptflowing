@@ -1,0 +1,10 @@
+﻿{
+  "verificationId": "verification:dev-12-cli",
+  "passed": true,
+  "verifiedAt": "2026-08-06T21:45:00.000Z",
+  "commands": [
+    "typecheck",
+    "tests"
+  ],
+  "warnings": []
+}

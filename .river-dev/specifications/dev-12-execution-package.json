@@ -1,0 +1,79 @@
+﻿{
+    "version":  "1.0.0",
+    "id":  "dev-12-execution-package",
+    "name":  "Controlled Execution Package",
+    "objective":  "Build and persist a deterministic execution package containing an approved implementation proposal, implementation manifest, verification metadata, and controlled implementation handoff state without applying repository changes.",
+    "branch":  "dev-12-execution-package",
+    "commitMessage":  "DEV-12: Build controlled execution package",
+    "allowedPaths":  [
+                         ".river-dev/specifications/dev-12-cli-manifest.json",
+                         ".river-dev/specifications/dev-12-cli-proposal.json",
+                         ".river-dev/specifications/dev-12-cli-verification.json",
+                         ".river-dev/specifications/dev-12-execution-package.json",
+                         "tools/river-dev/src/commands/create-execution-package.test.ts",
+                         "tools/river-dev/src/commands/create-execution-package.ts",
+                         "tools/river-dev/src/core/execution-package.test.ts",
+                         "tools/river-dev/src/core/execution-package.ts",
+                         "tools/river-dev/src/index.ts",
+                         "tools/river-dev/src/types.ts"
+                     ],
+    "packageRoot":  ".river-dev/execution-packages",
+    "stages":  [
+                   "load-plan",
+                   "load-intent",
+                   "generate-proposal",
+                   "approve-proposal",
+                   "generate-manifest",
+                   "validate-package",
+                   "persist-package"
+               ],
+    "requirements":  {
+                         "approvedPlanRequired":  true,
+                         "explicitImplementationIntentRequired":  true,
+                         "approvedProposalRequired":  true,
+                         "manifestRequired":  true,
+                         "verificationMetadataRequired":  true,
+                         "deterministicIdentifierRequired":  true,
+                         "deterministicSerializationRequired":  true,
+                         "deterministicPathRequired":  true,
+                         "immutablePersistenceRequired":  true,
+                         "overwriteAllowed":  false,
+                         "scopeExpansionAllowed":  false,
+                         "protectedPathsAllowed":  false,
+                         "outsideRepositoryAllowed":  false,
+                         "implementationAllowed":  false,
+                         "implementationWritesAllowed":  false,
+                         "commitAllowed":  false,
+                         "pushAllowed":  false
+                     },
+    "packageStates":  [
+                          "ready-for-verification",
+                          "verified",
+                          "ready-for-implementation",
+                          "blocked"
+                      ],
+    "outcomes":  [
+                     "package-created",
+                     "package-persisted",
+                     "approval-required",
+                     "verification-required",
+                     "package-exists",
+                     "invalid-package",
+                     "scope-blocked",
+                     "stopped"
+                 ],
+    "qualityGates":  [
+                         "expected-branch",
+                         "approved-plan",
+                         "explicit-intent",
+                         "proposal-approval",
+                         "manifest-generation",
+                         "verification-metadata",
+                         "deterministic-package",
+                         "package-boundary",
+                         "overwrite-protection",
+                         "typecheck",
+                         "tests",
+                         "review"
+                     ]
+}

@@ -1,0 +1,15 @@
+﻿{
+  "version": "1.0.0",
+  "implementationId": "implementation:proposal:intent:dev-12-cli",
+  "planId": "plan:dev-12-cli",
+  "branch": "dev-12-execution-package",
+  "description": "Create a verified DEV-12 CLI execution package.",
+  "operations": [
+    {
+      "type": "write-file",
+      "path": "tools/river-dev/src/generated/dev-12-cli-example.ts",
+      "content": "export const dev12CliExample = true;\n",
+      "overwrite": false
+    }
+  ]
+}

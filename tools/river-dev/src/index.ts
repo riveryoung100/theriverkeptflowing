@@ -13,6 +13,10 @@ import {
     getDefaultCommitSpecificationPath
 } from "./commands/commit";
 import {
+    createExecutionPackageRiverDev,
+    formatExecutionPackageResult
+} from "./commands/create-execution-package";
+import {
     formatGeneratedArtifactPersistenceResult,
     persistGeneratedArtifactsRiverDev
 } from "./commands/persist-artifacts";
@@ -81,6 +85,7 @@ function parseCommand(
         case "inspect":
         case "plan":
         case "generate-artifacts":
+        case "create-execution-package":
         case "persist-artifacts":
         case "generate-proposal":
         case "generate-manifest":
@@ -148,6 +153,46 @@ async function run(): Promise<void> {
 
             process.stdout.write(
                 `${formatImplementationPlan(plan)}\n`
+            );
+
+            return;
+
+        }
+
+        case "create-execution-package": {
+
+            const proposalPath =
+                process.argv[3];
+
+            const manifestPath =
+                process.argv[4];
+
+            const verificationPath =
+                process.argv[5];
+
+            if (
+                proposalPath ===
+                    undefined ||
+                manifestPath ===
+                    undefined ||
+                verificationPath ===
+                    undefined
+            ) {
+                throw new TypeError(
+                    "Usage: create-execution-package <proposal-path> <manifest-path> <verification-path>"
+                );
+            }
+
+            const result =
+                await createExecutionPackageRiverDev(
+                    configuration,
+                    proposalPath,
+                    manifestPath,
+                    verificationPath
+                );
+
+            process.stdout.write(
+                `${formatExecutionPackageResult(result)}\n`
             );
 
             return;
@@ -797,6 +842,7 @@ run().catch(
 
     }
 );
+
 
 
 
