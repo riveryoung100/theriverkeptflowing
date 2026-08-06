@@ -1,0 +1,28 @@
+﻿{
+    "id":  "dev-04-review-engine",
+    "name":  "Review Engine",
+    "objective":  "Review completed implementations before commit.",
+    "allowedPaths":  [
+                         "tools/river-dev/src/review",
+                         "tools/river-dev/src/index.ts",
+                         "tools/river-dev/src/commands/review.ts",
+                         ".river-dev/specifications",
+                         "tools/river-dev/src/execution/verification.test.ts"
+                     ],
+    "qualityGates":  [
+                         "scope",
+                         "tests",
+                         "typecheck",
+                         "documentation",
+                         "exports",
+                         "secret-scan"
+                     ],
+    "reviewChecks":  [
+                         "working-tree",
+                         "approved-files",
+                         "unexpected-files",
+                         "git-diff",
+                         "quality-gates",
+                         "documentation"
+                     ]
+}

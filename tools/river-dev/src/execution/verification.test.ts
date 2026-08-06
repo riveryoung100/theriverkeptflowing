@@ -2,6 +2,14 @@
 import test from "node:test";
 
 import {
+    execFile
+} from "node:child_process";
+
+import {
+    promisify
+} from "node:util";
+
+import {
     loadRiverDevConfiguration
 } from "../core/config";
 
@@ -15,8 +23,51 @@ import type {
 } from "./verification";
 
 
-function createSpecification():
-RiverDevVerificationSpecification {
+const execFileAsync =
+    promisify(
+        execFile
+    );
+
+
+async function readCurrentBranch():
+Promise<string> {
+
+    const result =
+        await execFileAsync(
+            "git",
+            [
+                "branch",
+                "--show-current"
+            ],
+            {
+                cwd:
+                    process.cwd(),
+
+                windowsHide:
+                    true
+            }
+        );
+
+    const branch =
+        result.stdout.trim();
+
+    if (
+        branch.length ===
+        0
+    ) {
+        throw new TypeError(
+            "Could not determine current Git branch."
+        );
+    }
+
+    return branch;
+
+}
+
+
+function createSpecification(
+    branch: string
+): RiverDevVerificationSpecification {
 
     return {
 
@@ -26,8 +77,7 @@ RiverDevVerificationSpecification {
         verificationId:
             "verification:test",
 
-        branch:
-            "dev-03-verification-engine",
+        branch,
 
         commands: [
             {
@@ -53,11 +103,19 @@ test(
                 process.cwd()
             );
 
+        const branch =
+            await readCurrentBranch();
+
+        const specification =
+            createSpecification(
+                branch
+            );
+
         assert.doesNotThrow(
             () => {
                 validateVerificationSpecification(
                     configuration,
-                    createSpecification()
+                    specification
                 );
             }
         );
@@ -75,9 +133,14 @@ test(
                 process.cwd()
             );
 
+        const branch =
+            await readCurrentBranch();
+
         const specification = {
 
-            ...createSpecification(),
+            ...createSpecification(
+                branch
+            ),
 
             commands: [
                 {
@@ -114,13 +177,21 @@ test(
                 process.cwd()
             );
 
+        const branch =
+            await readCurrentBranch();
+
+        const baseSpecification =
+            createSpecification(
+                branch
+            );
+
         const specification = {
 
-            ...createSpecification(),
+            ...baseSpecification,
 
             commands: [
-                ...createSpecification().commands,
-                ...createSpecification().commands
+                ...baseSpecification.commands,
+                ...baseSpecification.commands
             ]
 
         };
@@ -148,6 +219,9 @@ test(
                 process.cwd()
             );
 
+        const branch =
+            await readCurrentBranch();
+
         const runner =
             createVerificationRunner(
                 configuration
@@ -155,7 +229,9 @@ test(
 
         const result =
             await runner.verify(
-                createSpecification()
+                createSpecification(
+                    branch
+                )
             );
 
         assert.equal(
@@ -186,6 +262,9 @@ test(
                 process.cwd()
             );
 
+        const branch =
+            await readCurrentBranch();
+
         const runner =
             createVerificationRunner(
                 configuration
@@ -193,10 +272,12 @@ test(
 
         const specification = {
 
-            ...createSpecification(),
+            ...createSpecification(
+                branch
+            ),
 
             branch:
-                "wrong-branch"
+                `${branch}-incorrect`
 
         };
 

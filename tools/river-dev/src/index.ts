@@ -25,6 +25,11 @@ import {
     verifyRiverDev
 } from "./commands/verify";
 import {
+    formatReviewResult,
+    getDefaultReviewSpecificationPath,
+    reviewRiverDev
+} from "./commands/review";
+import {
     formatResumeReport,
     resumeRiverDev
 } from "./commands/resume";
@@ -187,7 +192,36 @@ async function run(): Promise<void> {
 
         }
 
-        case "review":
+        case "review": {
+
+            const specificationPath =
+                process.argv[3] ??
+                getDefaultReviewSpecificationPath(
+                    configuration
+                );
+
+            const result =
+                await reviewRiverDev(
+                    configuration,
+                    specificationPath
+                );
+
+            process.stdout.write(
+                `${formatReviewResult(result)}\n`
+            );
+
+            if (
+                result.passed ===
+                false
+            ) {
+                process.exitCode =
+                    1;
+            }
+
+            return;
+
+        }
+
         case "commit":
             throw new TypeError(
                 `River Dev command is not implemented yet: ${command}`
@@ -217,4 +251,5 @@ run().catch(
 
     }
 );
+
 
