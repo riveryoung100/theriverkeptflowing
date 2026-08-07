@@ -2,9 +2,11 @@
 import test from "node:test";
 
 import {
+    mkdir,
     mkdtemp,
     readFile,
-    rm
+    rm,
+    writeFile
 } from "node:fs/promises";
 
 import {
@@ -23,6 +25,12 @@ import type {
     RiverDevRepositorySnapshot,
     RiverDevRunState
 } from "../types";
+
+import {
+    completeRiverDevSession,
+    createRiverDevSession,
+    updateRiverDevSessionProgress
+} from "../core/session-state";
 
 import {
     createRiverDevStateStore
@@ -127,6 +135,16 @@ test(
 
             assert.deepEqual(
                 state.completedRuns,
+                []
+            );
+
+            assert.equal(
+                state.activeSession,
+                null
+            );
+
+            assert.deepEqual(
+                state.completedSessions,
                 []
             );
 
@@ -457,6 +475,353 @@ test(
             assert.match(
                 source,
                 /\n  "version":/
+            );
+
+        }
+        finally {
+
+            await rm(
+                root,
+                {
+                    recursive:
+                        true,
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);
+
+
+test(
+    "begins and reloads an active session",
+    async () => {
+
+        const root =
+            await mkdtemp(
+                join(
+                    tmpdir(),
+                    "river-dev-session-store-"
+                )
+            );
+
+        try {
+
+            const store =
+                createRiverDevStateStore(
+                    root
+                );
+
+            const session =
+                createRiverDevSession({
+                    phase:
+                        "DEV-17 Session State Manager",
+                    specificationPath:
+                        ".river-dev/specifications/dev-17-session-state-manager.json",
+                    repository:
+                        createSnapshot(
+                            root
+                        ),
+                    startedAt:
+                        "2026-08-07T14:45:00.000Z",
+                    planId:
+                        "plan:dev-17"
+                });
+
+            await store.beginSession(
+                session
+            );
+
+            const state =
+                await store.load();
+
+            assert.equal(
+                state.activeSession?.sessionId,
+                session.sessionId
+            );
+
+            assert.equal(
+                state.completedSessions.length,
+                0
+            );
+
+        }
+        finally {
+
+            await rm(
+                root,
+                {
+                    recursive:
+                        true,
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);
+
+
+test(
+    "updates an active session",
+    async () => {
+
+        const root =
+            await mkdtemp(
+                join(
+                    tmpdir(),
+                    "river-dev-session-store-"
+                )
+            );
+
+        try {
+
+            const store =
+                createRiverDevStateStore(
+                    root
+                );
+
+            const session =
+                createRiverDevSession({
+                    phase:
+                        "DEV-17 Session State Manager",
+                    specificationPath:
+                        ".river-dev/specifications/dev-17-session-state-manager.json",
+                    repository:
+                        createSnapshot(
+                            root
+                        ),
+                    startedAt:
+                        "2026-08-07T14:45:00.000Z"
+                });
+
+            await store.beginSession(
+                session
+            );
+
+            const updated =
+                updateRiverDevSessionProgress(
+                    session,
+                    {
+                        currentStep:
+                            "verification",
+                        status:
+                            "ready-to-resume",
+                        validation: {
+                            tests:
+                                "passed"
+                        },
+                        updatedAt:
+                            "2026-08-07T14:46:00.000Z"
+                    }
+                );
+
+            await store.updateSession(
+                updated
+            );
+
+            const state =
+                await store.load();
+
+            assert.equal(
+                state.activeSession?.currentStep,
+                "verification"
+            );
+
+            assert.equal(
+                state.activeSession?.status,
+                "ready-to-resume"
+            );
+
+            assert.equal(
+                state.activeSession?.validation.tests,
+                "passed"
+            );
+
+        }
+        finally {
+
+            await rm(
+                root,
+                {
+                    recursive:
+                        true,
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);
+
+
+test(
+    "completes and archives an active session",
+    async () => {
+
+        const root =
+            await mkdtemp(
+                join(
+                    tmpdir(),
+                    "river-dev-session-store-"
+                )
+            );
+
+        try {
+
+            const store =
+                createRiverDevStateStore(
+                    root
+                );
+
+            const session =
+                createRiverDevSession({
+                    phase:
+                        "DEV-17 Session State Manager",
+                    specificationPath:
+                        ".river-dev/specifications/dev-17-session-state-manager.json",
+                    repository:
+                        createSnapshot(
+                            root
+                        ),
+                    startedAt:
+                        "2026-08-07T14:45:00.000Z"
+                });
+
+            await store.beginSession(
+                session
+            );
+
+            const completed =
+                completeRiverDevSession(
+                    session,
+                    "2026-08-07T14:50:00.000Z"
+                );
+
+            const state =
+                await store.completeSession(
+                    completed
+                );
+
+            assert.equal(
+                state.activeSession,
+                null
+            );
+
+            assert.equal(
+                state.completedSessions.length,
+                1
+            );
+
+            assert.equal(
+                state.completedSessions[0]?.status,
+                "completed"
+            );
+
+        }
+        finally {
+
+            await rm(
+                root,
+                {
+                    recursive:
+                        true,
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);
+
+
+test(
+    "loads pre-DEV-17 state files with session defaults",
+    async () => {
+
+        const root =
+            await mkdtemp(
+                join(
+                    tmpdir(),
+                    "river-dev-legacy-state-"
+                )
+            );
+
+        try {
+
+            const stateDirectory =
+                join(
+                    root,
+                    ".river-dev",
+                    "state"
+                );
+
+            await mkdir(
+                stateDirectory,
+                {
+                    recursive:
+                        true
+                }
+            );
+
+            const statePath =
+                join(
+                    stateDirectory,
+                    "river-dev-state.json"
+                );
+
+            await writeFile(
+                statePath,
+                JSON.stringify(
+                    {
+                        version:
+                            RIVER_DEV_VERSION,
+                        activeRun:
+                            null,
+                        completedRuns:
+                            []
+                    },
+                    null,
+                    2
+                ),
+                "utf8"
+            );
+
+            const store =
+                createRiverDevStateStore(
+                    root
+                );
+
+            const state =
+                await store.load();
+
+            assert.equal(
+                state.activeSession,
+                null
+            );
+
+            assert.deepEqual(
+                state.completedSessions,
+                []
+            );
+
+            assert.equal(
+                state.activeRun,
+                null
+            );
+
+            assert.deepEqual(
+                state.completedRuns,
+                []
             );
 
         }

@@ -16,6 +16,7 @@ import {
 
 import type {
     RiverDevRunState,
+    RiverDevSessionState,
     RiverDevStateStore,
     RiverDevStoredState
 } from "../types";
@@ -31,6 +32,12 @@ RiverDevStoredState = {
         null,
 
     completedRuns:
+        [],
+
+    activeSession:
+        null,
+
+    completedSessions:
         []
 
 };
@@ -56,6 +63,28 @@ function removeUtf8Bom(
 }
 
 
+function normalizeStoredState(
+    state:
+        RiverDevStoredState
+): RiverDevStoredState {
+
+    return {
+
+        ...state,
+
+        activeSession:
+            state.activeSession ??
+            null,
+
+        completedSessions:
+            state.completedSessions ??
+            []
+
+    };
+
+}
+
+
 function validateStoredState(
     state: RiverDevStoredState
 ): void {
@@ -76,6 +105,16 @@ function validateStoredState(
     ) {
         throw new TypeError(
             "Completed runs must be an array."
+        );
+    }
+
+    if (
+        !Array.isArray(
+            state.completedSessions
+        )
+    ) {
+        throw new TypeError(
+            "Completed sessions must be an array."
         );
     }
 
@@ -115,12 +154,17 @@ implements RiverDevStateStore {
                     "utf8"
                 );
 
-            const state =
+            const parsed =
                 JSON.parse(
                     removeUtf8Bom(
                         source
                     )
                 ) as RiverDevStoredState;
+
+            const state =
+                normalizeStoredState(
+                    parsed
+                );
 
             validateStoredState(
                 state
@@ -301,8 +345,7 @@ implements RiverDevStateStore {
         const updated:
             RiverDevStoredState = {
 
-            version:
-                current.version,
+            ...current,
 
             activeRun:
                 null,
@@ -335,6 +378,162 @@ implements RiverDevStateStore {
             ...current,
 
             activeRun:
+                null
+
+        };
+
+        await this.save(
+            updated
+        );
+
+        return updated;
+
+    }
+
+
+    async beginSession(
+        session:
+            RiverDevSessionState
+    ): Promise<RiverDevStoredState> {
+
+        const current =
+            await this.load();
+
+        if (
+            current.activeSession !==
+            null
+        ) {
+            throw new TypeError(
+                `An active River Dev session already exists: ${current.activeSession.sessionId}`
+            );
+        }
+
+        const updated:
+            RiverDevStoredState = {
+
+            ...current,
+
+            activeSession:
+                session
+
+        };
+
+        await this.save(
+            updated
+        );
+
+        return updated;
+
+    }
+
+
+    async updateSession(
+        session:
+            RiverDevSessionState
+    ): Promise<RiverDevStoredState> {
+
+        const current =
+            await this.load();
+
+        if (
+            current.activeSession ===
+            null
+        ) {
+            throw new TypeError(
+                "No active River Dev session exists."
+            );
+        }
+
+        if (
+            current.activeSession.sessionId !==
+            session.sessionId
+        ) {
+            throw new TypeError(
+                "River Dev session identifier does not match the active session."
+            );
+        }
+
+        const updated:
+            RiverDevStoredState = {
+
+            ...current,
+
+            activeSession:
+                session
+
+        };
+
+        await this.save(
+            updated
+        );
+
+        return updated;
+
+    }
+
+
+    async completeSession(
+        session:
+            RiverDevSessionState
+    ): Promise<RiverDevStoredState> {
+
+        const current =
+            await this.load();
+
+        if (
+            current.activeSession ===
+            null
+        ) {
+            throw new TypeError(
+                "No active River Dev session exists."
+            );
+        }
+
+        if (
+            current.activeSession.sessionId !==
+            session.sessionId
+        ) {
+            throw new TypeError(
+                "River Dev session identifier does not match the active session."
+            );
+        }
+
+        const updated:
+            RiverDevStoredState = {
+
+            ...current,
+
+            activeSession:
+                null,
+
+            completedSessions: [
+                ...current.completedSessions,
+                session
+            ]
+
+        };
+
+        await this.save(
+            updated
+        );
+
+        return updated;
+
+    }
+
+
+    async clearActiveSession():
+    Promise<RiverDevStoredState> {
+
+        const current =
+            await this.load();
+
+        const updated:
+            RiverDevStoredState = {
+
+            ...current,
+
+            activeSession:
                 null
 
         };

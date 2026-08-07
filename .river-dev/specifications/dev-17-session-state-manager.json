@@ -1,0 +1,89 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-17 Session State Manager",
+  "branch": "dev-17-session-state-manager",
+  "commitMessage": "DEV-17: Build persistent session state manager",
+  "objective": "Create a deterministic persistent session-state system that records active development context, current phase, specification, plan, execution progress, validation state, repair history, and resumable workflow state across River Dev invocations.",
+  "architecturalContext": [
+    "DEV-16 automatic phase resolution",
+    "Persistent River Dev state store",
+    "Run lifecycle",
+    "Execution package pipeline",
+    "Immutable execution audit records",
+    "Resume command",
+    "River Development Agent roadmap Chapter 10"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/state/store.ts",
+      "tools/river-dev/src/state/store.test.ts",
+      "tools/river-dev/src/commands/resume.ts",
+      "tools/river-dev/src/commands/resume.test.ts",
+      "tools/river-dev/src/index.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-17-session-state-manager.json",
+      "tools/river-dev/src/core/session-state.ts",
+      "tools/river-dev/src/core/session-state.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "The agent can create a deterministic session state from repository and development context.",
+    "Session state records the active branch, phase, specification, plan identity, current lifecycle step, status, timestamps, validation state, repair history, and resume metadata.",
+    "Session state persists across River Dev process invocations.",
+    "Session state can be loaded deterministically from repository-local storage.",
+    "Interrupted sessions can be recognized as resumable when their repository context still matches.",
+    "Sessions with mismatched branch or repository state are blocked from unsafe resume.",
+    "Completed sessions remain queryable without being treated as active work.",
+    "Existing River Dev run-state storage remains backward compatible or is migrated safely.",
+    "No session state is persisted outside the repository.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/session-state.test.ts",
+    "tools/river-dev/src/state/store.test.ts",
+    "tools/river-dev/src/commands/resume.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  },
+  "approvalBoundaries": [
+    "push",
+    "deploy",
+    "package-install",
+    "dependency-upgrade",
+    "file-delete",
+    "database-migration",
+    "production-data-change",
+    "infrastructure-change",
+    "secret-access",
+    "scope-expansion"
+  ]
+}

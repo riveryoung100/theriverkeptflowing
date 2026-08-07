@@ -19,6 +19,11 @@ import {
 } from "../core/config";
 
 import {
+    createRiverDevSession,
+    updateRiverDevSessionProgress
+} from "../core/session-state";
+
+import {
     captureRepositorySnapshot
 } from "../git/repository";
 
@@ -165,6 +170,16 @@ test(
                 null
             );
 
+            assert.equal(
+                report.hasActiveSession,
+                false
+            );
+
+            assert.equal(
+                report.activeSession,
+                null
+            );
+
         }
         finally {
 
@@ -274,6 +289,515 @@ test(
                     report
                 ),
                 /Plan started/
+            );
+
+        }
+        finally {
+
+            await rm(
+                root,
+                {
+                    recursive:
+                        true,
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);
+
+
+test(
+    "reports an active session as safely resumable when repository context matches",
+    async () => {
+
+        const root =
+            await mkdtemp(
+                join(
+                    tmpdir(),
+                    "river-dev-session-resume-"
+                )
+            );
+
+        try {
+
+            const configuration =
+                await loadRiverDevConfiguration(
+                    process.cwd()
+                );
+
+            const temporaryConfiguration = {
+
+                ...configuration,
+
+                repositoryRoot:
+                    root
+
+            };
+
+            const snapshot = {
+
+                repositoryRoot:
+                    root,
+
+                branch:
+                    "dev-17-session-state-manager",
+
+                commit:
+                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+
+                clean:
+                    true,
+
+                changedPaths:
+                    [],
+
+                capturedAt:
+                    "2026-08-07T14:50:00.000Z"
+
+            } as const;
+
+            const session =
+                createRiverDevSession({
+                    phase:
+                        "DEV-17 Session State Manager",
+                    specificationPath:
+                        ".river-dev/specifications/dev-17-session-state-manager.json",
+                    repository:
+                        snapshot,
+                    startedAt:
+                        "2026-08-07T14:50:00.000Z",
+                    planId:
+                        "plan:dev-17-test"
+                });
+
+            const progressed =
+                updateRiverDevSessionProgress(
+                    session,
+                    {
+                        currentStep:
+                            "verification",
+                        status:
+                            "ready-to-resume",
+                        updatedAt:
+                            "2026-08-07T14:51:00.000Z"
+                    }
+                );
+
+            const store =
+                createRiverDevStateStore(
+                    root
+                );
+
+            await store.beginSession(
+                progressed
+            );
+
+            const report =
+                await resumeRiverDev(
+                    temporaryConfiguration,
+                    snapshot
+                );
+
+            assert.equal(
+                report.hasActiveSession,
+                true
+            );
+
+            assert.equal(
+                report.sessionResumable,
+                true
+            );
+
+            assert.equal(
+                report.activeSession?.currentStep,
+                "verification"
+            );
+
+            assert.match(
+                report.message,
+                /ready to resume from verification/
+            );
+
+        }
+        finally {
+
+            await rm(
+                root,
+                {
+                    recursive:
+                        true,
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);
+
+
+test(
+    "blocks session resume when branch does not match",
+    async () => {
+
+        const root =
+            await mkdtemp(
+                join(
+                    tmpdir(),
+                    "river-dev-session-resume-"
+                )
+            );
+
+        try {
+
+            const configuration =
+                await loadRiverDevConfiguration(
+                    process.cwd()
+                );
+
+            const temporaryConfiguration = {
+
+                ...configuration,
+
+                repositoryRoot:
+                    root
+
+            };
+
+            const originalSnapshot = {
+
+                repositoryRoot:
+                    root,
+
+                branch:
+                    "dev-17-session-state-manager",
+
+                commit:
+                    "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+
+                clean:
+                    true,
+
+                changedPaths:
+                    [],
+
+                capturedAt:
+                    "2026-08-07T14:52:00.000Z"
+
+            } as const;
+
+            const session =
+                createRiverDevSession({
+                    phase:
+                        "DEV-17 Session State Manager",
+                    specificationPath:
+                        ".river-dev/specifications/dev-17-session-state-manager.json",
+                    repository:
+                        originalSnapshot,
+                    startedAt:
+                        "2026-08-07T14:52:00.000Z"
+                });
+
+            const store =
+                createRiverDevStateStore(
+                    root
+                );
+
+            await store.beginSession(
+                session
+            );
+
+            const mismatchedSnapshot = {
+
+                ...originalSnapshot,
+
+                branch:
+                    "main"
+
+            };
+
+            const report =
+                await resumeRiverDev(
+                    temporaryConfiguration,
+                    mismatchedSnapshot
+                );
+
+            assert.equal(
+                report.sessionResumable,
+                false
+            );
+
+            assert.match(
+                report.sessionResumeReason ?? "",
+                /branch mismatch/
+            );
+
+            assert.match(
+                report.message,
+                /blocked from resume/
+            );
+
+        }
+        finally {
+
+            await rm(
+                root,
+                {
+                    recursive:
+                        true,
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);
+
+
+test(
+    "blocks session resume when commit does not match",
+    async () => {
+
+        const root =
+            await mkdtemp(
+                join(
+                    tmpdir(),
+                    "river-dev-session-resume-"
+                )
+            );
+
+        try {
+
+            const configuration =
+                await loadRiverDevConfiguration(
+                    process.cwd()
+                );
+
+            const temporaryConfiguration = {
+
+                ...configuration,
+
+                repositoryRoot:
+                    root
+
+            };
+
+            const originalSnapshot = {
+
+                repositoryRoot:
+                    root,
+
+                branch:
+                    "dev-17-session-state-manager",
+
+                commit:
+                    "cccccccccccccccccccccccccccccccccccccccc",
+
+                clean:
+                    true,
+
+                changedPaths:
+                    [],
+
+                capturedAt:
+                    "2026-08-07T14:53:00.000Z"
+
+            } as const;
+
+            const session =
+                createRiverDevSession({
+                    phase:
+                        "DEV-17 Session State Manager",
+                    specificationPath:
+                        ".river-dev/specifications/dev-17-session-state-manager.json",
+                    repository:
+                        originalSnapshot,
+                    startedAt:
+                        "2026-08-07T14:53:00.000Z"
+                });
+
+            const store =
+                createRiverDevStateStore(
+                    root
+                );
+
+            await store.beginSession(
+                session
+            );
+
+            const mismatchedSnapshot = {
+
+                ...originalSnapshot,
+
+                commit:
+                    "dddddddddddddddddddddddddddddddddddddddd"
+
+            };
+
+            const report =
+                await resumeRiverDev(
+                    temporaryConfiguration,
+                    mismatchedSnapshot
+                );
+
+            assert.equal(
+                report.sessionResumable,
+                false
+            );
+
+            assert.match(
+                report.sessionResumeReason ?? "",
+                /commit mismatch/
+            );
+
+        }
+        finally {
+
+            await rm(
+                root,
+                {
+                    recursive:
+                        true,
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);
+
+
+test(
+    "formats durable session recovery context",
+    async () => {
+
+        const root =
+            await mkdtemp(
+                join(
+                    tmpdir(),
+                    "river-dev-session-resume-"
+                )
+            );
+
+        try {
+
+            const configuration =
+                await loadRiverDevConfiguration(
+                    process.cwd()
+                );
+
+            const temporaryConfiguration = {
+
+                ...configuration,
+
+                repositoryRoot:
+                    root
+
+            };
+
+            const snapshot = {
+
+                repositoryRoot:
+                    root,
+
+                branch:
+                    "dev-17-session-state-manager",
+
+                commit:
+                    "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+
+                clean:
+                    true,
+
+                changedPaths:
+                    [],
+
+                capturedAt:
+                    "2026-08-07T14:54:00.000Z"
+
+            } as const;
+
+            const session =
+                createRiverDevSession({
+                    phase:
+                        "DEV-17 Session State Manager",
+                    specificationPath:
+                        ".river-dev/specifications/dev-17-session-state-manager.json",
+                    repository:
+                        snapshot,
+                    startedAt:
+                        "2026-08-07T14:54:00.000Z",
+                    planId:
+                        "plan:resume-format-test"
+                });
+
+            const progressed =
+                updateRiverDevSessionProgress(
+                    session,
+                    {
+                        currentStep:
+                            "execution-package",
+                        executionPackageId:
+                            "execution-package:test",
+                        auditId:
+                            "audit:test",
+                        updatedAt:
+                            "2026-08-07T14:55:00.000Z"
+                    }
+                );
+
+            const store =
+                createRiverDevStateStore(
+                    root
+                );
+
+            await store.beginSession(
+                progressed
+            );
+
+            const report =
+                await resumeRiverDev(
+                    temporaryConfiguration,
+                    snapshot
+                );
+
+            const formatted =
+                formatResumeReport(
+                    report
+                );
+
+            assert.match(
+                formatted,
+                /DEV-17 Session State Manager/
+            );
+
+            assert.match(
+                formatted,
+                /Current step: execution-package/
+            );
+
+            assert.match(
+                formatted,
+                /execution-package:test/
+            );
+
+            assert.match(
+                formatted,
+                /audit:test/
+            );
+
+            assert.match(
+                formatted,
+                /Session resumable: true/
             );
 
         }

@@ -318,6 +318,140 @@ export interface RiverDevRunState {
 }
 
 
+export type RiverDevSessionStatus =
+    | "active"
+    | "blocked"
+    | "repairing"
+    | "ready-to-resume"
+    | "completed"
+    | "failed";
+
+export type RiverDevSessionLifecycleStep =
+    | "context"
+    | "specification"
+    | "scope-validation"
+    | "planning"
+    | "proposal"
+    | "manifest"
+    | "artifact-generation"
+    | "execution-package"
+    | "execution"
+    | "audit"
+    | "review"
+    | "verification"
+    | "repair"
+    | "commit-preparation"
+    | "approval"
+    | "completed";
+
+export type RiverDevValidationStatus =
+    | "pending"
+    | "passed"
+    | "failed"
+    | "blocked";
+
+export interface RiverDevSessionValidationState {
+
+    readonly tests:
+        RiverDevValidationStatus;
+
+    readonly typecheck:
+        RiverDevValidationStatus;
+
+    readonly review:
+        RiverDevValidationStatus;
+
+    readonly qualityGates:
+        RiverDevValidationStatus;
+
+}
+
+export interface RiverDevSessionRepairAttempt {
+
+    readonly attempt:
+        number;
+
+    readonly reason:
+        string;
+
+    readonly outcome:
+        | "pending"
+        | "repaired"
+        | "failed";
+
+    readonly recordedAt:
+        string;
+
+}
+
+export interface RiverDevSessionResumeState {
+
+    readonly resumable:
+        boolean;
+
+    readonly reason:
+        string;
+
+    readonly expectedBranch:
+        string;
+
+    readonly expectedCommit:
+        string;
+
+}
+
+export interface RiverDevSessionState {
+
+    readonly version:
+        "1.0.0";
+
+    readonly sessionId:
+        string;
+
+    readonly phase:
+        string;
+
+    readonly specificationPath:
+        string;
+
+    readonly planId:
+        string |
+        null;
+
+    readonly executionPackageId:
+        string |
+        null;
+
+    readonly auditId:
+        string |
+        null;
+
+    readonly currentStep:
+        RiverDevSessionLifecycleStep;
+
+    readonly status:
+        RiverDevSessionStatus;
+
+    readonly startedAt:
+        string;
+
+    readonly updatedAt:
+        string;
+
+    readonly repository:
+        RiverDevRepositorySnapshot;
+
+    readonly validation:
+        RiverDevSessionValidationState;
+
+    readonly repairHistory:
+        readonly RiverDevSessionRepairAttempt[];
+
+    readonly resume:
+        RiverDevSessionResumeState;
+
+}
+
 export interface RiverDevStoredState {
 
     readonly version:
@@ -329,6 +463,13 @@ export interface RiverDevStoredState {
 
     readonly completedRuns:
         readonly RiverDevRunState[];
+
+    readonly activeSession:
+        RiverDevSessionState |
+        null;
+
+    readonly completedSessions:
+        readonly RiverDevSessionState[];
 
 }
 
@@ -357,7 +498,23 @@ export interface RiverDevStateStore {
     clearActiveRun():
         Promise<RiverDevStoredState>;
 
+    beginSession(
+        session: RiverDevSessionState
+    ): Promise<RiverDevStoredState>;
+
+    updateSession(
+        session: RiverDevSessionState
+    ): Promise<RiverDevStoredState>;
+
+    completeSession(
+        session: RiverDevSessionState
+    ): Promise<RiverDevStoredState>;
+
+    clearActiveSession():
+        Promise<RiverDevStoredState>;
+
 }
+
 
 
 
