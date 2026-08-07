@@ -1,0 +1,83 @@
+﻿{
+    "version":  "1.0.0",
+    "phase":  "DEV-16 Context Phase Resolution",
+    "branch":  "dev-16-agent-session-state",
+    "commitMessage":  "DEV-16: Build automatic phase resolution",
+    "objective":  "Create deterministic active-phase resolution that discovers the River Dev specification associated with the current Git branch while preserving explicit specification-path overrides.",
+    "architecturalContext":  [
+                                 "River Dev configuration loader",
+                                 "Git repository inspection",
+                                 "Deterministic planning engine",
+                                 "Specification-first development lifecycle",
+                                 "Execution and immutable audit pipeline",
+                                 "River Development Agent roadmap"
+                             ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "tools/river-dev/src/commands/plan.ts",
+                                                  "tools/river-dev/src/index.ts"
+                                              ],
+                          "creatablePaths":  [
+                                                 "tools/river-dev/src/core/phase-resolution.ts",
+                                                 "tools/river-dev/src/core/phase-resolution.test.ts",
+                                                 ".river-dev/specifications/dev-16-phase-resolution.json"
+                                             ],
+                          "excludedPaths":  [
+                                                ".env",
+                                                ".git",
+                                                "node_modules",
+                                                "dist"
+                                            ]
+                      },
+    "acceptanceCriteria":  [
+                               "The agent determines the current Git branch using the existing repository abstraction.",
+                               "The agent deterministically resolves exactly one specification whose branch field matches the current development branch.",
+                               "Specification discovery is independent of specification filename.",
+                               "An explicit specification path supplied to the plan command continues to override automatic discovery.",
+                               "A non-development branch is rejected when automatic phase discovery is requested.",
+                               "No matching specification produces a clear deterministic failure.",
+                               "Multiple matching specifications produce a clear deterministic failure.",
+                               "Repository boundaries remain enforced.",
+                               "Existing planning behavior remains backward compatible when an explicit specification path is supplied.",
+                               "Focused tests, River Dev typechecking, and main-project typechecking pass."
+                           ],
+    "requiredTests":  [
+                          "tools/river-dev/src/core/phase-resolution.test.ts",
+                          "tools/river-dev/src/core/planner.test.ts",
+                          "tools/river-dev/src/index.test.ts"
+                      ],
+    "requiredQualityGates":  [
+                                 "expected-branch",
+                                 "scope-check",
+                                 "tests",
+                                 "typecheck",
+                                 "documentation",
+                                 "exports",
+                                 "secret-scan",
+                                 "review",
+                                 "staged-diff"
+                             ],
+    "approvedCommands":  [
+                             "git-status",
+                             "git-branch-current",
+                             "git-diff",
+                             "typecheck",
+                             "test-tsx"
+                         ],
+    "repairLimits":  {
+                         "maximumAttempts":  3,
+                         "allowScopeExpansion":  false
+                     },
+    "approvalBoundaries":  [
+                               "push",
+                               "deploy",
+                               "package-install",
+                               "dependency-upgrade",
+                               "file-delete",
+                               "database-migration",
+                               "production-data-change",
+                               "infrastructure-change",
+                               "secret-access",
+                               "scope-expansion"
+                           ]
+}

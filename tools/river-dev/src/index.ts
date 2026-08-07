@@ -52,9 +52,12 @@ import {
 
 import {
     formatImplementationPlan,
-    getDefaultSpecificationPath,
     planRiverDevPhase
 } from "./commands/plan";
+
+import {
+    resolvePhaseSpecification
+} from "./core/phase-resolution";
 
 import {
     formatVerificationResult,
@@ -154,9 +157,12 @@ async function run(): Promise<void> {
 
         case "plan": {
 
+            const explicitSpecificationPath =
+                process.argv[3];
+
             const specificationPath =
-                process.argv[3] ??
-                getDefaultSpecificationPath(
+                explicitSpecificationPath ??
+                await resolvePhaseSpecification(
                     configuration
                 );
 
@@ -960,6 +966,7 @@ run().catch(
 
     }
 );
+
 
 
 
