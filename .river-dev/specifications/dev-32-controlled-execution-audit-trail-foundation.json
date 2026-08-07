@@ -1,0 +1,102 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-32 Controlled Execution Audit Trail Foundation",
+  "branch": "dev-32-controlled-execution-audit-trail-foundation",
+  "commitMessage": "DEV-32: Build controlled execution audit trail foundation",
+  "objective": "Create a deterministic controlled execution audit trail foundation that consumes DEV-31 execution results, records explainable execution history states, preserves safety boundaries, and establishes traceability for future River Development Agent operations without performing uncontrolled repository modifications.",
+  "architecturalContext": [
+    "DEV-19 deterministic context engine",
+    "DEV-20 bounded context artifact loader",
+    "DEV-21 context understanding engine",
+    "DEV-22 intelligent planning engine",
+    "DEV-23 execution intelligence engine",
+    "DEV-24 execution validation safety gate engine",
+    "DEV-25 execution orchestrator foundation",
+    "DEV-26 execution session approval state engine",
+    "DEV-27 execution simulation engine",
+    "DEV-28 controlled execution runner foundation",
+    "DEV-29 controlled execution action model foundation",
+    "DEV-30 controlled execution dispatcher foundation",
+    "DEV-31 controlled execution result model foundation",
+    "Controlled execution audit trail",
+    "Bounded agent operations",
+    "River Development Agent roadmap Generation II"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts",
+      "tools/river-dev/src/core/result-engine.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-32-controlled-execution-audit-trail-foundation.json",
+      "tools/river-dev/src/core/audit-engine.ts",
+      "tools/river-dev/src/core/audit-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Audit engine consumes DEV-31 controlled execution results instead of independently analyzing repositories.",
+    "Audit records are deterministic for identical execution results.",
+    "Blocked results remain visible as blocked outcomes.",
+    "Approval-required results remain traceable.",
+    "Audit output is explainable.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/audit-engine.test.ts",
+    "tools/river-dev/src/core/result-engine.test.ts",
+    "tools/river-dev/src/core/dispatcher-engine.test.ts",
+    "tools/river-dev/src/core/action-engine.test.ts",
+    "tools/river-dev/src/core/runner-engine.test.ts",
+    "tools/river-dev/src/core/simulation-engine.test.ts",
+    "tools/river-dev/src/core/session-engine.test.ts",
+    "tools/river-dev/src/core/orchestration-engine.test.ts",
+    "tools/river-dev/src/core/validation-engine.test.ts",
+    "tools/river-dev/src/core/execution-engine.test.ts",
+    "tools/river-dev/src/core/planning-engine.test.ts",
+    "tools/river-dev/src/core/context-engine.test.ts",
+    "tools/river-dev/src/commands/context.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  },
+  "approvalBoundaries": [
+    "push",
+    "deploy",
+    "package-install",
+    "dependency-upgrade",
+    "file-delete",
+    "database-migration",
+    "production-data-change",
+    "infrastructure-change",
+    "secret-access",
+    "scope-expansion"
+  ]
+}

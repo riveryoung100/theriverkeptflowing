@@ -760,6 +760,40 @@ string;
 
 }
 
+
+export interface RiverDevAuditStep {
+
+readonly taskId:
+string;
+
+readonly state:
+"successful" |
+"blocked" |
+"approval-required";
+
+readonly reason:
+string;
+
+}
+
+export interface RiverDevExecutionAudit {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly complete:
+boolean;
+
+readonly history:
+readonly RiverDevAuditStep[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
 export interface RiverDevExecutionResult {
 
 readonly version:
