@@ -174,56 +174,65 @@ RiverDevDevelopmentContext {
                 "No active River Dev session exists."
         },
 
-        artifacts:
+
+    relevantEntries:
+    [
         {
-            version:
-                "1.0.0",
-
-            maximumArtifactBytes:
-                0,
-
-            maximumTotalBytes:
-                0,
-
-            loadedBytes:
-                0,
-
-            loadedCount:
-                0,
-
-            truncatedCount:
-                0,
-
-            omittedCount:
-                0,
-
-            artifacts:
-                []
+            path:
+                "tools/river-dev/src/types.ts",
+            kind:
+                "file",
+            classification:
+                "river-dev",
+            reason:
+                "approved-modifiable-scope"
         },
-    relevantEntries: [
-            {
-                path:
-                    "tools/river-dev/src/types.ts",
-                kind:
-                    "file",
-                classification:
-                    "river-dev",
-                reason:
-                    "approved-modifiable-scope"
-            },
-            {
-                path:
-                    "tools/river-dev/src/core/context-engine.ts",
-                kind:
-                    "file",
-                classification:
-                    "river-dev",
-                reason:
-                    "approved-creatable-scope"
-            }
-        ]
+        {
+            path:
+                "tools/river-dev/src/core/context-engine.ts",
+            kind:
+                "file",
+            classification:
+                "river-dev",
+            reason:
+                "approved-creatable-scope"
+        }
+    ],
 
-    };
+    understanding:
+    {
+        version:
+            "1.0.0",
+        artifactCount:
+            0,
+        metadata:
+            [],
+        relationships:
+            [],
+        relevance:
+            []
+    },
+
+    artifacts:
+    {
+        version:
+            "1.0.0",
+        maximumArtifactBytes:
+            0,
+        maximumTotalBytes:
+            0,
+        loadedBytes:
+            0,
+        loadedCount:
+            0,
+        truncatedCount:
+            0,
+        omittedCount:
+            0,
+        artifacts:
+            []
+    }
+};
 
 }
 

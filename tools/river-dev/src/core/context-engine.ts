@@ -37,6 +37,9 @@ import {
 import {
 loadContextArtifacts
 } from "./context-artifact-loader";
+import {
+    analyzeContextArtifacts
+} from "./context-understanding";
 
 
 export const RIVER_DEV_CONTEXT_VERSION =
@@ -466,6 +469,11 @@ export async function createRiverDevDevelopmentContext(
             relevantEntries
         );
 
+    const understanding =
+        analyzeContextArtifacts(
+            artifacts
+        );
+
     return {
 
         version:
@@ -577,14 +585,13 @@ export async function createRiverDevDevelopmentContext(
 
         session,
 
-        relevantEntries,
+    relevantEntries,
 
-        artifacts
+    artifacts,
 
-    };
+    understanding
+
+};
 
 }
-
-
-
 

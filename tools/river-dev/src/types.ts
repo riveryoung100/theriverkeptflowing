@@ -505,11 +505,80 @@ export interface RiverDevContextArtifactBundle {
     readonly omittedCount:
         number;
 
+
     readonly artifacts:
         readonly RiverDevContextArtifact[];
 
 }
 
+
+export interface RiverDevContextArtifactMetadata {
+
+    readonly path:
+        string;
+
+    readonly extension:
+        string;
+
+    readonly bytes:
+        number;
+
+    readonly classification:
+        RiverDevRepositoryPathClassification;
+
+}
+
+
+export interface RiverDevContextArtifactRelationship {
+
+    readonly from:
+        string;
+
+    readonly to:
+        string;
+
+    readonly type:
+        "imports" |
+        "references";
+
+    readonly reason:
+        string;
+
+}
+
+
+export interface RiverDevContextRelevanceScore {
+
+    readonly path:
+        string;
+
+    readonly score:
+        number;
+
+    readonly reasons:
+        readonly string[];
+
+}
+
+
+export interface RiverDevContextUnderstanding {
+
+    readonly version:
+        "1.0.0";
+
+    readonly artifactCount:
+        number;
+
+    readonly metadata:
+        readonly RiverDevContextArtifactMetadata[];
+
+    readonly relationships:
+        readonly RiverDevContextArtifactRelationship[];
+
+    readonly relevance:
+        readonly RiverDevContextRelevanceScore[];
+
+}
 export interface RiverDevDevelopmentContext {
 
     readonly version:
@@ -586,7 +655,12 @@ export interface RiverDevDevelopmentContext {
     readonly relevantEntries:
         readonly RiverDevContextRelevantEntry[];
 
-    readonly artifacts:
+
+
+    readonly understanding:
+        RiverDevContextUnderstanding;
+
+readonly artifacts:
         RiverDevContextArtifactBundle;
 
 }
@@ -816,7 +890,4 @@ export interface RiverDevStateStore {
         Promise<RiverDevStoredState>;
 
 }
-
-
-
 
