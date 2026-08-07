@@ -680,6 +680,40 @@ string;
 
 }
 
+
+export interface RiverDevSimulationStep {
+
+readonly taskId:
+string;
+
+readonly state:
+"simulated" |
+"blocked" |
+"approval-required";
+
+readonly reason:
+string;
+
+}
+
+export interface RiverDevExecutionSimulation {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly ready:
+boolean;
+
+readonly steps:
+readonly RiverDevSimulationStep[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
 export interface RiverDevExecutionSession {
 
 readonly version:

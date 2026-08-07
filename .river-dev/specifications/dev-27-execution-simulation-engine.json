@@ -1,0 +1,92 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-27 Execution Simulation Engine",
+  "branch": "dev-27-execution-simulation-engine",
+  "commitMessage": "DEV-27: Build deterministic execution simulation engine",
+  "objective": "Create a deterministic execution simulation engine that consumes DEV-26 approved execution sessions, simulates future execution workflows without repository modifications, validates execution ordering and approval state assumptions, and produces explainable simulation results.",
+  "architecturalContext": [
+    "DEV-19 deterministic context engine",
+    "DEV-20 bounded context artifact loader",
+    "DEV-21 context understanding engine",
+    "DEV-22 intelligent planning engine",
+    "DEV-23 execution intelligence engine",
+    "DEV-24 execution validation safety gate engine",
+    "DEV-25 execution orchestrator foundation",
+    "DEV-26 execution session approval state engine",
+    "Execution simulation",
+    "Dry-run execution safety",
+    "River Development Agent roadmap Generation II"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts",
+      "tools/river-dev/src/core/session-engine.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-27-execution-simulation-engine.json",
+      "tools/river-dev/src/core/simulation-engine.ts",
+      "tools/river-dev/src/core/simulation-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Simulation engine consumes DEV-26 execution sessions instead of independently analyzing repositories.",
+    "Simulation results are deterministic for identical sessions.",
+    "Pending approvals prevent simulated execution readiness.",
+    "Rejected states prevent simulation readiness.",
+    "Simulation output explains every simulated step.",
+    "Repository state remains unchanged during simulation.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/simulation-engine.test.ts",
+    "tools/river-dev/src/core/session-engine.test.ts",
+    "tools/river-dev/src/core/orchestration-engine.test.ts",
+    "tools/river-dev/src/core/validation-engine.test.ts",
+    "tools/river-dev/src/core/execution-engine.test.ts",
+    "tools/river-dev/src/core/planning-engine.test.ts",
+    "tools/river-dev/src/core/context-engine.test.ts",
+    "tools/river-dev/src/commands/context.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  },
+  "approvalBoundaries": [
+    "push",
+    "deploy",
+    "package-install",
+    "dependency-upgrade",
+    "file-delete",
+    "database-migration",
+    "production-data-change",
+    "infrastructure-change",
+    "secret-access",
+    "scope-expansion"
+  ]
+}
