@@ -1,0 +1,90 @@
+﻿{
+"version": "1.0.0",
+"phase": "DEV-24 Execution Validation Safety Gate Engine",
+"branch": "dev-24-execution-validation-safety-gate-engine",
+"commitMessage": "DEV-24: Build deterministic execution validation safety gate engine",
+"objective": "Create a deterministic execution validation safety gate engine that consumes DEV-23 execution manifests, validates execution tasks against River Development Agent safety policies, detects approval requirements and scope violations, and produces explainable validation results before any future execution workflow.",
+"architecturalContext": [
+"DEV-19 deterministic context engine",
+"DEV-20 bounded context artifact loader",
+"DEV-21 context understanding engine",
+"DEV-22 intelligent planning engine",
+"DEV-23 execution intelligence engine",
+"Execution safety validation",
+"Approval boundary enforcement",
+"Execution readiness foundation",
+"River Development Agent roadmap Generation II"
+],
+"approvedScope": {
+"modifiablePaths": [
+"tools/river-dev/src/types.ts",
+"tools/river-dev/src/commands/context.ts",
+"tools/river-dev/src/core/execution-engine.ts"
+],
+"creatablePaths": [
+".river-dev/specifications/dev-24-execution-validation-safety-gate-engine.json",
+"tools/river-dev/src/core/validation-engine.ts",
+"tools/river-dev/src/core/validation-engine.test.ts"
+],
+"excludedPaths": [
+".env",
+".git",
+"node_modules",
+"dist"
+]
+},
+"acceptanceCriteria": [
+"Validation engine consumes DEV-23 execution manifests instead of independently analyzing repositories.",
+"Validation results are deterministic for identical execution manifests.",
+"Every execution task receives an explainable validation decision.",
+"Protected paths never pass validation.",
+"Approval-required actions are identified before execution.",
+"Scope violations are rejected.",
+"Validation output contains execution readiness state.",
+"Repository state remains unchanged during validation analysis.",
+"Focused tests, River Dev typechecking, and main-project typechecking pass."
+],
+"requiredTests": [
+"tools/river-dev/src/core/validation-engine.test.ts",
+"tools/river-dev/src/core/execution-engine.test.ts",
+"tools/river-dev/src/core/planning-engine.test.ts",
+"tools/river-dev/src/core/context-understanding.test.ts",
+"tools/river-dev/src/core/context-engine.test.ts",
+"tools/river-dev/src/commands/context.test.ts",
+"tools/river-dev/src/index.test.ts"
+],
+"requiredQualityGates": [
+"expected-branch",
+"scope-check",
+"tests",
+"typecheck",
+"documentation",
+"exports",
+"secret-scan",
+"review",
+"staged-diff"
+],
+"approvedCommands": [
+"git-status",
+"git-branch-current",
+"git-diff",
+"typecheck",
+"test-tsx"
+],
+"repairLimits": {
+"maximumAttempts": 3,
+"allowScopeExpansion": false
+},
+"approvalBoundaries": [
+"push",
+"deploy",
+"package-install",
+"dependency-upgrade",
+"file-delete",
+"database-migration",
+"production-data-change",
+"infrastructure-change",
+"secret-access",
+"scope-expansion"
+]
+}

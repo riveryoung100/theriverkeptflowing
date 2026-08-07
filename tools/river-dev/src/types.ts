@@ -621,6 +621,42 @@ export interface RiverDevExecutionTask {
 }
 
 
+
+export interface RiverDevValidationDecision {
+
+readonly taskId:
+    string;
+
+readonly path:
+    string;
+
+readonly valid:
+    boolean;
+
+readonly reason:
+    string;
+
+readonly requiresApproval:
+    boolean;
+
+}
+
+
+export interface RiverDevValidationResult {
+
+readonly version:
+    "1.0.0";
+
+readonly ready:
+    boolean;
+
+readonly decisions:
+    readonly RiverDevValidationDecision[];
+
+readonly blockedReasons:
+    readonly string[];
+
+}
 export interface RiverDevExecutionManifest {
 
     readonly version:
