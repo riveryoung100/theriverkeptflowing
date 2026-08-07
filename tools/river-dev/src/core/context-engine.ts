@@ -34,6 +34,9 @@ import {
 import {
     discoverRepository
 } from "./repository-discovery";
+import {
+loadContextArtifacts
+} from "./context-artifact-loader";
 
 
 export const RIVER_DEV_CONTEXT_VERSION =
@@ -457,6 +460,12 @@ export async function createRiverDevDevelopmentContext(
             discovery.keyPaths
         );
 
+    const artifacts =
+        await loadContextArtifacts(
+            configuration.repositoryRoot,
+            relevantEntries
+        );
+
     return {
 
         version:
@@ -568,8 +577,14 @@ export async function createRiverDevDevelopmentContext(
 
         session,
 
-        relevantEntries
+        relevantEntries,
+
+        artifacts
 
     };
 
 }
+
+
+
+

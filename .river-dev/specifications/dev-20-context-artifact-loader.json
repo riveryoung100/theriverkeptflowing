@@ -1,0 +1,98 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-20 Context Artifact Loader",
+  "branch": "dev-20-context-artifact-loader",
+  "commitMessage": "DEV-20: Build bounded context artifact loader",
+  "objective": "Create a deterministic, read-only context artifact loader that safely loads bounded textual content for DEV-19 relevant repository entries while enforcing repository boundaries, protected-path restrictions, file-size limits, per-artifact limits, total context limits, binary-file rejection, truncation metadata, and stable ordering for downstream reasoning systems.",
+  "architecturalContext": [
+    "DEV-16 automatic phase resolution",
+    "DEV-17 persistent session state manager",
+    "DEV-18 repository discovery engine",
+    "DEV-19 deterministic development context engine",
+    "River Dev project map",
+    "Safety policy engine",
+    "Repository boundary enforcement",
+    "Protected path classification",
+    "River Development Agent roadmap Generation II"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/core/context-engine.ts",
+      "tools/river-dev/src/core/context-engine.test.ts",
+      "tools/river-dev/src/commands/context.ts",
+      "tools/river-dev/src/commands/context.test.ts",
+      "tools/river-dev/src/index.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-20-context-artifact-loader.json",
+      "tools/river-dev/src/core/context-artifact-loader.ts",
+      "tools/river-dev/src/core/context-artifact-loader.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "The loader accepts deterministic relevant repository entries produced by the DEV-19 Context Engine.",
+    "Only repository-relative file entries are eligible for content loading.",
+    "Directories are not loaded as textual artifacts.",
+    "Protected paths and protected classifications are never read as context artifacts.",
+    "Paths that resolve outside the repository boundary are rejected.",
+    "Binary or non-text files are rejected or represented without exposing binary content.",
+    "Each loaded artifact records its repository-relative path, classification, selection reason, original byte size, loaded byte count, truncation state, and textual content.",
+    "Per-artifact content is bounded by a deterministic maximum size.",
+    "The complete loaded context is bounded by a deterministic total byte budget.",
+    "Artifacts are processed in stable deterministic order.",
+    "When the total context budget is exhausted, later artifacts are omitted deterministically and the result records omission counts.",
+    "UTF-8 text files are loaded without introducing byte-order-mark content into the resulting context.",
+    "Missing files and unreadable files produce deterministic safe failures rather than silent corruption.",
+    "DEV-19 development context can include the loaded artifact bundle without changing repository state.",
+    "The context command reports loaded artifact counts, loaded bytes, truncation counts, omission counts, and artifact paths.",
+    "The loader performs read-only repository access and never modifies application files.",
+    "Focused tests, existing DEV-19 regressions, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/context-artifact-loader.test.ts",
+    "tools/river-dev/src/core/context-engine.test.ts",
+    "tools/river-dev/src/commands/context.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  },
+  "approvalBoundaries": [
+    "push",
+    "deploy",
+    "package-install",
+    "dependency-upgrade",
+    "file-delete",
+    "database-migration",
+    "production-data-change",
+    "infrastructure-change",
+    "secret-access",
+    "scope-expansion"
+  ]
+}

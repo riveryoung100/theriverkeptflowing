@@ -174,7 +174,33 @@ RiverDevDevelopmentContext {
                 "No active River Dev session exists."
         },
 
-        relevantEntries: [
+        artifacts:
+        {
+            version:
+                "1.0.0",
+
+            maximumArtifactBytes:
+                0,
+
+            maximumTotalBytes:
+                0,
+
+            loadedBytes:
+                0,
+
+            loadedCount:
+                0,
+
+            truncatedCount:
+                0,
+
+            omittedCount:
+                0,
+
+            artifacts:
+                []
+        },
+    relevantEntries: [
             {
                 path:
                     "tools/river-dev/src/types.ts",
@@ -261,3 +287,4 @@ test(
 
     }
 );
+
