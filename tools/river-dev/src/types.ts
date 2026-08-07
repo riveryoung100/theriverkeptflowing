@@ -728,6 +728,40 @@ string;
 
 }
 
+
+export interface RiverDevDispatchStep {
+
+    readonly taskId:
+    string;
+
+    readonly state:
+    "dispatchable" |
+    "blocked" |
+    "approval-required";
+
+    readonly reason:
+    string;
+
+}
+
+export interface RiverDevExecutionDispatcher {
+
+    readonly version:
+    "1.0.0";
+
+    readonly objective:
+    string;
+
+    readonly ready:
+    boolean;
+
+    readonly dispatches:
+    readonly RiverDevDispatchStep[];
+
+    readonly blockedReasons:
+    readonly string[];
+
+}
 export interface RiverDevExecutionAction {
 
 readonly version:
