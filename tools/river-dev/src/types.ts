@@ -952,6 +952,40 @@ string;
 
 }
 
+
+export interface RiverDevReviewBoundaryStep {
+
+readonly taskId:
+string;
+
+readonly state:
+"approved" |
+"blocked" |
+"confirmation-required";
+
+readonly reason:
+string;
+
+}
+
+export interface RiverDevReviewBoundary {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly completed:
+boolean;
+
+readonly reviews:
+readonly RiverDevReviewBoundaryStep[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
 export interface RiverDevCommitBoundary {
 
 readonly version:
