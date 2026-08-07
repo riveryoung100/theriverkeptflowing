@@ -1,0 +1,54 @@
+﻿{
+  "version": "1.0.0",
+  "id": "dev-15-execution-audit-record",
+  "name": "Immutable Execution Audit Record",
+  "objective": "Create and persist a deterministic immutable audit record for each controlled execution-package run, including package identity, mode, branch, implementation outcome, operation results, write status, and execution timestamp.",
+  "branch": "dev-15-execution-audit-record",
+  "commitMessage": "DEV-15: Build immutable execution audit records",
+  "allowedPaths": [
+    ".river-dev/specifications/dev-15-execution-audit-record.json",
+    "tools/river-dev/src/core/execution-audit.ts",
+    "tools/river-dev/src/core/execution-audit.test.ts",
+    "tools/river-dev/src/commands/audit-execution.ts",
+    "tools/river-dev/src/index.ts",
+    "tools/river-dev/src/types.ts"
+  ],
+  "auditRoot": ".river-dev/execution-audits",
+  "requirements": {
+    "executionResultRequired": true,
+    "packageIdentityRequired": true,
+    "branchRequired": true,
+    "modeRequired": true,
+    "operationResultsRequired": true,
+    "writeStatusRequired": true,
+    "timestampRequired": true,
+    "deterministicSerializationRequired": true,
+    "immutablePersistenceRequired": true,
+    "overwriteAllowed": false,
+    "outsideRepositoryAllowed": false,
+    "scopeExpansionAllowed": false,
+    "implementationAllowed": false,
+    "commitAllowed": false,
+    "pushAllowed": false
+  },
+  "outcomes": [
+    "audit-prepared",
+    "audit-persisted",
+    "audit-exists",
+    "invalid-execution-result",
+    "scope-blocked",
+    "stopped"
+  ],
+  "qualityGates": [
+    "expected-branch",
+    "valid-execution-result",
+    "deterministic-record",
+    "deterministic-path",
+    "immutable-write",
+    "overwrite-protection",
+    "scope-check",
+    "typecheck",
+    "tests",
+    "review"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "version": "1.0.0",
+  "auditId": "execution-audit:execution-package-implementation-proposal-intent-dev-15-cli:dry-run:2026-08-07t13-30-00.000z",
+  "packageId": "execution-package:implementation:proposal:intent:dev-15-cli",
+  "implementationId": "implementation:proposal:intent:dev-15-cli",
+  "planId": "plan:dev-15-cli",
+  "branch": "dev-15-execution-audit-record",
+  "mode": "dry-run",
+  "applied": false,
+  "explicitApplyAuthorized": false,
+  "operationCount": 1,
+  "operations": [
+    {
+      "index": 0,
+      "type": "write-file",
+      "path": "tools/river-dev/src/generated/dev-15-cli-example.ts",
+      "status": "validated",
+      "message": "File validated."
+    }
+  ],
+  "warnings": [],
+  "writesPerformed": false,
+  "executedAt": "2026-08-07T13:30:00.000Z"
+}

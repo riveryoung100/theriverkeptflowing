@@ -17,6 +17,10 @@ import {
     formatExecutionPackageResult
 } from "./commands/create-execution-package";
 import {
+    auditExecutionFileRiverDev,
+    formatExecutionAuditResult
+} from "./commands/audit-execution";
+import {
     executePackageRiverDev,
     formatPackageExecutionResult
 } from "./commands/execute-package";
@@ -96,6 +100,7 @@ function parseCommand(
         case "create-execution-package":
         case "persist-execution-package":
         case "execute-package":
+        case "audit-execution":
         case "persist-artifacts":
         case "generate-proposal":
         case "generate-manifest":
@@ -200,6 +205,38 @@ async function run(): Promise<void> {
 
     process.stdout.write(
         `${formatExecutionPackageResult(result)}\n`
+    );
+
+    return;
+
+}
+
+case "audit-execution": {
+
+    const executionResultPath =
+        process.argv[3];
+
+    const executedAt =
+        process.argv[4];
+
+    if (
+        executionResultPath === undefined ||
+        executedAt === undefined
+    ) {
+        throw new TypeError(
+            "Usage: audit-execution <execution-result-path> <executed-at>"
+        );
+    }
+
+    const result =
+        await auditExecutionFileRiverDev(
+            configuration,
+            executionResultPath,
+            executedAt
+        );
+
+    process.stdout.write(
+        `${formatExecutionAuditResult(result)}\n`
     );
 
     return;
@@ -923,6 +960,8 @@ run().catch(
 
     }
 );
+
+
 
 
 
