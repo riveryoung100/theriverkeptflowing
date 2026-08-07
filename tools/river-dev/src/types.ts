@@ -744,6 +744,40 @@ export interface RiverDevDispatchStep {
 
 }
 
+
+export interface RiverDevResultStep {
+
+readonly taskId:
+string;
+
+readonly state:
+"successful" |
+"blocked" |
+"approval-required";
+
+readonly reason:
+string;
+
+}
+
+export interface RiverDevExecutionResult {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly ready:
+boolean;
+
+readonly results:
+readonly RiverDevResultStep[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
 export interface RiverDevExecutionDispatcher {
 
     readonly version:
