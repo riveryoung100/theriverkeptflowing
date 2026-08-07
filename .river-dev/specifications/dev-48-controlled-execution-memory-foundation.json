@@ -1,0 +1,67 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-48 Controlled Execution Memory Foundation",
+  "branch": "dev-48-controlled-execution-memory-foundation",
+  "commitMessage": "DEV-48: Build controlled execution memory foundation",
+  "objective": "Create a deterministic controlled execution memory layer that preserves approved development context, architectural decisions, execution history, and reasoning outcomes while maintaining safety boundaries and human approval controls.",
+  "architecturalContext": [
+    "DEV-45 controlled execution orchestrator foundation",
+    "DEV-46 controlled execution intelligence foundation",
+    "DEV-47 controlled execution reasoning foundation",
+    "Controlled execution memory layer",
+    "River Development Agent Generation III"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-48-controlled-execution-memory-foundation.json",
+      "tools/river-dev/src/core/memory-engine.ts",
+      "tools/river-dev/src/core/memory-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Memory layer stores deterministic development context.",
+    "Memory records preserve explainable architectural decisions.",
+    "Blocked execution states cannot create trusted memory entries.",
+    "Human approval boundaries remain preserved.",
+    "Memory output is deterministic and reviewable.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/memory-engine.test.ts",
+    "tools/river-dev/src/core/reasoning-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}

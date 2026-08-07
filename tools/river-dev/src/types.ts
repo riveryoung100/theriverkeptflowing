@@ -1019,6 +1019,41 @@ string;
 
 }
 
+
+export interface RiverDevMemoryEntry {
+
+readonly category:
+string;
+
+readonly key:
+string;
+
+readonly value:
+string;
+
+readonly source:
+string;
+
+}
+
+export interface RiverDevExecutionMemory {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly trusted:
+boolean;
+
+readonly entries:
+readonly RiverDevMemoryEntry[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
 export interface RiverDevExecutionReasoning {
 
 readonly version:
