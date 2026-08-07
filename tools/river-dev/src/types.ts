@@ -642,6 +642,46 @@ readonly requiresApproval:
 }
 
 
+
+export interface RiverDevExecutionStep {
+
+readonly id:
+    string;
+
+readonly taskId:
+    string;
+
+readonly order:
+    number;
+
+readonly status:
+    "ready" |
+    "blocked" |
+    "approval-required";
+
+readonly reason:
+    string;
+
+}
+
+export interface RiverDevExecutionWorkflow {
+
+readonly version:
+    "1.0.0";
+
+readonly objective:
+    string;
+
+readonly ready:
+    boolean;
+
+readonly steps:
+    readonly RiverDevExecutionStep[];
+
+readonly blockedReasons:
+    readonly string[];
+
+}
 export interface RiverDevValidationResult {
 
 readonly version:
