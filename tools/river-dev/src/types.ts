@@ -776,6 +776,40 @@ string;
 
 }
 
+
+export interface RiverDevGovernanceStep {
+
+readonly taskId:
+string;
+
+readonly state:
+"approved" |
+"blocked" |
+"review-required";
+
+readonly reason:
+string;
+
+}
+
+export interface RiverDevExecutionGovernance {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly approved:
+boolean;
+
+readonly decisions:
+readonly RiverDevGovernanceStep[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
 export interface RiverDevExecutionAudit {
 
 readonly version:
