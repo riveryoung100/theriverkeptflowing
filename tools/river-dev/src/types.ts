@@ -968,6 +968,40 @@ string;
 
 }
 
+
+export interface RiverDevOrchestratorStep {
+
+readonly name:
+string;
+
+readonly state:
+"complete" |
+"blocked" |
+"confirmation-required";
+
+readonly reason:
+string;
+
+}
+
+export interface RiverDevExecutionOrchestrator {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly executable:
+boolean;
+
+readonly steps:
+readonly RiverDevOrchestratorStep[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
 export interface RiverDevReviewBoundary {
 
 readonly version:
