@@ -1,0 +1,69 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-47 Controlled Execution Reasoning Foundation",
+  "branch": "dev-47-controlled-execution-reasoning-foundation",
+  "commitMessage": "DEV-47: Build controlled execution reasoning foundation",
+  "objective": "Create a deterministic controlled execution reasoning layer that consumes approved intelligence outputs, produces explainable reasoning decisions, preserves human approval boundaries, and prevents execution paths from proceeding without validated reasoning.",
+  "architecturalContext": [
+    "DEV-42 controlled execution final gate foundation",
+    "DEV-43 controlled execution commit boundary foundation",
+    "DEV-44 controlled execution review boundary foundation",
+    "DEV-45 controlled execution orchestrator foundation",
+    "DEV-46 controlled execution intelligence foundation",
+    "Controlled execution reasoning layer",
+    "River Development Agent Generation III"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-47-controlled-execution-reasoning-foundation.json",
+      "tools/river-dev/src/core/reasoning-engine.ts",
+      "tools/river-dev/src/core/reasoning-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Reasoning layer consumes approved intelligence output.",
+    "Reasoning decisions are deterministic and explainable.",
+    "Blocked intelligence cannot produce executable reasoning.",
+    "Confirmation-required intelligence remains gated.",
+    "Human approval boundaries remain preserved.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/reasoning-engine.test.ts",
+    "tools/river-dev/src/core/intelligence-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}

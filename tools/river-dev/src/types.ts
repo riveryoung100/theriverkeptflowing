@@ -1000,6 +1000,43 @@ string;
 
 }
 
+
+export interface RiverDevReasoningStep {
+
+readonly category:
+string;
+
+readonly state:
+"reasoned" |
+"blocked" |
+"confirmation-required";
+
+readonly explanation:
+string;
+
+readonly decision:
+string;
+
+}
+
+export interface RiverDevExecutionReasoning {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly validated:
+boolean;
+
+readonly steps:
+readonly RiverDevReasoningStep[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
 export interface RiverDevExecutionIntelligence {
 
 readonly version:
