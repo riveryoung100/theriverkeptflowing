@@ -664,6 +664,40 @@ readonly reason:
 
 }
 
+
+export interface RiverDevApprovalState {
+
+readonly taskId:
+string;
+
+readonly state:
+"pending" |
+"approved" |
+"rejected";
+
+readonly reason:
+string;
+
+}
+
+export interface RiverDevExecutionSession {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly ready:
+boolean;
+
+readonly approvals:
+readonly RiverDevApprovalState[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
 export interface RiverDevExecutionWorkflow {
 
 readonly version:
