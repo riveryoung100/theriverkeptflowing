@@ -984,6 +984,40 @@ string;
 
 }
 
+
+export interface RiverDevIntelligenceStep {
+
+readonly category:
+string;
+
+readonly state:
+"understood" |
+"blocked" |
+"confirmation-required";
+
+readonly explanation:
+string;
+
+}
+
+export interface RiverDevExecutionIntelligence {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly understood:
+boolean;
+
+readonly steps:
+readonly RiverDevIntelligenceStep[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
 export interface RiverDevExecutionOrchestrator {
 
 readonly version:
