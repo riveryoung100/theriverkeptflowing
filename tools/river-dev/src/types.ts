@@ -920,6 +920,40 @@ string;
 
 }
 
+
+export interface RiverDevFinalGateStep {
+
+readonly taskId:
+string;
+
+readonly state:
+"approved" |
+"blocked" |
+"confirmation-required";
+
+readonly reason:
+string;
+
+}
+
+export interface RiverDevExecutionFinalGate {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly permitted:
+boolean;
+
+readonly gates:
+readonly RiverDevFinalGateStep[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
 export interface RiverDevRunAuthorization {
 
 readonly version:
