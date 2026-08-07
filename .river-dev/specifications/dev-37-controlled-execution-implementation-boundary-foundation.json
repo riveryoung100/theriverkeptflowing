@@ -1,0 +1,112 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-37 Controlled Execution Implementation Boundary Foundation",
+  "branch": "dev-37-controlled-execution-implementation-boundary-foundation",
+  "commitMessage": "DEV-37: Build controlled execution implementation boundary foundation",
+  "objective": "Create a deterministic controlled execution implementation boundary foundation that consumes DEV-36 authorization states, defines bounded implementation readiness, preserves safety constraints, and produces explainable implementation boundary decisions without performing uncontrolled repository modifications.",
+  "architecturalContext": [
+    "DEV-19 deterministic context engine",
+    "DEV-20 bounded context artifact loader",
+    "DEV-21 context understanding engine",
+    "DEV-22 intelligent planning engine",
+    "DEV-23 execution intelligence engine",
+    "DEV-24 execution validation safety gate engine",
+    "DEV-25 execution orchestrator foundation",
+    "DEV-26 execution session approval state engine",
+    "DEV-27 execution simulation engine",
+    "DEV-28 controlled execution runner foundation",
+    "DEV-29 controlled execution action model foundation",
+    "DEV-30 controlled execution dispatcher foundation",
+    "DEV-31 controlled execution result model foundation",
+    "DEV-32 controlled execution audit trail foundation",
+    "DEV-33 controlled execution governance model foundation",
+    "DEV-34 controlled execution policy engine foundation",
+    "DEV-35 controlled execution approval resolution foundation",
+    "DEV-36 controlled execution authorization boundary foundation",
+    "Controlled execution implementation boundary",
+    "Bounded agent operations",
+    "River Development Agent roadmap Generation II"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts",
+      "tools/river-dev/src/core/authorization-engine.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-37-controlled-execution-implementation-boundary-foundation.json",
+      "tools/river-dev/src/core/implementation-engine.ts",
+      "tools/river-dev/src/core/implementation-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Implementation engine consumes DEV-36 authorization states instead of independently analyzing repositories.",
+    "Implementation decisions are deterministic for identical authorization states.",
+    "Blocked authorization cannot produce implementation readiness.",
+    "Confirmation-required authorization remains gated.",
+    "Implementation output is explainable.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+"tools/river-dev/src/core/implementation-engine.test.ts",
+"tools/river-dev/src/core/authorization-engine.test.ts",
+"tools/river-dev/src/core/approval-engine.test.ts",
+"tools/river-dev/src/core/policy-engine.test.ts",
+"tools/river-dev/src/core/governance-engine.test.ts",
+"tools/river-dev/src/core/audit-engine.test.ts",
+"tools/river-dev/src/core/result-engine.test.ts",
+"tools/river-dev/src/core/dispatcher-engine.test.ts",
+"tools/river-dev/src/core/action-engine.test.ts",
+"tools/river-dev/src/core/runner-engine.test.ts",
+"tools/river-dev/src/core/simulation-engine.test.ts",
+"tools/river-dev/src/core/session-engine.test.ts",
+"tools/river-dev/src/core/orchestration-engine.test.ts",
+"tools/river-dev/src/core/validation-engine.test.ts",
+"tools/river-dev/src/core/execution-engine.test.ts",
+"tools/river-dev/src/core/planning-engine.test.ts",
+"tools/river-dev/src/core/context-engine.test.ts",
+"tools/river-dev/src/commands/context.test.ts",
+"tools/river-dev/src/index.test.ts"
+],"requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  },
+  "approvalBoundaries": [
+    "push",
+    "deploy",
+    "package-install",
+    "dependency-upgrade",
+    "file-delete",
+    "database-migration",
+    "production-data-change",
+    "infrastructure-change",
+    "secret-access",
+    "scope-expansion"
+  ]
+}
+
