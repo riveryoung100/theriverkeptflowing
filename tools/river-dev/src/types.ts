@@ -9,7 +9,8 @@ export type RiverDevVersion =
 export type RiverDevCommandName =
     | "inspect"
 | "discover-repository"
-    | "plan"
+| "context"
+| "plan"
     | "create-execution-package"
     | "persist-execution-package"
     | "execute-package"
@@ -369,6 +370,171 @@ export interface RiverDevRepositoryDiscoveryReport {
 
 }
 
+export interface RiverDevContextPhaseIdentity {
+
+    readonly phase:
+        string;
+
+    readonly branch:
+        string;
+
+    readonly specificationPath:
+        string;
+
+    readonly objective:
+        string;
+
+    readonly commitMessage:
+        string;
+
+}
+
+export interface RiverDevContextScope {
+
+    readonly modifiablePaths:
+        readonly string[];
+
+    readonly creatablePaths:
+        readonly string[];
+
+    readonly excludedPaths:
+        readonly string[];
+
+}
+
+export interface RiverDevContextSessionCompatibility {
+
+    readonly hasActiveSession:
+        boolean;
+
+    readonly sessionId:
+        string |
+        null;
+
+    readonly compatible:
+        boolean;
+
+    readonly reason:
+        string;
+
+}
+
+export interface RiverDevContextRelevantEntry {
+
+    readonly path:
+        string;
+
+    readonly kind:
+        RiverDevRepositoryPathKind;
+
+    readonly classification:
+        RiverDevRepositoryPathClassification;
+
+    readonly reason:
+        string;
+
+}
+
+export interface RiverDevContextIdentity {
+
+    readonly repositoryRoot:
+        string;
+
+    readonly branch:
+        string;
+
+    readonly commit:
+        string;
+
+    readonly capturedAt:
+        string;
+
+    readonly discoveryVersion:
+        "1.0.0";
+
+    readonly specificationPath:
+        string;
+
+}
+
+export interface RiverDevDevelopmentContext {
+
+    readonly version:
+        "1.0.0";
+
+    readonly generatedAt:
+        string;
+
+    readonly identity:
+        RiverDevContextIdentity;
+
+    readonly project: {
+
+        readonly name:
+            string;
+
+        readonly repositoryType:
+            string;
+
+        readonly defaultBranch:
+            string;
+
+        readonly packageManager:
+            string;
+
+    };
+
+    readonly phase:
+        RiverDevContextPhaseIdentity;
+
+    readonly repository:
+        RiverDevRepositorySnapshot;
+
+    readonly discovery:
+        RiverDevRepositoryDiscoveryReport;
+
+    readonly keyPaths:
+        Readonly<Record<string, string>>;
+
+    readonly architecturalContext:
+        readonly string[];
+
+    readonly scope:
+        RiverDevContextScope;
+
+    readonly acceptanceCriteria:
+        readonly string[];
+
+    readonly requiredTests:
+        readonly string[];
+
+    readonly requiredQualityGates:
+        readonly string[];
+
+    readonly approvedCommands:
+        readonly string[];
+
+    readonly repairLimits: {
+
+        readonly maximumAttempts:
+            number;
+
+        readonly allowScopeExpansion:
+            boolean;
+
+    };
+
+    readonly approvalBoundaries:
+        readonly RiverDevApprovalRequirement[];
+
+    readonly session:
+        RiverDevContextSessionCompatibility;
+
+    readonly relevantEntries:
+        readonly RiverDevContextRelevantEntry[];
+
+}
+
 export interface RiverDevRunState {
 
     readonly version:
@@ -594,4 +760,6 @@ export interface RiverDevStateStore {
         Promise<RiverDevStoredState>;
 
 }
+
+
 

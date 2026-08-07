@@ -1,0 +1,91 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-19 Context Engine",
+  "branch": "dev-19-context-engine",
+  "commitMessage": "DEV-19: Build deterministic development context engine",
+  "objective": "Create a deterministic development-context engine that combines active phase identity, repository snapshot, repository discovery, project architecture, approved scope, active session state, and relevant repository artifacts into a bounded context object for downstream River Development Agent planning, reasoning, implementation, review, and resume workflows.",
+  "architecturalContext": [
+    "DEV-16 automatic phase resolution",
+    "DEV-17 persistent session state manager",
+    "DEV-18 repository discovery engine",
+    "River Dev project map",
+    "Safety policy engine",
+    "Phase specification loader",
+    "Repository snapshot abstraction",
+    "Persistent state store",
+    "River Development Agent roadmap Generation II"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/index.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-19-context-engine.json",
+      "tools/river-dev/src/core/context-engine.ts",
+      "tools/river-dev/src/core/context-engine.test.ts",
+      "tools/river-dev/src/commands/context.ts",
+      "tools/river-dev/src/commands/context.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "The context engine resolves the active phase specification using the existing phase-resolution system.",
+    "The context engine captures current repository branch, commit, cleanliness, and changed paths using the existing repository abstraction.",
+    "The context engine consumes DEV-18 repository discovery rather than performing an independent repository traversal.",
+    "The context engine includes project identity, configured key paths, architectural context, approved scope, acceptance criteria, required tests, quality gates, approved commands, repair limits, and approval boundaries from the active specification.",
+    "The context engine loads active River Dev session state when present without requiring a session to exist.",
+    "The context engine records whether the active session repository context matches the current repository context.",
+    "The context engine selects bounded relevant repository entries using deterministic classification and phase-scope rules.",
+    "Protected and secret-classified paths are never included as readable context artifacts.",
+    "Context output is deterministic when repository state, specification, session state, and timestamp are held constant.",
+    "Context output exposes enough identity information for downstream systems to detect stale or mismatched context.",
+    "A CLI command produces a readable development-context report.",
+    "Context generation is read-only and performs no repository mutations.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/context-engine.test.ts",
+    "tools/river-dev/src/commands/context.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  },
+  "approvalBoundaries": [
+    "push",
+    "deploy",
+    "package-install",
+    "dependency-upgrade",
+    "file-delete",
+    "database-migration",
+    "production-data-change",
+    "infrastructure-change",
+    "secret-access",
+    "scope-expansion"
+  ]
+}

@@ -13,6 +13,11 @@ formatRepositoryDiscoveryReport
 } from "./commands/discover-repository";
 
 import {
+createContextReport,
+formatContextReport
+} from "./commands/context";
+
+import {
     commitRiverDev,
     formatCommitResult,
     getDefaultCommitSpecificationPath
@@ -106,6 +111,8 @@ function parseCommand(
 
         case "discover-repository":
 
+        case "context":
+
         case "plan":
         case "generate-artifacts":
         case "create-execution-package":
@@ -184,6 +191,20 @@ async function run(): Promise<void> {
 
             return;
 
+
+        }
+        case "context": {
+
+            const context =
+                await createContextReport(
+                    configuration
+                );
+
+            process.stdout.write(
+                `${formatContextReport(context)}\n`
+            );
+
+            return;
 
         }
 
@@ -999,4 +1020,5 @@ run().catch(
 
     }
 );
+
 
