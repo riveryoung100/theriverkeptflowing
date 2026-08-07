@@ -1,0 +1,70 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-43 Controlled Execution Commit Boundary Foundation",
+  "branch": "dev-43-controlled-execution-commit-boundary-foundation",
+  "commitMessage": "DEV-43: Build controlled execution commit boundary foundation",
+  "objective": "Create a deterministic controlled execution commit boundary that consumes DEV-42 final gate states, verifies execution permission before repository commits, preserves human approval boundaries, and produces explainable commit authorization decisions without performing uncontrolled repository modifications.",
+  "architecturalContext": [
+    "DEV-39 controlled execution change validation foundation",
+    "DEV-40 controlled execution readiness foundation",
+    "DEV-41 controlled execution approval-to-run boundary foundation",
+    "DEV-42 controlled execution final gate foundation",
+    "Controlled execution commit boundary",
+    "Bounded agent operations",
+    "River Development Agent roadmap Generation II"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts",
+      "tools/river-dev/src/core/final-gate-engine.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-43-controlled-execution-commit-boundary-foundation.json",
+      "tools/river-dev/src/core/commit-boundary-engine.ts",
+      "tools/river-dev/src/core/commit-boundary-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Commit boundary consumes DEV-42 final gate states.",
+    "Commit authorization decisions are deterministic.",
+    "Blocked final gates cannot authorize commits.",
+    "Confirmation-required final gates remain gated.",
+    "Commit boundary output is explainable.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/commit-boundary-engine.test.ts",
+    "tools/river-dev/src/core/final-gate-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}
