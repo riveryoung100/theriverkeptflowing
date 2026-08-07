@@ -1,0 +1,78 @@
+﻿{
+"version": "1.0.0",
+"phase": "DEV-38 Controlled Execution Change Planning Foundation",
+"branch": "dev-38-controlled-execution-change-planning-foundation",
+"commitMessage": "DEV-38: Build controlled execution change planning foundation",
+"objective": "Create a deterministic controlled execution change planning foundation that consumes DEV-37 implementation readiness states, produces explainable change plans, preserves safety boundaries, and prepares bounded execution without performing uncontrolled repository modifications.",
+"approvedScope": {
+"modifiablePaths": [
+"tools/river-dev/src/types.ts",
+"tools/river-dev/src/commands/context.ts",
+"tools/river-dev/src/core/implementation-engine.ts"
+],
+"creatablePaths": [
+".river-dev/specifications/dev-38-controlled-execution-change-planning-foundation.json",
+"tools/river-dev/src/core/change-plan-engine.ts",
+"tools/river-dev/src/core/change-plan-engine.test.ts"
+],
+"excludedPaths": [
+".env",
+".git",
+"node_modules",
+"dist"
+]
+},
+"acceptanceCriteria": [
+"Change planning consumes DEV-37 implementation states.",
+"Change plans are deterministic.",
+"Blocked implementation cannot create executable change plans.",
+"Confirmation-required implementation remains gated.",
+"Change output is explainable.",
+"No uncontrolled repository modifications occur.",
+"Focused tests, River Dev typechecking, and main-project typechecking pass."
+],
+"requiredTests": [
+"tools/river-dev/src/core/change-plan-engine.test.ts",
+"tools/river-dev/src/core/implementation-engine.test.ts",
+"tools/river-dev/src/core/authorization-engine.test.ts",
+"tools/river-dev/src/core/approval-engine.test.ts",
+"tools/river-dev/src/core/policy-engine.test.ts",
+"tools/river-dev/src/core/governance-engine.test.ts",
+"tools/river-dev/src/core/audit-engine.test.ts",
+"tools/river-dev/src/core/result-engine.test.ts",
+"tools/river-dev/src/core/dispatcher-engine.test.ts",
+"tools/river-dev/src/core/action-engine.test.ts",
+"tools/river-dev/src/core/runner-engine.test.ts",
+"tools/river-dev/src/core/simulation-engine.test.ts",
+"tools/river-dev/src/core/session-engine.test.ts",
+"tools/river-dev/src/core/orchestration-engine.test.ts",
+"tools/river-dev/src/core/validation-engine.test.ts",
+"tools/river-dev/src/core/execution-engine.test.ts",
+"tools/river-dev/src/core/planning-engine.test.ts",
+"tools/river-dev/src/core/context-engine.test.ts",
+"tools/river-dev/src/commands/context.test.ts",
+"tools/river-dev/src/index.test.ts"
+],
+"requiredQualityGates": [
+"expected-branch",
+"scope-check",
+"tests",
+"typecheck",
+"documentation",
+"exports",
+"secret-scan",
+"review",
+"staged-diff"
+],
+"approvedCommands": [
+"git-status",
+"git-branch-current",
+"git-diff",
+"typecheck",
+"test-tsx"
+],
+"repairLimits": {
+"maximumAttempts": 3,
+"allowScopeExpansion": false
+}
+}

@@ -856,6 +856,40 @@ string;
 
 }
 
+
+export interface RiverDevChangeStep {
+
+readonly taskId:
+string;
+
+readonly state:
+"planned" |
+"blocked" |
+"confirmation-required";
+
+readonly reason:
+string;
+
+}
+
+export interface RiverDevExecutionChangePlan {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly executable:
+boolean;
+
+readonly changes:
+readonly RiverDevChangeStep[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
 export interface RiverDevExecutionImplementation {
 
 readonly version:
