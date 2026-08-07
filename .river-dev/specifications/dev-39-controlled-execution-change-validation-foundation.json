@@ -1,0 +1,104 @@
+﻿{
+"version": "1.0.0",
+"phase": "DEV-39 Controlled Execution Change Validation Foundation",
+"branch": "dev-39-controlled-execution-change-validation-foundation",
+"commitMessage": "DEV-39: Build controlled execution change validation foundation",
+"objective": "Create a deterministic controlled execution change validation foundation that consumes DEV-38 change plans, validates bounded execution readiness, preserves safety constraints, and produces explainable validation decisions without performing uncontrolled repository modifications.",
+"architecturalContext": [
+"DEV-19 deterministic context engine",
+"DEV-20 bounded context artifact loader",
+"DEV-21 context understanding engine",
+"DEV-22 intelligent planning engine",
+"DEV-23 execution intelligence engine",
+"DEV-24 execution validation safety gate engine",
+"DEV-25 execution orchestrator foundation",
+"DEV-26 execution session approval state engine",
+"DEV-27 execution simulation engine",
+"DEV-28 controlled execution runner foundation",
+"DEV-29 controlled execution action model foundation",
+"DEV-30 controlled execution dispatcher foundation",
+"DEV-31 controlled execution result model foundation",
+"DEV-32 controlled execution audit trail foundation",
+"DEV-33 controlled execution governance model foundation",
+"DEV-34 controlled execution policy engine foundation",
+"DEV-35 controlled execution approval resolution foundation",
+"DEV-36 controlled execution authorization boundary foundation",
+"DEV-37 controlled execution implementation boundary foundation",
+"DEV-38 controlled execution change planning foundation",
+"Controlled execution change validation",
+"Bounded agent operations",
+"River Development Agent roadmap Generation II"
+],
+"approvedScope": {
+"modifiablePaths": [
+"tools/river-dev/src/types.ts",
+"tools/river-dev/src/commands/context.ts",
+"tools/river-dev/src/core/change-plan-engine.ts"
+],
+"creatablePaths": [
+".river-dev/specifications/dev-39-controlled-execution-change-validation-foundation.json",
+"tools/river-dev/src/core/change-validation-engine.ts",
+"tools/river-dev/src/core/change-validation-engine.test.ts"
+],
+"excludedPaths": [
+".env",
+".git",
+"node_modules",
+"dist"
+]
+},
+"acceptanceCriteria": [
+"Change validation consumes DEV-38 change plan states.",
+"Validation decisions are deterministic.",
+"Blocked change plans cannot become validated execution states.",
+"Confirmation-required plans remain gated.",
+"Validation output is explainable.",
+"No uncontrolled repository modifications occur.",
+"Focused tests, River Dev typechecking, and main-project typechecking pass."
+],
+"requiredTests": [
+"tools/river-dev/src/core/change-validation-engine.test.ts",
+"tools/river-dev/src/core/change-plan-engine.test.ts",
+"tools/river-dev/src/core/implementation-engine.test.ts",
+"tools/river-dev/src/core/authorization-engine.test.ts",
+"tools/river-dev/src/core/approval-engine.test.ts",
+"tools/river-dev/src/core/policy-engine.test.ts",
+"tools/river-dev/src/core/governance-engine.test.ts",
+"tools/river-dev/src/core/audit-engine.test.ts",
+"tools/river-dev/src/core/result-engine.test.ts",
+"tools/river-dev/src/core/dispatcher-engine.test.ts",
+"tools/river-dev/src/core/action-engine.test.ts",
+"tools/river-dev/src/core/runner-engine.test.ts",
+"tools/river-dev/src/core/simulation-engine.test.ts",
+"tools/river-dev/src/core/session-engine.test.ts",
+"tools/river-dev/src/core/orchestration-engine.test.ts",
+"tools/river-dev/src/core/validation-engine.test.ts",
+"tools/river-dev/src/core/execution-engine.test.ts",
+"tools/river-dev/src/core/planning-engine.test.ts",
+"tools/river-dev/src/core/context-engine.test.ts",
+"tools/river-dev/src/commands/context.test.ts",
+"tools/river-dev/src/index.test.ts"
+],
+"requiredQualityGates": [
+"expected-branch",
+"scope-check",
+"tests",
+"typecheck",
+"documentation",
+"exports",
+"secret-scan",
+"review",
+"staged-diff"
+],
+"approvedCommands": [
+"git-status",
+"git-branch-current",
+"git-diff",
+"typecheck",
+"test-tsx"
+],
+"repairLimits": {
+"maximumAttempts": 3,
+"allowScopeExpansion": false
+}
+}
