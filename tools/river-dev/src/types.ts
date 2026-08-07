@@ -808,6 +808,40 @@ string;
 
 }
 
+
+export interface RiverDevApprovalStep {
+
+readonly taskId:
+string;
+
+readonly state:
+"approved" |
+"blocked" |
+"pending-review";
+
+readonly reason:
+string;
+
+}
+
+export interface RiverDevExecutionApproval {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly approved:
+boolean;
+
+readonly approvals:
+readonly RiverDevApprovalStep[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
 export interface RiverDevExecutionPolicy {
 
 readonly version:
