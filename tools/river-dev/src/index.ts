@@ -8,6 +8,11 @@ import {
 } from "./commands/inspect";
 
 import {
+discoverRiverDevRepository,
+formatRepositoryDiscoveryReport
+} from "./commands/discover-repository";
+
+import {
     commitRiverDev,
     formatCommitResult,
     getDefaultCommitSpecificationPath
@@ -98,6 +103,9 @@ function parseCommand(
     switch (value) {
 
         case "inspect":
+
+        case "discover-repository":
+
         case "plan":
         case "generate-artifacts":
         case "create-execution-package":
@@ -154,6 +162,31 @@ async function run(): Promise<void> {
             return;
 
         }
+
+        case "discover-repository": {
+
+
+            const report =
+
+                await discoverRiverDevRepository(
+
+                    configuration
+
+                );
+
+
+            process.stdout.write(
+
+                `${formatRepositoryDiscoveryReport(report)}\n`
+
+            );
+
+
+            return;
+
+
+        }
+
 
         case "plan": {
 
@@ -966,33 +999,4 @@ run().catch(
 
     }
 );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

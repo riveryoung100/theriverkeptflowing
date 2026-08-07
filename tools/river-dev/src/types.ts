@@ -8,6 +8,7 @@ export type RiverDevVersion =
 
 export type RiverDevCommandName =
     | "inspect"
+| "discover-repository"
     | "plan"
     | "create-execution-package"
     | "persist-execution-package"
@@ -289,6 +290,85 @@ export interface RiverDevRepositorySnapshot {
 }
 
 
+export type RiverDevRepositoryPathKind =
+    | "file"
+    | "directory";
+
+export type RiverDevRepositoryPathClassification =
+    | "river-dev"
+    | "source"
+    | "test"
+    | "documentation"
+    | "configuration"
+    | "content"
+    | "public-asset"
+    | "infrastructure"
+    | "protected"
+    | "other";
+
+export interface RiverDevRepositoryDiscoveryEntry {
+
+    readonly path:
+        string;
+
+    readonly kind:
+        RiverDevRepositoryPathKind;
+
+    readonly classification:
+        RiverDevRepositoryPathClassification;
+
+    readonly protected:
+        boolean;
+
+}
+
+export interface RiverDevRepositoryDiscoveryCounts {
+
+    readonly total:
+        number;
+
+    readonly files:
+        number;
+
+    readonly directories:
+        number;
+
+    readonly protected:
+        number;
+
+}
+
+export interface RiverDevRepositoryDiscoveryReport {
+
+    readonly version:
+        "1.0.0";
+
+    readonly repositoryRoot:
+        string;
+
+    readonly projectName:
+        string;
+
+    readonly branch:
+        string;
+
+    readonly commit:
+        string;
+
+    readonly discoveredAt:
+        string;
+
+    readonly entries:
+        readonly RiverDevRepositoryDiscoveryEntry[];
+
+    readonly counts:
+        RiverDevRepositoryDiscoveryCounts;
+
+    readonly keyPaths:
+        Readonly<Record<string, string>>;
+
+}
+
 export interface RiverDevRunState {
 
     readonly version:
@@ -514,15 +594,4 @@ export interface RiverDevStateStore {
         Promise<RiverDevStoredState>;
 
 }
-
-
-
-
-
-
-
-
-
-
-
 

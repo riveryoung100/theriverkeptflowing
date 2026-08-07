@@ -1,0 +1,87 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-18 Repository Discovery",
+  "branch": "dev-18-repository-discovery",
+  "commitMessage": "DEV-18: Build repository discovery engine",
+  "objective": "Create a deterministic repository-discovery engine that inventories the repository structure, identifies important project boundaries and engineering artifacts, classifies discovered paths, and produces a stable repository discovery report for downstream context and reasoning systems.",
+  "architecturalContext": [
+    "DEV-16 automatic phase resolution",
+    "DEV-17 persistent session state manager",
+    "Repository inspection",
+    "River Dev project map",
+    "Safety policy engine",
+    "Planning engine",
+    "River Development Agent roadmap Generation II"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/index.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-18-repository-discovery.json",
+      "tools/river-dev/src/core/repository-discovery.ts",
+      "tools/river-dev/src/core/repository-discovery.test.ts",
+      "tools/river-dev/src/commands/discover-repository.ts",
+      "tools/river-dev/src/commands/discover-repository.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "The agent recursively discovers repository paths without traversing outside the repository boundary.",
+    "Excluded and protected repository paths are not traversed as ordinary discovery targets.",
+    "Discovered paths are normalized to repository-relative forward-slash paths.",
+    "Discovery output is deterministic for the same repository state.",
+    "The engine distinguishes files from directories.",
+    "The engine classifies important River Dev, source, configuration, documentation, test, content, and infrastructure paths.",
+    "The discovery result records repository identity, branch, commit, counts, classifications, and discovery timestamp.",
+    "The engine can identify key repository roots and important project files without depending on framework-specific assumptions.",
+    "A CLI command produces a readable repository discovery report.",
+    "Discovery performs read-only repository analysis and does not modify application files.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/repository-discovery.test.ts",
+    "tools/river-dev/src/commands/discover-repository.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  },
+  "approvalBoundaries": [
+    "push",
+    "deploy",
+    "package-install",
+    "dependency-upgrade",
+    "file-delete",
+    "database-migration",
+    "production-data-change",
+    "infrastructure-change",
+    "secret-access",
+    "scope-expansion"
+  ]
+}
