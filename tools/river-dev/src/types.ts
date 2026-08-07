@@ -579,6 +579,40 @@ export interface RiverDevContextUnderstanding {
         readonly RiverDevContextRelevanceScore[];
 
 }
+
+export interface RiverDevPlanningDecision {
+
+    readonly path:
+        string;
+
+    readonly priority:
+        number;
+
+    readonly reason:
+        string;
+
+    readonly action:
+        "inspect" |
+        "modify" |
+        "create";
+}
+
+
+export interface RiverDevImplementationPlan {
+
+    readonly version:
+        "1.0.0";
+
+    readonly objective:
+        string;
+
+    readonly decisions:
+        readonly RiverDevPlanningDecision[];
+
+    readonly steps:
+        readonly string[];
+
+}
 export interface RiverDevDevelopmentContext {
 
     readonly version:

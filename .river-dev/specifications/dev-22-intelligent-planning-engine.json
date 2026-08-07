@@ -1,0 +1,89 @@
+﻿{
+    "version": "1.0.0",
+    "phase": "DEV-22 Intelligent Planning Engine",
+    "branch": "dev-22-intelligent-planning-engine",
+    "commitMessage": "DEV-22: Build deterministic intelligent planning engine",
+    "objective": "Create a deterministic planning intelligence engine that consumes DEV-21 context understanding output, identifies implementation-relevant artifacts, generates explainable implementation plans, and provides bounded planning decisions for downstream River Development Agent execution workflows.",
+    "architecturalContext": [
+        "DEV-19 deterministic context engine",
+        "DEV-20 bounded context artifact loader",
+        "DEV-21 context understanding engine",
+        "Artifact metadata intelligence",
+        "Dependency relationship awareness",
+        "Context relevance scoring",
+        "Implementation planning foundation",
+        "River Development Agent roadmap Generation II"
+    ],
+    "approvedScope": {
+        "modifiablePaths": [
+            "tools/river-dev/src/types.ts",
+            "tools/river-dev/src/core/context-engine.ts",
+            "tools/river-dev/src/core/context-understanding.ts",
+            "tools/river-dev/src/commands/context.ts"
+        ],
+        "creatablePaths": [
+            ".river-dev/specifications/dev-22-intelligent-planning-engine.json",
+            "tools/river-dev/src/core/planning-engine.ts",
+            "tools/river-dev/src/core/planning-engine.test.ts"
+        ],
+        "excludedPaths": [
+            ".env",
+            ".git",
+            "node_modules",
+            "dist"
+        ]
+    },
+    "acceptanceCriteria": [
+        "Planning engine consumes DEV-21 understanding output instead of independently scanning repository files.",
+        "Planning output is deterministic for identical context input.",
+        "Important implementation artifacts are identified from relevance intelligence.",
+        "Planning decisions include explainable reasons.",
+        "Implementation steps are represented explicitly.",
+        "Planning remains bounded by approved repository scope.",
+        "Protected paths never enter planning output.",
+        "Context command can expose planning summaries.",
+        "Repository state remains unchanged during planning analysis.",
+        "Focused tests, River Dev typechecking, and main-project typechecking pass."
+    ],
+    "requiredTests": [
+        "tools/river-dev/src/core/planning-engine.test.ts",
+        "tools/river-dev/src/core/context-understanding.test.ts",
+        "tools/river-dev/src/core/context-engine.test.ts",
+        "tools/river-dev/src/commands/context.test.ts",
+        "tools/river-dev/src/index.test.ts"
+    ],
+    "requiredQualityGates": [
+        "expected-branch",
+        "scope-check",
+        "tests",
+        "typecheck",
+        "documentation",
+        "exports",
+        "secret-scan",
+        "review",
+        "staged-diff"
+    ],
+    "approvedCommands": [
+        "git-status",
+        "git-branch-current",
+        "git-diff",
+        "typecheck",
+        "test-tsx"
+    ],
+    "repairLimits": {
+        "maximumAttempts": 3,
+        "allowScopeExpansion": false
+    },
+    "approvalBoundaries": [
+        "push",
+        "deploy",
+        "package-install",
+        "dependency-upgrade",
+        "file-delete",
+        "database-migration",
+        "production-data-change",
+        "infrastructure-change",
+        "secret-access",
+        "scope-expansion"
+    ]
+}

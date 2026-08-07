@@ -4,6 +4,10 @@
 } from "../types";
 
 import {
+createImplementationPlan
+} from "../core/planning-engine";
+
+import {
     createRiverDevDevelopmentContext
 } from "../core/context-engine";
 
@@ -23,7 +27,13 @@ export function formatContextReport(
     context: RiverDevDevelopmentContext
 ): string {
 
-    const lines: string[] = [
+
+const plan =
+    createImplementationPlan(
+        context.understanding,
+        context.phase.objective
+    );
+const lines: string[] = [
 
         "River Development Context",
 
@@ -52,8 +62,30 @@ export function formatContextReport(
                 `- ${entry.path} (${entry.reason})`
         )
 
-    ];
+,
 
-    return lines.join("\n");
+    "",
+
+    "Implementation Plan:",
+
+    ...plan.steps.map(
+        (step) =>
+            `- ${step}`
+    ),
+
+    "",
+
+    "Planning Decisions:",
+
+    ...plan.decisions.map(
+        (decision) =>
+            `- ${decision.path}: ${decision.reason}`
+    )
+
+
+
+];
+
+return lines.join("\n");
 
 }
