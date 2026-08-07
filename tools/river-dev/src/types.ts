@@ -904,6 +904,40 @@ string;
 
 }
 
+
+export interface RiverDevRunAuthorizationStep {
+
+readonly taskId:
+string;
+
+readonly state:
+"authorized" |
+"blocked" |
+"confirmation-required";
+
+readonly reason:
+string;
+
+}
+
+export interface RiverDevRunAuthorization {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly authorized:
+boolean;
+
+readonly authorization:
+readonly RiverDevRunAuthorizationStep[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
 export interface RiverDevExecutionReadiness {
 
 readonly version:

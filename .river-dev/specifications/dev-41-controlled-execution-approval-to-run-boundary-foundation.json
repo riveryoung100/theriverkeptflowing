@@ -1,0 +1,82 @@
+﻿{
+    "version":  "1.0.0",
+    "phase":  "DEV-41 Controlled Execution Approval-to-Run Boundary Foundation",
+    "branch":  "dev-41-controlled-execution-approval-to-run-boundary-foundation",
+    "commitMessage":  "DEV-41: Build controlled execution approval-to-run boundary foundation",
+    "objective":  "Create a deterministic controlled execution approval-to-run boundary that consumes DEV-40 readiness states, enforces final execution permission requirements, preserves human approval boundaries, and produces explainable run authorization decisions without performing uncontrolled repository modifications.",
+    "architecturalContext":  [
+                                 "DEV-37 controlled execution implementation boundary foundation",
+                                 "DEV-38 controlled execution change planning foundation",
+                                 "DEV-39 controlled execution change validation foundation",
+                                 "DEV-40 controlled execution readiness foundation",
+                                 "Controlled execution approval-to-run boundary",
+                                 "Bounded agent operations",
+                                 "River Development Agent roadmap Generation II"
+                             ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "tools/river-dev/src/types.ts",
+                                                  "tools/river-dev/src/commands/context.ts",
+                                                  "tools/river-dev/src/core/readiness-engine.ts"
+                                              ],
+                          "creatablePaths":  [
+                                                 ".river-dev/specifications/dev-41-controlled-execution-approval-to-run-boundary-foundation.json",
+                                                 "tools/river-dev/src/core/run-authorization-engine.ts",
+                                                 "tools/river-dev/src/core/run-authorization-engine.test.ts"
+                                             ],
+                          "excludedPaths":  [
+                                                ".env",
+                                                ".git",
+                                                "node_modules",
+                                                "dist"
+                                            ]
+                      },
+    "acceptanceCriteria":  [
+                               "Run authorization consumes DEV-40 readiness states.",
+                               "Authorization decisions are deterministic.",
+                               "Blocked readiness cannot authorize execution.",
+                               "Confirmation-required readiness remains gated.",
+                               "Authorization output is explainable.",
+                               "No uncontrolled repository modifications occur.",
+                               "Focused tests, River Dev typechecking, and main-project typechecking pass."
+                           ],
+    "requiredQualityGates":  [
+                                 "expected-branch",
+                                 "scope-check",
+                                 "tests",
+                                 "typecheck",
+                                 "documentation",
+                                 "exports",
+                                 "secret-scan",
+                                 "review",
+                                 "staged-diff"
+                             ],
+    "approvedCommands":  [
+                             "git-status",
+                             "git-branch-current",
+                             "git-diff",
+                             "typecheck",
+                             "test-tsx"
+                         ],
+    "repairLimits":  {
+                         "maximumAttempts":  3,
+                         "allowScopeExpansion":  false
+                     },
+    "id":  "dev-41-controlled-execution-approval-to-run-boundary-foundation",
+    "name":  "DEV-41 Controlled Execution Approval-to-Run Boundary Foundation",
+    "requiredTests":  [
+                          "tools/river-dev/src/core/run-authorization-engine.test.ts",
+                          "tools/river-dev/src/core/readiness-engine.test.ts",
+                          "tools/river-dev/src/index.test.ts"
+                      ],
+    "requiredDocumentation":  [
+                                  ".river-dev/specifications/dev-41-controlled-execution-approval-to-run-boundary-foundation.json"
+                              ],
+    "stages":  [
+                   "understand",
+                   "plan",
+                   "implement",
+                   "validate",
+                   "review"
+               ]
+}
