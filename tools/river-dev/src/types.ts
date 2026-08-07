@@ -598,6 +598,44 @@ export interface RiverDevPlanningDecision {
 }
 
 
+
+export interface RiverDevExecutionTask {
+
+    readonly id:
+        string;
+
+    readonly path:
+        string;
+
+    readonly action:
+        "inspect" |
+        "modify" |
+        "create";
+
+    readonly priority:
+        number;
+
+    readonly reason:
+        string;
+
+}
+
+
+export interface RiverDevExecutionManifest {
+
+    readonly version:
+        "1.0.0";
+
+    readonly objective:
+        string;
+
+    readonly tasks:
+        readonly RiverDevExecutionTask[];
+
+    readonly approvalRequired:
+        readonly string[];
+
+}
 export interface RiverDevImplementationPlan {
 
     readonly version:
@@ -924,4 +962,3 @@ export interface RiverDevStateStore {
         Promise<RiverDevStoredState>;
 
 }
-
