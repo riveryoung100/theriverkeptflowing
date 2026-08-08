@@ -24,14 +24,14 @@ true,
 source:
 "controlled-execution-lifecycle-intelligence-action",
 
-outcome:
+execution:
 [
 {
 taskId:
 "outcome-boundary",
 
 state:
-"completed",
+"executed",
 
 reason:
 "verified"
@@ -66,7 +66,7 @@ feedback.feedback[0]!.state,
 
 assert.equal(
 feedback.source,
-"controlled-execution-lifecycle-intelligence-outcome"
+"controlled-execution-lifecycle-intelligence-execution"
 );
 
 }
@@ -91,7 +91,7 @@ false,
 source:
 "controlled-execution-lifecycle-intelligence-action",
 
-outcome:
+execution:
 [
 {
 taskId:
@@ -150,14 +150,14 @@ true,
 source:
 "controlled-execution-lifecycle-intelligence-action",
 
-outcome:
+execution:
 [
 {
 taskId:
 "final-review",
 
 state:
-"completed",
+"executed",
 
 reason:
 "human verified"

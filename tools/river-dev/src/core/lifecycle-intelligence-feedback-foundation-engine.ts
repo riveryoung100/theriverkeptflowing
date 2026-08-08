@@ -1,17 +1,17 @@
 ﻿import type {
-RiverDevExecutionLifecycleIntelligenceOutcome,
-RiverDevExecutionLifecycleIntelligenceFeedback
+RiverDevExecutionLifecycleIntelligenceFeedback,
+RiverDevExecutionLifecycleIntelligenceExecution
 } from "../types";
 
 export function createLifecycleIntelligenceFeedback(
-outcome:
-RiverDevExecutionLifecycleIntelligenceOutcome
+execution:
+RiverDevExecutionLifecycleIntelligenceExecution
 ):
 RiverDevExecutionLifecycleIntelligenceFeedback {
 
 const blocked =
-outcome.trusted === false ||
-outcome.blockedReasons.length > 0;
+execution.trusted === false ||
+execution.blockedReasons.length > 0;
 
 return {
 
@@ -19,18 +19,19 @@ version:
 "1.0.0",
 
 objective:
-outcome.objective,
+execution.objective,
 
 trusted:
 !blocked,
 
 source:
-"controlled-execution-lifecycle-intelligence-outcome",
+"controlled-execution-lifecycle-intelligence-execution",
 
 feedback:
-outcome.outcome.map(
+execution.execution.map(
 (step) =>
 ({
+
 taskId:
 step.taskId,
 
@@ -46,7 +47,7 @@ step.reason
 ),
 
 blockedReasons:
-outcome.blockedReasons
+execution.blockedReasons
 
 };
 
