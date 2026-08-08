@@ -1,0 +1,73 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-62 Controlled Execution Lifecycle Intelligence Orchestration Foundation",
+  "branch": "dev-62-controlled-execution-lifecycle-intelligence-orchestration-foundation",
+  "commitMessage": "DEV-62: Build controlled execution lifecycle intelligence orchestration foundation",
+  "objective": "Create a deterministic controlled execution lifecycle intelligence orchestration layer that coordinates trusted lifecycle intelligence outputs while preserving provenance, explainability, safety boundaries, and human authorization controls.",
+  "architecturalContext": [
+    "DEV-53 controlled execution workflow foundation",
+    "DEV-54 controlled execution workflow orchestration foundation",
+    "DEV-55 controlled execution workflow runtime foundation",
+    "DEV-56 controlled execution result foundation",
+    "DEV-57 controlled execution review foundation",
+    "DEV-58 controlled execution approval foundation",
+    "DEV-59 controlled execution completion foundation",
+    "DEV-60 controlled execution lifecycle foundation",
+    "DEV-61 controlled execution lifecycle intelligence foundation",
+    "Controlled execution lifecycle intelligence orchestration layer",
+    "River Development Agent Generation III"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-62-controlled-execution-lifecycle-intelligence-orchestration-foundation.json",
+      "tools/river-dev/src/core/lifecycle-intelligence-orchestration-foundation-engine.ts",
+      "tools/river-dev/src/core/lifecycle-intelligence-orchestration-foundation-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Orchestration layer consumes trusted lifecycle intelligence.",
+    "Orchestration preserves intelligence provenance.",
+    "Blocked intelligence cannot create trusted orchestration states.",
+    "Human authorization boundaries remain preserved.",
+    "Orchestration output is deterministic and explainable.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/lifecycle-intelligence-orchestration-foundation-engine.test.ts",
+    "tools/river-dev/src/core/lifecycle-intelligence-foundation-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}
