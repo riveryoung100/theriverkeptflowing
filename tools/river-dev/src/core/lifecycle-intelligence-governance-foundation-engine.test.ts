@@ -24,14 +24,14 @@ true,
 source:
 "controlled-execution-lifecycle-intelligence-insight",
 
-recommendation:
+readiness:
 [
 {
 taskId:
 "recommendation-boundary",
 
 state:
-"recommended",
+"ready",
 
 reason:
 "verified"
@@ -66,7 +66,7 @@ governance.governance[0]!.state,
 
 assert.equal(
 governance.source,
-"controlled-execution-lifecycle-intelligence-recommendation"
+"controlled-execution-lifecycle-intelligence-readiness"
 );
 
 }
@@ -91,7 +91,7 @@ false,
 source:
 "controlled-execution-lifecycle-intelligence-insight",
 
-recommendation:
+readiness:
 [
 {
 taskId:
@@ -150,14 +150,14 @@ true,
 source:
 "controlled-execution-lifecycle-intelligence-insight",
 
-recommendation:
+readiness:
 [
 {
 taskId:
 "final-review",
 
 state:
-"recommended",
+"ready",
 
 reason:
 "human verified"

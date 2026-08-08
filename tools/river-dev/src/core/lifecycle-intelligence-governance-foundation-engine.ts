@@ -1,17 +1,17 @@
 ﻿import type {
-RiverDevExecutionLifecycleIntelligenceRecommendation,
-RiverDevExecutionLifecycleIntelligenceGovernance
+RiverDevExecutionLifecycleIntelligenceGovernance,
+RiverDevExecutionLifecycleIntelligenceReadiness
 } from "../types";
 
 export function createLifecycleIntelligenceGovernance(
-recommendation:
-RiverDevExecutionLifecycleIntelligenceRecommendation
+readiness:
+RiverDevExecutionLifecycleIntelligenceReadiness
 ):
 RiverDevExecutionLifecycleIntelligenceGovernance {
 
 const blocked =
-recommendation.trusted === false ||
-recommendation.blockedReasons.length > 0;
+readiness.trusted === false ||
+readiness.blockedReasons.length > 0;
 
 return {
 
@@ -19,16 +19,16 @@ version:
 "1.0.0",
 
 objective:
-recommendation.objective,
+readiness.objective,
 
 trusted:
 !blocked,
 
 source:
-"controlled-execution-lifecycle-intelligence-recommendation",
+"controlled-execution-lifecycle-intelligence-readiness",
 
 governance:
-recommendation.recommendation.map(
+readiness.readiness.map(
 (step) =>
 ({
 
@@ -47,7 +47,7 @@ step.reason
 ),
 
 blockedReasons:
-recommendation.blockedReasons
+readiness.blockedReasons
 
 };
 

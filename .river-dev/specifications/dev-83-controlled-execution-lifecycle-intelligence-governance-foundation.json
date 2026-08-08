@@ -1,0 +1,69 @@
+﻿{
+"version": "1.0.0",
+"phase": "DEV-83 Controlled Execution Lifecycle Intelligence Governance Foundation",
+"branch": "dev-83-controlled-execution-lifecycle-intelligence-governance-foundation",
+"commitMessage": "DEV-83: Build controlled execution lifecycle intelligence governance foundation",
+"objective": "Create a deterministic controlled execution lifecycle intelligence governance layer that governs ready lifecycle intelligence states for safe execution decisions while maintaining provenance, explainability, safety boundaries, and human authorization controls.",
+"architecturalContext": [
+"DEV-78 controlled execution lifecycle intelligence persistence foundation",
+"DEV-79 controlled execution lifecycle intelligence recovery foundation",
+"DEV-80 controlled execution lifecycle intelligence restoration foundation",
+"DEV-81 controlled execution lifecycle intelligence activation foundation",
+"DEV-82 controlled execution lifecycle intelligence readiness foundation",
+"Controlled execution lifecycle intelligence governance layer",
+"River Development Agent Generation III"
+],
+"approvedScope": {
+"modifiablePaths": [
+"tools/river-dev/src/types.ts",
+"tools/river-dev/src/commands/context.ts"
+],
+"creatablePaths": [
+".river-dev/specifications/dev-83-controlled-execution-lifecycle-intelligence-governance-foundation.json",
+"tools/river-dev/src/core/lifecycle-intelligence-governance-foundation-engine.ts",
+"tools/river-dev/src/core/lifecycle-intelligence-governance-foundation-engine.test.ts"
+],
+"excludedPaths": [
+".env",
+".git",
+"node_modules",
+"dist"
+]
+},
+"acceptanceCriteria": [
+"Governance layer consumes trusted lifecycle intelligence readiness states.",
+"Governance preserves readiness provenance.",
+"Blocked readiness cannot create trusted governance states.",
+"Human authorization boundaries remain preserved.",
+"Governance output is deterministic and explainable.",
+"No uncontrolled repository modifications occur.",
+"Focused tests, River Dev typechecking, and main-project typechecking pass."
+],
+"requiredTests": [
+"tools/river-dev/src/core/lifecycle-intelligence-governance-foundation-engine.test.ts",
+"tools/river-dev/src/core/lifecycle-intelligence-readiness-foundation-engine.test.ts",
+"tools/river-dev/src/index.test.ts"
+],
+"requiredQualityGates": [
+"expected-branch",
+"scope-check",
+"tests",
+"typecheck",
+"documentation",
+"exports",
+"secret-scan",
+"review",
+"staged-diff"
+],
+"approvedCommands": [
+"git-status",
+"git-branch-current",
+"git-diff",
+"typecheck",
+"test-tsx"
+],
+"repairLimits": {
+"maximumAttempts": 3,
+"allowScopeExpansion": false
+}
+}
