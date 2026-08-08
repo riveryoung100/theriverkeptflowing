@@ -1,4 +1,26 @@
-﻿export const RIVER_DEV_VERSION =
+﻿
+export interface RiverDevProjectIntelligence {
+
+readonly version:
+"1.0.0";
+
+readonly source:
+string;
+
+readonly repository:
+string;
+
+readonly architecture:
+readonly string[];
+
+readonly contentSystems:
+readonly string[];
+
+readonly understood:
+boolean;
+
+}
+export const RIVER_DEV_VERSION =
     "0.1.0" as const;
 
 
@@ -3427,3 +3449,4 @@ export interface RiverDevStateStore {
         Promise<RiverDevStoredState>;
 
 }
+

@@ -1,0 +1,65 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-104 River Development Agent Project Intelligence Foundation",
+  "branch": "dev-104-river-development-agent-project-intelligence-foundation",
+  "commitMessage": "DEV-104: Build River Development Agent project intelligence foundation",
+  "objective": "Create the project intelligence foundation that allows River Dev to understand repository structure, architecture patterns, content systems, and project context before proposing or executing controlled changes.",
+  "architecturalContext": [
+    "DEV-101 controlled execution lifecycle intelligence resilience foundation",
+    "DEV-102 controlled execution lifecycle intelligence resilience integration foundation",
+    "DEV-103 controlled execution lifecycle intelligence integration advancement foundation",
+    "River Development Agent Generation III",
+    "The River Kept Flowing platform ecosystem"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-104-river-development-agent-project-intelligence-foundation.json",
+      "tools/river-dev/src/core/project-intelligence-foundation-engine.ts",
+      "tools/river-dev/src/core/project-intelligence-foundation-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Project intelligence captures deterministic repository context.",
+    "Project intelligence preserves source provenance.",
+    "Project intelligence output is explainable.",
+    "Human authorization boundaries remain preserved.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/project-intelligence-foundation-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}
