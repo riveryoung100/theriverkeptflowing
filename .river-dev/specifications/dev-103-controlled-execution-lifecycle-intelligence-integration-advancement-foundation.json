@@ -1,0 +1,67 @@
+﻿{
+"version": "1.0.0",
+"phase": "DEV-103 Controlled Execution Lifecycle Intelligence Integration Advancement Foundation",
+"branch": "dev-103-controlled-execution-lifecycle-intelligence-integration-advancement-foundation",
+"commitMessage": "DEV-103: Build controlled execution lifecycle intelligence integration advancement foundation",
+"objective": "Create a deterministic controlled execution lifecycle intelligence advancement layer that consumes integrated lifecycle intelligence states and preserves governed lifecycle advancement capability while maintaining provenance, explainability, safety boundaries, and human authorization controls.",
+"architecturalContext": [
+"DEV-100 controlled execution lifecycle intelligence continuity foundation",
+"DEV-101 controlled execution lifecycle intelligence resilience foundation",
+"DEV-102 controlled execution lifecycle intelligence resilience integration foundation",
+"Controlled execution lifecycle intelligence advancement layer",
+"River Development Agent Generation III"
+],
+"approvedScope": {
+"modifiablePaths": [
+"tools/river-dev/src/types.ts",
+"tools/river-dev/src/commands/context.ts"
+],
+"creatablePaths": [
+".river-dev/specifications/dev-103-controlled-execution-lifecycle-intelligence-integration-advancement-foundation.json",
+"tools/river-dev/src/core/lifecycle-intelligence-integration-advancement-foundation-engine.ts",
+"tools/river-dev/src/core/lifecycle-intelligence-integration-advancement-foundation-engine.test.ts"
+],
+"excludedPaths": [
+".env",
+".git",
+"node_modules",
+"dist"
+]
+},
+"acceptanceCriteria": [
+"Advancement layer consumes trusted integration states.",
+"Advancement preserves integration provenance.",
+"Blocked integration cannot create trusted advancement states.",
+"Human authorization boundaries remain preserved.",
+"Advancement output is deterministic and explainable.",
+"No uncontrolled repository modifications occur.",
+"Focused tests, River Dev typechecking, and main-project typechecking pass."
+],
+"requiredTests": [
+"tools/river-dev/src/core/lifecycle-intelligence-integration-advancement-foundation-engine.test.ts",
+"tools/river-dev/src/core/lifecycle-intelligence-resilience-integration-foundation-engine.test.ts",
+"tools/river-dev/src/index.test.ts"
+],
+"requiredQualityGates": [
+"expected-branch",
+"scope-check",
+"tests",
+"typecheck",
+"documentation",
+"exports",
+"secret-scan",
+"review",
+"staged-diff"
+],
+"approvedCommands": [
+"git-status",
+"git-branch-current",
+"git-diff",
+"typecheck",
+"test-tsx"
+],
+"repairLimits": {
+"maximumAttempts": 3,
+"allowScopeExpansion": false
+}
+}
