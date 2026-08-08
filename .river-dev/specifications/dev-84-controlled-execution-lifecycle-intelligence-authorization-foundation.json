@@ -1,0 +1,69 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-84 Controlled Execution Lifecycle Intelligence Authorization Foundation",
+  "branch": "dev-84-controlled-execution-lifecycle-intelligence-authorization-foundation",
+  "commitMessage": "DEV-84: Build controlled execution lifecycle intelligence authorization foundation",
+  "objective": "Create a deterministic controlled execution lifecycle intelligence authorization layer that evaluates governed lifecycle intelligence states for authorized execution while maintaining provenance, explainability, safety boundaries, and human authorization controls.",
+  "architecturalContext": [
+    "DEV-79 controlled execution lifecycle intelligence recovery foundation",
+    "DEV-80 controlled execution lifecycle intelligence restoration foundation",
+    "DEV-81 controlled execution lifecycle intelligence activation foundation",
+    "DEV-82 controlled execution lifecycle intelligence readiness foundation",
+    "DEV-83 controlled execution lifecycle intelligence governance foundation",
+    "Controlled execution lifecycle intelligence authorization layer",
+    "River Development Agent Generation III"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-84-controlled-execution-lifecycle-intelligence-authorization-foundation.json",
+      "tools/river-dev/src/core/lifecycle-intelligence-authorization-foundation-engine.ts",
+      "tools/river-dev/src/core/lifecycle-intelligence-authorization-foundation-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Authorization layer consumes trusted lifecycle intelligence governance states.",
+    "Authorization preserves governance provenance.",
+    "Blocked governance cannot create trusted authorization states.",
+    "Human authorization boundaries remain preserved.",
+    "Authorization output is deterministic and explainable.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/lifecycle-intelligence-authorization-foundation-engine.test.ts",
+    "tools/river-dev/src/core/lifecycle-intelligence-governance-foundation-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}

@@ -1811,6 +1811,41 @@ readonly reason:
 string;
 
 }
+
+export interface RiverDevExecutionLifecycleIntelligenceAuthorization {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly trusted:
+boolean;
+
+readonly source:
+string;
+
+readonly authorization:
+readonly RiverDevLifecycleIntelligenceAuthorizationStep[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
+
+export interface RiverDevLifecycleIntelligenceAuthorizationStep {
+
+readonly taskId:
+string;
+
+readonly state:
+"authorized" | "blocked";
+
+readonly reason:
+string;
+
+}
 export interface RiverDevExecutionLifecycleIntelligenceGovernance {
 
 readonly version:
