@@ -1,4 +1,32 @@
 ﻿
+export interface RiverDevExecutionIntelligenceFoundation {
+
+readonly version:
+"1.0.0";
+
+readonly source:
+string;
+
+readonly objective:
+string;
+
+readonly decision:
+"approved" | "blocked";
+
+readonly understood:
+boolean;
+
+readonly executionActions:
+readonly string[];
+
+readonly preparationSource:
+string;
+
+readonly blockedReasons:
+readonly string[];
+
+}
+
 export interface RiverDevExecutionContextSynthesis {
 
 readonly version:

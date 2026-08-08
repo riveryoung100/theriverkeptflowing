@@ -1,19 +1,16 @@
 ﻿import type {
-RiverDevExecutionIntelligence,
-RiverDevExecutionPreparation
+RiverDevExecutionPreparation,
+RiverDevExecutionIntelligenceFoundation
 } from "../types";
-
 
 export function createExecutionIntelligence(
 preparation:
 RiverDevExecutionPreparation
 ):
-RiverDevExecutionIntelligence {
-
+RiverDevExecutionIntelligenceFoundation {
 
 const approved =
 preparation.authorized === true;
-
 
 return {
 
@@ -26,40 +23,27 @@ source:
 objective:
 preparation.objective,
 
-preparationSource:
-"river-development-agent-execution-preparation",
-
 decision:
 approved
-? "approved"
-: "blocked",
+?
+"approved"
+:
+"blocked",
+
+understood:
+approved,
 
 executionActions:
 approved
 ?
 [
-"execute approved implementation",
-"run validation checks",
-"record execution result"
+"execute approved implementation"
 ]
 :
-[
-"halt execution",
-"request human authorization"
-],
-
-validationRequirements:
-[
-"verify authorization state",
-"preserve execution provenance",
-"confirm validation results"
-],
-
-understood:
-approved,
-
-steps:
 [],
+
+preparationSource:
+"river-development-agent-execution-preparation",
 
 blockedReasons:
 approved
@@ -73,4 +57,3 @@ approved
 };
 
 }
-
