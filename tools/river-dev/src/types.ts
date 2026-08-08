@@ -1,4 +1,29 @@
 ﻿
+export interface RiverDevPlanningIntelligence {
+
+readonly version:
+"1.0.0";
+
+readonly source:
+string;
+
+readonly objective:
+string;
+
+readonly projectRepository:
+string;
+
+readonly steps:
+readonly string[];
+
+readonly risks:
+readonly string[];
+
+readonly trusted:
+boolean;
+
+}
+
 export interface RiverDevProjectIntelligence {
 
 readonly version:

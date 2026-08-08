@@ -1,0 +1,67 @@
+﻿{
+"version": "1.0.0",
+"phase": "DEV-105 River Development Agent Planning Intelligence Foundation",
+"branch": "dev-105-river-development-agent-planning-intelligence-foundation",
+"commitMessage": "DEV-105: Build River Development Agent planning intelligence foundation",
+"objective": "Create a deterministic planning intelligence foundation that consumes project intelligence and approved objectives to generate explainable implementation plans while preserving safety boundaries, provenance, human authorization controls, and controlled execution principles.",
+"architecturalContext": [
+"DEV-101 controlled execution lifecycle intelligence resilience foundation",
+"DEV-102 controlled execution lifecycle intelligence resilience integration foundation",
+"DEV-103 controlled execution lifecycle intelligence integration advancement foundation",
+"DEV-104 River Development Agent project intelligence foundation",
+"River Development Agent Generation III",
+"The River Kept Flowing platform ecosystem"
+],
+"approvedScope": {
+"modifiablePaths": [
+"tools/river-dev/src/types.ts",
+"tools/river-dev/src/commands/context.ts"
+],
+"creatablePaths": [
+".river-dev/specifications/dev-105-river-development-agent-planning-intelligence-foundation.json",
+"tools/river-dev/src/core/planning-intelligence-foundation-engine.ts",
+"tools/river-dev/src/core/planning-intelligence-foundation-engine.test.ts"
+],
+"excludedPaths": [
+".env",
+".git",
+"node_modules",
+"dist"
+]
+},
+"acceptanceCriteria": [
+"Planning intelligence consumes trusted project intelligence.",
+"Planning output preserves project intelligence provenance.",
+"Planning output is deterministic and explainable.",
+"Blocked or untrusted inputs cannot create trusted plans.",
+"Human authorization boundaries remain preserved.",
+"No uncontrolled repository modifications occur.",
+"Focused tests, River Dev typechecking, and main-project typechecking pass."
+],
+"requiredTests": [
+"tools/river-dev/src/core/planning-intelligence-foundation-engine.test.ts",
+"tools/river-dev/src/index.test.ts"
+],
+"requiredQualityGates": [
+"expected-branch",
+"scope-check",
+"tests",
+"typecheck",
+"documentation",
+"exports",
+"secret-scan",
+"review",
+"staged-diff"
+],
+"approvedCommands": [
+"git-status",
+"git-branch-current",
+"git-diff",
+"typecheck",
+"test-tsx"
+],
+"repairLimits": {
+"maximumAttempts": 3,
+"allowScopeExpansion": false
+}
+}
