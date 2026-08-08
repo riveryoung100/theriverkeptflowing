@@ -1053,6 +1053,41 @@ string;
 
 }
 
+
+export interface RiverDevCapability {
+
+readonly category:
+string;
+
+readonly name:
+string;
+
+readonly description:
+string;
+
+readonly source:
+string;
+
+}
+
+export interface RiverDevExecutionCapability {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly trusted:
+boolean;
+
+readonly capabilities:
+readonly RiverDevCapability[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
 export interface RiverDevExecutionKnowledge {
 
 readonly version:
