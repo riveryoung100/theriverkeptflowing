@@ -1,0 +1,68 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-128 River Development Agent Controlled Execution Intelligence Reasoning Foundation",
+  "branch": "dev-128-river-development-agent-controlled-execution-intelligence-reasoning-foundation",
+  "commitMessage": "DEV-128: Build River Development Agent controlled execution intelligence reasoning foundation",
+  "objective": "Create a deterministic controlled execution intelligence reasoning foundation that transforms trusted interpretation states into governed reasoning states while preserving provenance, safety boundaries, human authorization controls, and controlled execution principles.",
+  "architecturalContext": [
+    "DEV-123 River Development Agent controlled execution intelligence memory foundation",
+    "DEV-124 River Development Agent controlled execution intelligence memory retrieval foundation",
+    "DEV-125 River Development Agent controlled execution intelligence context synthesis foundation",
+    "DEV-126 River Development Agent controlled execution intelligence understanding foundation",
+    "DEV-127 River Development Agent controlled execution intelligence interpretation foundation",
+    "River Development Agent Generation III",
+    "The River Kept Flowing platform ecosystem"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-128-river-development-agent-controlled-execution-intelligence-reasoning-foundation.json",
+      "tools/river-dev/src/core/execution-intelligence-reasoning-foundation-engine.ts",
+      "tools/river-dev/src/core/execution-intelligence-reasoning-foundation-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Reasoning generation consumes trusted interpretation states.",
+    "Untrusted interpretation states cannot create reasoning states.",
+    "Reasoning output preserves execution provenance.",
+    "Reasoning output is deterministic and explainable.",
+    "Human authorization boundaries remain preserved.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/execution-intelligence-reasoning-foundation-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}

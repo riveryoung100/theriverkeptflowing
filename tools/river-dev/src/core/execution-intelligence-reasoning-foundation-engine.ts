@@ -1,17 +1,18 @@
 ﻿import type {
-RiverDevExecutionIntelligenceEvaluationFoundation,
+RiverDevExecutionIntelligenceInterpretationFoundation,
 RiverDevExecutionIntelligenceReasoningFoundation
 } from "../types";
 
 export function createExecutionIntelligenceReasoning(
-evaluation:
-RiverDevExecutionIntelligenceEvaluationFoundation
+interpretation:
+RiverDevExecutionIntelligenceInterpretationFoundation
 ):
 RiverDevExecutionIntelligenceReasoningFoundation {
 
-const trusted =
-evaluation.approved === true
-&& evaluation.understood === true;
+
+const reasoned =
+interpretation.approved === true;
+
 
 return {
 
@@ -22,41 +23,50 @@ source:
 "river-development-agent-execution-intelligence-reasoning",
 
 objective:
-evaluation.objective,
+interpretation.objective,
 
-trusted,
+trusted:
+reasoned,
+
+reasoned,
+
+approved:
+reasoned,
+
 
 reasoning:
-trusted
+reasoned
 ?
 [
 "execution evaluation accepted",
-"approved intelligence interpreted",
-"governed execution reasoning prepared"
+"execution intelligence relationships reasoned",
+"governed reasoning state prepared"
 ]
 :
 [
-"execution reasoning halted",
-"evaluation approval missing",
-"authorization review required"
+"reasoning generation blocked",
+"execution intelligence evaluation not approved",
+"review required before reasoning"
 ],
 
+
 provenance:
-trusted
+reasoned
 ?
 [
 "execution evaluation verified",
-"reasoning boundary maintained",
-"decision context preserved"
+"reasoning provenance preserved",
+"execution intelligence boundary maintained"
 ]
 :
 [
-"blocked evaluation state recorded",
-"reasoning halted safely"
+"execution evaluation rejected",
+"reasoning boundary maintained"
 ],
 
+
 blockedReasons:
-trusted
+reasoned
 ?
 []
 :

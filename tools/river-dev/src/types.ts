@@ -10,10 +10,19 @@ string;
 readonly objective:
 string;
 
-readonly interpreted:
+readonly approved:
 boolean;
 
-readonly interpretation:
+readonly understood:
+boolean;
+
+readonly interpreted?:
+boolean;
+
+readonly evaluation:
+readonly string[];
+
+readonly interpretation?:
 readonly string[];
 
 readonly provenance:
@@ -23,7 +32,6 @@ readonly blockedReasons:
 readonly string[];
 
 }
-
 export interface RiverDevExecutionIntelligenceUnderstandingFoundation {
 
 readonly version:
@@ -241,6 +249,12 @@ string;
 readonly trusted:
 boolean;
 
+readonly reasoned?:
+boolean;
+
+readonly approved?:
+boolean;
+
 readonly reasoning:
 readonly string[];
 
@@ -251,7 +265,6 @@ readonly blockedReasons:
 readonly string[];
 
 }
-
 export interface RiverDevExecutionIntelligenceEvaluationFoundation {
 
 readonly version:
