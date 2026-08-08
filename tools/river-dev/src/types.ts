@@ -1,4 +1,26 @@
 ﻿
+export interface RiverDevExecutionMemoryRetrieval {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly trusted:
+boolean;
+
+readonly retrievedEntries:
+readonly RiverDevMemoryEntry[];
+
+readonly provenance:
+readonly string[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
+
 export interface RiverDevExecutionContinuation {
 
 readonly version:
