@@ -1,4 +1,32 @@
 ﻿
+export interface RiverDevExecutionReporting {
+
+readonly version:
+"1.0.0";
+
+readonly source:
+string;
+
+readonly objective:
+string;
+
+readonly outcomeSource:
+string;
+
+readonly reportState:
+"successful" | "failed" | "blocked";
+
+readonly reportEntries:
+readonly string[];
+
+readonly validationSummary:
+readonly string[];
+
+readonly authorized:
+boolean;
+
+}
+
 export interface RiverDevExecutionOutcome {
 
 readonly version:
