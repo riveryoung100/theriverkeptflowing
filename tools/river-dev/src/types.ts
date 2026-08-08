@@ -2802,14 +2802,28 @@ boolean;
 readonly source:
 string;
 
+readonly executionSource?:
+string;
+
+readonly state?:
+"ready" | "executing" | "completed" | "blocked";
+
 readonly lifecycle:
 readonly RiverDevLifecycleStep[];
+
+readonly lifecycleSteps?:
+readonly string[];
+
+readonly safetyChecks?:
+readonly string[];
+
+readonly authorized?:
+boolean;
 
 readonly blockedReasons:
 readonly string[];
 
 }
-
 export interface RiverDevLifecycleStep {
 
 readonly taskId:
