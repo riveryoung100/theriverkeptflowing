@@ -1414,6 +1414,41 @@ readonly string[];
 
 }
 
+
+export interface RiverDevExecutionLifecycle {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly active:
+boolean;
+
+readonly source:
+string;
+
+readonly lifecycle:
+readonly RiverDevLifecycleStep[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
+
+export interface RiverDevLifecycleStep {
+
+readonly taskId:
+string;
+
+readonly state:
+"active" | "blocked";
+
+readonly reason:
+string;
+
+}
 export interface RiverDevExecutionCompletion {
 
 readonly version:
