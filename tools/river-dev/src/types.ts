@@ -2086,6 +2086,41 @@ readonly reason:
 string;
 
 }
+
+export interface RiverDevExecutionLifecycleIntelligenceAdaptation {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly trusted:
+boolean;
+
+readonly source:
+string;
+
+readonly adaptation:
+readonly RiverDevLifecycleIntelligenceAdaptationStep[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
+
+export interface RiverDevLifecycleIntelligenceAdaptationStep {
+
+readonly taskId:
+string;
+
+readonly state:
+"adapted" | "blocked";
+
+readonly reason:
+string;
+
+}
 export interface RiverDevExecutionLifecycleIntelligenceFeedback {
 
 readonly version:
