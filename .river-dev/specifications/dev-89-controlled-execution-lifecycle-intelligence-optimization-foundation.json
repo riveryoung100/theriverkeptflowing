@@ -1,0 +1,69 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-89 Controlled Execution Lifecycle Intelligence Optimization Foundation",
+  "branch": "dev-89-controlled-execution-lifecycle-intelligence-optimization-foundation",
+  "commitMessage": "DEV-89: Build controlled execution lifecycle intelligence optimization foundation",
+  "objective": "Create a deterministic controlled execution lifecycle intelligence optimization layer that consumes governed adaptation states and produces optimized lifecycle intelligence states while maintaining provenance, explainability, safety boundaries, and human authorization controls.",
+  "architecturalContext": [
+    "DEV-84 controlled execution lifecycle intelligence authorization foundation",
+    "DEV-85 controlled execution lifecycle intelligence dispatch foundation",
+    "DEV-86 controlled execution lifecycle intelligence execution foundation",
+    "DEV-87 controlled execution lifecycle intelligence feedback foundation",
+    "DEV-88 controlled execution lifecycle intelligence adaptation foundation",
+    "Controlled execution lifecycle intelligence optimization layer",
+    "River Development Agent Generation III"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-89-controlled-execution-lifecycle-intelligence-optimization-foundation.json",
+      "tools/river-dev/src/core/lifecycle-intelligence-optimization-foundation-engine.ts",
+      "tools/river-dev/src/core/lifecycle-intelligence-optimization-foundation-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Optimization layer consumes trusted lifecycle intelligence adaptation states.",
+    "Optimization preserves adaptation provenance.",
+    "Blocked adaptation cannot create trusted optimization states.",
+    "Human authorization boundaries remain preserved.",
+    "Optimization output is deterministic and explainable.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/lifecycle-intelligence-optimization-foundation-engine.test.ts",
+    "tools/river-dev/src/core/lifecycle-intelligence-adaptation-foundation-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}
