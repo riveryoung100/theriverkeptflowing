@@ -2294,6 +2294,41 @@ string;
 }
 
 
+
+export interface RiverDevExecutionLifecycleIntelligenceIntegration {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly trusted:
+boolean;
+
+readonly source:
+string;
+
+readonly integration:
+readonly RiverDevLifecycleIntelligenceIntegrationStep[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
+
+export interface RiverDevLifecycleIntelligenceIntegrationStep {
+
+readonly taskId:
+string;
+
+readonly state:
+"integrated" | "blocked";
+
+readonly reason:
+string;
+
+}
 export interface RiverDevExecutionLifecycleIntelligenceSynchronization {
 
 readonly version:
