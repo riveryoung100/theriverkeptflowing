@@ -1,0 +1,67 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-102 Controlled Execution Lifecycle Intelligence Resilience Integration Foundation",
+  "branch": "dev-102-controlled-execution-lifecycle-intelligence-resilience-integration-foundation",
+  "commitMessage": "DEV-102: Build controlled execution lifecycle intelligence resilience integration foundation",
+  "objective": "Create a deterministic controlled execution lifecycle intelligence integration layer that connects lifecycle resilience capabilities into governed execution intelligence while preserving provenance, explainability, safety boundaries, and human authorization controls.",
+  "architecturalContext": [
+    "DEV-99 controlled execution lifecycle intelligence continuation foundation",
+    "DEV-100 controlled execution lifecycle intelligence continuity foundation",
+    "DEV-101 controlled execution lifecycle intelligence resilience foundation",
+    "Controlled execution lifecycle intelligence integration layer",
+    "River Development Agent Generation III"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-102-controlled-execution-lifecycle-intelligence-resilience-integration-foundation.json",
+      "tools/river-dev/src/core/lifecycle-intelligence-resilience-integration-foundation-engine.ts",
+      "tools/river-dev/src/core/lifecycle-intelligence-resilience-integration-foundation-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Integration layer consumes trusted resilience states.",
+    "Integration preserves resilience provenance.",
+    "Blocked resilience cannot create trusted integration states.",
+    "Human authorization boundaries remain preserved.",
+    "Integration output is deterministic and explainable.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/lifecycle-intelligence-resilience-integration-foundation-engine.test.ts",
+    "tools/river-dev/src/core/lifecycle-intelligence-resilience-foundation-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}
