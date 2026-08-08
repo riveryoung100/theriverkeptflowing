@@ -1,0 +1,68 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-94 Controlled Execution Lifecycle Intelligence Consolidation Foundation",
+  "branch": "dev-94-controlled-execution-lifecycle-intelligence-consolidation-foundation",
+  "commitMessage": "DEV-94: Build controlled execution lifecycle intelligence consolidation foundation",
+  "objective": "Create a deterministic controlled execution lifecycle intelligence consolidation layer that consumes integrated lifecycle intelligence states and consolidates governed lifecycle capabilities while maintaining provenance, explainability, safety boundaries, and human authorization controls.",
+  "architecturalContext": [
+    "DEV-90 controlled execution lifecycle intelligence orchestration foundation",
+    "DEV-91 controlled execution lifecycle intelligence coordination foundation",
+    "DEV-92 controlled execution lifecycle intelligence synchronization foundation",
+    "DEV-93 controlled execution lifecycle intelligence integration foundation",
+    "Controlled execution lifecycle intelligence consolidation layer",
+    "River Development Agent Generation III"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-94-controlled-execution-lifecycle-intelligence-consolidation-foundation.json",
+      "tools/river-dev/src/core/lifecycle-intelligence-consolidation-foundation-engine.ts",
+      "tools/river-dev/src/core/lifecycle-intelligence-consolidation-foundation-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Consolidation layer consumes trusted lifecycle intelligence integration states.",
+    "Consolidation preserves integration provenance.",
+    "Blocked integration cannot create trusted consolidation states.",
+    "Human authorization boundaries remain preserved.",
+    "Consolidation output is deterministic and explainable.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/lifecycle-intelligence-consolidation-foundation-engine.test.ts",
+    "tools/river-dev/src/core/lifecycle-intelligence-integration-foundation-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}

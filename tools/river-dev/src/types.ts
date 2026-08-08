@@ -2295,6 +2295,41 @@ string;
 
 
 
+
+export interface RiverDevExecutionLifecycleIntelligenceConsolidation {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly trusted:
+boolean;
+
+readonly source:
+string;
+
+readonly consolidation:
+readonly RiverDevLifecycleIntelligenceConsolidationStep[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
+
+export interface RiverDevLifecycleIntelligenceConsolidationStep {
+
+readonly taskId:
+string;
+
+readonly state:
+"consolidated" | "blocked";
+
+readonly reason:
+string;
+
+}
 export interface RiverDevExecutionLifecycleIntelligenceIntegration {
 
 readonly version:
