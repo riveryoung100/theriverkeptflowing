@@ -1,4 +1,29 @@
 ﻿
+export interface RiverDevExecutionIntelligenceContinuationFoundation {
+
+readonly version:
+"1.0.0";
+
+readonly source:
+string;
+
+readonly objective:
+string;
+
+readonly continuing:
+boolean;
+
+readonly continuation:
+readonly string[];
+
+readonly provenance:
+readonly string[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
+
 export interface RiverDevExecutionIntelligenceOutcomeFoundation {
 
 readonly version:
