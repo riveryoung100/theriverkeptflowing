@@ -1,0 +1,69 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-75 Controlled Execution Lifecycle Intelligence Reliability Foundation",
+  "branch": "dev-75-controlled-execution-lifecycle-intelligence-reliability-foundation",
+  "commitMessage": "DEV-75: Build controlled execution lifecycle intelligence reliability foundation",
+  "objective": "Create a deterministic controlled execution lifecycle intelligence reliability layer that verifies compliant lifecycle intelligence states through reliability controls while preserving provenance, explainability, safety boundaries, and human authorization controls.",
+  "architecturalContext": [
+    "DEV-70 controlled execution lifecycle intelligence recommendation foundation",
+    "DEV-71 controlled execution lifecycle intelligence governance foundation",
+    "DEV-72 controlled execution lifecycle intelligence validation foundation",
+    "DEV-73 controlled execution lifecycle intelligence assurance foundation",
+    "DEV-74 controlled execution lifecycle intelligence compliance foundation",
+    "Controlled execution lifecycle intelligence reliability layer",
+    "River Development Agent Generation III"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-75-controlled-execution-lifecycle-intelligence-reliability-foundation.json",
+      "tools/river-dev/src/core/lifecycle-intelligence-reliability-foundation-engine.ts",
+      "tools/river-dev/src/core/lifecycle-intelligence-reliability-foundation-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Reliability layer consumes trusted lifecycle intelligence compliance states.",
+    "Reliability preserves compliance provenance.",
+    "Blocked compliance cannot create trusted reliability states.",
+    "Human authorization boundaries remain preserved.",
+    "Reliability output is deterministic and explainable.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/lifecycle-intelligence-reliability-foundation-engine.test.ts",
+    "tools/river-dev/src/core/lifecycle-intelligence-compliance-foundation-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}
