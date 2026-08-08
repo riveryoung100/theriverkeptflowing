@@ -1,0 +1,69 @@
+﻿{
+"version": "1.0.0",
+"phase": "DEV-92 Controlled Execution Lifecycle Intelligence Synchronization Foundation",
+"branch": "dev-92-controlled-execution-lifecycle-intelligence-synchronization-foundation",
+"commitMessage": "DEV-92: Build controlled execution lifecycle intelligence synchronization foundation",
+"objective": "Create a deterministic controlled execution lifecycle intelligence synchronization layer that consumes coordinated lifecycle intelligence states and synchronizes governed lifecycle information while maintaining provenance, explainability, safety boundaries, and human authorization controls.",
+"architecturalContext": [
+"DEV-87 controlled execution lifecycle intelligence feedback foundation",
+"DEV-88 controlled execution lifecycle intelligence adaptation foundation",
+"DEV-89 controlled execution lifecycle intelligence optimization foundation",
+"DEV-90 controlled execution lifecycle intelligence orchestration foundation",
+"DEV-91 controlled execution lifecycle intelligence coordination foundation",
+"Controlled execution lifecycle intelligence synchronization layer",
+"River Development Agent Generation III"
+],
+"approvedScope": {
+"modifiablePaths": [
+"tools/river-dev/src/types.ts",
+"tools/river-dev/src/commands/context.ts"
+],
+"creatablePaths": [
+".river-dev/specifications/dev-92-controlled-execution-lifecycle-intelligence-synchronization-foundation.json",
+"tools/river-dev/src/core/lifecycle-intelligence-synchronization-foundation-engine.ts",
+"tools/river-dev/src/core/lifecycle-intelligence-synchronization-foundation-engine.test.ts"
+],
+"excludedPaths": [
+".env",
+".git",
+"node_modules",
+"dist"
+]
+},
+"acceptanceCriteria": [
+"Synchronization layer consumes trusted lifecycle intelligence coordination states.",
+"Synchronization preserves coordination provenance.",
+"Blocked coordination cannot create trusted synchronization states.",
+"Human authorization boundaries remain preserved.",
+"Synchronization output is deterministic and explainable.",
+"No uncontrolled repository modifications occur.",
+"Focused tests, River Dev typechecking, and main-project typechecking pass."
+],
+"requiredTests": [
+"tools/river-dev/src/core/lifecycle-intelligence-synchronization-foundation-engine.test.ts",
+"tools/river-dev/src/core/lifecycle-intelligence-coordination-foundation-engine.test.ts",
+"tools/river-dev/src/index.test.ts"
+],
+"requiredQualityGates": [
+"expected-branch",
+"scope-check",
+"tests",
+"typecheck",
+"documentation",
+"exports",
+"secret-scan",
+"review",
+"staged-diff"
+],
+"approvedCommands": [
+"git-status",
+"git-branch-current",
+"git-diff",
+"typecheck",
+"test-tsx"
+],
+"repairLimits": {
+"maximumAttempts": 3,
+"allowScopeExpansion": false
+}
+}
