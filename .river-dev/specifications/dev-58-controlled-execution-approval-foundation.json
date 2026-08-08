@@ -1,0 +1,69 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-58 Controlled Execution Approval Foundation",
+  "branch": "dev-58-controlled-execution-approval-foundation",
+  "commitMessage": "DEV-58: Build controlled execution approval foundation",
+  "objective": "Create a deterministic controlled execution approval layer that evaluates reviewed execution outcomes while preserving provenance, explainability, safety boundaries, and human authorization controls.",
+  "architecturalContext": [
+    "DEV-53 controlled execution workflow foundation",
+    "DEV-54 controlled execution workflow orchestration foundation",
+    "DEV-55 controlled execution workflow runtime foundation",
+    "DEV-56 controlled execution result foundation",
+    "DEV-57 controlled execution review foundation",
+    "Controlled execution approval layer",
+    "River Development Agent Generation III"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-58-controlled-execution-approval-foundation.json",
+      "tools/river-dev/src/core/approval-foundation-engine.ts",
+      "tools/river-dev/src/core/approval-foundation-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Approval layer consumes execution reviews.",
+    "Approvals preserve review provenance.",
+    "Rejected reviews cannot create approved execution states.",
+    "Human authorization boundaries remain preserved.",
+    "Approval output is deterministic and explainable.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/approval-foundation-engine.test.ts",
+    "tools/river-dev/src/core/review-foundation-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}
