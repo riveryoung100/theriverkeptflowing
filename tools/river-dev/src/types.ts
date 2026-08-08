@@ -1,4 +1,29 @@
 ﻿
+export interface RiverDevExecutionContextSynthesis {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly trusted:
+boolean;
+
+readonly retrievedContext:
+readonly RiverDevMemoryEntry[];
+
+readonly synthesis:
+readonly string[];
+
+readonly provenance:
+readonly string[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
+
 export interface RiverDevExecutionMemoryRetrieval {
 
 readonly version:
