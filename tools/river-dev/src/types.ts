@@ -4,7 +4,7 @@ export interface RiverDevExecutionPreparation {
 readonly version:
 "1.0.0";
 
-readonly source:
+readonly source?:
 string;
 
 readonly objective:
@@ -29,7 +29,7 @@ export interface RiverDevImplementationIntelligence {
 readonly version:
 "1.0.0";
 
-readonly source:
+readonly source?:
 string;
 
 readonly objective:
@@ -54,7 +54,7 @@ export interface RiverDevPlanningIntelligence {
 readonly version:
 "1.0.0";
 
-readonly source:
+readonly source?:
 string;
 
 readonly objective:
@@ -79,7 +79,7 @@ export interface RiverDevProjectIntelligence {
 readonly version:
 "1.0.0";
 
-readonly source:
+readonly source?:
 string;
 
 readonly repository:
@@ -1317,8 +1317,23 @@ export interface RiverDevExecutionIntelligence {
 readonly version:
 "1.0.0";
 
+readonly source?:
+string;
+
 readonly objective:
 string;
+
+readonly preparationSource?:
+string;
+
+readonly decision?:
+"approved" | "blocked";
+
+readonly executionActions?:
+readonly string[];
+
+readonly validationRequirements?:
+readonly string[];
 
 readonly understood:
 boolean;
