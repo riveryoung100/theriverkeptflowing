@@ -22,7 +22,7 @@ boolean;
 readonly evaluation:
 readonly string[];
 
-readonly interpretation?:
+readonly interpretation:
 readonly string[];
 
 readonly provenance:

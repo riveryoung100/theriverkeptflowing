@@ -25,6 +25,24 @@ understanding.objective,
 
 interpreted,
 
+understood:
+interpreted,
+
+approved:
+interpreted,
+
+evaluation:
+interpreted
+?
+[
+"trusted understanding evaluated",
+"interpretation approved"
+]
+:
+[
+"evaluation blocked"
+],
+
 interpretation:
 interpreted
 ?
