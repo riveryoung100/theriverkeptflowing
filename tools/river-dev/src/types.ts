@@ -1413,6 +1413,41 @@ readonly blockedReasons:
 readonly string[];
 
 }
+
+export interface RiverDevExecutionCompletion {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly completed:
+boolean;
+
+readonly source:
+string;
+
+readonly completion:
+readonly RiverDevCompletionStep[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
+
+export interface RiverDevCompletionStep {
+
+readonly taskId:
+string;
+
+readonly state:
+"completed" | "blocked";
+
+readonly reason:
+string;
+
+}
 export interface RiverDevExecutionApproval {
 
 readonly version:
