@@ -1,0 +1,69 @@
+﻿{
+"version": "1.0.0",
+"phase": "DEV-80 Controlled Execution Lifecycle Intelligence Restoration Foundation",
+"branch": "dev-80-controlled-execution-lifecycle-intelligence-restoration-foundation",
+"commitMessage": "DEV-80: Build controlled execution lifecycle intelligence restoration foundation",
+"objective": "Create a deterministic controlled execution lifecycle intelligence restoration layer that restores recovered lifecycle intelligence states into governed execution readiness while maintaining provenance, explainability, safety boundaries, and human authorization controls.",
+"architecturalContext": [
+"DEV-75 controlled execution lifecycle intelligence reliability foundation",
+"DEV-76 controlled execution lifecycle intelligence resilience foundation",
+"DEV-77 controlled execution lifecycle intelligence continuity foundation",
+"DEV-78 controlled execution lifecycle intelligence persistence foundation",
+"DEV-79 controlled execution lifecycle intelligence recovery foundation",
+"Controlled execution lifecycle intelligence restoration layer",
+"River Development Agent Generation III"
+],
+"approvedScope": {
+"modifiablePaths": [
+"tools/river-dev/src/types.ts",
+"tools/river-dev/src/commands/context.ts"
+],
+"creatablePaths": [
+".river-dev/specifications/dev-80-controlled-execution-lifecycle-intelligence-restoration-foundation.json",
+"tools/river-dev/src/core/lifecycle-intelligence-restoration-foundation-engine.ts",
+"tools/river-dev/src/core/lifecycle-intelligence-restoration-foundation-engine.test.ts"
+],
+"excludedPaths": [
+".env",
+".git",
+"node_modules",
+"dist"
+]
+},
+"acceptanceCriteria": [
+"Restoration layer consumes trusted lifecycle intelligence recovery states.",
+"Restoration preserves recovery provenance.",
+"Blocked recovery cannot create trusted restoration states.",
+"Human authorization boundaries remain preserved.",
+"Restoration output is deterministic and explainable.",
+"No uncontrolled repository modifications occur.",
+"Focused tests, River Dev typechecking, and main-project typechecking pass."
+],
+"requiredTests": [
+"tools/river-dev/src/core/lifecycle-intelligence-restoration-foundation-engine.test.ts",
+"tools/river-dev/src/core/lifecycle-intelligence-recovery-foundation-engine.test.ts",
+"tools/river-dev/src/index.test.ts"
+],
+"requiredQualityGates": [
+"expected-branch",
+"scope-check",
+"tests",
+"typecheck",
+"documentation",
+"exports",
+"secret-scan",
+"review",
+"staged-diff"
+],
+"approvedCommands": [
+"git-status",
+"git-branch-current",
+"git-diff",
+"typecheck",
+"test-tsx"
+],
+"repairLimits": {
+"maximumAttempts": 3,
+"allowScopeExpansion": false
+}
+}
