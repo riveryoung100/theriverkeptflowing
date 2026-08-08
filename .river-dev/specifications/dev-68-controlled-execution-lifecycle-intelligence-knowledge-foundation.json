@@ -1,0 +1,79 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-68 Controlled Execution Lifecycle Intelligence Knowledge Foundation",
+  "branch": "dev-68-controlled-execution-lifecycle-intelligence-knowledge-foundation",
+  "commitMessage": "DEV-68: Build controlled execution lifecycle intelligence knowledge foundation",
+  "objective": "Create a deterministic controlled execution lifecycle intelligence knowledge layer that derives governed knowledge objects from trusted learning states while preserving provenance, explainability, safety boundaries, and human authorization controls.",
+  "architecturalContext": [
+    "DEV-53 controlled execution workflow foundation",
+    "DEV-54 controlled execution workflow orchestration foundation",
+    "DEV-55 controlled execution workflow runtime foundation",
+    "DEV-56 controlled execution result foundation",
+    "DEV-57 controlled execution review foundation",
+    "DEV-58 controlled execution approval foundation",
+    "DEV-59 controlled execution completion foundation",
+    "DEV-60 controlled execution lifecycle foundation",
+    "DEV-61 controlled execution lifecycle intelligence foundation",
+    "DEV-62 controlled execution lifecycle intelligence orchestration foundation",
+    "DEV-63 controlled execution lifecycle intelligence decision foundation",
+    "DEV-64 controlled execution lifecycle intelligence action foundation",
+    "DEV-65 controlled execution lifecycle intelligence outcome foundation",
+    "DEV-66 controlled execution lifecycle intelligence feedback foundation",
+    "DEV-67 controlled execution lifecycle intelligence learning foundation",
+    "Controlled execution lifecycle intelligence knowledge layer",
+    "River Development Agent Generation III"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-68-controlled-execution-lifecycle-intelligence-knowledge-foundation.json",
+      "tools/river-dev/src/core/lifecycle-intelligence-knowledge-foundation-engine.ts",
+      "tools/river-dev/src/core/lifecycle-intelligence-knowledge-foundation-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Knowledge layer consumes trusted lifecycle intelligence learning states.",
+    "Knowledge preserves learning provenance.",
+    "Blocked learning cannot create trusted knowledge states.",
+    "Human authorization boundaries remain preserved.",
+    "Knowledge output is deterministic and explainable.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/lifecycle-intelligence-knowledge-foundation-engine.test.ts",
+    "tools/river-dev/src/core/lifecycle-intelligence-learning-foundation-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}
