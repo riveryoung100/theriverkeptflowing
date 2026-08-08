@@ -2300,6 +2300,41 @@ string;
 
 
 
+
+export interface RiverDevExecutionLifecycleIntelligenceContinuation {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly trusted:
+boolean;
+
+readonly source:
+string;
+
+readonly continuation:
+readonly RiverDevLifecycleIntelligenceContinuationStep[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
+
+export interface RiverDevLifecycleIntelligenceContinuationStep {
+
+readonly taskId:
+string;
+
+readonly state:
+"continued" | "blocked";
+
+readonly reason:
+string;
+
+}
 export interface RiverDevExecutionLifecycleIntelligenceEvolution {
 
 readonly version:
