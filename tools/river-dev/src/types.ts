@@ -1485,6 +1485,28 @@ readonly blockedReasons:
 readonly string[];
 
 }
+
+export interface RiverDevExecutionReview {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly approved:
+boolean;
+
+readonly source:
+string;
+
+readonly findings:
+readonly string[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
 export interface RiverDevExecutionResult {
 
 readonly version:
