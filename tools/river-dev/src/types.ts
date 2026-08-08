@@ -1612,6 +1612,44 @@ readonly steps:
 readonly string[];
 
 }
+
+export interface RiverDevWorkflowOrchestration {
+
+readonly category:
+string;
+
+readonly name:
+string;
+
+readonly description:
+string;
+
+readonly source:
+string;
+
+readonly workflows:
+readonly string[];
+
+}
+
+export interface RiverDevExecutionWorkflowOrchestration {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly trusted:
+boolean;
+
+readonly orchestrations:
+readonly RiverDevWorkflowOrchestration[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
 export interface RiverDevExecutionWorkflow {
 
 readonly version:
