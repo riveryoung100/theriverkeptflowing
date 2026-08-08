@@ -1,4 +1,32 @@
 ﻿
+export interface RiverDevExecutionContinuation {
+
+readonly version:
+"1.0.0";
+
+readonly source:
+string;
+
+readonly objective:
+string;
+
+readonly reportingSource:
+string;
+
+readonly continuationState:
+"continue" | "halt" | "review";
+
+readonly continuationActions:
+readonly string[];
+
+readonly validationSummary:
+readonly string[];
+
+readonly authorized:
+boolean;
+
+}
+
 export interface RiverDevExecutionReporting {
 
 readonly version:
