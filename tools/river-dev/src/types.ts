@@ -2298,6 +2298,41 @@ string;
 
 
 
+
+export interface RiverDevExecutionLifecycleIntelligenceMaturation {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly trusted:
+boolean;
+
+readonly source:
+string;
+
+readonly maturation:
+readonly RiverDevLifecycleIntelligenceMaturationStep[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
+
+export interface RiverDevLifecycleIntelligenceMaturationStep {
+
+readonly taskId:
+string;
+
+readonly state:
+"matured" | "blocked";
+
+readonly reason:
+string;
+
+}
 export interface RiverDevExecutionLifecycleIntelligenceAdvancement {
 
 readonly version:

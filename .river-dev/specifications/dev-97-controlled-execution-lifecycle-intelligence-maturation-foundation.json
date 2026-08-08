@@ -1,0 +1,69 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-97 Controlled Execution Lifecycle Intelligence Maturation Foundation",
+  "branch": "dev-97-controlled-execution-lifecycle-intelligence-maturation-foundation",
+  "commitMessage": "DEV-97: Build controlled execution lifecycle intelligence maturation foundation",
+  "objective": "Create a deterministic controlled execution lifecycle intelligence maturation layer that consumes advanced lifecycle intelligence states and matures governed lifecycle capabilities while maintaining provenance, explainability, safety boundaries, and human authorization controls.",
+  "architecturalContext": [
+    "DEV-92 controlled execution lifecycle intelligence synchronization foundation",
+    "DEV-93 controlled execution lifecycle intelligence integration foundation",
+    "DEV-94 controlled execution lifecycle intelligence consolidation foundation",
+    "DEV-95 controlled execution lifecycle intelligence transition foundation",
+    "DEV-96 controlled execution lifecycle intelligence advancement foundation",
+    "Controlled execution lifecycle intelligence maturation layer",
+    "River Development Agent Generation III"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-97-controlled-execution-lifecycle-intelligence-maturation-foundation.json",
+      "tools/river-dev/src/core/lifecycle-intelligence-maturation-foundation-engine.ts",
+      "tools/river-dev/src/core/lifecycle-intelligence-maturation-foundation-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Maturation layer consumes trusted lifecycle intelligence advancement states.",
+    "Maturation preserves advancement provenance.",
+    "Blocked advancement cannot create trusted maturation states.",
+    "Human authorization boundaries remain preserved.",
+    "Maturation output is deterministic and explainable.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/lifecycle-intelligence-maturation-foundation-engine.test.ts",
+    "tools/river-dev/src/core/lifecycle-intelligence-advancement-foundation-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}
