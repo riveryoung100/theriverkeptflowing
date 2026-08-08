@@ -24,14 +24,14 @@ true,
 source:
 "controlled-execution-lifecycle",
 
-intelligence:
+optimization:
 [
 {
 taskId:
 "intelligence-boundary",
 
 state:
-"trusted",
+"optimized",
 
 reason:
 "verified"
@@ -66,7 +66,7 @@ orchestration.orchestration[0]!.state,
 
 assert.equal(
 orchestration.source,
-"controlled-execution-lifecycle-intelligence"
+"controlled-execution-lifecycle-intelligence-optimization"
 );
 
 }
@@ -92,7 +92,7 @@ false,
 source:
 "controlled-execution-lifecycle",
 
-intelligence:
+optimization:
 [
 {
 taskId:
@@ -152,14 +152,14 @@ true,
 source:
 "controlled-execution-lifecycle",
 
-intelligence:
+optimization:
 [
 {
 taskId:
 "final-review",
 
 state:
-"trusted",
+"optimized",
 
 reason:
 "human verified"

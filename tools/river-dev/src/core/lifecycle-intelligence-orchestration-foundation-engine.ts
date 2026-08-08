@@ -1,17 +1,17 @@
 ﻿import type {
-RiverDevExecutionLifecycleIntelligence,
-RiverDevExecutionLifecycleIntelligenceOrchestration
+RiverDevExecutionLifecycleIntelligenceOrchestration,
+RiverDevExecutionLifecycleIntelligenceOptimization
 } from "../types";
 
 export function createLifecycleIntelligenceOrchestration(
-intelligence:
-RiverDevExecutionLifecycleIntelligence
+optimization:
+RiverDevExecutionLifecycleIntelligenceOptimization
 ):
 RiverDevExecutionLifecycleIntelligenceOrchestration {
 
 const blocked =
-intelligence.trusted === false ||
-intelligence.blockedReasons.length > 0;
+optimization.trusted === false ||
+optimization.blockedReasons.length > 0;
 
 return {
 
@@ -19,18 +19,19 @@ version:
 "1.0.0",
 
 objective:
-intelligence.objective,
+optimization.objective,
 
 trusted:
 !blocked,
 
 source:
-"controlled-execution-lifecycle-intelligence",
+"controlled-execution-lifecycle-intelligence-optimization",
 
 orchestration:
-intelligence.intelligence.map(
+optimization.optimization.map(
 (step) =>
 ({
+
 taskId:
 step.taskId,
 
@@ -46,7 +47,7 @@ step.reason
 ),
 
 blockedReasons:
-intelligence.blockedReasons
+optimization.blockedReasons
 
 };
 
