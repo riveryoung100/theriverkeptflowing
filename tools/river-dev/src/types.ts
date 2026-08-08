@@ -2292,6 +2292,41 @@ readonly reason:
 string;
 
 }
+
+export interface RiverDevExecutionLifecycleIntelligenceCoordination {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly trusted:
+boolean;
+
+readonly source:
+string;
+
+readonly coordination:
+readonly RiverDevLifecycleIntelligenceCoordinationStep[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
+
+export interface RiverDevLifecycleIntelligenceCoordinationStep {
+
+readonly taskId:
+string;
+
+readonly state:
+"coordinated" | "blocked";
+
+readonly reason:
+string;
+
+}
 export interface RiverDevExecutionLifecycleIntelligenceOrchestration {
 
 readonly version:
