@@ -1,0 +1,69 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-96 Controlled Execution Lifecycle Intelligence Advancement Foundation",
+  "branch": "dev-96-controlled-execution-lifecycle-intelligence-advancement-foundation",
+  "commitMessage": "DEV-96: Build controlled execution lifecycle intelligence advancement foundation",
+  "objective": "Create a deterministic controlled execution lifecycle intelligence advancement layer that consumes transitioned lifecycle intelligence states and advances governed lifecycle capabilities while maintaining provenance, explainability, safety boundaries, and human authorization controls.",
+  "architecturalContext": [
+    "DEV-91 controlled execution lifecycle intelligence coordination foundation",
+    "DEV-92 controlled execution lifecycle intelligence synchronization foundation",
+    "DEV-93 controlled execution lifecycle intelligence integration foundation",
+    "DEV-94 controlled execution lifecycle intelligence consolidation foundation",
+    "DEV-95 controlled execution lifecycle intelligence transition foundation",
+    "Controlled execution lifecycle intelligence advancement layer",
+    "River Development Agent Generation III"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-96-controlled-execution-lifecycle-intelligence-advancement-foundation.json",
+      "tools/river-dev/src/core/lifecycle-intelligence-advancement-foundation-engine.ts",
+      "tools/river-dev/src/core/lifecycle-intelligence-advancement-foundation-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Advancement layer consumes trusted lifecycle intelligence transition states.",
+    "Advancement preserves transition provenance.",
+    "Blocked transition cannot create trusted advancement states.",
+    "Human authorization boundaries remain preserved.",
+    "Advancement output is deterministic and explainable.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/lifecycle-intelligence-advancement-foundation-engine.test.ts",
+    "tools/river-dev/src/core/lifecycle-intelligence-transition-foundation-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}
