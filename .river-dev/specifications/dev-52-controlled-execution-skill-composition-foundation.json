@@ -1,0 +1,71 @@
+﻿{
+"version": "1.0.0",
+"phase": "DEV-52 Controlled Execution Skill Composition Foundation",
+"branch": "dev-52-controlled-execution-skill-composition-foundation",
+"commitMessage": "DEV-52: Build controlled execution skill composition foundation",
+"objective": "Create a deterministic controlled execution skill composition layer that combines trusted skills into reusable workflows while preserving safety boundaries, explainability, and human approval controls.",
+"architecturalContext": [
+"DEV-45 controlled execution orchestrator foundation",
+"DEV-46 controlled execution intelligence foundation",
+"DEV-47 controlled execution reasoning foundation",
+"DEV-48 controlled execution memory foundation",
+"DEV-49 controlled execution knowledge foundation",
+"DEV-50 controlled execution capability foundation",
+"DEV-51 controlled execution skill foundation",
+"Controlled execution skill composition layer",
+"River Development Agent Generation III"
+],
+"approvedScope": {
+"modifiablePaths": [
+"tools/river-dev/src/types.ts",
+"tools/river-dev/src/commands/context.ts"
+],
+"creatablePaths": [
+".river-dev/specifications/dev-52-controlled-execution-skill-composition-foundation.json",
+"tools/river-dev/src/core/skill-composition-engine.ts",
+"tools/river-dev/src/core/skill-composition-engine.test.ts"
+],
+"excludedPaths": [
+".env",
+".git",
+"node_modules",
+"dist"
+]
+},
+"acceptanceCriteria": [
+"Skill composition consumes trusted skill output.",
+"Composed workflows preserve explainable origins.",
+"Untrusted skills cannot create trusted compositions.",
+"Human approval boundaries remain preserved.",
+"Composition output is deterministic and reviewable.",
+"No uncontrolled repository modifications occur.",
+"Focused tests, River Dev typechecking, and main-project typechecking pass."
+],
+"requiredTests": [
+"tools/river-dev/src/core/skill-composition-engine.test.ts",
+"tools/river-dev/src/core/skill-engine.test.ts",
+"tools/river-dev/src/index.test.ts"
+],
+"requiredQualityGates": [
+"expected-branch",
+"scope-check",
+"tests",
+"typecheck",
+"documentation",
+"exports",
+"secret-scan",
+"review",
+"staged-diff"
+],
+"approvedCommands": [
+"git-status",
+"git-branch-current",
+"git-diff",
+"typecheck",
+"test-tsx"
+],
+"repairLimits": {
+"maximumAttempts": 3,
+"allowScopeExpansion": false
+}
+}

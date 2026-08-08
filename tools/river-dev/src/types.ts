@@ -1087,6 +1087,44 @@ string;
 
 }
 
+
+export interface RiverDevSkillComposition {
+
+readonly category:
+string;
+
+readonly name:
+string;
+
+readonly description:
+string;
+
+readonly source:
+string;
+
+readonly skills:
+readonly string[];
+
+}
+
+export interface RiverDevExecutionSkillComposition {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly trusted:
+boolean;
+
+readonly compositions:
+readonly RiverDevSkillComposition[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
 export interface RiverDevExecutionSkill {
 
 readonly version:
