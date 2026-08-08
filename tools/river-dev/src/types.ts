@@ -1,4 +1,29 @@
 ﻿
+export interface RiverDevExecutionPreparation {
+
+readonly version:
+"1.0.0";
+
+readonly source:
+string;
+
+readonly objective:
+string;
+
+readonly implementationSource:
+string;
+
+readonly executionSteps:
+readonly string[];
+
+readonly safetyChecks:
+readonly string[];
+
+readonly authorized:
+boolean;
+
+}
+
 export interface RiverDevImplementationIntelligence {
 
 readonly version:
@@ -3499,5 +3524,4 @@ export interface RiverDevStateStore {
         Promise<RiverDevStoredState>;
 
 }
-
 
