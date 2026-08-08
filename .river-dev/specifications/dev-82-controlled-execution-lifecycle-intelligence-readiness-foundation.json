@@ -1,0 +1,69 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-82 Controlled Execution Lifecycle Intelligence Readiness Foundation",
+  "branch": "dev-82-controlled-execution-lifecycle-intelligence-readiness-foundation",
+  "commitMessage": "DEV-82: Build controlled execution lifecycle intelligence readiness foundation",
+  "objective": "Create a deterministic controlled execution lifecycle intelligence readiness layer that evaluates activated lifecycle intelligence states for governed execution readiness while maintaining provenance, explainability, safety boundaries, and human authorization controls.",
+  "architecturalContext": [
+    "DEV-77 controlled execution lifecycle intelligence continuity foundation",
+    "DEV-78 controlled execution lifecycle intelligence persistence foundation",
+    "DEV-79 controlled execution lifecycle intelligence recovery foundation",
+    "DEV-80 controlled execution lifecycle intelligence restoration foundation",
+    "DEV-81 controlled execution lifecycle intelligence activation foundation",
+    "Controlled execution lifecycle intelligence readiness layer",
+    "River Development Agent Generation III"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-82-controlled-execution-lifecycle-intelligence-readiness-foundation.json",
+      "tools/river-dev/src/core/lifecycle-intelligence-readiness-foundation-engine.ts",
+      "tools/river-dev/src/core/lifecycle-intelligence-readiness-foundation-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Readiness layer consumes trusted lifecycle intelligence activation states.",
+    "Readiness preserves activation provenance.",
+    "Blocked activation cannot create trusted readiness states.",
+    "Human authorization boundaries remain preserved.",
+    "Readiness output is deterministic and explainable.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/lifecycle-intelligence-readiness-foundation-engine.test.ts",
+    "tools/river-dev/src/core/lifecycle-intelligence-activation-foundation-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}
