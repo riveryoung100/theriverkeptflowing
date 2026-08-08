@@ -27,7 +27,7 @@ trusted:
 source:
 "controlled-execution-lifecycle-intelligence-evolution",
 
-continuation:
+resilience:
 evolution.evolution.map(
 (step) =>
 ({
@@ -38,7 +38,7 @@ step.taskId,
 state:
 blocked
 ? "blocked"
-: "continued",
+: "resilient",
 
 reason:
 step.reason

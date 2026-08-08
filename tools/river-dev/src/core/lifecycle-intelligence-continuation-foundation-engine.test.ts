@@ -55,13 +55,13 @@ true
 );
 
 assert.equal(
-continuation.continuation[0]!.taskId,
+continuation.resilience[0]!.taskId,
 "evolution-boundary"
 );
 
 assert.equal(
-continuation.continuation[0]!.state,
-"continued"
+continuation.resilience[0]!.state,
+"resilient"
 );
 
 assert.equal(
@@ -119,7 +119,7 @@ false
 );
 
 assert.equal(
-continuation.continuation[0]!.state,
+continuation.resilience[0]!.state,
 "blocked"
 );
 
@@ -171,7 +171,7 @@ blockedReasons:
 );
 
 assert.equal(
-continuation.continuation[0]!.reason,
+continuation.resilience[0]!.reason,
 "human verified"
 );
 

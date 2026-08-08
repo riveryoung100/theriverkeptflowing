@@ -2309,14 +2309,15 @@ readonly version:
 readonly objective:
 string;
 
+readonly resilience:
+readonly RiverDevLifecycleIntelligenceResilienceStep[];
+
 readonly trusted:
 boolean;
 
 readonly source:
 string;
 
-readonly continuation:
-readonly RiverDevLifecycleIntelligenceContinuationStep[];
 
 readonly blockedReasons:
 readonly string[];

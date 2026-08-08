@@ -1,17 +1,17 @@
 ﻿import type {
-RiverDevExecutionLifecycleIntelligenceResilience,
-RiverDevExecutionLifecycleIntelligenceContinuity
+RiverDevExecutionLifecycleIntelligenceContinuity,
+RiverDevExecutionLifecycleIntelligenceContinuation
 } from "../types";
 
 export function createLifecycleIntelligenceContinuity(
-resilience:
-RiverDevExecutionLifecycleIntelligenceResilience
+continuation:
+RiverDevExecutionLifecycleIntelligenceContinuation
 ):
 RiverDevExecutionLifecycleIntelligenceContinuity {
 
 const blocked =
-resilience.trusted === false ||
-resilience.blockedReasons.length > 0;
+continuation.trusted === false ||
+continuation.blockedReasons.length > 0;
 
 return {
 
@@ -19,7 +19,7 @@ version:
 "1.0.0",
 
 objective:
-resilience.objective,
+continuation.objective,
 
 trusted:
 !blocked,
@@ -28,7 +28,7 @@ source:
 "controlled-execution-lifecycle-intelligence-resilience",
 
 continuity:
-resilience.resilience.map(
+continuation.resilience.map(
 (step) =>
 ({
 
@@ -47,7 +47,7 @@ step.reason
 ),
 
 blockedReasons:
-resilience.blockedReasons
+continuation.blockedReasons
 
 };
 

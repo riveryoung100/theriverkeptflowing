@@ -1,0 +1,69 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-100 Controlled Execution Lifecycle Intelligence Continuity Foundation",
+  "branch": "dev-100-controlled-execution-lifecycle-intelligence-continuity-foundation",
+  "commitMessage": "DEV-100: Build controlled execution lifecycle intelligence continuity foundation",
+  "objective": "Create a deterministic controlled execution lifecycle intelligence continuity layer that consumes continued lifecycle intelligence states and preserves governed lifecycle capability continuity while maintaining provenance, explainability, safety boundaries, and human authorization controls.",
+  "architecturalContext": [
+    "DEV-95 controlled execution lifecycle intelligence transition foundation",
+    "DEV-96 controlled execution lifecycle intelligence advancement foundation",
+    "DEV-97 controlled execution lifecycle intelligence maturation foundation",
+    "DEV-98 controlled execution lifecycle intelligence evolution foundation",
+    "DEV-99 controlled execution lifecycle intelligence continuation foundation",
+    "Controlled execution lifecycle intelligence continuity layer",
+    "River Development Agent Generation III"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-100-controlled-execution-lifecycle-intelligence-continuity-foundation.json",
+      "tools/river-dev/src/core/lifecycle-intelligence-continuity-foundation-engine.ts",
+      "tools/river-dev/src/core/lifecycle-intelligence-continuity-foundation-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Continuity layer consumes trusted lifecycle intelligence continuation states.",
+    "Continuity preserves continuation provenance.",
+    "Blocked continuation cannot create trusted continuity states.",
+    "Human authorization boundaries remain preserved.",
+    "Continuity output is deterministic and explainable.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/lifecycle-intelligence-continuity-foundation-engine.test.ts",
+    "tools/river-dev/src/core/lifecycle-intelligence-continuation-foundation-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}
