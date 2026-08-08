@@ -1593,22 +1593,47 @@ readonly blockedReasons:
 readonly string[];
 
 }
+
+export interface RiverDevWorkflow {
+
+readonly category:
+string;
+
+readonly name:
+string;
+
+readonly description:
+string;
+
+readonly source:
+string;
+
+readonly steps:
+readonly string[];
+
+}
 export interface RiverDevExecutionWorkflow {
 
 readonly version:
-    "1.0.0";
+"1.0.0";
 
 readonly objective:
-    string;
+string;
+
+readonly trusted?:
+boolean;
 
 readonly ready:
-    boolean;
+boolean;
 
 readonly steps:
-    readonly RiverDevExecutionStep[];
+readonly RiverDevExecutionStep[];
+
+readonly workflows?:
+readonly RiverDevWorkflow[];
 
 readonly blockedReasons:
-    readonly string[];
+readonly string[];
 
 }
 export interface RiverDevValidationResult {

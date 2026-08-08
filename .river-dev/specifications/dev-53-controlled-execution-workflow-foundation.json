@@ -1,0 +1,72 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-53 Controlled Execution Workflow Foundation",
+  "branch": "dev-53-controlled-execution-workflow-foundation",
+  "commitMessage": "DEV-53: Build controlled execution workflow foundation",
+  "objective": "Create a deterministic controlled execution workflow layer that transforms trusted skill compositions into executable development workflows while preserving safety boundaries, explainability, and human approval controls.",
+  "architecturalContext": [
+    "DEV-45 controlled execution orchestrator foundation",
+    "DEV-46 controlled execution intelligence foundation",
+    "DEV-47 controlled execution reasoning foundation",
+    "DEV-48 controlled execution memory foundation",
+    "DEV-49 controlled execution knowledge foundation",
+    "DEV-50 controlled execution capability foundation",
+    "DEV-51 controlled execution skill foundation",
+    "DEV-52 controlled execution skill composition foundation",
+    "Controlled execution workflow layer",
+    "River Development Agent Generation III"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-53-controlled-execution-workflow-foundation.json",
+      "tools/river-dev/src/core/workflow-engine.ts",
+      "tools/river-dev/src/core/workflow-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Workflow layer consumes trusted skill composition output.",
+    "Workflows preserve explainable origins.",
+    "Untrusted compositions cannot create trusted workflows.",
+    "Human approval boundaries remain preserved.",
+    "Workflow output is deterministic and reviewable.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/workflow-engine.test.ts",
+    "tools/river-dev/src/core/skill-composition-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}
