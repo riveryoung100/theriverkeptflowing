@@ -1,0 +1,69 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-95 Controlled Execution Lifecycle Intelligence Transition Foundation",
+  "branch": "dev-95-controlled-execution-lifecycle-intelligence-transition-foundation",
+  "commitMessage": "DEV-95: Build controlled execution lifecycle intelligence transition foundation",
+  "objective": "Create a deterministic controlled execution lifecycle intelligence transition layer that consumes consolidated lifecycle intelligence states and transitions governed lifecycle capabilities while maintaining provenance, explainability, safety boundaries, and human authorization controls.",
+  "architecturalContext": [
+    "DEV-90 controlled execution lifecycle intelligence orchestration foundation",
+    "DEV-91 controlled execution lifecycle intelligence coordination foundation",
+    "DEV-92 controlled execution lifecycle intelligence synchronization foundation",
+    "DEV-93 controlled execution lifecycle intelligence integration foundation",
+    "DEV-94 controlled execution lifecycle intelligence consolidation foundation",
+    "Controlled execution lifecycle intelligence transition layer",
+    "River Development Agent Generation III"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-95-controlled-execution-lifecycle-intelligence-transition-foundation.json",
+      "tools/river-dev/src/core/lifecycle-intelligence-transition-foundation-engine.ts",
+      "tools/river-dev/src/core/lifecycle-intelligence-transition-foundation-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Transition layer consumes trusted lifecycle intelligence consolidation states.",
+    "Transition preserves consolidation provenance.",
+    "Blocked consolidation cannot create trusted transition states.",
+    "Human authorization boundaries remain preserved.",
+    "Transition output is deterministic and explainable.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/lifecycle-intelligence-transition-foundation-engine.test.ts",
+    "tools/river-dev/src/core/lifecycle-intelligence-consolidation-foundation-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}
