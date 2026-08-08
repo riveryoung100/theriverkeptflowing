@@ -1,0 +1,69 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-81 Controlled Execution Lifecycle Intelligence Activation Foundation",
+  "branch": "dev-81-controlled-execution-lifecycle-intelligence-activation-foundation",
+  "commitMessage": "DEV-81: Build controlled execution lifecycle intelligence activation foundation",
+  "objective": "Create a deterministic controlled execution lifecycle intelligence activation layer that transitions restored lifecycle intelligence states into governed active execution capability while maintaining provenance, explainability, safety boundaries, and human authorization controls.",
+  "architecturalContext": [
+    "DEV-76 controlled execution lifecycle intelligence resilience foundation",
+    "DEV-77 controlled execution lifecycle intelligence continuity foundation",
+    "DEV-78 controlled execution lifecycle intelligence persistence foundation",
+    "DEV-79 controlled execution lifecycle intelligence recovery foundation",
+    "DEV-80 controlled execution lifecycle intelligence restoration foundation",
+    "Controlled execution lifecycle intelligence activation layer",
+    "River Development Agent Generation III"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-81-controlled-execution-lifecycle-intelligence-activation-foundation.json",
+      "tools/river-dev/src/core/lifecycle-intelligence-activation-foundation-engine.ts",
+      "tools/river-dev/src/core/lifecycle-intelligence-activation-foundation-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Activation layer consumes trusted lifecycle intelligence restoration states.",
+    "Activation preserves restoration provenance.",
+    "Blocked restoration cannot create trusted activation states.",
+    "Human authorization boundaries remain preserved.",
+    "Activation output is deterministic and explainable.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/lifecycle-intelligence-activation-foundation-engine.test.ts",
+    "tools/river-dev/src/core/lifecycle-intelligence-restoration-foundation-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}
