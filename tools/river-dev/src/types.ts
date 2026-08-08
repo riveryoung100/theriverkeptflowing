@@ -1812,6 +1812,41 @@ string;
 
 }
 
+
+export interface RiverDevExecutionLifecycleIntelligenceDispatch {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly trusted:
+boolean;
+
+readonly source:
+string;
+
+readonly dispatch:
+readonly RiverDevLifecycleIntelligenceDispatchStep[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
+
+export interface RiverDevLifecycleIntelligenceDispatchStep {
+
+readonly taskId:
+string;
+
+readonly state:
+"dispatched" | "blocked";
+
+readonly reason:
+string;
+
+}
 export interface RiverDevExecutionLifecycleIntelligenceAuthorization {
 
 readonly version:

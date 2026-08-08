@@ -1,0 +1,69 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-85 Controlled Execution Lifecycle Intelligence Dispatch Foundation",
+  "branch": "dev-85-controlled-execution-lifecycle-intelligence-dispatch-foundation",
+  "commitMessage": "DEV-85: Build controlled execution lifecycle intelligence dispatch foundation",
+  "objective": "Create a deterministic controlled execution lifecycle intelligence dispatch layer that evaluates authorized lifecycle intelligence states for controlled dispatch into execution workflows while maintaining provenance, explainability, safety boundaries, and human authorization controls.",
+  "architecturalContext": [
+    "DEV-80 controlled execution lifecycle intelligence restoration foundation",
+    "DEV-81 controlled execution lifecycle intelligence activation foundation",
+    "DEV-82 controlled execution lifecycle intelligence readiness foundation",
+    "DEV-83 controlled execution lifecycle intelligence governance foundation",
+    "DEV-84 controlled execution lifecycle intelligence authorization foundation",
+    "Controlled execution lifecycle intelligence dispatch layer",
+    "River Development Agent Generation III"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-85-controlled-execution-lifecycle-intelligence-dispatch-foundation.json",
+      "tools/river-dev/src/core/lifecycle-intelligence-dispatch-foundation-engine.ts",
+      "tools/river-dev/src/core/lifecycle-intelligence-dispatch-foundation-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Dispatch layer consumes trusted lifecycle intelligence authorization states.",
+    "Dispatch preserves authorization provenance.",
+    "Blocked authorization cannot create trusted dispatch states.",
+    "Human authorization boundaries remain preserved.",
+    "Dispatch output is deterministic and explainable.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/lifecycle-intelligence-dispatch-foundation-engine.test.ts",
+    "tools/river-dev/src/core/lifecycle-intelligence-authorization-foundation-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}
