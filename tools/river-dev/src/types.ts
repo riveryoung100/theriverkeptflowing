@@ -1632,6 +1632,38 @@ readonly string[];
 
 }
 
+
+export interface RiverDevWorkflowRuntimeStep {
+
+readonly name:
+string;
+
+readonly source:
+string;
+
+readonly status:
+"ready" | "blocked";
+
+}
+
+export interface RiverDevExecutionWorkflowRuntime {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly trusted:
+boolean;
+
+readonly steps:
+readonly RiverDevWorkflowRuntimeStep[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
 export interface RiverDevExecutionWorkflowOrchestration {
 
 readonly version:

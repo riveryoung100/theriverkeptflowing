@@ -1,0 +1,74 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-55 Controlled Execution Workflow Runtime Foundation",
+  "branch": "dev-55-controlled-execution-workflow-runtime-foundation",
+  "commitMessage": "DEV-55: Build controlled execution workflow runtime foundation",
+  "objective": "Create a deterministic controlled execution workflow runtime layer that executes trusted orchestrations through governed runtime steps while preserving safety boundaries, explainability, and human approval controls.",
+  "architecturalContext": [
+    "DEV-45 controlled execution orchestrator foundation",
+    "DEV-46 controlled execution intelligence foundation",
+    "DEV-47 controlled execution reasoning foundation",
+    "DEV-48 controlled execution memory foundation",
+    "DEV-49 controlled execution knowledge foundation",
+    "DEV-50 controlled execution capability foundation",
+    "DEV-51 controlled execution skill foundation",
+    "DEV-52 controlled execution skill composition foundation",
+    "DEV-53 controlled execution workflow foundation",
+    "DEV-54 controlled execution workflow orchestration foundation",
+    "Controlled execution workflow runtime layer",
+    "River Development Agent Generation III"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-55-controlled-execution-workflow-runtime-foundation.json",
+      "tools/river-dev/src/core/workflow-runtime-engine.ts",
+      "tools/river-dev/src/core/workflow-runtime-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Runtime layer consumes trusted workflow orchestration output.",
+    "Runtime execution preserves explainable origins.",
+    "Untrusted orchestrations cannot create trusted runtime execution.",
+    "Human approval boundaries remain preserved.",
+    "Runtime output is deterministic and reviewable.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/workflow-runtime-engine.test.ts",
+    "tools/river-dev/src/core/workflow-orchestration-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}
