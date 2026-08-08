@@ -1419,6 +1419,41 @@ readonly string[];
 
 
 
+
+export interface RiverDevExecutionLifecycleIntelligenceOutcome {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly trusted:
+boolean;
+
+readonly source:
+string;
+
+readonly outcome:
+readonly RiverDevLifecycleIntelligenceOutcomeStep[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
+
+export interface RiverDevLifecycleIntelligenceOutcomeStep {
+
+readonly taskId:
+string;
+
+readonly state:
+"completed" | "blocked";
+
+readonly reason:
+string;
+
+}
 export interface RiverDevExecutionLifecycleIntelligenceAction {
 
 readonly version:

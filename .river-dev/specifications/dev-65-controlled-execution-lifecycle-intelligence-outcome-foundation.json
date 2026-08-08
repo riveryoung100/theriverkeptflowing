@@ -1,0 +1,76 @@
+﻿{
+"version": "1.0.0",
+"phase": "DEV-65 Controlled Execution Lifecycle Intelligence Outcome Foundation",
+"branch": "dev-65-controlled-execution-lifecycle-intelligence-outcome-foundation",
+"commitMessage": "DEV-65: Build controlled execution lifecycle intelligence outcome foundation",
+"objective": "Create a deterministic controlled execution lifecycle intelligence outcome layer that records governed outcomes from trusted actions while preserving provenance, explainability, safety boundaries, and human authorization controls.",
+"architecturalContext": [
+"DEV-53 controlled execution workflow foundation",
+"DEV-54 controlled execution workflow orchestration foundation",
+"DEV-55 controlled execution workflow runtime foundation",
+"DEV-56 controlled execution result foundation",
+"DEV-57 controlled execution review foundation",
+"DEV-58 controlled execution approval foundation",
+"DEV-59 controlled execution completion foundation",
+"DEV-60 controlled execution lifecycle foundation",
+"DEV-61 controlled execution lifecycle intelligence foundation",
+"DEV-62 controlled execution lifecycle intelligence orchestration foundation",
+"DEV-63 controlled execution lifecycle intelligence decision foundation",
+"DEV-64 controlled execution lifecycle intelligence action foundation",
+"Controlled execution lifecycle intelligence outcome layer",
+"River Development Agent Generation III"
+],
+"approvedScope": {
+"modifiablePaths": [
+"tools/river-dev/src/types.ts",
+"tools/river-dev/src/commands/context.ts"
+],
+"creatablePaths": [
+".river-dev/specifications/dev-65-controlled-execution-lifecycle-intelligence-outcome-foundation.json",
+"tools/river-dev/src/core/lifecycle-intelligence-outcome-foundation-engine.ts",
+"tools/river-dev/src/core/lifecycle-intelligence-outcome-foundation-engine.test.ts"
+],
+"excludedPaths": [
+".env",
+".git",
+"node_modules",
+"dist"
+]
+},
+"acceptanceCriteria": [
+"Outcome layer consumes trusted lifecycle intelligence actions.",
+"Outcome preserves action provenance.",
+"Blocked actions cannot create trusted outcomes.",
+"Human authorization boundaries remain preserved.",
+"Outcome output is deterministic and explainable.",
+"No uncontrolled repository modifications occur.",
+"Focused tests, River Dev typechecking, and main-project typechecking pass."
+],
+"requiredTests": [
+"tools/river-dev/src/core/lifecycle-intelligence-outcome-foundation-engine.test.ts",
+"tools/river-dev/src/core/lifecycle-intelligence-action-foundation-engine.test.ts",
+"tools/river-dev/src/index.test.ts"
+],
+"requiredQualityGates": [
+"expected-branch",
+"scope-check",
+"tests",
+"typecheck",
+"documentation",
+"exports",
+"secret-scan",
+"review",
+"staged-diff"
+],
+"approvedCommands": [
+"git-status",
+"git-branch-current",
+"git-diff",
+"typecheck",
+"test-tsx"
+],
+"repairLimits": {
+"maximumAttempts": 3,
+"allowScopeExpansion": false
+}
+}
