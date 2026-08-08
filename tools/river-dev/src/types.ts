@@ -1499,6 +1499,18 @@ boolean;
 readonly results:
 readonly RiverDevResultStep[];
 
+readonly trusted?:
+boolean;
+
+readonly status?:
+"success" | "blocked";
+
+readonly source?:
+string;
+
+readonly details?:
+readonly string[];
+
 readonly blockedReasons:
 readonly string[];
 

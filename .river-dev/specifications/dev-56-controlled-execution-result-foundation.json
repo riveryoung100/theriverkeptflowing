@@ -1,0 +1,67 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-56 Controlled Execution Result Foundation",
+  "branch": "dev-56-controlled-execution-result-foundation",
+  "commitMessage": "DEV-56: Build controlled execution result foundation",
+  "objective": "Create a deterministic controlled execution result layer that captures governed runtime outcomes while preserving provenance, explainability, safety boundaries, and human review controls.",
+  "architecturalContext": [
+    "DEV-53 controlled execution workflow foundation",
+    "DEV-54 controlled execution workflow orchestration foundation",
+    "DEV-55 controlled execution workflow runtime foundation",
+    "Controlled execution result layer",
+    "River Development Agent Generation III"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-56-controlled-execution-result-foundation.json",
+      "tools/river-dev/src/core/result-foundation-engine.ts",
+      "tools/river-dev/src/core/result-foundation-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Result layer consumes trusted runtime output.",
+    "Results preserve execution provenance.",
+    "Blocked runtime states cannot create trusted results.",
+    "Human approval boundaries remain preserved.",
+    "Result output is deterministic and reviewable.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/result-foundation-engine.test.ts",
+    "tools/river-dev/src/core/workflow-runtime-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}
