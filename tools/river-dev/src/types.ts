@@ -1036,6 +1036,41 @@ string;
 
 }
 
+
+export interface RiverDevKnowledgeObject {
+
+readonly category:
+string;
+
+readonly key:
+string;
+
+readonly insight:
+string;
+
+readonly source:
+string;
+
+}
+
+export interface RiverDevExecutionKnowledge {
+
+readonly version:
+"1.0.0";
+
+readonly objective:
+string;
+
+readonly trusted:
+boolean;
+
+readonly objects:
+readonly RiverDevKnowledgeObject[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
 export interface RiverDevExecutionMemory {
 
 readonly version:
