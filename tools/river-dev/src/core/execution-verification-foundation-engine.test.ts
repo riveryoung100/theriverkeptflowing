@@ -25,6 +25,11 @@ objective:
 trusted:
 true,
 
+restorationState:
+[
+"restoration accepted"
+],
+
 deploymentState:
 [
 "deployment accepted"
@@ -73,6 +78,11 @@ objective:
 
 trusted:
 false,
+
+restorationState:
+[
+"restoration blocked"
+],
 
 deploymentState:
 [
@@ -125,6 +135,11 @@ objective:
 trusted:
 true,
 
+restorationState:
+[
+"restoration accepted"
+],
+
 deploymentState:
 [
 "validated"
@@ -147,3 +162,4 @@ true
 );
 
 });
+

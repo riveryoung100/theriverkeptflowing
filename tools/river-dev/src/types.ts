@@ -16,6 +16,9 @@ boolean;
 readonly restorationState:
 readonly string[];
 
+readonly deploymentState:
+readonly string[];
+
 readonly provenance:
 readonly string[];
 

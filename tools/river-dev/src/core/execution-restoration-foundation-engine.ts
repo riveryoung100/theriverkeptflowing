@@ -40,6 +40,20 @@ trusted
 "recovery review required"
 ],
 
+deploymentState:
+trusted
+?
+[
+"restoration deployed",
+"execution deployment state verified",
+"controlled deployment boundary preserved"
+]
+:
+[
+"deployment generation restricted",
+"restoration deployment review required"
+],
+
 provenance:
 trusted
 ?
