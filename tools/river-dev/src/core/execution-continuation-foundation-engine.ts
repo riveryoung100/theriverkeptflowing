@@ -1,20 +1,16 @@
 ﻿import type {
-RiverDevExecutionContinuationReport,
+RiverDevExecutionCompletionFoundation,
 RiverDevExecutionContinuationFoundation
 } from "../types";
 
-
 export function createExecutionContinuation(
-report:
-RiverDevExecutionContinuationReport
+completion:
+RiverDevExecutionCompletionFoundation
 ):
 RiverDevExecutionContinuationFoundation {
 
-
-const canContinue =
-report.reportState === "successful" &&
-report.authorized === true;
-
+const authorized =
+completion.blockedReasons.length === 0;
 
 return {
 
@@ -25,48 +21,57 @@ source:
 "river-development-agent-execution-continuation",
 
 objective:
-report.objective,
+completion.objective,
 
 continuationState:
-canContinue
+authorized
 ?
-"continue"
+"completion accepted; continuation created; controlled continuation boundary preserved"
 :
-"halt",
+"continuation generation restricted; completion review required",
 
-authorized:
-report.authorized,
+authorized,
 
 continuationActions:
-canContinue
+authorized
 ?
 [
-"continue governed execution flow"
+"continue governed execution flow",
+"preserve execution provenance",
+"maintain authorization boundary"
 ]
 :
 [
-"halt continuation flow"
+"halt continuation",
+"require review"
 ],
 
 reportingSource:
-"river-development-agent-execution-reporting",
+"river-development-agent-execution-continuation",
 
 provenance:
+authorized
+?
 [
-"execution reporting evaluated",
-"continuation decision preserved"
+"completion record verified",
+"continuation provenance preserved",
+"human authorization boundary maintained"
+]
+:
+[
+"completion state preserved",
+"continuation boundary maintained"
 ],
 
 blockedReasons:
-canContinue
+authorized
 ?
 []
 :
 [
-"execution reporting blocked continuation"
+"completion record not authorized"
 ]
 
 };
 
 }
-

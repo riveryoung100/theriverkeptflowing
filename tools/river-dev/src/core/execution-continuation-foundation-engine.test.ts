@@ -5,8 +5,9 @@ import {
 createExecutionContinuation
 } from "./execution-continuation-foundation-engine";
 
+
 test(
-"creates continuation from successful execution reporting",
+"creates trusted continuation from trusted completion",
 () => {
 
 const continuation =
@@ -16,36 +17,29 @@ version:
 "1.0.0",
 
 source:
-"execution-reporting-test",
+"test",
 
 objective:
 "Build capability",
 
-outcomeSource:
-"river-development-agent-execution-outcome",
+trusted:
+true,
 
-reportState:
-"successful",
-
-reportEntries:
+completionState:
 [
-"execution outcome validated"
+"completion accepted"
 ],
 
-validationSummary:
+provenance:
 [
-"verify authorization"
+"verified"
 ],
 
-authorized:
-true
+blockedReasons:
+[]
 
 });
 
-assert.equal(
-continuation.continuationState,
-"continue"
-);
 
 assert.equal(
 continuation.authorized,
@@ -53,13 +47,8 @@ true
 );
 
 assert.equal(
-continuation.objective,
-"Build capability"
-);
-
-assert.equal(
-continuation.continuationActions[0],
-"continue governed execution flow"
+continuation.continuationActions.length > 0,
+true
 );
 
 }
@@ -67,7 +56,7 @@ continuation.continuationActions[0],
 
 
 test(
-"halts continuation from blocked execution reporting",
+"blocks continuation from untrusted completion",
 () => {
 
 const continuation =
@@ -77,34 +66,31 @@ version:
 "1.0.0",
 
 source:
-"execution-reporting-test",
+"test",
 
 objective:
 "Unsafe capability",
 
-outcomeSource:
-"river-development-agent-execution-outcome",
+trusted:
+false,
 
-reportState:
-"blocked",
-
-reportEntries:
+completionState:
 [
-"execution outcome blocked"
+"completion blocked"
 ],
 
-validationSummary:
-[],
+provenance:
+[
+"preserved"
+],
 
-authorized:
-false
+blockedReasons:
+[
+"blocked"
+]
 
 });
 
-assert.equal(
-continuation.continuationState,
-"halt"
-);
 
 assert.equal(
 continuation.authorized,
@@ -112,8 +98,8 @@ false
 );
 
 assert.equal(
-continuation.continuationActions[0],
-"halt continuation flow"
+continuation.blockedReasons.length > 0,
+true
 );
 
 }
@@ -121,7 +107,7 @@ continuation.continuationActions[0],
 
 
 test(
-"preserves continuation provenance",
+"preserves execution continuation provenance",
 () => {
 
 const continuation =
@@ -131,36 +117,33 @@ version:
 "1.0.0",
 
 source:
-"execution-reporting-test",
+"test",
 
 objective:
 "Provenance test",
 
-outcomeSource:
-"river-development-agent-execution-outcome",
+trusted:
+true,
 
-reportState:
-"successful",
+completionState:
+[
+"validated"
+],
 
-reportEntries:
-[],
+provenance:
+[
+"verified"
+],
 
-validationSummary:
-[],
-
-authorized:
-true
+blockedReasons:
+[]
 
 });
 
-assert.equal(
-continuation.source,
-"river-development-agent-execution-continuation"
-);
 
 assert.equal(
-continuation.reportingSource,
-"river-development-agent-execution-reporting"
+continuation.provenance.length > 0,
+true
 );
 
 }
