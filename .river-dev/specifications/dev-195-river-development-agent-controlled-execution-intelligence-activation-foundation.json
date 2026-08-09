@@ -1,0 +1,69 @@
+﻿{
+"version": "1.0.0",
+"phase": "DEV-195 River Development Agent Controlled Execution Intelligence Activation Foundation",
+"branch": "dev-195-river-development-agent-controlled-execution-intelligence-activation-foundation",
+"commitMessage": "DEV-195: Build River Development Agent controlled execution intelligence activation foundation",
+"objective": "Create a deterministic controlled execution intelligence activation foundation that transforms governed execution intelligence readiness records into structured intelligence activation records while preserving provenance, safety boundaries, human authorization controls, and controlled system evolution principles.",
+"architecturalContext": [
+"DEV-189 River Development Agent controlled execution intelligence evolution foundation",
+"DEV-190 River Development Agent controlled execution intelligence adaptation foundation",
+"DEV-191 River Development Agent controlled execution intelligence optimization foundation",
+"DEV-192 River Development Agent controlled execution intelligence refinement foundation",
+"DEV-193 River Development Agent controlled execution intelligence maturation foundation",
+"DEV-194 River Development Agent controlled execution intelligence readiness foundation",
+"River Development Agent Generation III",
+"The River Kept Flowing platform ecosystem"
+],
+"approvedScope": {
+"modifiablePaths": [
+"tools/river-dev/src/types.ts",
+"tools/river-dev/src/commands/context.ts"
+],
+"creatablePaths": [
+".river-dev/specifications/dev-195-river-development-agent-controlled-execution-intelligence-activation-foundation.json",
+"tools/river-dev/src/core/execution-intelligence-activation-foundation-engine.ts",
+"tools/river-dev/src/core/execution-intelligence-activation-foundation-engine.test.ts"
+],
+"excludedPaths": [
+".env",
+".git",
+"node_modules",
+"dist"
+]
+},
+"acceptanceCriteria": [
+"Intelligence activation consumes governed execution intelligence readiness records.",
+"Untrusted intelligence readiness records cannot create trusted intelligence activation records.",
+"Intelligence activation records preserve provenance.",
+"Intelligence activation output is deterministic and explainable.",
+"Human authorization boundaries remain preserved.",
+"No uncontrolled repository modifications occur.",
+"Focused tests, River Dev typechecking, and main-project typechecking pass."
+],
+"requiredTests": [
+"tools/river-dev/src/core/execution-intelligence-activation-foundation-engine.test.ts",
+"tools/river-dev/src/index.test.ts"
+],
+"requiredQualityGates": [
+"expected-branch",
+"scope-check",
+"tests",
+"typecheck",
+"documentation",
+"exports",
+"secret-scan",
+"review",
+"staged-diff"
+],
+"approvedCommands": [
+"git-status",
+"git-branch-current",
+"git-diff",
+"typecheck",
+"test-tsx"
+],
+"repairLimits": {
+"maximumAttempts": 3,
+"allowScopeExpansion": false
+}
+}
