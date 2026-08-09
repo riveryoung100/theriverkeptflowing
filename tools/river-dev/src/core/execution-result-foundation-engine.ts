@@ -1,21 +1,17 @@
 ﻿import type {
-RiverDevExecutionRuntimeFoundation,
+RiverDevExecutionActionFoundation,
 RiverDevExecutionResultFoundation
 } from "../types";
 
 export function createExecutionResult(
-runtime:
-RiverDevExecutionRuntimeFoundation
+action:
+RiverDevExecutionActionFoundation
 ):
 RiverDevExecutionResultFoundation {
 
-const completed =
-runtime.running === true &&
-runtime.authorized === true &&
-runtime.blockedReasons.length === 0;
-
 const successful =
-completed;
+action.trusted === true &&
+action.blockedReasons.length === 0;
 
 return {
 
@@ -26,9 +22,10 @@ source:
 "river-development-agent-execution-result",
 
 objective:
-runtime.objective,
+action.objective,
 
-completed,
+completed:
+successful,
 
 successful,
 
@@ -36,28 +33,28 @@ resultState:
 successful
 ?
 [
-"runtime execution completed",
-"execution result captured",
-"controlled execution outcome preserved"
+"action record accepted",
+"execution result completed",
+"controlled result boundary preserved"
 ]
 :
 [
-"execution result blocked",
-"runtime outcome requires review"
+"result generation restricted",
+"action review required"
 ],
 
 provenance:
 successful
 ?
 [
-"runtime authorization verified",
-"execution result provenance preserved",
-"result boundary maintained"
+"action record verified",
+"result provenance preserved",
+"human authorization boundary maintained"
 ]
 :
 [
-"runtime state preserved",
-"execution result boundary maintained"
+"action state preserved",
+"result boundary maintained"
 ],
 
 blockedReasons:
@@ -66,7 +63,7 @@ successful
 []
 :
 [
-"execution runtime not completed"
+"action record not trusted"
 ]
 
 };

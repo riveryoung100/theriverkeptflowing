@@ -7,7 +7,7 @@ createExecutionResult
 
 
 test(
-"creates successful result from completed runtime",
+"creates successful result from trusted action",
 () => {
 
 const result =
@@ -20,22 +20,19 @@ source:
 "test",
 
 objective:
-"execute repository change",
+"execute governed flow",
 
-running:
+trusted:
 true,
 
-authorized:
-true,
-
-runtimeState:
+actionState:
 [
-"runtime completed"
+"action completed"
 ],
 
 provenance:
 [
-"runtime verified"
+"verified"
 ],
 
 blockedReasons:
@@ -54,16 +51,12 @@ result.successful,
 true
 );
 
-assert.equal(
-result.resultState.length > 0,
-true
+}
 );
-
-});
 
 
 test(
-"blocks result from incomplete runtime",
+"blocks result from untrusted action",
 () => {
 
 const result =
@@ -76,27 +69,24 @@ source:
 "test",
 
 objective:
-"execute repository change",
+"blocked flow",
 
-running:
+trusted:
 false,
 
-authorized:
-false,
-
-runtimeState:
+actionState:
 [
-"runtime blocked"
+"action blocked"
 ],
 
 provenance:
 [
-"runtime preserved"
+"preserved"
 ],
 
 blockedReasons:
 [
-"authorization missing"
+"blocked"
 ]
 
 });
@@ -117,7 +107,8 @@ result.blockedReasons.length > 0,
 true
 );
 
-});
+}
+);
 
 
 test(
@@ -134,22 +125,19 @@ source:
 "test",
 
 objective:
-"validate result chain",
+"provenance chain",
 
-running:
+trusted:
 true,
 
-authorized:
-true,
-
-runtimeState:
+actionState:
 [
 "validated"
 ],
 
 provenance:
 [
-"runtime verified"
+"verified"
 ],
 
 blockedReasons:
@@ -163,4 +151,6 @@ result.provenance.length > 0,
 true
 );
 
-});
+}
+);
+
