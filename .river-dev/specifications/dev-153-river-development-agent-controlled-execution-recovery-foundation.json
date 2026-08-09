@@ -1,0 +1,72 @@
+﻿{
+"version": "1.0.0",
+"phase": "DEV-153 River Development Agent Controlled Execution Recovery Foundation",
+"branch": "dev-153-river-development-agent-controlled-execution-recovery-foundation",
+"commitMessage": "DEV-153: Build River Development Agent controlled execution recovery foundation",
+"objective": "Create a deterministic controlled execution recovery foundation that transforms governed execution stabilization records into structured recovery records while preserving provenance, safety boundaries, human authorization controls, and controlled system evolution principles.",
+"architecturalContext": [
+"DEV-144 River Development Agent controlled execution observation foundation",
+"DEV-145 River Development Agent controlled execution learning foundation",
+"DEV-146 River Development Agent controlled execution adaptation foundation",
+"DEV-147 River Development Agent controlled execution improvement foundation",
+"DEV-148 River Development Agent controlled execution continuation foundation",
+"DEV-149 River Development Agent controlled execution reinforcement foundation",
+"DEV-150 River Development Agent controlled execution consolidation foundation",
+"DEV-151 River Development Agent controlled execution integration foundation",
+"DEV-152 River Development Agent controlled execution stabilization foundation",
+"River Development Agent Generation III",
+"The River Kept Flowing platform ecosystem"
+],
+"approvedScope": {
+"modifiablePaths": [
+"tools/river-dev/src/types.ts",
+"tools/river-dev/src/commands/context.ts"
+],
+"creatablePaths": [
+".river-dev/specifications/dev-153-river-development-agent-controlled-execution-recovery-foundation.json",
+"tools/river-dev/src/core/execution-recovery-foundation-engine.ts",
+"tools/river-dev/src/core/execution-recovery-foundation-engine.test.ts"
+],
+"excludedPaths": [
+".env",
+".git",
+"node_modules",
+"dist"
+]
+},
+"acceptanceCriteria": [
+"Recovery consumes governed execution stabilization records.",
+"Untrusted stabilization records cannot create trusted recovery records.",
+"Recovery records preserve provenance.",
+"Recovery output is deterministic and explainable.",
+"Human authorization boundaries remain preserved.",
+"No uncontrolled repository modifications occur.",
+"Focused tests, River Dev typechecking, and main-project typechecking pass."
+],
+"requiredTests": [
+"tools/river-dev/src/core/execution-recovery-foundation-engine.test.ts",
+"tools/river-dev/src/index.test.ts"
+],
+"requiredQualityGates": [
+"expected-branch",
+"scope-check",
+"tests",
+"typecheck",
+"documentation",
+"exports",
+"secret-scan",
+"review",
+"staged-diff"
+],
+"approvedCommands": [
+"git-status",
+"git-branch-current",
+"git-diff",
+"typecheck",
+"test-tsx"
+],
+"repairLimits": {
+"maximumAttempts": 3,
+"allowScopeExpansion": false
+}
+}
