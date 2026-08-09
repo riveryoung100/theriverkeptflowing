@@ -1,0 +1,73 @@
+﻿{
+"version": "1.0.0",
+"phase": "DEV-191 River Development Agent Controlled Execution Intelligence Optimization Foundation",
+"branch": "dev-191-river-development-agent-controlled-execution-intelligence-optimization-foundation",
+"commitMessage": "DEV-191: Build River Development Agent controlled execution intelligence optimization foundation",
+"objective": "Create a deterministic controlled execution intelligence optimization foundation that transforms governed execution intelligence adaptation records into structured intelligence optimization records while preserving provenance, safety boundaries, human authorization controls, and controlled system evolution principles.",
+"architecturalContext": [
+"DEV-181 River Development Agent controlled execution intelligence formation foundation",
+"DEV-182 River Development Agent controlled execution intelligence consolidation foundation",
+"DEV-183 River Development Agent controlled execution intelligence integration foundation",
+"DEV-184 River Development Agent controlled execution intelligence stabilization foundation",
+"DEV-185 River Development Agent controlled execution intelligence assurance foundation",
+"DEV-186 River Development Agent controlled execution intelligence verification foundation",
+"DEV-187 River Development Agent controlled execution intelligence certification foundation",
+"DEV-188 River Development Agent controlled execution intelligence completion foundation",
+"DEV-189 River Development Agent controlled execution intelligence evolution foundation",
+"DEV-190 River Development Agent controlled execution intelligence adaptation foundation",
+"River Development Agent Generation III",
+"The River Kept Flowing platform ecosystem"
+],
+"approvedScope": {
+"modifiablePaths": [
+"tools/river-dev/src/types.ts",
+"tools/river-dev/src/commands/context.ts"
+],
+"creatablePaths": [
+".river-dev/specifications/dev-191-river-development-agent-controlled-execution-intelligence-optimization-foundation.json",
+"tools/river-dev/src/core/execution-intelligence-optimization-foundation-engine.ts",
+"tools/river-dev/src/core/execution-intelligence-optimization-foundation-engine.test.ts"
+],
+"excludedPaths": [
+".env",
+".git",
+"node_modules",
+"dist"
+]
+},
+"acceptanceCriteria": [
+"Intelligence optimization consumes governed execution intelligence adaptation records.",
+"Untrusted intelligence adaptation records cannot create trusted intelligence optimization records.",
+"Intelligence optimization records preserve provenance.",
+"Intelligence optimization output is deterministic and explainable.",
+"Human authorization boundaries remain preserved.",
+"No uncontrolled repository modifications occur.",
+"Focused tests, River Dev typechecking, and main-project typechecking pass."
+],
+"requiredTests": [
+"tools/river-dev/src/core/execution-intelligence-optimization-foundation-engine.test.ts",
+"tools/river-dev/src/index.test.ts"
+],
+"requiredQualityGates": [
+"expected-branch",
+"scope-check",
+"tests",
+"typecheck",
+"documentation",
+"exports",
+"secret-scan",
+"review",
+"staged-diff"
+],
+"approvedCommands": [
+"git-status",
+"git-branch-current",
+"git-diff",
+"typecheck",
+"test-tsx"
+],
+"repairLimits": {
+"maximumAttempts": 3,
+"allowScopeExpansion": false
+}
+}
