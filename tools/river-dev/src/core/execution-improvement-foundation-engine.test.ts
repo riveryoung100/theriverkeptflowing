@@ -20,25 +20,26 @@ source:
 "test",
 
 objective:
-"execute repository change",
+"execute governed flow",
 
 trusted:
 true,
 
 adaptationState:
 [
-"adaptation accepted"
+"adaptation completed"
 ],
 
 provenance:
 [
-"adaptation verified"
+"verified"
 ],
 
 blockedReasons:
 []
 
 });
+
 
 assert.equal(
 improvement.trusted,
@@ -50,7 +51,8 @@ improvement.improvementState.length > 0,
 true
 );
 
-});
+}
+);
 
 
 test(
@@ -67,7 +69,7 @@ source:
 "test",
 
 objective:
-"execute repository change",
+"blocked flow",
 
 trusted:
 false,
@@ -79,15 +81,16 @@ adaptationState:
 
 provenance:
 [
-"adaptation preserved"
+"preserved"
 ],
 
 blockedReasons:
 [
-"adaptation not trusted"
+"blocked"
 ]
 
 });
+
 
 assert.equal(
 improvement.trusted,
@@ -99,7 +102,8 @@ improvement.blockedReasons.length > 0,
 true
 );
 
-});
+}
+);
 
 
 test(
@@ -116,7 +120,7 @@ source:
 "test",
 
 objective:
-"validate improvement chain",
+"provenance chain",
 
 trusted:
 true,
@@ -128,7 +132,7 @@ adaptationState:
 
 provenance:
 [
-"adaptation verified"
+"verified"
 ],
 
 blockedReasons:
@@ -136,9 +140,11 @@ blockedReasons:
 
 });
 
+
 assert.equal(
 improvement.provenance.length > 0,
 true
 );
 
-});
+}
+);
