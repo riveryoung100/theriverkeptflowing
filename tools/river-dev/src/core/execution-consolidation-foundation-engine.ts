@@ -1,17 +1,17 @@
 ﻿import type {
-RiverDevExecutionReinforcementFoundation,
+RiverDevExecutionImprovementFoundation,
 RiverDevExecutionConsolidationFoundation
 } from "../types";
 
 export function createExecutionConsolidation(
-reinforcement:
-RiverDevExecutionReinforcementFoundation
+improvement:
+RiverDevExecutionImprovementFoundation
 ):
 RiverDevExecutionConsolidationFoundation {
 
 const trusted =
-reinforcement.trusted === true &&
-reinforcement.blockedReasons.length === 0;
+improvement.trusted === true &&
+improvement.blockedReasons.length === 0;
 
 return {
 
@@ -22,7 +22,7 @@ source:
 "river-development-agent-execution-consolidation",
 
 objective:
-reinforcement.objective,
+improvement.objective,
 
 trusted,
 
@@ -30,27 +30,27 @@ consolidationState:
 trusted
 ?
 [
-"reinforcement record accepted",
+"improvement record accepted",
 "execution consolidation created",
 "controlled consolidation boundary preserved"
 ]
 :
 [
 "consolidation generation restricted",
-"reinforcement review required"
+"improvement review required"
 ],
 
 provenance:
 trusted
 ?
 [
-"reinforcement record verified",
+"improvement record verified",
 "consolidation provenance preserved",
 "human authorization boundary maintained"
 ]
 :
 [
-"reinforcement state preserved",
+"improvement state preserved",
 "consolidation boundary maintained"
 ],
 
@@ -60,10 +60,9 @@ trusted
 []
 :
 [
-"reinforcement record not trusted"
+"improvement record not trusted"
 ]
 
 };
 
 }
-

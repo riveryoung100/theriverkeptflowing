@@ -7,7 +7,7 @@ createExecutionConsolidation
 
 
 test(
-"creates trusted consolidation from trusted reinforcement",
+"creates trusted consolidation from trusted improvement",
 () => {
 
 const consolidation =
@@ -25,9 +25,9 @@ objective:
 trusted:
 true,
 
-reinforcementState:
+improvementState:
 [
-"reinforcement accepted"
+"improvement completed"
 ],
 
 provenance:
@@ -51,11 +51,12 @@ consolidation.consolidationState.length > 0,
 true
 );
 
-});
+}
+);
 
 
 test(
-"blocks consolidation from untrusted reinforcement",
+"blocks consolidation from untrusted improvement",
 () => {
 
 const consolidation =
@@ -73,9 +74,9 @@ objective:
 trusted:
 false,
 
-reinforcementState:
+improvementState:
 [
-"reinforcement blocked"
+"improvement blocked"
 ],
 
 provenance:
@@ -101,7 +102,8 @@ consolidation.blockedReasons.length > 0,
 true
 );
 
-});
+}
+);
 
 
 test(
@@ -123,7 +125,7 @@ objective:
 trusted:
 true,
 
-reinforcementState:
+improvementState:
 [
 "validated"
 ],
@@ -144,5 +146,5 @@ consolidation.provenance.length > 0,
 true
 );
 
-});
-
+}
+);
