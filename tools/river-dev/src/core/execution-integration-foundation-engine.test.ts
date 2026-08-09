@@ -5,6 +5,7 @@ import {
 createExecutionIntegration
 } from "./execution-integration-foundation-engine";
 
+
 test(
 "creates trusted integration from trusted consolidation",
 () => {
@@ -26,7 +27,7 @@ true,
 
 consolidationState:
 [
-"consolidation accepted"
+"consolidation completed"
 ],
 
 provenance:
@@ -51,6 +52,7 @@ true
 
 }
 );
+
 
 test(
 "blocks integration from untrusted consolidation",
@@ -100,6 +102,7 @@ true
 
 }
 );
+
 
 test(
 "preserves execution integration provenance",
