@@ -1,4 +1,29 @@
 ﻿
+export interface RiverDevExecutionAuthorizationFoundation {
+
+readonly version:
+"1.0.0";
+
+readonly source:
+string;
+
+readonly objective:
+string;
+
+readonly trusted:
+boolean;
+
+readonly authorizationState:
+readonly string[];
+
+readonly provenance:
+readonly string[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
+
 export interface RiverDevExecutionDecisionFoundation {
 
 readonly version:
