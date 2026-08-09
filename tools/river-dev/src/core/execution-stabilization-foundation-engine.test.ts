@@ -26,7 +26,7 @@ true,
 
 integrationState:
 [
-"integration accepted"
+"integration completed"
 ],
 
 provenance:
@@ -142,4 +142,3 @@ true
 
 }
 );
-
