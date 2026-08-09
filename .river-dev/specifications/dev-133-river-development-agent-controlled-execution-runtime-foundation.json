@@ -1,0 +1,69 @@
+﻿{
+"version": "1.0.0",
+"phase": "DEV-133 River Development Agent Controlled Execution Runtime Foundation",
+"branch": "dev-133-river-development-agent-controlled-execution-runtime-foundation",
+"commitMessage": "DEV-133: Build River Development Agent controlled execution runtime foundation",
+"objective": "Create a deterministic controlled execution runtime foundation that receives governed execution control states, validates execution requests, preserves provenance, maintains human authorization boundaries, and prepares safe execution runtime behavior.",
+"architecturalContext": [
+"DEV-127 River Development Agent controlled execution intelligence interpretation foundation",
+"DEV-128 River Development Agent controlled execution intelligence reasoning foundation",
+"DEV-129 River Development Agent controlled execution intelligence decision foundation",
+"DEV-130 River Development Agent controlled execution intelligence action foundation",
+"DEV-131 River Development Agent controlled execution intelligence orchestration foundation",
+"DEV-132 River Development Agent controlled execution intelligence execution control foundation",
+"River Development Agent Generation III",
+"The River Kept Flowing platform ecosystem"
+],
+"approvedScope": {
+"modifiablePaths": [
+"tools/river-dev/src/types.ts",
+"tools/river-dev/src/commands/context.ts"
+],
+"creatablePaths": [
+".river-dev/specifications/dev-133-river-development-agent-controlled-execution-runtime-foundation.json",
+"tools/river-dev/src/core/execution-runtime-foundation-engine.ts",
+"tools/river-dev/src/core/execution-runtime-foundation-engine.test.ts"
+],
+"excludedPaths": [
+".env",
+".git",
+"node_modules",
+"dist"
+]
+},
+"acceptanceCriteria": [
+"Runtime consumes governed execution control states.",
+"Unauthorized execution controls cannot create runtime states.",
+"Runtime state preserves provenance.",
+"Runtime output is deterministic and explainable.",
+"Human authorization boundaries remain preserved.",
+"No uncontrolled repository modifications occur.",
+"Focused tests, River Dev typechecking, and main-project typechecking pass."
+],
+"requiredTests": [
+"tools/river-dev/src/core/execution-runtime-foundation-engine.test.ts",
+"tools/river-dev/src/index.test.ts"
+],
+"requiredQualityGates": [
+"expected-branch",
+"scope-check",
+"tests",
+"typecheck",
+"documentation",
+"exports",
+"secret-scan",
+"review",
+"staged-diff"
+],
+"approvedCommands": [
+"git-status",
+"git-branch-current",
+"git-diff",
+"typecheck",
+"test-tsx"
+],
+"repairLimits": {
+"maximumAttempts": 3,
+"allowScopeExpansion": false
+}
+}
