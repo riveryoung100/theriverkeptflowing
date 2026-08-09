@@ -1,17 +1,17 @@
 ﻿import type {
-RiverDevExecutionIntelligenceCertificationFoundation,
+RiverDevExecutionIntelligenceEvolutionFoundation,
 RiverDevExecutionIntelligenceCompletionFoundation
 } from "../types";
 
 export function createExecutionIntelligenceCompletion(
-certification:
-RiverDevExecutionIntelligenceCertificationFoundation
+evolution:
+RiverDevExecutionIntelligenceEvolutionFoundation
 ):
 RiverDevExecutionIntelligenceCompletionFoundation {
 
 const trusted =
-certification.trusted === true &&
-certification.blockedReasons.length === 0;
+evolution.trusted === true &&
+evolution.blockedReasons.length === 0;
 
 return {
 
@@ -22,7 +22,7 @@ source:
 "river-development-agent-execution-intelligence-completion",
 
 objective:
-certification.objective,
+evolution.objective,
 
 trusted,
 
@@ -30,27 +30,27 @@ completionState:
 trusted
 ?
 [
-"intelligence certification record accepted",
+"intelligence evolution record accepted",
 "intelligence completion created",
-"controlled intelligence boundary preserved"
+"controlled intelligence lifecycle preserved"
 ]
 :
 [
 "intelligence completion restricted",
-"intelligence certification review required"
+"intelligence evolution review required"
 ],
 
 provenance:
 trusted
 ?
 [
-"intelligence certification verified",
+"intelligence evolution verified",
 "completion provenance preserved",
 "human authorization boundary maintained"
 ]
 :
 [
-"intelligence certification state preserved",
+"intelligence evolution state preserved",
 "completion boundary maintained"
 ],
 
@@ -60,7 +60,7 @@ trusted
 []
 :
 [
-"intelligence certification not trusted"
+"intelligence evolution not trusted"
 ]
 
 };
