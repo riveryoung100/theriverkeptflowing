@@ -28,9 +28,9 @@ true,
 decision:
 "execute",
 
-reasoning:
+actions:
 [
-"trusted reasoning state"
+"execute approved change"
 ],
 
 provenance:
@@ -43,15 +43,18 @@ blockedReasons:
 
 });
 
+
 assert.equal(
 action.authorized,
 true
 );
 
+
 assert.equal(
 action.actions.length > 0,
 true
 );
+
 
 assert.equal(
 action.blockedReasons.length,
@@ -83,9 +86,9 @@ false,
 decision:
 "hold",
 
-reasoning:
+actions:
 [
-"review required"
+"execution review required"
 ],
 
 provenance:
@@ -100,10 +103,12 @@ blockedReasons:
 
 });
 
+
 assert.equal(
 action.authorized,
 false
 );
+
 
 assert.equal(
 action.blockedReasons.length > 0,
@@ -135,9 +140,9 @@ true,
 decision:
 "execute",
 
-reasoning:
+actions:
 [
-"trusted reasoning"
+"validate action chain"
 ],
 
 provenance:
@@ -150,10 +155,10 @@ blockedReasons:
 
 });
 
+
 assert.equal(
 action.provenance.length > 0,
 true
 );
 
 });
-
