@@ -6,7 +6,7 @@ createExecutionAssurance
 } from "./execution-assurance-foundation-engine";
 
 test(
-"creates trusted assurance from trusted verification",
+"creates trusted assurance from trusted stabilization",
 () => {
 
 const assurance =
@@ -24,9 +24,9 @@ objective:
 trusted:
 true,
 
-verificationState:
+stabilizationState:
 [
-"verification accepted"
+"stabilization completed"
 ],
 
 provenance:
@@ -54,7 +54,7 @@ true
 
 
 test(
-"blocks assurance from untrusted verification",
+"blocks assurance from untrusted stabilization",
 () => {
 
 const assurance =
@@ -72,9 +72,9 @@ objective:
 trusted:
 false,
 
-verificationState:
+stabilizationState:
 [
-"verification blocked"
+"stabilization blocked"
 ],
 
 provenance:
@@ -122,7 +122,7 @@ objective:
 trusted:
 true,
 
-verificationState:
+stabilizationState:
 [
 "validated"
 ],
@@ -144,4 +144,3 @@ true
 
 }
 );
-

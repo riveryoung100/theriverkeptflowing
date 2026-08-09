@@ -1,17 +1,17 @@
 ﻿import type {
-RiverDevExecutionVerificationFoundation,
+RiverDevExecutionStabilizationFoundation,
 RiverDevExecutionAssuranceFoundation
 } from "../types";
 
 export function createExecutionAssurance(
-verification:
-RiverDevExecutionVerificationFoundation
+stabilization:
+RiverDevExecutionStabilizationFoundation
 ):
 RiverDevExecutionAssuranceFoundation {
 
 const trusted =
-verification.trusted === true &&
-verification.blockedReasons.length === 0;
+stabilization.trusted === true &&
+stabilization.blockedReasons.length === 0;
 
 return {
 
@@ -22,7 +22,7 @@ source:
 "river-development-agent-execution-assurance",
 
 objective:
-verification.objective,
+stabilization.objective,
 
 trusted,
 
@@ -30,40 +30,27 @@ assuranceState:
 trusted
 ?
 [
-"verification record accepted",
+"stabilization record accepted",
 "execution assurance created",
 "controlled assurance boundary preserved"
 ]
 :
 [
 "assurance generation restricted",
-"verification review required"
-],
-
-evolutionState:
-trusted
-?
-[
-"execution evolution authorized",
-"controlled evolution boundary preserved"
-]
-:
-[
-"evolution generation restricted",
-"assurance review required"
+"stabilization review required"
 ],
 
 provenance:
 trusted
 ?
 [
-"verification record verified",
+"stabilization record verified",
 "assurance provenance preserved",
 "human authorization boundary maintained"
 ]
 :
 [
-"verification state preserved",
+"stabilization state preserved",
 "assurance boundary maintained"
 ],
 
@@ -73,7 +60,19 @@ trusted
 []
 :
 [
-"verification record not trusted"
+"stabilization record not trusted"
+],
+
+evolutionState:
+trusted
+?
+[
+"controlled evolution maintained",
+"assurance progression recorded"
+]
+:
+[
+"evolution boundary preserved"
 ]
 
 };
