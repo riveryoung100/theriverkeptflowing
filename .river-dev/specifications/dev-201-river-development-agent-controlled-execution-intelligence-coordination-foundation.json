@@ -1,0 +1,69 @@
+﻿{
+"version": "1.0.0",
+"phase": "DEV-201 River Development Agent Controlled Execution Intelligence Coordination Foundation",
+"branch": "dev-201-river-development-agent-controlled-execution-intelligence-coordination-foundation",
+"commitMessage": "DEV-201: Build River Development Agent controlled execution intelligence coordination foundation",
+"objective": "Create a deterministic controlled execution intelligence coordination foundation that transforms governed execution intelligence integration records into structured intelligence coordination records while preserving provenance, safety boundaries, human authorization controls, and controlled system evolution principles.",
+"architecturalContext": [
+"DEV-195 River Development Agent controlled execution intelligence activation foundation",
+"DEV-196 River Development Agent controlled execution intelligence continuation foundation",
+"DEV-197 River Development Agent controlled execution intelligence persistence foundation",
+"DEV-198 River Development Agent controlled execution intelligence preservation foundation",
+"DEV-199 River Development Agent controlled execution intelligence consolidation foundation",
+"DEV-200 River Development Agent controlled execution intelligence integration foundation",
+"River Development Agent Generation III",
+"The River Kept Flowing platform ecosystem"
+],
+"approvedScope": {
+"modifiablePaths": [
+"tools/river-dev/src/types.ts",
+"tools/river-dev/src/commands/context.ts"
+],
+"creatablePaths": [
+".river-dev/specifications/dev-201-river-development-agent-controlled-execution-intelligence-coordination-foundation.json",
+"tools/river-dev/src/core/execution-intelligence-coordination-foundation-engine.ts",
+"tools/river-dev/src/core/execution-intelligence-coordination-foundation-engine.test.ts"
+],
+"excludedPaths": [
+".env",
+".git",
+"node_modules",
+"dist"
+]
+},
+"acceptanceCriteria": [
+"Intelligence coordination consumes governed execution intelligence integration records.",
+"Untrusted intelligence integration records cannot create trusted intelligence coordination records.",
+"Intelligence coordination records preserve provenance.",
+"Intelligence coordination output is deterministic and explainable.",
+"Human authorization boundaries remain preserved.",
+"No uncontrolled repository modifications occur.",
+"Focused tests, River Dev typechecking, and main-project typechecking pass."
+],
+"requiredTests": [
+"tools/river-dev/src/core/execution-intelligence-coordination-foundation-engine.test.ts",
+"tools/river-dev/src/index.test.ts"
+],
+"requiredQualityGates": [
+"expected-branch",
+"scope-check",
+"tests",
+"typecheck",
+"documentation",
+"exports",
+"secret-scan",
+"review",
+"staged-diff"
+],
+"approvedCommands": [
+"git-status",
+"git-branch-current",
+"git-diff",
+"typecheck",
+"test-tsx"
+],
+"repairLimits": {
+"maximumAttempts": 3,
+"allowScopeExpansion": false
+}
+}
