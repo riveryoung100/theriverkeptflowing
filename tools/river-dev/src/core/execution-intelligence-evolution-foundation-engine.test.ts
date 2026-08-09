@@ -5,8 +5,9 @@ import {
 createExecutionIntelligenceEvolution
 } from "./execution-intelligence-evolution-foundation-engine";
 
+
 test(
-"creates trusted intelligence evolution from trusted intelligence completion",
+"creates trusted intelligence evolution from trusted intelligence adaptation",
 () => {
 
 const evolution =
@@ -24,9 +25,9 @@ objective:
 trusted:
 true,
 
-completionState:
+adaptationState:
 [
-"intelligence completion accepted"
+"intelligence adaptation accepted"
 ],
 
 provenance:
@@ -38,6 +39,7 @@ blockedReasons:
 []
 
 });
+
 
 assert.equal(
 evolution.trusted,
@@ -52,8 +54,9 @@ true
 }
 );
 
+
 test(
-"blocks intelligence evolution from untrusted intelligence completion",
+"blocks intelligence evolution from untrusted intelligence adaptation",
 () => {
 
 const evolution =
@@ -71,9 +74,9 @@ objective:
 trusted:
 false,
 
-completionState:
+adaptationState:
 [
-"intelligence completion blocked"
+"intelligence adaptation blocked"
 ],
 
 provenance:
@@ -88,6 +91,7 @@ blockedReasons:
 
 });
 
+
 assert.equal(
 evolution.trusted,
 false
@@ -100,6 +104,7 @@ true
 
 }
 );
+
 
 test(
 "preserves execution intelligence evolution provenance",
@@ -120,7 +125,7 @@ objective:
 trusted:
 true,
 
-completionState:
+adaptationState:
 [
 "validated"
 ],
@@ -134,6 +139,7 @@ blockedReasons:
 []
 
 });
+
 
 assert.equal(
 evolution.provenance.length > 0,
