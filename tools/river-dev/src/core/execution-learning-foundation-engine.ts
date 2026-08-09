@@ -1,17 +1,17 @@
 ﻿import type {
-RiverDevExecutionFeedbackFoundation,
+RiverDevExecutionObservationFoundation,
 RiverDevExecutionLearningFoundation
 } from "../types";
 
 export function createExecutionLearning(
-feedback:
-RiverDevExecutionFeedbackFoundation
+observation:
+RiverDevExecutionObservationFoundation
 ):
 RiverDevExecutionLearningFoundation {
 
 const trusted =
-feedback.trusted === true &&
-feedback.blockedReasons.length === 0;
+observation.trusted === true &&
+observation.blockedReasons.length === 0;
 
 return {
 
@@ -22,7 +22,7 @@ source:
 "river-development-agent-execution-learning",
 
 objective:
-feedback.objective,
+observation.objective,
 
 trusted,
 
@@ -30,27 +30,27 @@ learningState:
 trusted
 ?
 [
-"execution feedback accepted",
-"learning record created",
-"controlled improvement boundary preserved"
+"observation record accepted",
+"execution learning record created",
+"controlled knowledge evolution boundary preserved"
 ]
 :
 [
 "learning generation restricted",
-"feedback requires review"
+"observation review required"
 ],
 
 provenance:
 trusted
 ?
 [
-"execution feedback verified",
+"observation record verified",
 "learning provenance preserved",
-"controlled learning boundary maintained"
+"human authorization boundary maintained"
 ]
 :
 [
-"feedback state preserved",
+"observation state preserved",
 "learning boundary maintained"
 ],
 
@@ -60,7 +60,7 @@ trusted
 []
 :
 [
-"execution feedback not trusted"
+"observation record not trusted"
 ]
 
 };

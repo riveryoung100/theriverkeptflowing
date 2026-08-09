@@ -24,7 +24,7 @@ objective:
 trusted:
 true,
 
-feedbackState:
+observationState:
 [
 "feedback accepted"
 ],
@@ -71,7 +71,7 @@ objective:
 trusted:
 false,
 
-feedbackState:
+observationState:
 [
 "feedback blocked"
 ],
@@ -120,7 +120,7 @@ objective:
 trusted:
 true,
 
-feedbackState:
+observationState:
 [
 "validated"
 ],
@@ -141,3 +141,4 @@ true
 );
 
 });
+
