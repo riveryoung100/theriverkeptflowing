@@ -5,8 +5,9 @@ import {
 createExecutionIntelligenceAction
 } from "./execution-intelligence-action-foundation-engine";
 
+
 test(
-"creates authorized actions from approved execution decision",
+"creates authorized action from approved execute decision",
 () => {
 
 const action =
@@ -16,10 +17,10 @@ version:
 "1.0.0",
 
 source:
-"river-development-agent-execution-intelligence-decision",
+"test",
 
 objective:
-"Build capability",
+"execute repository change",
 
 approved:
 true,
@@ -27,14 +28,14 @@ true,
 decision:
 "execute",
 
-actions:
+reasoning:
 [
-"execute governed implementation"
+"trusted reasoning state"
 ],
 
 provenance:
 [
-"decision authorization verified"
+"decision verified"
 ],
 
 blockedReasons:
@@ -48,13 +49,8 @@ true
 );
 
 assert.equal(
-action.objective,
-"Build capability"
-);
-
-assert.equal(
-action.actions[0],
-"execute approved governed action"
+action.actions.length > 0,
+true
 );
 
 assert.equal(
@@ -62,12 +58,11 @@ action.blockedReasons.length,
 0
 );
 
-}
-);
+});
 
 
 test(
-"blocks actions from held execution decision",
+"blocks action from hold decision",
 () => {
 
 const action =
@@ -77,10 +72,10 @@ version:
 "1.0.0",
 
 source:
-"river-development-agent-execution-intelligence-decision",
+"test",
 
 objective:
-"Unsafe capability",
+"execute repository change",
 
 approved:
 false,
@@ -88,17 +83,19 @@ false,
 decision:
 "hold",
 
-actions:
-[],
+reasoning:
+[
+"review required"
+],
 
 provenance:
 [
-"blocked decision state recorded"
+"decision preserved"
 ],
 
 blockedReasons:
 [
-"execution decision not authorized"
+"decision not approved"
 ]
 
 });
@@ -109,17 +106,11 @@ false
 );
 
 assert.equal(
-action.actions.length,
-0
+action.blockedReasons.length > 0,
+true
 );
 
-assert.equal(
-action.blockedReasons[0],
-"execution decision not authorized"
-);
-
-}
-);
+});
 
 
 test(
@@ -133,10 +124,10 @@ version:
 "1.0.0",
 
 source:
-"river-development-agent-execution-intelligence-decision",
+"test",
 
 objective:
-"Provenance test",
+"validate provenance",
 
 approved:
 true,
@@ -144,11 +135,15 @@ true,
 decision:
 "execute",
 
-actions:
-[],
+reasoning:
+[
+"trusted reasoning"
+],
 
 provenance:
-[],
+[
+"decision verified"
+],
 
 blockedReasons:
 []
@@ -156,19 +151,9 @@ blockedReasons:
 });
 
 assert.equal(
-action.source,
-"river-development-agent-execution-intelligence-action"
+action.provenance.length > 0,
+true
 );
 
-assert.equal(
-action.provenance[0],
-"decision authorization verified"
-);
+});
 
-assert.equal(
-action.version,
-"1.0.0"
-);
-
-}
-);

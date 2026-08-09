@@ -10,8 +10,8 @@ RiverDevExecutionIntelligenceDecisionFoundation
 RiverDevExecutionIntelligenceActionFoundation {
 
 const authorized =
-decision.approved === true
-&& decision.decision === "execute";
+decision.approved === true &&
+decision.decision === "execute";
 
 return {
 
@@ -30,23 +30,29 @@ actions:
 authorized
 ?
 [
-"execute approved governed action"
+"trusted decision state accepted",
+"controlled execution action prepared",
+"human authorization boundary preserved"
 ]
 :
-[],
+[
+"action generation blocked",
+"decision state requires review",
+"execution authorization not granted"
+],
 
 provenance:
 authorized
 ?
 [
-"decision authorization verified",
-"execution action boundary maintained",
-"action provenance preserved"
+"decision approval verified",
+"action provenance preserved",
+"execution boundary maintained"
 ]
 :
 [
-"blocked decision state recorded",
-"action generation halted safely"
+"decision approval not verified",
+"action boundary maintained"
 ],
 
 blockedReasons:
