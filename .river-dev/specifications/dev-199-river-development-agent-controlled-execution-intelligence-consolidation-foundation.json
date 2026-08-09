@@ -1,0 +1,69 @@
+﻿{
+"version": "1.0.0",
+"phase": "DEV-199 River Development Agent Controlled Execution Intelligence Consolidation Foundation",
+"branch": "dev-199-river-development-agent-controlled-execution-intelligence-consolidation-foundation",
+"commitMessage": "DEV-199: Build River Development Agent controlled execution intelligence consolidation foundation",
+"objective": "Create a deterministic controlled execution intelligence consolidation foundation that transforms governed execution intelligence preservation records into structured intelligence consolidation records while preserving provenance, safety boundaries, human authorization controls, and controlled system evolution principles.",
+"architecturalContext": [
+"DEV-193 River Development Agent controlled execution intelligence maturation foundation",
+"DEV-194 River Development Agent controlled execution intelligence readiness foundation",
+"DEV-195 River Development Agent controlled execution intelligence activation foundation",
+"DEV-196 River Development Agent controlled execution intelligence continuation foundation",
+"DEV-197 River Development Agent controlled execution intelligence persistence foundation",
+"DEV-198 River Development Agent controlled execution intelligence preservation foundation",
+"River Development Agent Generation III",
+"The River Kept Flowing platform ecosystem"
+],
+"approvedScope": {
+"modifiablePaths": [
+"tools/river-dev/src/types.ts",
+"tools/river-dev/src/commands/context.ts"
+],
+"creatablePaths": [
+".river-dev/specifications/dev-199-river-development-agent-controlled-execution-intelligence-consolidation-foundation.json",
+"tools/river-dev/src/core/execution-intelligence-consolidation-foundation-engine.ts",
+"tools/river-dev/src/core/execution-intelligence-consolidation-foundation-engine.test.ts"
+],
+"excludedPaths": [
+".env",
+".git",
+"node_modules",
+"dist"
+]
+},
+"acceptanceCriteria": [
+"Intelligence consolidation consumes governed execution intelligence preservation records.",
+"Untrusted intelligence preservation records cannot create trusted intelligence consolidation records.",
+"Intelligence consolidation records preserve provenance.",
+"Intelligence consolidation output is deterministic and explainable.",
+"Human authorization boundaries remain preserved.",
+"No uncontrolled repository modifications occur.",
+"Focused tests, River Dev typechecking, and main-project typechecking pass."
+],
+"requiredTests": [
+"tools/river-dev/src/core/execution-intelligence-consolidation-foundation-engine.test.ts",
+"tools/river-dev/src/index.test.ts"
+],
+"requiredQualityGates": [
+"expected-branch",
+"scope-check",
+"tests",
+"typecheck",
+"documentation",
+"exports",
+"secret-scan",
+"review",
+"staged-diff"
+],
+"approvedCommands": [
+"git-status",
+"git-branch-current",
+"git-diff",
+"typecheck",
+"test-tsx"
+],
+"repairLimits": {
+"maximumAttempts": 3,
+"allowScopeExpansion": false
+}
+}

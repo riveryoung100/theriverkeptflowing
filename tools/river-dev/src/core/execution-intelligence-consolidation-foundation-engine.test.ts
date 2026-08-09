@@ -24,7 +24,7 @@ objective:
 trusted:
 true,
 
-intelligenceState:
+preservationState:
 [
 "intelligence formation accepted"
 ],
@@ -71,7 +71,7 @@ objective:
 trusted:
 false,
 
-intelligenceState:
+preservationState:
 [
 "intelligence formation blocked"
 ],
@@ -120,7 +120,7 @@ objective:
 trusted:
 true,
 
-intelligenceState:
+preservationState:
 [
 "validated"
 ],
@@ -142,3 +142,4 @@ true
 
 }
 );
+

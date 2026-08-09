@@ -1,17 +1,17 @@
 ﻿import type {
-RiverDevExecutionIntelligenceFormationFoundation,
+RiverDevExecutionIntelligencePreservationFoundation,
 RiverDevExecutionIntelligenceConsolidationFoundation
 } from "../types";
 
 export function createExecutionIntelligenceConsolidation(
-formation:
-RiverDevExecutionIntelligenceFormationFoundation
+preservation:
+RiverDevExecutionIntelligencePreservationFoundation
 ):
 RiverDevExecutionIntelligenceConsolidationFoundation {
 
 const trusted =
-formation.trusted === true &&
-formation.blockedReasons.length === 0;
+preservation.trusted === true &&
+preservation.blockedReasons.length === 0;
 
 return {
 
@@ -22,7 +22,7 @@ source:
 "river-development-agent-execution-intelligence-consolidation",
 
 objective:
-formation.objective,
+preservation.objective,
 
 trusted,
 
@@ -30,27 +30,27 @@ consolidationState:
 trusted
 ?
 [
-"intelligence formation record accepted",
+"intelligence preservation record accepted",
 "intelligence consolidation created",
 "controlled intelligence boundary preserved"
 ]
 :
 [
 "intelligence consolidation restricted",
-"intelligence formation review required"
+"intelligence preservation review required"
 ],
 
 provenance:
 trusted
 ?
 [
-"intelligence formation verified",
+"intelligence preservation verified",
 "consolidation provenance preserved",
 "human authorization boundary maintained"
 ]
 :
 [
-"intelligence formation state preserved",
+"intelligence preservation state preserved",
 "consolidation boundary maintained"
 ],
 
@@ -60,7 +60,7 @@ trusted
 []
 :
 [
-"intelligence formation not trusted"
+"intelligence preservation not trusted"
 ]
 
 };
