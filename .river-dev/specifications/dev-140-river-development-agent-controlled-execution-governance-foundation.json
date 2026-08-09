@@ -1,0 +1,70 @@
+﻿{
+"version": "1.0.0",
+"phase": "DEV-140 River Development Agent Controlled Execution Governance Foundation",
+"branch": "dev-140-river-development-agent-controlled-execution-governance-foundation",
+"commitMessage": "DEV-140: Build River Development Agent controlled execution governance foundation",
+"objective": "Create a deterministic controlled execution governance foundation that governs evolution records through explicit authorization states, policy boundaries, audit continuity, and controlled promotion rules while preserving provenance, safety boundaries, and human oversight.",
+"architecturalContext": [
+"DEV-133 River Development Agent controlled execution runtime foundation",
+"DEV-134 River Development Agent controlled execution result foundation",
+"DEV-135 River Development Agent controlled execution feedback foundation",
+"DEV-136 River Development Agent controlled execution learning foundation",
+"DEV-137 River Development Agent controlled execution adaptation foundation",
+"DEV-138 River Development Agent controlled execution improvement foundation",
+"DEV-139 River Development Agent controlled execution evolution foundation",
+"River Development Agent Generation III",
+"The River Kept Flowing platform ecosystem"
+],
+"approvedScope": {
+"modifiablePaths": [
+"tools/river-dev/src/types.ts",
+"tools/river-dev/src/commands/context.ts"
+],
+"creatablePaths": [
+".river-dev/specifications/dev-140-river-development-agent-controlled-execution-governance-foundation.json",
+"tools/river-dev/src/core/execution-governance-foundation-engine.ts",
+"tools/river-dev/src/core/execution-governance-foundation-engine.test.ts"
+],
+"excludedPaths": [
+".env",
+".git",
+"node_modules",
+"dist"
+]
+},
+"acceptanceCriteria": [
+"Governance consumes governed execution evolution records.",
+"Unauthorized evolution records cannot create approved governance states.",
+"Governance preserves provenance.",
+"Governance output is deterministic and explainable.",
+"Human authorization boundaries remain preserved.",
+"No uncontrolled repository modifications occur.",
+"Focused tests, River Dev typechecking, and main-project typechecking pass."
+],
+"requiredTests": [
+"tools/river-dev/src/core/execution-governance-foundation-engine.test.ts",
+"tools/river-dev/src/index.test.ts"
+],
+"requiredQualityGates": [
+"expected-branch",
+"scope-check",
+"tests",
+"typecheck",
+"documentation",
+"exports",
+"secret-scan",
+"review",
+"staged-diff"
+],
+"approvedCommands": [
+"git-status",
+"git-branch-current",
+"git-diff",
+"typecheck",
+"test-tsx"
+],
+"repairLimits": {
+"maximumAttempts": 3,
+"allowScopeExpansion": false
+}
+}
