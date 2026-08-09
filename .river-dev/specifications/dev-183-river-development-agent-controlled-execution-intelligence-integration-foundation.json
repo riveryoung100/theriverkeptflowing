@@ -1,0 +1,70 @@
+﻿{
+"version": "1.0.0",
+"phase": "DEV-183 River Development Agent Controlled Execution Intelligence Integration Foundation",
+"branch": "dev-183-river-development-agent-controlled-execution-intelligence-integration-foundation",
+"commitMessage": "DEV-183: Build River Development Agent controlled execution intelligence integration foundation",
+"objective": "Create a deterministic controlled execution intelligence integration foundation that transforms governed execution intelligence consolidation records into structured intelligence integration records while preserving provenance, safety boundaries, human authorization controls, and controlled system evolution principles.",
+"architecturalContext": [
+"DEV-176 River Development Agent controlled execution reflection foundation",
+"DEV-177 River Development Agent controlled execution learning integration foundation",
+"DEV-178 River Development Agent controlled execution knowledge formation foundation",
+"DEV-179 River Development Agent controlled execution knowledge consolidation foundation",
+"DEV-180 River Development Agent controlled execution knowledge integration foundation",
+"DEV-181 River Development Agent controlled execution intelligence formation foundation",
+"DEV-182 River Development Agent controlled execution intelligence consolidation foundation",
+"River Development Agent Generation III",
+"The River Kept Flowing platform ecosystem"
+],
+"approvedScope": {
+"modifiablePaths": [
+"tools/river-dev/src/types.ts",
+"tools/river-dev/src/commands/context.ts"
+],
+"creatablePaths": [
+".river-dev/specifications/dev-183-river-development-agent-controlled-execution-intelligence-integration-foundation.json",
+"tools/river-dev/src/core/execution-intelligence-integration-foundation-engine.ts",
+"tools/river-dev/src/core/execution-intelligence-integration-foundation-engine.test.ts"
+],
+"excludedPaths": [
+".env",
+".git",
+"node_modules",
+"dist"
+]
+},
+"acceptanceCriteria": [
+"Intelligence integration consumes governed execution intelligence consolidation records.",
+"Untrusted intelligence consolidation records cannot create trusted intelligence integration records.",
+"Intelligence integration records preserve provenance.",
+"Intelligence integration output is deterministic and explainable.",
+"Human authorization boundaries remain preserved.",
+"No uncontrolled repository modifications occur.",
+"Focused tests, River Dev typechecking, and main-project typechecking pass."
+],
+"requiredTests": [
+"tools/river-dev/src/core/execution-intelligence-integration-foundation-engine.test.ts",
+"tools/river-dev/src/index.test.ts"
+],
+"requiredQualityGates": [
+"expected-branch",
+"scope-check",
+"tests",
+"typecheck",
+"documentation",
+"exports",
+"secret-scan",
+"review",
+"staged-diff"
+],
+"approvedCommands": [
+"git-status",
+"git-branch-current",
+"git-diff",
+"typecheck",
+"test-tsx"
+],
+"repairLimits": {
+"maximumAttempts": 3,
+"allowScopeExpansion": false
+}
+}
