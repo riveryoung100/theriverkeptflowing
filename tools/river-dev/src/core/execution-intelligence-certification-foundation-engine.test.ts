@@ -6,7 +6,7 @@ createExecutionIntelligenceCertification
 } from "./execution-intelligence-certification-foundation-engine";
 
 test(
-"creates trusted intelligence certification from trusted intelligence verification",
+"creates trusted intelligence certification from trusted intelligence completion",
 () => {
 
 const certification =
@@ -24,9 +24,9 @@ objective:
 trusted:
 true,
 
-verificationState:
+completionState:
 [
-"intelligence verification accepted"
+"intelligence completion accepted"
 ],
 
 provenance:
@@ -52,9 +52,8 @@ true
 }
 );
 
-
 test(
-"blocks intelligence certification from untrusted intelligence verification",
+"blocks intelligence certification from untrusted intelligence completion",
 () => {
 
 const certification =
@@ -72,9 +71,9 @@ objective:
 trusted:
 false,
 
-verificationState:
+completionState:
 [
-"intelligence verification blocked"
+"intelligence completion blocked"
 ],
 
 provenance:
@@ -102,7 +101,6 @@ true
 }
 );
 
-
 test(
 "preserves execution intelligence certification provenance",
 () => {
@@ -122,7 +120,7 @@ objective:
 trusted:
 true,
 
-verificationState:
+completionState:
 [
 "validated"
 ],
