@@ -6,7 +6,7 @@ createExecutionIntelligenceAdaptation
 } from "./execution-intelligence-adaptation-foundation-engine";
 
 test(
-"creates trusted intelligence adaptation from trusted intelligence evolution",
+"creates trusted intelligence adaptation from trusted intelligence orchestration",
 () => {
 
 const adaptation =
@@ -21,12 +21,15 @@ source:
 objective:
 "Build capability",
 
-trusted:
+orchestrated:
 true,
 
-evolutionState:
+authorized:
+true,
+
+pipeline:
 [
-"intelligence evolution accepted"
+"intelligence orchestration accepted"
 ],
 
 provenance:
@@ -54,7 +57,7 @@ true
 
 
 test(
-"blocks intelligence adaptation from untrusted intelligence evolution",
+"blocks intelligence adaptation from untrusted intelligence orchestration",
 () => {
 
 const adaptation =
@@ -69,12 +72,15 @@ source:
 objective:
 "Unsafe capability",
 
-trusted:
+orchestrated:
 false,
 
-evolutionState:
+authorized:
+false,
+
+pipeline:
 [
-"intelligence evolution blocked"
+"intelligence orchestration blocked"
 ],
 
 provenance:
@@ -119,10 +125,13 @@ source:
 objective:
 "Provenance test",
 
-trusted:
+orchestrated:
 true,
 
-evolutionState:
+authorized:
+true,
+
+pipeline:
 [
 "validated"
 ],

@@ -1,0 +1,69 @@
+﻿{
+"version": "1.0.0",
+"phase": "DEV-203 River Development Agent Controlled Execution Intelligence Adaptation Foundation",
+"branch": "dev-203-river-development-agent-controlled-execution-intelligence-adaptation-foundation",
+"commitMessage": "DEV-203: Build River Development Agent controlled execution intelligence adaptation foundation",
+"objective": "Create a deterministic controlled execution intelligence adaptation foundation that transforms governed execution intelligence orchestration records into structured intelligence adaptation records while preserving provenance, safety boundaries, human authorization controls, and controlled system evolution principles.",
+"architecturalContext": [
+"DEV-197 River Development Agent controlled execution intelligence persistence foundation",
+"DEV-198 River Development Agent controlled execution intelligence preservation foundation",
+"DEV-199 River Development Agent controlled execution intelligence consolidation foundation",
+"DEV-200 River Development Agent controlled execution intelligence integration foundation",
+"DEV-201 River Development Agent controlled execution intelligence coordination foundation",
+"DEV-202 River Development Agent controlled execution intelligence orchestration foundation",
+"River Development Agent Generation III",
+"The River Kept Flowing platform ecosystem"
+],
+"approvedScope": {
+"modifiablePaths": [
+"tools/river-dev/src/types.ts",
+"tools/river-dev/src/commands/context.ts"
+],
+"creatablePaths": [
+".river-dev/specifications/dev-203-river-development-agent-controlled-execution-intelligence-adaptation-foundation.json",
+"tools/river-dev/src/core/execution-intelligence-adaptation-foundation-engine.ts",
+"tools/river-dev/src/core/execution-intelligence-adaptation-foundation-engine.test.ts"
+],
+"excludedPaths": [
+".env",
+".git",
+"node_modules",
+"dist"
+]
+},
+"acceptanceCriteria": [
+"Intelligence adaptation consumes governed execution intelligence orchestration records.",
+"Untrusted intelligence orchestration records cannot create trusted intelligence adaptation records.",
+"Intelligence adaptation records preserve provenance.",
+"Intelligence adaptation output is deterministic and explainable.",
+"Human authorization boundaries remain preserved.",
+"No uncontrolled repository modifications occur.",
+"Focused tests, River Dev typechecking, and main-project typechecking pass."
+],
+"requiredTests": [
+"tools/river-dev/src/core/execution-intelligence-adaptation-foundation-engine.test.ts",
+"tools/river-dev/src/index.test.ts"
+],
+"requiredQualityGates": [
+"expected-branch",
+"scope-check",
+"tests",
+"typecheck",
+"documentation",
+"exports",
+"secret-scan",
+"review",
+"staged-diff"
+],
+"approvedCommands": [
+"git-status",
+"git-branch-current",
+"git-diff",
+"typecheck",
+"test-tsx"
+],
+"repairLimits": {
+"maximumAttempts": 3,
+"allowScopeExpansion": false
+}
+}

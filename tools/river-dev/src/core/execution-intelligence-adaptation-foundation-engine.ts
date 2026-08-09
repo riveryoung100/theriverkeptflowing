@@ -1,17 +1,18 @@
 ﻿import type {
-RiverDevExecutionIntelligenceEvolutionFoundation,
+RiverDevExecutionIntelligenceOrchestrationFoundation,
 RiverDevExecutionIntelligenceAdaptationFoundation
 } from "../types";
 
 export function createExecutionIntelligenceAdaptation(
-evolution:
-RiverDevExecutionIntelligenceEvolutionFoundation
+orchestration:
+RiverDevExecutionIntelligenceOrchestrationFoundation
 ):
 RiverDevExecutionIntelligenceAdaptationFoundation {
 
 const trusted =
-evolution.trusted === true &&
-evolution.blockedReasons.length === 0;
+orchestration.orchestrated === true &&
+orchestration.authorized === true &&
+orchestration.blockedReasons.length === 0;
 
 return {
 
@@ -22,7 +23,7 @@ source:
 "river-development-agent-execution-intelligence-adaptation",
 
 objective:
-evolution.objective,
+orchestration.objective,
 
 trusted,
 
@@ -30,27 +31,27 @@ adaptationState:
 trusted
 ?
 [
-"intelligence evolution record accepted",
+"intelligence orchestration record accepted",
 "intelligence adaptation created",
-"controlled intelligence boundary preserved"
+"controlled intelligence evolution preserved"
 ]
 :
 [
 "intelligence adaptation restricted",
-"intelligence evolution review required"
+"intelligence orchestration review required"
 ],
 
 provenance:
 trusted
 ?
 [
-"intelligence evolution verified",
+"intelligence orchestration verified",
 "adaptation provenance preserved",
 "human authorization boundary maintained"
 ]
 :
 [
-"intelligence evolution state preserved",
+"intelligence orchestration state preserved",
 "adaptation boundary maintained"
 ],
 
@@ -60,7 +61,7 @@ trusted
 []
 :
 [
-"intelligence evolution not trusted"
+"intelligence orchestration not trusted"
 ]
 
 };
