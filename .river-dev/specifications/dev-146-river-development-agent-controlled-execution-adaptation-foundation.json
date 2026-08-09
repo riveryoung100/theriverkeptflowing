@@ -1,0 +1,70 @@
+﻿{
+"version": "1.0.0",
+"phase": "DEV-146 River Development Agent Controlled Execution Adaptation Foundation",
+"branch": "dev-146-river-development-agent-controlled-execution-adaptation-foundation",
+"commitMessage": "DEV-146: Build River Development Agent controlled execution adaptation foundation",
+"objective": "Create a deterministic controlled execution adaptation foundation that transforms governed execution learning records into structured adaptation records while preserving provenance, safety boundaries, human authorization controls, and controlled system evolution principles.",
+"architecturalContext": [
+"DEV-139 River Development Agent controlled execution evolution foundation",
+"DEV-140 River Development Agent controlled execution governance foundation",
+"DEV-141 River Development Agent controlled execution promotion foundation",
+"DEV-142 River Development Agent controlled execution deployment foundation",
+"DEV-143 River Development Agent controlled execution verification foundation",
+"DEV-144 River Development Agent controlled execution observation foundation",
+"DEV-145 River Development Agent controlled execution learning foundation",
+"River Development Agent Generation III",
+"The River Kept Flowing platform ecosystem"
+],
+"approvedScope": {
+"modifiablePaths": [
+"tools/river-dev/src/types.ts",
+"tools/river-dev/src/commands/context.ts"
+],
+"creatablePaths": [
+".river-dev/specifications/dev-146-river-development-agent-controlled-execution-adaptation-foundation.json",
+"tools/river-dev/src/core/execution-adaptation-foundation-engine.ts",
+"tools/river-dev/src/core/execution-adaptation-foundation-engine.test.ts"
+],
+"excludedPaths": [
+".env",
+".git",
+"node_modules",
+"dist"
+]
+},
+"acceptanceCriteria": [
+"Adaptation consumes governed execution learning records.",
+"Untrusted learning records cannot create trusted adaptation records.",
+"Adaptation records preserve provenance.",
+"Adaptation output is deterministic and explainable.",
+"Human authorization boundaries remain preserved.",
+"No uncontrolled repository modifications occur.",
+"Focused tests, River Dev typechecking, and main-project typechecking pass."
+],
+"requiredTests": [
+"tools/river-dev/src/core/execution-adaptation-foundation-engine.test.ts",
+"tools/river-dev/src/index.test.ts"
+],
+"requiredQualityGates": [
+"expected-branch",
+"scope-check",
+"tests",
+"typecheck",
+"documentation",
+"exports",
+"secret-scan",
+"review",
+"staged-diff"
+],
+"approvedCommands": [
+"git-status",
+"git-branch-current",
+"git-diff",
+"typecheck",
+"test-tsx"
+],
+"repairLimits": {
+"maximumAttempts": 3,
+"allowScopeExpansion": false
+}
+}

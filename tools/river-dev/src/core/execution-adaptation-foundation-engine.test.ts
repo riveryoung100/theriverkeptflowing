@@ -5,8 +5,9 @@ import {
 createExecutionAdaptation
 } from "./execution-adaptation-foundation-engine";
 
+
 test(
-"creates trusted adaptation from trusted learning record",
+"creates trusted adaptation from trusted learning",
 () => {
 
 const adaptation =
@@ -51,8 +52,9 @@ true
 
 });
 
+
 test(
-"blocks adaptation from untrusted learning record",
+"blocks adaptation from untrusted learning",
 () => {
 
 const adaptation =
@@ -98,6 +100,7 @@ true
 );
 
 });
+
 
 test(
 "preserves execution adaptation provenance",

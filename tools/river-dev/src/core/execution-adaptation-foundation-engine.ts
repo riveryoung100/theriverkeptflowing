@@ -31,13 +31,13 @@ trusted
 ?
 [
 "learning record accepted",
-"improvement recommendation created",
+"execution adaptation created",
 "controlled adaptation boundary preserved"
 ]
 :
 [
 "adaptation generation restricted",
-"learning record requires review"
+"learning review required"
 ],
 
 provenance:
@@ -46,7 +46,7 @@ trusted
 [
 "learning record verified",
 "adaptation provenance preserved",
-"controlled improvement boundary maintained"
+"human authorization boundary maintained"
 ]
 :
 [
