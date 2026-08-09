@@ -52,7 +52,6 @@ true
 }
 );
 
-
 test(
 "blocks intelligence integration from untrusted intelligence consolidation",
 () => {
@@ -101,7 +100,6 @@ true
 
 }
 );
-
 
 test(
 "preserves execution intelligence integration provenance",
