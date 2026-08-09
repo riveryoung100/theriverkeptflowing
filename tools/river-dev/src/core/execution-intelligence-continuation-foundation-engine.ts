@@ -1,16 +1,17 @@
 ﻿import type {
-RiverDevExecutionIntelligenceOutcomeFoundation,
+RiverDevExecutionIntelligenceActivationFoundation,
 RiverDevExecutionIntelligenceContinuationFoundation
 } from "../types";
 
 export function createExecutionIntelligenceContinuation(
-outcome:
-RiverDevExecutionIntelligenceOutcomeFoundation
+activation:
+RiverDevExecutionIntelligenceActivationFoundation
 ):
 RiverDevExecutionIntelligenceContinuationFoundation {
 
 const continuing =
-outcome.successful === true;
+activation.trusted === true &&
+activation.blockedReasons.length === 0;
 
 return {
 
@@ -21,7 +22,7 @@ source:
 "river-development-agent-execution-intelligence-continuation",
 
 objective:
-outcome.objective,
+activation.objective,
 
 continuing,
 
@@ -29,28 +30,27 @@ continuation:
 continuing
 ?
 [
-"successful execution outcome accepted",
-"controlled continuation state prepared",
-"next governed execution phase available"
+"intelligence activation record accepted",
+"intelligence continuation created",
+"controlled intelligence boundary preserved"
 ]
 :
 [
-"continuation halted",
-"failed outcome recorded",
-"review required before continuation"
+"intelligence continuation restricted",
+"intelligence activation review required"
 ],
 
 provenance:
 continuing
 ?
 [
-"outcome success verified",
-"continuation boundary maintained",
-"execution provenance preserved"
+"intelligence activation verified",
+"continuation provenance preserved",
+"human authorization boundary maintained"
 ]
 :
 [
-"failed outcome state recorded",
+"intelligence activation state preserved",
 "continuation boundary maintained"
 ],
 
@@ -60,7 +60,7 @@ continuing
 []
 :
 [
-"execution outcome not successful"
+"intelligence activation not trusted"
 ]
 
 };

@@ -21,17 +21,17 @@ source:
 objective:
 "Build capability",
 
-successful:
+trusted:
 true,
 
-outcome:
+activationState:
 [
 "authorized execution action completed"
 ],
 
 provenance:
 [
-"outcome success verified"
+"intelligence activation verified"
 ],
 
 blockedReasons:
@@ -51,7 +51,7 @@ continuation.objective,
 
 assert.equal(
 continuation.continuation[0],
-"successful execution outcome accepted"
+"intelligence activation record accepted"
 );
 
 assert.equal(
@@ -79,10 +79,10 @@ source:
 objective:
 "Unsafe capability",
 
-successful:
+trusted:
 false,
 
-outcome:
+activationState:
 [
 "execution action blocked"
 ],
@@ -106,7 +106,7 @@ false
 
 assert.equal(
 continuation.blockedReasons[0],
-"execution outcome not successful"
+"intelligence activation not trusted"
 );
 
 }
@@ -129,10 +129,10 @@ source:
 objective:
 "Provenance test",
 
-successful:
+trusted:
 true,
 
-outcome:
+activationState:
 [],
 
 provenance:
@@ -150,7 +150,7 @@ continuation.source,
 
 assert.equal(
 continuation.provenance[0],
-"outcome success verified"
+"intelligence activation verified"
 );
 
 assert.equal(
@@ -160,3 +160,5 @@ continuation.version,
 
 }
 );
+
+
