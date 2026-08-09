@@ -5,9 +5,8 @@ import {
 createExecutionIntelligenceOrchestration
 } from "./execution-intelligence-orchestration-foundation-engine";
 
-
 test(
-"creates orchestration from authorized action",
+"creates trusted intelligence orchestration from trusted intelligence coordination",
 () => {
 
 const orchestration =
@@ -20,19 +19,19 @@ source:
 "test",
 
 objective:
-"execute repository change",
+"Build capability",
 
-authorized:
+trusted:
 true,
 
-actions:
+coordinationState:
 [
-"execute approved change"
+"intelligence coordination accepted"
 ],
 
 provenance:
 [
-"action verified"
+"verified"
 ],
 
 blockedReasons:
@@ -40,30 +39,27 @@ blockedReasons:
 
 });
 
-
 assert.equal(
 orchestration.orchestrated,
 true
 );
-
 
 assert.equal(
 orchestration.authorized,
 true
 );
 
-
 assert.equal(
 orchestration.pipeline.length > 0,
 true
 );
 
-
-});
+}
+);
 
 
 test(
-"blocks orchestration from unauthorized action",
+"blocks intelligence orchestration from untrusted intelligence coordination",
 () => {
 
 const orchestration =
@@ -76,46 +72,49 @@ source:
 "test",
 
 objective:
-"execute repository change",
+"Unsafe capability",
 
-authorized:
+trusted:
 false,
 
-actions:
+coordinationState:
 [
-"review required"
+"intelligence coordination blocked"
 ],
 
 provenance:
 [
-"action preserved"
+"preserved"
 ],
 
 blockedReasons:
 [
-"authorization missing"
+"blocked"
 ]
 
 });
-
 
 assert.equal(
 orchestration.orchestrated,
 false
 );
 
+assert.equal(
+orchestration.authorized,
+false
+);
 
 assert.equal(
 orchestration.blockedReasons.length > 0,
 true
 );
 
-
-});
+}
+);
 
 
 test(
-"preserves orchestration provenance",
+"preserves execution intelligence orchestration provenance",
 () => {
 
 const orchestration =
@@ -128,19 +127,19 @@ source:
 "test",
 
 objective:
-"validate execution chain",
+"Provenance test",
 
-authorized:
+trusted:
 true,
 
-actions:
+coordinationState:
 [
-"validate chain"
+"validated"
 ],
 
 provenance:
 [
-"action verified"
+"verified"
 ],
 
 blockedReasons:
@@ -148,12 +147,10 @@ blockedReasons:
 
 });
 
-
 assert.equal(
 orchestration.provenance.length > 0,
 true
 );
 
-
-});
-
+}
+);

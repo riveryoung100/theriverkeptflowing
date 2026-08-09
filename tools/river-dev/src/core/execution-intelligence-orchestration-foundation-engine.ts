@@ -1,20 +1,17 @@
 ﻿import type {
-RiverDevExecutionIntelligenceActionFoundation,
+RiverDevExecutionIntelligenceCoordinationFoundation,
 RiverDevExecutionIntelligenceOrchestrationFoundation
 } from "../types";
 
-
 export function createExecutionIntelligenceOrchestration(
-action:
-RiverDevExecutionIntelligenceActionFoundation
+coordination:
+RiverDevExecutionIntelligenceCoordinationFoundation
 ):
 RiverDevExecutionIntelligenceOrchestrationFoundation {
 
-
 const orchestrated =
-action.authorized === true &&
-action.blockedReasons.length === 0;
-
+coordination.trusted === true &&
+coordination.blockedReasons.length === 0;
 
 return {
 
@@ -25,41 +22,38 @@ source:
 "river-development-agent-execution-intelligence-orchestration",
 
 objective:
-action.objective,
+coordination.objective,
 
 orchestrated,
 
 authorized:
-action.authorized,
+orchestrated,
 
 pipeline:
 orchestrated
 ?
 [
-"understanding",
-"interpretation",
-"reasoning",
-"decision",
-"action",
-"orchestration"
+"intelligence coordination record accepted",
+"intelligence orchestration created",
+"controlled intelligence boundary preserved"
 ]
 :
 [
-"action review required",
-"orchestration blocked"
+"intelligence orchestration restricted",
+"intelligence coordination review required"
 ],
 
 provenance:
 orchestrated
 ?
 [
-"action authorization verified",
-"execution intelligence provenance preserved",
-"controlled orchestration boundary maintained"
+"intelligence coordination verified",
+"orchestration provenance preserved",
+"human authorization boundary maintained"
 ]
 :
 [
-"untrusted action state recorded",
+"intelligence coordination state preserved",
 "orchestration boundary maintained"
 ],
 
@@ -69,7 +63,7 @@ orchestrated
 []
 :
 [
-"execution action not authorized"
+"intelligence coordination not trusted"
 ]
 
 };
