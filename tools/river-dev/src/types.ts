@@ -16,6 +16,9 @@ boolean;
 readonly assuranceState:
 readonly string[];
 
+readonly evolutionState:
+readonly string[];
+
 readonly provenance:
 readonly string[];
 

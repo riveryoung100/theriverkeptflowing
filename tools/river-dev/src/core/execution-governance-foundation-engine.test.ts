@@ -24,6 +24,11 @@ objective:
 trusted:
 true,
 
+assuranceState:
+[
+"assurance accepted"
+],
+
 evolutionState:
 [
 "evolution accepted"
@@ -69,6 +74,11 @@ objective:
 
 trusted:
 false,
+
+assuranceState:
+[
+"assurance blocked"
+],
 
 evolutionState:
 [
@@ -118,6 +128,11 @@ objective:
 trusted:
 true,
 
+assuranceState:
+[
+"assurance accepted"
+],
+
 evolutionState:
 [
 "validated"
@@ -139,3 +154,4 @@ true
 );
 
 });
+

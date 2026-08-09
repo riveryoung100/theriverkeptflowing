@@ -40,6 +40,19 @@ trusted
 "verification review required"
 ],
 
+evolutionState:
+trusted
+?
+[
+"execution evolution authorized",
+"controlled evolution boundary preserved"
+]
+:
+[
+"evolution generation restricted",
+"assurance review required"
+],
+
 provenance:
 trusted
 ?

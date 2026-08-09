@@ -1,17 +1,17 @@
 ﻿import type {
-RiverDevExecutionEvolutionFoundation,
+RiverDevExecutionAssuranceFoundation,
 RiverDevExecutionGovernanceFoundation
 } from "../types";
 
 export function createExecutionGovernance(
-evolution:
-RiverDevExecutionEvolutionFoundation
+assurance:
+RiverDevExecutionAssuranceFoundation
 ):
 RiverDevExecutionGovernanceFoundation {
 
 const trusted =
-evolution.trusted === true &&
-evolution.blockedReasons.length === 0;
+assurance.trusted === true &&
+assurance.blockedReasons.length === 0;
 
 return {
 
@@ -22,7 +22,7 @@ source:
 "river-development-agent-execution-governance",
 
 objective:
-evolution.objective,
+assurance.objective,
 
 trusted,
 
@@ -30,27 +30,27 @@ governanceState:
 trusted
 ?
 [
-"evolution record accepted",
-"authorization boundary verified",
-"governed promotion state created"
+"assurance record accepted",
+"execution governance created",
+"controlled governance boundary preserved"
 ]
 :
 [
-"evolution governance restricted",
-"authorization review required"
+"governance generation restricted",
+"assurance review required"
 ],
 
 provenance:
 trusted
 ?
 [
-"evolution record verified",
+"assurance record verified",
 "governance provenance preserved",
-"human oversight boundary maintained"
+"human authorization boundary maintained"
 ]
 :
 [
-"evolution state preserved",
+"assurance state preserved",
 "governance boundary maintained"
 ],
 
@@ -60,9 +60,10 @@ trusted
 []
 :
 [
-"evolution record not trusted"
+"assurance record not trusted"
 ]
 
 };
 
 }
+
