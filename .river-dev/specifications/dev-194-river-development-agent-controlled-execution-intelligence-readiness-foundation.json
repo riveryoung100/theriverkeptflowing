@@ -1,0 +1,68 @@
+﻿{
+"version": "1.0.0",
+"phase": "DEV-194 River Development Agent Controlled Execution Intelligence Readiness Foundation",
+"branch": "dev-194-river-development-agent-controlled-execution-intelligence-readiness-foundation",
+"commitMessage": "DEV-194: Build River Development Agent controlled execution intelligence readiness foundation",
+"objective": "Create a deterministic controlled execution intelligence readiness foundation that transforms governed execution intelligence maturation records into structured intelligence readiness records while preserving provenance, safety boundaries, human authorization controls, and controlled system evolution principles.",
+"architecturalContext": [
+"DEV-189 River Development Agent controlled execution intelligence evolution foundation",
+"DEV-190 River Development Agent controlled execution intelligence adaptation foundation",
+"DEV-191 River Development Agent controlled execution intelligence optimization foundation",
+"DEV-192 River Development Agent controlled execution intelligence refinement foundation",
+"DEV-193 River Development Agent controlled execution intelligence maturation foundation",
+"River Development Agent Generation III",
+"The River Kept Flowing platform ecosystem"
+],
+"approvedScope": {
+"modifiablePaths": [
+"tools/river-dev/src/types.ts",
+"tools/river-dev/src/commands/context.ts"
+],
+"creatablePaths": [
+".river-dev/specifications/dev-194-river-development-agent-controlled-execution-intelligence-readiness-foundation.json",
+"tools/river-dev/src/core/execution-intelligence-readiness-foundation-engine.ts",
+"tools/river-dev/src/core/execution-intelligence-readiness-foundation-engine.test.ts"
+],
+"excludedPaths": [
+".env",
+".git",
+"node_modules",
+"dist"
+]
+},
+"acceptanceCriteria": [
+"Intelligence readiness consumes governed execution intelligence maturation records.",
+"Untrusted intelligence maturation records cannot create trusted intelligence readiness records.",
+"Intelligence readiness records preserve provenance.",
+"Intelligence readiness output is deterministic and explainable.",
+"Human authorization boundaries remain preserved.",
+"No uncontrolled repository modifications occur.",
+"Focused tests, River Dev typechecking, and main-project typechecking pass."
+],
+"requiredTests": [
+"tools/river-dev/src/core/execution-intelligence-readiness-foundation-engine.test.ts",
+"tools/river-dev/src/index.test.ts"
+],
+"requiredQualityGates": [
+"expected-branch",
+"scope-check",
+"tests",
+"typecheck",
+"documentation",
+"exports",
+"secret-scan",
+"review",
+"staged-diff"
+],
+"approvedCommands": [
+"git-status",
+"git-branch-current",
+"git-diff",
+"typecheck",
+"test-tsx"
+],
+"repairLimits": {
+"maximumAttempts": 3,
+"allowScopeExpansion": false
+}
+}

@@ -1,4 +1,29 @@
 ﻿
+export interface RiverDevExecutionIntelligenceReadinessFoundation {
+
+readonly version:
+"1.0.0";
+
+readonly source:
+string;
+
+readonly objective:
+string;
+
+readonly trusted:
+boolean;
+
+readonly readinessState:
+readonly string[];
+
+readonly provenance:
+readonly string[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
+
 export interface RiverDevExecutionIntelligenceMaturationFoundation {
 
 readonly version:
