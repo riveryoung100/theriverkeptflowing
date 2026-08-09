@@ -5,6 +5,7 @@ import {
 createExecutionImprovement
 } from "./execution-improvement-foundation-engine";
 
+
 test(
 "creates trusted improvement from trusted adaptation",
 () => {
@@ -50,6 +51,7 @@ true
 );
 
 });
+
 
 test(
 "blocks improvement from untrusted adaptation",
@@ -98,6 +100,7 @@ true
 );
 
 });
+
 
 test(
 "preserves execution improvement provenance",

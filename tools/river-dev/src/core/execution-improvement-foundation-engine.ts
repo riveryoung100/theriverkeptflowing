@@ -30,23 +30,23 @@ improvementState:
 trusted
 ?
 [
-"adaptation accepted",
-"improvement proposal created",
-"controlled system evolution boundary preserved"
+"adaptation record accepted",
+"execution improvement created",
+"controlled improvement boundary preserved"
 ]
 :
 [
 "improvement generation restricted",
-"adaptation requires review"
+"adaptation review required"
 ],
 
 provenance:
 trusted
 ?
 [
-"adaptation verified",
+"adaptation record verified",
 "improvement provenance preserved",
-"controlled evolution boundary maintained"
+"human authorization boundary maintained"
 ]
 :
 [
@@ -60,7 +60,7 @@ trusted
 []
 :
 [
-"adaptation not trusted"
+"adaptation record not trusted"
 ]
 
 };
