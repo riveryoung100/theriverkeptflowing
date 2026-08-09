@@ -5,8 +5,9 @@ import {
 createExecutionLearning
 } from "./execution-learning-foundation-engine";
 
+
 test(
-"creates trusted learning from trusted execution feedback",
+"creates trusted learning from trusted execution result",
 () => {
 
 const learning =
@@ -19,25 +20,29 @@ source:
 "test",
 
 objective:
-"execute repository change",
+"execute governed flow",
 
-trusted:
+completed:
 true,
 
-observationState:
+successful:
+true,
+
+resultState:
 [
-"feedback accepted"
+"execution completed"
 ],
 
 provenance:
 [
-"feedback verified"
+"verified"
 ],
 
 blockedReasons:
 []
 
 });
+
 
 assert.equal(
 learning.trusted,
@@ -49,11 +54,12 @@ learning.learningState.length > 0,
 true
 );
 
-});
+}
+);
 
 
 test(
-"blocks learning from untrusted execution feedback",
+"blocks learning from unsuccessful execution result",
 () => {
 
 const learning =
@@ -66,27 +72,31 @@ source:
 "test",
 
 objective:
-"execute repository change",
+"blocked flow",
 
-trusted:
+completed:
 false,
 
-observationState:
+successful:
+false,
+
+resultState:
 [
-"feedback blocked"
+"execution failed"
 ],
 
 provenance:
 [
-"feedback preserved"
+"preserved"
 ],
 
 blockedReasons:
 [
-"feedback not trusted"
+"failed"
 ]
 
 });
+
 
 assert.equal(
 learning.trusted,
@@ -98,7 +108,8 @@ learning.blockedReasons.length > 0,
 true
 );
 
-});
+}
+);
 
 
 test(
@@ -115,19 +126,22 @@ source:
 "test",
 
 objective:
-"validate learning chain",
+"provenance chain",
 
-trusted:
+completed:
 true,
 
-observationState:
+successful:
+true,
+
+resultState:
 [
 "validated"
 ],
 
 provenance:
 [
-"feedback verified"
+"verified"
 ],
 
 blockedReasons:
@@ -135,10 +149,11 @@ blockedReasons:
 
 });
 
+
 assert.equal(
 learning.provenance.length > 0,
 true
 );
 
-});
-
+}
+);
