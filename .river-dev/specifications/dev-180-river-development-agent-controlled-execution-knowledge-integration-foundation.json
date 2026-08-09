@@ -1,0 +1,78 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-180 River Development Agent Controlled Execution Knowledge Integration Foundation",
+  "branch": "dev-180-river-development-agent-controlled-execution-knowledge-integration-foundation",
+  "commitMessage": "DEV-180: Build River Development Agent controlled execution knowledge integration foundation",
+  "objective": "Create a deterministic controlled execution knowledge integration foundation that transforms governed execution knowledge consolidation records into structured knowledge integration records while preserving provenance, safety boundaries, human authorization controls, and controlled system evolution principles.",
+  "architecturalContext": [
+    "DEV-165 River Development Agent controlled execution learning foundation",
+    "DEV-166 River Development Agent controlled execution adaptation foundation",
+    "DEV-167 River Development Agent controlled execution improvement foundation",
+    "DEV-168 River Development Agent controlled execution consolidation foundation",
+    "DEV-169 River Development Agent controlled execution integration foundation",
+    "DEV-170 River Development Agent controlled execution stabilization foundation",
+    "DEV-171 River Development Agent controlled execution assurance foundation",
+    "DEV-172 River Development Agent controlled execution verification foundation",
+    "DEV-173 River Development Agent controlled execution certification foundation",
+    "DEV-174 River Development Agent controlled execution completion foundation",
+    "DEV-175 River Development Agent controlled execution continuation foundation",
+    "DEV-176 River Development Agent controlled execution reflection foundation",
+    "DEV-177 River Development Agent controlled execution learning integration foundation",
+    "DEV-178 River Development Agent controlled execution knowledge formation foundation",
+    "DEV-179 River Development Agent controlled execution knowledge consolidation foundation",
+    "River Development Agent Generation III",
+    "The River Kept Flowing platform ecosystem"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-180-river-development-agent-controlled-execution-knowledge-integration-foundation.json",
+      "tools/river-dev/src/core/execution-knowledge-integration-foundation-engine.ts",
+      "tools/river-dev/src/core/execution-knowledge-integration-foundation-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Knowledge integration consumes governed execution knowledge consolidation records.",
+    "Untrusted knowledge consolidation records cannot create trusted knowledge integration records.",
+    "Knowledge integration records preserve provenance.",
+    "Knowledge integration output is deterministic and explainable.",
+    "Human authorization boundaries remain preserved.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/execution-knowledge-integration-foundation-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}
