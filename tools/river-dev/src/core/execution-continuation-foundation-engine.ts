@@ -1,17 +1,20 @@
 ﻿import type {
-RiverDevExecutionReporting,
-RiverDevExecutionContinuation
+RiverDevExecutionContinuationReport,
+RiverDevExecutionContinuationFoundation
 } from "../types";
+
 
 export function createExecutionContinuation(
 report:
-RiverDevExecutionReporting
+RiverDevExecutionContinuationReport
 ):
-RiverDevExecutionContinuation {
+RiverDevExecutionContinuationFoundation {
 
-const authorized =
-report.authorized === true &&
-report.reportState === "successful";
+
+const canContinue =
+report.reportState === "successful" &&
+report.authorized === true;
+
 
 return {
 
@@ -24,40 +27,46 @@ source:
 objective:
 report.objective,
 
-reportingSource:
-"river-development-agent-execution-reporting",
-
 continuationState:
-authorized
+canContinue
 ?
 "continue"
 :
 "halt",
 
+authorized:
+report.authorized,
+
 continuationActions:
-authorized
+canContinue
 ?
 [
-"continue governed execution flow",
-"preserve execution context",
-"prepare next controlled action"
+"continue governed execution flow"
 ]
 :
 [
-"halt continuation flow",
-"preserve blocked report state",
-"request authorization review"
+"halt continuation flow"
 ],
 
-validationSummary:
+reportingSource:
+"river-development-agent-execution-reporting",
+
+provenance:
 [
-"verify reporting provenance",
-"confirm authorization state",
-"preserve deterministic continuation"
+"execution reporting evaluated",
+"continuation decision preserved"
 ],
 
-authorized
+blockedReasons:
+canContinue
+?
+[]
+:
+[
+"execution reporting blocked continuation"
+]
 
 };
 
 }
+

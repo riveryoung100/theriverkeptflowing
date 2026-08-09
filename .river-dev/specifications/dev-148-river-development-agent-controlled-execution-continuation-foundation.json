@@ -1,0 +1,71 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-148 River Development Agent Controlled Execution Continuation Foundation",
+  "branch": "dev-148-river-development-agent-controlled-execution-continuation-foundation",
+  "commitMessage": "DEV-148: Build River Development Agent controlled execution continuation foundation",
+  "objective": "Create a deterministic controlled execution continuation foundation that transforms governed execution improvement records into structured continuation records while preserving provenance, safety boundaries, human authorization controls, and controlled system evolution principles.",
+  "architecturalContext": [
+    "DEV-140 River Development Agent controlled execution governance foundation",
+    "DEV-141 River Development Agent controlled execution promotion foundation",
+    "DEV-142 River Development Agent controlled execution deployment foundation",
+    "DEV-143 River Development Agent controlled execution verification foundation",
+    "DEV-144 River Development Agent controlled execution observation foundation",
+    "DEV-145 River Development Agent controlled execution learning foundation",
+    "DEV-146 River Development Agent controlled execution adaptation foundation",
+    "DEV-147 River Development Agent controlled execution improvement foundation",
+    "River Development Agent Generation III",
+    "The River Kept Flowing platform ecosystem"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-148-river-development-agent-controlled-execution-continuation-foundation.json",
+      "tools/river-dev/src/core/execution-continuation-foundation-engine.ts",
+      "tools/river-dev/src/core/execution-continuation-foundation-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Continuation consumes governed execution improvement records.",
+    "Untrusted improvement records cannot create trusted continuation records.",
+    "Continuation records preserve provenance.",
+    "Continuation output is deterministic and explainable.",
+    "Human authorization boundaries remain preserved.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/execution-continuation-foundation-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}

@@ -1,4 +1,62 @@
 ﻿
+export interface RiverDevExecutionContinuationReport {
+
+readonly version:
+"1.0.0";
+
+readonly source:
+string;
+
+readonly objective:
+string;
+
+readonly outcomeSource:
+string;
+
+readonly reportState:
+string;
+
+readonly reportEntries:
+readonly string[];
+
+readonly validationSummary:
+readonly string[];
+
+readonly authorized:
+boolean;
+
+}
+
+export interface RiverDevExecutionContinuationFoundation {
+
+readonly version:
+"1.0.0";
+
+readonly source:
+string;
+
+readonly objective:
+string;
+
+readonly continuationState:
+string;
+
+readonly authorized:
+boolean;
+
+readonly continuationActions:
+readonly string[];
+
+readonly reportingSource:
+string;
+
+readonly provenance:
+readonly string[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
 export interface RiverDevExecutionObservationFoundation {
 
 readonly version:
