@@ -1,0 +1,68 @@
+﻿{
+"version": "1.0.0",
+"phase": "DEV-134 River Development Agent Controlled Execution Result Foundation",
+"branch": "dev-134-river-development-agent-controlled-execution-result-foundation",
+"commitMessage": "DEV-134: Build River Development Agent controlled execution result foundation",
+"objective": "Create a deterministic controlled execution result foundation that captures governed runtime outcomes, preserves execution provenance, records success and failure states, maintains human authorization boundaries, and prepares safe learning feedback behavior.",
+"architecturalContext": [
+"DEV-129 River Development Agent controlled execution intelligence decision foundation",
+"DEV-130 River Development Agent controlled execution intelligence action foundation",
+"DEV-131 River Development Agent controlled execution intelligence orchestration foundation",
+"DEV-132 River Development Agent controlled execution intelligence execution control foundation",
+"DEV-133 River Development Agent controlled execution runtime foundation",
+"River Development Agent Generation III",
+"The River Kept Flowing platform ecosystem"
+],
+"approvedScope": {
+"modifiablePaths": [
+"tools/river-dev/src/types.ts",
+"tools/river-dev/src/commands/context.ts"
+],
+"creatablePaths": [
+".river-dev/specifications/dev-134-river-development-agent-controlled-execution-result-foundation.json",
+"tools/river-dev/src/core/execution-result-foundation-engine.ts",
+"tools/river-dev/src/core/execution-result-foundation-engine.test.ts"
+],
+"excludedPaths": [
+".env",
+".git",
+"node_modules",
+"dist"
+]
+},
+"acceptanceCriteria": [
+"Execution results consume governed runtime states.",
+"Unauthorized runtime states cannot create successful execution results.",
+"Execution results preserve provenance.",
+"Result output is deterministic and explainable.",
+"Human authorization boundaries remain preserved.",
+"No uncontrolled repository modifications occur.",
+"Focused tests, River Dev typechecking, and main-project typechecking pass."
+],
+"requiredTests": [
+"tools/river-dev/src/core/execution-result-foundation-engine.test.ts",
+"tools/river-dev/src/index.test.ts"
+],
+"requiredQualityGates": [
+"expected-branch",
+"scope-check",
+"tests",
+"typecheck",
+"documentation",
+"exports",
+"secret-scan",
+"review",
+"staged-diff"
+],
+"approvedCommands": [
+"git-status",
+"git-branch-current",
+"git-diff",
+"typecheck",
+"test-tsx"
+],
+"repairLimits": {
+"maximumAttempts": 3,
+"allowScopeExpansion": false
+}
+}
