@@ -1,0 +1,86 @@
+﻿{
+    "version":  "1.0.0",
+    "phase":  "DEV-235 River Development Agent Controlled Execution Intelligence Governance Consolidation Foundation",
+    "branch":  "dev-235-river-development-agent-controlled-execution-intelligence-governance-consolidation-foundation",
+    "commitMessage":  "DEV-235: Build River Development Agent controlled execution intelligence governance consolidation foundation",
+    "objective":  "Create a deterministic controlled execution intelligence governance consolidation foundation that transforms trusted preserved governance lifecycle records into structured consolidated governance records while preserving preservation provenance, human authorization boundaries, repository authorization boundaries, strict scope control, and the principle that consolidation organizes and unifies governed lifecycle state without independently granting execution authority.",
+    "architecturalContext":  [
+                                 "DEV-222 River Development Agent controlled execution intelligence governance evolution foundation",
+                                 "DEV-223 River Development Agent controlled execution intelligence governance adaptation foundation",
+                                 "DEV-224 River Development Agent controlled execution intelligence governance optimization foundation",
+                                 "DEV-225 River Development Agent controlled execution intelligence governance refinement foundation",
+                                 "DEV-226 River Development Agent controlled execution intelligence governance maturation foundation",
+                                 "DEV-227 River Development Agent controlled execution intelligence governance stabilization foundation",
+                                 "DEV-228 River Development Agent controlled execution intelligence governance assurance foundation",
+                                 "DEV-229 River Development Agent controlled execution intelligence governance verification foundation",
+                                 "DEV-230 River Development Agent controlled execution intelligence governance certification foundation",
+                                 "DEV-231 River Development Agent controlled execution intelligence governance completion foundation",
+                                 "DEV-232 River Development Agent controlled execution intelligence governance continuation foundation",
+                                 "DEV-233 River Development Agent controlled execution intelligence governance persistence foundation",
+                                 "DEV-234 River Development Agent controlled execution intelligence governance preservation foundation",
+                                 "Historical controlled execution intelligence Preservation -\u003e Consolidation successor contract",
+                                 "River Development Agent Generation III",
+                                 "The River Kept Flowing platform ecosystem"
+                             ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "tools/river-dev/src/types.ts",
+                                                  "tools/river-dev/src/commands/context.ts"
+                                              ],
+                          "creatablePaths":  [
+                                                 ".river-dev/specifications/dev-235-river-development-agent-controlled-execution-intelligence-governance-consolidation-foundation.json",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-consolidation-foundation-engine.ts",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-consolidation-foundation-engine.test.ts"
+                                             ],
+                          "excludedPaths":  [
+                                                ".env",
+                                                ".git",
+                                                "node_modules",
+                                                "dist"
+                                            ]
+                      },
+    "acceptanceCriteria":  [
+                               "Governance consolidation consumes governed execution intelligence governance preservation records.",
+                               "Only trusted preserved governance preservation records can create trusted governance consolidation records.",
+                               "Untrusted governance preservation records cannot create trusted governance consolidation records.",
+                               "Non-preserved governance preservation records cannot create trusted governance consolidation records.",
+                               "Blocked governance preservation records cannot create trusted governance consolidation records.",
+                               "Governance consolidation records preserve preservation provenance.",
+                               "Governance consolidation output is deterministic and explainable.",
+                               "Governance consolidation cannot independently authorize repository modification.",
+                               "Governance consolidation cannot independently authorize execution.",
+                               "Governance consolidation cannot weaken human authorization boundaries.",
+                               "Governance consolidation cannot weaken repository authorization boundaries.",
+                               "Governance consolidation cannot expand execution scope.",
+                               "Consolidation organizes and unifies governed lifecycle state without creating autonomous execution authority.",
+                               "Strict scope control remains preserved.",
+                               "No uncontrolled repository modifications occur.",
+                               "Focused tests, River Dev typechecking, and main-project typechecking pass."
+                           ],
+    "requiredTests":  [
+                          "tools/river-dev/src/core/execution-intelligence-governance-consolidation-foundation-engine.test.ts",
+                          "tools/river-dev/src/index.test.ts"
+                      ],
+    "requiredQualityGates":  [
+                                 "expected-branch",
+                                 "scope-check",
+                                 "tests",
+                                 "typecheck",
+                                 "documentation",
+                                 "exports",
+                                 "secret-scan",
+                                 "review",
+                                 "staged-diff"
+                             ],
+    "approvedCommands":  [
+                             "git-status",
+                             "git-branch-current",
+                             "git-diff",
+                             "typecheck",
+                             "test-tsx"
+                         ],
+    "repairLimits":  {
+                         "maximumAttempts":  3,
+                         "allowScopeExpansion":  false
+                     }
+}

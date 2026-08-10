@@ -1,4 +1,4 @@
-export interface RiverDevExecutionIntelligenceGovernanceStabilizationFoundation {
+﻿export interface RiverDevExecutionIntelligenceGovernanceStabilizationFoundation {
 
 readonly version:
 "1.0.0";
@@ -5888,4 +5888,22 @@ export interface RiverDevExecutionIntelligenceGovernancePreservationFoundation {
 
 export interface RiverDevExecutionIntelligenceGovernancePreservationFoundationInput {
   governancePersistence: RiverDevExecutionIntelligenceGovernancePersistenceFoundation;
+}
+export interface RiverDevExecutionIntelligenceGovernanceConsolidationFoundationInput {
+  readonly governancePreservation: RiverDevExecutionIntelligenceGovernancePreservationFoundation;
+}
+
+export interface RiverDevExecutionIntelligenceGovernanceConsolidationFoundation {
+  readonly version: "1.0.0";
+  readonly source: string;
+  readonly objective: string;
+  readonly trusted: boolean;
+  readonly consolidated: boolean;
+  readonly preservation: RiverDevExecutionIntelligenceGovernancePreservationFoundation;
+  readonly consolidationState: readonly string[];
+  readonly consolidationSignals: readonly string[];
+  readonly provenance: readonly string[];
+  readonly authorizationBoundaries: readonly string[];
+  readonly scopeBoundaries: readonly string[];
+  readonly blockedReasons: readonly string[];
 }
