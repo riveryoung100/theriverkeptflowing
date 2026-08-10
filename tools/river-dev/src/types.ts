@@ -5945,3 +5945,22 @@ export interface RiverDevExecutionIntelligenceGovernanceCoordinationFoundation {
   readonly scopeBoundaries: readonly string[];
   readonly blockedReasons: readonly string[];
 }
+
+export interface RiverDevExecutionIntelligenceGovernanceOrchestrationFoundationInput {
+  readonly governanceCoordination: RiverDevExecutionIntelligenceGovernanceCoordinationFoundation;
+}
+
+export interface RiverDevExecutionIntelligenceGovernanceOrchestrationFoundation {
+  readonly version: "1.0.0";
+  readonly source: string;
+  readonly objective: string;
+  readonly trusted: boolean;
+  readonly orchestrated: boolean;
+  readonly coordination: RiverDevExecutionIntelligenceGovernanceCoordinationFoundation;
+  readonly orchestrationState: readonly string[];
+  readonly orchestrationSignals: readonly string[];
+  readonly provenance: readonly string[];
+  readonly authorizationBoundaries: readonly string[];
+  readonly scopeBoundaries: readonly string[];
+  readonly blockedReasons: readonly string[];
+}

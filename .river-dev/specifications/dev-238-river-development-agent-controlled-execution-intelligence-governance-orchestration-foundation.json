@@ -1,0 +1,105 @@
+﻿{
+    "version":  "1.0.0",
+    "phase":  "DEV-238 River Development Agent Controlled Execution Intelligence Governance Orchestration Foundation",
+    "branch":  "dev-238-river-development-agent-controlled-execution-intelligence-governance-orchestration-foundation",
+    "commitMessage":  "DEV-238: Build River Development Agent controlled execution intelligence governance orchestration foundation",
+    "objective":  "Create a deterministic controlled execution intelligence governance orchestration foundation that transforms trusted coordinated governance lifecycle records into structured orchestrated governance records while preserving coordination provenance, human authorization boundaries, repository authorization boundaries, strict scope control, and the principle that orchestration organizes governed lifecycle activity without independently granting repository modification or execution authority.",
+    "architectureStatus":  "Generation III frontier extension",
+    "architecturalDecision":  [
+                                  "DEV-237 Governance Coordination is the direct Generation III predecessor.",
+                                  "No historical Governance Orchestration foundation exists.",
+                                  "Historical ordinary Execution Intelligence establishes Coordination -\u003e Orchestration as a valid structural precedent.",
+                                  "Historical ordinary Orchestration couples orchestrated state to an authorized field.",
+                                  "Generation III Governance Orchestration explicitly rejects orchestration-as-authorization coupling.",
+                                  "Governance Orchestration may organize governed lifecycle activity but cannot independently authorize repository modification or execution."
+                              ],
+    "architecturalContext":  [
+                                 "DEV-227 River Development Agent controlled execution intelligence governance stabilization foundation",
+                                 "DEV-228 River Development Agent controlled execution intelligence governance assurance foundation",
+                                 "DEV-229 River Development Agent controlled execution intelligence governance verification foundation",
+                                 "DEV-230 River Development Agent controlled execution intelligence governance certification foundation",
+                                 "DEV-231 River Development Agent controlled execution intelligence governance completion foundation",
+                                 "DEV-232 River Development Agent controlled execution intelligence governance continuation foundation",
+                                 "DEV-233 River Development Agent controlled execution intelligence governance persistence foundation",
+                                 "DEV-234 River Development Agent controlled execution intelligence governance preservation foundation",
+                                 "DEV-235 River Development Agent controlled execution intelligence governance consolidation foundation",
+                                 "DEV-236 River Development Agent controlled execution intelligence governance integration foundation",
+                                 "DEV-237 River Development Agent controlled execution intelligence governance coordination foundation",
+                                 "Historical ordinary Execution Intelligence Coordination -\u003e Orchestration structural precedent",
+                                 "River Development Agent Generation III",
+                                 "The River Kept Flowing platform ecosystem"
+                             ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "tools/river-dev/src/types.ts",
+                                                  "tools/river-dev/src/commands/context.ts"
+                                              ],
+                          "creatablePaths":  [
+                                                 ".river-dev/specifications/dev-238-river-development-agent-controlled-execution-intelligence-governance-orchestration-foundation.json",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-orchestration-foundation-engine.ts",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-orchestration-foundation-engine.test.ts"
+                                             ],
+                          "excludedPaths":  [
+                                                ".env",
+                                                ".git",
+                                                "node_modules",
+                                                "dist"
+                                            ]
+                      },
+    "acceptanceCriteria":  [
+                               "Governance orchestration consumes governed execution intelligence governance coordination records.",
+                               "Only trusted coordinated governance coordination records can create trusted governance orchestration records.",
+                               "Untrusted governance coordination records cannot create trusted governance orchestration records.",
+                               "Non-coordinated governance coordination records cannot create trusted governance orchestration records.",
+                               "Blocked governance coordination records cannot create trusted governance orchestration records.",
+                               "Governance orchestration preserves governance coordination provenance.",
+                               "Governance orchestration output is deterministic and explainable.",
+                               "Governance orchestration cannot independently authorize repository modification.",
+                               "Governance orchestration cannot independently authorize execution.",
+                               "Governance orchestration cannot weaken human authorization boundaries.",
+                               "Governance orchestration cannot weaken repository authorization boundaries.",
+                               "Governance orchestration cannot expand execution scope.",
+                               "Governance orchestration must not expose an autonomous authorization grant derived solely from orchestration state.",
+                               "Orchestration organizes coordinated governed lifecycle activity without creating autonomous execution authority.",
+                               "Strict scope control remains preserved.",
+                               "No uncontrolled repository modifications occur.",
+                               "Focused tests, River Dev typechecking, and main-project typechecking pass."
+                           ],
+    "trustContract":  {
+                          "requiredPredicates":  [
+                                                     "governanceCoordination.trusted === true",
+                                                     "governanceCoordination.coordinated === true",
+                                                     "governanceCoordination.blockedReasons.length === 0"
+                                                 ],
+                          "orchestrationImpliesAuthorization":  false,
+                          "autonomousExecutionAuthority":  false,
+                          "repositoryModificationAuthority":  false,
+                          "scopeExpansionPermitted":  false
+                      },
+    "requiredTests":  [
+                          "tools/river-dev/src/core/execution-intelligence-governance-orchestration-foundation-engine.test.ts",
+                          "tools/river-dev/src/index.test.ts"
+                      ],
+    "requiredQualityGates":  [
+                                 "expected-branch",
+                                 "scope-check",
+                                 "tests",
+                                 "typecheck",
+                                 "documentation",
+                                 "exports",
+                                 "secret-scan",
+                                 "review",
+                                 "staged-diff"
+                             ],
+    "approvedCommands":  [
+                             "git-status",
+                             "git-branch-current",
+                             "git-diff",
+                             "typecheck",
+                             "test-tsx"
+                         ],
+    "repairLimits":  {
+                         "maximumAttempts":  3,
+                         "allowScopeExpansion":  false
+                     }
+}
