@@ -1,4 +1,4 @@
-﻿
+
 export interface RiverDevExecutionIntelligenceGovernanceEvolutionFoundation {
 
 readonly version:
@@ -24,6 +24,30 @@ readonly string[];
 
 }
 
+export interface RiverDevExecutionIntelligenceGovernanceAdaptationFoundation {
+
+readonly version:
+"1.0.0";
+
+readonly source:
+string;
+
+readonly objective:
+string;
+
+readonly trusted:
+boolean;
+
+readonly governanceAdaptationState:
+readonly string[];
+
+readonly provenance:
+readonly string[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
 export interface RiverDevExecutionIntelligenceLearningFoundation {
 
 readonly version:
