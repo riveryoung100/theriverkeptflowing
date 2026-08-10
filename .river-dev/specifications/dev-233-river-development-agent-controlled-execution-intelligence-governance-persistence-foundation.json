@@ -1,0 +1,84 @@
+﻿{
+    "version":  "1.0.0",
+    "phase":  "DEV-233 River Development Agent Controlled Execution Intelligence Governance Persistence Foundation",
+    "branch":  "dev-233-river-development-agent-controlled-execution-intelligence-governance-persistence-foundation",
+    "commitMessage":  "DEV-233: Build River Development Agent controlled execution intelligence governance persistence foundation",
+    "objective":  "Create a deterministic controlled execution intelligence governance persistence foundation that transforms trusted governance continuation records into durable structured governance persistence records while preserving continuation provenance, human authorization boundaries, repository authorization boundaries, strict scope control, and the principle that persistence records state without independently granting execution authority.",
+    "architecturalContext":  [
+                                 "DEV-222 River Development Agent controlled execution intelligence governance evolution foundation",
+                                 "DEV-223 River Development Agent controlled execution intelligence governance adaptation foundation",
+                                 "DEV-224 River Development Agent controlled execution intelligence governance optimization foundation",
+                                 "DEV-225 River Development Agent controlled execution intelligence governance refinement foundation",
+                                 "DEV-226 River Development Agent controlled execution intelligence governance maturation foundation",
+                                 "DEV-227 River Development Agent controlled execution intelligence governance stabilization foundation",
+                                 "DEV-228 River Development Agent controlled execution intelligence governance assurance foundation",
+                                 "DEV-229 River Development Agent controlled execution intelligence governance verification foundation",
+                                 "DEV-230 River Development Agent controlled execution intelligence governance certification foundation",
+                                 "DEV-231 River Development Agent controlled execution intelligence governance completion foundation",
+                                 "DEV-232 River Development Agent controlled execution intelligence governance continuation foundation",
+                                 "Historical controlled execution intelligence Continuation -\u003e Persistence successor contract",
+                                 "River Development Agent Generation III",
+                                 "The River Kept Flowing platform ecosystem"
+                             ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "tools/river-dev/src/types.ts",
+                                                  "tools/river-dev/src/commands/context.ts"
+                                              ],
+                          "creatablePaths":  [
+                                                 ".river-dev/specifications/dev-233-river-development-agent-controlled-execution-intelligence-governance-persistence-foundation.json",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-persistence-foundation-engine.ts",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-persistence-foundation-engine.test.ts"
+                                             ],
+                          "excludedPaths":  [
+                                                ".env",
+                                                ".git",
+                                                "node_modules",
+                                                "dist"
+                                            ]
+                      },
+    "acceptanceCriteria":  [
+                               "Governance persistence consumes governed execution intelligence governance continuation records.",
+                               "Only trusted continuing governance continuation records can create trusted governance persistence records.",
+                               "Untrusted governance continuation records cannot create trusted governance persistence records.",
+                               "Non-continuing governance continuation records cannot create trusted governance persistence records.",
+                               "Blocked governance continuation records cannot create trusted governance persistence records.",
+                               "Governance persistence records preserve continuation provenance.",
+                               "Governance persistence output is deterministic and explainable.",
+                               "Governance persistence cannot independently authorize repository modification.",
+                               "Governance persistence cannot independently authorize execution.",
+                               "Governance persistence cannot weaken human authorization boundaries.",
+                               "Governance persistence cannot weaken repository authorization boundaries.",
+                               "Governance persistence cannot expand execution scope.",
+                               "Persistence represents durable governed lifecycle state, not autonomous execution authority.",
+                               "Strict scope control remains preserved.",
+                               "No uncontrolled repository modifications occur.",
+                               "Focused tests, River Dev typechecking, and main-project typechecking pass."
+                           ],
+    "requiredTests":  [
+                          "tools/river-dev/src/core/execution-intelligence-governance-persistence-foundation-engine.test.ts",
+                          "tools/river-dev/src/index.test.ts"
+                      ],
+    "requiredQualityGates":  [
+                                 "expected-branch",
+                                 "scope-check",
+                                 "tests",
+                                 "typecheck",
+                                 "documentation",
+                                 "exports",
+                                 "secret-scan",
+                                 "review",
+                                 "staged-diff"
+                             ],
+    "approvedCommands":  [
+                             "git-status",
+                             "git-branch-current",
+                             "git-diff",
+                             "typecheck",
+                             "test-tsx"
+                         ],
+    "repairLimits":  {
+                         "maximumAttempts":  3,
+                         "allowScopeExpansion":  false
+                     }
+}
