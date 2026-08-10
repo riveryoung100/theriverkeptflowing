@@ -5787,3 +5787,20 @@ governanceAssuranceState: string[];
 provenance: string[];
 blockedReasons: string[];
 }
+
+export interface RiverDevExecutionIntelligenceGovernanceVerificationFoundation {
+  version: "1.0.0";
+  governanceAssuranceId: string;
+  verificationId: string;
+  trusted: boolean;
+  verified: boolean;
+  verificationSignals: string[];
+  blockedReasons: string[];
+  provenance: string[];
+  authorizationBoundaries: string[];
+  scopeBoundaries: string[];
+}
+
+export interface RiverDevExecutionIntelligenceGovernanceVerificationFoundationInput {
+  governanceAssurance: RiverDevExecutionIntelligenceGovernanceAssuranceFoundation;
+}
