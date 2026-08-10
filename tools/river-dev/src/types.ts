@@ -5777,3 +5777,13 @@ export interface RiverDevStateStore {
 
 }
 
+
+export interface RiverDevExecutionIntelligenceGovernanceAssuranceFoundation {
+version: string;
+source: string;
+objective: string;
+trusted: boolean;
+governanceAssuranceState: string[];
+provenance: string[];
+blockedReasons: string[];
+}

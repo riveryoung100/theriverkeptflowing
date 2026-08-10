@@ -1,0 +1,78 @@
+﻿{
+    "version":  "1.0.0",
+    "phase":  "DEV-228 River Development Agent Controlled Execution Intelligence Governance Assurance Foundation",
+    "branch":  "dev-228-river-development-agent-controlled-execution-intelligence-governance-assurance-foundation",
+    "commitMessage":  "DEV-228: Build River Development Agent controlled execution intelligence governance assurance foundation",
+    "objective":  "Create a deterministic controlled execution intelligence governance assurance foundation that transforms governed execution intelligence governance stabilization records into structured governance assurance records while preserving provenance, safety boundaries, human authorization controls, repository authorization boundaries, strict scope control, and controlled system evolution principles.",
+    "architecturalContext":  [
+                                 "DEV-217 River Development Agent controlled execution intelligence execution foundation",
+                                 "DEV-218 River Development Agent controlled execution intelligence result foundation",
+                                 "DEV-219 River Development Agent controlled execution intelligence learning foundation",
+                                 "DEV-220 River Development Agent controlled execution intelligence adaptation foundation",
+                                 "DEV-221 River Development Agent controlled execution intelligence evolution foundation",
+                                 "DEV-222 River Development Agent controlled execution intelligence governance evolution foundation",
+                                 "DEV-223 River Development Agent controlled execution intelligence governance adaptation foundation",
+                                 "DEV-224 River Development Agent controlled execution intelligence governance optimization foundation",
+                                 "DEV-225 River Development Agent controlled execution intelligence governance refinement foundation",
+                                 "DEV-226 River Development Agent controlled execution intelligence governance maturation foundation",
+                                 "DEV-227 River Development Agent controlled execution intelligence governance stabilization foundation",
+                                 "River Development Agent Generation III",
+                                 "The River Kept Flowing platform ecosystem"
+                             ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "tools/river-dev/src/types.ts",
+                                                  "tools/river-dev/src/commands/context.ts"
+                                              ],
+                          "creatablePaths":  [
+                                                 ".river-dev/specifications/dev-228-river-development-agent-controlled-execution-intelligence-governance-assurance-foundation.json",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-assurance-foundation-engine.ts",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-assurance-foundation-engine.test.ts"
+                                             ],
+                          "excludedPaths":  [
+                                                ".env",
+                                                ".git",
+                                                "node_modules",
+                                                "dist"
+                                            ]
+                      },
+    "acceptanceCriteria":  [
+                               "Governance assurance consumes governed execution intelligence governance stabilization records.",
+                               "Untrusted governance stabilization records cannot create trusted governance assurance records.",
+                               "Governance assurance records preserve provenance.",
+                               "Governance assurance output is deterministic and explainable.",
+                               "Governance assurance cannot independently authorize repository modification.",
+                               "Governance assurance cannot weaken human authorization boundaries.",
+                               "Governance assurance cannot weaken repository authorization boundaries.",
+                               "Governance assurance cannot expand execution scope.",
+                               "Strict scope control remains preserved.",
+                               "No uncontrolled repository modifications occur.",
+                               "Focused tests, River Dev typechecking, and main-project typechecking pass."
+                           ],
+    "requiredTests":  [
+                          "tools/river-dev/src/core/execution-intelligence-governance-assurance-foundation-engine.test.ts",
+                          "tools/river-dev/src/index.test.ts"
+                      ],
+    "requiredQualityGates":  [
+                                 "expected-branch",
+                                 "scope-check",
+                                 "tests",
+                                 "typecheck",
+                                 "documentation",
+                                 "exports",
+                                 "secret-scan",
+                                 "review",
+                                 "staged-diff"
+                             ],
+    "approvedCommands":  [
+                             "git-status",
+                             "git-branch-current",
+                             "git-diff",
+                             "typecheck",
+                             "test-tsx"
+                         ],
+    "repairLimits":  {
+                         "maximumAttempts":  3,
+                         "allowScopeExpansion":  false
+                     }
+}
