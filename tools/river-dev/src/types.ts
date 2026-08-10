@@ -6066,3 +6066,25 @@ export interface RiverDevExecutionIntelligenceGovernanceApprovalBoundaryFoundati
     scopeBoundaries: readonly string[];
     blockedReasons: readonly string[];
 }
+export interface RiverDevExecutionIntelligenceGovernanceExecutionBoundaryFoundationInput {
+    approvalBoundary: RiverDevExecutionIntelligenceGovernanceApprovalBoundaryFoundation;
+}
+
+export interface RiverDevExecutionIntelligenceGovernanceExecutionBoundaryFoundation {
+    version: string;
+    source: string;
+    objective: string;
+
+    trusted: boolean;
+    controlled: boolean;
+
+    approvalBoundary: RiverDevExecutionIntelligenceGovernanceApprovalBoundaryFoundation;
+
+    executionState: readonly string[];
+    executionSignals: readonly string[];
+
+    provenance: readonly string[];
+    authorizationBoundaries: readonly string[];
+    scopeBoundaries: readonly string[];
+    blockedReasons: readonly string[];
+}

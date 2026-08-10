@@ -1,0 +1,99 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-241 River Development Agent Controlled Execution Intelligence Governance Execution Boundary Foundation",
+  "architectureStatus": "Generation III execution boundary",
+  "branch": "dev-241-river-development-agent-controlled-execution-intelligence-governance-execution-boundary-foundation",
+  "commitMessage": "DEV-241: Build River Development Agent controlled execution intelligence governance execution boundary foundation",
+  "objective": "Create a deterministic controlled execution intelligence governance execution boundary that consumes a trusted approved DEV-240 governance approval-boundary record, preserves authorization provenance, approval evidence, human authorization evidence, repository authorization evidence, and approved execution scope, and produces an explainable execution-boundary record without independently authorizing or approving execution, modifying the repository, executing arbitrary commands, expanding scope, or granting autonomous execution authority.",
+  "architecturalContext": [
+    "DEV-238 River Development Agent controlled execution intelligence governance orchestration foundation",
+    "DEV-239 River Development Agent controlled execution intelligence governance authorization boundary foundation",
+    "DEV-240 River Development Agent controlled execution intelligence governance approval boundary foundation",
+    "Historical controlled execution approval-to-run boundary foundation",
+    "Historical controlled execution final gate foundation",
+    "Historical execution governance and execution-control foundations",
+    "Generation III separation of orchestration, authorization, approval, and execution",
+    "River Development Agent Generation III",
+    "The River Kept Flowing platform ecosystem"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-241-river-development-agent-controlled-execution-intelligence-governance-execution-boundary-foundation.json",
+      "tools/river-dev/src/core/execution-intelligence-governance-execution-boundary-foundation-engine.ts",
+      "tools/river-dev/src/core/execution-intelligence-governance-execution-boundary-foundation-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "trustContract": {
+    "requiredApprovalPredicates": [
+      "approvalBoundary.trusted === true",
+      "approvalBoundary.approved === true",
+      "approvalBoundary.blockedReasons.length === 0"
+    ],
+    "explicitExecutionBoundaryRequired": true,
+    "authorizationImpliesExecution": false,
+    "approvalImpliesExecution": false,
+    "executionBoundaryImpliesCommandExecution": false,
+    "autonomousExecutionAuthority": false,
+    "autonomousRepositoryModificationAuthority": false,
+    "autonomousScopeExpansion": false
+  },
+  "acceptanceCriteria": [
+    "Governance execution boundary consumes DEV-240 governance approval-boundary records.",
+    "Only trusted approved governance approval-boundary records can create trusted governance execution-boundary records.",
+    "Untrusted approval-boundary records cannot create trusted governance execution-boundary records.",
+    "Non-approved approval-boundary records cannot create trusted governance execution-boundary records.",
+    "Blocked approval-boundary records cannot create trusted governance execution-boundary records.",
+    "Authorization alone cannot create a trusted governance execution boundary.",
+    "Approval alone does not perform execution.",
+    "Governance execution boundary preserves human authorization evidence.",
+    "Governance execution boundary preserves repository authorization evidence.",
+    "Governance execution boundary preserves approved execution scope.",
+    "Governance execution boundary preserves authorization provenance.",
+    "Governance execution boundary preserves explicit approval evidence.",
+    "Governance execution-boundary output is deterministic and explainable.",
+    "Governance execution boundary remains separate from command execution.",
+    "Governance execution boundary cannot independently modify the repository.",
+    "Governance execution boundary cannot independently execute arbitrary commands.",
+    "Governance execution boundary cannot expand approved execution scope.",
+    "Governance execution boundary grants no autonomous execution authority.",
+    "Strict scope control remains preserved.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/execution-intelligence-governance-execution-boundary-foundation-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}
