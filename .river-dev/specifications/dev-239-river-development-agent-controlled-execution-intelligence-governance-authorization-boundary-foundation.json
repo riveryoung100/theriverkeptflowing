@@ -1,0 +1,103 @@
+﻿{
+    "version":  "1.0.0",
+    "phase":  "DEV-239 River Development Agent Controlled Execution Intelligence Governance Authorization Boundary Foundation",
+    "architectureStatus":  "Generation III execution-authority boundary",
+    "branch":  "dev-239-river-development-agent-controlled-execution-intelligence-governance-authorization-boundary-foundation",
+    "commitMessage":  "DEV-239: Build River Development Agent controlled execution intelligence governance authorization boundary foundation",
+    "objective":  "Create a deterministic controlled execution intelligence governance authorization boundary that consumes trusted governance orchestration together with explicit human authorization evidence, explicit repository authorization evidence, and explicit approved execution scope, producing a governed authorization-boundary record without inferring authorization from orchestration state, independently approving execution, modifying the repository, executing commands, or expanding scope.",
+    "architecturalContext":  [
+                                 "DEV-237 River Development Agent controlled execution intelligence governance coordination foundation",
+                                 "DEV-238 River Development Agent controlled execution intelligence governance orchestration foundation",
+                                 "Historical execution authorization foundation",
+                                 "Historical execution approval foundation",
+                                 "Historical execution intelligence execution-control foundation",
+                                 "Generation III separation of orchestration, authorization, approval, and execution",
+                                 "River Development Agent Generation III",
+                                 "The River Kept Flowing platform ecosystem"
+                             ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "tools/river-dev/src/types.ts",
+                                                  "tools/river-dev/src/commands/context.ts"
+                                              ],
+                          "creatablePaths":  [
+                                                 ".river-dev/specifications/dev-239-river-development-agent-controlled-execution-intelligence-governance-authorization-boundary-foundation.json",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-authorization-boundary-foundation-engine.ts",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-authorization-boundary-foundation-engine.test.ts"
+                                             ],
+                          "excludedPaths":  [
+                                                ".env",
+                                                ".git",
+                                                "node_modules",
+                                                "dist"
+                                            ]
+                      },
+    "trustContract":  {
+                          "requiredOrchestrationPredicates":  [
+                                                                  "governanceOrchestration.trusted === true",
+                                                                  "governanceOrchestration.orchestrated === true",
+                                                                  "governanceOrchestration.blockedReasons.length === 0"
+                                                              ],
+                          "explicitHumanAuthorizationRequired":  true,
+                          "explicitRepositoryAuthorizationRequired":  true,
+                          "explicitApprovedScopeRequired":  true,
+                          "orchestrationImpliesAuthorization":  false,
+                          "authorizationImpliesApproval":  false,
+                          "authorizationImpliesExecution":  false,
+                          "autonomousExecutionAuthority":  false,
+                          "autonomousRepositoryModificationAuthority":  false,
+                          "autonomousScopeExpansion":  false
+                      },
+    "acceptanceCriteria":  [
+                               "Governance authorization boundary consumes trusted governance orchestration records.",
+                               "Governance authorization boundary requires explicit human authorization evidence.",
+                               "Governance authorization boundary requires explicit repository authorization evidence.",
+                               "Governance authorization boundary requires explicit approved execution scope.",
+                               "Trusted orchestration alone cannot create an authorized governance boundary.",
+                               "Untrusted orchestration cannot create a trusted governance authorization boundary.",
+                               "Non-orchestrated governance state cannot create a trusted governance authorization boundary.",
+                               "Blocked governance orchestration cannot create a trusted governance authorization boundary.",
+                               "Missing human authorization cannot create an authorized governance boundary.",
+                               "Missing repository authorization cannot create an authorized governance boundary.",
+                               "Missing approved execution scope cannot create an authorized governance boundary.",
+                               "Governance authorization remains separate from execution approval.",
+                               "Governance authorization remains separate from execution.",
+                               "Governance authorization boundary preserves orchestration provenance.",
+                               "Governance authorization boundary preserves human authorization evidence.",
+                               "Governance authorization boundary preserves repository authorization evidence.",
+                               "Governance authorization boundary preserves approved execution scope.",
+                               "Governance authorization boundary output is deterministic and explainable.",
+                               "Governance authorization boundary cannot independently modify the repository.",
+                               "Governance authorization boundary cannot independently execute commands.",
+                               "Governance authorization boundary cannot expand approved execution scope.",
+                               "Strict scope control remains preserved.",
+                               "No uncontrolled repository modifications occur.",
+                               "Focused tests, River Dev typechecking, and main-project typechecking pass."
+                           ],
+    "requiredTests":  [
+                          "tools/river-dev/src/core/execution-intelligence-governance-authorization-boundary-foundation-engine.test.ts",
+                          "tools/river-dev/src/index.test.ts"
+                      ],
+    "requiredQualityGates":  [
+                                 "expected-branch",
+                                 "scope-check",
+                                 "tests",
+                                 "typecheck",
+                                 "documentation",
+                                 "exports",
+                                 "secret-scan",
+                                 "review",
+                                 "staged-diff"
+                             ],
+    "approvedCommands":  [
+                             "git-status",
+                             "git-branch-current",
+                             "git-diff",
+                             "typecheck",
+                             "test-tsx"
+                         ],
+    "repairLimits":  {
+                         "maximumAttempts":  3,
+                         "allowScopeExpansion":  false
+                     }
+}

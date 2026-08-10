@@ -5964,3 +5964,73 @@ export interface RiverDevExecutionIntelligenceGovernanceOrchestrationFoundation 
   readonly scopeBoundaries: readonly string[];
   readonly blockedReasons: readonly string[];
 }
+
+export interface RiverDevExecutionIntelligenceGovernanceHumanAuthorizationEvidence {
+    readonly authorized: boolean;
+    readonly authorizedBy: string;
+    readonly authorizationId: string;
+    readonly authorizationSignals: readonly string[];
+}
+
+export interface RiverDevExecutionIntelligenceGovernanceRepositoryAuthorizationEvidence {
+    readonly authorized: boolean;
+    readonly repositoryRoot: string;
+    readonly authorizationId: string;
+    readonly authorizationSignals: readonly string[];
+}
+
+export interface RiverDevExecutionIntelligenceGovernanceAuthorizationBoundaryFoundationInput {
+    readonly governanceOrchestration:
+        RiverDevExecutionIntelligenceGovernanceOrchestrationFoundation;
+
+    readonly humanAuthorization:
+        RiverDevExecutionIntelligenceGovernanceHumanAuthorizationEvidence | null;
+
+    readonly repositoryAuthorization:
+        RiverDevExecutionIntelligenceGovernanceRepositoryAuthorizationEvidence | null;
+
+    readonly approvedScope:
+        RiverDevContextScope | null;
+}
+
+export interface RiverDevExecutionIntelligenceGovernanceAuthorizationBoundaryFoundation {
+    readonly version: "1.0.0";
+
+    readonly source:
+        "river-development-agent-execution-intelligence-governance-authorization-boundary";
+
+    readonly objective: string;
+
+    readonly trusted: boolean;
+    readonly authorized: boolean;
+
+    readonly orchestration:
+        RiverDevExecutionIntelligenceGovernanceOrchestrationFoundation;
+
+    readonly humanAuthorization:
+        RiverDevExecutionIntelligenceGovernanceHumanAuthorizationEvidence | null;
+
+    readonly repositoryAuthorization:
+        RiverDevExecutionIntelligenceGovernanceRepositoryAuthorizationEvidence | null;
+
+    readonly approvedScope:
+        RiverDevContextScope | null;
+
+    readonly authorizationState:
+        readonly string[];
+
+    readonly authorizationSignals:
+        readonly string[];
+
+    readonly provenance:
+        readonly string[];
+
+    readonly authorizationBoundaries:
+        readonly string[];
+
+    readonly scopeBoundaries:
+        readonly string[];
+
+    readonly blockedReasons:
+        readonly string[];
+}
