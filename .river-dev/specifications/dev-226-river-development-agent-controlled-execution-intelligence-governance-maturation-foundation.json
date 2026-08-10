@@ -1,0 +1,76 @@
+{
+    "version":  "1.0.0",
+    "phase":  "DEV-226 River Development Agent Controlled Execution Intelligence Governance Maturation Foundation",
+    "branch":  "dev-226-river-development-agent-controlled-execution-intelligence-governance-maturation-foundation",
+    "commitMessage":  "DEV-226: Build River Development Agent controlled execution intelligence governance maturation foundation",
+    "objective":  "Create a deterministic controlled execution intelligence governance maturation foundation that transforms governed execution intelligence governance refinement records into structured governance maturation records while preserving provenance, safety boundaries, human authorization controls, strict scope control, and controlled system evolution principles.",
+    "architecturalContext":  [
+                                 "DEV-216 River Development Agent controlled execution intelligence action foundation",
+                                 "DEV-217 River Development Agent controlled execution intelligence execution foundation",
+                                 "DEV-218 River Development Agent controlled execution intelligence result foundation",
+                                 "DEV-219 River Development Agent controlled execution intelligence learning foundation",
+                                 "DEV-220 River Development Agent controlled execution intelligence adaptation foundation",
+                                 "DEV-221 River Development Agent controlled execution intelligence evolution foundation",
+                                 "DEV-222 River Development Agent controlled execution intelligence governance evolution foundation",
+                                 "DEV-223 River Development Agent controlled execution intelligence governance adaptation foundation",
+                                 "DEV-224 River Development Agent controlled execution intelligence governance optimization foundation",
+                                 "DEV-225 River Development Agent controlled execution intelligence governance refinement foundation",
+                                 "River Development Agent Generation III",
+                                 "The River Kept Flowing platform ecosystem"
+                             ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "tools/river-dev/src/types.ts",
+                                                  "tools/river-dev/src/commands/context.ts"
+                                              ],
+                          "creatablePaths":  [
+                                                 ".river-dev/specifications/dev-226-river-development-agent-controlled-execution-intelligence-governance-maturation-foundation.json",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-maturation-foundation-engine.ts",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-maturation-foundation-engine.test.ts"
+                                             ],
+                          "excludedPaths":  [
+                                                ".env",
+                                                ".git",
+                                                "node_modules",
+                                                "dist"
+                                            ]
+                      },
+    "acceptanceCriteria":  [
+                               "Governance maturation consumes governed execution intelligence governance refinement records.",
+                               "Untrusted governance refinement records cannot create trusted governance maturation records.",
+                               "Governance maturation records preserve provenance.",
+                               "Governance maturation output is deterministic and explainable.",
+                               "Governance maturation cannot independently authorize repository modification.",
+                               "Governance maturation cannot weaken human authorization boundaries.",
+                               "Governance maturation cannot weaken repository authorization boundaries.",
+                               "Strict scope control remains preserved.",
+                               "No uncontrolled repository modifications occur.",
+                               "Focused tests, River Dev typechecking, and main-project typechecking pass."
+                           ],
+    "requiredTests":  [
+                          "tools/river-dev/src/core/execution-intelligence-governance-maturation-foundation-engine.test.ts",
+                          "tools/river-dev/src/index.test.ts"
+                      ],
+    "requiredQualityGates":  [
+                                 "expected-branch",
+                                 "scope-check",
+                                 "tests",
+                                 "typecheck",
+                                 "documentation",
+                                 "exports",
+                                 "secret-scan",
+                                 "review",
+                                 "staged-diff"
+                             ],
+    "approvedCommands":  [
+                             "git-status",
+                             "git-branch-current",
+                             "git-diff",
+                             "typecheck",
+                             "test-tsx"
+                         ],
+    "repairLimits":  {
+                         "maximumAttempts":  3,
+                         "allowScopeExpansion":  false
+                     }
+}
