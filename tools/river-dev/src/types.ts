@@ -1,3 +1,27 @@
+export interface RiverDevExecutionIntelligenceGovernanceRefinementFoundation {
+
+readonly version:
+"1.0.0";
+
+readonly source:
+string;
+
+readonly objective:
+string;
+
+readonly trusted:
+boolean;
+
+readonly governanceRefinementState:
+readonly string[];
+
+readonly provenance:
+readonly string[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
 
 export interface RiverDevExecutionIntelligenceGovernanceEvolutionFoundation {
 
