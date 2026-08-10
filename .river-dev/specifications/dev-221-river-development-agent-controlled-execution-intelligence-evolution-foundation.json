@@ -1,0 +1,71 @@
+﻿{
+"version": "1.0.0",
+"phase": "DEV-221 River Development Agent Controlled Execution Intelligence Evolution Foundation",
+"branch": "dev-221-river-development-agent-controlled-execution-intelligence-evolution-foundation",
+"commitMessage": "DEV-221: Build River Development Agent controlled execution intelligence evolution foundation",
+"objective": "Create a deterministic controlled execution intelligence evolution foundation that transforms governed execution intelligence adaptation records into structured intelligence evolution records while preserving provenance, safety boundaries, human authorization controls, and controlled system evolution principles.",
+"architecturalContext": [
+"DEV-213 River Development Agent controlled execution intelligence oversight foundation",
+"DEV-214 River Development Agent controlled execution intelligence review foundation",
+"DEV-215 River Development Agent controlled execution intelligence decision foundation",
+"DEV-216 River Development Agent controlled execution intelligence action foundation",
+"DEV-217 River Development Agent controlled execution intelligence execution foundation",
+"DEV-218 River Development Agent controlled execution intelligence result foundation",
+"DEV-219 River Development Agent controlled execution intelligence learning foundation",
+"DEV-220 River Development Agent controlled execution intelligence adaptation foundation",
+"River Development Agent Generation III",
+"The River Kept Flowing platform ecosystem"
+],
+"approvedScope": {
+"modifiablePaths": [
+"tools/river-dev/src/types.ts",
+"tools/river-dev/src/commands/context.ts"
+],
+"creatablePaths": [
+".river-dev/specifications/dev-221-river-development-agent-controlled-execution-intelligence-evolution-foundation.json",
+"tools/river-dev/src/core/execution-intelligence-evolution-foundation-engine.ts",
+"tools/river-dev/src/core/execution-intelligence-evolution-foundation-engine.test.ts"
+],
+"excludedPaths": [
+".env",
+".git",
+"node_modules",
+"dist"
+]
+},
+"acceptanceCriteria": [
+"Intelligence evolution consumes governed execution intelligence adaptation records.",
+"Untrusted intelligence adaptations cannot create trusted intelligence evolution records.",
+"Intelligence evolution records preserve provenance.",
+"Intelligence evolution output is deterministic and explainable.",
+"Human authorization boundaries remain preserved.",
+"No uncontrolled repository modifications occur.",
+"Focused tests, River Dev typechecking, and main-project typechecking pass."
+],
+"requiredTests": [
+"tools/river-dev/src/core/execution-intelligence-evolution-foundation-engine.test.ts",
+"tools/river-dev/src/index.test.ts"
+],
+"requiredQualityGates": [
+"expected-branch",
+"scope-check",
+"tests",
+"typecheck",
+"documentation",
+"exports",
+"secret-scan",
+"review",
+"staged-diff"
+],
+"approvedCommands": [
+"git-status",
+"git-branch-current",
+"git-diff",
+"typecheck",
+"test-tsx"
+],
+"repairLimits": {
+"maximumAttempts": 3,
+"allowScopeExpansion": false
+}
+}

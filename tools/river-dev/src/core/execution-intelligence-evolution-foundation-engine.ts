@@ -30,14 +30,14 @@ evolutionState:
 trusted
 ?
 [
-"intelligence adaptation record accepted",
+"intelligence adaptation accepted",
 "intelligence evolution created",
 "controlled intelligence evolution preserved"
 ]
 :
 [
 "intelligence evolution restricted",
-"intelligence adaptation review required"
+"adaptation review required"
 ],
 
 provenance:

@@ -5,7 +5,6 @@ import {
 createExecutionIntelligenceEvolution
 } from "./execution-intelligence-evolution-foundation-engine";
 
-
 test(
 "creates trusted intelligence evolution from trusted intelligence adaptation",
 () => {
@@ -27,7 +26,7 @@ true,
 
 adaptationState:
 [
-"intelligence adaptation accepted"
+"intelligence adaptation completed"
 ],
 
 provenance:
@@ -39,7 +38,6 @@ blockedReasons:
 []
 
 });
-
 
 assert.equal(
 evolution.trusted,
@@ -53,7 +51,6 @@ true
 
 }
 );
-
 
 test(
 "blocks intelligence evolution from untrusted intelligence adaptation",
@@ -76,7 +73,7 @@ false,
 
 adaptationState:
 [
-"intelligence adaptation blocked"
+"adaptation blocked"
 ],
 
 provenance:
@@ -91,7 +88,6 @@ blockedReasons:
 
 });
 
-
 assert.equal(
 evolution.trusted,
 false
@@ -104,7 +100,6 @@ true
 
 }
 );
-
 
 test(
 "preserves execution intelligence evolution provenance",
@@ -139,7 +134,6 @@ blockedReasons:
 []
 
 });
-
 
 assert.equal(
 evolution.provenance.length > 0,
