@@ -6128,3 +6128,26 @@ export interface RiverDevExecutionIntelligenceGovernanceExecutionControlFoundati
     scopeBoundaries: readonly string[];
     blockedReasons: readonly string[];
 }
+export interface RiverDevExecutionIntelligenceGovernanceExecutionRuntimeFoundationInput {
+  executionControl: RiverDevExecutionIntelligenceGovernanceExecutionControlFoundation;
+}
+
+export interface RiverDevExecutionIntelligenceGovernanceExecutionRuntimeFoundation {
+  version: string;
+  source: string;
+  objective: string;
+
+  trusted: boolean;
+  ready: boolean;
+  authorized: boolean;
+
+  executionControl: RiverDevExecutionIntelligenceGovernanceExecutionControlFoundation;
+  executionRequest: readonly string[];
+
+  runtimeState: readonly string[];
+  provenance: readonly string[];
+
+  authorizationBoundaries: readonly string[];
+  scopeBoundaries: readonly string[];
+  blockedReasons: readonly string[];
+}

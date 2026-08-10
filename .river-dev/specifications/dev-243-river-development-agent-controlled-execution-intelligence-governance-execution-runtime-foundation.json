@@ -1,0 +1,116 @@
+﻿{
+    "version":  "1.0.0",
+    "phase":  "DEV-243 River Development Agent Controlled Execution Intelligence Governance Execution Runtime Foundation",
+    "architectureStatus":  "Generation III governance execution runtime readiness",
+    "branch":  "dev-243-river-development-agent-controlled-execution-intelligence-governance-execution-runtime-foundation",
+    "commitMessage":  "DEV-243: Build River Development Agent controlled execution intelligence governance execution runtime foundation",
+    "objective":  "Create a deterministic controlled execution intelligence governance execution-runtime foundation that consumes a trusted controlled authorized DEV-242 governance execution-control record, validates its governed execution request, and produces explainable runtime-readiness state while preserving execution-control provenance, human authorization evidence, repository authorization evidence, explicit approval evidence, approved execution scope, and strict separation between runtime readiness and actual command or repository execution.",
+    "architecturalDecision":  [
+                                  "Historical DEV-132 -\u003e DEV-133 establishes Execution Control -\u003e Runtime as the direct structural precedent.",
+                                  "Historical DEV-133 derives runtime state from controlled, authorized, unblocked execution control.",
+                                  "Historical DEV-133 does not directly inspect executionRequest despite its specification describing request validation.",
+                                  "Generation III strengthens that contract by requiring a non-empty governed DEV-242 execution request.",
+                                  "DEV-243 creates runtime readiness only and does not execute commands or modify the repository.",
+                                  "Any future executable action, dispatch, mutation, or command surface remains a separate downstream governed phase."
+                              ],
+    "architecturalContext":  [
+                                 "DEV-239 River Development Agent controlled execution intelligence governance authorization boundary foundation",
+                                 "DEV-240 River Development Agent controlled execution intelligence governance approval boundary foundation",
+                                 "DEV-241 River Development Agent controlled execution intelligence governance execution boundary foundation",
+                                 "DEV-242 River Development Agent controlled execution intelligence governance execution control foundation",
+                                 "DEV-132 River Development Agent controlled execution intelligence execution control foundation",
+                                 "DEV-133 River Development Agent controlled execution runtime foundation",
+                                 "Historical execution validation, approval, simulation, runner, action-model, and dispatcher separation",
+                                 "River Development Agent Generation III",
+                                 "The River Kept Flowing platform ecosystem"
+                             ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "tools/river-dev/src/types.ts",
+                                                  "tools/river-dev/src/commands/context.ts"
+                                              ],
+                          "creatablePaths":  [
+                                                 ".river-dev/specifications/dev-243-river-development-agent-controlled-execution-intelligence-governance-execution-runtime-foundation.json",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-execution-runtime-foundation-engine.ts",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-execution-runtime-foundation-engine.test.ts"
+                                             ],
+                          "excludedPaths":  [
+                                                ".env",
+                                                ".git",
+                                                "node_modules",
+                                                "dist"
+                                            ]
+                      },
+    "trustContract":  {
+                          "requiredExecutionControlPredicates":  [
+                                                                     "executionControl.trusted === true",
+                                                                     "executionControl.controlled === true",
+                                                                     "executionControl.authorized === true",
+                                                                     "executionControl.blockedReasons.length === 0",
+                                                                     "executionControl.executionRequest.length \u003e 0"
+                                                                 ],
+                          "runtimeReadinessOnly":  true,
+                          "runtimeReadinessImpliesCommandExecution":  false,
+                          "runtimeReadinessImpliesRepositoryModification":  false,
+                          "runtimeReadinessImpliesCommitAuthority":  false,
+                          "runtimeReadinessImpliesPushAuthority":  false,
+                          "runtimeReadinessImpliesDispatchAuthority":  false,
+                          "autonomousExecutionAuthority":  false,
+                          "autonomousRepositoryModificationAuthority":  false,
+                          "autonomousScopeExpansion":  false
+                      },
+    "acceptanceCriteria":  [
+                               "Governance execution runtime consumes DEV-242 governance execution-control records.",
+                               "Only trusted controlled authorized governance execution-control records can create trusted governance runtime-readiness records.",
+                               "Untrusted execution-control records cannot create trusted governance runtime-readiness records.",
+                               "Non-controlled execution-control records cannot create trusted governance runtime-readiness records.",
+                               "Unauthorized execution-control records cannot create trusted governance runtime-readiness records.",
+                               "Blocked execution-control records cannot create trusted governance runtime-readiness records.",
+                               "Execution-control records without an execution request cannot create trusted governance runtime-readiness records.",
+                               "Governance execution runtime validates governed execution-request presence.",
+                               "Governance execution runtime preserves DEV-242 execution-control provenance.",
+                               "Governance execution runtime preserves human authorization evidence.",
+                               "Governance execution runtime preserves repository authorization evidence.",
+                               "Governance execution runtime preserves explicit approval evidence.",
+                               "Governance execution runtime preserves approved execution scope.",
+                               "Governance execution runtime output is deterministic and explainable.",
+                               "Runtime readiness remains separate from command execution.",
+                               "Runtime readiness remains separate from repository modification.",
+                               "Runtime readiness remains separate from action dispatch.",
+                               "Governance execution runtime cannot independently execute arbitrary commands.",
+                               "Governance execution runtime cannot independently modify the repository.",
+                               "Governance execution runtime cannot independently commit repository changes.",
+                               "Governance execution runtime cannot independently push repository changes.",
+                               "Governance execution runtime cannot expand approved execution scope.",
+                               "Governance execution runtime grants no autonomous execution authority.",
+                               "Strict scope control remains preserved.",
+                               "No uncontrolled repository modifications occur.",
+                               "Focused tests, River Dev typechecking, and main-project typechecking pass."
+                           ],
+    "requiredTests":  [
+                          "tools/river-dev/src/core/execution-intelligence-governance-execution-runtime-foundation-engine.test.ts",
+                          "tools/river-dev/src/index.test.ts"
+                      ],
+    "requiredQualityGates":  [
+                                 "expected-branch",
+                                 "scope-check",
+                                 "tests",
+                                 "typecheck",
+                                 "documentation",
+                                 "exports",
+                                 "secret-scan",
+                                 "review",
+                                 "staged-diff"
+                             ],
+    "approvedCommands":  [
+                             "git-status",
+                             "git-branch-current",
+                             "git-diff",
+                             "typecheck",
+                             "test-tsx"
+                         ],
+    "repairLimits":  {
+                         "maximumAttempts":  3,
+                         "allowScopeExpansion":  false
+                     }
+}
