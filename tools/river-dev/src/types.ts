@@ -5907,3 +5907,22 @@ export interface RiverDevExecutionIntelligenceGovernanceConsolidationFoundation 
   readonly scopeBoundaries: readonly string[];
   readonly blockedReasons: readonly string[];
 }
+
+export interface RiverDevExecutionIntelligenceGovernanceIntegrationFoundationInput {
+  readonly governanceConsolidation: RiverDevExecutionIntelligenceGovernanceConsolidationFoundation;
+}
+
+export interface RiverDevExecutionIntelligenceGovernanceIntegrationFoundation {
+  readonly version: "1.0.0";
+  readonly source: string;
+  readonly objective: string;
+  readonly trusted: boolean;
+  readonly integrated: boolean;
+  readonly consolidation: RiverDevExecutionIntelligenceGovernanceConsolidationFoundation;
+  readonly integrationState: readonly string[];
+  readonly integrationSignals: readonly string[];
+  readonly provenance: readonly string[];
+  readonly authorizationBoundaries: readonly string[];
+  readonly scopeBoundaries: readonly string[];
+  readonly blockedReasons: readonly string[];
+}
