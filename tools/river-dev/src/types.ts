@@ -5804,3 +5804,20 @@ export interface RiverDevExecutionIntelligenceGovernanceVerificationFoundation {
 export interface RiverDevExecutionIntelligenceGovernanceVerificationFoundationInput {
   governanceAssurance: RiverDevExecutionIntelligenceGovernanceAssuranceFoundation;
 }
+
+export interface RiverDevExecutionIntelligenceGovernanceCertificationFoundation {
+  version: "1.0.0";
+  governanceVerificationId: string;
+  certificationId: string;
+  trusted: boolean;
+  certified: boolean;
+  certificationSignals: string[];
+  blockedReasons: string[];
+  provenance: string[];
+  authorizationBoundaries: string[];
+  scopeBoundaries: string[];
+}
+
+export interface RiverDevExecutionIntelligenceGovernanceCertificationFoundationInput {
+  governanceVerification: RiverDevExecutionIntelligenceGovernanceVerificationFoundation;
+}
