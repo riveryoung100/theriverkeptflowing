@@ -1,0 +1,55 @@
+﻿{
+    "phase":  "DEV-244 River Development Agent Controlled Execution Intelligence Governance Execution Dispatch Foundation",
+    "branch":  "dev-244-river-development-agent-controlled-execution-intelligence-governance-execution-dispatch-foundation",
+    "commitMessage":  "DEV-244: Build River Development Agent controlled execution intelligence governance execution dispatch foundation",
+    "objective":  "Create a deterministic controlled execution intelligence governance execution-dispatch foundation that consumes trusted ready DEV-243 governance execution-runtime records and produces explainable governed dispatch-readiness records while preserving runtime provenance, governed execution-request evidence, human authorization evidence, repository authorization evidence, explicit approval evidence, approved execution scope, and strict separation between dispatch readiness and actual command or repository execution.",
+    "architectureStatus":  "Generation III governance execution dispatch-readiness foundation",
+    "predecessor":  "DEV-243 River Development Agent controlled execution intelligence governance execution runtime foundation",
+    "invariants":  [
+                       "Dispatch requires a trusted DEV-243 governance execution-runtime record.",
+                       "Dispatch requires explicit runtime readiness.",
+                       "Dispatch requires preserved governed execution-request evidence.",
+                       "Dispatch readiness must fail closed when predecessor blockers exist.",
+                       "Dispatch preserves human authorization evidence.",
+                       "Dispatch preserves repository authorization evidence.",
+                       "Dispatch preserves explicit approval evidence.",
+                       "Dispatch preserves approved execution scope.",
+                       "Dispatch cannot expand approved execution scope.",
+                       "Dispatch readiness remains separate from actual command execution.",
+                       "Dispatch readiness remains separate from repository modification.",
+                       "Dispatch readiness does not grant commit authority.",
+                       "Dispatch readiness does not grant push authority.",
+                       "Dispatch readiness grants no autonomous execution authority."
+                   ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "tools/river-dev/src/types.ts"
+                                              ],
+                          "creatablePaths":  [
+                                                 ".river-dev/specifications/dev-244-river-development-agent-controlled-execution-intelligence-governance-execution-dispatch-foundation.json",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-execution-dispatch-foundation-engine.ts",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-execution-dispatch-foundation-engine.test.ts"
+                                             ]
+                      },
+    "prohibitedScope":  [
+                            "tools/river-dev/src/index.ts",
+                            "tools/river-dev/src/commands/context.ts",
+                            "CLI integration",
+                            "command execution",
+                            "shell execution",
+                            "repository modification execution",
+                            "commit execution",
+                            "push execution",
+                            "deployment execution",
+                            "autonomous execution",
+                            "scope expansion"
+                        ],
+    "validation":  [
+                       "DEV-244 specification contract validation",
+                       "Focused River Development Agent TypeScript typecheck",
+                       "Focused DEV-244 deterministic tests",
+                       "Main-project typecheck",
+                       "git diff --check",
+                       "Exact scope verification"
+                   ]
+}
