@@ -1,0 +1,77 @@
+{
+    "version":  "1.0.0",
+    "phase":  "DEV-227 River Development Agent Controlled Execution Intelligence Governance Stabilization Foundation",
+    "branch":  "dev-227-river-development-agent-controlled-execution-intelligence-governance-stabilization-foundation",
+    "commitMessage":  "DEV-227: Build River Development Agent controlled execution intelligence governance stabilization foundation",
+    "objective":  "Create a deterministic controlled execution intelligence governance stabilization foundation that transforms governed execution intelligence governance maturation records into structured governance stabilization records while preserving provenance, safety boundaries, human authorization controls, repository authorization boundaries, strict scope control, and controlled system evolution principles.",
+    "architecturalContext":  [
+                                 "DEV-217 River Development Agent controlled execution intelligence execution foundation",
+                                 "DEV-218 River Development Agent controlled execution intelligence result foundation",
+                                 "DEV-219 River Development Agent controlled execution intelligence learning foundation",
+                                 "DEV-220 River Development Agent controlled execution intelligence adaptation foundation",
+                                 "DEV-221 River Development Agent controlled execution intelligence evolution foundation",
+                                 "DEV-222 River Development Agent controlled execution intelligence governance evolution foundation",
+                                 "DEV-223 River Development Agent controlled execution intelligence governance adaptation foundation",
+                                 "DEV-224 River Development Agent controlled execution intelligence governance optimization foundation",
+                                 "DEV-225 River Development Agent controlled execution intelligence governance refinement foundation",
+                                 "DEV-226 River Development Agent controlled execution intelligence governance maturation foundation",
+                                 "River Development Agent Generation III",
+                                 "The River Kept Flowing platform ecosystem"
+                             ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "tools/river-dev/src/types.ts",
+                                                  "tools/river-dev/src/commands/context.ts"
+                                              ],
+                          "creatablePaths":  [
+                                                 ".river-dev/specifications/dev-227-river-development-agent-controlled-execution-intelligence-governance-stabilization-foundation.json",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-stabilization-foundation-engine.ts",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-stabilization-foundation-engine.test.ts"
+                                             ],
+                          "excludedPaths":  [
+                                                ".env",
+                                                ".git",
+                                                "node_modules",
+                                                "dist"
+                                            ]
+                      },
+    "acceptanceCriteria":  [
+                               "Governance stabilization consumes governed execution intelligence governance maturation records.",
+                               "Untrusted governance maturation records cannot create trusted governance stabilization records.",
+                               "Governance stabilization records preserve provenance.",
+                               "Governance stabilization output is deterministic and explainable.",
+                               "Governance stabilization cannot independently authorize repository modification.",
+                               "Governance stabilization cannot weaken human authorization boundaries.",
+                               "Governance stabilization cannot weaken repository authorization boundaries.",
+                               "Governance stabilization cannot expand execution scope.",
+                               "Strict scope control remains preserved.",
+                               "No uncontrolled repository modifications occur.",
+                               "Focused tests, River Dev typechecking, and main-project typechecking pass."
+                           ],
+    "requiredTests":  [
+                          "tools/river-dev/src/core/execution-intelligence-governance-stabilization-foundation-engine.test.ts",
+                          "tools/river-dev/src/index.test.ts"
+                      ],
+    "requiredQualityGates":  [
+                                 "expected-branch",
+                                 "scope-check",
+                                 "tests",
+                                 "typecheck",
+                                 "documentation",
+                                 "exports",
+                                 "secret-scan",
+                                 "review",
+                                 "staged-diff"
+                             ],
+    "approvedCommands":  [
+                             "git-status",
+                             "git-branch-current",
+                             "git-diff",
+                             "typecheck",
+                             "test-tsx"
+                         ],
+    "repairLimits":  {
+                         "maximumAttempts":  3,
+                         "allowScopeExpansion":  false
+                     }
+}
