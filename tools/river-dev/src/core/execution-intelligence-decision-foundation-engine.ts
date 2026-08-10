@@ -1,16 +1,17 @@
 ﻿import type {
-RiverDevExecutionIntelligenceReasoningFoundation,
+RiverDevExecutionIntelligenceReviewFoundation,
 RiverDevExecutionIntelligenceDecisionFoundation
 } from "../types";
 
 export function createExecutionIntelligenceDecision(
-reasoning:
-RiverDevExecutionIntelligenceReasoningFoundation
+review:
+RiverDevExecutionIntelligenceReviewFoundation
 ):
 RiverDevExecutionIntelligenceDecisionFoundation {
 
 const approved =
-reasoning.trusted === true;
+review.trusted === true &&
+review.blockedReasons.length === 0;
 
 return {
 
@@ -21,7 +22,7 @@ source:
 "river-development-agent-execution-intelligence-decision",
 
 objective:
-reasoning.objective,
+review.objective,
 
 approved,
 
@@ -36,23 +37,28 @@ actions:
 approved
 ?
 [
-"execute governed implementation"
+"controlled execution authorized",
+"execution boundary preserved",
+"human authorization maintained"
 ]
 :
-[],
+[
+"execution withheld",
+"human review required"
+],
 
 provenance:
 approved
 ?
 [
-"reasoning trust verified",
-"execution decision boundary maintained",
-"decision provenance preserved"
+"review verification preserved",
+"decision provenance preserved",
+"authorization boundary maintained"
 ]
 :
 [
-"blocked reasoning state recorded",
-"decision safely held"
+"review state preserved",
+"decision boundary maintained"
 ],
 
 blockedReasons:
@@ -61,7 +67,7 @@ approved
 []
 :
 [
-"execution reasoning not trusted"
+"intelligence review not approved"
 ]
 
 };
