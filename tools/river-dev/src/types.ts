@@ -1,4 +1,29 @@
 ﻿
+export interface RiverDevExecutionIntelligenceOversightFoundation {
+
+readonly version:
+"1.0.0";
+
+readonly source:
+string;
+
+readonly objective:
+string;
+
+readonly trusted:
+boolean;
+
+readonly oversightState:
+readonly string[];
+
+readonly provenance:
+readonly string[];
+
+readonly blockedReasons:
+readonly string[];
+
+}
+
 export interface RiverDevExecutionIntelligenceAuditFoundation {
 
 readonly version:
