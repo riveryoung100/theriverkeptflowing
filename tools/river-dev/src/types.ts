@@ -6088,3 +6088,43 @@ export interface RiverDevExecutionIntelligenceGovernanceExecutionBoundaryFoundat
     scopeBoundaries: readonly string[];
     blockedReasons: readonly string[];
 }
+
+export interface RiverDevExecutionIntelligenceGovernanceExecutionControlFoundationInput {
+    executionBoundary: RiverDevExecutionIntelligenceGovernanceExecutionBoundaryFoundation;
+}
+
+export interface RiverDevExecutionIntelligenceGovernanceExecutionControlFoundation {
+    version: string;
+    source: string;
+    objective: string;
+
+    trusted: boolean;
+    controlled: boolean;
+
+    /**
+     * Preserved upstream governance authorization eligibility.
+     *
+     * This field does not grant command execution, repository modification,
+     * commit, push, scope-expansion, or autonomous execution authority.
+     */
+    authorized: boolean;
+
+    executionBoundary: RiverDevExecutionIntelligenceGovernanceExecutionBoundaryFoundation;
+
+    /**
+     * Governed descriptive execution-request evidence.
+     *
+     * This is not an executable command payload and does not itself authorize
+     * or perform repository modification, command execution, commits, pushes,
+     * or expansion of approved execution scope.
+     */
+    executionRequest: readonly string[];
+
+    executionControlState: readonly string[];
+    executionControlSignals: readonly string[];
+
+    provenance: readonly string[];
+    authorizationBoundaries: readonly string[];
+    scopeBoundaries: readonly string[];
+    blockedReasons: readonly string[];
+}

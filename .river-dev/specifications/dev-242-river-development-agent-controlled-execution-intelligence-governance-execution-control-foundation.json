@@ -1,0 +1,103 @@
+﻿{
+    "version":  "1.0.0",
+    "phase":  "DEV-242 River Development Agent Controlled Execution Intelligence Governance Execution Control Foundation",
+    "architectureStatus":  "Generation III governance execution control",
+    "branch":  "dev-242-river-development-agent-controlled-execution-intelligence-governance-execution-control-foundation",
+    "commitMessage":  "DEV-242: Build River Development Agent controlled execution intelligence governance execution control foundation",
+    "objective":  "Create a deterministic controlled execution intelligence governance execution-control foundation that consumes a trusted controlled DEV-241 governance execution-boundary record and produces an explainable governed execution-control record and execution request while preserving human authorization evidence, repository authorization evidence, explicit approval evidence, approved execution scope, execution-boundary provenance, and strict separation between execution control and actual command execution.",
+    "architecturalContext":  [
+                                 "DEV-238 River Development Agent controlled execution intelligence governance orchestration foundation",
+                                 "DEV-239 River Development Agent controlled execution intelligence governance authorization boundary foundation",
+                                 "DEV-240 River Development Agent controlled execution intelligence governance approval boundary foundation",
+                                 "DEV-241 River Development Agent controlled execution intelligence governance execution boundary foundation",
+                                 "Historical execution intelligence execution-control foundation",
+                                 "Historical controlled execution approval-to-run boundary foundation",
+                                 "Historical controlled execution final-gate foundation",
+                                 "Historical lifecycle authorization -\u003e dispatch -\u003e execution separation",
+                                 "River Development Agent Generation III",
+                                 "The River Kept Flowing platform ecosystem"
+                             ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "tools/river-dev/src/types.ts",
+                                                  "tools/river-dev/src/commands/context.ts"
+                                              ],
+                          "creatablePaths":  [
+                                                 ".river-dev/specifications/dev-242-river-development-agent-controlled-execution-intelligence-governance-execution-control-foundation.json",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-execution-control-foundation-engine.ts",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-execution-control-foundation-engine.test.ts"
+                                             ],
+                          "excludedPaths":  [
+                                                ".env",
+                                                ".git",
+                                                "node_modules",
+                                                "dist"
+                                            ]
+                      },
+    "trustContract":  {
+                          "requiredExecutionBoundaryPredicates":  [
+                                                                      "executionBoundary.trusted === true",
+                                                                      "executionBoundary.controlled === true",
+                                                                      "executionBoundary.blockedReasons.length === 0"
+                                                                  ],
+                          "explicitExecutionRequestRequired":  true,
+                          "executionControlImpliesCommandExecution":  false,
+                          "executionControlImpliesRepositoryModification":  false,
+                          "autonomousExecutionAuthority":  false,
+                          "autonomousRepositoryModificationAuthority":  false,
+                          "autonomousCommitAuthority":  false,
+                          "autonomousPushAuthority":  false,
+                          "autonomousScopeExpansion":  false
+                      },
+    "acceptanceCriteria":  [
+                               "Governance execution control consumes DEV-241 governance execution-boundary records.",
+                               "Only trusted controlled governance execution-boundary records can create trusted governance execution-control records.",
+                               "Untrusted execution-boundary records cannot create trusted governance execution-control records.",
+                               "Non-controlled execution-boundary records cannot create trusted governance execution-control records.",
+                               "Blocked execution-boundary records cannot create trusted governance execution-control records.",
+                               "Governance execution control produces an explicit execution request.",
+                               "An execution request does not itself execute commands.",
+                               "Governance execution control preserves human authorization evidence.",
+                               "Governance execution control preserves repository authorization evidence.",
+                               "Governance execution control preserves explicit approval evidence.",
+                               "Governance execution control preserves approved execution scope.",
+                               "Governance execution control preserves execution-boundary provenance.",
+                               "Governance execution-control output is deterministic and explainable.",
+                               "Governance execution control remains separate from command execution.",
+                               "Governance execution control cannot independently modify the repository.",
+                               "Governance execution control cannot independently execute arbitrary commands.",
+                               "Governance execution control cannot independently commit repository changes.",
+                               "Governance execution control cannot independently push repository changes.",
+                               "Governance execution control cannot expand approved execution scope.",
+                               "Governance execution control grants no autonomous execution authority.",
+                               "Strict scope control remains preserved.",
+                               "No uncontrolled repository modifications occur.",
+                               "Focused tests, River Dev typechecking, and main-project typechecking pass."
+                           ],
+    "requiredTests":  [
+                          "tools/river-dev/src/core/execution-intelligence-governance-execution-control-foundation-engine.test.ts",
+                          "tools/river-dev/src/index.test.ts"
+                      ],
+    "requiredQualityGates":  [
+                                 "expected-branch",
+                                 "scope-check",
+                                 "tests",
+                                 "typecheck",
+                                 "documentation",
+                                 "exports",
+                                 "secret-scan",
+                                 "review",
+                                 "staged-diff"
+                             ],
+    "approvedCommands":  [
+                             "git-status",
+                             "git-branch-current",
+                             "git-diff",
+                             "typecheck",
+                             "test-tsx"
+                         ],
+    "repairLimits":  {
+                         "maximumAttempts":  3,
+                         "allowScopeExpansion":  false
+                     }
+}
