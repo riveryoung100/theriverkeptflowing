@@ -1,0 +1,101 @@
+﻿{
+    "version":  "1.0.0",
+    "phase":  "DEV-237 River Development Agent Controlled Execution Intelligence Governance Coordination Foundation",
+    "branch":  "dev-237-river-development-agent-controlled-execution-intelligence-governance-coordination-foundation",
+    "commitMessage":  "DEV-237: Build River Development Agent controlled execution intelligence governance coordination foundation",
+    "objective":  "Create a deterministic controlled execution intelligence governance coordination foundation that transforms trusted integrated governance lifecycle records into structured coordinated governance records while preserving integration provenance, human authorization boundaries, repository authorization boundaries, strict scope control, and the principle that coordination organizes governed state without independently granting execution authority.",
+    "architectureStatus":  "Generation III frontier extension",
+    "architecturalDecision":  [
+                                  "DEV-236 Governance Integration is the final previously implemented governance foundation.",
+                                  "No historical Governance Coordination foundation exists.",
+                                  "No historical governance-specific consumer of Governance Integration exists.",
+                                  "Historical ordinary Execution Intelligence establishes Integration -\u003e Coordination as a valid structural precedent.",
+                                  "Governance Stabilization already occurred at DEV-227 and is therefore not repeated after Integration.",
+                                  "DEV-237 deliberately extends Generation III governance architecture with Coordination."
+                              ],
+    "architecturalContext":  [
+                                 "DEV-227 River Development Agent controlled execution intelligence governance stabilization foundation",
+                                 "DEV-228 River Development Agent controlled execution intelligence governance assurance foundation",
+                                 "DEV-229 River Development Agent controlled execution intelligence governance verification foundation",
+                                 "DEV-230 River Development Agent controlled execution intelligence governance certification foundation",
+                                 "DEV-231 River Development Agent controlled execution intelligence governance completion foundation",
+                                 "DEV-232 River Development Agent controlled execution intelligence governance continuation foundation",
+                                 "DEV-233 River Development Agent controlled execution intelligence governance persistence foundation",
+                                 "DEV-234 River Development Agent controlled execution intelligence governance preservation foundation",
+                                 "DEV-235 River Development Agent controlled execution intelligence governance consolidation foundation",
+                                 "DEV-236 River Development Agent controlled execution intelligence governance integration foundation",
+                                 "Historical ordinary Execution Intelligence Integration -\u003e Coordination structural precedent",
+                                 "River Development Agent Generation III",
+                                 "The River Kept Flowing platform ecosystem"
+                             ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "tools/river-dev/src/types.ts",
+                                                  "tools/river-dev/src/commands/context.ts"
+                                              ],
+                          "creatablePaths":  [
+                                                 ".river-dev/specifications/dev-237-river-development-agent-controlled-execution-intelligence-governance-coordination-foundation.json",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-coordination-foundation-engine.ts",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-coordination-foundation-engine.test.ts"
+                                             ],
+                          "excludedPaths":  [
+                                                ".env",
+                                                ".git",
+                                                "node_modules",
+                                                "dist"
+                                            ]
+                      },
+    "acceptanceCriteria":  [
+                               "Governance coordination consumes governed execution intelligence governance integration records.",
+                               "Only trusted integrated governance integration records can create trusted governance coordination records.",
+                               "Untrusted governance integration records cannot create trusted governance coordination records.",
+                               "Non-integrated governance integration records cannot create trusted governance coordination records.",
+                               "Blocked governance integration records cannot create trusted governance coordination records.",
+                               "Governance coordination preserves governance integration provenance.",
+                               "Governance coordination output is deterministic and explainable.",
+                               "Governance coordination cannot independently authorize repository modification.",
+                               "Governance coordination cannot independently authorize execution.",
+                               "Governance coordination cannot weaken human authorization boundaries.",
+                               "Governance coordination cannot weaken repository authorization boundaries.",
+                               "Governance coordination cannot expand execution scope.",
+                               "Coordination organizes integrated governed lifecycle state without creating autonomous execution authority.",
+                               "Strict scope control remains preserved.",
+                               "No uncontrolled repository modifications occur.",
+                               "Focused tests, River Dev typechecking, and main-project typechecking pass."
+                           ],
+    "trustContract":  {
+                          "requiredPredicates":  [
+                                                     "governanceIntegration.trusted === true",
+                                                     "governanceIntegration.integrated === true",
+                                                     "governanceIntegration.blockedReasons.length === 0"
+                                                 ],
+                          "autonomousExecutionAuthority":  false,
+                          "scopeExpansionPermitted":  false
+                      },
+    "requiredTests":  [
+                          "tools/river-dev/src/core/execution-intelligence-governance-coordination-foundation-engine.test.ts",
+                          "tools/river-dev/src/index.test.ts"
+                      ],
+    "requiredQualityGates":  [
+                                 "expected-branch",
+                                 "scope-check",
+                                 "tests",
+                                 "typecheck",
+                                 "documentation",
+                                 "exports",
+                                 "secret-scan",
+                                 "review",
+                                 "staged-diff"
+                             ],
+    "approvedCommands":  [
+                             "git-status",
+                             "git-branch-current",
+                             "git-diff",
+                             "typecheck",
+                             "test-tsx"
+                         ],
+    "repairLimits":  {
+                         "maximumAttempts":  3,
+                         "allowScopeExpansion":  false
+                     }
+}
