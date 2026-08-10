@@ -5872,3 +5872,20 @@ export interface RiverDevExecutionIntelligenceGovernancePersistenceFoundation {
 export interface RiverDevExecutionIntelligenceGovernancePersistenceFoundationInput {
   governanceContinuation: RiverDevExecutionIntelligenceGovernanceContinuationFoundation;
 }
+
+export interface RiverDevExecutionIntelligenceGovernancePreservationFoundation {
+  version: "1.0.0";
+  governancePersistenceId: string;
+  preservationId: string;
+  trusted: boolean;
+  preserved: boolean;
+  preservationSignals: string[];
+  blockedReasons: string[];
+  provenance: string[];
+  authorizationBoundaries: string[];
+  scopeBoundaries: string[];
+}
+
+export interface RiverDevExecutionIntelligenceGovernancePreservationFoundationInput {
+  governancePersistence: RiverDevExecutionIntelligenceGovernancePersistenceFoundation;
+}
