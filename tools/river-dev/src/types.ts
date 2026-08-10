@@ -1,4 +1,4 @@
-﻿export interface RiverDevExecutionIntelligenceGovernanceStabilizationFoundation {
+export interface RiverDevExecutionIntelligenceGovernanceStabilizationFoundation {
 
 readonly version:
 "1.0.0";
@@ -6033,4 +6033,36 @@ export interface RiverDevExecutionIntelligenceGovernanceAuthorizationBoundaryFou
 
     readonly blockedReasons:
         readonly string[];
+}
+
+export interface RiverDevExecutionIntelligenceGovernanceApprovalEvidence {
+    approved: boolean;
+    approvedBy: string;
+    approvalId: string;
+    approvalSignals: readonly string[];
+}
+
+export interface RiverDevExecutionIntelligenceGovernanceApprovalBoundaryFoundationInput {
+    authorizationBoundary: RiverDevExecutionIntelligenceGovernanceAuthorizationBoundaryFoundation;
+    approvalEvidence: RiverDevExecutionIntelligenceGovernanceApprovalEvidence | null;
+}
+
+export interface RiverDevExecutionIntelligenceGovernanceApprovalBoundaryFoundation {
+    version: string;
+    source: string;
+    objective: string;
+
+    trusted: boolean;
+    approved: boolean;
+
+    authorizationBoundary: RiverDevExecutionIntelligenceGovernanceAuthorizationBoundaryFoundation;
+    approvalEvidence: RiverDevExecutionIntelligenceGovernanceApprovalEvidence | null;
+
+    approvalState: readonly string[];
+    approvalSignals: readonly string[];
+
+    provenance: readonly string[];
+    authorizationBoundaries: readonly string[];
+    scopeBoundaries: readonly string[];
+    blockedReasons: readonly string[];
 }
