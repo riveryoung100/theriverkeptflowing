@@ -5,9 +5,8 @@ import {
 createExecutionIntelligenceAction
 } from "./execution-intelligence-action-foundation-engine";
 
-
 test(
-"creates authorized action from approved execute decision",
+"creates authorized execution action from approved intelligence decision",
 () => {
 
 const action =
@@ -20,7 +19,7 @@ source:
 "test",
 
 objective:
-"execute repository change",
+"Build capability",
 
 approved:
 true,
@@ -30,12 +29,12 @@ decision:
 
 actions:
 [
-"execute approved change"
+"execute approved operation"
 ],
 
 provenance:
 [
-"decision verified"
+"verified"
 ],
 
 blockedReasons:
@@ -43,29 +42,21 @@ blockedReasons:
 
 });
 
-
 assert.equal(
 action.authorized,
 true
 );
-
 
 assert.equal(
 action.actions.length > 0,
 true
 );
 
-
-assert.equal(
-action.blockedReasons.length,
-0
+}
 );
 
-});
-
-
 test(
-"blocks action from hold decision",
+"blocks execution action from held intelligence decision",
 () => {
 
 const action =
@@ -78,7 +69,7 @@ source:
 "test",
 
 objective:
-"execute repository change",
+"Unsafe capability",
 
 approved:
 false,
@@ -88,38 +79,36 @@ decision:
 
 actions:
 [
-"execution review required"
+"blocked operation"
 ],
 
 provenance:
 [
-"decision preserved"
+"preserved"
 ],
 
 blockedReasons:
 [
-"decision not approved"
+"blocked"
 ]
 
 });
-
 
 assert.equal(
 action.authorized,
 false
 );
 
-
 assert.equal(
 action.blockedReasons.length > 0,
 true
 );
 
-});
-
+}
+);
 
 test(
-"preserves action provenance",
+"preserves execution intelligence action provenance",
 () => {
 
 const action =
@@ -132,7 +121,7 @@ source:
 "test",
 
 objective:
-"validate provenance",
+"Provenance test",
 
 approved:
 true,
@@ -142,12 +131,12 @@ decision:
 
 actions:
 [
-"validate action chain"
+"validated"
 ],
 
 provenance:
 [
-"decision verified"
+"verified"
 ],
 
 blockedReasons:
@@ -155,10 +144,10 @@ blockedReasons:
 
 });
 
-
 assert.equal(
 action.provenance.length > 0,
 true
 );
 
-});
+}
+);

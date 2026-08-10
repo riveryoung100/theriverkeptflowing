@@ -1,0 +1,70 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-216 River Development Agent Controlled Execution Intelligence Action Foundation",
+  "branch": "dev-216-river-development-agent-controlled-execution-intelligence-action-foundation",
+  "commitMessage": "DEV-216: Build River Development Agent controlled execution intelligence action foundation",
+  "objective": "Create a deterministic controlled execution intelligence action foundation that transforms governed execution intelligence decision records into structured intelligence action records while preserving provenance, safety boundaries, human authorization controls, and controlled system evolution principles.",
+  "architecturalContext": [
+    "DEV-209 River Development Agent controlled execution intelligence governance foundation",
+    "DEV-210 River Development Agent controlled execution intelligence policy foundation",
+    "DEV-211 River Development Agent controlled execution intelligence compliance foundation",
+    "DEV-212 River Development Agent controlled execution intelligence audit foundation",
+    "DEV-213 River Development Agent controlled execution intelligence oversight foundation",
+    "DEV-214 River Development Agent controlled execution intelligence review foundation",
+    "DEV-215 River Development Agent controlled execution intelligence decision foundation",
+    "River Development Agent Generation III",
+    "The River Kept Flowing platform ecosystem"
+  ],
+  "approvedScope": {
+    "modifiablePaths": [
+      "tools/river-dev/src/types.ts",
+      "tools/river-dev/src/commands/context.ts"
+    ],
+    "creatablePaths": [
+      ".river-dev/specifications/dev-216-river-development-agent-controlled-execution-intelligence-action-foundation.json",
+      "tools/river-dev/src/core/execution-intelligence-action-foundation-engine.ts",
+      "tools/river-dev/src/core/execution-intelligence-action-foundation-engine.test.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "node_modules",
+      "dist"
+    ]
+  },
+  "acceptanceCriteria": [
+    "Intelligence action consumes governed execution intelligence decision records.",
+    "Unapproved intelligence decisions cannot create trusted intelligence action records.",
+    "Intelligence action records preserve provenance.",
+    "Intelligence action output is deterministic and explainable.",
+    "Human authorization boundaries remain preserved.",
+    "No uncontrolled repository modifications occur.",
+    "Focused tests, River Dev typechecking, and main-project typechecking pass."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/core/execution-intelligence-action-foundation-engine.test.ts",
+    "tools/river-dev/src/index.test.ts"
+  ],
+  "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-branch-current",
+    "git-diff",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "allowScopeExpansion": false
+  }
+}
