@@ -5838,3 +5838,20 @@ export interface RiverDevExecutionIntelligenceGovernanceCompletionFoundation {
 export interface RiverDevExecutionIntelligenceGovernanceCompletionFoundationInput {
   governanceCertification: RiverDevExecutionIntelligenceGovernanceCertificationFoundation;
 }
+
+export interface RiverDevExecutionIntelligenceGovernanceContinuationFoundation {
+  version: "1.0.0";
+  governanceCompletionId: string;
+  continuationId: string;
+  trusted: boolean;
+  continuing: boolean;
+  continuationSignals: string[];
+  blockedReasons: string[];
+  provenance: string[];
+  authorizationBoundaries: string[];
+  scopeBoundaries: string[];
+}
+
+export interface RiverDevExecutionIntelligenceGovernanceContinuationFoundationInput {
+  governanceCompletion: RiverDevExecutionIntelligenceGovernanceCompletionFoundation;
+}
