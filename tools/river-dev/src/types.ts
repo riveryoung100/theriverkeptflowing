@@ -6175,3 +6175,28 @@ export interface RiverDevExecutionIntelligenceGovernanceExecutionDispatchFoundat
   scopeBoundaries: readonly string[];
   blockedReasons: readonly string[];
 }
+export interface RiverDevExecutionIntelligenceGovernanceExecutionHandoffFoundationInput {
+  executionDispatch: RiverDevExecutionIntelligenceGovernanceExecutionDispatchFoundation;
+}
+
+export interface RiverDevExecutionIntelligenceGovernanceExecutionHandoffFoundation {
+  version: string;
+  source: string;
+  objective: string;
+
+  trusted: boolean;
+  ready: boolean;
+  authorized: boolean;
+  dispatchReady: boolean;
+  handoffReady: boolean;
+
+  executionDispatch: RiverDevExecutionIntelligenceGovernanceExecutionDispatchFoundation;
+  executionRequest: readonly string[];
+
+  handoffState: readonly string[];
+  provenance: readonly string[];
+
+  authorizationBoundaries: readonly string[];
+  scopeBoundaries: readonly string[];
+  blockedReasons: readonly string[];
+}

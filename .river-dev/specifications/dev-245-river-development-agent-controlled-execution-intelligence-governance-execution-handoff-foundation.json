@@ -1,0 +1,88 @@
+﻿{
+    "phase":  "DEV-245 River Development Agent Controlled Execution Intelligence Governance Execution Handoff Foundation",
+    "branch":  "dev-245-river-development-agent-controlled-execution-intelligence-governance-execution-handoff-foundation",
+    "commitMessage":  "DEV-245: Build River Development Agent controlled execution intelligence governance execution handoff foundation",
+    "architectureStatus":  "Generation III governance execution handoff-readiness foundation",
+    "predecessor":  "DEV-244 River Development Agent controlled execution intelligence governance execution dispatch foundation",
+    "objective":  "Create a deterministic controlled execution intelligence governance execution-handoff foundation that consumes trusted dispatch-ready DEV-244 governance execution-dispatch records and produces structured governed execution-handoff records while preserving dispatch provenance, governed execution-request evidence, human authorization evidence, repository authorization evidence, explicit approval evidence, approved execution scope, and strict separation between execution handoff readiness and actual command or repository execution.",
+    "architecturalDecision":  [
+                                  "DEV-244 establishes governed dispatch readiness without performing execution.",
+                                  "DEV-245 introduces an explicit controlled handoff boundary before any future executor may be considered.",
+                                  "Execution handoff records describe eligibility for a downstream executor but do not themselves execute commands.",
+                                  "Execution handoff cannot create new authorization, approval, repository modification, commit, push, deployment, or scope-expansion authority.",
+                                  "Any actual executor remains a separately governed downstream phase."
+                              ],
+    "requiredPredecessorPredicates":  [
+                                          "executionDispatch.trusted === true",
+                                          "executionDispatch.ready === true",
+                                          "executionDispatch.authorized === true",
+                                          "executionDispatch.dispatchReady === true",
+                                          "executionDispatch.blockedReasons.length === 0",
+                                          "executionDispatch.executionRequest.length \u003e 0"
+                                      ],
+    "invariants":  [
+                       "Handoff requires trusted DEV-244 execution-dispatch evidence.",
+                       "Handoff requires explicit dispatch readiness.",
+                       "Handoff requires preserved execution authorization.",
+                       "Handoff requires an unblocked DEV-244 dispatch record.",
+                       "Handoff requires governed execution-request evidence.",
+                       "Handoff preserves human authorization evidence.",
+                       "Handoff preserves repository authorization evidence.",
+                       "Handoff preserves explicit approval evidence.",
+                       "Handoff preserves approved execution scope.",
+                       "Handoff fails closed when any predecessor requirement fails.",
+                       "Handoff cannot expand approved execution scope.",
+                       "Handoff readiness remains separate from actual command execution.",
+                       "Handoff readiness remains separate from repository modification.",
+                       "Handoff readiness does not grant commit authority.",
+                       "Handoff readiness does not grant push authority.",
+                       "Handoff readiness does not grant deployment authority.",
+                       "Handoff readiness grants no autonomous execution authority."
+                   ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "tools/river-dev/src/types.ts"
+                                              ],
+                          "creatablePaths":  [
+                                                 ".river-dev/specifications/dev-245-river-development-agent-controlled-execution-intelligence-governance-execution-handoff-foundation.json",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-execution-handoff-foundation-engine.ts",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-execution-handoff-foundation-engine.test.ts"
+                                             ]
+                      },
+    "prohibitedScope":  [
+                            "tools/river-dev/src/index.ts",
+                            "tools/river-dev/src/commands/context.ts",
+                            "CLI integration",
+                            "command execution",
+                            "shell execution",
+                            "repository modification execution",
+                            "commit execution",
+                            "push execution",
+                            "deployment execution",
+                            "autonomous execution",
+                            "scope expansion"
+                        ],
+    "trustContract":  {
+                          "handoffReadinessOnly":  true,
+                          "handoffImpliesCommandExecution":  false,
+                          "handoffImpliesRepositoryModification":  false,
+                          "handoffImpliesCommitAuthority":  false,
+                          "handoffImpliesPushAuthority":  false,
+                          "handoffImpliesDeploymentAuthority":  false,
+                          "autonomousExecutionAuthority":  false,
+                          "autonomousRepositoryModificationAuthority":  false,
+                          "autonomousScopeExpansion":  false
+                      },
+    "requiredTests":  [
+                          "tools/river-dev/src/core/execution-intelligence-governance-execution-handoff-foundation-engine.test.ts"
+                      ],
+    "validation":  [
+                       "DEV-245 specification contract validation",
+                       "Focused River Development Agent TypeScript typecheck",
+                       "Focused DEV-245 deterministic tests",
+                       "Main-project typecheck",
+                       "Authority exclusion inspection",
+                       "git diff --check",
+                       "Exact scope verification"
+                   ]
+}
