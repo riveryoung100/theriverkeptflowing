@@ -1,0 +1,70 @@
+﻿{
+"version": "1.0.0",
+"phase": "DEV-218 River Development Agent Controlled Execution Intelligence Result Foundation",
+"branch": "dev-218-river-development-agent-controlled-execution-intelligence-result-foundation",
+"commitMessage": "DEV-218: Build River Development Agent controlled execution intelligence result foundation",
+"objective": "Create a deterministic controlled execution intelligence result foundation that transforms governed execution intelligence execution records into structured intelligence result records while preserving provenance, safety boundaries, human authorization controls, and controlled system evolution principles.",
+"architecturalContext": [
+"DEV-211 River Development Agent controlled execution intelligence compliance foundation",
+"DEV-212 River Development Agent controlled execution intelligence audit foundation",
+"DEV-213 River Development Agent controlled execution intelligence oversight foundation",
+"DEV-214 River Development Agent controlled execution intelligence review foundation",
+"DEV-215 River Development Agent controlled execution intelligence decision foundation",
+"DEV-216 River Development Agent controlled execution intelligence action foundation",
+"DEV-217 River Development Agent controlled execution intelligence execution foundation",
+"River Development Agent Generation III",
+"The River Kept Flowing platform ecosystem"
+],
+"approvedScope": {
+"modifiablePaths": [
+"tools/river-dev/src/types.ts",
+"tools/river-dev/src/commands/context.ts"
+],
+"creatablePaths": [
+".river-dev/specifications/dev-218-river-development-agent-controlled-execution-intelligence-result-foundation.json",
+"tools/river-dev/src/core/execution-intelligence-result-foundation-engine.ts",
+"tools/river-dev/src/core/execution-intelligence-result-foundation-engine.test.ts"
+],
+"excludedPaths": [
+".env",
+".git",
+"node_modules",
+"dist"
+]
+},
+"acceptanceCriteria": [
+"Intelligence result consumes governed execution intelligence execution records.",
+"Unexecuted or unauthorized intelligence executions cannot create trusted intelligence result records.",
+"Intelligence result records preserve provenance.",
+"Intelligence result output is deterministic and explainable.",
+"Human authorization boundaries remain preserved.",
+"No uncontrolled repository modifications occur.",
+"Focused tests, River Dev typechecking, and main-project typechecking pass."
+],
+"requiredTests": [
+"tools/river-dev/src/core/execution-intelligence-result-foundation-engine.test.ts",
+"tools/river-dev/src/index.test.ts"
+],
+"requiredQualityGates": [
+"expected-branch",
+"scope-check",
+"tests",
+"typecheck",
+"documentation",
+"exports",
+"secret-scan",
+"review",
+"staged-diff"
+],
+"approvedCommands": [
+"git-status",
+"git-branch-current",
+"git-diff",
+"typecheck",
+"test-tsx"
+],
+"repairLimits": {
+"maximumAttempts": 3,
+"allowScopeExpansion": false
+}
+}
