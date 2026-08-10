@@ -6,7 +6,7 @@ createExecutionIntelligenceVerification
 } from "./execution-intelligence-verification-foundation-engine";
 
 test(
-"creates trusted intelligence verification from trusted intelligence assurance",
+"creates trusted intelligence verification from trusted intelligence certification",
 () => {
 
 const verification =
@@ -24,9 +24,9 @@ objective:
 trusted:
 true,
 
-assuranceState:
+certificationState:
 [
-"intelligence assurance accepted"
+"intelligence certification accepted"
 ],
 
 provenance:
@@ -53,7 +53,7 @@ true
 );
 
 test(
-"blocks intelligence verification from untrusted intelligence assurance",
+"blocks intelligence verification from untrusted intelligence certification",
 () => {
 
 const verification =
@@ -71,9 +71,9 @@ objective:
 trusted:
 false,
 
-assuranceState:
+certificationState:
 [
-"intelligence assurance blocked"
+"intelligence certification blocked"
 ],
 
 provenance:
@@ -120,7 +120,7 @@ objective:
 trusted:
 true,
 
-assuranceState:
+certificationState:
 [
 "validated"
 ],
