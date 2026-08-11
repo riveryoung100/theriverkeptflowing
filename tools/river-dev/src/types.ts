@@ -6322,3 +6322,54 @@ export interface RiverDevControlledExecutorCapabilityAuthorizationFoundation {
 
   blockedReasons: readonly string[];
 }
+
+/**
+ * DEV-249 controlled executor operation admission foundation.
+ *
+ * Admission is a deterministic decision boundary only.
+ * These types grant no execution authority.
+ */
+
+export type RiverDevControlledExecutorOperation =
+  | "inspect-approved-repository-state"
+  | "prepare-approved-repository-change"
+  | "validate-approved-repository-change";
+
+export interface RiverDevControlledExecutorOperationAdmissionRequest {
+  operation: RiverDevControlledExecutorOperation;
+  requiredCapability: RiverDevControlledExecutorCapability;
+}
+
+export interface RiverDevControlledExecutorOperationAdmissionFoundationInput {
+  capabilityAuthorization: RiverDevControlledExecutorCapabilityAuthorizationFoundation;
+  admissionRequest: RiverDevControlledExecutorOperationAdmissionRequest;
+}
+
+export interface RiverDevControlledExecutorOperationAdmissionFoundation {
+  trusted: boolean;
+  ready: boolean;
+  admitted: boolean;
+
+  defaultPolicy: "DENY";
+  admissionDecisionOnly: true;
+
+  executionRequest: string;
+
+  proposedOperation: RiverDevControlledExecutorOperation;
+  requiredCapability: RiverDevControlledExecutorCapability;
+
+  authorizedCapabilities: RiverDevControlledExecutorCapability[];
+
+  operationRepresentedByAuthorizedCapability: boolean;
+
+  approvedExecutionScope: string[];
+
+  provenance: string[];
+  authorizationBoundaries: string[];
+  scopeBoundaries: string[];
+  blockedReasons: string[];
+
+  admissionMayCreateAuthorization: false;
+  admissionMayExpandScope: false;
+  admissionMayExecuteOperation: false;
+}

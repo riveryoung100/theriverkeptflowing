@@ -1,0 +1,118 @@
+﻿{
+    "phase":  "DEV-249 River Development Agent Controlled Executor Operation Admission Foundation",
+    "branch":  "dev-249-river-development-agent-controlled-executor-operation-admission-foundation",
+    "commitMessage":  "DEV-249: Build River Development Agent controlled executor operation admission foundation",
+    "architectureStatus":  "Generation III controlled executor operation admission foundation",
+    "predecessor":  "DEV-248 River Development Agent controlled executor capability authorization foundation",
+    "objective":  "Create a deterministic controlled executor operation-admission foundation that consumes a trusted ready DEV-248 capability-authorization decision and a proposed executor operation, then produces an explainable fail-closed admission decision only when the proposed operation is represented by an explicitly authorized capability and remains within inherited approved execution scope, while preserving authorization provenance and strict separation between operation admission and actual execution.",
+    "architecturalDecision":  [
+                                  "DEV-248 authorizes specific capabilities but performs no execution.",
+                                  "DEV-249 introduces an operation-level admission boundary before any future controlled executor operation.",
+                                  "A proposed operation must map to an explicitly authorized DEV-248 capability.",
+                                  "Operation admission cannot create new capability authorization.",
+                                  "Operation admission cannot expand approved execution scope.",
+                                  "Operation admission is deny-by-default.",
+                                  "Operation admission does not execute shell commands or modify repository state.",
+                                  "Operation admission does not grant commit, push, deployment, secret-access, autonomous-execution, or scope-expansion authority.",
+                                  "Actual executor behavior remains downstream and separately governed."
+                              ],
+    "requiredPredecessorPredicates":  [
+                                          "capabilityAuthorization.trusted === true",
+                                          "capabilityAuthorization.ready === true",
+                                          "capabilityAuthorization.authorized === true",
+                                          "capabilityAuthorization.executorAdmitted === true",
+                                          "capabilityAuthorization.defaultPolicy === DENY",
+                                          "capabilityAuthorization.authorizationDecisionOnly === true",
+                                          "capabilityAuthorization.blockedReasons.length === 0",
+                                          "capabilityAuthorization.executionRequest.length \u003e 0",
+                                          "capabilityAuthorization.authorizedCapabilities.length \u003e 0"
+                                      ],
+    "operationModel":  {
+                           "defaultPolicy":  "DENY",
+                           "admissionDecisionOnly":  true,
+                           "recognizedOperations":  [
+                                                        "inspect-approved-repository-state",
+                                                        "prepare-approved-repository-change",
+                                                        "validate-approved-repository-change"
+                                                    ],
+                           "operationRequiresAuthorizedCapability":  true,
+                           "admissionMayCreateAuthorization":  false,
+                           "admissionMayExpandScope":  false,
+                           "admissionMayExecuteOperation":  false
+                       },
+    "invariants":  [
+                       "Operation admission requires trusted DEV-248 authorization evidence.",
+                       "Operation admission requires ready DEV-248 authorization evidence.",
+                       "Operation admission requires preserved executor admission.",
+                       "Operation admission requires an unblocked DEV-248 record.",
+                       "Operation admission requires governed execution-request evidence.",
+                       "Operation admission requires at least one authorized capability.",
+                       "Operation admission requires a non-empty proposed operation.",
+                       "Proposed operation must map exactly to an authorized capability.",
+                       "Operation admission is deny-by-default.",
+                       "Operation admission cannot create capability authorization.",
+                       "Operation admission cannot expand approved execution scope.",
+                       "Operation admission preserves authorization provenance.",
+                       "Operation admission preserves authorization boundaries.",
+                       "Operation admission preserves scope boundaries.",
+                       "Operation admission does not perform shell execution.",
+                       "Operation admission does not perform repository modification.",
+                       "Operation admission does not perform repository deletion.",
+                       "Operation admission does not grant commit authority.",
+                       "Operation admission does not grant push authority.",
+                       "Operation admission does not grant deployment authority.",
+                       "Operation admission does not grant secret access.",
+                       "Operation admission does not grant autonomous execution."
+                   ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "tools/river-dev/src/types.ts"
+                                              ],
+                          "creatablePaths":  [
+                                                 ".river-dev/specifications/dev-249-river-development-agent-controlled-executor-operation-admission-foundation.json",
+                                                 "tools/river-dev/src/core/controlled-executor-operation-admission-foundation-engine.ts",
+                                                 "tools/river-dev/src/core/controlled-executor-operation-admission-foundation-engine.test.ts"
+                                             ]
+                      },
+    "prohibitedScope":  [
+                            "tools/river-dev/src/index.ts",
+                            "tools/river-dev/src/commands/context.ts",
+                            "CLI integration",
+                            "shell execution",
+                            "arbitrary command execution",
+                            "repository write execution",
+                            "repository deletion execution",
+                            "commit execution",
+                            "push execution",
+                            "deployment execution",
+                            "secret access",
+                            "autonomous execution",
+                            "scope expansion"
+                        ],
+    "trustContract":  {
+                          "admissionDecisionOnly":  true,
+                          "admissionImpliesExecution":  false,
+                          "admissionImpliesRepositoryModification":  false,
+                          "admissionImpliesRepositoryDeletion":  false,
+                          "admissionImpliesCommitAuthority":  false,
+                          "admissionImpliesPushAuthority":  false,
+                          "admissionImpliesDeploymentAuthority":  false,
+                          "admissionImpliesSecretAccess":  false,
+                          "autonomousExecutionAuthority":  false,
+                          "autonomousRepositoryModificationAuthority":  false,
+                          "autonomousScopeExpansion":  false
+                      },
+    "requiredTests":  [
+                          "tools/river-dev/src/core/controlled-executor-operation-admission-foundation-engine.test.ts"
+                      ],
+    "validation":  [
+                       "DEV-249 specification contract validation",
+                       "Focused River Development Agent TypeScript typecheck",
+                       "Focused DEV-249 deterministic tests",
+                       "Main-project typecheck",
+                       "Operation-to-authorized-capability containment inspection",
+                       "Execution-authority exclusion inspection",
+                       "git diff --check",
+                       "Exact scope verification"
+                   ]
+}
