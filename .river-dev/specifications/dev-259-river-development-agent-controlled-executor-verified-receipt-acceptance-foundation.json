@@ -1,0 +1,202 @@
+{
+  "id": "DEV-259",
+  "title": "River Development Agent Controlled Executor Verified Receipt Acceptance Foundation",
+  "generation": "III",
+  "status": "SPECIFICATION",
+
+  "parent": {
+    "phase": "DEV-258",
+    "commit": "b452ff9",
+    "requiredSemantics": "RECEIPT VERIFICATION ONLY"
+  },
+
+  "objective": "Deterministically accept or reject a verified DEV-258 execution receipt verification result as inert downstream decision data. Acceptance must require a trusted, ready, verified, deny-by-default, verification-only predecessor with valid receipt identity, recognized receipt state, approved execution scope, provenance, authorization boundaries, scope boundaries, and preserved authority exclusions. Acceptance does not authorize dispatch, execution, inspection invocation, retry, lifecycle-state persistence, repository mutation, staging, commit, push, deployment, secret access, scope expansion, arbitrary shell execution, or external side effects.",
+
+  "acceptanceModel": {
+    "defaultPolicy": "DENY",
+    "acceptanceDecisionOnly": true,
+
+    "requiresDEV258Verification": true,
+    "requiresTrustedVerification": true,
+    "requiresReadyVerification": true,
+    "requiresVerifiedVerification": true,
+
+    "requiresVerificationOnly": true,
+    "requiresExpectedReceiptVersion": true,
+    "requiresExpectedOperation": true,
+    "requiresRecognizedReceiptState": true,
+
+    "requiresApprovedExecutionScope": true,
+    "requiresProvenance": true,
+    "requiresAuthorizationBoundaries": true,
+    "requiresScopeBoundaries": true,
+
+    "mayCreateExecutionAuthorization": false,
+    "mayDispatch": false,
+    "mayExecuteOperation": false,
+    "mayInvokeInspectionDependency": false,
+    "mayRetryExecution": false,
+    "mayPersistLifecycleState": false,
+    "mayModifyRepository": false,
+    "mayDeleteRepositoryContent": false,
+    "mayStageRepositoryChanges": false,
+    "mayCommit": false,
+    "mayPush": false,
+    "mayDeploy": false,
+    "mayAccessSecrets": false,
+    "mayExpandScope": false,
+    "mayPerformArbitraryShellExecution": false,
+    "mayPerformExternalSideEffects": false
+  },
+
+  "acceptanceStates": [
+    "VERIFIED_RECEIPT_ACCEPTED",
+    "VERIFIED_RECEIPT_REJECTED"
+  ],
+
+  "acceptanceRules": [
+    "acceptance fails closed unless DEV-258 version is exact",
+    "acceptance fails closed unless DEV-258 trusted is true",
+    "acceptance fails closed unless DEV-258 ready is true",
+    "acceptance fails closed unless DEV-258 verified is true",
+    "acceptance fails closed unless defaultPolicy is DENY",
+    "acceptance fails closed unless verificationOnly is true",
+    "acceptance fails closed unless embedded receipt version is DEV-257",
+    "acceptance fails closed unless executed operation is inspect-approved-repository-state",
+    "acceptance fails closed unless receipt state is recognized",
+    "acceptance fails closed without approved execution scope",
+    "acceptance fails closed without provenance",
+    "acceptance fails closed without authorization boundaries",
+    "acceptance fails closed without scope boundaries",
+    "acceptance fails closed if any prohibited authority is granted",
+    "acceptance itself grants no downstream side-effect authority"
+  ],
+
+  "recognizedReceiptStates": [
+    "EXECUTION_SUCCEEDED",
+    "EXECUTION_FAILED",
+    "EXECUTION_NOT_ATTEMPTED"
+  ],
+
+  "requiredPredecessorEvidence": [
+    "DEV-258 version equals DEV-258",
+    "DEV-258 trusted is true",
+    "DEV-258 ready is true",
+    "DEV-258 verified is true",
+    "DEV-258 defaultPolicy is DENY",
+    "DEV-258 verificationOnly is true",
+
+    "embedded DEV-257 receipt version equals DEV-257",
+    "DEV-258 executedOperation equals inspect-approved-repository-state",
+    "DEV-258 receiptState is recognized",
+    "DEV-258 approvedExecutionScope is present",
+    "DEV-258 provenance is present",
+    "DEV-258 authorizationBoundaries are present",
+    "DEV-258 scopeBoundaries are present",
+
+    "DEV-258 mayExecuteOperation is false",
+    "DEV-258 mayInvokeInspectionDependency is false",
+    "DEV-258 mayRetryExecution is false",
+    "DEV-258 mayPersistLifecycleState is false",
+    "DEV-258 mayModifyRepository is false",
+    "DEV-258 mayDeleteRepositoryContent is false",
+    "DEV-258 mayStageRepositoryChanges is false",
+    "DEV-258 mayCommit is false",
+    "DEV-258 mayPush is false",
+    "DEV-258 mayDeploy is false",
+    "DEV-258 mayAccessSecrets is false",
+    "DEV-258 mayExpandScope is false",
+    "DEV-258 mayPerformArbitraryShellExecution is false",
+    "DEV-258 mayPerformExternalSideEffects is false"
+  ],
+
+  "requiredOutputs": [
+    "version",
+    "source",
+    "objective",
+    "trusted",
+    "ready",
+    "accepted",
+    "defaultPolicy",
+    "acceptanceDecisionOnly",
+    "verification",
+    "receiptState",
+    "executedOperation",
+    "approvedExecutionScope",
+    "provenance",
+    "authorizationBoundaries",
+    "scopeBoundaries",
+    "acceptanceState",
+    "acceptanceEvidence",
+    "blockedReasons"
+  ],
+
+  "authorityBoundary": {
+    "verifiedReceiptAcceptanceAuthority": "GRANTED FOR INERT ACCEPTANCE DECISION ONLY",
+    "executionAuthorizationCreationAuthority": "NOT GRANTED",
+    "dispatchAuthority": "NOT GRANTED",
+    "executionAuthority": "NOT GRANTED",
+    "inspectionInvocationAuthority": "NOT GRANTED",
+    "retryAuthority": "NOT GRANTED",
+    "lifecycleStateModificationAuthority": "NOT GRANTED",
+    "repositoryModificationAuthority": "NOT GRANTED",
+    "repositoryDeletionAuthority": "NOT GRANTED",
+    "repositoryStagingAuthority": "NOT GRANTED",
+    "commitAuthority": "NOT GRANTED",
+    "pushAuthority": "NOT GRANTED",
+    "deploymentAuthority": "NOT GRANTED",
+    "secretAccessAuthority": "NOT GRANTED",
+    "scopeExpansionAuthority": "NOT GRANTED",
+    "arbitraryShellExecutionAuthority": "NOT GRANTED",
+    "externalSideEffectAuthority": "NOT GRANTED"
+  },
+
+  "protectedIntegrationSurfaces": [
+    "tools/river-dev/src/index.ts",
+    "tools/river-dev/src/commands/context.ts"
+  ],
+
+  "implementationConstraints": [
+    "DEV-259 must consume DEV-258 verification data only.",
+    "DEV-259 must treat acceptance as inert decision data only.",
+    "DEV-259 must not create an execution authorization.",
+    "DEV-259 must not dispatch anything.",
+    "DEV-259 must not execute an operation.",
+    "DEV-259 must not invoke inspectRepository.",
+    "DEV-259 must not invoke runTrackedInspection.",
+    "DEV-259 must not retry execution.",
+    "DEV-259 must not persist lifecycle state.",
+    "DEV-259 must not mutate repository state.",
+    "DEV-259 must preserve approved execution scope without expansion.",
+    "DEV-259 must preserve verification and authorization provenance.",
+    "DEV-259 must fail closed for malformed predecessor data.",
+    "DEV-259 must fail closed if any prohibited predecessor authority is granted.",
+    "DEV-259 must not modify protected integration surfaces."
+  ],
+
+  "acceptanceCriteria": [
+    "DEV-259 begins directly from DEV-258 commit b452ff9.",
+    "A valid DEV-258 verification is accepted.",
+    "A non-verified DEV-258 result is rejected.",
+    "An untrusted DEV-258 result is rejected.",
+    "A non-ready DEV-258 result is rejected.",
+    "Wrong DEV-258 version is rejected.",
+    "Wrong embedded receipt version is rejected.",
+    "Wrong executed operation is rejected.",
+    "Unrecognized receipt state is rejected.",
+    "Missing approved execution scope is rejected.",
+    "Missing provenance is rejected.",
+    "Missing authorization boundaries are rejected.",
+    "Missing scope boundaries are rejected.",
+    "Any prohibited predecessor authority causes rejection.",
+    "Acceptance creates no execution authorization.",
+    "Acceptance performs no dispatch.",
+    "Acceptance performs no execution or inspection invocation.",
+    "Acceptance performs no retry or lifecycle-state mutation.",
+    "Acceptance performs no repository mutation.",
+    "Focused tests pass.",
+    "Focused typecheck passes.",
+    "Main-project typecheck passes.",
+    "Protected integration surfaces remain unchanged."
+  ]
+}

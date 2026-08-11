@@ -6932,3 +6932,71 @@ export interface RiverDevControlledExecutorExecutionReceiptVerificationFoundatio
   readonly mayPerformArbitraryShellExecution: false;
   readonly mayPerformExternalSideEffects: false;
 }
+
+export type RiverDevControlledExecutorVerifiedReceiptAcceptanceState =
+  | "VERIFIED_RECEIPT_ACCEPTED"
+  | "VERIFIED_RECEIPT_REJECTED";
+
+export interface RiverDevControlledExecutorVerifiedReceiptAcceptanceFoundationInput {
+  verification: RiverDevControlledExecutorExecutionReceiptVerificationFoundation;
+}
+
+export interface RiverDevControlledExecutorVerifiedReceiptAcceptanceFoundationResult {
+  version: "DEV-259";
+  source: "controlled-executor-verified-receipt-acceptance-foundation-engine";
+  objective: string;
+
+  trusted: boolean;
+  ready: boolean;
+  accepted: boolean;
+
+  defaultPolicy: "DENY";
+  acceptanceDecisionOnly: true;
+
+  verification: RiverDevControlledExecutorExecutionReceiptVerificationFoundation;
+
+  receiptState:
+    | "EXECUTION_SUCCEEDED"
+    | "EXECUTION_FAILED"
+    | "EXECUTION_NOT_ATTEMPTED"
+    | null;
+
+  executedOperation:
+    | "inspect-approved-repository-state"
+    | null;
+
+  approvedExecutionScope:
+    RiverDevControlledExecutorExecutionReceiptVerificationFoundation["approvedExecutionScope"];
+
+  provenance:
+    RiverDevControlledExecutorExecutionReceiptVerificationFoundation["provenance"];
+
+  authorizationBoundaries:
+    RiverDevControlledExecutorExecutionReceiptVerificationFoundation["authorizationBoundaries"];
+
+  scopeBoundaries:
+    RiverDevControlledExecutorExecutionReceiptVerificationFoundation["scopeBoundaries"];
+
+  acceptanceState:
+    RiverDevControlledExecutorVerifiedReceiptAcceptanceState;
+
+  acceptanceEvidence: string[];
+  blockedReasons: string[];
+
+  mayCreateExecutionAuthorization: false;
+  mayDispatch: false;
+  mayExecuteOperation: false;
+  mayInvokeInspectionDependency: false;
+  mayRetryExecution: false;
+  mayPersistLifecycleState: false;
+  mayModifyRepository: false;
+  mayDeleteRepositoryContent: false;
+  mayStageRepositoryChanges: false;
+  mayCommit: false;
+  mayPush: false;
+  mayDeploy: false;
+  mayAccessSecrets: false;
+  mayExpandScope: false;
+  mayPerformArbitraryShellExecution: false;
+  mayPerformExternalSideEffects: false;
+}
