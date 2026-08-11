@@ -1,0 +1,164 @@
+{
+  "id": "DEV-257",
+  "title": "River Development Agent Controlled Executor Read-Only Execution Receipt Foundation",
+  "generation": "III",
+  "status": "SPECIFICATION",
+
+  "parent": {
+    "phase": "DEV-256",
+    "commit": "fd909e0",
+    "requiredSemantics": "READ-ONLY INSPECTION ONLY"
+  },
+
+  "objective": "Create a deterministic, inert, auditable execution receipt from the DEV-256 controlled read-only repository inspection executor result. The receipt must preserve operation identity, execution attempt and success state, inspection output, approved execution scope, authorization provenance, authorization boundaries, scope boundaries, blockers, and the explicit absence of mutation authority. DEV-257 must not execute another operation, retry execution, invoke inspectRepository, persist lifecycle state, mutate repository state, stage, commit, push, deploy, access secrets, expand scope, or perform external side effects.",
+
+  "receiptModel": {
+    "defaultPolicy": "DENY",
+    "receiptConstructionOnly": true,
+
+    "requiresDEV256Result": true,
+    "requiresOperationIdentity": true,
+    "requiresExecutionAttemptState": true,
+    "requiresExecutionSuccessState": true,
+    "requiresApprovedExecutionScope": true,
+    "requiresAuthorizationProvenance": true,
+    "requiresAuthorizationBoundaries": true,
+    "requiresScopeBoundaries": true,
+    "requiresBlockedReasons": true,
+
+    "preservesInspectionResult": true,
+    "preservesApprovedExecutionScope": true,
+    "preservesAuthorizationProvenance": true,
+    "preservesAuthorizationBoundaries": true,
+    "preservesScopeBoundaries": true,
+
+    "mayExecuteOperation": false,
+    "mayInvokeInspectionDependency": false,
+    "mayRetryExecution": false,
+    "mayPersistLifecycleState": false,
+    "mayModifyRepository": false,
+    "mayDeleteRepositoryContent": false,
+    "mayStageRepositoryChanges": false,
+    "mayCommit": false,
+    "mayPush": false,
+    "mayDeploy": false,
+    "mayAccessSecrets": false,
+    "mayExpandScope": false,
+    "mayPerformArbitraryShellExecution": false,
+    "mayPerformExternalSideEffects": false
+  },
+
+  "receiptStates": [
+    "EXECUTION_SUCCEEDED",
+    "EXECUTION_FAILED",
+    "EXECUTION_NOT_ATTEMPTED"
+  ],
+
+  "requiredPredecessorEvidence": [
+    "DEV-256 version equals DEV-256",
+    "DEV-256 defaultPolicy is DENY",
+    "DEV-256 readOnlyExecutionOnly is true",
+    "DEV-256 executedOperation equals inspect-approved-repository-state",
+    "DEV-256 executionAttempted is present",
+    "DEV-256 executionSucceeded is present",
+    "DEV-256 approvedExecutionScope is present",
+    "DEV-256 provenance is present",
+    "DEV-256 authorizationBoundaries are present",
+    "DEV-256 scopeBoundaries are present",
+    "DEV-256 blockedReasons are present",
+    "DEV-256 mayPersistLifecycleState is false",
+    "DEV-256 mayModifyRepository is false",
+    "DEV-256 mayDeleteRepositoryContent is false",
+    "DEV-256 mayStageRepositoryChanges is false",
+    "DEV-256 mayCommit is false",
+    "DEV-256 mayPush is false",
+    "DEV-256 mayDeploy is false",
+    "DEV-256 mayAccessSecrets is false",
+    "DEV-256 mayExpandScope is false",
+    "DEV-256 mayPerformArbitraryShellExecution is false",
+    "DEV-256 mayPerformUnrelatedExternalSideEffects is false"
+  ],
+
+  "requiredOutputs": [
+    "version",
+    "source",
+    "objective",
+    "trusted",
+    "ready",
+    "defaultPolicy",
+    "receiptConstructionOnly",
+    "executedOperation",
+    "executionAttempted",
+    "executionSucceeded",
+    "receiptState",
+    "inspectionResult",
+    "approvedExecutionScope",
+    "executionState",
+    "provenance",
+    "authorizationBoundaries",
+    "scopeBoundaries",
+    "blockedReasons"
+  ],
+
+  "authorityBoundary": {
+    "receiptConstructionAuthority": "GRANTED FOR INERT RECEIPT ONLY",
+    "executionAuthority": "NOT GRANTED",
+    "inspectionInvocationAuthority": "NOT GRANTED",
+    "retryAuthority": "NOT GRANTED",
+    "lifecycleStateModificationAuthority": "NOT GRANTED",
+    "repositoryModificationAuthority": "NOT GRANTED",
+    "repositoryDeletionAuthority": "NOT GRANTED",
+    "repositoryStagingAuthority": "NOT GRANTED",
+    "commitAuthority": "NOT GRANTED",
+    "pushAuthority": "NOT GRANTED",
+    "deploymentAuthority": "NOT GRANTED",
+    "secretAccessAuthority": "NOT GRANTED",
+    "scopeExpansionAuthority": "NOT GRANTED",
+    "arbitraryShellExecutionAuthority": "NOT GRANTED",
+    "externalSideEffectAuthority": "NOT GRANTED"
+  },
+
+  "protectedIntegrationSurfaces": [
+    "tools/river-dev/src/index.ts",
+    "tools/river-dev/src/commands/context.ts"
+  ],
+
+  "implementationConstraints": [
+    "DEV-257 must consume a DEV-256 result as data.",
+    "DEV-257 must not invoke inspectRepository.",
+    "DEV-257 must not invoke runTrackedInspection.",
+    "DEV-257 must not retry failed execution.",
+    "DEV-257 must not persist lifecycle state.",
+    "DEV-257 must not mutate repository state.",
+    "DEV-257 must preserve DEV-256 approved execution scope exactly.",
+    "DEV-257 must preserve DEV-256 authorization provenance.",
+    "DEV-257 must preserve DEV-256 authorization boundaries.",
+    "DEV-257 must preserve DEV-256 scope boundaries.",
+    "DEV-257 must preserve DEV-256 inspection result exactly.",
+    "DEV-257 must deterministically classify receipt state.",
+    "DEV-257 must fail closed for malformed predecessor data.",
+    "DEV-257 must not modify protected integration surfaces."
+  ],
+
+  "acceptanceCriteria": [
+    "DEV-257 begins directly from DEV-256 commit fd909e0.",
+    "Successful DEV-256 execution produces EXECUTION_SUCCEEDED receipt state.",
+    "Failed attempted execution produces EXECUTION_FAILED receipt state.",
+    "Non-attempted execution produces EXECUTION_NOT_ATTEMPTED receipt state.",
+    "Inspection result is preserved exactly.",
+    "Approved execution scope is preserved exactly.",
+    "Authorization provenance is preserved.",
+    "Authorization boundaries are preserved.",
+    "Scope boundaries are preserved.",
+    "No operation executes during receipt construction.",
+    "No inspection dependency is invoked.",
+    "No retry occurs.",
+    "No lifecycle-state write occurs.",
+    "No repository mutation occurs.",
+    "No staging, commit, push, deploy, secret access, scope expansion, or external side effect occurs.",
+    "Focused tests pass.",
+    "Focused typecheck passes.",
+    "Main-project typecheck passes.",
+    "Protected integration surfaces remain unchanged."
+  ]
+}
