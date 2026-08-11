@@ -6524,3 +6524,59 @@ export interface RiverDevControlledExecutorOperationExecutionBoundaryFoundation 
 
   futureExecutorRequiredForSideEffects: true;
 }
+
+/**
+ * DEV-253 controlled executor invocation request foundation.
+ *
+ * This foundation constructs inert invocation-request data only.
+ * It grants no dispatch, executor-invocation, command-execution,
+ * or repository-modification authority.
+ */
+
+export interface RiverDevControlledExecutorInvocationRequestFoundationInput {
+  executionBoundary: RiverDevControlledExecutorOperationExecutionBoundaryFoundation;
+}
+
+export interface RiverDevControlledExecutorInvocationRequestFoundation {
+  version: string;
+  source: string;
+  objective: string;
+
+  trusted: boolean;
+  ready: boolean;
+  requestConstructed: boolean;
+
+  defaultPolicy: "DENY";
+  requestConstructionOnly: true;
+
+  executionBoundary: RiverDevControlledExecutorOperationExecutionBoundaryFoundation;
+
+  executionRequest: string;
+
+  preparedOperation: RiverDevControlledExecutorOperation;
+  requiredCapability: RiverDevControlledExecutorCapability;
+
+  authorizedCapabilities: RiverDevControlledExecutorCapability[];
+
+  requiredCapabilityAuthorized: boolean;
+
+  approvedExecutionScope: string[];
+
+  invocationRequestState: string[];
+
+  provenance: string[];
+  authorizationBoundaries: string[];
+  scopeBoundaries: string[];
+
+  blockedReasons: string[];
+
+  invocationRequestMayCreateAuthorization: false;
+  invocationRequestMayExpandScope: false;
+  invocationRequestMayInvokeExecutor: false;
+  invocationRequestMayExecuteOperation: false;
+  invocationRequestMayModifyRepository: false;
+  invocationRequestMayDispatch: false;
+
+  futureDispatchBoundaryRequired: true;
+  futureExecutorRequiredForSideEffects: true;
+}
