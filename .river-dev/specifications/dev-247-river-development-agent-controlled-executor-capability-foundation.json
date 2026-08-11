@@ -1,0 +1,121 @@
+﻿{
+    "phase":  "DEV-247 River Development Agent Controlled Executor Capability Foundation",
+    "branch":  "dev-247-river-development-agent-controlled-executor-capability-foundation",
+    "commitMessage":  "DEV-247: Build River Development Agent controlled executor capability foundation",
+    "architectureStatus":  "Generation III controlled executor capability foundation",
+    "predecessor":  "DEV-246 River Development Agent controlled execution intelligence governance executor admission foundation",
+    "objective":  "Create a deterministic controlled executor capability foundation that consumes a trusted executor-admitted DEV-246 governance record and derives an explicit fail-closed capability envelope describing which classes of downstream executor behavior could be eligible for later authorization, while preserving execution-request provenance, human authorization evidence, repository authorization evidence, explicit approval evidence, approved execution scope, and strict separation between capability eligibility and actual execution.",
+    "architecturalDecision":  [
+                                  "DEV-246 establishes executor admission eligibility without performing execution.",
+                                  "DEV-247 introduces an explicit capability envelope between executor admission and any future executor implementation.",
+                                  "Capability eligibility describes possible downstream controlled behavior but does not itself authorize or perform that behavior.",
+                                  "No capability may exceed the approved execution scope inherited from predecessor governance evidence.",
+                                  "Capabilities are denied by default unless explicitly represented by the governed capability contract.",
+                                  "Repository mutation, command execution, commit, push, deployment, and autonomous execution remain downstream concerns requiring separate authorization and implementation.",
+                                  "Capability derivation cannot create new human authorization, repository authorization, approval, or scope."
+                              ],
+    "requiredPredecessorPredicates":  [
+                                          "executorAdmission.trusted === true",
+                                          "executorAdmission.ready === true",
+                                          "executorAdmission.authorized === true",
+                                          "executorAdmission.dispatchReady === true",
+                                          "executorAdmission.handoffReady === true",
+                                          "executorAdmission.executorAdmitted === true",
+                                          "executorAdmission.blockedReasons.length === 0",
+                                          "executorAdmission.executionRequest.length \u003e 0"
+                                      ],
+    "capabilityModel":  {
+                            "defaultPolicy":  "DENY",
+                            "capabilityEligibilityOnly":  true,
+                            "initiallyRecognizedCapabilities":  [
+                                                                    "inspect-approved-repository-state",
+                                                                    "prepare-approved-repository-change",
+                                                                    "validate-approved-repository-change"
+                                                                ],
+                            "intentionallyExcludedCapabilities":  [
+                                                                      "execute-shell-command",
+                                                                      "execute-arbitrary-command",
+                                                                      "write-repository-state",
+                                                                      "delete-repository-state",
+                                                                      "commit-repository-state",
+                                                                      "push-repository-state",
+                                                                      "deploy-repository-state",
+                                                                      "access-secrets",
+                                                                      "expand-approved-scope",
+                                                                      "autonomous-execution"
+                                                                  ]
+                        },
+    "invariants":  [
+                       "Capability derivation requires trusted DEV-246 executor-admission evidence.",
+                       "Capability derivation requires executor admission.",
+                       "Capability derivation requires preserved authorization.",
+                       "Capability derivation requires preserved handoff and dispatch readiness.",
+                       "Capability derivation requires an unblocked predecessor record.",
+                       "Capability derivation requires governed execution-request evidence.",
+                       "Capability policy is deny-by-default.",
+                       "Capability eligibility does not imply capability authorization.",
+                       "Capability eligibility does not imply capability execution.",
+                       "Capability derivation preserves human authorization evidence.",
+                       "Capability derivation preserves repository authorization evidence.",
+                       "Capability derivation preserves explicit approval evidence.",
+                       "Capability derivation preserves approved execution scope.",
+                       "Capability derivation cannot expand approved execution scope.",
+                       "Capability derivation cannot create command execution authority.",
+                       "Capability derivation cannot create repository modification authority.",
+                       "Capability derivation cannot create commit authority.",
+                       "Capability derivation cannot create push authority.",
+                       "Capability derivation cannot create deployment authority.",
+                       "Capability derivation cannot create autonomous execution authority."
+                   ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "tools/river-dev/src/types.ts"
+                                              ],
+                          "creatablePaths":  [
+                                                 ".river-dev/specifications/dev-247-river-development-agent-controlled-executor-capability-foundation.json",
+                                                 "tools/river-dev/src/core/controlled-executor-capability-foundation-engine.ts",
+                                                 "tools/river-dev/src/core/controlled-executor-capability-foundation-engine.test.ts"
+                                             ]
+                      },
+    "prohibitedScope":  [
+                            "tools/river-dev/src/index.ts",
+                            "tools/river-dev/src/commands/context.ts",
+                            "CLI integration",
+                            "shell execution",
+                            "arbitrary command execution",
+                            "repository write execution",
+                            "repository deletion execution",
+                            "commit execution",
+                            "push execution",
+                            "deployment execution",
+                            "secret access",
+                            "autonomous execution",
+                            "scope expansion"
+                        ],
+    "trustContract":  {
+                          "capabilityEligibilityOnly":  true,
+                          "capabilityEligibilityImpliesAuthorization":  false,
+                          "capabilityEligibilityImpliesExecution":  false,
+                          "capabilityEligibilityImpliesRepositoryModification":  false,
+                          "capabilityEligibilityImpliesCommitAuthority":  false,
+                          "capabilityEligibilityImpliesPushAuthority":  false,
+                          "capabilityEligibilityImpliesDeploymentAuthority":  false,
+                          "secretAccessAuthority":  false,
+                          "autonomousExecutionAuthority":  false,
+                          "autonomousRepositoryModificationAuthority":  false,
+                          "autonomousScopeExpansion":  false
+                      },
+    "requiredTests":  [
+                          "tools/river-dev/src/core/controlled-executor-capability-foundation-engine.test.ts"
+                      ],
+    "validation":  [
+                       "DEV-247 specification contract validation",
+                       "Focused River Development Agent TypeScript typecheck",
+                       "Focused DEV-247 deterministic tests",
+                       "Main-project typecheck",
+                       "Capability deny-by-default inspection",
+                       "Execution-authority exclusion inspection",
+                       "git diff --check",
+                       "Exact scope verification"
+                   ]
+}

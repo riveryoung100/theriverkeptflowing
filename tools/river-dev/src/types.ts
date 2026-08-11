@@ -6226,3 +6226,49 @@ export interface RiverDevExecutionIntelligenceGovernanceExecutorAdmissionFoundat
   scopeBoundaries: readonly string[];
   blockedReasons: readonly string[];
 }
+
+/**
+ * DEV-247
+ * Controlled Executor Capability Foundation
+ *
+ * This contract represents capability eligibility only.
+ * It does not authorize or perform execution.
+ */
+
+export type RiverDevControlledExecutorCapability =
+  | "inspect-approved-repository-state"
+  | "prepare-approved-repository-change"
+  | "validate-approved-repository-change";
+
+export interface RiverDevControlledExecutorCapabilityFoundationInput {
+  executorAdmission: RiverDevExecutionIntelligenceGovernanceExecutorAdmissionFoundation;
+}
+
+export interface RiverDevControlledExecutorCapabilityFoundation {
+  version: string;
+  source: string;
+  objective: string;
+
+  trusted: boolean;
+  ready: boolean;
+  authorized: boolean;
+  executorAdmitted: boolean;
+
+  defaultPolicy: "DENY";
+  capabilityEligibilityOnly: true;
+
+  executorAdmission: RiverDevExecutionIntelligenceGovernanceExecutorAdmissionFoundation;
+
+  executionRequest: readonly string[];
+
+  recognizedCapabilities: readonly RiverDevControlledExecutorCapability[];
+  eligibleCapabilities: readonly RiverDevControlledExecutorCapability[];
+
+  capabilityState: readonly string[];
+
+  provenance: readonly string[];
+  authorizationBoundaries: readonly string[];
+  scopeBoundaries: readonly string[];
+
+  blockedReasons: readonly string[];
+}
