@@ -6580,3 +6580,59 @@ export interface RiverDevControlledExecutorInvocationRequestFoundation {
   futureDispatchBoundaryRequired: true;
   futureExecutorRequiredForSideEffects: true;
 }
+
+/**
+ * DEV-254 controlled executor dispatch authorization foundation.
+ *
+ * This foundation makes a deterministic dispatch-authorization
+ * decision only. It does not dispatch an invocation request,
+ * invoke an executor, execute an operation, or modify repository state.
+ */
+
+export interface RiverDevControlledExecutorDispatchAuthorizationFoundationInput {
+  invocationRequest: RiverDevControlledExecutorInvocationRequestFoundation;
+}
+
+export interface RiverDevControlledExecutorDispatchAuthorizationFoundation {
+  version: string;
+  source: string;
+  objective: string;
+
+  trusted: boolean;
+  ready: boolean;
+  dispatchAuthorized: boolean;
+
+  defaultPolicy: "DENY";
+  authorizationDecisionOnly: true;
+
+  invocationRequest: RiverDevControlledExecutorInvocationRequestFoundation;
+
+  executionRequest: string;
+
+  preparedOperation: RiverDevControlledExecutorOperation;
+  requiredCapability: RiverDevControlledExecutorCapability;
+
+  authorizedCapabilities: RiverDevControlledExecutorCapability[];
+
+  requiredCapabilityAuthorized: boolean;
+
+  approvedExecutionScope: string[];
+
+  dispatchAuthorizationState: string[];
+
+  provenance: string[];
+  authorizationBoundaries: string[];
+  scopeBoundaries: string[];
+
+  blockedReasons: string[];
+
+  dispatchAuthorizationMayCreateAuthorization: false;
+  dispatchAuthorizationMayExpandScope: false;
+  dispatchAuthorizationMayDispatch: false;
+  dispatchAuthorizationMayInvokeExecutor: false;
+  dispatchAuthorizationMayExecuteOperation: false;
+  dispatchAuthorizationMayModifyRepository: false;
+
+  futureDispatchBoundaryRequired: true;
+  futureExecutorRequiredForSideEffects: true;
+}
