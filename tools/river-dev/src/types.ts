@@ -6272,3 +6272,53 @@ export interface RiverDevControlledExecutorCapabilityFoundation {
 
   blockedReasons: readonly string[];
 }
+
+/**
+ * DEV-248
+ * Controlled Executor Capability Authorization Foundation
+ *
+ * This contract represents authorization decisions only.
+ * Authorization does not itself perform execution.
+ */
+
+export interface RiverDevControlledExecutorCapabilityAuthorizationRequest {
+  requestedCapabilities: readonly RiverDevControlledExecutorCapability[];
+  authorizationEvidence: readonly string[];
+}
+
+export interface RiverDevControlledExecutorCapabilityAuthorizationFoundationInput {
+  capabilityFoundation: RiverDevControlledExecutorCapabilityFoundation;
+  authorizationRequest: RiverDevControlledExecutorCapabilityAuthorizationRequest;
+}
+
+export interface RiverDevControlledExecutorCapabilityAuthorizationFoundation {
+  version: string;
+  source: string;
+  objective: string;
+
+  trusted: boolean;
+  ready: boolean;
+  authorized: boolean;
+  executorAdmitted: boolean;
+
+  defaultPolicy: "DENY";
+  authorizationDecisionOnly: true;
+
+  capabilityFoundation: RiverDevControlledExecutorCapabilityFoundation;
+  authorizationRequest: RiverDevControlledExecutorCapabilityAuthorizationRequest;
+
+  executionRequest: readonly string[];
+
+  eligibleCapabilities: readonly RiverDevControlledExecutorCapability[];
+  requestedCapabilities: readonly RiverDevControlledExecutorCapability[];
+  authorizedCapabilities: readonly RiverDevControlledExecutorCapability[];
+  deniedCapabilities: readonly RiverDevControlledExecutorCapability[];
+
+  authorizationState: readonly string[];
+
+  provenance: readonly string[];
+  authorizationBoundaries: readonly string[];
+  scopeBoundaries: readonly string[];
+
+  blockedReasons: readonly string[];
+}
