@@ -6373,3 +6373,51 @@ export interface RiverDevControlledExecutorOperationAdmissionFoundation {
   admissionMayExpandScope: false;
   admissionMayExecuteOperation: false;
 }
+
+/**
+ * DEV-250 controlled executor operation preparation foundation.
+ *
+ * Preparation describes an admitted operation only.
+ * These types grant no execution or repository-modification authority.
+ */
+
+export interface RiverDevControlledExecutorOperationPreparationFoundationInput {
+  operationAdmission: RiverDevControlledExecutorOperationAdmissionFoundation;
+}
+
+export interface RiverDevControlledExecutorOperationPreparationFoundation {
+  version: string;
+  source: string;
+  objective: string;
+
+  trusted: boolean;
+  ready: boolean;
+  prepared: boolean;
+
+  defaultPolicy: "DENY";
+  preparationOnly: true;
+
+  operationAdmission: RiverDevControlledExecutorOperationAdmissionFoundation;
+
+  executionRequest: string;
+
+  preparedOperation: RiverDevControlledExecutorOperation;
+  requiredCapability: RiverDevControlledExecutorCapability;
+
+  authorizedCapabilities: RiverDevControlledExecutorCapability[];
+
+  approvedExecutionScope: string[];
+
+  preparationState: string[];
+
+  provenance: string[];
+  authorizationBoundaries: string[];
+  scopeBoundaries: string[];
+
+  blockedReasons: string[];
+
+  preparationMayCreateAuthorization: false;
+  preparationMayExpandScope: false;
+  preparationMayExecuteOperation: false;
+  preparationMayModifyRepository: false;
+}

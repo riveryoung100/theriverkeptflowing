@@ -1,0 +1,112 @@
+﻿{
+    "phase":  "DEV-250 River Development Agent Controlled Executor Operation Preparation Foundation",
+    "branch":  "dev-250-river-development-agent-controlled-executor-operation-preparation-foundation",
+    "commitMessage":  "DEV-250: Build River Development Agent controlled executor operation preparation foundation",
+    "architectureStatus":  "Generation III controlled executor operation preparation foundation",
+    "predecessor":  "DEV-249 River Development Agent controlled executor operation admission foundation",
+    "objective":  "Create a deterministic controlled executor operation-preparation foundation that consumes a trusted ready admitted DEV-249 operation and derives an explicit immutable preparation record describing the admitted operation, inherited authorization provenance, authorized capability evidence, approved execution scope, and required downstream execution constraints without performing the operation, modifying repository state, or granting additional authority.",
+    "architecturalDecision":  [
+                                  "DEV-249 establishes operation admission but performs no execution.",
+                                  "DEV-250 introduces a preparation boundary after admission and before any future controlled operation execution.",
+                                  "Preparation may describe an admitted operation but may not perform it.",
+                                  "Preparation cannot create new capability authorization.",
+                                  "Preparation cannot expand approved execution scope.",
+                                  "Preparation cannot transform an unadmitted operation into an executable operation.",
+                                  "Preparation remains deny-by-default and fail-closed.",
+                                  "Repository mutation, shell execution, commit, push, deployment, secret access, autonomous execution, and scope expansion remain downstream and separately governed."
+                              ],
+    "requiredPredecessorPredicates":  [
+                                          "operationAdmission.trusted === true",
+                                          "operationAdmission.ready === true",
+                                          "operationAdmission.admitted === true",
+                                          "operationAdmission.defaultPolicy === DENY",
+                                          "operationAdmission.admissionDecisionOnly === true",
+                                          "operationAdmission.operationRepresentedByAuthorizedCapability === true",
+                                          "operationAdmission.blockedReasons.length === 0",
+                                          "operationAdmission.executionRequest.length \u003e 0",
+                                          "operationAdmission.authorizedCapabilities.length \u003e 0"
+                                      ],
+    "preparationModel":  {
+                             "defaultPolicy":  "DENY",
+                             "preparationOnly":  true,
+                             "preparationRequiresAdmission":  true,
+                             "preparationMayCreateAuthorization":  false,
+                             "preparationMayExpandScope":  false,
+                             "preparationMayExecuteOperation":  false,
+                             "preparationMayModifyRepository":  false
+                         },
+    "invariants":  [
+                       "Operation preparation requires trusted DEV-249 admission evidence.",
+                       "Operation preparation requires ready DEV-249 admission evidence.",
+                       "Operation preparation requires explicit DEV-249 admission.",
+                       "Operation preparation requires an unblocked predecessor record.",
+                       "Operation preparation requires governed execution-request evidence.",
+                       "Operation preparation requires authorized capability evidence.",
+                       "Operation preparation preserves the proposed operation.",
+                       "Operation preparation preserves the required capability.",
+                       "Operation preparation preserves authorization provenance.",
+                       "Operation preparation preserves approved execution scope.",
+                       "Operation preparation is deny-by-default.",
+                       "Operation preparation cannot create capability authorization.",
+                       "Operation preparation cannot expand approved execution scope.",
+                       "Operation preparation cannot perform shell execution.",
+                       "Operation preparation cannot modify repository state.",
+                       "Operation preparation cannot delete repository state.",
+                       "Operation preparation cannot commit repository state.",
+                       "Operation preparation cannot push repository state.",
+                       "Operation preparation cannot deploy repository state.",
+                       "Operation preparation cannot access secrets.",
+                       "Operation preparation cannot grant autonomous execution."
+                   ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "tools/river-dev/src/types.ts"
+                                              ],
+                          "creatablePaths":  [
+                                                 ".river-dev/specifications/dev-250-river-development-agent-controlled-executor-operation-preparation-foundation.json",
+                                                 "tools/river-dev/src/core/controlled-executor-operation-preparation-foundation-engine.ts",
+                                                 "tools/river-dev/src/core/controlled-executor-operation-preparation-foundation-engine.test.ts"
+                                             ]
+                      },
+    "prohibitedScope":  [
+                            "tools/river-dev/src/index.ts",
+                            "tools/river-dev/src/commands/context.ts",
+                            "CLI integration",
+                            "shell execution",
+                            "arbitrary command execution",
+                            "repository write execution",
+                            "repository deletion execution",
+                            "commit execution",
+                            "push execution",
+                            "deployment execution",
+                            "secret access",
+                            "autonomous execution",
+                            "scope expansion"
+                        ],
+    "trustContract":  {
+                          "preparationOnly":  true,
+                          "preparationImpliesExecution":  false,
+                          "preparationImpliesRepositoryModification":  false,
+                          "preparationImpliesRepositoryDeletion":  false,
+                          "preparationImpliesCommitAuthority":  false,
+                          "preparationImpliesPushAuthority":  false,
+                          "preparationImpliesDeploymentAuthority":  false,
+                          "preparationImpliesSecretAccess":  false,
+                          "autonomousExecutionAuthority":  false,
+                          "autonomousRepositoryModificationAuthority":  false,
+                          "autonomousScopeExpansion":  false
+                      },
+    "requiredTests":  [
+                          "tools/river-dev/src/core/controlled-executor-operation-preparation-foundation-engine.test.ts"
+                      ],
+    "validation":  [
+                       "DEV-250 specification contract validation",
+                       "Focused River Development Agent TypeScript typecheck",
+                       "Focused DEV-250 deterministic tests",
+                       "Main-project typecheck",
+                       "Admission-preservation inspection",
+                       "Execution-authority exclusion inspection",
+                       "git diff --check",
+                       "Exact scope verification"
+                   ]
+}
