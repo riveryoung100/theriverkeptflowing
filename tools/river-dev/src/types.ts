@@ -6871,3 +6871,64 @@ export interface RiverDevControlledExecutorReadOnlyExecutionReceiptFoundation {
   readonly mayPerformArbitraryShellExecution: false;
   readonly mayPerformExternalSideEffects: false;
 }
+
+export interface RiverDevControlledExecutorExecutionReceiptVerificationFoundationInput {
+  receipt:
+    RiverDevControlledExecutorReadOnlyExecutionReceiptFoundation;
+}
+
+export interface RiverDevControlledExecutorExecutionReceiptVerificationFoundation {
+  readonly version: "DEV-258";
+
+  readonly source: string;
+  readonly objective: string;
+
+  readonly trusted: boolean;
+  readonly ready: boolean;
+  readonly verified: boolean;
+
+  readonly defaultPolicy: "DENY";
+  readonly verificationOnly: true;
+
+  readonly receipt:
+    RiverDevControlledExecutorReadOnlyExecutionReceiptFoundation;
+
+  readonly receiptState:
+    RiverDevControlledExecutorReadOnlyExecutionReceiptState;
+
+  readonly executedOperation:
+    RiverDevControlledExecutorOperation;
+
+  readonly approvedExecutionScope:
+    readonly string[];
+
+  readonly provenance:
+    readonly string[];
+
+  readonly authorizationBoundaries:
+    readonly string[];
+
+  readonly scopeBoundaries:
+    readonly string[];
+
+  readonly verificationState:
+    readonly string[];
+
+  readonly blockedReasons:
+    readonly string[];
+
+  readonly mayExecuteOperation: false;
+  readonly mayInvokeInspectionDependency: false;
+  readonly mayRetryExecution: false;
+  readonly mayPersistLifecycleState: false;
+  readonly mayModifyRepository: false;
+  readonly mayDeleteRepositoryContent: false;
+  readonly mayStageRepositoryChanges: false;
+  readonly mayCommit: false;
+  readonly mayPush: false;
+  readonly mayDeploy: false;
+  readonly mayAccessSecrets: false;
+  readonly mayExpandScope: false;
+  readonly mayPerformArbitraryShellExecution: false;
+  readonly mayPerformExternalSideEffects: false;
+}

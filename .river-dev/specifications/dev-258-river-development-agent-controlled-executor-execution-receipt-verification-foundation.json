@@ -1,0 +1,177 @@
+{
+  "id": "DEV-258",
+  "title": "River Development Agent Controlled Executor Execution Receipt Verification Foundation",
+  "generation": "III",
+  "status": "SPECIFICATION",
+
+  "parent": {
+    "phase": "DEV-257",
+    "commit": "2656329",
+    "requiredSemantics": "RECEIPT CONSTRUCTION ONLY"
+  },
+
+  "objective": "Deterministically verify a DEV-257 controlled executor execution receipt as inert data. Verification must confirm receipt identity, deny-by-default semantics, receipt-construction-only semantics, execution-state consistency, inspection-result consistency, preservation of approved execution scope and authorization provenance, and the continued absence of execution or mutation authority. DEV-258 must not execute operations, invoke inspection, retry execution, persist lifecycle state, modify repository state, stage, commit, push, deploy, access secrets, expand scope, or perform external side effects.",
+
+  "verificationModel": {
+    "defaultPolicy": "DENY",
+    "verificationOnly": true,
+
+    "requiresDEV257Receipt": true,
+    "requiresTrustedReceipt": true,
+    "requiresReadyReceipt": true,
+
+    "requiresReceiptConstructionOnly": true,
+    "requiresExpectedOperation": true,
+    "requiresValidReceiptState": true,
+    "requiresExecutionStateConsistency": true,
+    "requiresInspectionResultConsistency": true,
+
+    "requiresApprovedExecutionScope": true,
+    "requiresAuthorizationProvenance": true,
+    "requiresAuthorizationBoundaries": true,
+    "requiresScopeBoundaries": true,
+
+    "mayExecuteOperation": false,
+    "mayInvokeInspectionDependency": false,
+    "mayRetryExecution": false,
+    "mayPersistLifecycleState": false,
+    "mayModifyRepository": false,
+    "mayDeleteRepositoryContent": false,
+    "mayStageRepositoryChanges": false,
+    "mayCommit": false,
+    "mayPush": false,
+    "mayDeploy": false,
+    "mayAccessSecrets": false,
+    "mayExpandScope": false,
+    "mayPerformArbitraryShellExecution": false,
+    "mayPerformExternalSideEffects": false
+  },
+
+  "validReceiptStates": [
+    "EXECUTION_SUCCEEDED",
+    "EXECUTION_FAILED",
+    "EXECUTION_NOT_ATTEMPTED"
+  ],
+
+  "receiptConsistencyRules": [
+    "EXECUTION_SUCCEEDED requires executionAttempted true",
+    "EXECUTION_SUCCEEDED requires executionSucceeded true",
+    "EXECUTION_SUCCEEDED requires non-null inspectionResult",
+
+    "EXECUTION_FAILED requires executionAttempted true",
+    "EXECUTION_FAILED requires executionSucceeded false",
+    "EXECUTION_FAILED requires null inspectionResult",
+
+    "EXECUTION_NOT_ATTEMPTED requires executionAttempted false",
+    "EXECUTION_NOT_ATTEMPTED requires executionSucceeded false"
+  ],
+
+  "requiredPredecessorEvidence": [
+    "DEV-257 version equals DEV-257",
+    "DEV-257 trusted is true",
+    "DEV-257 ready is true",
+    "DEV-257 defaultPolicy is DENY",
+    "DEV-257 receiptConstructionOnly is true",
+    "DEV-257 executedOperation equals inspect-approved-repository-state",
+    "DEV-257 receiptState is recognized",
+    "DEV-257 approvedExecutionScope is present",
+    "DEV-257 provenance is present",
+    "DEV-257 authorizationBoundaries are present",
+    "DEV-257 scopeBoundaries are present",
+
+    "DEV-257 mayExecuteOperation is false",
+    "DEV-257 mayInvokeInspectionDependency is false",
+    "DEV-257 mayRetryExecution is false",
+    "DEV-257 mayPersistLifecycleState is false",
+    "DEV-257 mayModifyRepository is false",
+    "DEV-257 mayDeleteRepositoryContent is false",
+    "DEV-257 mayStageRepositoryChanges is false",
+    "DEV-257 mayCommit is false",
+    "DEV-257 mayPush is false",
+    "DEV-257 mayDeploy is false",
+    "DEV-257 mayAccessSecrets is false",
+    "DEV-257 mayExpandScope is false",
+    "DEV-257 mayPerformArbitraryShellExecution is false",
+    "DEV-257 mayPerformExternalSideEffects is false"
+  ],
+
+  "requiredOutputs": [
+    "version",
+    "source",
+    "objective",
+    "trusted",
+    "ready",
+    "verified",
+    "defaultPolicy",
+    "verificationOnly",
+    "receipt",
+    "receiptState",
+    "executedOperation",
+    "approvedExecutionScope",
+    "provenance",
+    "authorizationBoundaries",
+    "scopeBoundaries",
+    "verificationState",
+    "blockedReasons"
+  ],
+
+  "authorityBoundary": {
+    "receiptVerificationAuthority": "GRANTED FOR INERT VERIFICATION ONLY",
+    "executionAuthority": "NOT GRANTED",
+    "inspectionInvocationAuthority": "NOT GRANTED",
+    "retryAuthority": "NOT GRANTED",
+    "lifecycleStateModificationAuthority": "NOT GRANTED",
+    "repositoryModificationAuthority": "NOT GRANTED",
+    "repositoryDeletionAuthority": "NOT GRANTED",
+    "repositoryStagingAuthority": "NOT GRANTED",
+    "commitAuthority": "NOT GRANTED",
+    "pushAuthority": "NOT GRANTED",
+    "deploymentAuthority": "NOT GRANTED",
+    "secretAccessAuthority": "NOT GRANTED",
+    "scopeExpansionAuthority": "NOT GRANTED",
+    "arbitraryShellExecutionAuthority": "NOT GRANTED",
+    "externalSideEffectAuthority": "NOT GRANTED"
+  },
+
+  "protectedIntegrationSurfaces": [
+    "tools/river-dev/src/index.ts",
+    "tools/river-dev/src/commands/context.ts"
+  ],
+
+  "implementationConstraints": [
+    "DEV-258 must consume DEV-257 receipt data only.",
+    "DEV-258 must not invoke inspectRepository.",
+    "DEV-258 must not invoke runTrackedInspection.",
+    "DEV-258 must not execute or retry an operation.",
+    "DEV-258 must not persist lifecycle state.",
+    "DEV-258 must not mutate repository state.",
+    "DEV-258 must verify receipt-state consistency deterministically.",
+    "DEV-258 must verify successful execution has an inspection result.",
+    "DEV-258 must verify failed execution does not claim success.",
+    "DEV-258 must preserve approved execution scope exactly.",
+    "DEV-258 must preserve authorization provenance.",
+    "DEV-258 must fail closed for malformed receipt data.",
+    "DEV-258 must not modify protected integration surfaces."
+  ],
+
+  "acceptanceCriteria": [
+    "DEV-258 begins directly from DEV-257 commit 2656329.",
+    "A valid successful receipt verifies successfully.",
+    "A valid failed receipt verifies successfully as a failed execution receipt.",
+    "A valid non-attempted receipt verifies successfully as a non-attempted execution receipt.",
+    "Malformed execution-state combinations fail closed.",
+    "Wrong receipt version fails closed.",
+    "Wrong operation fails closed.",
+    "Missing approved execution scope fails closed.",
+    "Missing authorization provenance fails closed.",
+    "Any prohibited predecessor authority fails closed.",
+    "Verification executes no operation.",
+    "Verification invokes no inspection dependency.",
+    "Verification performs no retry.",
+    "Verification performs no lifecycle-state or repository mutation.",
+    "Focused tests pass.",
+    "Focused typecheck passes.",
+    "Main-project typecheck passes.",
+    "Protected integration surfaces remain unchanged."
+  ]
+}
