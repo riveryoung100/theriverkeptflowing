@@ -7323,3 +7323,72 @@ export interface RiverDevControlledExecutorPackagedDownstreamHandoffVerification
 
   readonly futureDownstreamBoundaryRequired: true;
 }
+
+export type RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionState =
+  | "VERIFIED_PACKAGE_ADMISSION_ELIGIBLE"
+  | "VERIFIED_PACKAGE_ADMISSION_REJECTED";
+
+export interface RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionFoundationResult {
+  readonly version: "DEV-265";
+  readonly source:
+    "controlled-executor-verified-package-downstream-admission-foundation-engine";
+  readonly objective: string;
+
+  readonly trusted: boolean;
+  readonly ready: boolean;
+  readonly admissionEligible: boolean;
+
+  readonly defaultPolicy: "DENY";
+  readonly downstreamAdmissionEligibilityOnly: true;
+  readonly admissionResultIsInertData: true;
+
+  readonly admissionState:
+    RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionState;
+
+  readonly verification:
+    RiverDevControlledExecutorPackagedDownstreamHandoffVerificationFoundationResult;
+
+  readonly receiptState:
+    RiverDevControlledExecutorPackagedDownstreamHandoffVerificationFoundationResult[
+      "receiptState"
+    ];
+
+  readonly executedOperation:
+    RiverDevControlledExecutorPackagedDownstreamHandoffVerificationFoundationResult[
+      "executedOperation"
+    ];
+
+  readonly approvedExecutionScope: readonly string[];
+  readonly provenance: readonly string[];
+  readonly authorizationBoundaries: readonly string[];
+  readonly scopeBoundaries: readonly string[];
+  readonly verificationEvidence: readonly string[];
+  readonly acceptanceEvidence: readonly string[];
+  readonly packagingEvidence: readonly string[];
+  readonly packageVerificationEvidence: readonly string[];
+
+  readonly admissionEvidence: readonly string[];
+  readonly blockedReasons: readonly string[];
+
+  readonly mayCreateExecutionAuthorization: false;
+  readonly mayAuthorizeDownstreamAction: false;
+  readonly mayAdmitIntoActiveExecutor: false;
+  readonly mayDispatch: false;
+  readonly mayInvokeExecutor: false;
+  readonly mayExecuteOperation: false;
+  readonly mayInvokeInspectionDependency: false;
+  readonly mayRetryExecution: false;
+  readonly mayPersistLifecycleState: false;
+  readonly mayModifyRepository: false;
+  readonly mayDeleteRepositoryContent: false;
+  readonly mayStageRepositoryChanges: false;
+  readonly mayCommit: false;
+  readonly mayPush: false;
+  readonly mayDeploy: false;
+  readonly mayAccessSecrets: false;
+  readonly mayExpandScope: false;
+  readonly mayPerformArbitraryShellExecution: false;
+  readonly mayPerformExternalSideEffects: false;
+
+  readonly futureDownstreamAdmissionConsumptionBoundaryRequired: true;
+}
