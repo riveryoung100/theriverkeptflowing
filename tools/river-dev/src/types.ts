@@ -6471,3 +6471,56 @@ export interface RiverDevControlledExecutorOperationExecutionAuthorizationFounda
   authorizationMayExecuteOperation: false;
   authorizationMayModifyRepository: false;
 }
+
+/**
+ * DEV-252 controlled executor operation execution boundary foundation.
+ *
+ * The boundary determines executor eligibility only.
+ * These types grant no command execution or repository-modification authority.
+ */
+
+export interface RiverDevControlledExecutorOperationExecutionBoundaryFoundationInput {
+  executionAuthorization: RiverDevControlledExecutorOperationExecutionAuthorizationFoundation;
+}
+
+export interface RiverDevControlledExecutorOperationExecutionBoundaryFoundation {
+  version: string;
+  source: string;
+  objective: string;
+
+  trusted: boolean;
+  ready: boolean;
+  eligible: boolean;
+
+  defaultPolicy: "DENY";
+  boundaryDecisionOnly: true;
+
+  executionAuthorization: RiverDevControlledExecutorOperationExecutionAuthorizationFoundation;
+
+  executionRequest: string;
+
+  preparedOperation: RiverDevControlledExecutorOperation;
+  requiredCapability: RiverDevControlledExecutorCapability;
+
+  authorizedCapabilities: RiverDevControlledExecutorCapability[];
+
+  requiredCapabilityAuthorized: boolean;
+
+  approvedExecutionScope: string[];
+
+  boundaryState: string[];
+
+  provenance: string[];
+  authorizationBoundaries: string[];
+  scopeBoundaries: string[];
+
+  blockedReasons: string[];
+
+  boundaryMayCreateAuthorization: false;
+  boundaryMayExpandScope: false;
+  boundaryMayExecuteOperation: false;
+  boundaryMayModifyRepository: false;
+  boundaryMayInvokeExecutor: false;
+
+  futureExecutorRequiredForSideEffects: true;
+}
