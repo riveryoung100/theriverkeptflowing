@@ -1,0 +1,40 @@
+{
+  "version": "DEV-270",
+  "name": "River Development Agent Controlled Executor Active Admission Dispatch Authorization Foundation",
+  "predecessor": {
+    "version": "DEV-269",
+    "contract": "RiverDevControlledExecutorActiveAdmissionFoundationResult",
+    "requiredAdmissionState": "ACTIVE_ADMISSION_ACCEPTED"
+  },
+  "dispatchAuthorizationModel": {
+    "defaultPolicy": "DENY",
+    "dispatchAuthorizationDecisionOnly": true,
+    "dispatchAuthorizationResultIsInertData": true,
+    "requiredAdmissionState": "ACTIVE_ADMISSION_ACCEPTED",
+    "authorizedState": "DISPATCH_AUTHORIZED",
+    "unauthorizedState": "DISPATCH_UNAUTHORIZED",
+    "mayCreateExecutionAuthorization": false,
+    "mayAuthorizeDownstreamAction": false,
+    "mayAdmitIntoActiveExecutor": false,
+    "mayActivateAdmission": false,
+    "mayDispatch": false,
+    "mayInvokeExecutor": false,
+    "mayExecuteOperation": false,
+    "mayInvokeInspectionDependency": false,
+    "mayRetryExecution": false,
+    "mayPersistLifecycleState": false,
+    "mayModifyRepository": false,
+    "mayDeleteRepositoryContent": false,
+    "mayStageRepositoryChanges": false,
+    "mayCommit": false,
+    "mayPush": false,
+    "mayDeploy": false,
+    "mayAccessSecrets": false,
+    "mayExpandScope": false,
+    "mayPerformArbitraryShellExecution": false,
+    "mayPerformExternalSideEffects": false,
+    "futureControlledDispatchBoundaryRequired": true,
+    "futureExecutorInvocationBoundaryRequired": true,
+    "futureExecutionBoundaryRequired": true
+  }
+}
