@@ -1,0 +1,185 @@
+{
+  "id": "DEV-256",
+  "title": "River Development Agent Controlled Executor Read-Only Repository Inspection Executor Foundation",
+  "generation": "III",
+  "status": "SPECIFICATION",
+
+  "parent": {
+    "phase": "DEV-255",
+    "commit": "8efe0d1",
+    "requiredSemantics": "BOUNDARY ADMISSION ONLY"
+  },
+
+  "objective": "Introduce the first narrowly executing controlled-executor operation by permitting only inspect-approved-repository-state after successful DEV-255 dispatch-boundary admission. Execution must delegate to the existing inspectRepository read-only inspection primitive and may collect repository branch, commit, working-tree state, changed paths, configured policy metadata, and configured project paths. It must not persist River Dev lifecycle state, modify repository content, stage files, commit, push, deploy, access secrets, expand scope, execute change-preparation or change-validation operations, or perform unrelated external side effects.",
+
+  "executionModel": {
+    "defaultPolicy": "DENY",
+    "executionEnabled": true,
+    "readOnlyExecutionOnly": true,
+
+    "allowedOperation": "inspect-approved-repository-state",
+
+    "executorPrimitive": "inspectRepository",
+    "repositorySnapshotPrimitive": "captureRepositorySnapshot",
+
+    "trackedInspectionAllowed": false,
+    "trackedInspectionExclusionReason": "runTrackedInspection persists River Dev lifecycle state through the state store.",
+
+    "requiresTrustedDispatchBoundary": true,
+    "requiresReadyDispatchBoundary": true,
+    "requiresDispatchBoundaryAdmission": true,
+    "requiresBoundaryAdmissionOnlyPredecessor": true,
+
+    "requiresExactOperationMatch": true,
+    "requiresExactCapabilityMatch": true,
+    "requiresAuthorizedCapabilityEvidence": true,
+    "requiresApprovedExecutionScope": true,
+    "requiresAuthorizationProvenance": true,
+
+    "mayExecuteInspectApprovedRepositoryState": true,
+    "mayExecutePrepareApprovedRepositoryChange": false,
+    "mayExecuteValidateApprovedRepositoryChange": false,
+
+    "mayPersistLifecycleState": false,
+    "mayModifyRepository": false,
+    "mayDeleteRepositoryContent": false,
+    "mayStageRepositoryChanges": false,
+    "mayCommit": false,
+    "mayPush": false,
+    "mayDeploy": false,
+    "mayAccessSecrets": false,
+    "mayExpandScope": false,
+    "mayPerformArbitraryShellExecution": false,
+    "mayPerformUnrelatedExternalSideEffects": false,
+    "mayExecuteAutonomouslyOutsideApprovedBoundary": false
+  },
+
+  "allowedReadOnlyRepositoryOperations": [
+    "capture current Git branch",
+    "capture current Git commit",
+    "capture Git working-tree status",
+    "capture changed paths",
+    "derive whether working tree is clean",
+    "read approved River Dev configuration values required for inspection",
+    "construct deterministic in-memory inspection result"
+  ],
+
+  "approvedGitInspectionCommands": [
+    "git rev-parse --show-current equivalent used by repository helper",
+    "git rev-parse HEAD equivalent used by repository helper",
+    "git -c status.showUntrackedFiles=all status --porcelain=v1"
+  ],
+
+  "explicitlyExcludedExecutionSurfaces": [
+    "runTrackedInspection",
+    "implement --apply",
+    "repair --apply",
+    "commit --apply",
+    "prepare-approved-repository-change",
+    "validate-approved-repository-change",
+    "deployment",
+    "secret access",
+    "arbitrary shell execution"
+  ],
+
+  "requiredPredecessorEvidence": [
+    "DEV-255 trusted is true",
+    "DEV-255 ready is true",
+    "DEV-255 dispatchBoundaryAdmitted is true",
+    "DEV-255 defaultPolicy is DENY",
+    "DEV-255 boundaryAdmissionOnly is true",
+    "DEV-255 blockedReasons is empty",
+    "DEV-255 preparedOperation equals inspect-approved-repository-state",
+    "DEV-255 requiredCapability equals inspect-approved-repository-state",
+    "DEV-255 requiredCapabilityAuthorized is true",
+    "DEV-255 authorizedCapabilities contains inspect-approved-repository-state",
+    "DEV-255 approvedExecutionScope is present",
+    "DEV-255 provenance is present",
+    "DEV-255 dispatchBoundaryMayCreateAuthorization is false",
+    "DEV-255 dispatchBoundaryMayExpandScope is false",
+    "DEV-255 dispatchBoundaryMayInvokeExecutor is false",
+    "DEV-255 dispatchBoundaryMayExecuteOperation is false",
+    "DEV-255 dispatchBoundaryMayModifyRepository is false",
+    "DEV-255 dispatchBoundaryMayDeleteRepositoryContent is false",
+    "DEV-255 dispatchBoundaryMayCommit is false",
+    "DEV-255 dispatchBoundaryMayPush is false",
+    "DEV-255 dispatchBoundaryMayDeploy is false",
+    "DEV-255 dispatchBoundaryMayAccessSecrets is false",
+    "DEV-255 dispatchBoundaryMayPerformExternalSideEffects is false"
+  ],
+
+  "resultModel": {
+    "mustRecordOperation": true,
+    "mustRecordExecutionSucceeded": true,
+    "mustRecordInspectionResult": true,
+    "mustPreserveApprovedExecutionScope": true,
+    "mustPreserveAuthorizationProvenance": true,
+    "mustPreserveAuthorizationBoundaries": true,
+    "mustPreserveScopeBoundaries": true,
+    "mustRecordBlockedReasons": true,
+    "mustRemainDeterministicGivenEquivalentInspectionInputs": true
+  },
+
+  "authorityBoundary": {
+    "readOnlyRepositoryInspectionExecutionAuthority": "GRANTED ONLY FOR inspect-approved-repository-state",
+
+    "prepareRepositoryChangeExecutionAuthority": "NOT GRANTED",
+    "validateRepositoryChangeExecutionAuthority": "NOT GRANTED",
+    "lifecycleStateModificationAuthority": "NOT GRANTED",
+    "repositoryModificationAuthority": "NOT GRANTED",
+    "repositoryDeletionAuthority": "NOT GRANTED",
+    "repositoryStagingAuthority": "NOT GRANTED",
+    "commitAuthority": "NOT GRANTED",
+    "pushAuthority": "NOT GRANTED",
+    "deploymentAuthority": "NOT GRANTED",
+    "secretAccessAuthority": "NOT GRANTED",
+    "scopeExpansionAuthority": "NOT GRANTED",
+    "arbitraryShellExecutionAuthority": "NOT GRANTED",
+    "autonomousExecutionOutsideApprovedBoundary": "NOT GRANTED"
+  },
+
+  "protectedIntegrationSurfaces": [
+    "tools/river-dev/src/index.ts",
+    "tools/river-dev/src/commands/context.ts"
+  ],
+
+  "implementationConstraints": [
+    "DEV-256 must not modify existing inspect command behavior.",
+    "DEV-256 must not replace runTrackedInspection in the existing CLI.",
+    "DEV-256 must call inspectRepository directly for the controlled executor path.",
+    "DEV-256 must not invoke createRiverDevStateStore.",
+    "DEV-256 must not invoke createRiverDevRun.",
+    "DEV-256 must not call state-store beginRun, updateRun, completeRun, or clearActiveRun.",
+    "DEV-256 must reject any operation other than inspect-approved-repository-state.",
+    "DEV-256 must reject missing or mismatched required capability evidence.",
+    "DEV-256 must reject missing approved execution scope.",
+    "DEV-256 must reject predecessor blockers.",
+    "DEV-256 must preserve approved scope exactly.",
+    "DEV-256 must preserve authorization provenance.",
+    "DEV-256 must fail closed.",
+    "DEV-256 must not modify protected integration surfaces."
+  ],
+
+  "acceptanceCriteria": [
+    "DEV-256 begins directly from DEV-255 commit 8efe0d1.",
+    "Only inspect-approved-repository-state can execute.",
+    "prepare-approved-repository-change cannot execute.",
+    "validate-approved-repository-change cannot execute.",
+    "The controlled executor delegates repository inspection to inspectRepository.",
+    "runTrackedInspection is not invoked by the DEV-256 executor.",
+    "No River Dev lifecycle-state persistence occurs through the DEV-256 executor.",
+    "No repository content mutation occurs.",
+    "No repository deletion occurs.",
+    "No staging occurs.",
+    "No commit occurs.",
+    "No push occurs.",
+    "No deployment occurs.",
+    "No secret access occurs.",
+    "No approved-scope expansion occurs.",
+    "The executor fails closed for malformed or unauthorized boundary records.",
+    "Focused tests pass.",
+    "Focused typecheck passes.",
+    "Main-project typecheck passes.",
+    "Protected integration surfaces remain unchanged."
+  ]
+}

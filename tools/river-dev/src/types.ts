@@ -6697,3 +6697,107 @@ export interface RiverDevControlledExecutorDispatchBoundaryFoundation {
 
   futureExecutorRequiredForSideEffects: true;
 }
+
+/**
+ * DEV-256 controlled executor read-only repository inspection executor.
+ *
+ * This is the first controlled-executor foundation permitted to perform
+ * a real operation. Execution is restricted to
+ * inspect-approved-repository-state.
+ *
+ * It grants no repository mutation, lifecycle-state persistence,
+ * staging, commit, push, deployment, secret-access, scope-expansion,
+ * preparation, or validation authority.
+ */
+
+export interface RiverDevControlledExecutorReadOnlyInspectionResult {
+  readonly project: string;
+
+  readonly repository: RiverDevRepositorySnapshot;
+
+  readonly policy: {
+    readonly autonomousPushAllowed: boolean;
+    readonly outsideRepositoryAllowed: boolean;
+    readonly maximumRepairAttempts: number;
+    readonly requiredQualityGates: readonly string[];
+  };
+
+  readonly paths:
+    Readonly<Record<string, string>>;
+}
+
+export interface RiverDevControlledExecutorReadOnlyRepositoryInspectionExecutorDependencies {
+  inspectRepository(
+    capturedAt?: string
+  ): Promise<RiverDevControlledExecutorReadOnlyInspectionResult>;
+}
+
+export interface RiverDevControlledExecutorReadOnlyRepositoryInspectionExecutorFoundationInput {
+  dispatchBoundary: RiverDevControlledExecutorDispatchBoundaryFoundation;
+
+  dependencies:
+    RiverDevControlledExecutorReadOnlyRepositoryInspectionExecutorDependencies;
+
+  capturedAt?: string;
+}
+
+export interface RiverDevControlledExecutorReadOnlyRepositoryInspectionExecutorFoundation {
+  readonly version: "DEV-256";
+
+  readonly source: string;
+  readonly objective: string;
+
+  readonly trusted: boolean;
+  readonly ready: boolean;
+
+  readonly executionAttempted: boolean;
+  readonly executionSucceeded: boolean;
+
+  readonly defaultPolicy: "DENY";
+  readonly readOnlyExecutionOnly: true;
+
+  readonly executedOperation:
+    RiverDevControlledExecutorOperation;
+
+  readonly dispatchBoundary:
+    RiverDevControlledExecutorDispatchBoundaryFoundation;
+
+  readonly inspectionResult:
+    RiverDevControlledExecutorReadOnlyInspectionResult | null;
+
+  readonly approvedExecutionScope:
+    readonly string[];
+
+  readonly executionState:
+    readonly string[];
+
+  readonly provenance:
+    readonly string[];
+
+  readonly authorizationBoundaries:
+    readonly string[];
+
+  readonly scopeBoundaries:
+    readonly string[];
+
+  readonly blockedReasons:
+    readonly string[];
+
+  readonly mayExecuteInspectApprovedRepositoryState: true;
+
+  readonly mayExecutePrepareApprovedRepositoryChange: false;
+  readonly mayExecuteValidateApprovedRepositoryChange: false;
+
+  readonly mayPersistLifecycleState: false;
+  readonly mayModifyRepository: false;
+  readonly mayDeleteRepositoryContent: false;
+  readonly mayStageRepositoryChanges: false;
+  readonly mayCommit: false;
+  readonly mayPush: false;
+  readonly mayDeploy: false;
+  readonly mayAccessSecrets: false;
+  readonly mayExpandScope: false;
+  readonly mayPerformArbitraryShellExecution: false;
+  readonly mayPerformUnrelatedExternalSideEffects: false;
+  readonly mayExecuteAutonomouslyOutsideApprovedBoundary: false;
+}
