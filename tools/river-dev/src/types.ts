@@ -6421,3 +6421,53 @@ export interface RiverDevControlledExecutorOperationPreparationFoundation {
   preparationMayExecuteOperation: false;
   preparationMayModifyRepository: false;
 }
+
+/**
+ * DEV-251 controlled executor operation execution authorization foundation.
+ *
+ * Execution authorization is a deterministic decision boundary only.
+ * These types grant no operation-execution or repository-modification authority.
+ */
+
+export interface RiverDevControlledExecutorOperationExecutionAuthorizationFoundationInput {
+  operationPreparation: RiverDevControlledExecutorOperationPreparationFoundation;
+}
+
+export interface RiverDevControlledExecutorOperationExecutionAuthorizationFoundation {
+  version: string;
+  source: string;
+  objective: string;
+
+  trusted: boolean;
+  ready: boolean;
+  authorized: boolean;
+
+  defaultPolicy: "DENY";
+  authorizationDecisionOnly: true;
+
+  operationPreparation: RiverDevControlledExecutorOperationPreparationFoundation;
+
+  executionRequest: string;
+
+  preparedOperation: RiverDevControlledExecutorOperation;
+  requiredCapability: RiverDevControlledExecutorCapability;
+
+  authorizedCapabilities: RiverDevControlledExecutorCapability[];
+
+  requiredCapabilityAuthorized: boolean;
+
+  approvedExecutionScope: string[];
+
+  authorizationState: string[];
+
+  provenance: string[];
+  authorizationBoundaries: string[];
+  scopeBoundaries: string[];
+
+  blockedReasons: string[];
+
+  authorizationMayCreateCapabilityAuthorization: false;
+  authorizationMayExpandScope: false;
+  authorizationMayExecuteOperation: false;
+  authorizationMayModifyRepository: false;
+}
