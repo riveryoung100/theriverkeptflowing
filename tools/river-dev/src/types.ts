@@ -6200,3 +6200,29 @@ export interface RiverDevExecutionIntelligenceGovernanceExecutionHandoffFoundati
   scopeBoundaries: readonly string[];
   blockedReasons: readonly string[];
 }
+export interface RiverDevExecutionIntelligenceGovernanceExecutorAdmissionFoundationInput {
+  executionHandoff: RiverDevExecutionIntelligenceGovernanceExecutionHandoffFoundation;
+}
+
+export interface RiverDevExecutionIntelligenceGovernanceExecutorAdmissionFoundation {
+  version: string;
+  source: string;
+  objective: string;
+
+  trusted: boolean;
+  ready: boolean;
+  authorized: boolean;
+  dispatchReady: boolean;
+  handoffReady: boolean;
+  executorAdmitted: boolean;
+
+  executionHandoff: RiverDevExecutionIntelligenceGovernanceExecutionHandoffFoundation;
+  executionRequest: readonly string[];
+
+  admissionState: readonly string[];
+  provenance: readonly string[];
+
+  authorizationBoundaries: readonly string[];
+  scopeBoundaries: readonly string[];
+  blockedReasons: readonly string[];
+}

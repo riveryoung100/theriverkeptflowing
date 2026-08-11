@@ -1,0 +1,91 @@
+﻿{
+    "phase":  "DEV-246 River Development Agent Controlled Execution Intelligence Governance Executor Admission Foundation",
+    "branch":  "dev-246-river-development-agent-controlled-execution-intelligence-governance-executor-admission-foundation",
+    "commitMessage":  "DEV-246: Build River Development Agent controlled execution intelligence governance executor admission foundation",
+    "architectureStatus":  "Generation III governance executor admission foundation",
+    "predecessor":  "DEV-245 River Development Agent controlled execution intelligence governance execution handoff foundation",
+    "objective":  "Create a deterministic controlled execution intelligence governance executor-admission foundation that consumes a trusted handoff-ready DEV-245 governance execution-handoff record and produces an explainable fail-closed executor-admission decision while preserving execution-request provenance, human authorization evidence, repository authorization evidence, explicit approval evidence, approved execution scope, and strict separation between executor admission and actual command or repository execution.",
+    "architecturalDecision":  [
+                                  "DEV-245 establishes governed execution-handoff readiness without performing execution.",
+                                  "DEV-246 establishes a separate executor-admission boundary before any downstream executor can receive governed work.",
+                                  "Executor admission determines eligibility only and does not execute commands or modify repository state.",
+                                  "Admission cannot create new authorization, approval, scope, commit, push, deployment, or autonomous execution authority.",
+                                  "Actual controlled execution remains a separately governed downstream capability."
+                              ],
+    "requiredPredecessorPredicates":  [
+                                          "executionHandoff.trusted === true",
+                                          "executionHandoff.ready === true",
+                                          "executionHandoff.authorized === true",
+                                          "executionHandoff.dispatchReady === true",
+                                          "executionHandoff.handoffReady === true",
+                                          "executionHandoff.blockedReasons.length === 0",
+                                          "executionHandoff.executionRequest.length \u003e 0"
+                                      ],
+    "invariants":  [
+                       "Executor admission requires trusted DEV-245 execution-handoff evidence.",
+                       "Executor admission requires preserved readiness.",
+                       "Executor admission requires preserved authorization.",
+                       "Executor admission requires preserved dispatch readiness.",
+                       "Executor admission requires explicit handoff readiness.",
+                       "Executor admission requires an unblocked predecessor record.",
+                       "Executor admission requires governed execution-request evidence.",
+                       "Executor admission preserves human authorization evidence.",
+                       "Executor admission preserves repository authorization evidence.",
+                       "Executor admission preserves explicit approval evidence.",
+                       "Executor admission preserves approved execution scope.",
+                       "Executor admission fails closed when any predecessor requirement fails.",
+                       "Executor admission cannot expand approved execution scope.",
+                       "Executor admission remains separate from actual command execution.",
+                       "Executor admission remains separate from repository modification.",
+                       "Executor admission does not grant commit authority.",
+                       "Executor admission does not grant push authority.",
+                       "Executor admission does not grant deployment authority.",
+                       "Executor admission grants no autonomous execution authority."
+                   ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "tools/river-dev/src/types.ts"
+                                              ],
+                          "creatablePaths":  [
+                                                 ".river-dev/specifications/dev-246-river-development-agent-controlled-execution-intelligence-governance-executor-admission-foundation.json",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-executor-admission-foundation-engine.ts",
+                                                 "tools/river-dev/src/core/execution-intelligence-governance-executor-admission-foundation-engine.test.ts"
+                                             ]
+                      },
+    "prohibitedScope":  [
+                            "tools/river-dev/src/index.ts",
+                            "tools/river-dev/src/commands/context.ts",
+                            "CLI integration",
+                            "command execution",
+                            "shell execution",
+                            "repository modification execution",
+                            "commit execution",
+                            "push execution",
+                            "deployment execution",
+                            "autonomous execution",
+                            "scope expansion"
+                        ],
+    "trustContract":  {
+                          "executorAdmissionOnly":  true,
+                          "admissionImpliesCommandExecution":  false,
+                          "admissionImpliesRepositoryModification":  false,
+                          "admissionImpliesCommitAuthority":  false,
+                          "admissionImpliesPushAuthority":  false,
+                          "admissionImpliesDeploymentAuthority":  false,
+                          "autonomousExecutionAuthority":  false,
+                          "autonomousRepositoryModificationAuthority":  false,
+                          "autonomousScopeExpansion":  false
+                      },
+    "requiredTests":  [
+                          "tools/river-dev/src/core/execution-intelligence-governance-executor-admission-foundation-engine.test.ts"
+                      ],
+    "validation":  [
+                       "DEV-246 specification contract validation",
+                       "Focused River Development Agent TypeScript typecheck",
+                       "Focused DEV-246 deterministic tests",
+                       "Main-project typecheck",
+                       "Authority exclusion inspection",
+                       "git diff --check",
+                       "Exact scope verification"
+                   ]
+}
