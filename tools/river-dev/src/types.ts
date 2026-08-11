@@ -6636,3 +6636,64 @@ export interface RiverDevControlledExecutorDispatchAuthorizationFoundation {
   futureDispatchBoundaryRequired: true;
   futureExecutorRequiredForSideEffects: true;
 }
+
+/**
+ * DEV-255 controlled executor dispatch boundary foundation.
+ *
+ * This foundation performs deterministic inert dispatch-boundary
+ * admission only. It does not invoke an executor, execute an operation,
+ * mutate repository state, expand scope, or create external side effects.
+ */
+
+export interface RiverDevControlledExecutorDispatchBoundaryFoundationInput {
+  dispatchAuthorization: RiverDevControlledExecutorDispatchAuthorizationFoundation;
+}
+
+export interface RiverDevControlledExecutorDispatchBoundaryFoundation {
+  version: string;
+  source: string;
+  objective: string;
+
+  trusted: boolean;
+  ready: boolean;
+  dispatchBoundaryAdmitted: boolean;
+
+  defaultPolicy: "DENY";
+  boundaryAdmissionOnly: true;
+
+  dispatchAuthorization: RiverDevControlledExecutorDispatchAuthorizationFoundation;
+  invocationRequest: RiverDevControlledExecutorInvocationRequestFoundation;
+
+  executionRequest: string;
+
+  preparedOperation: RiverDevControlledExecutorOperation;
+  requiredCapability: RiverDevControlledExecutorCapability;
+
+  authorizedCapabilities: RiverDevControlledExecutorCapability[];
+
+  requiredCapabilityAuthorized: boolean;
+
+  approvedExecutionScope: string[];
+
+  dispatchBoundaryState: string[];
+
+  provenance: string[];
+  authorizationBoundaries: string[];
+  scopeBoundaries: string[];
+
+  blockedReasons: string[];
+
+  dispatchBoundaryMayCreateAuthorization: false;
+  dispatchBoundaryMayExpandScope: false;
+  dispatchBoundaryMayInvokeExecutor: false;
+  dispatchBoundaryMayExecuteOperation: false;
+  dispatchBoundaryMayModifyRepository: false;
+  dispatchBoundaryMayDeleteRepositoryContent: false;
+  dispatchBoundaryMayCommit: false;
+  dispatchBoundaryMayPush: false;
+  dispatchBoundaryMayDeploy: false;
+  dispatchBoundaryMayAccessSecrets: false;
+  dispatchBoundaryMayPerformExternalSideEffects: false;
+
+  futureExecutorRequiredForSideEffects: true;
+}
