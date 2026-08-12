@@ -7831,3 +7831,103 @@ export interface RiverDevControlledExecutorInvocationAuthorizationFoundationResu
   readonly futureControlledExecutorInvocationBoundaryRequired: true;
   readonly futureExecutionBoundaryRequired: true;
 }
+
+export type RiverDevControlledExecutorInvocationState =
+  | "CONTROLLED_EXECUTOR_INVOKED"
+  | "CONTROLLED_EXECUTOR_NOT_INVOKED";
+
+export interface RiverDevControlledExecutorInvocationFoundationResult {
+  readonly version: "DEV-273";
+
+  readonly trusted: boolean;
+  readonly ready: boolean;
+  readonly invoked: boolean;
+
+  readonly defaultPolicy: "DENY";
+
+  readonly controlledExecutorInvocationBoundaryOnly: true;
+  readonly controlledExecutorInvocationResultIsInertData: true;
+
+  readonly invocationState:
+    RiverDevControlledExecutorInvocationState;
+
+  readonly invocationAuthorization:
+    | RiverDevControlledExecutorInvocationAuthorizationFoundationResult
+    | null;
+
+  readonly controlledDispatch:
+    RiverDevControlledExecutorInvocationAuthorizationFoundationResult[
+      "controlledDispatch"
+    ];
+
+  readonly dispatchAuthorization:
+    RiverDevControlledExecutorInvocationAuthorizationFoundationResult[
+      "dispatchAuthorization"
+    ];
+
+  readonly activeAdmission:
+    RiverDevControlledExecutorInvocationAuthorizationFoundationResult[
+      "activeAdmission"
+    ];
+
+  readonly authorization:
+    RiverDevControlledExecutorInvocationAuthorizationFoundationResult[
+      "authorization"
+    ];
+
+  readonly eligibility:
+    RiverDevControlledExecutorInvocationAuthorizationFoundationResult[
+      "eligibility"
+    ];
+
+  readonly consumption:
+    RiverDevControlledExecutorInvocationAuthorizationFoundationResult[
+      "consumption"
+    ];
+
+  readonly receiptState:
+    RiverDevControlledExecutorInvocationAuthorizationFoundationResult[
+      "receiptState"
+    ];
+
+  readonly executedOperation:
+    RiverDevControlledExecutorInvocationAuthorizationFoundationResult[
+      "executedOperation"
+    ];
+
+  readonly approvedExecutionScope: readonly string[];
+  readonly provenance: readonly string[];
+
+  readonly controlledDispatchEvidence: readonly string[];
+  readonly executorInvocationAuthorizationEvidence: readonly string[];
+  readonly controlledExecutorInvocationEvidence: readonly string[];
+
+  readonly blockedReasons: readonly string[];
+
+  readonly mayCreateExecutionAuthorization: false;
+  readonly mayAuthorizeDownstreamAction: false;
+  readonly mayAdmitIntoActiveExecutor: false;
+  readonly mayActivateAdmission: false;
+  readonly mayDispatch: false;
+
+  readonly mayInvokeExecutor: false;
+  readonly mayExecuteOperation: false;
+  readonly mayInvokeInspectionDependency: false;
+  readonly mayRetryExecution: false;
+  readonly mayPersistLifecycleState: false;
+
+  readonly mayModifyRepository: false;
+  readonly mayDeleteRepositoryContent: false;
+  readonly mayStageRepositoryChanges: false;
+  readonly mayCommit: false;
+  readonly mayPush: false;
+  readonly mayDeploy: false;
+
+  readonly mayAccessSecrets: false;
+  readonly mayExpandScope: false;
+  readonly mayPerformArbitraryShellExecution: false;
+  readonly mayPerformNetworkExecution: false;
+  readonly mayPerformExternalSideEffects: false;
+
+  readonly futureExecutionBoundaryRequired: true;
+}
