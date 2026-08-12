@@ -10425,3 +10425,57 @@ export interface RiverDevGovernedExecutorIntegrationHandoffVerificationFoundatio
   verificationMayPush: false;
   verificationMayDeploy: false;
 }
+
+/**
+ * DEV-296 — Governed Executor Integration Handoff Acceptance Foundation
+ *
+ * Accepts or rejects an exact DEV-295 governed executor integration handoff
+ * verification result while preserving the acceptance result as inert data.
+ * Acceptance grants no authorization, invocation, execution, repository
+ * mutation, push, deployment, scope-expansion, or downstream-action authority.
+ */
+export type RiverDevGovernedExecutorIntegrationHandoffAcceptanceState =
+  | "GOVERNED_EXECUTOR_INTEGRATION_HANDOFF_ACCEPTED"
+  | "GOVERNED_EXECUTOR_INTEGRATION_HANDOFF_REJECTED";
+
+export interface RiverDevGovernedExecutorIntegrationHandoffAcceptanceFoundationInput {
+  verification: RiverDevGovernedExecutorIntegrationHandoffVerificationFoundation;
+}
+
+export interface RiverDevGovernedExecutorIntegrationHandoffAcceptanceFoundation {
+  version: "DEV-296";
+  source: "governed-executor-integration-handoff-acceptance-foundation";
+
+  trusted: boolean;
+  ready: boolean;
+  accepted: boolean;
+
+  defaultPolicy: "DENY";
+  acceptanceDecisionOnly: true;
+  acceptanceResultIsInertData: true;
+  futureDownstreamBoundaryRequired: true;
+
+  acceptanceState:
+    RiverDevGovernedExecutorIntegrationHandoffAcceptanceState;
+
+  verification:
+    RiverDevGovernedExecutorIntegrationHandoffVerificationFoundation;
+
+  predecessorVerificationState: string[];
+  predecessorVerificationEvidence: string[];
+  predecessorAcceptanceEvidence: string[];
+  predecessorHandoffEvidence: string[];
+
+  verificationEvidence: string[];
+  acceptanceEvidence: string[];
+  blockedReasons: string[];
+
+  acceptanceMayCreateAuthorization: false;
+  acceptanceMayAuthorizeDownstreamAction: false;
+  acceptanceMayExpandScope: false;
+  acceptanceMayModifyRepository: false;
+  acceptanceMayInvokeExecutor: false;
+  acceptanceMayExecuteOperation: false;
+  acceptanceMayPush: false;
+  acceptanceMayDeploy: false;
+}

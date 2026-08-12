@@ -1,0 +1,36 @@
+﻿{
+    "version":  "DEV-296",
+    "title":  "River Development Agent Governed Executor Integration Handoff Acceptance Foundation",
+    "objective":  "Accept or reject an exact DEV-295 governed executor integration handoff verification result as inert decision data without granting authorization, invocation, execution, repository mutation, push, deployment, scope expansion, or downstream-action authority.",
+    "predecessor":  {
+                        "version":  "DEV-295",
+                        "boundary":  "governed-executor-integration-handoff-verification-foundation"
+                    },
+    "architecture":  {
+                         "defaultPolicy":  "DENY",
+                         "acceptanceDecisionOnly":  true,
+                         "acceptanceResultIsInertData":  true,
+                         "futureDownstreamBoundaryRequired":  true
+                     },
+    "acceptance":  {
+                       "acceptedState":  "GOVERNED_EXECUTOR_INTEGRATION_HANDOFF_ACCEPTED",
+                       "rejectedState":  "GOVERNED_EXECUTOR_INTEGRATION_HANDOFF_REJECTED"
+                   },
+    "prohibitedAuthority":  [
+                                "create-authorization",
+                                "authorize-downstream-action",
+                                "expand-scope",
+                                "modify-repository",
+                                "invoke-executor",
+                                "execute-operation",
+                                "push",
+                                "deploy",
+                                "external-side-effects"
+                            ],
+    "expectedFiles":  [
+                          ".river-dev/specifications/dev-296-river-development-agent-governed-executor-integration-handoff-acceptance-foundation.json",
+                          "tools/river-dev/src/core/governed-executor-integration-handoff-acceptance-foundation-engine.test.ts",
+                          "tools/river-dev/src/core/governed-executor-integration-handoff-acceptance-foundation-engine.ts",
+                          "tools/river-dev/src/types.ts"
+                      ]
+}
