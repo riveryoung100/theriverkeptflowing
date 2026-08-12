@@ -10281,3 +10281,47 @@ export interface RiverDevControlledExecutionIntegritySealFoundationResult {
   mayPerformNetworkExecution: false;
   mayPerformExternalSideEffects: false;
 }
+
+/**
+ * DEV-293 governed executor integration acceptance foundation.
+ *
+ * This boundary accepts or rejects the inert DEV-292 verification result.
+ * Acceptance grants no authorization, execution, repository, push,
+ * deployment, scope-expansion, or external-side-effect authority.
+ */
+export type RiverDevGovernedExecutorIntegrationAcceptanceState =
+  | "GOVERNED_EXECUTOR_INTEGRATION_ACCEPTED"
+  | "GOVERNED_EXECUTOR_INTEGRATION_REJECTED";
+
+export interface RiverDevGovernedExecutorIntegrationAcceptanceFoundationInput {
+  verification: RiverDevGovernedExecutorIntegrationVerificationFoundation;
+}
+
+export interface RiverDevGovernedExecutorIntegrationAcceptanceFoundation {
+  version: "DEV-293";
+  source: "governed-executor-integration-acceptance-foundation";
+
+  trusted: boolean;
+  ready: boolean;
+  accepted: boolean;
+
+  defaultPolicy: "DENY";
+  acceptanceDecisionOnly: true;
+  acceptanceResultIsInertData: true;
+
+  acceptanceState: RiverDevGovernedExecutorIntegrationAcceptanceState;
+
+  verification: RiverDevGovernedExecutorIntegrationVerificationFoundation;
+
+  verificationState: string[];
+  verificationEvidence: string[];
+  acceptanceEvidence: string[];
+  blockedReasons: string[];
+
+  acceptanceMayCreateAuthorization: false;
+  acceptanceMayExpandScope: false;
+  acceptanceMayModifyRepository: false;
+  acceptanceMayExecuteOperation: false;
+  acceptanceMayPush: false;
+  acceptanceMayDeploy: false;
+}

@@ -1,0 +1,35 @@
+﻿{
+  "id": "DEV-293",
+  "title": "River Development Agent Governed Executor Integration Acceptance Foundation",
+  "status": "implementation",
+  "defaultPolicy": "DENY",
+  "predecessor": {
+    "id": "DEV-292",
+    "source": "governed-executor-integration-verification-foundation"
+  },
+  "objective": "Accept or reject the exact inert DEV-292 governed executor integration verification result without creating authorization or execution authority.",
+  "acceptanceBoundary": {
+    "decisionOnly": true,
+    "resultIsInertData": true,
+    "acceptedState": "GOVERNED_EXECUTOR_INTEGRATION_ACCEPTED",
+    "rejectedState": "GOVERNED_EXECUTOR_INTEGRATION_REJECTED"
+  },
+  "requirements": [
+    "DEV-292 predecessor identity must be valid.",
+    "Default policy must remain DENY.",
+    "DEV-292 verification must remain decision-only.",
+    "DEV-292 must be trusted.",
+    "DEV-292 must be ready.",
+    "DEV-292 must be verified.",
+    "DEV-292 must contain no blocked reasons.",
+    "DEV-292 must grant no prohibited authority."
+  ],
+  "prohibitedAuthority": {
+    "createAuthorization": false,
+    "expandScope": false,
+    "modifyRepository": false,
+    "executeOperation": false,
+    "push": false,
+    "deploy": false
+  }
+}
