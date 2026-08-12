@@ -1,0 +1,110 @@
+﻿{
+  "version": "DEV-286",
+  "name": "River Development Agent Controlled Execution Seal Foundation",
+  "architecture": "GENERATION III CONTROLLED EXECUTION SEAL FOUNDATION",
+
+  "predecessor": {
+    "version": "DEV-285",
+    "contract": "RiverDevControlledExecutionCertificationFoundationResult",
+
+    "requiredTrusted": true,
+    "requiredReady": true,
+    "requiredExecutionCertified": true,
+
+    "requiredDefaultPolicy": "DENY",
+
+    "requiredCertificationBoundaryOnly": true,
+    "requiredCertificationResultIsDeterministicData": true,
+
+    "requiredCertificationState": "CONTROLLED_EXECUTION_CERTIFIED",
+
+    "requiredMayInvokeExecutor": false,
+    "requiredMayExecuteOperation": false,
+    "requiredMayRetryExecution": false,
+    "requiredMayPersistLifecycleState": false,
+    "requiredMayModifyRepository": false,
+    "requiredMayCommit": false,
+    "requiredMayPush": false,
+
+    "requiredFutureControlledExecutionSealBoundary": true
+  },
+
+  "controlledExecutionSealModel": {
+    "defaultPolicy": "DENY",
+
+    "sealBoundaryOnly": true,
+    "sealResultIsDeterministicData": true,
+
+    "sealState": "CONTROLLED_EXECUTION_SEALED",
+    "sealNotEstablishedState": "CONTROLLED_EXECUTION_NOT_SEALED",
+
+    "singleSealTransitionOnly": true,
+
+    "sealMustPreserveExactExecutionScope": true,
+    "sealMustPreserveCertificationEvidence": true,
+    "sealMustPreserveVerificationEvidence": true,
+    "sealMustPreserveAttestationEvidence": true,
+    "sealMustPreserveAuditEvidence": true,
+    "sealMustPreserveArchiveEvidence": true,
+    "sealMustPreserveClosureEvidence": true,
+    "sealMustPreserveFinalizationEvidence": true,
+    "sealMustPreserveCompletionEvidence": true,
+    "sealMustPreserveLifecycleEvidence": true,
+    "sealMustPreserveReceiptEvidence": true,
+    "sealMustPreserveExecutionEvidence": true,
+    "sealMustPreservePredecessorEvidence": true,
+
+    "mayCreateExecutionAuthorization": false,
+    "mayAuthorizeDownstreamAction": false,
+    "mayAdmitIntoActiveExecutor": false,
+    "mayActivateAdmission": false,
+    "mayDispatch": false,
+
+    "mayInvokeExecutor": false,
+    "mayExecuteOperation": false,
+    "mayInvokeInspectionDependency": false,
+    "mayRetryExecution": false,
+    "mayPersistLifecycleState": false,
+
+    "mayModifyRepository": false,
+    "mayDeleteRepositoryContent": false,
+    "mayStageRepositoryChanges": false,
+    "mayCommit": false,
+    "mayPush": false,
+    "mayDeploy": false,
+
+    "mayAccessSecrets": false,
+    "mayExpandScope": false,
+    "mayPerformArbitraryShellExecution": false,
+    "mayPerformNetworkExecution": false,
+    "mayPerformExternalSideEffects": false,
+
+    "futureControlledExecutionIntegrityBoundaryRequired": true
+  },
+
+  "invariants": [
+    "DEV-286 consumes only the exact DEV-285 controlled execution certification result contract.",
+    "DEV-286 denies sealing when the DEV-285 predecessor is malformed, untrusted, unready, uncertified, blocked, inconsistent, or missing required certification evidence.",
+    "DEV-286 creates deterministic seal data only.",
+    "DEV-286 does not execute or re-execute an operation.",
+    "DEV-286 does not retry execution.",
+    "DEV-286 does not invoke an executor.",
+    "DEV-286 does not persist lifecycle state.",
+    "DEV-286 preserves the exact approved execution scope.",
+    "DEV-286 preserves predecessor provenance and the complete execution/certification evidence chain.",
+    "DEV-286 does not expand execution scope.",
+    "DEV-286 does not create new execution authorization.",
+    "DEV-286 does not modify repository content.",
+    "DEV-286 does not delete repository content.",
+    "DEV-286 does not stage repository changes.",
+    "DEV-286 does not commit.",
+    "DEV-286 does not push.",
+    "DEV-286 does not deploy.",
+    "DEV-286 does not access secrets.",
+    "DEV-286 does not perform arbitrary shell execution.",
+    "DEV-286 does not perform network execution.",
+    "DEV-286 does not perform external side effects.",
+    "Rejected predecessor payloads release no trusted predecessor payload.",
+    "A future explicit controlled execution integrity boundary is required before downstream progression."
+  ]
+}
