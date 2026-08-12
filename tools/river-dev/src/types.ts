@@ -10479,3 +10479,62 @@ export interface RiverDevGovernedExecutorIntegrationHandoffAcceptanceFoundation 
   acceptanceMayPush: false;
   acceptanceMayDeploy: false;
 }
+
+export type RiverDevGovernedExecutorIntegrationAcceptedHandoffPackagingState =
+  | "GOVERNED_EXECUTOR_INTEGRATION_ACCEPTED_HANDOFF_PACKAGE_READY"
+  | "GOVERNED_EXECUTOR_INTEGRATION_ACCEPTED_HANDOFF_PACKAGE_BLOCKED";
+
+export interface RiverDevGovernedExecutorIntegrationAcceptedHandoffPackagingFoundationResult {
+  readonly version: "DEV-297";
+  readonly source:
+    "governed-executor-integration-accepted-handoff-packaging-foundation-engine";
+
+  readonly objective: string;
+
+  readonly trusted: boolean;
+  readonly ready: boolean;
+  readonly packaged: boolean;
+
+  readonly defaultPolicy: "DENY";
+  readonly handoffPackagingOnly: true;
+  readonly packageIsInertData: true;
+  readonly futureDownstreamBoundaryRequired: true;
+
+  readonly packagingState:
+    RiverDevGovernedExecutorIntegrationAcceptedHandoffPackagingState;
+
+  readonly acceptance:
+    RiverDevGovernedExecutorIntegrationHandoffAcceptanceFoundation;
+
+  readonly predecessorVerificationState: readonly string[];
+  readonly predecessorVerificationEvidence: readonly string[];
+  readonly predecessorAcceptanceEvidence: readonly string[];
+  readonly predecessorHandoffEvidence: readonly string[];
+
+  readonly verificationEvidence: readonly string[];
+  readonly acceptanceEvidence: readonly string[];
+  readonly packagingEvidence: readonly string[];
+
+  readonly blockedReasons: readonly string[];
+
+  readonly mayCreateExecutionAuthorization: false;
+  readonly mayAuthorizeDownstreamAction: false;
+  readonly mayDispatch: false;
+  readonly mayInvokeExecutor: false;
+  readonly mayExecuteOperation: false;
+  readonly mayInvokeInspectionDependency: false;
+  readonly mayRetryExecution: false;
+  readonly mayPersistLifecycleState: false;
+
+  readonly mayModifyRepository: false;
+  readonly mayDeleteRepositoryContent: false;
+  readonly mayStageRepositoryChanges: false;
+  readonly mayCommit: false;
+  readonly mayPush: false;
+  readonly mayDeploy: false;
+
+  readonly mayAccessSecrets: false;
+  readonly mayExpandScope: false;
+  readonly mayPerformArbitraryShellExecution: false;
+  readonly mayPerformExternalSideEffects: false;
+}
