@@ -1,0 +1,103 @@
+{
+    "id":  "DEV-291",
+    "title":  "River Development Agent Governed Executor Integration Foundation",
+    "status":  "foundation",
+    "objective":  "Establish a default-deny governed integration boundary between controlled operation execution authorization and package execution so that apply mode alone can never constitute execution authorization.",
+    "predecessor":  {
+                        "id":  "DEV-290",
+                        "commit":  "5429336",
+                        "foundation":  "controlled-execution-integrity-seal-foundation"
+                    },
+    "authorizationContract":  {
+                                  "authoritativeType":  "RiverDevControlledExecutorOperationExecutionAuthorizationFoundation",
+                                  "parallelAuthorizationModelAllowed":  false,
+                                  "defaultPolicy":  "DENY",
+                                  "authorizationDecisionOnly":  true
+                              },
+    "coreSecurityInvariants":  [
+                                   "apply is an execution mode, not execution authorization",
+                                   "execution mode alone must never authorize mutation",
+                                   "missing authorization must deny apply execution",
+                                   "untrusted authorization must deny apply execution",
+                                   "unready authorization must deny apply execution",
+                                   "unauthorized authorization must deny apply execution",
+                                   "blocked authorization must deny apply execution",
+                                   "operation authorization must remain bound to the prepared operation",
+                                   "required capability must be explicitly authorized",
+                                   "required capability must exist within the authorized capability set",
+                                   "execution must remain within approved execution scope",
+                                   "authorization must not create capability authorization",
+                                   "authorization must not expand scope",
+                                   "authorization must not execute operations",
+                                   "authorization must not modify repository state",
+                                   "preview execution must remain non-mutating"
+                               ],
+    "integrationPath":  [
+                            "execution-package",
+                            "controlled-executor-preparation",
+                            "controlled-executor-operation-execution-authorization-foundation",
+                            "governed-executor-integration-foundation",
+                            "package-executor",
+                            "implementation-runner"
+                        ],
+    "applyRequirements":  [
+                              "execution authorization exists",
+                              "authorization is trusted",
+                              "authorization is ready",
+                              "authorization is explicitly authorized",
+                              "authorization default policy is DENY",
+                              "authorization remains decision-only",
+                              "authorization contains no blocked reasons",
+                              "prepared operation matches the authorized operation",
+                              "required capability matches the requested operation",
+                              "required capability is explicitly authorized",
+                              "required capability exists in authorized capabilities",
+                              "requested execution remains within approved execution scope"
+                          ],
+    "previewSemantics":  {
+                             "mutating":  false,
+                             "authorizationPresenceMayGrantMutation":  false,
+                             "mayConvertToApply":  false
+                         },
+    "governedIntegrationBoundary":  {
+                                        "failClosed":  true,
+                                        "mayManufactureAuthorization":  false,
+                                        "mayExpandAuthorization":  false,
+                                        "mayExpandScope":  false,
+                                        "mayCreateCapabilityAuthorization":  false,
+                                        "mayExecuteOperation":  false,
+                                        "mayModifyRepository":  false,
+                                        "mayPush":  false,
+                                        "mayDeploy":  false
+                                    },
+    "validationRequirements":  [
+                                   "preview remains non-mutating",
+                                   "apply without authorization is denied",
+                                   "apply with untrusted authorization is denied",
+                                   "apply with unready authorization is denied",
+                                   "apply with unauthorized authorization is denied",
+                                   "apply with blocked reasons is denied",
+                                   "apply with mismatched prepared operation is denied",
+                                   "apply with unauthorized required capability is denied",
+                                   "apply with required capability absent from authorized capabilities is denied",
+                                   "apply outside approved execution scope is denied",
+                                   "valid apply authorization may cross the governed integration boundary",
+                                   "authorization cannot create capability authorization",
+                                   "authorization cannot expand scope",
+                                   "authorization cannot execute the operation",
+                                   "authorization cannot modify the repository",
+                                   "execution mode alone never constitutes execution authorization"
+                               ],
+    "nonGoals":  [
+                     "autonomous approval",
+                     "autonomous pushing",
+                     "autonomous deployment",
+                     "secret access",
+                     "unrestricted shell execution",
+                     "unrestricted repository mutation",
+                     "distributed execution",
+                     "remote execution",
+                     "production deployment orchestration"
+                 ],
+    "completionStandard":  "DEV-291 is complete when a tested default-deny integration boundary proves that mutating package execution cannot occur solely because apply was requested and may proceed only through trusted explicit operation-bound capability-bound scope-bound execution authorization."
+}

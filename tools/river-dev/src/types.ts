@@ -6429,6 +6429,39 @@ export interface RiverDevControlledExecutorOperationPreparationFoundation {
  * These types grant no operation-execution or repository-modification authority.
  */
 
+
+export interface RiverDevGovernedExecutorIntegrationFoundationInput {
+  executionAuthorization: RiverDevControlledExecutorOperationExecutionAuthorizationFoundation;
+  requestedMode: "dry-run" | "apply";
+}
+
+export interface RiverDevGovernedExecutorIntegrationFoundation {
+  version: "DEV-291";
+  source: "governed-executor-integration-foundation";
+
+  trusted: boolean;
+  ready: boolean;
+  authorized: boolean;
+
+  defaultPolicy: "DENY";
+  integrationDecisionOnly: true;
+
+  requestedMode: "dry-run" | "apply";
+  effectiveMode: "dry-run" | "apply";
+
+  executionAuthorization: RiverDevControlledExecutorOperationExecutionAuthorizationFoundation;
+
+  authorizationRequiredForApply: true;
+  authorizationSatisfied: boolean;
+
+  blockedReasons: string[];
+  provenance: string[];
+
+  integrationMayCreateAuthorization: false;
+  integrationMayExpandScope: false;
+  integrationMayModifyRepository: false;
+  integrationMayExecuteOperation: false;
+}
 export interface RiverDevControlledExecutorOperationExecutionAuthorizationFoundationInput {
   operationPreparation: RiverDevControlledExecutorOperationPreparationFoundation;
 }
