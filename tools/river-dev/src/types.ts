@@ -7931,3 +7931,111 @@ export interface RiverDevControlledExecutorInvocationFoundationResult {
 
   readonly futureExecutionBoundaryRequired: true;
 }
+
+/**
+ * DEV-274
+ *
+ * Deterministic deny-by-default authorization result describing whether
+ * the exact DEV-273 controlled executor invocation is eligible to cross
+ * a future controlled operation execution boundary.
+ *
+ * This contract is inert data only.
+ * It does not execute an operation or grant execution authority.
+ */
+export interface RiverDevOperationExecutionAuthorizationFoundationResult {
+  readonly version: "DEV-274";
+
+  readonly trusted: boolean;
+  readonly ready: boolean;
+  readonly operationExecutionAuthorized: boolean;
+
+  readonly defaultPolicy: "DENY";
+
+  readonly operationExecutionAuthorizationDecisionOnly: true;
+  readonly operationExecutionAuthorizationResultIsInertData: true;
+
+  readonly operationExecutionAuthorizationState:
+    | "OPERATION_EXECUTION_AUTHORIZED"
+    | "OPERATION_EXECUTION_UNAUTHORIZED";
+
+  readonly controlledExecutorInvocation:
+    | RiverDevControlledExecutorInvocationFoundationResult
+    | null;
+
+  readonly controlledDispatch:
+    RiverDevControlledExecutorInvocationFoundationResult[
+      "controlledDispatch"
+    ];
+
+  readonly dispatchAuthorization:
+    RiverDevControlledExecutorInvocationFoundationResult[
+      "dispatchAuthorization"
+    ];
+
+  readonly activeAdmission:
+    RiverDevControlledExecutorInvocationFoundationResult[
+      "activeAdmission"
+    ];
+
+  readonly authorization:
+    RiverDevControlledExecutorInvocationFoundationResult[
+      "authorization"
+    ];
+
+  readonly eligibility:
+    RiverDevControlledExecutorInvocationFoundationResult[
+      "eligibility"
+    ];
+
+  readonly consumption:
+    RiverDevControlledExecutorInvocationFoundationResult[
+      "consumption"
+    ];
+
+  readonly receiptState:
+    RiverDevControlledExecutorInvocationFoundationResult[
+      "receiptState"
+    ];
+
+  readonly executedOperation:
+    RiverDevControlledExecutorInvocationFoundationResult[
+      "executedOperation"
+    ];
+
+  readonly approvedExecutionScope: readonly string[];
+  readonly provenance: readonly string[];
+
+  readonly controlledDispatchEvidence: readonly string[];
+  readonly executorInvocationAuthorizationEvidence: readonly string[];
+  readonly controlledExecutorInvocationEvidence: readonly string[];
+  readonly operationExecutionAuthorizationEvidence: readonly string[];
+
+  readonly blockedReasons: readonly string[];
+
+  readonly mayCreateExecutionAuthorization: false;
+  readonly mayAuthorizeDownstreamAction: false;
+  readonly mayAdmitIntoActiveExecutor: false;
+  readonly mayActivateAdmission: false;
+  readonly mayDispatch: false;
+
+  readonly mayInvokeExecutor: false;
+  readonly mayExecuteOperation: false;
+  readonly mayInvokeInspectionDependency: false;
+  readonly mayRetryExecution: false;
+  readonly mayPersistLifecycleState: false;
+
+  readonly mayModifyRepository: false;
+  readonly mayDeleteRepositoryContent: false;
+  readonly mayStageRepositoryChanges: false;
+  readonly mayCommit: false;
+  readonly mayPush: false;
+  readonly mayDeploy: false;
+
+  readonly mayAccessSecrets: false;
+  readonly mayExpandScope: false;
+  readonly mayPerformArbitraryShellExecution: false;
+  readonly mayPerformNetworkExecution: false;
+  readonly mayPerformExternalSideEffects: false;
+
+  readonly futureControlledOperationExecutionBoundaryRequired: true;
+}
