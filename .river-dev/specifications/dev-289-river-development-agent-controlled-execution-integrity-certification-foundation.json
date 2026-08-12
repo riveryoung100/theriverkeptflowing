@@ -1,0 +1,89 @@
+﻿{
+  "id": "DEV-289",
+  "title": "River Development Agent Controlled Execution Integrity Certification Foundation",
+  "status": "foundation",
+  "predecessor": {
+    "id": "DEV-288",
+    "version": "DEV-288",
+    "requiredResult": "RiverDevControlledExecutionIntegrityVerificationFoundationResult",
+    "requiredBoundary": "futureControlledExecutionIntegrityCertificationBoundaryRequired"
+  },
+  "objective": "Establish a deterministic, fail-closed certification boundary over the verified controlled-execution integrity result produced by DEV-288 without granting execution, repository, network, secret, persistence, dispatch, authorization, admission, retry, inspection-dependency, or external-side-effect authority.",
+  "resultContract": {
+    "name": "RiverDevControlledExecutionIntegrityCertificationFoundationResult",
+    "version": "DEV-289",
+    "trusted": "boolean",
+    "ready": "boolean",
+    "executionIntegrityCertified": "boolean",
+    "defaultPolicy": "DENY",
+    "controlledExecutionIntegrityCertificationBoundaryOnly": true,
+    "executionIntegrityCertificationResultIsDeterministicData": true,
+    "executionIntegrityCertificationState": [
+      "CONTROLLED_EXECUTION_INTEGRITY_CERTIFIED",
+      "CONTROLLED_EXECUTION_INTEGRITY_NOT_CERTIFIED"
+    ]
+  },
+  "requirements": [
+    "Accept only a DEV-288 RiverDevControlledExecutionIntegrityVerificationFoundationResult predecessor.",
+    "Require the predecessor to be trusted and ready.",
+    "Require executionIntegrityVerified to be true.",
+    "Require controlledExecutionIntegrityVerificationBoundaryOnly to remain true.",
+    "Require executionIntegrityVerificationResultIsDeterministicData to remain true.",
+    "Require executionIntegrityVerificationState to equal CONTROLLED_EXECUTION_INTEGRITY_VERIFIED.",
+    "Require defaultPolicy to remain DENY.",
+    "Require the complete controlled-execution object chain to remain present.",
+    "Require approved execution scope and provenance to remain present according to predecessor invariants.",
+    "Require every predecessor evidence chain required by DEV-288.",
+    "Require controlledExecutionIntegrityEvidence.",
+    "Require controlledExecutionIntegrityVerificationEvidence.",
+    "Reject any predecessor blockedReasons.",
+    "Reject any execution, authorization, admission, dispatch, executor, retry, inspection-dependency, lifecycle-persistence, repository, secret, scope-expansion, shell, network, deployment, or external-side-effect authority.",
+    "Require futureControlledExecutionIntegrityCertificationBoundaryRequired from DEV-288.",
+    "Produce certification as deterministic data only.",
+    "Preserve all predecessor evidence without mutation.",
+    "Append DEV-289:CONTROLLED_EXECUTION_INTEGRITY_CERTIFIED to controlledExecutionIntegrityCertificationEvidence.",
+    "Remain fail-closed under defaultPolicy DENY."
+  ],
+  "authority": {
+    "mayCreateExecutionAuthorization": false,
+    "mayAuthorizeDownstreamAction": false,
+    "mayAdmitIntoActiveExecutor": false,
+    "mayActivateAdmission": false,
+    "mayDispatch": false,
+    "mayInvokeExecutor": false,
+    "mayExecuteOperation": false,
+    "mayInvokeInspectionDependency": false,
+    "mayRetryExecution": false,
+    "mayPersistLifecycleState": false,
+    "mayModifyRepository": false,
+    "mayDeleteRepositoryContent": false,
+    "mayStageRepositoryChanges": false,
+    "mayCommit": false,
+    "mayPush": false,
+    "mayDeploy": false,
+    "mayAccessSecrets": false,
+    "mayExpandScope": false,
+    "mayPerformArbitraryShellExecution": false,
+    "mayPerformNetworkExecution": false,
+    "mayPerformExternalSideEffects": false
+  },
+  "implementation": {
+    "engine": "tools/river-dev/src/core/controlled-execution-integrity-certification-foundation-engine.ts",
+    "tests": "tools/river-dev/src/core/controlled-execution-integrity-certification-foundation-engine.test.ts",
+    "types": "tools/river-dev/src/types.ts"
+  },
+  "nonGoals": [
+    "Do not authorize execution.",
+    "Do not dispatch operations.",
+    "Do not invoke an executor.",
+    "Do not execute operations.",
+    "Do not activate admission.",
+    "Do not modify repository content.",
+    "Do not stage, commit, push, or deploy.",
+    "Do not access secrets.",
+    "Do not perform network execution.",
+    "Do not create external side effects.",
+    "Do not expand approved execution scope.",
+    "Do not convert certification into executable authority."
+  ]
+}
