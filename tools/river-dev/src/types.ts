@@ -10373,3 +10373,55 @@ export interface RiverDevGovernedExecutorIntegrationHandoffFoundation {
   handoffMayPush: false;
   handoffMayDeploy: false;
 }
+
+/**
+ * DEV-295 — Governed Executor Integration Handoff Verification Foundation
+ *
+ * This boundary verifies an exact DEV-294 governed executor integration
+ * handoff while preserving the handoff as inert data. Verification grants
+ * no authorization, invocation, execution, repository mutation, push,
+ * deployment, scope-expansion, or downstream-action authority.
+ */
+export type RiverDevGovernedExecutorIntegrationHandoffVerificationState =
+  | "GOVERNED_EXECUTOR_INTEGRATION_HANDOFF_VERIFIED"
+  | "GOVERNED_EXECUTOR_INTEGRATION_HANDOFF_NOT_VERIFIED";
+
+export interface RiverDevGovernedExecutorIntegrationHandoffVerificationFoundationInput {
+  handoff: RiverDevGovernedExecutorIntegrationHandoffFoundation;
+}
+
+export interface RiverDevGovernedExecutorIntegrationHandoffVerificationFoundation {
+  version: "DEV-295";
+  source: "governed-executor-integration-handoff-verification-foundation";
+
+  trusted: boolean;
+  ready: boolean;
+  verified: boolean;
+
+  defaultPolicy: "DENY";
+  verificationOnly: true;
+  verificationResultIsInertData: true;
+  futureDownstreamBoundaryRequired: true;
+
+  verificationState:
+    RiverDevGovernedExecutorIntegrationHandoffVerificationState;
+
+  handoff: RiverDevGovernedExecutorIntegrationHandoffFoundation;
+
+  predecessorVerificationState: string[];
+  predecessorVerificationEvidence: string[];
+  predecessorAcceptanceEvidence: string[];
+  predecessorHandoffEvidence: string[];
+
+  verificationEvidence: string[];
+  blockedReasons: string[];
+
+  verificationMayCreateAuthorization: false;
+  verificationMayAuthorizeDownstreamAction: false;
+  verificationMayExpandScope: false;
+  verificationMayModifyRepository: false;
+  verificationMayInvokeExecutor: false;
+  verificationMayExecuteOperation: false;
+  verificationMayPush: false;
+  verificationMayDeploy: false;
+}

@@ -1,0 +1,56 @@
+﻿{
+  "id": "DEV-295",
+  "title": "River Development Agent Governed Executor Integration Handoff Verification Foundation",
+  "status": "implementation",
+  "parent": "DEV-294",
+  "objective": "Verify the exact inert DEV-294 governed executor integration handoff without creating or inheriting downstream authority.",
+  "input": {
+    "predecessor": "RiverDevGovernedExecutorIntegrationHandoffFoundation",
+    "requiredVersion": "DEV-294",
+    "requiredSource": "governed-executor-integration-handoff-foundation"
+  },
+  "contract": {
+    "defaultPolicy": "DENY",
+    "verificationOnly": true,
+    "verificationResultIsInertData": true,
+    "futureDownstreamBoundaryRequired": true,
+    "verifiedState": "GOVERNED_EXECUTOR_INTEGRATION_HANDOFF_VERIFIED",
+    "blockedState": "GOVERNED_EXECUTOR_INTEGRATION_HANDOFF_NOT_VERIFIED"
+  },
+  "verificationRequirements": [
+    "exact DEV-294 predecessor identity",
+    "trusted predecessor",
+    "ready predecessor",
+    "handoffReady predecessor",
+    "READY handoff state",
+    "DENY-by-default policy",
+    "handoff-only semantics",
+    "inert handoff data",
+    "future downstream boundary requirement",
+    "empty predecessor blocked reasons",
+    "absence of prohibited downstream authority"
+  ],
+  "evidenceContinuity": [
+    "verificationState",
+    "verificationEvidence",
+    "acceptanceEvidence",
+    "handoffEvidence"
+  ],
+  "prohibitedAuthority": [
+    "create authorization",
+    "authorize downstream action",
+    "expand scope",
+    "modify repository",
+    "invoke executor",
+    "execute operation",
+    "push",
+    "deploy"
+  ],
+  "sideEffects": {
+    "repositoryMutation": false,
+    "fileWriteAuthority": false,
+    "shellExecution": false,
+    "networkExecution": false,
+    "externalSideEffects": false
+  }
+}
