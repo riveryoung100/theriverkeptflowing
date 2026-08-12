@@ -1,0 +1,106 @@
+﻿{
+  "version": "DEV-283",
+  "name": "River Development Agent Controlled Execution Attestation Foundation",
+  "architecture": "GENERATION III CONTROLLED EXECUTION ATTESTATION FOUNDATION",
+
+  "predecessor": {
+    "version": "DEV-282",
+    "contract": "RiverDevControlledExecutionAuditFoundationResult",
+
+    "requiredTrusted": true,
+    "requiredReady": true,
+    "requiredExecutionAudited": true,
+
+    "requiredDefaultPolicy": "DENY",
+
+    "requiredAuditBoundaryOnly": true,
+    "requiredAuditResultIsDeterministicData": true,
+
+    "requiredAuditState": "CONTROLLED_EXECUTION_AUDITED",
+
+    "requiredMayInvokeExecutor": false,
+    "requiredMayExecuteOperation": false,
+    "requiredMayRetryExecution": false,
+    "requiredMayPersistLifecycleState": false,
+    "requiredMayModifyRepository": false,
+    "requiredMayCommit": false,
+    "requiredMayPush": false,
+
+    "requiredFutureControlledExecutionAttestationBoundary": true
+  },
+
+  "controlledExecutionAttestationModel": {
+    "defaultPolicy": "DENY",
+
+    "attestationBoundaryOnly": true,
+    "attestationResultIsDeterministicData": true,
+
+    "attestationState": "CONTROLLED_EXECUTION_ATTESTED",
+    "attestationNotEstablishedState": "CONTROLLED_EXECUTION_NOT_ATTESTED",
+
+    "singleAttestationTransitionOnly": true,
+    "attestationMustPreserveExactExecutionScope": true,
+    "attestationMustPreserveAuditEvidence": true,
+    "attestationMustPreserveArchiveEvidence": true,
+    "attestationMustPreserveClosureEvidence": true,
+    "attestationMustPreserveFinalizationEvidence": true,
+    "attestationMustPreserveCompletionEvidence": true,
+    "attestationMustPreserveLifecycleEvidence": true,
+    "attestationMustPreserveReceiptEvidence": true,
+    "attestationMustPreserveExecutionEvidence": true,
+    "attestationMustPreservePredecessorEvidence": true,
+
+    "mayCreateExecutionAuthorization": false,
+    "mayAuthorizeDownstreamAction": false,
+    "mayAdmitIntoActiveExecutor": false,
+    "mayActivateAdmission": false,
+    "mayDispatch": false,
+
+    "mayInvokeExecutor": false,
+    "mayExecuteOperation": false,
+    "mayInvokeInspectionDependency": false,
+    "mayRetryExecution": false,
+    "mayPersistLifecycleState": false,
+
+    "mayModifyRepository": false,
+    "mayDeleteRepositoryContent": false,
+    "mayStageRepositoryChanges": false,
+    "mayCommit": false,
+    "mayPush": false,
+    "mayDeploy": false,
+
+    "mayAccessSecrets": false,
+    "mayExpandScope": false,
+    "mayPerformArbitraryShellExecution": false,
+    "mayPerformNetworkExecution": false,
+    "mayPerformExternalSideEffects": false,
+
+    "futureControlledExecutionVerificationBoundaryRequired": true
+  },
+
+  "invariants": [
+    "DEV-283 consumes only the exact DEV-282 controlled execution audit result contract.",
+    "DEV-283 denies attestation when the DEV-282 predecessor is malformed, untrusted, unready, unaudited, blocked, inconsistent, or missing required audit evidence.",
+    "DEV-283 creates deterministic attestation data only.",
+    "DEV-283 does not execute or re-execute an operation.",
+    "DEV-283 does not retry execution.",
+    "DEV-283 does not invoke an executor.",
+    "DEV-283 does not persist lifecycle state.",
+    "DEV-283 preserves the exact approved execution scope.",
+    "DEV-283 preserves predecessor provenance and the complete execution/audit evidence chain.",
+    "DEV-283 does not expand execution scope.",
+    "DEV-283 does not create new execution authorization.",
+    "DEV-283 does not modify repository content.",
+    "DEV-283 does not delete repository content.",
+    "DEV-283 does not stage repository changes.",
+    "DEV-283 does not commit.",
+    "DEV-283 does not push.",
+    "DEV-283 does not deploy.",
+    "DEV-283 does not access secrets.",
+    "DEV-283 does not perform arbitrary shell execution.",
+    "DEV-283 does not perform network execution.",
+    "DEV-283 does not perform external side effects.",
+    "Rejected predecessor payloads release no trusted predecessor payload.",
+    "A future explicit controlled execution verification boundary is required before downstream progression."
+  ]
+}
