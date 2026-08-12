@@ -8470,3 +8470,126 @@ export interface RiverDevControlledExecutionCompletionFoundationResult {
 
   futureControlledExecutionFinalizationBoundaryRequired: true;
 }
+
+export interface RiverDevControlledExecutionFinalizationFoundationResult {
+  version: "DEV-279";
+
+  trusted: boolean;
+  ready: boolean;
+  executionFinalized: boolean;
+
+  defaultPolicy: "DENY";
+
+  controlledExecutionFinalizationBoundaryOnly: true;
+  executionFinalizationResultIsDeterministicData: true;
+
+  executionFinalizationState:
+    | "CONTROLLED_EXECUTION_FINALIZED"
+    | "CONTROLLED_EXECUTION_NOT_FINALIZED";
+
+  controlledExecutionCompletion:
+    | RiverDevControlledExecutionCompletionFoundationResult
+    | null;
+
+  controlledOperationExecutionLifecycle:
+    | RiverDevControlledExecutionCompletionFoundationResult["controlledOperationExecutionLifecycle"]
+    | null;
+
+  controlledOperationExecutionReceipt:
+    | RiverDevControlledExecutionCompletionFoundationResult["controlledOperationExecutionReceipt"]
+    | null;
+
+  controlledOperationExecution:
+    | RiverDevControlledExecutionCompletionFoundationResult["controlledOperationExecution"]
+    | null;
+
+  operationExecutionAuthorization:
+    | RiverDevControlledExecutionCompletionFoundationResult["operationExecutionAuthorization"]
+    | null;
+
+  controlledExecutorInvocation:
+    | RiverDevControlledExecutionCompletionFoundationResult["controlledExecutorInvocation"]
+    | null;
+
+  controlledDispatch:
+    | RiverDevControlledExecutionCompletionFoundationResult["controlledDispatch"]
+    | null;
+
+  dispatchAuthorization:
+    | RiverDevControlledExecutionCompletionFoundationResult["dispatchAuthorization"]
+    | null;
+
+  activeAdmission:
+    | RiverDevControlledExecutionCompletionFoundationResult["activeAdmission"]
+    | null;
+
+  authorization:
+    | RiverDevControlledExecutionCompletionFoundationResult["authorization"]
+    | null;
+
+  eligibility:
+    | RiverDevControlledExecutionCompletionFoundationResult["eligibility"]
+    | null;
+
+  consumption:
+    | RiverDevControlledExecutionCompletionFoundationResult["consumption"]
+    | null;
+
+  receiptState:
+    | RiverDevControlledExecutionCompletionFoundationResult["receiptState"]
+    | null;
+
+  executedOperation:
+    | RiverDevControlledExecutionCompletionFoundationResult["executedOperation"]
+    | null;
+
+  approvedExecutionScope: string[];
+  provenance: string[];
+
+  controlledDispatchEvidence: string[];
+  executorInvocationAuthorizationEvidence: string[];
+  controlledExecutorInvocationEvidence: string[];
+  operationExecutionAuthorizationEvidence: string[];
+  controlledOperationExecutionEvidence: string[];
+  controlledOperationExecutionReceiptEvidence: string[];
+  controlledOperationExecutionLifecycleEvidence: string[];
+  controlledExecutionCompletionEvidence: string[];
+  controlledExecutionFinalizationEvidence: string[];
+
+  blockedReasons: string[];
+
+  singleFinalizationTransitionOnly: true;
+  finalizationMustPreserveExactExecutionScope: true;
+  finalizationMustPreserveCompletionEvidence: true;
+  finalizationMustPreserveLifecycleEvidence: true;
+  finalizationMustPreserveReceiptEvidence: true;
+  finalizationMustPreserveExecutionEvidence: true;
+  finalizationMustPreservePredecessorEvidence: true;
+
+  mayCreateExecutionAuthorization: false;
+  mayAuthorizeDownstreamAction: false;
+  mayAdmitIntoActiveExecutor: false;
+  mayActivateAdmission: false;
+  mayDispatch: false;
+
+  mayInvokeExecutor: false;
+  mayExecuteOperation: false;
+  mayInvokeInspectionDependency: false;
+  mayRetryExecution: false;
+  mayPersistLifecycleState: false;
+
+  mayModifyRepository: false;
+  mayDeleteRepositoryContent: false;
+  mayStageRepositoryChanges: false;
+  mayCommit: false;
+  mayPush: false;
+  mayDeploy: false;
+
+  mayAccessSecrets: false;
+  mayExpandScope: false;
+  mayPerformArbitraryShellExecution: false;
+  mayPerformNetworkExecution: false;
+  mayPerformExternalSideEffects: false;
+
+  futureControlledExecutionClosureBoundaryRequired: true;
+}
