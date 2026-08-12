@@ -1,0 +1,58 @@
+{
+    "id":  "DEV-292",
+    "title":  "River Development Agent Governed Executor Integration Verification Foundation",
+    "status":  "foundation",
+    "objective":  "Verify deterministically and fail closed that the DEV-291 governed executor integration decision preserves default-deny semantics and cannot silently elevate an unauthorized apply request into executable mutation authority.",
+    "predecessor":  {
+                        "id":  "DEV-291",
+                        "commit":  "1b0af2c",
+                        "foundation":  "governed-executor-integration-foundation"
+                    },
+    "authoritativeInput":  "RiverDevGovernedExecutorIntegrationFoundation",
+    "defaultPolicy":  "DENY",
+    "verificationDecisionOnly":  true,
+    "requiredInvariants":  [
+                               "DEV-291 predecessor version is exact",
+                               "DEV-291 predecessor source is exact",
+                               "default policy remains DENY",
+                               "integration remains decision-only",
+                               "integration cannot create authorization",
+                               "integration cannot expand scope",
+                               "integration cannot modify repository state",
+                               "integration cannot execute operations",
+                               "requested mode is preserved",
+                               "effective mode must never be apply when predecessor authorization is false",
+                               "effective mode must never be apply when predecessor readiness is false",
+                               "effective mode must never be apply when predecessor trust is false",
+                               "effective mode must never be apply when authorizationSatisfied is false",
+                               "blocked predecessor state must fail verification",
+                               "dry-run remains non-mutating",
+                               "successful verification grants no execution authority"
+                           ],
+    "verificationBoundary":  {
+                                 "failClosed":  true,
+                                 "mayCreateAuthorization":  false,
+                                 "mayExpandScope":  false,
+                                 "mayModifyRepository":  false,
+                                 "mayExecuteOperation":  false,
+                                 "mayPush":  false,
+                                 "mayDeploy":  false
+                             },
+    "validationRequirements":  [
+                                   "valid DEV-291 dry-run decision verifies",
+                                   "valid DEV-291 authorized apply decision verifies",
+                                   "untrusted predecessor fails verification",
+                                   "unready predecessor fails verification",
+                                   "unauthorized apply predecessor fails verification",
+                                   "authorization-unsatisfied apply predecessor fails verification",
+                                   "apply effective mode with unauthorized predecessor fails verification",
+                                   "non-DENY predecessor fails verification",
+                                   "predecessor that may create authorization fails verification",
+                                   "predecessor that may expand scope fails verification",
+                                   "predecessor that may modify repository fails verification",
+                                   "predecessor that may execute operation fails verification",
+                                   "verification result is deterministic data",
+                                   "successful verification itself grants no execution capability"
+                               ],
+    "completionStandard":  "DEV-292 is complete when deterministic verification proves that only internally consistent DEV-291 governed integration decisions verify successfully and that verification itself cannot authorize, execute, mutate, push, deploy, or expand scope."
+}

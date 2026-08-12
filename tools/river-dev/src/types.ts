@@ -6430,6 +6430,35 @@ export interface RiverDevControlledExecutorOperationPreparationFoundation {
  */
 
 
+
+export interface RiverDevGovernedExecutorIntegrationVerificationFoundationInput {
+  governedExecutorIntegration: RiverDevGovernedExecutorIntegrationFoundation;
+}
+
+export interface RiverDevGovernedExecutorIntegrationVerificationFoundation {
+  version: "DEV-292";
+  source: "governed-executor-integration-verification-foundation";
+
+  trusted: boolean;
+  ready: boolean;
+  verified: boolean;
+
+  defaultPolicy: "DENY";
+  verificationDecisionOnly: true;
+
+  governedExecutorIntegration: RiverDevGovernedExecutorIntegrationFoundation;
+
+  verificationState: string[];
+  verificationEvidence: string[];
+  blockedReasons: string[];
+
+  verificationMayCreateAuthorization: false;
+  verificationMayExpandScope: false;
+  verificationMayModifyRepository: false;
+  verificationMayExecuteOperation: false;
+  verificationMayPush: false;
+  verificationMayDeploy: false;
+}
 export interface RiverDevGovernedExecutorIntegrationFoundationInput {
   executionAuthorization: RiverDevControlledExecutorOperationExecutionAuthorizationFoundation;
   requestedMode: "dry-run" | "apply";
