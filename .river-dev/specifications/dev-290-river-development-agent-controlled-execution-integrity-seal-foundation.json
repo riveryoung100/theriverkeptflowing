@@ -1,0 +1,121 @@
+{
+  "id": "DEV-290",
+  "title": "River Development Agent Controlled Execution Integrity Seal Foundation",
+  "status": "foundation",
+  "predecessor": "DEV-289",
+
+  "purpose": "Establish the deterministic terminal integrity-seal boundary over an exact successfully certified DEV-289 controlled execution integrity certification result without granting execution authority, repository mutation authority, network authority, or external side-effect authority.",
+
+  "boundary": {
+    "kind": "controlled-execution-integrity-seal",
+    "terminalIntegrityBoundary": true,
+    "defaultPolicy": "DENY",
+    "deterministicDataOnly": true,
+    "executionAuthorityGranted": false,
+    "repositoryMutationAuthorityGranted": false,
+    "networkExecutionAuthorityGranted": false,
+    "externalSideEffectAuthorityGranted": false
+  },
+
+  "predecessorRequirements": {
+    "version": "DEV-289",
+    "trusted": true,
+    "ready": true,
+    "executionIntegrityCertified": true,
+    "defaultPolicy": "DENY",
+    "controlledExecutionIntegrityCertificationBoundaryOnly": true,
+    "executionIntegrityCertificationResultIsDeterministicData": true,
+    "executionIntegrityCertificationState": "CONTROLLED_EXECUTION_INTEGRITY_CERTIFIED",
+    "blockedReasonsMustBeEmpty": true
+  },
+
+  "sealRequirements": {
+    "exactPredecessorRequired": true,
+    "preservePredecessorEvidenceWithoutMutation": true,
+    "preserveApprovedExecutionScopeWithoutMutation": true,
+    "preserveProvenanceWithoutMutation": true,
+    "terminalSealRequired": true,
+    "futureIntegrityBoundaryRequired": false,
+    "sealResultMustBeDeterministicData": true,
+    "sealMustNotExecuteOperations": true,
+    "sealMustNotModifyRepository": true,
+    "sealMustNotPush": true,
+    "sealMustNotDeploy": true,
+    "sealMustNotAccessSecrets": true,
+    "sealMustNotPerformNetworkExecution": true,
+    "sealMustNotPerformExternalSideEffects": true
+  },
+
+  "resultContract": {
+    "version": "DEV-290",
+    "defaultPolicy": "DENY",
+    "controlledExecutionIntegritySealBoundaryOnly": true,
+    "executionIntegritySealResultIsDeterministicData": true,
+    "executionIntegritySealed": true,
+    "executionIntegritySealState": "CONTROLLED_EXECUTION_INTEGRITY_SEALED",
+    "terminalControlledExecutionIntegrityBoundary": true,
+    "futureControlledExecutionIntegrityBoundaryRequired": false
+  },
+
+  "authority": {
+    "mayCreateExecutionAuthorization": false,
+    "mayAuthorizeDownstreamAction": false,
+    "mayAdmitIntoActiveExecutor": false,
+    "mayActivateAdmission": false,
+    "mayDispatch": false,
+    "mayInvokeExecutor": false,
+    "mayExecuteOperation": false,
+    "mayInvokeInspectionDependency": false,
+    "mayRetryExecution": false,
+    "mayPersistLifecycleState": false,
+    "mayModifyRepository": false,
+    "mayDeleteRepositoryContent": false,
+    "mayStageRepositoryChanges": false,
+    "mayCommit": false,
+    "mayPush": false,
+    "mayDeploy": false,
+    "mayAccessSecrets": false,
+    "mayExpandScope": false,
+    "mayPerformArbitraryShellExecution": false,
+    "mayPerformNetworkExecution": false,
+    "mayPerformExternalSideEffects": false
+  },
+
+  "evidence": {
+    "preserveControlledDispatchEvidence": true,
+    "preserveExecutorInvocationAuthorizationEvidence": true,
+    "preserveControlledExecutorInvocationEvidence": true,
+    "preserveOperationExecutionAuthorizationEvidence": true,
+    "preserveControlledOperationExecutionEvidence": true,
+    "preserveControlledOperationExecutionReceiptEvidence": true,
+    "preserveControlledOperationExecutionLifecycleEvidence": true,
+    "preserveControlledExecutionCompletionEvidence": true,
+    "preserveControlledExecutionFinalizationEvidence": true,
+    "preserveControlledExecutionClosureEvidence": true,
+    "preserveControlledExecutionArchiveEvidence": true,
+    "preserveControlledExecutionAuditEvidence": true,
+    "preserveControlledExecutionAttestationEvidence": true,
+    "preserveControlledExecutionVerificationEvidence": true,
+    "preserveControlledExecutionCertificationEvidence": true,
+    "preserveControlledExecutionSealEvidence": true,
+    "preserveControlledExecutionIntegrityEvidence": true,
+    "preserveControlledExecutionIntegrityVerificationEvidence": true,
+    "preserveControlledExecutionIntegrityCertificationEvidence": true,
+    "appendControlledExecutionIntegritySealEvidence": true
+  },
+
+  "acceptanceCriteria": [
+    "DEV-290 accepts only an exact trusted ready successfully certified DEV-289 predecessor.",
+    "DEV-290 rejects any predecessor with blocked reasons.",
+    "DEV-290 preserves predecessor evidence, provenance, and approved execution scope without mutation.",
+    "DEV-290 produces deterministic integrity-seal data.",
+    "DEV-290 establishes a terminal controlled execution integrity boundary.",
+    "DEV-290 does not require another future controlled execution integrity boundary.",
+    "DEV-290 grants no execution authority.",
+    "DEV-290 grants no repository mutation authority.",
+    "DEV-290 grants no push or deployment authority.",
+    "DEV-290 grants no network execution authority.",
+    "DEV-290 grants no external side-effect authority.",
+    "DEV-290 remains default-deny."
+  ]
+}

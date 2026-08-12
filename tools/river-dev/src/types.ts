@@ -10053,3 +10053,169 @@ export interface RiverDevControlledExecutionIntegrityCertificationFoundationResu
   mayPerformNetworkExecution: false;
   mayPerformExternalSideEffects: false;
 }
+
+export interface RiverDevControlledExecutionIntegritySealFoundationResult {
+  version: "DEV-290";
+
+  trusted: boolean;
+  ready: boolean;
+  executionIntegritySealed: boolean;
+
+  defaultPolicy: "DENY";
+
+  controlledExecutionIntegritySealBoundaryOnly: true;
+  executionIntegritySealResultIsDeterministicData: true;
+
+  executionIntegritySealState:
+    | "CONTROLLED_EXECUTION_INTEGRITY_SEALED"
+    | "CONTROLLED_EXECUTION_INTEGRITY_NOT_SEALED";
+
+  terminalControlledExecutionIntegrityBoundary: true;
+  futureControlledExecutionIntegrityBoundaryRequired: false;
+
+  controlledExecutionIntegrityCertification:
+    RiverDevControlledExecutionIntegrityCertificationFoundationResult | null;
+
+  controlledExecutionIntegrityVerification:
+    RiverDevControlledExecutionIntegrityVerificationFoundationResult | null;
+
+  controlledExecutionIntegrity:
+    RiverDevControlledExecutionIntegrityFoundationResult | null;
+
+  controlledExecutionSeal:
+    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionSeal"];
+
+  controlledExecutionCertification:
+    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionCertification"];
+
+  controlledExecutionVerification:
+    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionVerification"];
+
+  controlledExecutionAttestation:
+    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionAttestation"];
+
+  controlledExecutionAudit:
+    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionAudit"];
+
+  controlledExecutionArchive:
+    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionArchive"];
+
+  controlledExecutionClosure:
+    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionClosure"];
+
+  controlledExecutionFinalization:
+    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionFinalization"];
+
+  controlledExecutionCompletion:
+    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionCompletion"];
+
+  controlledOperationExecutionLifecycle:
+    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledOperationExecutionLifecycle"];
+
+  controlledOperationExecutionReceipt:
+    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledOperationExecutionReceipt"];
+
+  controlledOperationExecution:
+    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledOperationExecution"];
+
+  operationExecutionAuthorization:
+    RiverDevControlledExecutionIntegrityCertificationFoundationResult["operationExecutionAuthorization"];
+
+  controlledExecutorInvocation:
+    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutorInvocation"];
+
+  controlledDispatch:
+    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledDispatch"];
+
+  dispatchAuthorization:
+    RiverDevControlledExecutionIntegrityCertificationFoundationResult["dispatchAuthorization"];
+
+  activeAdmission:
+    RiverDevControlledExecutionIntegrityCertificationFoundationResult["activeAdmission"];
+
+  authorization:
+    RiverDevControlledExecutionIntegrityCertificationFoundationResult["authorization"];
+
+  eligibility:
+    RiverDevControlledExecutionIntegrityCertificationFoundationResult["eligibility"];
+
+  consumption:
+    RiverDevControlledExecutionIntegrityCertificationFoundationResult["consumption"];
+
+  receiptState:
+    RiverDevControlledExecutionIntegrityCertificationFoundationResult["receiptState"];
+
+  executedOperation:
+    RiverDevControlledExecutionIntegrityCertificationFoundationResult["executedOperation"];
+
+  approvedExecutionScope: string[];
+
+  provenance: string[];
+
+  controlledDispatchEvidence: string[];
+
+  executorInvocationAuthorizationEvidence: string[];
+
+  controlledExecutorInvocationEvidence: string[];
+
+  operationExecutionAuthorizationEvidence: string[];
+
+  controlledOperationExecutionEvidence: string[];
+
+  controlledOperationExecutionReceiptEvidence: string[];
+
+  controlledOperationExecutionLifecycleEvidence: string[];
+
+  controlledExecutionCompletionEvidence: string[];
+
+  controlledExecutionFinalizationEvidence: string[];
+
+  controlledExecutionClosureEvidence: string[];
+
+  controlledExecutionArchiveEvidence: string[];
+
+  controlledExecutionAuditEvidence: string[];
+
+  controlledExecutionAttestationEvidence: string[];
+
+  controlledExecutionVerificationEvidence: string[];
+
+  controlledExecutionCertificationEvidence: string[];
+
+  controlledExecutionSealEvidence: string[];
+
+  controlledExecutionIntegrityEvidence: string[];
+
+  controlledExecutionIntegrityVerificationEvidence: string[];
+
+  controlledExecutionIntegrityCertificationEvidence: string[];
+
+  controlledExecutionIntegritySealEvidence: string[];
+
+  blockedReasons: string[];
+
+  mayCreateExecutionAuthorization: false;
+  mayAuthorizeDownstreamAction: false;
+  mayAdmitIntoActiveExecutor: false;
+  mayActivateAdmission: false;
+  mayDispatch: false;
+
+  mayInvokeExecutor: false;
+  mayExecuteOperation: false;
+  mayInvokeInspectionDependency: false;
+  mayRetryExecution: false;
+  mayPersistLifecycleState: false;
+
+  mayModifyRepository: false;
+  mayDeleteRepositoryContent: false;
+  mayStageRepositoryChanges: false;
+  mayCommit: false;
+  mayPush: false;
+  mayDeploy: false;
+
+  mayAccessSecrets: false;
+  mayExpandScope: false;
+  mayPerformArbitraryShellExecution: false;
+  mayPerformNetworkExecution: false;
+  mayPerformExternalSideEffects: false;
+}
