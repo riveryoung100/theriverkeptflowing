@@ -1,0 +1,105 @@
+﻿{
+  "version": "DEV-277",
+  "name": "River Development Agent Controlled Operation Execution Lifecycle Foundation",
+  "architecture": "GENERATION III CONTROLLED OPERATION EXECUTION LIFECYCLE FOUNDATION",
+
+  "predecessor": {
+    "version": "DEV-276",
+    "contract": "RiverDevControlledOperationExecutionReceiptFoundationResult",
+
+    "requiredTrusted": true,
+    "requiredReady": true,
+    "requiredExecutionReceiptCreated": true,
+
+    "requiredDefaultPolicy": "DENY",
+
+    "requiredReceiptBoundaryOnly": true,
+    "requiredReceiptResultIsDeterministicData": true,
+
+    "requiredReceiptState": "CONTROLLED_OPERATION_EXECUTION_RECEIPT_CREATED",
+
+    "requiredSingleExecutionReceiptOnly": true,
+    "requiredReceiptPreservesExactExecutionScope": true,
+    "requiredReceiptPreservesPredecessorEvidence": true,
+    "requiredReceiptPreservesExecutionEvidence": true,
+
+    "requiredMayInvokeExecutor": false,
+    "requiredMayExecuteOperation": false,
+    "requiredMayRetryExecution": false,
+    "requiredMayPersistLifecycleState": false,
+    "requiredMayModifyRepository": false,
+    "requiredMayCommit": false,
+    "requiredMayPush": false,
+
+    "requiredFutureExecutionLifecycleBoundary": true
+  },
+
+  "controlledOperationExecutionLifecycleModel": {
+    "defaultPolicy": "DENY",
+
+    "lifecycleBoundaryOnly": true,
+    "lifecycleResultIsDeterministicData": true,
+
+    "lifecycleState": "CONTROLLED_OPERATION_EXECUTION_LIFECYCLE_ESTABLISHED",
+    "lifecycleNotEstablishedState": "CONTROLLED_OPERATION_EXECUTION_LIFECYCLE_NOT_ESTABLISHED",
+
+    "singleLifecycleTransitionOnly": true,
+    "lifecycleMustPreserveExactExecutionScope": true,
+    "lifecycleMustPreserveReceiptEvidence": true,
+    "lifecycleMustPreserveExecutionEvidence": true,
+    "lifecycleMustPreservePredecessorEvidence": true,
+
+    "mayCreateExecutionAuthorization": false,
+    "mayAuthorizeDownstreamAction": false,
+    "mayAdmitIntoActiveExecutor": false,
+    "mayActivateAdmission": false,
+    "mayDispatch": false,
+
+    "mayInvokeExecutor": false,
+    "mayExecuteOperation": false,
+    "mayInvokeInspectionDependency": false,
+    "mayRetryExecution": false,
+    "mayPersistLifecycleState": false,
+
+    "mayModifyRepository": false,
+    "mayDeleteRepositoryContent": false,
+    "mayStageRepositoryChanges": false,
+    "mayCommit": false,
+    "mayPush": false,
+    "mayDeploy": false,
+
+    "mayAccessSecrets": false,
+    "mayExpandScope": false,
+    "mayPerformArbitraryShellExecution": false,
+    "mayPerformNetworkExecution": false,
+    "mayPerformExternalSideEffects": false,
+
+    "futureControlledExecutionCompletionBoundaryRequired": true
+  },
+
+  "invariants": [
+    "DEV-277 consumes only the exact DEV-276 controlled operation execution receipt result contract.",
+    "DEV-277 denies lifecycle establishment when the DEV-276 predecessor is malformed, untrusted, unready, missing a receipt, blocked, inconsistent, or missing required evidence.",
+    "DEV-277 creates deterministic lifecycle data only.",
+    "DEV-277 does not execute or re-execute an operation.",
+    "DEV-277 does not retry execution.",
+    "DEV-277 does not invoke an executor.",
+    "DEV-277 does not persist lifecycle state.",
+    "DEV-277 preserves the exact approved execution scope.",
+    "DEV-277 preserves predecessor provenance, execution evidence, and receipt evidence.",
+    "DEV-277 does not expand execution scope.",
+    "DEV-277 does not create new execution authorization.",
+    "DEV-277 does not modify repository content.",
+    "DEV-277 does not delete repository content.",
+    "DEV-277 does not stage repository changes.",
+    "DEV-277 does not commit.",
+    "DEV-277 does not push.",
+    "DEV-277 does not deploy.",
+    "DEV-277 does not access secrets.",
+    "DEV-277 does not perform arbitrary shell execution.",
+    "DEV-277 does not perform network execution.",
+    "DEV-277 does not perform external side effects.",
+    "Rejected predecessor payloads release no trusted predecessor payload.",
+    "A future explicit controlled execution completion boundary is required before downstream progression."
+  ]
+}
