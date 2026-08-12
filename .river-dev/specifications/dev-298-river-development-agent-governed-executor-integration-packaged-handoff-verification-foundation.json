@@ -1,0 +1,36 @@
+{
+  "version": "DEV-298",
+  "name": "River Development Agent Governed Executor Integration Packaged Handoff Verification Foundation",
+  "predecessor": {
+    "version": "DEV-297",
+    "contract": "RiverDevGovernedExecutorIntegrationAcceptedHandoffPackagingFoundationResult"
+  },
+  "objective": "Verify an exact trusted DEV-297 governed executor integration accepted handoff package as inert decision data for a future admission boundary while preserving valid evidence continuity, containing rejected data, and granting zero downstream authority.",
+  "verificationModel": {
+    "defaultPolicy": "DENY",
+    "verificationOnly": true,
+    "verificationResultIsInertData": true,
+    "successfulEvidencePreservationRequired": true,
+    "rejectedDataContainmentRequired": true,
+    "inheritedAuthorityRejected": true,
+    "futureAdmissionBoundaryRequired": true,
+    "mayCreateExecutionAuthorization": false,
+    "mayAuthorizeDownstreamAction": false,
+    "mayDispatch": false,
+    "mayInvokeExecutor": false,
+    "mayExecuteOperation": false,
+    "mayInvokeInspectionDependency": false,
+    "mayRetryExecution": false,
+    "mayPersistLifecycleState": false,
+    "mayModifyRepository": false,
+    "mayDeleteRepositoryContent": false,
+    "mayStageRepositoryChanges": false,
+    "mayCommit": false,
+    "mayPush": false,
+    "mayDeploy": false,
+    "mayAccessSecrets": false,
+    "mayExpandScope": false,
+    "mayPerformArbitraryShellExecution": false,
+    "mayPerformExternalSideEffects": false
+  }
+}
