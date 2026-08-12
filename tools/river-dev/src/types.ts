@@ -8137,3 +8137,108 @@ export interface RiverDevControlledOperationExecutionBoundaryFoundationResult {
 
   futureExecutionReceiptBoundaryRequired: true;
 }
+
+export interface RiverDevControlledOperationExecutionReceiptFoundationResult {
+  version: "DEV-276";
+
+  trusted: boolean;
+  ready: boolean;
+  executionReceiptCreated: boolean;
+
+  defaultPolicy: "DENY";
+
+  controlledOperationExecutionReceiptBoundaryOnly: true;
+  executionReceiptResultIsDeterministicData: true;
+
+  executionReceiptState:
+    | "CONTROLLED_OPERATION_EXECUTION_RECEIPT_CREATED"
+    | "CONTROLLED_OPERATION_EXECUTION_RECEIPT_NOT_CREATED";
+
+  controlledOperationExecution:
+    | RiverDevControlledOperationExecutionBoundaryFoundationResult
+    | null;
+
+  operationExecutionAuthorization:
+    | RiverDevControlledOperationExecutionBoundaryFoundationResult["operationExecutionAuthorization"]
+    | null;
+
+  controlledExecutorInvocation:
+    | RiverDevControlledOperationExecutionBoundaryFoundationResult["controlledExecutorInvocation"]
+    | null;
+
+  controlledDispatch:
+    | RiverDevControlledOperationExecutionBoundaryFoundationResult["controlledDispatch"]
+    | null;
+
+  dispatchAuthorization:
+    | RiverDevControlledOperationExecutionBoundaryFoundationResult["dispatchAuthorization"]
+    | null;
+
+  activeAdmission:
+    | RiverDevControlledOperationExecutionBoundaryFoundationResult["activeAdmission"]
+    | null;
+
+  authorization:
+    | RiverDevControlledOperationExecutionBoundaryFoundationResult["authorization"]
+    | null;
+
+  eligibility:
+    | RiverDevControlledOperationExecutionBoundaryFoundationResult["eligibility"]
+    | null;
+
+  consumption:
+    | RiverDevControlledOperationExecutionBoundaryFoundationResult["consumption"]
+    | null;
+
+  receiptState:
+    | RiverDevControlledOperationExecutionBoundaryFoundationResult["receiptState"]
+    | null;
+
+  executedOperation:
+    | RiverDevControlledOperationExecutionBoundaryFoundationResult["executedOperation"]
+    | null;
+
+  approvedExecutionScope: string[];
+  provenance: string[];
+
+  controlledDispatchEvidence: string[];
+  executorInvocationAuthorizationEvidence: string[];
+  controlledExecutorInvocationEvidence: string[];
+  operationExecutionAuthorizationEvidence: string[];
+  controlledOperationExecutionEvidence: string[];
+  controlledOperationExecutionReceiptEvidence: string[];
+
+  blockedReasons: string[];
+
+  singleExecutionReceiptOnly: true;
+  receiptMustPreserveExactExecutionScope: true;
+  receiptMustPreservePredecessorEvidence: true;
+  receiptMustPreserveExecutionEvidence: true;
+
+  mayCreateExecutionAuthorization: false;
+  mayAuthorizeDownstreamAction: false;
+  mayAdmitIntoActiveExecutor: false;
+  mayActivateAdmission: false;
+  mayDispatch: false;
+
+  mayInvokeExecutor: false;
+  mayExecuteOperation: false;
+  mayInvokeInspectionDependency: false;
+  mayRetryExecution: false;
+  mayPersistLifecycleState: false;
+
+  mayModifyRepository: false;
+  mayDeleteRepositoryContent: false;
+  mayStageRepositoryChanges: false;
+  mayCommit: false;
+  mayPush: false;
+  mayDeploy: false;
+
+  mayAccessSecrets: false;
+  mayExpandScope: false;
+  mayPerformArbitraryShellExecution: false;
+  mayPerformNetworkExecution: false;
+  mayPerformExternalSideEffects: false;
+
+  futureExecutionLifecycleBoundaryRequired: true;
+}
