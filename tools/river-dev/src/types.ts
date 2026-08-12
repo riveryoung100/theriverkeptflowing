@@ -8039,3 +8039,101 @@ export interface RiverDevOperationExecutionAuthorizationFoundationResult {
 
   readonly futureControlledOperationExecutionBoundaryRequired: true;
 }
+
+export interface RiverDevControlledOperationExecutionBoundaryFoundationResult {
+  version: "DEV-275";
+
+  trusted: boolean;
+  ready: boolean;
+  operationExecuted: boolean;
+
+  defaultPolicy: "DENY";
+
+  controlledOperationExecutionBoundaryOnly: true;
+  executionResultIsDeterministicData: true;
+
+  executionState:
+    | "CONTROLLED_OPERATION_EXECUTED"
+    | "CONTROLLED_OPERATION_NOT_EXECUTED";
+
+  operationExecutionAuthorization:
+    | RiverDevOperationExecutionAuthorizationFoundationResult
+    | null;
+
+  controlledExecutorInvocation:
+    | RiverDevOperationExecutionAuthorizationFoundationResult["controlledExecutorInvocation"]
+    | null;
+
+  controlledDispatch:
+    | RiverDevOperationExecutionAuthorizationFoundationResult["controlledDispatch"]
+    | null;
+
+  dispatchAuthorization:
+    | RiverDevOperationExecutionAuthorizationFoundationResult["dispatchAuthorization"]
+    | null;
+
+  activeAdmission:
+    | RiverDevOperationExecutionAuthorizationFoundationResult["activeAdmission"]
+    | null;
+
+  authorization:
+    | RiverDevOperationExecutionAuthorizationFoundationResult["authorization"]
+    | null;
+
+  eligibility:
+    | RiverDevOperationExecutionAuthorizationFoundationResult["eligibility"]
+    | null;
+
+  consumption:
+    | RiverDevOperationExecutionAuthorizationFoundationResult["consumption"]
+    | null;
+
+  receiptState:
+    | RiverDevOperationExecutionAuthorizationFoundationResult["receiptState"]
+    | null;
+
+  executedOperation:
+    | RiverDevOperationExecutionAuthorizationFoundationResult["executedOperation"]
+    | null;
+
+  approvedExecutionScope: string[];
+  provenance: string[];
+
+  controlledDispatchEvidence: string[];
+  executorInvocationAuthorizationEvidence: string[];
+  controlledExecutorInvocationEvidence: string[];
+  operationExecutionAuthorizationEvidence: string[];
+  controlledOperationExecutionEvidence: string[];
+
+  blockedReasons: string[];
+
+  singleAuthorizedOperationOnly: true;
+  scopeMustRemainExact: true;
+  predecessorEvidenceMustRemainPresent: true;
+
+  mayCreateExecutionAuthorization: false;
+  mayAuthorizeDownstreamAction: false;
+  mayAdmitIntoActiveExecutor: false;
+  mayActivateAdmission: false;
+  mayDispatch: false;
+
+  mayInvokeExecutor: false;
+  mayInvokeInspectionDependency: false;
+  mayRetryExecution: false;
+  mayPersistLifecycleState: false;
+
+  mayModifyRepositoryBeyondAuthorizedOperation: false;
+  mayDeleteRepositoryContent: false;
+  mayStageRepositoryChanges: false;
+  mayCommit: false;
+  mayPush: false;
+  mayDeploy: false;
+
+  mayAccessSecrets: false;
+  mayExpandScope: false;
+  mayPerformArbitraryShellExecution: false;
+  mayPerformNetworkExecution: false;
+  mayPerformExternalSideEffectsBeyondAuthorizedOperation: false;
+
+  futureExecutionReceiptBoundaryRequired: true;
+}
