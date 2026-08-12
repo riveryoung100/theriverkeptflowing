@@ -1,0 +1,41 @@
+﻿{
+  "id": "DEV-294",
+  "title": "River Development Agent Governed Executor Integration Handoff Foundation",
+  "status": "implementation",
+  "defaultPolicy": "DENY",
+  "predecessor": {
+    "id": "DEV-293",
+    "source": "governed-executor-integration-acceptance-foundation"
+  },
+  "objective": "Create a deterministic fail-closed inert handoff from the exact accepted DEV-293 governed executor integration acceptance result to a future explicit downstream boundary without creating authorization, invoking an executor, executing an operation, or modifying repository state.",
+  "handoffBoundary": {
+    "handoffOnly": true,
+    "resultIsInertData": true,
+    "readyState": "GOVERNED_EXECUTOR_INTEGRATION_HANDOFF_READY",
+    "blockedState": "GOVERNED_EXECUTOR_INTEGRATION_HANDOFF_BLOCKED",
+    "futureDownstreamBoundaryRequired": true
+  },
+  "requirements": [
+    "DEV-293 predecessor identity and source must be exact.",
+    "DEV-293 must remain trusted, ready, and accepted.",
+    "DEV-293 acceptance state must be GOVERNED_EXECUTOR_INTEGRATION_ACCEPTED.",
+    "Default policy must remain DENY.",
+    "DEV-293 acceptance must remain decision-only and inert data.",
+    "DEV-293 must contain no blocked reasons.",
+    "DEV-293 must grant no prohibited authority.",
+    "Verification state and evidence must be preserved only when handoff-ready.",
+    "Acceptance evidence must be preserved only when handoff-ready.",
+    "The handoff must remain inert data.",
+    "Any downstream authorization or action requires a separate explicit future boundary."
+  ],
+  "prohibitedAuthority": {
+    "createAuthorization": false,
+    "authorizeDownstreamAction": false,
+    "expandScope": false,
+    "modifyRepository": false,
+    "invokeExecutor": false,
+    "executeOperation": false,
+    "push": false,
+    "deploy": false
+  }
+}

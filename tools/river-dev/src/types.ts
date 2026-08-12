@@ -10325,3 +10325,51 @@ export interface RiverDevGovernedExecutorIntegrationAcceptanceFoundation {
   acceptanceMayPush: false;
   acceptanceMayDeploy: false;
 }
+/**
+ * DEV-294 governed executor integration handoff foundation.
+ *
+ * This boundary converts an exact accepted DEV-293 result into an inert,
+ * provenance-preserving downstream handoff. Handoff readiness grants no
+ * authorization, invocation, execution, repository, push, deployment,
+ * scope-expansion, or downstream-action authority.
+ */
+export type RiverDevGovernedExecutorIntegrationHandoffState =
+  | "GOVERNED_EXECUTOR_INTEGRATION_HANDOFF_READY"
+  | "GOVERNED_EXECUTOR_INTEGRATION_HANDOFF_BLOCKED";
+
+export interface RiverDevGovernedExecutorIntegrationHandoffFoundationInput {
+  acceptance: RiverDevGovernedExecutorIntegrationAcceptanceFoundation;
+}
+
+export interface RiverDevGovernedExecutorIntegrationHandoffFoundation {
+  version: "DEV-294";
+  source: "governed-executor-integration-handoff-foundation";
+
+  trusted: boolean;
+  ready: boolean;
+  handoffReady: boolean;
+
+  defaultPolicy: "DENY";
+  handoffOnly: true;
+  handoffResultIsInertData: true;
+  futureDownstreamBoundaryRequired: true;
+
+  handoffState: RiverDevGovernedExecutorIntegrationHandoffState;
+
+  acceptance: RiverDevGovernedExecutorIntegrationAcceptanceFoundation;
+
+  verificationState: string[];
+  verificationEvidence: string[];
+  acceptanceEvidence: string[];
+  handoffEvidence: string[];
+  blockedReasons: string[];
+
+  handoffMayCreateAuthorization: false;
+  handoffMayAuthorizeDownstreamAction: false;
+  handoffMayExpandScope: false;
+  handoffMayModifyRepository: false;
+  handoffMayInvokeExecutor: false;
+  handoffMayExecuteOperation: false;
+  handoffMayPush: false;
+  handoffMayDeploy: false;
+}
