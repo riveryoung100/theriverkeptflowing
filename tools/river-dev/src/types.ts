@@ -8886,3 +8886,132 @@ export interface RiverDevControlledExecutionArchiveFoundationResult {
 
   futureControlledExecutionAuditBoundaryRequired: true;
 }
+export interface RiverDevControlledExecutionAuditFoundationResult {
+  version: "DEV-282";
+
+  trusted: boolean;
+  ready: boolean;
+  executionAudited: boolean;
+
+  defaultPolicy: "DENY";
+
+  controlledExecutionAuditBoundaryOnly: true;
+  executionAuditResultIsDeterministicData: true;
+
+  executionAuditState:
+    | "CONTROLLED_EXECUTION_AUDITED"
+    | "CONTROLLED_EXECUTION_NOT_AUDITED";
+
+  controlledExecutionArchive:
+    | RiverDevControlledExecutionArchiveFoundationResult
+    | null;
+
+  controlledExecutionClosure:
+    | RiverDevControlledExecutionArchiveFoundationResult["controlledExecutionClosure"]
+    | null;
+
+  controlledExecutionFinalization:
+    | RiverDevControlledExecutionArchiveFoundationResult["controlledExecutionFinalization"]
+    | null;
+
+  controlledExecutionCompletion:
+    | RiverDevControlledExecutionArchiveFoundationResult["controlledExecutionCompletion"]
+    | null;
+
+  controlledOperationExecutionLifecycle:
+    | RiverDevControlledExecutionArchiveFoundationResult["controlledOperationExecutionLifecycle"]
+    | null;
+
+  controlledOperationExecutionReceipt:
+    | RiverDevControlledExecutionArchiveFoundationResult["controlledOperationExecutionReceipt"]
+    | null;
+
+  controlledOperationExecution:
+    | RiverDevControlledExecutionArchiveFoundationResult["controlledOperationExecution"]
+    | null;
+
+  operationExecutionAuthorization:
+    | RiverDevControlledExecutionArchiveFoundationResult["operationExecutionAuthorization"]
+    | null;
+
+  controlledExecutorInvocation:
+    | RiverDevControlledExecutionArchiveFoundationResult["controlledExecutorInvocation"]
+    | null;
+
+  controlledDispatch:
+    | RiverDevControlledExecutionArchiveFoundationResult["controlledDispatch"]
+    | null;
+
+  dispatchAuthorization:
+    | RiverDevControlledExecutionArchiveFoundationResult["dispatchAuthorization"]
+    | null;
+
+  activeAdmission:
+    | RiverDevControlledExecutionArchiveFoundationResult["activeAdmission"]
+    | null;
+
+  authorization:
+    | RiverDevControlledExecutionArchiveFoundationResult["authorization"]
+    | null;
+
+  eligibility:
+    | RiverDevControlledExecutionArchiveFoundationResult["eligibility"]
+    | null;
+
+  consumption:
+    | RiverDevControlledExecutionArchiveFoundationResult["consumption"]
+    | null;
+
+  receiptState:
+    | RiverDevControlledExecutionArchiveFoundationResult["receiptState"]
+    | null;
+
+  executedOperation:
+    | RiverDevControlledExecutionArchiveFoundationResult["executedOperation"]
+    | null;
+
+  approvedExecutionScope: string[];
+  provenance: string[];
+
+  controlledDispatchEvidence: string[];
+  executorInvocationAuthorizationEvidence: string[];
+  controlledExecutorInvocationEvidence: string[];
+  operationExecutionAuthorizationEvidence: string[];
+  controlledOperationExecutionEvidence: string[];
+  controlledOperationExecutionReceiptEvidence: string[];
+  controlledOperationExecutionLifecycleEvidence: string[];
+  controlledExecutionCompletionEvidence: string[];
+  controlledExecutionFinalizationEvidence: string[];
+  controlledExecutionClosureEvidence: string[];
+  controlledExecutionArchiveEvidence: string[];
+  controlledExecutionAuditEvidence: string[];
+
+  blockedReasons: string[];
+
+  mayCreateExecutionAuthorization: false;
+  mayAuthorizeDownstreamAction: false;
+  mayAdmitIntoActiveExecutor: false;
+  mayActivateAdmission: false;
+  mayDispatch: false;
+
+  mayInvokeExecutor: false;
+  mayExecuteOperation: false;
+  mayInvokeInspectionDependency: false;
+  mayRetryExecution: false;
+  mayPersistLifecycleState: false;
+
+  mayModifyRepository: false;
+  mayDeleteRepositoryContent: false;
+  mayStageRepositoryChanges: false;
+  mayCommit: false;
+  mayPush: false;
+  mayDeploy: false;
+
+  mayAccessSecrets: false;
+  mayExpandScope: false;
+  mayPerformArbitraryShellExecution: false;
+  mayPerformNetworkExecution: false;
+  mayPerformExternalSideEffects: false;
+
+  futureControlledExecutionAttestationBoundaryRequired: true;
+}

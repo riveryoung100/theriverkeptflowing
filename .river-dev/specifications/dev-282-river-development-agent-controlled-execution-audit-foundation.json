@@ -1,0 +1,105 @@
+﻿{
+  "version": "DEV-282",
+  "name": "River Development Agent Controlled Execution Audit Foundation",
+  "architecture": "GENERATION III CONTROLLED EXECUTION AUDIT FOUNDATION",
+
+  "predecessor": {
+    "version": "DEV-281",
+    "contract": "RiverDevControlledExecutionArchiveFoundationResult",
+
+    "requiredTrusted": true,
+    "requiredReady": true,
+    "requiredExecutionArchived": true,
+
+    "requiredDefaultPolicy": "DENY",
+
+    "requiredArchiveBoundaryOnly": true,
+    "requiredArchiveResultIsDeterministicData": true,
+
+    "requiredArchiveState": "CONTROLLED_EXECUTION_ARCHIVED",
+
+    "requiredMayInvokeExecutor": false,
+    "requiredMayExecuteOperation": false,
+    "requiredMayRetryExecution": false,
+    "requiredMayPersistLifecycleState": false,
+    "requiredMayModifyRepository": false,
+    "requiredMayCommit": false,
+    "requiredMayPush": false,
+
+    "requiredFutureControlledExecutionAuditBoundary": true
+  },
+
+  "controlledExecutionAuditModel": {
+    "defaultPolicy": "DENY",
+
+    "auditBoundaryOnly": true,
+    "auditResultIsDeterministicData": true,
+
+    "auditState": "CONTROLLED_EXECUTION_AUDITED",
+    "auditNotEstablishedState": "CONTROLLED_EXECUTION_NOT_AUDITED",
+
+    "singleAuditTransitionOnly": true,
+    "auditMustPreserveExactExecutionScope": true,
+    "auditMustPreserveArchiveEvidence": true,
+    "auditMustPreserveClosureEvidence": true,
+    "auditMustPreserveFinalizationEvidence": true,
+    "auditMustPreserveCompletionEvidence": true,
+    "auditMustPreserveLifecycleEvidence": true,
+    "auditMustPreserveReceiptEvidence": true,
+    "auditMustPreserveExecutionEvidence": true,
+    "auditMustPreservePredecessorEvidence": true,
+
+    "mayCreateExecutionAuthorization": false,
+    "mayAuthorizeDownstreamAction": false,
+    "mayAdmitIntoActiveExecutor": false,
+    "mayActivateAdmission": false,
+    "mayDispatch": false,
+
+    "mayInvokeExecutor": false,
+    "mayExecuteOperation": false,
+    "mayInvokeInspectionDependency": false,
+    "mayRetryExecution": false,
+    "mayPersistLifecycleState": false,
+
+    "mayModifyRepository": false,
+    "mayDeleteRepositoryContent": false,
+    "mayStageRepositoryChanges": false,
+    "mayCommit": false,
+    "mayPush": false,
+    "mayDeploy": false,
+
+    "mayAccessSecrets": false,
+    "mayExpandScope": false,
+    "mayPerformArbitraryShellExecution": false,
+    "mayPerformNetworkExecution": false,
+    "mayPerformExternalSideEffects": false,
+
+    "futureControlledExecutionAttestationBoundaryRequired": true
+  },
+
+  "invariants": [
+    "DEV-282 consumes only the exact DEV-281 controlled execution archive result contract.",
+    "DEV-282 denies audit establishment when the DEV-281 predecessor is malformed, untrusted, unready, unarchived, blocked, inconsistent, or missing required archive evidence.",
+    "DEV-282 creates deterministic audit data only.",
+    "DEV-282 does not execute or re-execute an operation.",
+    "DEV-282 does not retry execution.",
+    "DEV-282 does not invoke an executor.",
+    "DEV-282 does not persist lifecycle state.",
+    "DEV-282 preserves the exact approved execution scope.",
+    "DEV-282 preserves predecessor provenance and the complete execution/archive evidence chain.",
+    "DEV-282 does not expand execution scope.",
+    "DEV-282 does not create new execution authorization.",
+    "DEV-282 does not modify repository content.",
+    "DEV-282 does not delete repository content.",
+    "DEV-282 does not stage repository changes.",
+    "DEV-282 does not commit.",
+    "DEV-282 does not push.",
+    "DEV-282 does not deploy.",
+    "DEV-282 does not access secrets.",
+    "DEV-282 does not perform arbitrary shell execution.",
+    "DEV-282 does not perform network execution.",
+    "DEV-282 does not perform external side effects.",
+    "Rejected predecessor payloads release no trusted predecessor payload.",
+    "A future explicit controlled execution attestation boundary is required before downstream progression."
+  ]
+}
