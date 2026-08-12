@@ -1,0 +1,111 @@
+﻿{
+  "version": "DEV-280",
+  "name": "River Development Agent Controlled Execution Closure Foundation",
+  "architecture": "GENERATION III CONTROLLED EXECUTION CLOSURE FOUNDATION",
+
+  "predecessor": {
+    "version": "DEV-279",
+    "contract": "RiverDevControlledExecutionFinalizationFoundationResult",
+
+    "requiredTrusted": true,
+    "requiredReady": true,
+    "requiredExecutionFinalized": true,
+
+    "requiredDefaultPolicy": "DENY",
+
+    "requiredFinalizationBoundaryOnly": true,
+    "requiredFinalizationResultIsDeterministicData": true,
+
+    "requiredFinalizationState": "CONTROLLED_EXECUTION_FINALIZED",
+
+    "requiredSingleFinalizationTransitionOnly": true,
+    "requiredFinalizationPreservesExactExecutionScope": true,
+    "requiredFinalizationPreservesCompletionEvidence": true,
+    "requiredFinalizationPreservesLifecycleEvidence": true,
+    "requiredFinalizationPreservesReceiptEvidence": true,
+    "requiredFinalizationPreservesExecutionEvidence": true,
+    "requiredFinalizationPreservesPredecessorEvidence": true,
+
+    "requiredMayInvokeExecutor": false,
+    "requiredMayExecuteOperation": false,
+    "requiredMayRetryExecution": false,
+    "requiredMayPersistLifecycleState": false,
+    "requiredMayModifyRepository": false,
+    "requiredMayCommit": false,
+    "requiredMayPush": false,
+
+    "requiredFutureControlledExecutionClosureBoundary": true
+  },
+
+  "controlledExecutionClosureModel": {
+    "defaultPolicy": "DENY",
+
+    "closureBoundaryOnly": true,
+    "closureResultIsDeterministicData": true,
+
+    "closureState": "CONTROLLED_EXECUTION_CLOSED",
+    "closureNotEstablishedState": "CONTROLLED_EXECUTION_NOT_CLOSED",
+
+    "singleClosureTransitionOnly": true,
+    "closureMustPreserveExactExecutionScope": true,
+    "closureMustPreserveFinalizationEvidence": true,
+    "closureMustPreserveCompletionEvidence": true,
+    "closureMustPreserveLifecycleEvidence": true,
+    "closureMustPreserveReceiptEvidence": true,
+    "closureMustPreserveExecutionEvidence": true,
+    "closureMustPreservePredecessorEvidence": true,
+
+    "mayCreateExecutionAuthorization": false,
+    "mayAuthorizeDownstreamAction": false,
+    "mayAdmitIntoActiveExecutor": false,
+    "mayActivateAdmission": false,
+    "mayDispatch": false,
+
+    "mayInvokeExecutor": false,
+    "mayExecuteOperation": false,
+    "mayInvokeInspectionDependency": false,
+    "mayRetryExecution": false,
+    "mayPersistLifecycleState": false,
+
+    "mayModifyRepository": false,
+    "mayDeleteRepositoryContent": false,
+    "mayStageRepositoryChanges": false,
+    "mayCommit": false,
+    "mayPush": false,
+    "mayDeploy": false,
+
+    "mayAccessSecrets": false,
+    "mayExpandScope": false,
+    "mayPerformArbitraryShellExecution": false,
+    "mayPerformNetworkExecution": false,
+    "mayPerformExternalSideEffects": false,
+
+    "futureControlledExecutionArchiveBoundaryRequired": true
+  },
+
+  "invariants": [
+    "DEV-280 consumes only the exact DEV-279 controlled execution finalization result contract.",
+    "DEV-280 denies closure when the DEV-279 predecessor is malformed, untrusted, unready, unfinalized, blocked, inconsistent, or missing required finalization evidence.",
+    "DEV-280 creates deterministic closure data only.",
+    "DEV-280 does not execute or re-execute an operation.",
+    "DEV-280 does not retry execution.",
+    "DEV-280 does not invoke an executor.",
+    "DEV-280 does not persist lifecycle state.",
+    "DEV-280 preserves the exact approved execution scope.",
+    "DEV-280 preserves predecessor provenance, execution evidence, receipt evidence, lifecycle evidence, completion evidence, and finalization evidence.",
+    "DEV-280 does not expand execution scope.",
+    "DEV-280 does not create new execution authorization.",
+    "DEV-280 does not modify repository content.",
+    "DEV-280 does not delete repository content.",
+    "DEV-280 does not stage repository changes.",
+    "DEV-280 does not commit.",
+    "DEV-280 does not push.",
+    "DEV-280 does not deploy.",
+    "DEV-280 does not access secrets.",
+    "DEV-280 does not perform arbitrary shell execution.",
+    "DEV-280 does not perform network execution.",
+    "DEV-280 does not perform external side effects.",
+    "Rejected predecessor payloads release no trusted predecessor payload.",
+    "A future explicit controlled execution archive boundary is required before downstream progression."
+  ]
+}
