@@ -1,0 +1,107 @@
+﻿{
+  "version": "DEV-284",
+  "name": "River Development Agent Controlled Execution Verification Foundation",
+  "architecture": "GENERATION III CONTROLLED EXECUTION VERIFICATION FOUNDATION",
+
+  "predecessor": {
+    "version": "DEV-283",
+    "contract": "RiverDevControlledExecutionAttestationFoundationResult",
+
+    "requiredTrusted": true,
+    "requiredReady": true,
+    "requiredExecutionAttested": true,
+
+    "requiredDefaultPolicy": "DENY",
+
+    "requiredAttestationBoundaryOnly": true,
+    "requiredAttestationResultIsDeterministicData": true,
+
+    "requiredAttestationState": "CONTROLLED_EXECUTION_ATTESTED",
+
+    "requiredMayInvokeExecutor": false,
+    "requiredMayExecuteOperation": false,
+    "requiredMayRetryExecution": false,
+    "requiredMayPersistLifecycleState": false,
+    "requiredMayModifyRepository": false,
+    "requiredMayCommit": false,
+    "requiredMayPush": false,
+
+    "requiredFutureControlledExecutionVerificationBoundary": true
+  },
+
+  "controlledExecutionVerificationModel": {
+    "defaultPolicy": "DENY",
+
+    "verificationBoundaryOnly": true,
+    "verificationResultIsDeterministicData": true,
+
+    "verificationState": "CONTROLLED_EXECUTION_VERIFIED",
+    "verificationNotEstablishedState": "CONTROLLED_EXECUTION_NOT_VERIFIED",
+
+    "singleVerificationTransitionOnly": true,
+    "verificationMustPreserveExactExecutionScope": true,
+    "verificationMustPreserveAttestationEvidence": true,
+    "verificationMustPreserveAuditEvidence": true,
+    "verificationMustPreserveArchiveEvidence": true,
+    "verificationMustPreserveClosureEvidence": true,
+    "verificationMustPreserveFinalizationEvidence": true,
+    "verificationMustPreserveCompletionEvidence": true,
+    "verificationMustPreserveLifecycleEvidence": true,
+    "verificationMustPreserveReceiptEvidence": true,
+    "verificationMustPreserveExecutionEvidence": true,
+    "verificationMustPreservePredecessorEvidence": true,
+
+    "mayCreateExecutionAuthorization": false,
+    "mayAuthorizeDownstreamAction": false,
+    "mayAdmitIntoActiveExecutor": false,
+    "mayActivateAdmission": false,
+    "mayDispatch": false,
+
+    "mayInvokeExecutor": false,
+    "mayExecuteOperation": false,
+    "mayInvokeInspectionDependency": false,
+    "mayRetryExecution": false,
+    "mayPersistLifecycleState": false,
+
+    "mayModifyRepository": false,
+    "mayDeleteRepositoryContent": false,
+    "mayStageRepositoryChanges": false,
+    "mayCommit": false,
+    "mayPush": false,
+    "mayDeploy": false,
+
+    "mayAccessSecrets": false,
+    "mayExpandScope": false,
+    "mayPerformArbitraryShellExecution": false,
+    "mayPerformNetworkExecution": false,
+    "mayPerformExternalSideEffects": false,
+
+    "futureControlledExecutionCertificationBoundaryRequired": true
+  },
+
+  "invariants": [
+    "DEV-284 consumes only the exact DEV-283 controlled execution attestation result contract.",
+    "DEV-284 denies verification when the DEV-283 predecessor is malformed, untrusted, unready, unattested, blocked, inconsistent, or missing required attestation evidence.",
+    "DEV-284 creates deterministic verification data only.",
+    "DEV-284 does not execute or re-execute an operation.",
+    "DEV-284 does not retry execution.",
+    "DEV-284 does not invoke an executor.",
+    "DEV-284 does not persist lifecycle state.",
+    "DEV-284 preserves the exact approved execution scope.",
+    "DEV-284 preserves predecessor provenance and the complete execution/attestation evidence chain.",
+    "DEV-284 does not expand execution scope.",
+    "DEV-284 does not create new execution authorization.",
+    "DEV-284 does not modify repository content.",
+    "DEV-284 does not delete repository content.",
+    "DEV-284 does not stage repository changes.",
+    "DEV-284 does not commit.",
+    "DEV-284 does not push.",
+    "DEV-284 does not deploy.",
+    "DEV-284 does not access secrets.",
+    "DEV-284 does not perform arbitrary shell execution.",
+    "DEV-284 does not perform network execution.",
+    "DEV-284 does not perform external side effects.",
+    "Rejected predecessor payloads release no trusted predecessor payload.",
+    "A future explicit controlled execution certification boundary is required before downstream progression."
+  ]
+}

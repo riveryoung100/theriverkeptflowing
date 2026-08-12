@@ -9149,3 +9149,142 @@ export interface RiverDevControlledExecutionAttestationFoundationResult {
 
   futureControlledExecutionVerificationBoundaryRequired: true;
 }
+export interface RiverDevControlledExecutionVerificationFoundationResult {
+  version: "DEV-284";
+
+  trusted: boolean;
+  ready: boolean;
+  executionVerified: boolean;
+
+  defaultPolicy: "DENY";
+
+  controlledExecutionVerificationBoundaryOnly: true;
+  executionVerificationResultIsDeterministicData: true;
+
+  executionVerificationState:
+    | "CONTROLLED_EXECUTION_VERIFIED"
+    | "CONTROLLED_EXECUTION_NOT_VERIFIED";
+
+  controlledExecutionAttestation:
+    | RiverDevControlledExecutionAttestationFoundationResult
+    | null;
+
+  controlledExecutionAudit:
+    | RiverDevControlledExecutionAttestationFoundationResult["controlledExecutionAudit"]
+    | null;
+
+  controlledExecutionArchive:
+    | RiverDevControlledExecutionAttestationFoundationResult["controlledExecutionArchive"]
+    | null;
+
+  controlledExecutionClosure:
+    | RiverDevControlledExecutionAttestationFoundationResult["controlledExecutionClosure"]
+    | null;
+
+  controlledExecutionFinalization:
+    | RiverDevControlledExecutionAttestationFoundationResult["controlledExecutionFinalization"]
+    | null;
+
+  controlledExecutionCompletion:
+    | RiverDevControlledExecutionAttestationFoundationResult["controlledExecutionCompletion"]
+    | null;
+
+  controlledOperationExecutionLifecycle:
+    | RiverDevControlledExecutionAttestationFoundationResult["controlledOperationExecutionLifecycle"]
+    | null;
+
+  controlledOperationExecutionReceipt:
+    | RiverDevControlledExecutionAttestationFoundationResult["controlledOperationExecutionReceipt"]
+    | null;
+
+  controlledOperationExecution:
+    | RiverDevControlledExecutionAttestationFoundationResult["controlledOperationExecution"]
+    | null;
+
+  operationExecutionAuthorization:
+    | RiverDevControlledExecutionAttestationFoundationResult["operationExecutionAuthorization"]
+    | null;
+
+  controlledExecutorInvocation:
+    | RiverDevControlledExecutionAttestationFoundationResult["controlledExecutorInvocation"]
+    | null;
+
+  controlledDispatch:
+    | RiverDevControlledExecutionAttestationFoundationResult["controlledDispatch"]
+    | null;
+
+  dispatchAuthorization:
+    | RiverDevControlledExecutionAttestationFoundationResult["dispatchAuthorization"]
+    | null;
+
+  activeAdmission:
+    | RiverDevControlledExecutionAttestationFoundationResult["activeAdmission"]
+    | null;
+
+  authorization:
+    | RiverDevControlledExecutionAttestationFoundationResult["authorization"]
+    | null;
+
+  eligibility:
+    | RiverDevControlledExecutionAttestationFoundationResult["eligibility"]
+    | null;
+
+  consumption:
+    | RiverDevControlledExecutionAttestationFoundationResult["consumption"]
+    | null;
+
+  receiptState:
+    | RiverDevControlledExecutionAttestationFoundationResult["receiptState"]
+    | null;
+
+  executedOperation:
+    | RiverDevControlledExecutionAttestationFoundationResult["executedOperation"]
+    | null;
+
+  approvedExecutionScope: string[];
+  provenance: string[];
+
+  controlledDispatchEvidence: string[];
+  executorInvocationAuthorizationEvidence: string[];
+  controlledExecutorInvocationEvidence: string[];
+  operationExecutionAuthorizationEvidence: string[];
+  controlledOperationExecutionEvidence: string[];
+  controlledOperationExecutionReceiptEvidence: string[];
+  controlledOperationExecutionLifecycleEvidence: string[];
+  controlledExecutionCompletionEvidence: string[];
+  controlledExecutionFinalizationEvidence: string[];
+  controlledExecutionClosureEvidence: string[];
+  controlledExecutionArchiveEvidence: string[];
+  controlledExecutionAuditEvidence: string[];
+  controlledExecutionAttestationEvidence: string[];
+  controlledExecutionVerificationEvidence: string[];
+
+  blockedReasons: string[];
+
+  mayCreateExecutionAuthorization: false;
+  mayAuthorizeDownstreamAction: false;
+  mayAdmitIntoActiveExecutor: false;
+  mayActivateAdmission: false;
+  mayDispatch: false;
+
+  mayInvokeExecutor: false;
+  mayExecuteOperation: false;
+  mayInvokeInspectionDependency: false;
+  mayRetryExecution: false;
+  mayPersistLifecycleState: false;
+
+  mayModifyRepository: false;
+  mayDeleteRepositoryContent: false;
+  mayStageRepositoryChanges: false;
+  mayCommit: false;
+  mayPush: false;
+  mayDeploy: false;
+
+  mayAccessSecrets: false;
+  mayExpandScope: false;
+  mayPerformArbitraryShellExecution: false;
+  mayPerformNetworkExecution: false;
+  mayPerformExternalSideEffects: false;
+
+  futureControlledExecutionCertificationBoundaryRequired: true;
+}
