@@ -1,5 +1,6 @@
-﻿import type {
-    RiverDevConfiguration
+import type {
+    RiverDevConfiguration,
+    RiverDevOperationalExecutorIntegrationEntryAuthorization
 } from "../types";
 
 import {
@@ -15,6 +16,10 @@ import type {
     RiverDevExecutionPackage
 } from "./execution-package";
 
+import {
+    establishOperationalExecutorIntegrationEntryFoundation
+} from "./operational-executor-integration-entry-foundation-engine";
+
 
 export interface RiverDevPackageExecutionRequest {
 
@@ -23,6 +28,10 @@ export interface RiverDevPackageExecutionRequest {
 
     readonly mode:
         RiverDevImplementationMode;
+
+    readonly operationExecutionAuthorization?:
+        RiverDevOperationalExecutorIntegrationEntryAuthorization
+        | null;
 
 }
 
@@ -199,6 +208,31 @@ export async function executePackage(
         request
     );
 
+    const operationalEntry =
+        establishOperationalExecutorIntegrationEntryFoundation(
+            {
+                requestedMode:
+                    request.mode,
+
+                authorization:
+                    request.operationExecutionAuthorization ??
+                    null
+            }
+        );
+
+    if (
+        request.mode ===
+            "apply" &&
+        operationalEntry.admitted !==
+            true
+    ) {
+        throw new TypeError(
+            operationalEntry.blockedReasons.join(
+                " "
+            )
+        );
+    }
+
     const runner =
         createImplementationRunner(
             configuration
@@ -207,7 +241,7 @@ export async function executePackage(
     const implementation =
         await runner.execute(
             request.executionPackage.manifest,
-            request.mode
+            operationalEntry.effectiveMode
         );
 
     return {
@@ -220,8 +254,7 @@ export async function executePackage(
         implementation,
 
         explicitApplyAuthorized:
-            request.mode ===
-            "apply"
+            operationalEntry.governedApplyAuthorized
     };
 
 }

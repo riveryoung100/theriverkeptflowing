@@ -1,0 +1,32 @@
+{
+  "id": "DEV-315",
+  "title": "River Development Agent Production Package Executor Authorization Integration",
+  "objective": "Integrate the DEV-314 operational executor entry decision into the real package executor so apply intent can no longer constitute execution authorization.",
+  "phase": "operational-executor-integration",
+  "predecessor": {
+    "id": "DEV-314",
+    "commit": "0656517aef7bec0f0dbae00850505b7d9d249a9d"
+  },
+  "productionTarget": "tools/river-dev/src/core/package-executor.ts",
+  "requirements": {
+    "requestedApplyIsNotAuthorization": true,
+    "governedAuthorizationRequiredForApply": true,
+    "dryRunRemainsNonMutating": true,
+    "defaultPolicy": "DENY",
+    "runnerRemainsUnmodified": true
+  },
+  "authorizationContract": {
+    "entryEngine": "operational-executor-integration-entry-foundation-engine",
+    "authorizedState": "OPERATION_EXECUTION_AUTHORIZED",
+    "unauthorizedState": "OPERATION_EXECUTION_UNAUTHORIZED",
+    "missingAuthorizationFailsClosed": true
+  },
+  "completionCriteria": [
+    "package-executor consumes DEV-314 entry decision",
+    "apply intent alone no longer authorizes apply",
+    "dry-run still succeeds without mutation authorization",
+    "unauthorized apply is rejected before runner execution",
+    "authorized apply can proceed only through explicit governed authorization",
+    "runner.ts remains unchanged"
+  ]
+}

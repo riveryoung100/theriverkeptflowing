@@ -1,4 +1,4 @@
-﻿import {
+import {
     strict as assert
 } from "node:assert";
 
@@ -460,7 +460,67 @@ test(
 
 
 test(
-    "executes an apply only when explicitly requested",
+    "rejects apply without governed authorization before runner execution",
+    async () => {
+
+        const repositoryRoot =
+            await mkdtemp(
+                join(
+                    tmpdir(),
+                    "river-dev-package-denied-apply-"
+                )
+            );
+
+        try {
+
+            await assert.rejects(
+                executePackage(
+                    await createConfiguration(
+                        repositoryRoot
+                    ),
+                    {
+                        executionPackage:
+                            createPackage(),
+
+                        mode:
+                            "apply"
+                    }
+                ),
+                /governed operation-execution authorization is absent/
+            );
+
+            await assert.rejects(
+                readFile(
+                    join(
+                        repositoryRoot,
+                        "generated",
+                        "dev-14-example.ts"
+                    ),
+                    "utf8"
+                )
+            );
+
+        }
+        finally {
+
+            await rm(
+                repositoryRoot,
+                {
+                    recursive:
+                        true,
+
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);
+
+test(
+    "executes an apply only with governed authorization",
     async () => {
 
         const repositoryRoot =
@@ -483,7 +543,13 @@ test(
                             createPackage(),
 
                         mode:
-                            "apply"
+                            "apply",
+
+                        operationExecutionAuthorization:
+                            {
+                                authorizationState:
+                                    "OPERATION_EXECUTION_AUTHORIZED"
+                            }
                     }
                 );
 
@@ -535,5 +601,3 @@ test(
 
     }
 );
-
-
