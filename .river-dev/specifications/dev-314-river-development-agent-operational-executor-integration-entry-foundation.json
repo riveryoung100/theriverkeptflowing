@@ -1,0 +1,89 @@
+{
+  "id": "DEV-314",
+  "title": "River Development Agent Operational Executor Integration Entry Foundation",
+  "objective": "Establish the first operational integration entry between the governed operation-execution authorization chain and the existing production implementation executor without allowing requested apply mode to constitute its own authorization.",
+  "phase": "operational-executor-integration",
+  "predecessor": {
+    "id": "DEV-313",
+    "commit": "7438ea48b141f0674dcdab3d5065f019bdc22cae",
+    "contract": "governed-executor-integration-operation-execution-closure-foundation"
+  },
+  "architecturalDecision": {
+    "operationalIntegrationBegins": true,
+    "additionalInertResultChainModulesProhibited": true,
+    "requestedApplyIsNotAuthorization": true,
+    "governedAuthorizationRequiredForApply": true,
+    "dryRunRemainsNonMutating": true,
+    "defaultPolicy": "DENY"
+  },
+  "authorizationSource": {
+    "engine": "governed-executor-integration-operation-execution-authorization-foundation-engine",
+    "requiredAuthorizedState": "OPERATION_EXECUTION_AUTHORIZED",
+    "authorizationMustPreexist": true,
+    "entryMayNotCreateAuthorization": true,
+    "entryMayNotUpgradeAuthorization": true,
+    "entryMayNotInferAuthorizationFromMode": true
+  },
+  "operationalBoundary": {
+    "target": "existing production implementation executor",
+    "applyRequestAlonePermitted": false,
+    "applyRequiresGovernedAuthorization": true,
+    "dryRunRequiresMutationAuthority": false,
+    "defaultDenyOnMissingAuthorization": true,
+    "defaultDenyOnInvalidAuthorization": true,
+    "defaultDenyOnMismatchedAuthorization": true
+  },
+  "authorityConstraints": {
+    "mayCreateExecutionAuthorization": false,
+    "mayAuthorizeDownstreamAction": false,
+    "mayExpandAuthorization": false,
+    "mayBypassGovernance": false,
+    "mayTreatApplyModeAsAuthorization": false,
+    "mayGrantArbitraryRepositoryMutation": false,
+    "mayDeleteRepositoryContentWithoutExistingAuthority": false,
+    "mayStageRepositoryChangesWithoutExistingAuthority": false,
+    "mayCommitWithoutExistingAuthority": false,
+    "mayPushWithoutExistingAuthority": false,
+    "mayDeployWithoutExistingAuthority": false,
+    "mayAccessSecretsWithoutExistingAuthority": false,
+    "mayPerformArbitraryShellExecution": false,
+    "mayPerformUnscopedNetworkExecution": false
+  },
+  "requiredBehavior": [
+    "Preserve existing package validation as defense in depth.",
+    "Preserve dry-run as the default non-mutating implementation mode.",
+    "Distinguish an apply request from governed authorization to perform apply.",
+    "Require the existing governed operation-execution authorization contract before admitting an apply request into the production implementation executor.",
+    "Reject missing, unauthorized, malformed, or mismatched governed authorization by default.",
+    "Do not reinterpret the DEV-313 closure artifact as execution authority.",
+    "Do not create broad repository mutation authority.",
+    "Do not execute an operation during DEV-314 implementation or validation."
+  ],
+  "initialImplementationScope": [
+    "tools/river-dev/src/core/operational-executor-integration-entry-foundation-engine.ts",
+    "tools/river-dev/src/core/operational-executor-integration-entry-foundation-engine.test.ts",
+    "tools/river-dev/src/types.ts"
+  ],
+  "productionIntegrationCandidates": [
+    "tools/river-dev/src/core/package-executor.ts",
+    "tools/river-dev/src/commands/implement.ts"
+  ],
+  "productionIntegrationRule": "Production caller modification is permitted only after the DEV-314 entry contract is implemented, tested, and its exact integration seam is proven.",
+  "validation": {
+    "typecheckRequired": true,
+    "targetedTestsRequired": true,
+    "fullTestsRequired": true,
+    "buildRequired": true,
+    "diffCheckRequired": true,
+    "operationExecutionProhibitedDuringValidation": true
+  },
+  "completionCriteria": [
+    "A typed operational execution-entry contract exists.",
+    "Apply intent and governed apply authorization are distinct.",
+    "Unauthorized apply is fail-closed.",
+    "Dry-run remains non-mutating.",
+    "Existing governed authorization is consumed rather than recreated.",
+    "No broad repository authority is introduced.",
+    "The next production integration step is explicit and testable."
+  ]
+}

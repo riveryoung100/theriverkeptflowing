@@ -9182,3 +9182,69 @@ export interface RiverDevGovernedExecutorIntegrationOperationExecutionClosureFou
   readonly mayPerformNetworkExecution: false;
   readonly mayPerformExternalSideEffects: false;
 }
+
+export type RiverDevOperationalExecutorIntegrationRequestedMode =
+  | "dry-run"
+  | "apply";
+
+export type RiverDevOperationalExecutorIntegrationEntryState =
+  | "DRY_RUN_ADMITTED"
+  | "APPLY_ADMITTED"
+  | "APPLY_DENIED";
+
+export interface RiverDevOperationalExecutorIntegrationEntryAuthorization {
+  readonly authorizationState:
+    | "OPERATION_EXECUTION_AUTHORIZED"
+    | "OPERATION_EXECUTION_UNAUTHORIZED";
+}
+
+export interface RiverDevOperationalExecutorIntegrationEntryFoundationInput {
+  readonly requestedMode:
+    RiverDevOperationalExecutorIntegrationRequestedMode;
+
+  readonly authorization:
+    RiverDevOperationalExecutorIntegrationEntryAuthorization
+    | null;
+}
+
+export interface RiverDevOperationalExecutorIntegrationEntryFoundationResult {
+  readonly version: "DEV-314";
+
+  readonly source:
+    "operational-executor-integration-entry-foundation-engine";
+
+  readonly objective: string;
+
+  readonly defaultPolicy: "DENY";
+
+  readonly requestedMode:
+    RiverDevOperationalExecutorIntegrationRequestedMode;
+
+  readonly effectiveMode:
+    RiverDevOperationalExecutorIntegrationRequestedMode;
+
+  readonly entryState:
+    RiverDevOperationalExecutorIntegrationEntryState;
+
+  readonly admitted: boolean;
+
+  readonly applyRequested: boolean;
+  readonly governedAuthorizationPresent: boolean;
+  readonly governedApplyAuthorized: boolean;
+
+  readonly requestedApplyIsAuthorization: false;
+  readonly createsAuthorization: false;
+  readonly upgradesAuthorization: false;
+  readonly grantsArbitraryRepositoryMutation: false;
+
+  readonly dryRunIsNonMutating: true;
+  readonly operationalExecutionPerformed: false;
+
+  readonly authorizationState:
+    | "OPERATION_EXECUTION_AUTHORIZED"
+    | "OPERATION_EXECUTION_UNAUTHORIZED"
+    | "AUTHORIZATION_ABSENT";
+
+  readonly evidence: readonly string[];
+  readonly blockedReasons: readonly string[];
+}
