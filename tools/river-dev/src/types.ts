@@ -8940,3 +8940,78 @@ export interface RiverDevGovernedExecutorIntegrationOperationExecutionResultLife
   mayPerformNetworkExecution: false;
   mayPerformExternalSideEffects: false;
 }
+
+export interface RiverDevGovernedExecutorIntegrationOperationExecutionResultCompletionFoundationInput {
+  readonly resultLifecycle:
+    RiverDevGovernedExecutorIntegrationOperationExecutionResultLifecycleFoundationResult;
+}
+
+export interface RiverDevGovernedExecutorIntegrationOperationExecutionResultCompletionFoundationResult {
+  readonly version: "DEV-311";
+
+  readonly source:
+    "governed-executor-integration-operation-execution-result-completion-foundation-engine";
+
+  readonly objective: string;
+
+  readonly trusted: boolean;
+  readonly ready: boolean;
+  readonly completionEstablished: boolean;
+
+  readonly defaultPolicy: "DENY";
+
+  readonly completionOnly: true;
+  readonly completionIsInertData: true;
+  readonly resultMutationProhibited: true;
+  readonly lifecycleMutationProhibited: true;
+  readonly operationReexecutionProhibited: true;
+  readonly futureMutationCapableExecutionBoundaryRequired: true;
+
+  readonly completionState:
+    | "GOVERNED_OPERATION_EXECUTION_RESULT_COMPLETION_ESTABLISHED"
+    | "GOVERNED_OPERATION_EXECUTION_RESULT_COMPLETION_NOT_ESTABLISHED";
+
+  readonly lifecycleState:
+    | "GOVERNED_OPERATION_EXECUTION_RESULT_LIFECYCLE_ESTABLISHED"
+    | "GOVERNED_OPERATION_EXECUTION_RESULT_LIFECYCLE_NOT_ESTABLISHED";
+
+  readonly resultState:
+    | "GOVERNED_OPERATION_EXECUTION_RESULT_ESTABLISHED"
+    | "GOVERNED_OPERATION_EXECUTION_RESULT_NOT_ESTABLISHED";
+
+  readonly receiptState:
+    | "EXECUTION_RESULT_RECORDED"
+    | "EXECUTION_RESULT_NOT_RECORDED";
+
+  readonly resultLifecycle:
+    RiverDevGovernedExecutorIntegrationOperationExecutionResultLifecycleFoundationResult
+    | null;
+
+  readonly completionEvidence: readonly string[];
+  readonly provenance: readonly string[];
+  readonly blockedReasons: readonly string[];
+
+  readonly mayCreateExecutionAuthorization: false;
+  readonly mayAuthorizeDownstreamAction: false;
+  readonly mayAdmitIntoActiveExecutor: false;
+  readonly mayActivateAdmission: false;
+  readonly mayDispatch: false;
+  readonly mayInvokeExecutor: false;
+  readonly mayExecuteOperation: false;
+  readonly mayInvokeInspectionDependency: false;
+  readonly mayRetryExecution: false;
+  readonly mayPersistLifecycleState: false;
+
+  readonly mayModifyRepository: false;
+  readonly mayDeleteRepositoryContent: false;
+  readonly mayStageRepositoryChanges: false;
+  readonly mayCommit: false;
+  readonly mayPush: false;
+  readonly mayDeploy: false;
+
+  readonly mayAccessSecrets: false;
+  readonly mayExpandScope: false;
+  readonly mayPerformArbitraryShellExecution: false;
+  readonly mayPerformNetworkExecution: false;
+  readonly mayPerformExternalSideEffects: false;
+}
