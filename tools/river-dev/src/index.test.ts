@@ -1,4 +1,4 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
@@ -343,7 +343,7 @@ test(
 
         assert.equal(
             snapshot.clean,
-            false
+            (await getChangedPaths(repositoryRoot)).length === 0
         );
 
         assert.equal(
@@ -425,8 +425,20 @@ test(
 
         assert.match(
             formatted,
-            /Changed files:/
+            new RegExp(`Changed paths: ${report.repository.changedPaths.length}`)
         );
+
+        if (report.repository.changedPaths.length === 0) {
+            assert.doesNotMatch(
+                formatted,
+                /Changed files:/
+            );
+        } else {
+            assert.match(
+                formatted,
+                /Changed files:/
+            );
+        }
 
     }
 );
