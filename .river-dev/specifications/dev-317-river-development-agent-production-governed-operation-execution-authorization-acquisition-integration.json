@@ -1,0 +1,25 @@
+﻿{
+  "id": "DEV-317",
+  "title": "River Development Agent Production Governed Operation Execution Authorization Acquisition Integration",
+  "objective": "Integrate deterministic production acquisition of governed operation-execution authorization through the existing trusted execution-authorization and governed-executor foundation chain without creating new authorization semantics or performing repository mutation.",
+  "constraints": [
+    "Reuse existing production authorization foundations.",
+    "Preserve default-deny behavior.",
+    "Do not manufacture, upgrade, or bypass authorization.",
+    "Thread exact trusted predecessor results through the existing governed executor integration chain.",
+    "Terminate at the existing DEV-307 operation-execution authorization result.",
+    "Expose authorization as inert data only.",
+    "Do not execute repository operations.",
+    "Do not stage, commit, push, merge, deploy, access secrets, expand scope, or perform external side effects."
+  ],
+  "acceptanceCriteria": [
+    "Production integration deterministically composes the existing governed executor authorization chain.",
+    "The integration begins from an existing RiverDevExecutionAuthorizationFoundation.",
+    "Each governed executor stage receives the exact result of its required predecessor.",
+    "The terminal result is the existing DEV-307 RiverDevGovernedExecutorIntegrationOperationExecutionAuthorizationFoundationResult.",
+    "Unauthorized or untrusted predecessor state remains denied by existing foundation behavior.",
+    "No new authorization state or authorization upgrade is introduced.",
+    "The integration itself performs no repository mutation or external side effect.",
+    "TypeScript compilation and existing tests remain green."
+  ]
+}
