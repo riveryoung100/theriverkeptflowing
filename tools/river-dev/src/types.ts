@@ -8384,3 +8384,83 @@ export interface RiverDevGovernedExecutorIntegrationActiveAdmissionVerificationF
   readonly mayPerformNetworkExecution: false;
   readonly mayPerformExternalSideEffects: false;
 }
+
+/**
+ * DEV-304
+ * River Development Agent governed executor integration
+ * active-admission enforcement foundation.
+ *
+ * This boundary enforces whether an exact trusted DEV-303 verification
+ * result satisfies the active-admission enforcement contract.
+ *
+ * Enforcement remains inert data. It grants no executor invocation,
+ * dispatch, operation execution, repository mutation, push, deployment,
+ * secret, shell, network, scope-expansion, or external-side-effect
+ * authority.
+ */
+export interface RiverDevGovernedExecutorIntegrationActiveAdmissionEnforcementFoundationInput {
+  readonly activeAdmissionVerification: RiverDevGovernedExecutorIntegrationActiveAdmissionVerificationFoundationResult;
+}
+
+export interface RiverDevGovernedExecutorIntegrationActiveAdmissionEnforcementFoundationResult {
+  readonly version: "DEV-304";
+  readonly source: "governed-executor-integration-active-admission-enforcement-foundation-engine";
+  readonly objective: string;
+
+  readonly trusted: boolean;
+  readonly ready: boolean;
+  readonly enforced: boolean;
+
+  readonly defaultPolicy: "DENY";
+
+  readonly activeAdmissionEnforcementDecisionOnly: true;
+  readonly enforcementResultIsInertData: true;
+  readonly futureExecutorInvocationBoundaryRequired: true;
+
+  readonly enforcementState:
+    | "ACTIVE_ADMISSION_ENFORCED"
+    | "ACTIVE_ADMISSION_REJECTED";
+
+  readonly verification: RiverDevGovernedExecutorIntegrationActiveAdmissionVerificationFoundationResult | null;
+
+  readonly predecessorVerificationState: readonly string[];
+  readonly predecessorVerificationEvidence: readonly string[];
+  readonly predecessorAcceptanceEvidence: readonly string[];
+  readonly predecessorHandoffEvidence: readonly string[];
+  readonly verificationEvidence: readonly string[];
+  readonly acceptanceEvidence: readonly string[];
+  readonly packagingEvidence: readonly string[];
+  readonly packageVerificationEvidence: readonly string[];
+  readonly admissionEvidence: readonly string[];
+  readonly consumptionEvidence: readonly string[];
+  readonly activeAdmissionEligibilityEvidence: readonly string[];
+  readonly activeAdmissionAuthorizationEvidence: readonly string[];
+  readonly activeAdmissionVerificationEvidence: readonly string[];
+  readonly activeAdmissionEnforcementEvidence: readonly string[];
+
+  readonly blockedReasons: readonly string[];
+
+  readonly mayCreateExecutionAuthorization: false;
+  readonly mayAuthorizeDownstreamAction: false;
+  readonly mayAdmitIntoActiveExecutor: false;
+  readonly mayActivateAdmission: false;
+  readonly mayDispatch: false;
+  readonly mayInvokeExecutor: false;
+  readonly mayExecuteOperation: false;
+  readonly mayInvokeInspectionDependency: false;
+  readonly mayRetryExecution: false;
+  readonly mayPersistLifecycleState: false;
+
+  readonly mayModifyRepository: false;
+  readonly mayDeleteRepositoryContent: false;
+  readonly mayStageRepositoryChanges: false;
+  readonly mayCommit: false;
+  readonly mayPush: false;
+  readonly mayDeploy: false;
+
+  readonly mayAccessSecrets: false;
+  readonly mayExpandScope: false;
+  readonly mayPerformArbitraryShellExecution: false;
+  readonly mayPerformNetworkExecution: false;
+  readonly mayPerformExternalSideEffects: false;
+}

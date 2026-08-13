@@ -1,0 +1,68 @@
+{
+  "id": "DEV-304",
+  "title": "River Development Agent Governed Executor Integration Active Admission Enforcement Foundation",
+  "status": "implementation-foundation",
+  "objective": "Enforce an exact trusted DEV-303 active-admission verification result while preserving enforcement as inert data and creating no dispatch, executor invocation, execution, repository mutation, deployment, secret, scope-expansion, shell, network, or external-side-effect authority.",
+  "predecessor": "DEV-303",
+  "defaultPolicy": "DENY",
+  "enforcementBoundary": {
+    "decisionOnly": true,
+    "resultIsInertData": true,
+    "futureExecutorInvocationBoundaryRequired": true
+  },
+  "requiredPredecessorState": {
+    "version": "DEV-303",
+    "trusted": true,
+    "ready": true,
+    "verified": true,
+    "verificationState": "ACTIVE_ADMISSION_AUTHORIZATION_VERIFIED",
+    "defaultPolicy": "DENY",
+    "activeAdmissionVerificationDecisionOnly": true,
+    "verificationResultIsInertData": true,
+    "futureActiveAdmissionBoundaryRequired": true,
+    "blockedReasonsMustBeEmpty": true,
+    "authorizationLineageRequired": true,
+    "completeEvidenceContinuityRequired": true,
+    "zeroInheritedAuthorityRequired": true
+  },
+  "resultStates": {
+    "accepted": "ACTIVE_ADMISSION_ENFORCED",
+    "rejected": "ACTIVE_ADMISSION_REJECTED"
+  },
+  "forbiddenAuthorities": [
+    "createExecutionAuthorization",
+    "authorizeDownstreamAction",
+    "admitIntoActiveExecutor",
+    "activateAdmission",
+    "dispatch",
+    "invokeExecutor",
+    "executeOperation",
+    "invokeInspectionDependency",
+    "retryExecution",
+    "persistLifecycleState",
+    "modifyRepository",
+    "deleteRepositoryContent",
+    "stageRepositoryChanges",
+    "commit",
+    "push",
+    "deploy",
+    "accessSecrets",
+    "expandScope",
+    "performArbitraryShellExecution",
+    "performNetworkExecution",
+    "performExternalSideEffects"
+  ],
+  "invariants": [
+    "A successful DEV-304 result represents only that the active-admission enforcement boundary has been satisfied.",
+    "DEV-304 must not itself admit anything into the active executor.",
+    "DEV-304 must not activate admission.",
+    "DEV-304 must not dispatch work.",
+    "DEV-304 must not invoke an executor.",
+    "DEV-304 must not execute an operation.",
+    "DEV-304 must preserve complete DEV-303 evidence continuity.",
+    "DEV-304 must reject any predecessor authority escalation.",
+    "DEV-304 must reject removal of the future active-admission boundary requirement.",
+    "DEV-304 output must be deterministic.",
+    "A future separately governed executor-invocation boundary remains required."
+  ]
+}
