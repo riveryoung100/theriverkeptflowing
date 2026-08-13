@@ -8873,3 +8873,70 @@ export interface RiverDevGovernedExecutorIntegrationOperationExecutionResultFoun
   readonly mayPerformNetworkExecution: false;
   readonly mayPerformExternalSideEffects: false;
 }
+
+export interface RiverDevGovernedExecutorIntegrationOperationExecutionResultLifecycleFoundationInput {
+  operationExecutionResult:
+    RiverDevGovernedExecutorIntegrationOperationExecutionResultFoundationResult;
+}
+
+export interface RiverDevGovernedExecutorIntegrationOperationExecutionResultLifecycleFoundationResult {
+  version: "DEV-310";
+  source:
+    "governed-executor-integration-operation-execution-result-lifecycle-foundation-engine";
+  objective: string;
+
+  trusted: boolean;
+  ready: boolean;
+  lifecycleEstablished: boolean;
+
+  defaultPolicy: "DENY";
+
+  lifecycleOnly: true;
+  lifecycleIsInertData: true;
+  resultMutationProhibited: true;
+  operationReexecutionProhibited: true;
+  futureMutationCapableExecutionBoundaryRequired: true;
+
+  lifecycleState:
+    | "GOVERNED_OPERATION_EXECUTION_RESULT_LIFECYCLE_ESTABLISHED"
+    | "GOVERNED_OPERATION_EXECUTION_RESULT_LIFECYCLE_NOT_ESTABLISHED";
+
+  resultState:
+    | "GOVERNED_OPERATION_EXECUTION_RESULT_ESTABLISHED"
+    | "GOVERNED_OPERATION_EXECUTION_RESULT_NOT_ESTABLISHED";
+
+  receiptState:
+    | "EXECUTION_RESULT_RECORDED"
+    | "EXECUTION_RESULT_NOT_RECORDED";
+
+  operationExecutionResult:
+    RiverDevGovernedExecutorIntegrationOperationExecutionResultFoundationResult | null;
+
+  lifecycleEvidence: readonly string[];
+  provenance: readonly string[];
+  blockedReasons: readonly string[];
+
+  mayCreateExecutionAuthorization: false;
+  mayAuthorizeDownstreamAction: false;
+  mayAdmitIntoActiveExecutor: false;
+  mayActivateAdmission: false;
+  mayDispatch: false;
+  mayInvokeExecutor: false;
+  mayExecuteOperation: false;
+  mayInvokeInspectionDependency: false;
+  mayRetryExecution: false;
+  mayPersistLifecycleState: false;
+
+  mayModifyRepository: false;
+  mayDeleteRepositoryContent: false;
+  mayStageRepositoryChanges: false;
+  mayCommit: false;
+  mayPush: false;
+  mayDeploy: false;
+
+  mayAccessSecrets: false;
+  mayExpandScope: false;
+  mayPerformArbitraryShellExecution: false;
+  mayPerformNetworkExecution: false;
+  mayPerformExternalSideEffects: false;
+}

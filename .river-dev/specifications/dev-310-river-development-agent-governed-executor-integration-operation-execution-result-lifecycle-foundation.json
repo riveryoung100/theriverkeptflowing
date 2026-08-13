@@ -1,0 +1,22 @@
+﻿{
+  "id": "DEV-310",
+  "title": "River Development Agent governed executor integration operation execution result lifecycle foundation",
+  "status": "implementation",
+  "objective": "Establish an immutable inert lifecycle representation from exact trusted DEV-309 governed operation-execution result.",
+  "predecessor": "DEV-309",
+  "defaultPolicy": "DENY",
+  "constraints": [
+    "Consume only exact trusted DEV-309 result state.",
+    "Do not re-execute operations.",
+    "Do not persist lifecycle state.",
+    "Do not mutate repository state.",
+    "Do not stage, commit, push, deploy, access secrets, expand scope, perform arbitrary shell execution, perform network execution, or perform external side effects.",
+    "Preserve the future mutation-capable execution boundary."
+  ],
+  "outputs": [
+    "governed operation execution result lifecycle state",
+    "lifecycle evidence",
+    "preserved provenance",
+    "explicit denied authority flags"
+  ]
+}
