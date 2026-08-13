@@ -1,9 +1,10 @@
-﻿import {
+import {
     resolve
 } from "node:path";
 
 import type {
-    RiverDevConfiguration
+    RiverDevConfiguration,
+    RiverDevOperationalExecutorIntegrationEntryAuthorization
 } from "../types";
 
 import {
@@ -20,6 +21,10 @@ import type {
     RiverDevImplementationResult
 } from "../execution/runner";
 
+import {
+    establishOperationalExecutorIntegrationEntryFoundation
+} from "../core/operational-executor-integration-entry-foundation-engine";
+
 
 export async function implementRiverDevPlan(
     configuration:
@@ -28,7 +33,11 @@ export async function implementRiverDevPlan(
         string,
     mode:
         RiverDevImplementationMode =
-            "dry-run"
+            "dry-run",
+    operationExecutionAuthorization:
+        RiverDevOperationalExecutorIntegrationEntryAuthorization
+        | null =
+            null
 ): Promise<RiverDevImplementationResult> {
 
     const policy =
@@ -46,6 +55,30 @@ export async function implementRiverDevPlan(
             resolvedManifestPath
         );
 
+    const operationalEntry =
+        establishOperationalExecutorIntegrationEntryFoundation(
+            {
+                requestedMode:
+                    mode,
+
+                authorization:
+                    operationExecutionAuthorization
+            }
+        );
+
+    if (
+        mode ===
+            "apply" &&
+        operationalEntry.admitted !==
+            true
+    ) {
+        throw new TypeError(
+            operationalEntry.blockedReasons.join(
+                " "
+            )
+        );
+    }
+
     const runner =
         createImplementationRunner(
             configuration
@@ -53,7 +86,7 @@ export async function implementRiverDevPlan(
 
     return runner.execute(
         manifest,
-        mode
+        operationalEntry.effectiveMode
     );
 
 }

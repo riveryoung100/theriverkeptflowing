@@ -1,0 +1,40 @@
+{
+  "id": "DEV-316",
+  "title": "River Development Agent Production Implement Command Governed Authorization Integration",
+  "objective": "Close the remaining direct production implement-command mutation bypass by requiring the existing governed operational-entry authorization boundary before apply reaches the implementation runner.",
+  "phase": "operational-executor-integration",
+  "predecessor": {
+    "id": "DEV-315",
+    "commit": "5932498755cf774080bf2cc2d080c80c8542e582"
+  },
+  "productionTarget": "tools/river-dev/src/commands/implement.ts",
+  "architecturalDecision": {
+    "requestedApplyIsNotAuthorization": true,
+    "authorizationMayNotBeSynthesizedFromMode": true,
+    "existingGovernedAuthorizationContractReused": true,
+    "missingApplyAuthorizationFailsClosed": true,
+    "dryRunRemainsNonMutating": true,
+    "defaultPolicy": "DENY"
+  },
+  "requirements": [
+    "implementRiverDevPlan accepts preexisting governed operation-execution authorization",
+    "dry-run remains admissible without mutation authorization",
+    "apply without governed authorization is rejected before runner execution",
+    "apply with OPERATION_EXECUTION_AUTHORIZED may reach the implementation runner",
+    "the implementation runner receives the governed effective mode",
+    "index.ts does not manufacture authorization from --apply",
+    "runner.ts remains unchanged",
+    "package-executor.ts remains unchanged",
+    "no new inert authorization layer is introduced"
+  ],
+  "completionCriteria": [
+    "direct implement runner bypass is closed",
+    "apply intent alone cannot mutate repository state through implementRiverDevPlan",
+    "existing callers remain source-compatible through optional authorization input",
+    "authorization remains externally produced and preexisting",
+    "typecheck passes",
+    "existing tests pass",
+    "DEV-314 regression tests pass",
+    "diff integrity passes"
+  ]
+}
