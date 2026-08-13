@@ -1,0 +1,24 @@
+{
+  "id": "DEV-302",
+  "title": "River Development Agent Governed Executor Integration Active Admission Authorization Foundation",
+  "status": "implementation-foundation",
+  "objective": "Authorize an exact trusted DEV-301 active-admission eligibility result for a future separately governed active-admission boundary while creating no admission, dispatch, execution, mutation, network, secret, shell, or external-side-effect authority.",
+  "predecessor": "DEV-301",
+  "defaultPolicy": "DENY",
+  "constraints": [
+    "DEV-301 must be trusted.",
+    "DEV-301 must be ready.",
+    "DEV-301 must be eligible.",
+    "DEV-301 eligibility state must be ACTIVE_ADMISSION_ELIGIBLE.",
+    "DEV-301 must remain an active-admission eligibility decision only.",
+    "DEV-301 eligibility result must remain inert data.",
+    "DEV-301 must require a future active-admission authorization boundary.",
+    "DEV-301 blocked reasons must be empty.",
+    "Required predecessor lineage and evidence must be present.",
+    "All inherited and downstream authorities must remain denied.",
+    "Authorization must not itself admit, activate admission, dispatch, invoke an executor, or execute an operation.",
+    "Authorization must not modify, delete, stage, commit, push, or deploy repository content.",
+    "Authorization must not access secrets, expand scope, perform arbitrary shell execution, perform network execution, or perform external side effects.",
+    "A future separately governed active-admission boundary remains required."
+  ]
+}
