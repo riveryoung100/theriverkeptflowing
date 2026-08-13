@@ -1,0 +1,56 @@
+﻿{
+  "version": "1.0.0",
+  "id": "DEV-319",
+  "name": "River Development Agent Production Governed Operation Execution Authorization Orchestration Integration",
+  "objective": "Establish a deterministic non-executing orchestration boundary that invokes the existing DEV-318 authorization-consumption integration exactly once, observes the acquisition-and-consumption result already composed through DEV-317, and determines whether governed authorization may progress toward the existing operational executor entry boundary.",
+  "branch": "dev-319-river-development-agent-production-governed-operation-execution-authorization-orchestration-integration",
+  "allowedPaths": [
+    ".river-dev/specifications/dev-319-river-development-agent-production-governed-operation-execution-authorization-orchestration-integration.json",
+    "tools/river-dev/src/core/governed-operation-execution-authorization-orchestration-integration.ts",
+    "tools/river-dev/src/core/governed-operation-execution-authorization-orchestration-integration.test.ts"
+  ],
+  "requirements": [
+    "Invoke the DEV-318 governed operation-execution authorization consumption integration exactly once.",
+    "Do not directly invoke DEV-317 from DEV-319 because DEV-318 already performs deterministic DEV-317 authorization acquisition internally.",
+    "Observe DEV-318 authorizationAcquired and authorizationUsableForOperationalEntry without duplicating acquisition or consumption logic.",
+    "Preserve the authorization object exposed by DEV-318 when it is usable for operational entry.",
+    "Fail closed when DEV-318 does not expose authorization usable for operational entry.",
+    "Return an explicit deterministic orchestration state describing whether authorization is ready to be presented to the existing operational executor entry boundary.",
+    "Distinguish an authorization-ready result from a fail-closed authorization-blocked result.",
+    "Requested apply mode must never itself create, upgrade, synthesize, infer, or broaden authorization.",
+    "Do not execute repository mutation, package execution, command execution, commit, push, deployment, or any other operational side effect.",
+    "Do not call the DEV-314 operational executor integration entry boundary in DEV-319.",
+    "Do not bypass or weaken the DEV-314 operational executor integration entry authorization boundary.",
+    "Do not modify production callers in DEV-319.",
+    "Do not modify DEV-317 or DEV-318 implementation contracts.",
+    "Add focused tests proving one-time DEV-318 orchestration, authorization-ready behavior, fail-closed blocked behavior, deterministic propagation, and non-executing safety."
+  ],
+  "qualityGates": [
+    "DEV-319 focused tests pass.",
+    "DEV-318 regression tests pass.",
+    "DEV-317 regression tests pass.",
+    "DEV-314 regression tests pass.",
+    "Existing River Dev baseline tests pass.",
+    "TypeScript compilation passes.",
+    "Repository build passes.",
+    "Repository diff is limited exactly to DEV-319 allowed paths.",
+    "No production caller is modified.",
+    "DEV-319 contains no direct DEV-317 invocation.",
+    "DEV-319 contains exactly one DEV-318 consumption invocation.",
+    "No operation execution side effect is introduced.",
+    "No autonomous push or deployment behavior is introduced."
+  ],
+  "outOfScope": [
+    "Changing tools/river-dev/src/index.ts.",
+    "Changing tools/river-dev/src/commands/implement.ts.",
+    "Changing tools/river-dev/src/core/package-executor.ts.",
+    "Directly invoking acquireGovernedOperationExecutionAuthorization from DEV-319.",
+    "Invoking establishOperationalExecutorIntegrationEntryFoundation from DEV-319.",
+    "Executing authorized operations.",
+    "Changing commit behavior.",
+    "Changing push behavior.",
+    "Changing deployment behavior.",
+    "Removing existing authorization gates.",
+    "Broad refactoring unrelated to the DEV-319 orchestration boundary."
+  ]
+}
