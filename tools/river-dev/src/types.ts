@@ -8697,3 +8697,87 @@ export interface RiverDevGovernedExecutorIntegrationOperationExecutionAuthorizat
   readonly mayPerformNetworkExecution: false;
   readonly mayPerformExternalSideEffects: false;
 }
+
+/**
+ * DEV-308 governed executor integration operation execution foundation.
+ *
+ * This boundary consumes an exact trusted DEV-307 operation-execution
+ * authorization result and establishes an inert governed operation-execution
+ * representation.
+ *
+ * Establishing operation execution here does not perform repository mutation,
+ * shell execution, network execution, retries, persistence, push, deployment,
+ * secret access, scope expansion, or any external side effect.
+ *
+ * A future mutation-capable execution boundary remains required.
+ */
+export interface RiverDevGovernedExecutorIntegrationOperationExecutionFoundationInput {
+  readonly operationExecutionAuthorization: RiverDevGovernedExecutorIntegrationOperationExecutionAuthorizationFoundationResult;
+}
+
+export interface RiverDevGovernedExecutorIntegrationOperationExecutionFoundationResult {
+  readonly version: "DEV-308";
+  readonly source: "governed-executor-integration-operation-execution-foundation-engine";
+  readonly objective: string;
+
+  readonly trusted: boolean;
+  readonly ready: boolean;
+  readonly executed: boolean;
+
+  readonly defaultPolicy: "DENY";
+
+  readonly operationExecutionOnly: true;
+  readonly executionResultIsInertData: true;
+  readonly futureMutationCapableExecutionBoundaryRequired: true;
+
+  readonly executionState:
+    | "GOVERNED_OPERATION_EXECUTION_ESTABLISHED"
+    | "GOVERNED_OPERATION_EXECUTION_NOT_ESTABLISHED";
+
+  readonly authorization: RiverDevGovernedExecutorIntegrationOperationExecutionAuthorizationFoundationResult | null;
+
+  readonly predecessorVerificationState: readonly string[];
+  readonly predecessorVerificationEvidence: readonly string[];
+  readonly predecessorAcceptanceEvidence: readonly string[];
+  readonly predecessorHandoffEvidence: readonly string[];
+  readonly verificationEvidence: readonly string[];
+  readonly acceptanceEvidence: readonly string[];
+  readonly packagingEvidence: readonly string[];
+  readonly packageVerificationEvidence: readonly string[];
+  readonly admissionEvidence: readonly string[];
+  readonly consumptionEvidence: readonly string[];
+  readonly activeAdmissionEligibilityEvidence: readonly string[];
+  readonly activeAdmissionAuthorizationEvidence: readonly string[];
+  readonly activeAdmissionVerificationEvidence: readonly string[];
+  readonly activeAdmissionEnforcementEvidence: readonly string[];
+  readonly executorInvocationAuthorizationEvidence: readonly string[];
+  readonly executorInvocationEvidence: readonly string[];
+  readonly operationExecutionAuthorizationEvidence: readonly string[];
+  readonly operationExecutionEvidence: readonly string[];
+
+  readonly blockedReasons: readonly string[];
+
+  readonly mayCreateExecutionAuthorization: false;
+  readonly mayAuthorizeDownstreamAction: false;
+  readonly mayAdmitIntoActiveExecutor: false;
+  readonly mayActivateAdmission: false;
+  readonly mayDispatch: false;
+  readonly mayInvokeExecutor: false;
+  readonly mayExecuteOperation: false;
+  readonly mayInvokeInspectionDependency: false;
+  readonly mayRetryExecution: false;
+  readonly mayPersistLifecycleState: false;
+
+  readonly mayModifyRepository: false;
+  readonly mayDeleteRepositoryContent: false;
+  readonly mayStageRepositoryChanges: false;
+  readonly mayCommit: false;
+  readonly mayPush: false;
+  readonly mayDeploy: false;
+
+  readonly mayAccessSecrets: false;
+  readonly mayExpandScope: false;
+  readonly mayPerformArbitraryShellExecution: false;
+  readonly mayPerformNetworkExecution: false;
+  readonly mayPerformExternalSideEffects: false;
+}

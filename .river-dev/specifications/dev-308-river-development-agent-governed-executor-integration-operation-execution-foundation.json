@@ -1,0 +1,36 @@
+﻿{
+  "id": "DEV-308",
+  "title": "River Development Agent Governed Executor Integration Operation Execution Foundation",
+  "status": "implementation",
+  "objective": "Establish an inert governed operation-execution representation from exact trusted DEV-307 operation-execution authorization without invoking mutation-capable execution machinery.",
+  "predecessor": "DEV-307",
+  "defaultPolicy": "DENY",
+  "boundary": {
+    "consumes": "Exact trusted DEV-307 operation-execution authorization",
+    "produces": "Inert governed operation-execution foundation result",
+    "actualOperationSideEffect": false,
+    "mutationCapableDependencyInvocation": false,
+    "futureMutationCapableExecutionBoundaryRequired": true
+  },
+  "prohibitedAuthorities": [
+    "repository mutation",
+    "repository deletion",
+    "repository staging",
+    "commit",
+    "push",
+    "deployment",
+    "arbitrary shell execution",
+    "network execution",
+    "secret access",
+    "scope expansion",
+    "retry execution",
+    "lifecycle persistence",
+    "external side effects"
+  ],
+  "artifacts": [
+    ".river-dev/specifications/dev-308-river-development-agent-governed-executor-integration-operation-execution-foundation.json",
+    "tools/river-dev/src/core/governed-executor-integration-operation-execution-foundation-engine.test.ts",
+    "tools/river-dev/src/core/governed-executor-integration-operation-execution-foundation-engine.ts",
+    "tools/river-dev/src/types.ts"
+  ]
+}
