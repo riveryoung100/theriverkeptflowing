@@ -1,0 +1,66 @@
+﻿{
+  "id": "DEV-300",
+  "title": "River Development Agent Governed Executor Integration Verified Package Downstream Admission Consumption Foundation",
+  "status": "implementation",
+  "defaultPolicy": "DENY",
+  "objective": "Consume an exact trusted DEV-299 governed executor integration verified-package downstream-admission result as inert data while preserving provenance and evidence continuity and creating zero downstream authority.",
+  "predecessor": {
+    "id": "DEV-299",
+    "requiredTrusted": true,
+    "requiredReady": true,
+    "requiredAdmissionEligible": true,
+    "requiredAdmissionState": "GOVERNED_EXECUTOR_INTEGRATION_VERIFIED_PACKAGE_ADMISSION_ELIGIBLE",
+    "blockedReasonsMustBeEmpty": true
+  },
+  "decision": {
+    "consumptionDecisionOnly": true,
+    "resultIsInertData": true,
+    "acceptedState": "GOVERNED_EXECUTOR_INTEGRATION_VERIFIED_PACKAGE_ADMISSION_CONSUMPTION_ACCEPTED",
+    "rejectedState": "GOVERNED_EXECUTOR_INTEGRATION_VERIFIED_PACKAGE_ADMISSION_CONSUMPTION_REJECTED"
+  },
+  "evidenceContinuity": {
+    "preserve": [
+      "predecessorVerificationState",
+      "predecessorVerificationEvidence",
+      "predecessorAcceptanceEvidence",
+      "predecessorHandoffEvidence",
+      "verificationEvidence",
+      "acceptanceEvidence",
+      "packagingEvidence",
+      "packageVerificationEvidence",
+      "admissionEvidence"
+    ],
+    "add": [
+      "consumptionEvidence"
+    ],
+    "blockedConsumptionReleasesSuccessfulEvidence": false
+  },
+  "authority": {
+    "createsExecutionAuthorization": false,
+    "authorizesDownstreamAction": false,
+    "admitsIntoActiveExecutor": false,
+    "activatesAdmission": false,
+    "dispatches": false,
+    "invokesExecutor": false,
+    "executesOperation": false,
+    "invokesInspectionDependency": false,
+    "retriesExecution": false,
+    "persistsLifecycleState": false,
+    "modifiesRepository": false,
+    "deletesRepositoryContent": false,
+    "stagesRepositoryChanges": false,
+    "commits": false,
+    "pushes": false,
+    "deploys": false,
+    "accessesSecrets": false,
+    "expandsScope": false,
+    "performsArbitraryShellExecution": false,
+    "performsNetworkExecution": false,
+    "performsExternalSideEffects": false
+  },
+  "futureBoundary": {
+    "required": true,
+    "name": "Active Admission Eligibility",
+    "historicalAnalogue": "DEV-267"
+  }
+}
