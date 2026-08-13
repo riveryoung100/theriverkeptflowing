@@ -1,0 +1,67 @@
+{
+  "id": "DEV-318",
+  "title": "River Development Agent Production Governed Operation Execution Authorization Consumption Integration",
+  "objective": "Connect deterministic production acquisition of the existing governed operation-execution authorization to the existing operational executor integration entry boundary at real production execution call sites, while preserving default-deny behavior and without creating, upgrading, or broadening authorization.",
+  "status": "specified",
+  "predecessor": "DEV-317",
+  "scope": {
+    "includes": [
+      "Consume the DEV-317 governed operation-execution authorization acquisition integration from production execution paths that currently enter DEV-314 without supplied governed authorization.",
+      "Pass only the acquired existing governed authorization into the DEV-314 operational executor integration entry boundary.",
+      "Preserve DEV-314 as the authoritative admission boundary for apply-mode execution.",
+      "Preserve dry-run behavior as non-mutating and independent of mutation authorization.",
+      "Preserve default-deny behavior when governed authorization is absent, untrusted, not ready, unauthorized, malformed, or otherwise unusable.",
+      "Integrate production authorization consumption without creating new authorization authority.",
+      "Add deterministic tests proving authorized production consumption and unauthorized/default-deny behavior.",
+      "Keep the integration narrowly scoped to authorization acquisition-to-consumption wiring."
+    ],
+    "excludes": [
+      "Creating operation-execution authorization.",
+      "Upgrading, expanding, synthesizing, or repairing authorization.",
+      "Treating --apply or requested apply mode as authorization.",
+      "Bypassing the DEV-314 operational executor integration entry boundary.",
+      "Granting arbitrary repository mutation authority.",
+      "Changing the underlying governed authorization decision semantics established by DEV-307.",
+      "Changing the inert authorization acquisition semantics established by DEV-317.",
+      "Adding retry, persistence, push, deployment, secret-access, network, or external-side-effect authority.",
+      "Broad refactoring unrelated to the production authorization-consumption seam."
+    ]
+  },
+  "invariants": [
+    "DEV-317 acquisition remains deterministic and does not itself execute repository operations.",
+    "DEV-314 remains the authoritative operational admission boundary.",
+    "Requested apply mode is never authorization.",
+    "Missing governed authorization remains denied for apply-mode execution.",
+    "Only a valid existing governed OPERATION_EXECUTION_AUTHORIZED result may satisfy governed apply authorization.",
+    "Dry-run remains non-mutating.",
+    "No authorization is created, upgraded, broadened, synthesized, or inferred by DEV-318.",
+    "No new repository mutation primitive is introduced.",
+    "Existing safety, policy, path, and execution-runner boundaries remain intact."
+  ],
+  "acceptanceCriteria": [
+    "At least one real production execution path consumes DEV-317 acquisition rather than leaving DEV-317 with zero production consumers.",
+    "The acquired governed authorization is supplied to the existing DEV-314 operational entry boundary.",
+    "Authorized apply-mode execution can reach the existing runner only after DEV-314 admission.",
+    "Apply-mode execution remains blocked when governed authorization cannot be acquired or does not satisfy DEV-314.",
+    "Dry-run remains operational without mutation authorization and remains non-mutating.",
+    "Tests prove both authorized and denied production consumption paths.",
+    "No caller can convert --apply alone into governed authorization.",
+    "Typecheck passes.",
+    "Relevant regression tests pass.",
+    "Full River Dev baseline tests pass.",
+    "Repository build passes."
+  ],
+  "expectedFiles": [
+    ".river-dev/specifications/dev-318-river-development-agent-production-governed-operation-execution-authorization-consumption-integration.json",
+    "tools/river-dev/src/core/governed-operation-execution-authorization-consumption-integration.ts",
+    "tools/river-dev/src/core/governed-operation-execution-authorization-consumption-integration.test.ts"
+  ],
+  "implementationNotes": [
+    "Prefer a narrow integration adapter over embedding authorization-acquisition logic directly into package-executor.ts, implement.ts, or index.ts.",
+    "The implementation must consume DEV-317 output and produce only the authorization input required by the existing DEV-314 boundary.",
+    "Do not duplicate DEV-307 authorization logic.",
+    "Do not duplicate DEV-314 admission logic.",
+    "Do not make the consumption adapter itself mutation-capable.",
+    "Before implementation, inspect the exact DEV-317 exported function signature and its dependency requirements and determine the smallest production caller integration point."
+  ]
+}
