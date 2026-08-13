@@ -1,0 +1,29 @@
+﻿{
+  "version": "1.0.0",
+  "phase": "DEV-307",
+  "title": "River Development Agent governed executor integration operation execution authorization foundation",
+  "objective": "Establish a default-deny inert authorization boundary between the trusted DEV-306 governed executor invocation and a future operation execution boundary.",
+  "predecessor": "DEV-306",
+  "predecessorVersion": "DEV-306",
+  "defaultPolicy": "DENY",
+  "authorizationDecisionOnly": true,
+  "authorizationResultIsInertData": true,
+  "futureOperationExecutionBoundaryRequired": true,
+  "executionPerformed": false,
+  "repositoryMutationAuthorized": false,
+  "shellExecutionAuthorized": false,
+  "networkExecutionAuthorized": false,
+  "externalSideEffectsAuthorized": false,
+  "requirements": [
+    "Consume the exact trusted DEV-306 executor invocation result.",
+    "Require DEV-306 trusted, ready, and invoked state.",
+    "Require the embedded DEV-305 executor invocation authorization to remain trusted, ready, and authorized.",
+    "Produce an explicit operation execution authorization state.",
+    "Default to DENY whenever predecessor invariants are not satisfied.",
+    "Represent authorization as inert data only.",
+    "Do not execute an operation.",
+    "Do not mutate repository state.",
+    "Do not grant shell, network, retry, persistence, push, deployment, secret-access, scope-expansion, or external-side-effect authority.",
+    "Require a future operation execution boundary before any actual execution."
+  ]
+}
