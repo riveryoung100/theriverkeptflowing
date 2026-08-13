@@ -1,0 +1,38 @@
+﻿{
+  "id": "DEV-313",
+  "title": "River Development Agent Governed Executor Integration Operation Execution Closure Foundation",
+  "status": "implementation",
+  "objective": "Close the inert governed operation-execution result chain from exact trusted DEV-312 finalization and establish the explicit handoff boundary into operational executor integration.",
+  "predecessor": {
+    "id": "DEV-312",
+    "requiredSource": "governed-executor-integration-operation-execution-result-finalization-foundation-engine",
+    "requiredFinalizationState": "GOVERNED_OPERATION_EXECUTION_RESULT_FINALIZATION_ESTABLISHED"
+  },
+  "defaultPolicy": "DENY",
+  "boundary": {
+    "closureOnly": true,
+    "closureIsInertData": true,
+    "resultMutationProhibited": true,
+    "lifecycleMutationProhibited": true,
+    "completionMutationProhibited": true,
+    "finalizationMutationProhibited": true,
+    "operationReexecutionProhibited": true,
+    "operationalIntegrationRequiredNext": true,
+    "repositoryMutation": false,
+    "externalSideEffects": false
+  },
+  "closureStates": [
+    "GOVERNED_OPERATION_EXECUTION_CLOSURE_ESTABLISHED",
+    "GOVERNED_OPERATION_EXECUTION_CLOSURE_NOT_ESTABLISHED"
+  ],
+  "nextPhase": {
+    "startsAt": "DEV-314",
+    "purpose": "operational executor integration"
+  },
+  "artifacts": [
+    ".river-dev/specifications/dev-313-river-development-agent-governed-executor-integration-operation-execution-closure-foundation.json",
+    "tools/river-dev/src/core/governed-executor-integration-operation-execution-closure-foundation-engine.test.ts",
+    "tools/river-dev/src/core/governed-executor-integration-operation-execution-closure-foundation-engine.ts",
+    "tools/river-dev/src/types.ts"
+  ]
+}

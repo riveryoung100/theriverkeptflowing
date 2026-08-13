@@ -9095,3 +9095,90 @@ export interface RiverDevGovernedExecutorIntegrationOperationExecutionResultFina
   readonly mayPerformNetworkExecution: false;
   readonly mayPerformExternalSideEffects: false;
 }
+
+export interface RiverDevGovernedExecutorIntegrationOperationExecutionClosureFoundationInput {
+  readonly resultFinalization:
+    RiverDevGovernedExecutorIntegrationOperationExecutionResultFinalizationFoundationResult;
+}
+
+export interface RiverDevGovernedExecutorIntegrationOperationExecutionClosureFoundationResult {
+  readonly version: "DEV-313";
+
+  readonly source:
+    "governed-executor-integration-operation-execution-closure-foundation-engine";
+
+  readonly objective: string;
+
+  readonly trusted: boolean;
+  readonly ready: boolean;
+  readonly closureEstablished: boolean;
+
+  readonly defaultPolicy: "DENY";
+
+  readonly closureOnly: true;
+  readonly closureIsInertData: true;
+
+  readonly resultMutationProhibited: true;
+  readonly lifecycleMutationProhibited: true;
+  readonly completionMutationProhibited: true;
+  readonly finalizationMutationProhibited: true;
+  readonly operationReexecutionProhibited: true;
+
+  readonly operationalIntegrationRequiredNext: true;
+
+  readonly closureState:
+    | "GOVERNED_OPERATION_EXECUTION_CLOSURE_ESTABLISHED"
+    | "GOVERNED_OPERATION_EXECUTION_CLOSURE_NOT_ESTABLISHED";
+
+  readonly finalizationState:
+    | "GOVERNED_OPERATION_EXECUTION_RESULT_FINALIZATION_ESTABLISHED"
+    | "GOVERNED_OPERATION_EXECUTION_RESULT_FINALIZATION_NOT_ESTABLISHED";
+
+  readonly completionState:
+    | "GOVERNED_OPERATION_EXECUTION_RESULT_COMPLETION_ESTABLISHED"
+    | "GOVERNED_OPERATION_EXECUTION_RESULT_COMPLETION_NOT_ESTABLISHED";
+
+  readonly lifecycleState:
+    | "GOVERNED_OPERATION_EXECUTION_RESULT_LIFECYCLE_ESTABLISHED"
+    | "GOVERNED_OPERATION_EXECUTION_RESULT_LIFECYCLE_NOT_ESTABLISHED";
+
+  readonly resultState:
+    | "GOVERNED_OPERATION_EXECUTION_RESULT_ESTABLISHED"
+    | "GOVERNED_OPERATION_EXECUTION_RESULT_NOT_ESTABLISHED";
+
+  readonly receiptState:
+    | "EXECUTION_RESULT_RECORDED"
+    | "EXECUTION_RESULT_NOT_RECORDED";
+
+  readonly resultFinalization:
+    RiverDevGovernedExecutorIntegrationOperationExecutionResultFinalizationFoundationResult
+    | null;
+
+  readonly closureEvidence: readonly string[];
+  readonly provenance: readonly string[];
+  readonly blockedReasons: readonly string[];
+
+  readonly mayCreateExecutionAuthorization: false;
+  readonly mayAuthorizeDownstreamAction: false;
+  readonly mayAdmitIntoActiveExecutor: false;
+  readonly mayActivateAdmission: false;
+  readonly mayDispatch: false;
+  readonly mayInvokeExecutor: false;
+  readonly mayExecuteOperation: false;
+  readonly mayInvokeInspectionDependency: false;
+  readonly mayRetryExecution: false;
+  readonly mayPersistLifecycleState: false;
+
+  readonly mayModifyRepository: false;
+  readonly mayDeleteRepositoryContent: false;
+  readonly mayStageRepositoryChanges: false;
+  readonly mayCommit: false;
+  readonly mayPush: false;
+  readonly mayDeploy: false;
+
+  readonly mayAccessSecrets: false;
+  readonly mayExpandScope: false;
+  readonly mayPerformArbitraryShellExecution: false;
+  readonly mayPerformNetworkExecution: false;
+  readonly mayPerformExternalSideEffects: false;
+}
