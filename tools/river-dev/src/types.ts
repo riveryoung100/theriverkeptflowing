@@ -8464,3 +8464,71 @@ export interface RiverDevGovernedExecutorIntegrationActiveAdmissionEnforcementFo
   readonly mayPerformNetworkExecution: false;
   readonly mayPerformExternalSideEffects: false;
 }
+
+export interface RiverDevGovernedExecutorIntegrationExecutorInvocationAuthorizationFoundationInput {
+  readonly activeAdmissionEnforcement: RiverDevGovernedExecutorIntegrationActiveAdmissionEnforcementFoundationResult;
+}
+
+export interface RiverDevGovernedExecutorIntegrationExecutorInvocationAuthorizationFoundationResult {
+  readonly version: "DEV-305";
+  readonly source: "governed-executor-integration-executor-invocation-authorization-foundation-engine";
+  readonly objective: string;
+
+  readonly trusted: boolean;
+  readonly ready: boolean;
+  readonly authorized: boolean;
+
+  readonly defaultPolicy: "DENY";
+
+  readonly executorInvocationAuthorizationDecisionOnly: true;
+  readonly authorizationResultIsInertData: true;
+  readonly futureExecutorInvocationBoundaryRequired: true;
+
+  readonly authorizationState:
+    | "EXECUTOR_INVOCATION_AUTHORIZED"
+    | "EXECUTOR_INVOCATION_UNAUTHORIZED";
+
+  readonly enforcement: RiverDevGovernedExecutorIntegrationActiveAdmissionEnforcementFoundationResult | null;
+
+  readonly predecessorVerificationState: readonly string[];
+  readonly predecessorVerificationEvidence: readonly string[];
+  readonly predecessorAcceptanceEvidence: readonly string[];
+  readonly predecessorHandoffEvidence: readonly string[];
+  readonly verificationEvidence: readonly string[];
+  readonly acceptanceEvidence: readonly string[];
+  readonly packagingEvidence: readonly string[];
+  readonly packageVerificationEvidence: readonly string[];
+  readonly admissionEvidence: readonly string[];
+  readonly consumptionEvidence: readonly string[];
+  readonly activeAdmissionEligibilityEvidence: readonly string[];
+  readonly activeAdmissionAuthorizationEvidence: readonly string[];
+  readonly activeAdmissionVerificationEvidence: readonly string[];
+  readonly activeAdmissionEnforcementEvidence: readonly string[];
+  readonly executorInvocationAuthorizationEvidence: readonly string[];
+
+  readonly blockedReasons: readonly string[];
+
+  readonly mayCreateExecutionAuthorization: false;
+  readonly mayAuthorizeDownstreamAction: false;
+  readonly mayAdmitIntoActiveExecutor: false;
+  readonly mayActivateAdmission: false;
+  readonly mayDispatch: false;
+  readonly mayInvokeExecutor: false;
+  readonly mayExecuteOperation: false;
+  readonly mayInvokeInspectionDependency: false;
+  readonly mayRetryExecution: false;
+  readonly mayPersistLifecycleState: false;
+
+  readonly mayModifyRepository: false;
+  readonly mayDeleteRepositoryContent: false;
+  readonly mayStageRepositoryChanges: false;
+  readonly mayCommit: false;
+  readonly mayPush: false;
+  readonly mayDeploy: false;
+
+  readonly mayAccessSecrets: false;
+  readonly mayExpandScope: false;
+  readonly mayPerformArbitraryShellExecution: false;
+  readonly mayPerformNetworkExecution: false;
+  readonly mayPerformExternalSideEffects: false;
+}

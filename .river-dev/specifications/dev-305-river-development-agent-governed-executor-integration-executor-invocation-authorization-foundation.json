@@ -1,0 +1,51 @@
+﻿{
+  "id": "DEV-305",
+  "title": "River Development Agent Governed Executor Integration Executor Invocation Authorization Foundation",
+  "status": "foundation",
+  "predecessor": "DEV-304",
+  "objective": "Authorize an exact trusted DEV-304 active-admission enforcement result for a future separately governed executor invocation boundary while keeping the authorization result inert and granting no executor invocation, dispatch, execution, repository mutation, network, secret, shell, deployment, or external-side-effect authority.",
+  "defaultPolicy": "DENY",
+  "invariants": [
+    "DEV-304 is the exact predecessor.",
+    "The predecessor must be trusted, ready, and actively enforced.",
+    "The predecessor enforcement state must be ACTIVE_ADMISSION_ENFORCED.",
+    "The predecessor must remain an inert active-admission enforcement decision.",
+    "The predecessor must require a future executor invocation boundary.",
+    "Complete predecessor evidence and provenance continuity is required.",
+    "No inherited or downstream authority may already exist.",
+    "A successful DEV-305 result is an executor invocation authorization decision only.",
+    "A successful DEV-305 result remains inert data.",
+    "DEV-305 does not invoke an executor.",
+    "DEV-305 does not dispatch or execute an operation.",
+    "DEV-305 does not modify, stage, commit, push, deploy, access secrets, expand scope, execute arbitrary shell commands, perform network execution, or create external side effects.",
+    "A future separately governed executor invocation boundary remains required."
+  ],
+  "authorizedState": "EXECUTOR_INVOCATION_AUTHORIZED",
+  "rejectedState": "EXECUTOR_INVOCATION_UNAUTHORIZED",
+  "authority": {
+    "mayCreateExecutionAuthorization": false,
+    "mayAuthorizeDownstreamAction": false,
+    "mayAdmitIntoActiveExecutor": false,
+    "mayActivateAdmission": false,
+    "mayDispatch": false,
+    "mayInvokeExecutor": false,
+    "mayExecuteOperation": false,
+    "mayInvokeInspectionDependency": false,
+    "mayRetryExecution": false,
+    "mayPersistLifecycleState": false,
+    "mayModifyRepository": false,
+    "mayDeleteRepositoryContent": false,
+    "mayStageRepositoryChanges": false,
+    "mayCommit": false,
+    "mayPush": false,
+    "mayDeploy": false,
+    "mayAccessSecrets": false,
+    "mayExpandScope": false,
+    "mayPerformArbitraryShellExecution": false,
+    "mayPerformNetworkExecution": false,
+    "mayPerformExternalSideEffects": false
+  },
+  "futureBoundary": {
+    "futureExecutorInvocationBoundaryRequired": true
+  }
+}
