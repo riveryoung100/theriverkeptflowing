@@ -1,0 +1,25 @@
+{
+  "id": "DEV-303",
+  "title": "River Development Agent Governed Executor Integration Active Admission Verification Foundation",
+  "status": "implementation-foundation",
+  "objective": "Verify an exact trusted DEV-302 active-admission authorization result while preserving the separately governed active-admission boundary and creating no admission, dispatch, execution, mutation, network, secret, shell, or external-side-effect authority.",
+  "predecessor": "DEV-302",
+  "defaultPolicy": "DENY",
+  "constraints": [
+    "DEV-302 must be trusted.",
+    "DEV-302 must be ready.",
+    "DEV-302 must be authorized.",
+    "DEV-302 authorization state must be ACTIVE_ADMISSION_AUTHORIZED.",
+    "DEV-302 must remain an active-admission authorization decision only.",
+    "DEV-302 authorization result must remain inert data.",
+    "DEV-302 must require a future separately governed active-admission boundary.",
+    "DEV-302 blocked reasons must be empty.",
+    "Required predecessor lineage and evidence must be present.",
+    "All inherited and downstream authorities must remain denied.",
+    "Verification must not itself admit, activate admission, dispatch, invoke an executor, or execute an operation.",
+    "Verification must not modify, delete, stage, commit, push, or deploy repository content.",
+    "Verification must not access secrets, expand scope, perform arbitrary shell execution, perform network execution, or perform external side effects.",
+    "A future separately governed active-admission boundary remains required.",
+    "Verification output must be deterministic."
+  ]
+}

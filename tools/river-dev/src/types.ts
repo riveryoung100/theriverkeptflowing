@@ -1,5791 +1,3578 @@
 export interface RiverDevExecutionIntelligenceGovernanceStabilizationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly governanceStabilizationState: readonly string[];
 
-readonly governanceStabilizationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionIntelligenceGovernanceMaturationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly governanceMaturationState: readonly string[];
 
-readonly governanceMaturationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionIntelligenceGovernanceRefinementFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly governanceRefinementState: readonly string[];
 
-readonly governanceRefinementState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceGovernanceEvolutionFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly governanceState: readonly string[];
 
-readonly governanceState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceGovernanceOptimizationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly governanceOptimizationState: readonly string[];
 
-readonly governanceOptimizationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionIntelligenceGovernanceAdaptationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly governanceAdaptationState: readonly string[];
 
-readonly governanceAdaptationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionIntelligenceLearningFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly learningState: readonly string[];
 
-readonly learningState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceResultFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly successful: boolean;
 
-readonly successful:
-boolean;
+  readonly resultState: readonly string[];
 
-readonly resultState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceExecutionFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly executed: boolean;
 
-readonly executed:
-boolean;
+  readonly executionState: readonly string[];
 
-readonly executionState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceReviewFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly reviewState: readonly string[];
 
-readonly reviewState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceOversightFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly oversightState: readonly string[];
 
-readonly oversightState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceAuditFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly auditState: readonly string[];
 
-readonly auditState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceComplianceFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly complianceState: readonly string[];
 
-readonly complianceState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligencePolicyFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly policyState: readonly string[];
 
-readonly policyState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceGovernanceFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly governanceState: readonly string[];
 
-readonly governanceState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceValidationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly validationState: readonly string[];
 
-readonly validationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceCoordinationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly coordinationState: readonly string[];
 
-readonly coordinationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligencePreservationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly preservationState: readonly string[];
 
-readonly preservationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligencePersistenceFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly persistenceState: readonly string[];
 
-readonly persistenceState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceActivationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly activationState: readonly string[];
 
-readonly activationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceReadinessFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly readinessState: readonly string[];
 
-readonly readinessState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceMaturationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly maturationState: readonly string[];
 
-readonly maturationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionIntelligenceRefinementFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly refinementState: readonly string[];
 
-readonly refinementState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceOptimizationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly optimizationState: readonly string[];
 
-readonly optimizationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceAdaptationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly adaptationState: readonly string[];
 
-readonly adaptationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceEvolutionFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly evolutionState: readonly string[];
 
-readonly evolutionState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceCompletionFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly completionState: readonly string[];
 
-readonly completionState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceCertificationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly certificationState: readonly string[];
 
-readonly certificationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceVerificationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly verificationState: readonly string[];
 
-readonly verificationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceAssuranceFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly assuranceState: readonly string[];
 
-readonly assuranceState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceStabilizationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly stabilizationState: readonly string[];
 
-readonly stabilizationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceIntegrationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly integrationState: readonly string[];
 
-readonly integrationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceConsolidationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly consolidationState: readonly string[];
 
-readonly consolidationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceFormationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly intelligenceState: readonly string[];
 
-readonly intelligenceState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionKnowledgeIntegrationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly integrationState: readonly string[];
 
-readonly integrationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionKnowledgeConsolidationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly consolidationState: readonly string[];
 
-readonly consolidationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionKnowledgeFormationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly knowledgeState: readonly string[];
 
-readonly knowledgeState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionLearningIntegrationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly learningState: readonly string[];
 
-readonly learningState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionReflectionFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly reflectionState: readonly string[];
 
-readonly reflectionState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionCompletionFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly completionState: readonly string[];
 
-readonly completionState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionCertificationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly certificationState: readonly string[];
 
-readonly certificationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionActionFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly actionState: readonly string[];
 
-readonly actionState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionEnforcementFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly enforcementState: readonly string[];
 
-readonly enforcementState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionApprovalFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly approvalState: readonly string[];
 
-readonly approvalState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionAuthorizationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly authorizationState: readonly string[];
 
-readonly authorizationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionDecisionFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly decisionState: readonly string[];
 
-readonly decisionState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionPolicyFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly policyState: readonly string[];
 
-readonly policyState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionAssuranceFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly assuranceState: readonly string[];
 
-readonly assuranceState:
-readonly string[];
+  readonly evolutionState: readonly string[];
 
-readonly evolutionState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionRestorationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly restorationState: readonly string[];
 
-readonly restorationState:
-readonly string[];
+  readonly deploymentState: readonly string[];
 
-readonly deploymentState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionRecoveryFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly recoveryState: readonly string[];
 
-readonly recoveryState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionStabilizationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly stabilizationState: readonly string[];
 
-readonly stabilizationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntegrationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly integrationState: readonly string[];
 
-readonly integrationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionConsolidationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly consolidationState: readonly string[];
 
-readonly consolidationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionReinforcementFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly reinforcementState: readonly string[];
 
-readonly reinforcementState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionContinuationReport {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly outcomeSource: string;
 
-readonly outcomeSource:
-string;
+  readonly reportState: string;
 
-readonly reportState:
-string;
+  readonly reportEntries: readonly string[];
 
-readonly reportEntries:
-readonly string[];
+  readonly validationSummary: readonly string[];
 
-readonly validationSummary:
-readonly string[];
-
-readonly authorized:
-boolean;
-
+  readonly authorized: boolean;
 }
 
 export interface RiverDevExecutionContinuationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly continuationState: string;
 
-readonly continuationState:
-string;
+  readonly authorized: boolean;
 
-readonly authorized:
-boolean;
+  readonly continuationActions: readonly string[];
 
-readonly continuationActions:
-readonly string[];
+  readonly reportingSource: string;
 
-readonly reportingSource:
-string;
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionObservationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly observationState: readonly string[];
 
-readonly observationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionVerificationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly verificationState: readonly string[];
 
-readonly verificationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionDeploymentFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly deploymentState: readonly string[];
 
-readonly deploymentState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionPromotionFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly promotionState: readonly string[];
 
-readonly promotionState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionGovernanceFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly governanceState: readonly string[];
 
-readonly governanceState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionEvolutionFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly evolutionState: readonly string[];
 
-readonly evolutionState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionImprovementFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly improvementState: readonly string[];
 
-readonly improvementState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionAdaptationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly adaptationState: readonly string[];
 
-readonly adaptationState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionLearningFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly learningState: readonly string[];
 
-readonly learningState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionFeedbackFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly feedbackState: readonly string[];
 
-readonly feedbackState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionResultFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly completed: boolean;
 
-readonly completed:
-boolean;
+  readonly successful: boolean;
 
-readonly successful:
-boolean;
+  readonly resultState: readonly string[];
 
-readonly resultState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionRuntimeFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly running: boolean;
 
-readonly running:
-boolean;
+  readonly authorized: boolean;
 
-readonly authorized:
-boolean;
+  readonly runtimeState: readonly string[];
 
-readonly runtimeState:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceExecutionControlFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly controlled: boolean;
 
-readonly controlled:
-boolean;
+  readonly authorized: boolean;
 
-readonly authorized:
-boolean;
+  readonly executionRequest: readonly string[];
 
-readonly executionRequest:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceOrchestrationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly orchestrated: boolean;
 
-readonly orchestrated:
-boolean;
+  readonly authorized: boolean;
 
-readonly authorized:
-boolean;
+  readonly pipeline: readonly string[];
 
-readonly pipeline:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceInterpretationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly approved: boolean;
 
-readonly approved:
-boolean;
+  readonly understood: boolean;
 
-readonly understood:
-boolean;
+  readonly interpreted?: boolean;
 
-readonly interpreted?:
-boolean;
+  readonly evaluation: readonly string[];
 
-readonly evaluation:
-readonly string[];
+  readonly interpretation: readonly string[];
 
-readonly interpretation:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionIntelligenceUnderstandingFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly understood: boolean;
 
-readonly understood:
-boolean;
+  readonly understanding: readonly string[];
 
-readonly understanding:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceContextSynthesisFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly synthesized: boolean;
 
-readonly synthesized:
-boolean;
+  readonly context: readonly string[];
 
-readonly context:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceMemoryRetrievalFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly retrieved: boolean;
 
-readonly retrieved:
-boolean;
+  readonly memory: readonly string[];
 
-readonly memory:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceMemoryFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly memory: readonly string[];
 
-readonly memory:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceContinuationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly continuing: boolean;
 
-readonly continuing:
-boolean;
+  readonly continuation: readonly string[];
 
-readonly continuation:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceOutcomeFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly successful: boolean;
 
-readonly successful:
-boolean;
+  readonly outcome: readonly string[];
 
-readonly outcome:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceActionFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly authorized: boolean;
 
-readonly authorized:
-boolean;
+  readonly actions: readonly string[];
 
-readonly actions:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceDecisionFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly approved: boolean;
 
-readonly approved:
-boolean;
+  readonly decision: "execute" | "hold";
 
-readonly decision:
-"execute" | "hold";
+  readonly actions: readonly string[];
 
-readonly actions:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceReasoningFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly reasoned?: boolean;
 
-readonly reasoned?:
-boolean;
+  readonly approved?: boolean;
 
-readonly approved?:
-boolean;
+  readonly reasoning: readonly string[];
 
-readonly reasoning:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionIntelligenceEvaluationFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly approved: boolean;
 
-readonly approved:
-boolean;
+  readonly understood: boolean;
 
-readonly understood:
-boolean;
+  readonly evaluation: readonly string[];
 
-readonly evaluation:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceFoundation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly decision: "approved" | "blocked";
 
-readonly decision:
-"approved" | "blocked";
+  readonly understood: boolean;
 
-readonly understood:
-boolean;
+  readonly executionActions: readonly string[];
 
-readonly executionActions:
-readonly string[];
+  readonly preparationSource: string;
 
-readonly preparationSource:
-string;
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionContextSynthesis {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly retrievedContext: readonly RiverDevMemoryEntry[];
 
-readonly retrievedContext:
-readonly RiverDevMemoryEntry[];
+  readonly synthesis: readonly string[];
 
-readonly synthesis:
-readonly string[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionMemoryRetrieval {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly retrievedEntries: readonly RiverDevMemoryEntry[];
 
-readonly retrievedEntries:
-readonly RiverDevMemoryEntry[];
+  readonly provenance: readonly string[];
 
-readonly provenance:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionContinuation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly reportingSource: string;
 
-readonly reportingSource:
-string;
+  readonly continuationState: "continue" | "halt" | "review";
 
-readonly continuationState:
-"continue" | "halt" | "review";
+  readonly continuationActions: readonly string[];
 
-readonly continuationActions:
-readonly string[];
+  readonly validationSummary: readonly string[];
 
-readonly validationSummary:
-readonly string[];
-
-readonly authorized:
-boolean;
-
+  readonly authorized: boolean;
 }
 
 export interface RiverDevExecutionReporting {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly outcomeSource: string;
 
-readonly outcomeSource:
-string;
+  readonly reportState: "successful" | "failed" | "blocked";
 
-readonly reportState:
-"successful" | "failed" | "blocked";
+  readonly reportEntries: readonly string[];
 
-readonly reportEntries:
-readonly string[];
+  readonly validationSummary: readonly string[];
 
-readonly validationSummary:
-readonly string[];
-
-readonly authorized:
-boolean;
-
+  readonly authorized: boolean;
 }
 
 export interface RiverDevExecutionOutcome {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source: string;
 
-readonly source:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly lifecycleSource: string;
 
-readonly lifecycleSource:
-string;
+  readonly outcome: "successful" | "failed" | "blocked";
 
-readonly outcome:
-"successful" | "failed" | "blocked";
+  readonly executionResult: readonly string[];
 
-readonly executionResult:
-readonly string[];
+  readonly validationSummary: readonly string[];
 
-readonly validationSummary:
-readonly string[];
-
-readonly authorized:
-boolean;
-
+  readonly authorized: boolean;
 }
 
 export interface RiverDevExecutionPreparation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source?: string;
 
-readonly source?:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly implementationSource: string;
 
-readonly implementationSource:
-string;
+  readonly executionSteps: readonly string[];
 
-readonly executionSteps:
-readonly string[];
+  readonly safetyChecks: readonly string[];
 
-readonly safetyChecks:
-readonly string[];
-
-readonly authorized:
-boolean;
-
+  readonly authorized: boolean;
 }
 
 export interface RiverDevImplementationIntelligence {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source?: string;
 
-readonly source?:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly planSource: string;
 
-readonly planSource:
-string;
+  readonly proposedChanges: readonly string[];
 
-readonly proposedChanges:
-readonly string[];
+  readonly validationSteps: readonly string[];
 
-readonly validationSteps:
-readonly string[];
-
-readonly trusted:
-boolean;
-
+  readonly trusted: boolean;
 }
 
 export interface RiverDevPlanningIntelligence {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source?: string;
 
-readonly source?:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly projectRepository: string;
 
-readonly projectRepository:
-string;
+  readonly steps: readonly string[];
 
-readonly steps:
-readonly string[];
+  readonly risks: readonly string[];
 
-readonly risks:
-readonly string[];
-
-readonly trusted:
-boolean;
-
+  readonly trusted: boolean;
 }
 
 export interface RiverDevProjectIntelligence {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source?: string;
 
-readonly source?:
-string;
+  readonly repository: string;
 
-readonly repository:
-string;
+  readonly architecture: readonly string[];
 
-readonly architecture:
-readonly string[];
+  readonly contentSystems: readonly string[];
 
-readonly contentSystems:
-readonly string[];
-
-readonly understood:
-boolean;
-
+  readonly understood: boolean;
 }
-export const RIVER_DEV_VERSION =
-    "0.1.0" as const;
+export const RIVER_DEV_VERSION = "0.1.0" as const;
 
-
-export type RiverDevVersion =
-    typeof RIVER_DEV_VERSION;
-
+export type RiverDevVersion = typeof RIVER_DEV_VERSION;
 
 export type RiverDevCommandName =
-    | "inspect"
-| "discover-repository"
-| "context"
-| "plan"
-    | "create-execution-package"
-    | "persist-execution-package"
-    | "execute-package"
-    | "audit-execution"
-    | "persist-artifacts"
-    | "generate-artifacts"
-    | "generate-proposal"
-    | "generate-manifest"
-    | "implement"
-    | "verify"
-    | "review"
-    | "commit"
-    | "orchestrate"
-    | "repair"
-    | "resume";
-
+  | "inspect"
+  | "discover-repository"
+  | "context"
+  | "plan"
+  | "create-execution-package"
+  | "persist-execution-package"
+  | "execute-package"
+  | "audit-execution"
+  | "persist-artifacts"
+  | "generate-artifacts"
+  | "generate-proposal"
+  | "generate-manifest"
+  | "implement"
+  | "verify"
+  | "review"
+  | "commit"
+  | "orchestrate"
+  | "repair"
+  | "resume";
 
 export type RiverDevRunStatus =
-    | "idle"
-    | "inspecting"
-    | "planning"
-    | "implementing"
-    | "verifying"
-    | "reviewing"
-    | "ready-to-commit"
-    | "committing"
-    | "completed"
-    | "blocked"
-    | "failed";
-
+  | "idle"
+  | "inspecting"
+  | "planning"
+  | "implementing"
+  | "verifying"
+  | "reviewing"
+  | "ready-to-commit"
+  | "committing"
+  | "completed"
+  | "blocked"
+  | "failed";
 
 export type RiverDevApprovalRequirement =
-    | "push"
-    | "deploy"
-    | "package-install"
-    | "dependency-upgrade"
-    | "file-delete"
-    | "database-migration"
-    | "production-data-change"
-    | "infrastructure-change"
-    | "secret-access"
-    | "scope-expansion";
-
+  | "push"
+  | "deploy"
+  | "package-install"
+  | "dependency-upgrade"
+  | "file-delete"
+  | "database-migration"
+  | "production-data-change"
+  | "infrastructure-change"
+  | "secret-access"
+  | "scope-expansion";
 
 export interface RiverDevProjectMap {
+  readonly version: string;
 
-    readonly version:
-        string;
+  readonly project: {
+    readonly name: string;
 
-    readonly project: {
+    readonly repositoryType: string;
 
-        readonly name:
-            string;
+    readonly defaultBranch: string;
 
-        readonly repositoryType:
-            string;
+    readonly packageManager: string;
+  };
 
-        readonly defaultBranch:
-            string;
+  readonly paths: Readonly<Record<string, string>>;
 
-        readonly packageManager:
-            string;
+  readonly commands: Readonly<Record<string, string>>;
 
-    };
+  readonly conventions: Readonly<Record<string, unknown>>;
 
-    readonly paths:
-        Readonly<Record<string, string>>;
-
-    readonly commands:
-        Readonly<Record<string, string>>;
-
-    readonly conventions:
-        Readonly<Record<string, unknown>>;
-
-    readonly protectedPaths:
-        readonly string[];
-
+  readonly protectedPaths: readonly string[];
 }
-
 
 export interface RiverDevSafetyPolicy {
+  readonly version: string;
 
-    readonly version:
-        string;
+  readonly defaultMode: string;
 
-    readonly defaultMode:
-        string;
+  readonly repositoryBoundary: {
+    readonly allowOutsideRepository: boolean;
 
-    readonly repositoryBoundary: {
+    readonly allowParentDirectoryTraversal: boolean;
 
-        readonly allowOutsideRepository:
-            boolean;
+    readonly allowAbsolutePathsOutsideRepository: boolean;
+  };
 
-        readonly allowParentDirectoryTraversal:
-            boolean;
+  readonly git: Readonly<Record<string, boolean>>;
 
-        readonly allowAbsolutePathsOutsideRepository:
-            boolean;
+  readonly filesystem: Readonly<Record<string, boolean>>;
 
-    };
+  readonly commands: {
+    readonly allowShell: boolean;
 
-    readonly git:
-        Readonly<Record<string, boolean>>;
+    readonly allowNetworkCommands: boolean;
 
-    readonly filesystem:
-        Readonly<Record<string, boolean>>;
+    readonly allowDownloadedScripts: boolean;
 
-    readonly commands: {
+    readonly allowPackageInstall: boolean;
 
-        readonly allowShell:
-            boolean;
+    readonly allowProductionCommands: boolean;
 
-        readonly allowNetworkCommands:
-            boolean;
+    readonly maximumCommandSeconds: number;
+  };
 
-        readonly allowDownloadedScripts:
-            boolean;
+  readonly secrets: {
+    readonly denyPatterns: readonly string[];
 
-        readonly allowPackageInstall:
-            boolean;
+    readonly allowReadingSecretFiles: boolean;
 
-        readonly allowProductionCommands:
-            boolean;
+    readonly allowWritingSecretFiles: boolean;
 
-        readonly maximumCommandSeconds:
-            number;
+    readonly allowReportingSecretValues: boolean;
+  };
 
-    };
+  readonly repairs: {
+    readonly maximumAttempts: number;
 
-    readonly secrets: {
+    readonly requireFailureEvidence: boolean;
 
-        readonly denyPatterns:
-            readonly string[];
+    readonly allowScopeExpansion: boolean;
+  };
 
-        readonly allowReadingSecretFiles:
-            boolean;
-
-        readonly allowWritingSecretFiles:
-            boolean;
-
-        readonly allowReportingSecretValues:
-            boolean;
-
-    };
-
-    readonly repairs: {
-
-        readonly maximumAttempts:
-            number;
-
-        readonly requireFailureEvidence:
-            boolean;
-
-        readonly allowScopeExpansion:
-            boolean;
-
-    };
-
-    readonly approvalRequiredFor:
-        readonly RiverDevApprovalRequirement[];
-
+  readonly approvalRequiredFor: readonly RiverDevApprovalRequirement[];
 }
-
 
 export interface RiverDevQualityGate {
+  readonly id: string;
 
-    readonly id:
-        string;
-
-    readonly description:
-        string;
-
+  readonly description: string;
 }
-
 
 export interface RiverDevQualityGates {
+  readonly version: string;
 
-    readonly version:
-        string;
+  readonly requiredBeforeCommit: readonly RiverDevQualityGate[];
 
-    readonly requiredBeforeCommit:
-        readonly RiverDevQualityGate[];
+  readonly existingNonBlockingHints: readonly {
+    readonly path: string;
 
-    readonly existingNonBlockingHints:
-        readonly {
+    readonly description: string;
+  }[];
 
-            readonly path:
-                string;
-
-            readonly description:
-                string;
-
-        }[];
-
-    readonly failureBehavior:
-        "stop";
-
+  readonly failureBehavior: "stop";
 }
-
 
 export interface RiverDevCommandDefinition {
+  readonly name: string;
 
-    readonly name:
-        string;
+  readonly executable: string;
 
-    readonly executable:
-        string;
+  readonly arguments?: readonly string[];
 
-    readonly arguments?:
-        readonly string[];
-
-    readonly argumentsPrefix?:
-        readonly string[];
-
+  readonly argumentsPrefix?: readonly string[];
 }
-
 
 export interface RiverDevCommandPolicy {
+  readonly version: string;
 
-    readonly version:
-        string;
+  readonly allowedCommands: readonly RiverDevCommandDefinition[];
 
-    readonly allowedCommands:
-        readonly RiverDevCommandDefinition[];
+  readonly deniedExecutables: readonly string[];
 
-    readonly deniedExecutables:
-        readonly string[];
-
-    readonly deniedGitArguments:
-        readonly string[];
-
+  readonly deniedGitArguments: readonly string[];
 }
-
 
 export interface RiverDevConfiguration {
+  readonly repositoryRoot: string;
 
-    readonly repositoryRoot:
-        string;
+  readonly policyRoot: string;
 
-    readonly policyRoot:
-        string;
+  readonly projectMap: RiverDevProjectMap;
 
-    readonly projectMap:
-        RiverDevProjectMap;
+  readonly safetyPolicy: RiverDevSafetyPolicy;
 
-    readonly safetyPolicy:
-        RiverDevSafetyPolicy;
+  readonly qualityGates: RiverDevQualityGates;
 
-    readonly qualityGates:
-        RiverDevQualityGates;
-
-    readonly commandPolicy:
-        RiverDevCommandPolicy;
-
+  readonly commandPolicy: RiverDevCommandPolicy;
 }
-
 
 export interface RiverDevRepositorySnapshot {
+  readonly repositoryRoot: string;
 
-    readonly repositoryRoot:
-        string;
+  readonly branch: string;
 
-    readonly branch:
-        string;
+  readonly commit: string;
 
-    readonly commit:
-        string;
+  readonly clean: boolean;
 
-    readonly clean:
-        boolean;
+  readonly changedPaths: readonly string[];
 
-    readonly changedPaths:
-        readonly string[];
-
-    readonly capturedAt:
-        string;
-
+  readonly capturedAt: string;
 }
 
-
-export type RiverDevRepositoryPathKind =
-    | "file"
-    | "directory";
+export type RiverDevRepositoryPathKind = "file" | "directory";
 
 export type RiverDevRepositoryPathClassification =
-    | "river-dev"
-    | "source"
-    | "test"
-    | "documentation"
-    | "configuration"
-    | "content"
-    | "public-asset"
-    | "infrastructure"
-    | "protected"
-    | "other";
+  | "river-dev"
+  | "source"
+  | "test"
+  | "documentation"
+  | "configuration"
+  | "content"
+  | "public-asset"
+  | "infrastructure"
+  | "protected"
+  | "other";
 
 export interface RiverDevRepositoryDiscoveryEntry {
+  readonly path: string;
 
-    readonly path:
-        string;
+  readonly kind: RiverDevRepositoryPathKind;
 
-    readonly kind:
-        RiverDevRepositoryPathKind;
+  readonly classification: RiverDevRepositoryPathClassification;
 
-    readonly classification:
-        RiverDevRepositoryPathClassification;
-
-    readonly protected:
-        boolean;
-
+  readonly protected: boolean;
 }
 
 export interface RiverDevRepositoryDiscoveryCounts {
+  readonly total: number;
 
-    readonly total:
-        number;
+  readonly files: number;
 
-    readonly files:
-        number;
+  readonly directories: number;
 
-    readonly directories:
-        number;
-
-    readonly protected:
-        number;
-
+  readonly protected: number;
 }
 
 export interface RiverDevRepositoryDiscoveryReport {
+  readonly version: "1.0.0";
 
-    readonly version:
-        "1.0.0";
+  readonly repositoryRoot: string;
 
-    readonly repositoryRoot:
-        string;
+  readonly projectName: string;
 
-    readonly projectName:
-        string;
+  readonly branch: string;
 
-    readonly branch:
-        string;
+  readonly commit: string;
 
-    readonly commit:
-        string;
+  readonly discoveredAt: string;
 
-    readonly discoveredAt:
-        string;
+  readonly entries: readonly RiverDevRepositoryDiscoveryEntry[];
 
-    readonly entries:
-        readonly RiverDevRepositoryDiscoveryEntry[];
+  readonly counts: RiverDevRepositoryDiscoveryCounts;
 
-    readonly counts:
-        RiverDevRepositoryDiscoveryCounts;
-
-    readonly keyPaths:
-        Readonly<Record<string, string>>;
-
+  readonly keyPaths: Readonly<Record<string, string>>;
 }
 
 export interface RiverDevContextPhaseIdentity {
+  readonly phase: string;
 
-    readonly phase:
-        string;
+  readonly branch: string;
 
-    readonly branch:
-        string;
+  readonly specificationPath: string;
 
-    readonly specificationPath:
-        string;
+  readonly objective: string;
 
-    readonly objective:
-        string;
-
-    readonly commitMessage:
-        string;
-
+  readonly commitMessage: string;
 }
 
 export interface RiverDevContextScope {
+  readonly modifiablePaths: readonly string[];
 
-    readonly modifiablePaths:
-        readonly string[];
+  readonly creatablePaths: readonly string[];
 
-    readonly creatablePaths:
-        readonly string[];
-
-    readonly excludedPaths:
-        readonly string[];
-
+  readonly excludedPaths: readonly string[];
 }
 
 export interface RiverDevContextSessionCompatibility {
+  readonly hasActiveSession: boolean;
 
-    readonly hasActiveSession:
-        boolean;
+  readonly sessionId: string | null;
 
-    readonly sessionId:
-        string |
-        null;
+  readonly compatible: boolean;
 
-    readonly compatible:
-        boolean;
-
-    readonly reason:
-        string;
-
+  readonly reason: string;
 }
 
 export interface RiverDevContextRelevantEntry {
+  readonly path: string;
 
-    readonly path:
-        string;
+  readonly kind: RiverDevRepositoryPathKind;
 
-    readonly kind:
-        RiverDevRepositoryPathKind;
+  readonly classification: RiverDevRepositoryPathClassification;
 
-    readonly classification:
-        RiverDevRepositoryPathClassification;
-
-    readonly reason:
-        string;
-
+  readonly reason: string;
 }
 
 export interface RiverDevContextIdentity {
+  readonly repositoryRoot: string;
 
-    readonly repositoryRoot:
-        string;
+  readonly branch: string;
 
-    readonly branch:
-        string;
+  readonly commit: string;
 
-    readonly commit:
-        string;
+  readonly capturedAt: string;
 
-    readonly capturedAt:
-        string;
+  readonly discoveryVersion: "1.0.0";
 
-    readonly discoveryVersion:
-        "1.0.0";
-
-    readonly specificationPath:
-        string;
-
+  readonly specificationPath: string;
 }
 
 export interface RiverDevContextArtifact {
+  readonly path: string;
 
-    readonly path:
-        string;
+  readonly classification: RiverDevRepositoryPathClassification;
 
-    readonly classification:
-        RiverDevRepositoryPathClassification;
+  readonly reason: string;
 
-    readonly reason:
-        string;
+  readonly originalBytes: number;
 
-    readonly originalBytes:
-        number;
+  readonly loadedBytes: number;
 
-    readonly loadedBytes:
-        number;
+  readonly truncated: boolean;
 
-    readonly truncated:
-        boolean;
-
-    readonly content:
-        string;
-
+  readonly content: string;
 }
 
 export interface RiverDevContextArtifactBundle {
+  readonly version: "1.0.0";
 
-    readonly version:
-        "1.0.0";
+  readonly maximumArtifactBytes: number;
 
-    readonly maximumArtifactBytes:
-        number;
+  readonly maximumTotalBytes: number;
 
-    readonly maximumTotalBytes:
-        number;
+  readonly loadedBytes: number;
 
-    readonly loadedBytes:
-        number;
+  readonly loadedCount: number;
 
-    readonly loadedCount:
-        number;
+  readonly truncatedCount: number;
 
-    readonly truncatedCount:
-        number;
+  readonly omittedCount: number;
 
-    readonly omittedCount:
-        number;
-
-
-    readonly artifacts:
-        readonly RiverDevContextArtifact[];
-
+  readonly artifacts: readonly RiverDevContextArtifact[];
 }
-
 
 export interface RiverDevContextArtifactMetadata {
+  readonly path: string;
 
-    readonly path:
-        string;
+  readonly extension: string;
 
-    readonly extension:
-        string;
+  readonly bytes: number;
 
-    readonly bytes:
-        number;
-
-    readonly classification:
-        RiverDevRepositoryPathClassification;
-
+  readonly classification: RiverDevRepositoryPathClassification;
 }
-
 
 export interface RiverDevContextArtifactRelationship {
+  readonly from: string;
 
-    readonly from:
-        string;
+  readonly to: string;
 
-    readonly to:
-        string;
+  readonly type: "imports" | "references";
 
-    readonly type:
-        "imports" |
-        "references";
-
-    readonly reason:
-        string;
-
+  readonly reason: string;
 }
-
 
 export interface RiverDevContextRelevanceScore {
+  readonly path: string;
 
-    readonly path:
-        string;
+  readonly score: number;
 
-    readonly score:
-        number;
-
-    readonly reasons:
-        readonly string[];
-
+  readonly reasons: readonly string[];
 }
 
-
 export interface RiverDevContextUnderstanding {
+  readonly version: "1.0.0";
 
-    readonly version:
-        "1.0.0";
+  readonly artifactCount: number;
 
-    readonly artifactCount:
-        number;
+  readonly metadata: readonly RiverDevContextArtifactMetadata[];
 
-    readonly metadata:
-        readonly RiverDevContextArtifactMetadata[];
+  readonly relationships: readonly RiverDevContextArtifactRelationship[];
 
-    readonly relationships:
-        readonly RiverDevContextArtifactRelationship[];
-
-    readonly relevance:
-        readonly RiverDevContextRelevanceScore[];
-
+  readonly relevance: readonly RiverDevContextRelevanceScore[];
 }
 
 export interface RiverDevPlanningDecision {
+  readonly path: string;
 
-    readonly path:
-        string;
+  readonly priority: number;
 
-    readonly priority:
-        number;
+  readonly reason: string;
 
-    readonly reason:
-        string;
-
-    readonly action:
-        "inspect" |
-        "modify" |
-        "create";
+  readonly action: "inspect" | "modify" | "create";
 }
-
-
 
 export interface RiverDevExecutionTask {
+  readonly id: string;
 
-    readonly id:
-        string;
+  readonly path: string;
 
-    readonly path:
-        string;
+  readonly action: "inspect" | "modify" | "create";
 
-    readonly action:
-        "inspect" |
-        "modify" |
-        "create";
+  readonly priority: number;
 
-    readonly priority:
-        number;
-
-    readonly reason:
-        string;
-
+  readonly reason: string;
 }
-
-
 
 export interface RiverDevValidationDecision {
+  readonly taskId: string;
 
-readonly taskId:
-    string;
+  readonly path: string;
 
-readonly path:
-    string;
+  readonly valid: boolean;
 
-readonly valid:
-    boolean;
+  readonly reason: string;
 
-readonly reason:
-    string;
-
-readonly requiresApproval:
-    boolean;
-
+  readonly requiresApproval: boolean;
 }
-
-
 
 export interface RiverDevExecutionStep {
+  readonly id: string;
 
-readonly id:
-    string;
+  readonly taskId: string;
 
-readonly taskId:
-    string;
+  readonly order: number;
 
-readonly order:
-    number;
+  readonly status: "ready" | "blocked" | "approval-required";
 
-readonly status:
-    "ready" |
-    "blocked" |
-    "approval-required";
-
-readonly reason:
-    string;
-
+  readonly reason: string;
 }
-
 
 export interface RiverDevApprovalState {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "pending" | "approved" | "rejected";
 
-readonly state:
-"pending" |
-"approved" |
-"rejected";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
-
 
 export interface RiverDevSimulationStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "simulated" | "blocked" | "approval-required";
 
-readonly state:
-"simulated" |
-"blocked" |
-"approval-required";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
-
 
 export interface RiverDevRunnerStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "executable" | "blocked" | "approval-required";
 
-readonly state:
-"executable" |
-"blocked" |
-"approval-required";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
-
 
 export interface RiverDevActionStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "executable" | "blocked" | "approval-required";
 
-readonly state:
-"executable" |
-"blocked" |
-"approval-required";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
-
 
 export interface RiverDevDispatchStep {
+  readonly taskId: string;
 
-    readonly taskId:
-    string;
+  readonly state: "dispatchable" | "blocked" | "approval-required";
 
-    readonly state:
-    "dispatchable" |
-    "blocked" |
-    "approval-required";
-
-    readonly reason:
-    string;
-
+  readonly reason: string;
 }
-
 
 export interface RiverDevResultStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "successful" | "blocked" | "approval-required";
 
-readonly state:
-"successful" |
-"blocked" |
-"approval-required";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
-
 
 export interface RiverDevAuditStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "successful" | "blocked" | "approval-required";
 
-readonly state:
-"successful" |
-"blocked" |
-"approval-required";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
-
 
 export interface RiverDevGovernanceStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "approved" | "blocked" | "review-required";
 
-readonly state:
-"approved" |
-"blocked" |
-"review-required";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
-
 
 export interface RiverDevPolicyStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "allowed" | "blocked" | "review-required";
 
-readonly state:
-"allowed" |
-"blocked" |
-"review-required";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
-
 
 export interface RiverDevApprovalStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "approved" | "blocked" | "pending-review";
 
-readonly state:
-"approved" |
-"blocked" |
-"pending-review";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
-
 
 export interface RiverDevAuthorizationStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "authorized" | "blocked" | "confirmation-required";
 
-readonly state:
-"authorized" |
-"blocked" |
-"confirmation-required";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
-
 
 export interface RiverDevImplementationStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "ready" | "blocked" | "confirmation-required";
 
-readonly state:
-"ready" |
-"blocked" |
-"confirmation-required";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
-
 
 export interface RiverDevChangeStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "planned" | "blocked" | "confirmation-required";
 
-readonly state:
-"planned" |
-"blocked" |
-"confirmation-required";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
-
 
 export interface RiverDevValidationStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "validated" | "blocked" | "confirmation-required";
 
-readonly state:
-"validated" |
-"blocked" |
-"confirmation-required";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
-
 
 export interface RiverDevReadinessStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "ready" | "blocked" | "confirmation-required";
 
-readonly state:
-"ready" |
-"blocked" |
-"confirmation-required";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
-
 
 export interface RiverDevRunAuthorizationStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "authorized" | "blocked" | "confirmation-required";
 
-readonly state:
-"authorized" |
-"blocked" |
-"confirmation-required";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
-
 
 export interface RiverDevFinalGateStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "approved" | "blocked" | "confirmation-required";
 
-readonly state:
-"approved" |
-"blocked" |
-"confirmation-required";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
-
 
 export interface RiverDevCommitBoundaryStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "authorized" | "blocked" | "confirmation-required";
 
-readonly state:
-"authorized" |
-"blocked" |
-"confirmation-required";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
-
 
 export interface RiverDevReviewBoundaryStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "approved" | "blocked" | "confirmation-required";
 
-readonly state:
-"approved" |
-"blocked" |
-"confirmation-required";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
-
 
 export interface RiverDevOrchestratorStep {
+  readonly name: string;
 
-readonly name:
-string;
+  readonly state: "complete" | "blocked" | "confirmation-required";
 
-readonly state:
-"complete" |
-"blocked" |
-"confirmation-required";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
-
 
 export interface RiverDevIntelligenceStep {
+  readonly category: string;
 
-readonly category:
-string;
+  readonly state: "understood" | "blocked" | "confirmation-required";
 
-readonly state:
-"understood" |
-"blocked" |
-"confirmation-required";
-
-readonly explanation:
-string;
-
+  readonly explanation: string;
 }
-
 
 export interface RiverDevReasoningStep {
+  readonly category: string;
 
-readonly category:
-string;
+  readonly state: "reasoned" | "blocked" | "confirmation-required";
 
-readonly state:
-"reasoned" |
-"blocked" |
-"confirmation-required";
+  readonly explanation: string;
 
-readonly explanation:
-string;
-
-readonly decision:
-string;
-
+  readonly decision: string;
 }
-
 
 export interface RiverDevMemoryEntry {
+  readonly category: string;
 
-readonly category:
-string;
+  readonly key: string;
 
-readonly key:
-string;
+  readonly value: string;
 
-readonly value:
-string;
-
-readonly source:
-string;
-
+  readonly source: string;
 }
-
 
 export interface RiverDevKnowledgeObject {
+  readonly category: string;
 
-readonly category:
-string;
+  readonly key: string;
 
-readonly key:
-string;
+  readonly insight: string;
 
-readonly insight:
-string;
-
-readonly source:
-string;
-
+  readonly source: string;
 }
-
 
 export interface RiverDevCapability {
+  readonly category: string;
 
-readonly category:
-string;
+  readonly name: string;
 
-readonly name:
-string;
+  readonly description: string;
 
-readonly description:
-string;
-
-readonly source:
-string;
-
+  readonly source: string;
 }
-
 
 export interface RiverDevSkill {
+  readonly category: string;
 
-readonly category:
-string;
+  readonly name: string;
 
-readonly name:
-string;
+  readonly description: string;
 
-readonly description:
-string;
-
-readonly source:
-string;
-
+  readonly source: string;
 }
 
-
 export interface RiverDevSkillComposition {
+  readonly category: string;
 
-readonly category:
-string;
+  readonly name: string;
 
-readonly name:
-string;
+  readonly description: string;
 
-readonly description:
-string;
+  readonly source: string;
 
-readonly source:
-string;
-
-readonly skills:
-readonly string[];
-
+  readonly skills: readonly string[];
 }
 
 export interface RiverDevExecutionSkillComposition {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly compositions: readonly RiverDevSkillComposition[];
 
-readonly compositions:
-readonly RiverDevSkillComposition[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionSkill {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly skills: readonly RiverDevSkill[];
 
-readonly skills:
-readonly RiverDevSkill[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionCapability {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly capabilities: readonly RiverDevCapability[];
 
-readonly capabilities:
-readonly RiverDevCapability[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionKnowledge {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly objects: readonly RiverDevKnowledgeObject[];
 
-readonly objects:
-readonly RiverDevKnowledgeObject[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionMemory {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly entries: readonly RiverDevMemoryEntry[];
 
-readonly entries:
-readonly RiverDevMemoryEntry[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionReasoning {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly validated: boolean;
 
-readonly validated:
-boolean;
+  readonly steps: readonly RiverDevReasoningStep[];
 
-readonly steps:
-readonly RiverDevReasoningStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionIntelligence {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly source?: string;
 
-readonly source?:
-string;
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly preparationSource?: string;
 
-readonly preparationSource?:
-string;
+  readonly decision?: "approved" | "blocked";
 
-readonly decision?:
-"approved" | "blocked";
+  readonly executionActions?: readonly string[];
 
-readonly executionActions?:
-readonly string[];
+  readonly validationRequirements?: readonly string[];
 
-readonly validationRequirements?:
-readonly string[];
+  readonly understood: boolean;
 
-readonly understood:
-boolean;
+  readonly steps: readonly RiverDevIntelligenceStep[];
 
-readonly steps:
-readonly RiverDevIntelligenceStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionOrchestrator {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly executable: boolean;
 
-readonly executable:
-boolean;
+  readonly steps: readonly RiverDevOrchestratorStep[];
 
-readonly steps:
-readonly RiverDevOrchestratorStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevReviewBoundary {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly completed: boolean;
 
-readonly completed:
-boolean;
+  readonly reviews: readonly RiverDevReviewBoundaryStep[];
 
-readonly reviews:
-readonly RiverDevReviewBoundaryStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevCommitBoundary {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly permitted: boolean;
 
-readonly permitted:
-boolean;
+  readonly commits: readonly RiverDevCommitBoundaryStep[];
 
-readonly commits:
-readonly RiverDevCommitBoundaryStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionFinalGate {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly permitted: boolean;
 
-readonly permitted:
-boolean;
+  readonly gates: readonly RiverDevFinalGateStep[];
 
-readonly gates:
-readonly RiverDevFinalGateStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevRunAuthorization {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly authorized: boolean;
 
-readonly authorized:
-boolean;
+  readonly authorization: readonly RiverDevRunAuthorizationStep[];
 
-readonly authorization:
-readonly RiverDevRunAuthorizationStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionReadiness {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly ready: boolean;
 
-readonly ready:
-boolean;
+  readonly readiness: readonly RiverDevReadinessStep[];
 
-readonly readiness:
-readonly RiverDevReadinessStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionChangeValidation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly valid: boolean;
 
-readonly valid:
-boolean;
+  readonly validations: readonly RiverDevValidationStep[];
 
-readonly validations:
-readonly RiverDevValidationStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionChangePlan {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly executable: boolean;
 
-readonly executable:
-boolean;
+  readonly changes: readonly RiverDevChangeStep[];
 
-readonly changes:
-readonly RiverDevChangeStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionImplementation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly ready: boolean;
 
-readonly ready:
-boolean;
+  readonly implementations: readonly RiverDevImplementationStep[];
 
-readonly implementations:
-readonly RiverDevImplementationStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionAuthorization {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly authorized: boolean;
 
-readonly authorized:
-boolean;
+  readonly authorizations: readonly RiverDevAuthorizationStep[];
 
-readonly authorizations:
-readonly RiverDevAuthorizationStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 export interface RiverDevExecutionLifecycleIntelligenceReadiness {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly readiness: readonly RiverDevLifecycleIntelligenceReadinessStep[];
 
-readonly readiness:
-readonly RiverDevLifecycleIntelligenceReadinessStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceReadinessStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "ready" | "blocked";
 
-readonly state:
-"ready" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceActivation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly activation: readonly RiverDevLifecycleIntelligenceActivationStep[];
 
-readonly activation:
-readonly RiverDevLifecycleIntelligenceActivationStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceActivationStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "activated" | "blocked";
 
-readonly state:
-"activated" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceRestoration {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly restoration: readonly RiverDevLifecycleIntelligenceRestorationStep[];
 
-readonly restoration:
-readonly RiverDevLifecycleIntelligenceRestorationStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceRestorationStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "restored" | "blocked";
 
-readonly state:
-"restored" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceRecovery {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly recovery: readonly RiverDevLifecycleIntelligenceRecoveryStep[];
 
-readonly recovery:
-readonly RiverDevLifecycleIntelligenceRecoveryStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceRecoveryStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "recovered" | "blocked";
 
-readonly state:
-"recovered" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligencePersistence {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly persistence: readonly RiverDevLifecycleIntelligencePersistenceStep[];
 
-readonly persistence:
-readonly RiverDevLifecycleIntelligencePersistenceStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligencePersistenceStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "persisted" | "blocked";
 
-readonly state:
-"persisted" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceContinuity {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly continuity: readonly RiverDevLifecycleIntelligenceContinuityStep[];
 
-readonly continuity:
-readonly RiverDevLifecycleIntelligenceContinuityStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceContinuityStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "continuous" | "blocked";
 
-readonly state:
-"continuous" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceResilience {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly resilience: readonly RiverDevLifecycleIntelligenceResilienceStep[];
 
-readonly resilience:
-readonly RiverDevLifecycleIntelligenceResilienceStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceResilienceStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "resilient" | "blocked";
 
-readonly state:
-"resilient" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceReliability {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly reliability: readonly RiverDevLifecycleIntelligenceReliabilityStep[];
 
-readonly reliability:
-readonly RiverDevLifecycleIntelligenceReliabilityStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceReliabilityStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "reliable" | "blocked";
 
-readonly state:
-"reliable" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceCompliance {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly compliance: readonly RiverDevLifecycleIntelligenceComplianceStep[];
 
-readonly compliance:
-readonly RiverDevLifecycleIntelligenceComplianceStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceComplianceStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "compliant" | "blocked";
 
-readonly state:
-"compliant" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceAssurance {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly assurance: readonly RiverDevLifecycleIntelligenceAssuranceStep[];
 
-readonly assurance:
-readonly RiverDevLifecycleIntelligenceAssuranceStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceAssuranceStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "assured" | "blocked";
 
-readonly state:
-"assured" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceValidation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly validation: readonly RiverDevLifecycleIntelligenceValidationStep[];
 
-readonly validation:
-readonly RiverDevLifecycleIntelligenceValidationStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceValidationStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "validated" | "blocked";
 
-readonly state:
-"validated" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 
-
-
 export interface RiverDevExecutionLifecycleIntelligenceExecution {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly execution: readonly RiverDevLifecycleIntelligenceExecutionStep[];
 
-readonly execution:
-readonly RiverDevLifecycleIntelligenceExecutionStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceExecutionStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "executed" | "blocked";
 
-readonly state:
-"executed" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceDispatch {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly dispatch: readonly RiverDevLifecycleIntelligenceDispatchStep[];
 
-readonly dispatch:
-readonly RiverDevLifecycleIntelligenceDispatchStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceDispatchStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "dispatched" | "blocked";
 
-readonly state:
-"dispatched" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceAuthorization {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly authorization: readonly RiverDevLifecycleIntelligenceAuthorizationStep[];
 
-readonly authorization:
-readonly RiverDevLifecycleIntelligenceAuthorizationStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceAuthorizationStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "authorized" | "blocked";
 
-readonly state:
-"authorized" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceGovernance {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly governance: readonly RiverDevLifecycleIntelligenceGovernanceStep[];
 
-readonly governance:
-readonly RiverDevLifecycleIntelligenceGovernanceStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceGovernanceStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "approved" | "blocked";
 
-readonly state:
-"approved" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceRecommendation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly recommendation: readonly RiverDevLifecycleIntelligenceRecommendationStep[];
 
-readonly recommendation:
-readonly RiverDevLifecycleIntelligenceRecommendationStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceRecommendationStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "recommended" | "blocked";
 
-readonly state:
-"recommended" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceInsight {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly insight: readonly RiverDevLifecycleIntelligenceInsightStep[];
 
-readonly insight:
-readonly RiverDevLifecycleIntelligenceInsightStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceInsightStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "identified" | "blocked";
 
-readonly state:
-"identified" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceKnowledge {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly knowledge: readonly RiverDevLifecycleIntelligenceKnowledgeStep[];
 
-readonly knowledge:
-readonly RiverDevLifecycleIntelligenceKnowledgeStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceKnowledgeStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "stored" | "blocked";
 
-readonly state:
-"stored" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceLearning {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly learning: readonly RiverDevLifecycleIntelligenceLearningStep[];
 
-readonly learning:
-readonly RiverDevLifecycleIntelligenceLearningStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceLearningStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "learned" | "blocked";
 
-readonly state:
-"learned" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 
-
 export interface RiverDevExecutionLifecycleIntelligenceOptimization {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly optimization: readonly RiverDevLifecycleIntelligenceOptimizationStep[];
 
-readonly optimization:
-readonly RiverDevLifecycleIntelligenceOptimizationStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceOptimizationStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "optimized" | "blocked";
 
-readonly state:
-"optimized" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceAdaptation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly adaptation: readonly RiverDevLifecycleIntelligenceAdaptationStep[];
 
-readonly adaptation:
-readonly RiverDevLifecycleIntelligenceAdaptationStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceAdaptationStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "adapted" | "blocked";
 
-readonly state:
-"adapted" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceFeedback {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly feedback: readonly RiverDevLifecycleIntelligenceFeedbackStep[];
 
-readonly feedback:
-readonly RiverDevLifecycleIntelligenceFeedbackStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceFeedbackStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "learned" | "blocked";
 
-readonly state:
-"learned" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceOutcome {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly outcome: readonly RiverDevLifecycleIntelligenceOutcomeStep[];
 
-readonly outcome:
-readonly RiverDevLifecycleIntelligenceOutcomeStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceOutcomeStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "completed" | "blocked";
 
-readonly state:
-"completed" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceAction {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly action: readonly RiverDevLifecycleIntelligenceActionStep[];
 
-readonly action:
-readonly RiverDevLifecycleIntelligenceActionStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceActionStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "acted" | "blocked";
 
-readonly state:
-"acted" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceDecision {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly decision: readonly RiverDevLifecycleIntelligenceDecisionStep[];
 
-readonly decision:
-readonly RiverDevLifecycleIntelligenceDecisionStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceDecisionStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "decided" | "blocked";
 
-readonly state:
-"decided" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 
-
-
-
-
-
-
-
-
 export interface RiverDevExecutionLifecycleIntelligenceContinuation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly resilience: readonly RiverDevLifecycleIntelligenceResilienceStep[];
 
-readonly resilience:
-readonly RiverDevLifecycleIntelligenceResilienceStep[];
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
-
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceContinuationStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "continued" | "blocked";
 
-readonly state:
-"continued" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceEvolution {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly evolution: readonly RiverDevLifecycleIntelligenceEvolutionStep[];
 
-readonly evolution:
-readonly RiverDevLifecycleIntelligenceEvolutionStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceEvolutionStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "evolved" | "blocked";
 
-readonly state:
-"evolved" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceMaturation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly maturation: readonly RiverDevLifecycleIntelligenceMaturationStep[];
 
-readonly maturation:
-readonly RiverDevLifecycleIntelligenceMaturationStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceMaturationStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "matured" | "blocked";
 
-readonly state:
-"matured" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceAdvancement {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly advancement: readonly RiverDevLifecycleIntelligenceAdvancementStep[];
 
-readonly advancement:
-readonly RiverDevLifecycleIntelligenceAdvancementStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceAdvancementStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "advanced" | "blocked";
 
-readonly state:
-"advanced" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceTransition {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly transition: readonly RiverDevLifecycleIntelligenceTransitionStep[];
 
-readonly transition:
-readonly RiverDevLifecycleIntelligenceTransitionStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceTransitionStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "transitioned" | "blocked";
 
-readonly state:
-"transitioned" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceConsolidation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly consolidation: readonly RiverDevLifecycleIntelligenceConsolidationStep[];
 
-readonly consolidation:
-readonly RiverDevLifecycleIntelligenceConsolidationStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceConsolidationStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "consolidated" | "blocked";
 
-readonly state:
-"consolidated" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceIntegration {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly integration: readonly RiverDevLifecycleIntelligenceIntegrationStep[];
 
-readonly integration:
-readonly RiverDevLifecycleIntelligenceIntegrationStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceIntegrationStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "integrated" | "blocked";
 
-readonly state:
-"integrated" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceSynchronization {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly synchronization: readonly RiverDevLifecycleIntelligenceSynchronizationStep[];
 
-readonly synchronization:
-readonly RiverDevLifecycleIntelligenceSynchronizationStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceSynchronizationStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "synchronized" | "blocked";
 
-readonly state:
-"synchronized" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceCoordination {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly coordination: readonly RiverDevLifecycleIntelligenceCoordinationStep[];
 
-readonly coordination:
-readonly RiverDevLifecycleIntelligenceCoordinationStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceCoordinationStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "coordinated" | "blocked";
 
-readonly state:
-"coordinated" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligenceOrchestration {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly orchestration: readonly RiverDevLifecycleIntelligenceOrchestrationStep[];
 
-readonly orchestration:
-readonly RiverDevLifecycleIntelligenceOrchestrationStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceOrchestrationStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "orchestrated" | "blocked";
 
-readonly state:
-"orchestrated" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycleIntelligence {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly intelligence: readonly RiverDevLifecycleIntelligenceStep[];
 
-readonly intelligence:
-readonly RiverDevLifecycleIntelligenceStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevLifecycleIntelligenceStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "trusted" | "blocked";
 
-readonly state:
-"trusted" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionLifecycle {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly active: boolean;
 
-readonly active:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly executionSource?: string;
 
-readonly executionSource?:
-string;
+  readonly state?: "ready" | "executing" | "completed" | "blocked";
 
-readonly state?:
-"ready" | "executing" | "completed" | "blocked";
+  readonly lifecycle: readonly RiverDevLifecycleStep[];
 
-readonly lifecycle:
-readonly RiverDevLifecycleStep[];
+  readonly lifecycleSteps?: readonly string[];
 
-readonly lifecycleSteps?:
-readonly string[];
+  readonly safetyChecks?: readonly string[];
 
-readonly safetyChecks?:
-readonly string[];
+  readonly authorized?: boolean;
 
-readonly authorized?:
-boolean;
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevLifecycleStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "active" | "blocked";
 
-readonly state:
-"active" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionCompletion {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly completed: boolean;
 
-readonly completed:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly completion: readonly RiverDevCompletionStep[];
 
-readonly completion:
-readonly RiverDevCompletionStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevCompletionStep {
+  readonly taskId: string;
 
-readonly taskId:
-string;
+  readonly state: "completed" | "blocked";
 
-readonly state:
-"completed" | "blocked";
-
-readonly reason:
-string;
-
+  readonly reason: string;
 }
 export interface RiverDevExecutionApproval {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly approved: boolean;
 
-readonly approved:
-boolean;
+  readonly approvals: readonly RiverDevApprovalStep[];
 
-readonly approvals:
-readonly RiverDevApprovalStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionPolicy {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly allowed: boolean;
 
-readonly allowed:
-boolean;
+  readonly policies: readonly RiverDevPolicyStep[];
 
-readonly policies:
-readonly RiverDevPolicyStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionGovernance {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly approved: boolean;
 
-readonly approved:
-boolean;
+  readonly decisions: readonly RiverDevGovernanceStep[];
 
-readonly decisions:
-readonly RiverDevGovernanceStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionAudit {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly complete: boolean;
 
-readonly complete:
-boolean;
+  readonly history: readonly RiverDevAuditStep[];
 
-readonly history:
-readonly RiverDevAuditStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionReview {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly approved: boolean;
 
-readonly approved:
-boolean;
+  readonly source: string;
 
-readonly source:
-string;
+  readonly findings: readonly string[];
 
-readonly findings:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionResult {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly ready: boolean;
 
-readonly ready:
-boolean;
+  readonly results: readonly RiverDevResultStep[];
 
-readonly results:
-readonly RiverDevResultStep[];
+  readonly trusted?: boolean;
 
-readonly trusted?:
-boolean;
+  readonly status?: "success" | "blocked";
 
-readonly status?:
-"success" | "blocked";
+  readonly source?: string;
 
-readonly source?:
-string;
+  readonly details?: readonly string[];
 
-readonly details?:
-readonly string[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionDispatcher {
+  readonly version: "1.0.0";
 
-    readonly version:
-    "1.0.0";
+  readonly objective: string;
 
-    readonly objective:
-    string;
+  readonly ready: boolean;
 
-    readonly ready:
-    boolean;
+  readonly dispatches: readonly RiverDevDispatchStep[];
 
-    readonly dispatches:
-    readonly RiverDevDispatchStep[];
-
-    readonly blockedReasons:
-    readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionAction {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly ready: boolean;
 
-readonly ready:
-boolean;
+  readonly actions: readonly RiverDevActionStep[];
 
-readonly actions:
-readonly RiverDevActionStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionRunner {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly ready: boolean;
 
-readonly ready:
-boolean;
+  readonly steps: readonly RiverDevRunnerStep[];
 
-readonly steps:
-readonly RiverDevRunnerStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionSimulation {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly ready: boolean;
 
-readonly ready:
-boolean;
+  readonly steps: readonly RiverDevSimulationStep[];
 
-readonly steps:
-readonly RiverDevSimulationStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionSession {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly ready: boolean;
 
-readonly ready:
-boolean;
+  readonly approvals: readonly RiverDevApprovalState[];
 
-readonly approvals:
-readonly RiverDevApprovalState[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevWorkflow {
+  readonly category: string;
 
-readonly category:
-string;
+  readonly name: string;
 
-readonly name:
-string;
+  readonly description: string;
 
-readonly description:
-string;
+  readonly source: string;
 
-readonly source:
-string;
-
-readonly steps:
-readonly string[];
-
+  readonly steps: readonly string[];
 }
 
 export interface RiverDevWorkflowOrchestration {
+  readonly category: string;
 
-readonly category:
-string;
+  readonly name: string;
 
-readonly name:
-string;
+  readonly description: string;
 
-readonly description:
-string;
+  readonly source: string;
 
-readonly source:
-string;
-
-readonly workflows:
-readonly string[];
-
+  readonly workflows: readonly string[];
 }
 
-
 export interface RiverDevWorkflowRuntimeStep {
+  readonly name: string;
 
-readonly name:
-string;
+  readonly source: string;
 
-readonly source:
-string;
-
-readonly status:
-"ready" | "blocked";
-
+  readonly status: "ready" | "blocked";
 }
 
 export interface RiverDevExecutionWorkflowRuntime {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly steps: readonly RiverDevWorkflowRuntimeStep[];
 
-readonly steps:
-readonly RiverDevWorkflowRuntimeStep[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionWorkflowOrchestration {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted: boolean;
 
-readonly trusted:
-boolean;
+  readonly orchestrations: readonly RiverDevWorkflowOrchestration[];
 
-readonly orchestrations:
-readonly RiverDevWorkflowOrchestration[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionWorkflow {
+  readonly version: "1.0.0";
 
-readonly version:
-"1.0.0";
+  readonly objective: string;
 
-readonly objective:
-string;
+  readonly trusted?: boolean;
 
-readonly trusted?:
-boolean;
+  readonly ready: boolean;
 
-readonly ready:
-boolean;
+  readonly steps: readonly RiverDevExecutionStep[];
 
-readonly steps:
-readonly RiverDevExecutionStep[];
+  readonly workflows?: readonly RiverDevWorkflow[];
 
-readonly workflows?:
-readonly RiverDevWorkflow[];
-
-readonly blockedReasons:
-readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevValidationResult {
+  readonly version: "1.0.0";
 
-readonly version:
-    "1.0.0";
+  readonly ready: boolean;
 
-readonly ready:
-    boolean;
+  readonly decisions: readonly RiverDevValidationDecision[];
 
-readonly decisions:
-    readonly RiverDevValidationDecision[];
-
-readonly blockedReasons:
-    readonly string[];
-
+  readonly blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionManifest {
+  readonly version: "1.0.0";
 
-    readonly version:
-        "1.0.0";
+  readonly objective: string;
 
-    readonly objective:
-        string;
+  readonly tasks: readonly RiverDevExecutionTask[];
 
-    readonly tasks:
-        readonly RiverDevExecutionTask[];
-
-    readonly approvalRequired:
-        readonly string[];
-
+  readonly approvalRequired: readonly string[];
 }
 export interface RiverDevImplementationPlan {
+  readonly version: "1.0.0";
 
-    readonly version:
-        "1.0.0";
+  readonly objective: string;
 
-    readonly objective:
-        string;
+  readonly decisions: readonly RiverDevPlanningDecision[];
 
-    readonly decisions:
-        readonly RiverDevPlanningDecision[];
-
-    readonly steps:
-        readonly string[];
-
+  readonly steps: readonly string[];
 }
 export interface RiverDevDevelopmentContext {
+  readonly version: "1.0.0";
 
-    readonly version:
-        "1.0.0";
+  readonly generatedAt: string;
 
-    readonly generatedAt:
-        string;
+  readonly identity: RiverDevContextIdentity;
 
-    readonly identity:
-        RiverDevContextIdentity;
+  readonly project: {
+    readonly name: string;
 
-    readonly project: {
+    readonly repositoryType: string;
 
-        readonly name:
-            string;
+    readonly defaultBranch: string;
 
-        readonly repositoryType:
-            string;
+    readonly packageManager: string;
+  };
 
-        readonly defaultBranch:
-            string;
+  readonly phase: RiverDevContextPhaseIdentity;
 
-        readonly packageManager:
-            string;
+  readonly repository: RiverDevRepositorySnapshot;
 
-    };
+  readonly discovery: RiverDevRepositoryDiscoveryReport;
 
-    readonly phase:
-        RiverDevContextPhaseIdentity;
+  readonly keyPaths: Readonly<Record<string, string>>;
 
-    readonly repository:
-        RiverDevRepositorySnapshot;
+  readonly architecturalContext: readonly string[];
 
-    readonly discovery:
-        RiverDevRepositoryDiscoveryReport;
+  readonly scope: RiverDevContextScope;
 
-    readonly keyPaths:
-        Readonly<Record<string, string>>;
+  readonly acceptanceCriteria: readonly string[];
 
-    readonly architecturalContext:
-        readonly string[];
+  readonly requiredTests: readonly string[];
 
-    readonly scope:
-        RiverDevContextScope;
+  readonly requiredQualityGates: readonly string[];
 
-    readonly acceptanceCriteria:
-        readonly string[];
+  readonly approvedCommands: readonly string[];
 
-    readonly requiredTests:
-        readonly string[];
+  readonly repairLimits: {
+    readonly maximumAttempts: number;
 
-    readonly requiredQualityGates:
-        readonly string[];
+    readonly allowScopeExpansion: boolean;
+  };
 
-    readonly approvedCommands:
-        readonly string[];
+  readonly approvalBoundaries: readonly RiverDevApprovalRequirement[];
 
-    readonly repairLimits: {
+  readonly session: RiverDevContextSessionCompatibility;
 
-        readonly maximumAttempts:
-            number;
+  readonly relevantEntries: readonly RiverDevContextRelevantEntry[];
 
-        readonly allowScopeExpansion:
-            boolean;
+  readonly understanding: RiverDevContextUnderstanding;
 
-    };
-
-    readonly approvalBoundaries:
-        readonly RiverDevApprovalRequirement[];
-
-    readonly session:
-        RiverDevContextSessionCompatibility;
-
-    readonly relevantEntries:
-        readonly RiverDevContextRelevantEntry[];
-
-
-
-    readonly understanding:
-        RiverDevContextUnderstanding;
-
-readonly artifacts:
-        RiverDevContextArtifactBundle;
-
+  readonly artifacts: RiverDevContextArtifactBundle;
 }
 
 export interface RiverDevRunState {
+  readonly version: RiverDevVersion;
 
-    readonly version:
-        RiverDevVersion;
+  readonly runId: string;
 
-    readonly runId:
-        string;
+  readonly command: RiverDevCommandName;
 
-    readonly command:
-        RiverDevCommandName;
+  readonly status: RiverDevRunStatus;
 
-    readonly status:
-        RiverDevRunStatus;
+  readonly startedAt: string;
 
-    readonly startedAt:
-        string;
+  readonly updatedAt: string;
 
-    readonly updatedAt:
-        string;
+  readonly repository: RiverDevRepositorySnapshot;
 
-    readonly repository:
-        RiverDevRepositorySnapshot;
-
-    readonly messages:
-        readonly string[];
-
+  readonly messages: readonly string[];
 }
 
-
 export type RiverDevSessionStatus =
-    | "active"
-    | "blocked"
-    | "repairing"
-    | "ready-to-resume"
-    | "completed"
-    | "failed";
+  | "active"
+  | "blocked"
+  | "repairing"
+  | "ready-to-resume"
+  | "completed"
+  | "failed";
 
 export type RiverDevSessionLifecycleStep =
-    | "context"
-    | "specification"
-    | "scope-validation"
-    | "planning"
-    | "proposal"
-    | "manifest"
-    | "artifact-generation"
-    | "execution-package"
-    | "execution"
-    | "audit"
-    | "review"
-    | "verification"
-    | "repair"
-    | "commit-preparation"
-    | "approval"
-    | "completed";
+  | "context"
+  | "specification"
+  | "scope-validation"
+  | "planning"
+  | "proposal"
+  | "manifest"
+  | "artifact-generation"
+  | "execution-package"
+  | "execution"
+  | "audit"
+  | "review"
+  | "verification"
+  | "repair"
+  | "commit-preparation"
+  | "approval"
+  | "completed";
 
 export type RiverDevValidationStatus =
-    | "pending"
-    | "passed"
-    | "failed"
-    | "blocked";
+  "pending" | "passed" | "failed" | "blocked";
 
 export interface RiverDevSessionValidationState {
+  readonly tests: RiverDevValidationStatus;
 
-    readonly tests:
-        RiverDevValidationStatus;
+  readonly typecheck: RiverDevValidationStatus;
 
-    readonly typecheck:
-        RiverDevValidationStatus;
+  readonly review: RiverDevValidationStatus;
 
-    readonly review:
-        RiverDevValidationStatus;
-
-    readonly qualityGates:
-        RiverDevValidationStatus;
-
+  readonly qualityGates: RiverDevValidationStatus;
 }
 
 export interface RiverDevSessionRepairAttempt {
+  readonly attempt: number;
 
-    readonly attempt:
-        number;
+  readonly reason: string;
 
-    readonly reason:
-        string;
+  readonly outcome: "pending" | "repaired" | "failed";
 
-    readonly outcome:
-        | "pending"
-        | "repaired"
-        | "failed";
-
-    readonly recordedAt:
-        string;
-
+  readonly recordedAt: string;
 }
 
 export interface RiverDevSessionResumeState {
+  readonly resumable: boolean;
 
-    readonly resumable:
-        boolean;
+  readonly reason: string;
 
-    readonly reason:
-        string;
+  readonly expectedBranch: string;
 
-    readonly expectedBranch:
-        string;
-
-    readonly expectedCommit:
-        string;
-
+  readonly expectedCommit: string;
 }
 
 export interface RiverDevSessionState {
+  readonly version: "1.0.0";
 
-    readonly version:
-        "1.0.0";
+  readonly sessionId: string;
 
-    readonly sessionId:
-        string;
+  readonly phase: string;
 
-    readonly phase:
-        string;
+  readonly specificationPath: string;
 
-    readonly specificationPath:
-        string;
+  readonly planId: string | null;
 
-    readonly planId:
-        string |
-        null;
+  readonly executionPackageId: string | null;
 
-    readonly executionPackageId:
-        string |
-        null;
+  readonly auditId: string | null;
 
-    readonly auditId:
-        string |
-        null;
+  readonly currentStep: RiverDevSessionLifecycleStep;
 
-    readonly currentStep:
-        RiverDevSessionLifecycleStep;
+  readonly status: RiverDevSessionStatus;
 
-    readonly status:
-        RiverDevSessionStatus;
+  readonly startedAt: string;
 
-    readonly startedAt:
-        string;
+  readonly updatedAt: string;
 
-    readonly updatedAt:
-        string;
+  readonly repository: RiverDevRepositorySnapshot;
 
-    readonly repository:
-        RiverDevRepositorySnapshot;
+  readonly validation: RiverDevSessionValidationState;
 
-    readonly validation:
-        RiverDevSessionValidationState;
+  readonly repairHistory: readonly RiverDevSessionRepairAttempt[];
 
-    readonly repairHistory:
-        readonly RiverDevSessionRepairAttempt[];
-
-    readonly resume:
-        RiverDevSessionResumeState;
-
+  readonly resume: RiverDevSessionResumeState;
 }
 
 export interface RiverDevStoredState {
+  readonly version: RiverDevVersion;
 
-    readonly version:
-        RiverDevVersion;
+  readonly activeRun: RiverDevRunState | null;
 
-    readonly activeRun:
-        RiverDevRunState |
-        null;
+  readonly completedRuns: readonly RiverDevRunState[];
 
-    readonly completedRuns:
-        readonly RiverDevRunState[];
+  readonly activeSession: RiverDevSessionState | null;
 
-    readonly activeSession:
-        RiverDevSessionState |
-        null;
-
-    readonly completedSessions:
-        readonly RiverDevSessionState[];
-
+  readonly completedSessions: readonly RiverDevSessionState[];
 }
-
 
 export interface RiverDevStateStore {
+  load(): Promise<RiverDevStoredState>;
 
-    load():
-        Promise<RiverDevStoredState>;
+  save(state: RiverDevStoredState): Promise<void>;
 
-    save(
-        state: RiverDevStoredState
-    ): Promise<void>;
+  beginRun(run: RiverDevRunState): Promise<RiverDevStoredState>;
 
-    beginRun(
-        run: RiverDevRunState
-    ): Promise<RiverDevStoredState>;
+  updateRun(run: RiverDevRunState): Promise<RiverDevStoredState>;
 
-    updateRun(
-        run: RiverDevRunState
-    ): Promise<RiverDevStoredState>;
+  completeRun(run: RiverDevRunState): Promise<RiverDevStoredState>;
 
-    completeRun(
-        run: RiverDevRunState
-    ): Promise<RiverDevStoredState>;
+  clearActiveRun(): Promise<RiverDevStoredState>;
 
-    clearActiveRun():
-        Promise<RiverDevStoredState>;
+  beginSession(session: RiverDevSessionState): Promise<RiverDevStoredState>;
 
-    beginSession(
-        session: RiverDevSessionState
-    ): Promise<RiverDevStoredState>;
+  updateSession(session: RiverDevSessionState): Promise<RiverDevStoredState>;
 
-    updateSession(
-        session: RiverDevSessionState
-    ): Promise<RiverDevStoredState>;
+  completeSession(session: RiverDevSessionState): Promise<RiverDevStoredState>;
 
-    completeSession(
-        session: RiverDevSessionState
-    ): Promise<RiverDevStoredState>;
-
-    clearActiveSession():
-        Promise<RiverDevStoredState>;
-
+  clearActiveSession(): Promise<RiverDevStoredState>;
 }
 
-
 export interface RiverDevExecutionIntelligenceGovernanceAssuranceFoundation {
-version: string;
-source: string;
-objective: string;
-trusted: boolean;
-governanceAssuranceState: string[];
-provenance: string[];
-blockedReasons: string[];
+  version: string;
+  source: string;
+  objective: string;
+  trusted: boolean;
+  governanceAssuranceState: string[];
+  provenance: string[];
+  blockedReasons: string[];
 }
 
 export interface RiverDevExecutionIntelligenceGovernanceVerificationFoundation {
@@ -5966,167 +3753,152 @@ export interface RiverDevExecutionIntelligenceGovernanceOrchestrationFoundation 
 }
 
 export interface RiverDevExecutionIntelligenceGovernanceHumanAuthorizationEvidence {
-    readonly authorized: boolean;
-    readonly authorizedBy: string;
-    readonly authorizationId: string;
-    readonly authorizationSignals: readonly string[];
+  readonly authorized: boolean;
+  readonly authorizedBy: string;
+  readonly authorizationId: string;
+  readonly authorizationSignals: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceGovernanceRepositoryAuthorizationEvidence {
-    readonly authorized: boolean;
-    readonly repositoryRoot: string;
-    readonly authorizationId: string;
-    readonly authorizationSignals: readonly string[];
+  readonly authorized: boolean;
+  readonly repositoryRoot: string;
+  readonly authorizationId: string;
+  readonly authorizationSignals: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceGovernanceAuthorizationBoundaryFoundationInput {
-    readonly governanceOrchestration:
-        RiverDevExecutionIntelligenceGovernanceOrchestrationFoundation;
+  readonly governanceOrchestration: RiverDevExecutionIntelligenceGovernanceOrchestrationFoundation;
 
-    readonly humanAuthorization:
-        RiverDevExecutionIntelligenceGovernanceHumanAuthorizationEvidence | null;
+  readonly humanAuthorization: RiverDevExecutionIntelligenceGovernanceHumanAuthorizationEvidence | null;
 
-    readonly repositoryAuthorization:
-        RiverDevExecutionIntelligenceGovernanceRepositoryAuthorizationEvidence | null;
+  readonly repositoryAuthorization: RiverDevExecutionIntelligenceGovernanceRepositoryAuthorizationEvidence | null;
 
-    readonly approvedScope:
-        RiverDevContextScope | null;
+  readonly approvedScope: RiverDevContextScope | null;
 }
 
 export interface RiverDevExecutionIntelligenceGovernanceAuthorizationBoundaryFoundation {
-    readonly version: "1.0.0";
+  readonly version: "1.0.0";
 
-    readonly source:
-        "river-development-agent-execution-intelligence-governance-authorization-boundary";
+  readonly source: "river-development-agent-execution-intelligence-governance-authorization-boundary";
 
-    readonly objective: string;
+  readonly objective: string;
 
-    readonly trusted: boolean;
-    readonly authorized: boolean;
+  readonly trusted: boolean;
+  readonly authorized: boolean;
 
-    readonly orchestration:
-        RiverDevExecutionIntelligenceGovernanceOrchestrationFoundation;
+  readonly orchestration: RiverDevExecutionIntelligenceGovernanceOrchestrationFoundation;
 
-    readonly humanAuthorization:
-        RiverDevExecutionIntelligenceGovernanceHumanAuthorizationEvidence | null;
+  readonly humanAuthorization: RiverDevExecutionIntelligenceGovernanceHumanAuthorizationEvidence | null;
 
-    readonly repositoryAuthorization:
-        RiverDevExecutionIntelligenceGovernanceRepositoryAuthorizationEvidence | null;
+  readonly repositoryAuthorization: RiverDevExecutionIntelligenceGovernanceRepositoryAuthorizationEvidence | null;
 
-    readonly approvedScope:
-        RiverDevContextScope | null;
+  readonly approvedScope: RiverDevContextScope | null;
 
-    readonly authorizationState:
-        readonly string[];
+  readonly authorizationState: readonly string[];
 
-    readonly authorizationSignals:
-        readonly string[];
+  readonly authorizationSignals: readonly string[];
 
-    readonly provenance:
-        readonly string[];
+  readonly provenance: readonly string[];
 
-    readonly authorizationBoundaries:
-        readonly string[];
+  readonly authorizationBoundaries: readonly string[];
 
-    readonly scopeBoundaries:
-        readonly string[];
+  readonly scopeBoundaries: readonly string[];
 
-    readonly blockedReasons:
-        readonly string[];
+  readonly blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceGovernanceApprovalEvidence {
-    approved: boolean;
-    approvedBy: string;
-    approvalId: string;
-    approvalSignals: readonly string[];
+  approved: boolean;
+  approvedBy: string;
+  approvalId: string;
+  approvalSignals: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceGovernanceApprovalBoundaryFoundationInput {
-    authorizationBoundary: RiverDevExecutionIntelligenceGovernanceAuthorizationBoundaryFoundation;
-    approvalEvidence: RiverDevExecutionIntelligenceGovernanceApprovalEvidence | null;
+  authorizationBoundary: RiverDevExecutionIntelligenceGovernanceAuthorizationBoundaryFoundation;
+  approvalEvidence: RiverDevExecutionIntelligenceGovernanceApprovalEvidence | null;
 }
 
 export interface RiverDevExecutionIntelligenceGovernanceApprovalBoundaryFoundation {
-    version: string;
-    source: string;
-    objective: string;
+  version: string;
+  source: string;
+  objective: string;
 
-    trusted: boolean;
-    approved: boolean;
+  trusted: boolean;
+  approved: boolean;
 
-    authorizationBoundary: RiverDevExecutionIntelligenceGovernanceAuthorizationBoundaryFoundation;
-    approvalEvidence: RiverDevExecutionIntelligenceGovernanceApprovalEvidence | null;
+  authorizationBoundary: RiverDevExecutionIntelligenceGovernanceAuthorizationBoundaryFoundation;
+  approvalEvidence: RiverDevExecutionIntelligenceGovernanceApprovalEvidence | null;
 
-    approvalState: readonly string[];
-    approvalSignals: readonly string[];
+  approvalState: readonly string[];
+  approvalSignals: readonly string[];
 
-    provenance: readonly string[];
-    authorizationBoundaries: readonly string[];
-    scopeBoundaries: readonly string[];
-    blockedReasons: readonly string[];
+  provenance: readonly string[];
+  authorizationBoundaries: readonly string[];
+  scopeBoundaries: readonly string[];
+  blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionIntelligenceGovernanceExecutionBoundaryFoundationInput {
-    approvalBoundary: RiverDevExecutionIntelligenceGovernanceApprovalBoundaryFoundation;
+  approvalBoundary: RiverDevExecutionIntelligenceGovernanceApprovalBoundaryFoundation;
 }
 
 export interface RiverDevExecutionIntelligenceGovernanceExecutionBoundaryFoundation {
-    version: string;
-    source: string;
-    objective: string;
+  version: string;
+  source: string;
+  objective: string;
 
-    trusted: boolean;
-    controlled: boolean;
+  trusted: boolean;
+  controlled: boolean;
 
-    approvalBoundary: RiverDevExecutionIntelligenceGovernanceApprovalBoundaryFoundation;
+  approvalBoundary: RiverDevExecutionIntelligenceGovernanceApprovalBoundaryFoundation;
 
-    executionState: readonly string[];
-    executionSignals: readonly string[];
+  executionState: readonly string[];
+  executionSignals: readonly string[];
 
-    provenance: readonly string[];
-    authorizationBoundaries: readonly string[];
-    scopeBoundaries: readonly string[];
-    blockedReasons: readonly string[];
+  provenance: readonly string[];
+  authorizationBoundaries: readonly string[];
+  scopeBoundaries: readonly string[];
+  blockedReasons: readonly string[];
 }
 
 export interface RiverDevExecutionIntelligenceGovernanceExecutionControlFoundationInput {
-    executionBoundary: RiverDevExecutionIntelligenceGovernanceExecutionBoundaryFoundation;
+  executionBoundary: RiverDevExecutionIntelligenceGovernanceExecutionBoundaryFoundation;
 }
 
 export interface RiverDevExecutionIntelligenceGovernanceExecutionControlFoundation {
-    version: string;
-    source: string;
-    objective: string;
+  version: string;
+  source: string;
+  objective: string;
 
-    trusted: boolean;
-    controlled: boolean;
+  trusted: boolean;
+  controlled: boolean;
 
-    /**
-     * Preserved upstream governance authorization eligibility.
-     *
-     * This field does not grant command execution, repository modification,
-     * commit, push, scope-expansion, or autonomous execution authority.
-     */
-    authorized: boolean;
+  /**
+   * Preserved upstream governance authorization eligibility.
+   *
+   * This field does not grant command execution, repository modification,
+   * commit, push, scope-expansion, or autonomous execution authority.
+   */
+  authorized: boolean;
 
-    executionBoundary: RiverDevExecutionIntelligenceGovernanceExecutionBoundaryFoundation;
+  executionBoundary: RiverDevExecutionIntelligenceGovernanceExecutionBoundaryFoundation;
 
-    /**
-     * Governed descriptive execution-request evidence.
-     *
-     * This is not an executable command payload and does not itself authorize
-     * or perform repository modification, command execution, commits, pushes,
-     * or expansion of approved execution scope.
-     */
-    executionRequest: readonly string[];
+  /**
+   * Governed descriptive execution-request evidence.
+   *
+   * This is not an executable command payload and does not itself authorize
+   * or perform repository modification, command execution, commits, pushes,
+   * or expansion of approved execution scope.
+   */
+  executionRequest: readonly string[];
 
-    executionControlState: readonly string[];
-    executionControlSignals: readonly string[];
+  executionControlState: readonly string[];
+  executionControlSignals: readonly string[];
 
-    provenance: readonly string[];
-    authorizationBoundaries: readonly string[];
-    scopeBoundaries: readonly string[];
-    blockedReasons: readonly string[];
+  provenance: readonly string[];
+  authorizationBoundaries: readonly string[];
+  scopeBoundaries: readonly string[];
+  blockedReasons: readonly string[];
 }
 export interface RiverDevExecutionIntelligenceGovernanceExecutionRuntimeFoundationInput {
   executionControl: RiverDevExecutionIntelligenceGovernanceExecutionControlFoundation;
@@ -6428,8 +4200,6 @@ export interface RiverDevControlledExecutorOperationPreparationFoundation {
  * Execution authorization is a deterministic decision boundary only.
  * These types grant no operation-execution or repository-modification authority.
  */
-
-
 
 export interface RiverDevGovernedExecutorIntegrationVerificationFoundationInput {
   governedExecutorIntegration: RiverDevGovernedExecutorIntegrationFoundation;
@@ -6784,21 +4554,19 @@ export interface RiverDevControlledExecutorReadOnlyInspectionResult {
     readonly requiredQualityGates: readonly string[];
   };
 
-  readonly paths:
-    Readonly<Record<string, string>>;
+  readonly paths: Readonly<Record<string, string>>;
 }
 
 export interface RiverDevControlledExecutorReadOnlyRepositoryInspectionExecutorDependencies {
   inspectRepository(
-    capturedAt?: string
+    capturedAt?: string,
   ): Promise<RiverDevControlledExecutorReadOnlyInspectionResult>;
 }
 
 export interface RiverDevControlledExecutorReadOnlyRepositoryInspectionExecutorFoundationInput {
   dispatchBoundary: RiverDevControlledExecutorDispatchBoundaryFoundation;
 
-  dependencies:
-    RiverDevControlledExecutorReadOnlyRepositoryInspectionExecutorDependencies;
+  dependencies: RiverDevControlledExecutorReadOnlyRepositoryInspectionExecutorDependencies;
 
   capturedAt?: string;
 }
@@ -6818,32 +4586,23 @@ export interface RiverDevControlledExecutorReadOnlyRepositoryInspectionExecutorF
   readonly defaultPolicy: "DENY";
   readonly readOnlyExecutionOnly: true;
 
-  readonly executedOperation:
-    RiverDevControlledExecutorOperation;
+  readonly executedOperation: RiverDevControlledExecutorOperation;
 
-  readonly dispatchBoundary:
-    RiverDevControlledExecutorDispatchBoundaryFoundation;
+  readonly dispatchBoundary: RiverDevControlledExecutorDispatchBoundaryFoundation;
 
-  readonly inspectionResult:
-    RiverDevControlledExecutorReadOnlyInspectionResult | null;
+  readonly inspectionResult: RiverDevControlledExecutorReadOnlyInspectionResult | null;
 
-  readonly approvedExecutionScope:
-    readonly string[];
+  readonly approvedExecutionScope: readonly string[];
 
-  readonly executionState:
-    readonly string[];
+  readonly executionState: readonly string[];
 
-  readonly provenance:
-    readonly string[];
+  readonly provenance: readonly string[];
 
-  readonly authorizationBoundaries:
-    readonly string[];
+  readonly authorizationBoundaries: readonly string[];
 
-  readonly scopeBoundaries:
-    readonly string[];
+  readonly scopeBoundaries: readonly string[];
 
-  readonly blockedReasons:
-    readonly string[];
+  readonly blockedReasons: readonly string[];
 
   readonly mayExecuteInspectApprovedRepositoryState: true;
 
@@ -6865,13 +4624,10 @@ export interface RiverDevControlledExecutorReadOnlyRepositoryInspectionExecutorF
 }
 
 export type RiverDevControlledExecutorReadOnlyExecutionReceiptState =
-  | "EXECUTION_SUCCEEDED"
-  | "EXECUTION_FAILED"
-  | "EXECUTION_NOT_ATTEMPTED";
+  "EXECUTION_SUCCEEDED" | "EXECUTION_FAILED" | "EXECUTION_NOT_ATTEMPTED";
 
 export interface RiverDevControlledExecutorReadOnlyExecutionReceiptFoundationInput {
-  executionResult:
-    RiverDevControlledExecutorReadOnlyRepositoryInspectionExecutorFoundation;
+  executionResult: RiverDevControlledExecutorReadOnlyRepositoryInspectionExecutorFoundation;
 }
 
 export interface RiverDevControlledExecutorReadOnlyExecutionReceiptFoundation {
@@ -6885,38 +4641,28 @@ export interface RiverDevControlledExecutorReadOnlyExecutionReceiptFoundation {
   readonly defaultPolicy: "DENY";
   readonly receiptConstructionOnly: true;
 
-  readonly executedOperation:
-    RiverDevControlledExecutorOperation;
+  readonly executedOperation: RiverDevControlledExecutorOperation;
 
   readonly executionAttempted: boolean;
   readonly executionSucceeded: boolean;
 
-  readonly receiptState:
-    RiverDevControlledExecutorReadOnlyExecutionReceiptState;
+  readonly receiptState: RiverDevControlledExecutorReadOnlyExecutionReceiptState;
 
-  readonly executionResult:
-    RiverDevControlledExecutorReadOnlyRepositoryInspectionExecutorFoundation;
+  readonly executionResult: RiverDevControlledExecutorReadOnlyRepositoryInspectionExecutorFoundation;
 
-  readonly inspectionResult:
-    RiverDevControlledExecutorReadOnlyInspectionResult | null;
+  readonly inspectionResult: RiverDevControlledExecutorReadOnlyInspectionResult | null;
 
-  readonly approvedExecutionScope:
-    readonly string[];
+  readonly approvedExecutionScope: readonly string[];
 
-  readonly executionState:
-    readonly string[];
+  readonly executionState: readonly string[];
 
-  readonly provenance:
-    readonly string[];
+  readonly provenance: readonly string[];
 
-  readonly authorizationBoundaries:
-    readonly string[];
+  readonly authorizationBoundaries: readonly string[];
 
-  readonly scopeBoundaries:
-    readonly string[];
+  readonly scopeBoundaries: readonly string[];
 
-  readonly blockedReasons:
-    readonly string[];
+  readonly blockedReasons: readonly string[];
 
   readonly mayExecuteOperation: false;
   readonly mayInvokeInspectionDependency: false;
@@ -6935,8 +4681,7 @@ export interface RiverDevControlledExecutorReadOnlyExecutionReceiptFoundation {
 }
 
 export interface RiverDevControlledExecutorExecutionReceiptVerificationFoundationInput {
-  receipt:
-    RiverDevControlledExecutorReadOnlyExecutionReceiptFoundation;
+  receipt: RiverDevControlledExecutorReadOnlyExecutionReceiptFoundation;
 }
 
 export interface RiverDevControlledExecutorExecutionReceiptVerificationFoundation {
@@ -6952,32 +4697,23 @@ export interface RiverDevControlledExecutorExecutionReceiptVerificationFoundatio
   readonly defaultPolicy: "DENY";
   readonly verificationOnly: true;
 
-  readonly receipt:
-    RiverDevControlledExecutorReadOnlyExecutionReceiptFoundation;
+  readonly receipt: RiverDevControlledExecutorReadOnlyExecutionReceiptFoundation;
 
-  readonly receiptState:
-    RiverDevControlledExecutorReadOnlyExecutionReceiptState;
+  readonly receiptState: RiverDevControlledExecutorReadOnlyExecutionReceiptState;
 
-  readonly executedOperation:
-    RiverDevControlledExecutorOperation;
+  readonly executedOperation: RiverDevControlledExecutorOperation;
 
-  readonly approvedExecutionScope:
-    readonly string[];
+  readonly approvedExecutionScope: readonly string[];
 
-  readonly provenance:
-    readonly string[];
+  readonly provenance: readonly string[];
 
-  readonly authorizationBoundaries:
-    readonly string[];
+  readonly authorizationBoundaries: readonly string[];
 
-  readonly scopeBoundaries:
-    readonly string[];
+  readonly scopeBoundaries: readonly string[];
 
-  readonly verificationState:
-    readonly string[];
+  readonly verificationState: readonly string[];
 
-  readonly blockedReasons:
-    readonly string[];
+  readonly blockedReasons: readonly string[];
 
   readonly mayExecuteOperation: false;
   readonly mayInvokeInspectionDependency: false;
@@ -6996,8 +4732,7 @@ export interface RiverDevControlledExecutorExecutionReceiptVerificationFoundatio
 }
 
 export type RiverDevControlledExecutorVerifiedReceiptAcceptanceState =
-  | "VERIFIED_RECEIPT_ACCEPTED"
-  | "VERIFIED_RECEIPT_REJECTED";
+  "VERIFIED_RECEIPT_ACCEPTED" | "VERIFIED_RECEIPT_REJECTED";
 
 export interface RiverDevControlledExecutorVerifiedReceiptAcceptanceFoundationInput {
   verification: RiverDevControlledExecutorExecutionReceiptVerificationFoundation;
@@ -7023,24 +4758,17 @@ export interface RiverDevControlledExecutorVerifiedReceiptAcceptanceFoundationRe
     | "EXECUTION_NOT_ATTEMPTED"
     | null;
 
-  executedOperation:
-    | "inspect-approved-repository-state"
-    | null;
+  executedOperation: "inspect-approved-repository-state" | null;
 
-  approvedExecutionScope:
-    RiverDevControlledExecutorExecutionReceiptVerificationFoundation["approvedExecutionScope"];
+  approvedExecutionScope: RiverDevControlledExecutorExecutionReceiptVerificationFoundation["approvedExecutionScope"];
 
-  provenance:
-    RiverDevControlledExecutorExecutionReceiptVerificationFoundation["provenance"];
+  provenance: RiverDevControlledExecutorExecutionReceiptVerificationFoundation["provenance"];
 
-  authorizationBoundaries:
-    RiverDevControlledExecutorExecutionReceiptVerificationFoundation["authorizationBoundaries"];
+  authorizationBoundaries: RiverDevControlledExecutorExecutionReceiptVerificationFoundation["authorizationBoundaries"];
 
-  scopeBoundaries:
-    RiverDevControlledExecutorExecutionReceiptVerificationFoundation["scopeBoundaries"];
+  scopeBoundaries: RiverDevControlledExecutorExecutionReceiptVerificationFoundation["scopeBoundaries"];
 
-  acceptanceState:
-    RiverDevControlledExecutorVerifiedReceiptAcceptanceState;
+  acceptanceState: RiverDevControlledExecutorVerifiedReceiptAcceptanceState;
 
   acceptanceEvidence: string[];
   blockedReasons: string[];
@@ -7064,13 +4792,11 @@ export interface RiverDevControlledExecutorVerifiedReceiptAcceptanceFoundationRe
 }
 
 export type RiverDevControlledExecutorAcceptedReceiptHandoffState =
-  | "ACCEPTED_RECEIPT_HANDOFF_READY"
-  | "ACCEPTED_RECEIPT_HANDOFF_BLOCKED";
+  "ACCEPTED_RECEIPT_HANDOFF_READY" | "ACCEPTED_RECEIPT_HANDOFF_BLOCKED";
 
 export interface RiverDevControlledExecutorAcceptedReceiptHandoffFoundation {
   readonly version: "DEV-260";
-  readonly source:
-    "controlled-executor-accepted-receipt-handoff-foundation-engine";
+  readonly source: "controlled-executor-accepted-receipt-handoff-foundation-engine";
   readonly objective: string;
 
   readonly trusted: boolean;
@@ -7080,21 +4806,13 @@ export interface RiverDevControlledExecutorAcceptedReceiptHandoffFoundation {
   readonly handoffConstructionOnly: true;
   readonly handoffIsInertData: true;
 
-  readonly handoffState:
-    RiverDevControlledExecutorAcceptedReceiptHandoffState;
+  readonly handoffState: RiverDevControlledExecutorAcceptedReceiptHandoffState;
 
-  readonly acceptance:
-    RiverDevControlledExecutorVerifiedReceiptAcceptanceFoundationResult;
+  readonly acceptance: RiverDevControlledExecutorVerifiedReceiptAcceptanceFoundationResult;
 
-  readonly receiptState:
-    RiverDevControlledExecutorVerifiedReceiptAcceptanceFoundationResult[
-      "receiptState"
-    ];
+  readonly receiptState: RiverDevControlledExecutorVerifiedReceiptAcceptanceFoundationResult["receiptState"];
 
-  readonly executedOperation:
-    RiverDevControlledExecutorVerifiedReceiptAcceptanceFoundationResult[
-      "executedOperation"
-    ];
+  readonly executedOperation: RiverDevControlledExecutorVerifiedReceiptAcceptanceFoundationResult["executedOperation"];
 
   readonly approvedExecutionScope: readonly string[];
   readonly provenance: readonly string[];
@@ -7125,13 +4843,11 @@ export interface RiverDevControlledExecutorAcceptedReceiptHandoffFoundation {
   readonly futureDownstreamBoundaryRequired: true;
 }
 export type RiverDevControlledExecutorDownstreamHandoffVerificationState =
-  | "DOWNSTREAM_HANDOFF_VERIFIED"
-  | "DOWNSTREAM_HANDOFF_REJECTED";
+  "DOWNSTREAM_HANDOFF_VERIFIED" | "DOWNSTREAM_HANDOFF_REJECTED";
 
 export interface RiverDevControlledExecutorDownstreamHandoffVerificationFoundationResult {
   readonly version: "DEV-261";
-  readonly source:
-    "controlled-executor-downstream-handoff-verification-foundation-engine";
+  readonly source: "controlled-executor-downstream-handoff-verification-foundation-engine";
   readonly objective: string;
 
   readonly trusted: boolean;
@@ -7142,21 +4858,13 @@ export interface RiverDevControlledExecutorDownstreamHandoffVerificationFoundati
   readonly verificationDecisionOnly: true;
   readonly verificationResultIsInertData: true;
 
-  readonly verificationState:
-    RiverDevControlledExecutorDownstreamHandoffVerificationState;
+  readonly verificationState: RiverDevControlledExecutorDownstreamHandoffVerificationState;
 
-  readonly handoff:
-    RiverDevControlledExecutorAcceptedReceiptHandoffFoundation;
+  readonly handoff: RiverDevControlledExecutorAcceptedReceiptHandoffFoundation;
 
-  readonly receiptState:
-    RiverDevControlledExecutorAcceptedReceiptHandoffFoundation[
-      "receiptState"
-    ];
+  readonly receiptState: RiverDevControlledExecutorAcceptedReceiptHandoffFoundation["receiptState"];
 
-  readonly executedOperation:
-    RiverDevControlledExecutorAcceptedReceiptHandoffFoundation[
-      "executedOperation"
-    ];
+  readonly executedOperation: RiverDevControlledExecutorAcceptedReceiptHandoffFoundation["executedOperation"];
 
   readonly approvedExecutionScope: readonly string[];
   readonly provenance: readonly string[];
@@ -7194,8 +4902,7 @@ export type RiverDevControlledExecutorVerifiedDownstreamHandoffAcceptanceState =
 
 export interface RiverDevControlledExecutorVerifiedDownstreamHandoffAcceptanceFoundationResult {
   readonly version: "DEV-262";
-  readonly source:
-    "controlled-executor-verified-downstream-handoff-acceptance-foundation-engine";
+  readonly source: "controlled-executor-verified-downstream-handoff-acceptance-foundation-engine";
   readonly objective: string;
 
   readonly trusted: boolean;
@@ -7206,21 +4913,13 @@ export interface RiverDevControlledExecutorVerifiedDownstreamHandoffAcceptanceFo
   readonly acceptanceDecisionOnly: true;
   readonly acceptanceResultIsInertData: true;
 
-  readonly acceptanceState:
-    RiverDevControlledExecutorVerifiedDownstreamHandoffAcceptanceState;
+  readonly acceptanceState: RiverDevControlledExecutorVerifiedDownstreamHandoffAcceptanceState;
 
-  readonly verification:
-    RiverDevControlledExecutorDownstreamHandoffVerificationFoundationResult;
+  readonly verification: RiverDevControlledExecutorDownstreamHandoffVerificationFoundationResult;
 
-  readonly receiptState:
-    RiverDevControlledExecutorDownstreamHandoffVerificationFoundationResult[
-      "receiptState"
-    ];
+  readonly receiptState: RiverDevControlledExecutorDownstreamHandoffVerificationFoundationResult["receiptState"];
 
-  readonly executedOperation:
-    RiverDevControlledExecutorDownstreamHandoffVerificationFoundationResult[
-      "executedOperation"
-    ];
+  readonly executedOperation: RiverDevControlledExecutorDownstreamHandoffVerificationFoundationResult["executedOperation"];
 
   readonly approvedExecutionScope: readonly string[];
   readonly provenance: readonly string[];
@@ -7259,8 +4958,7 @@ export type RiverDevControlledExecutorAcceptedDownstreamHandoffPackagingState =
 
 export interface RiverDevControlledExecutorAcceptedDownstreamHandoffPackagingFoundationResult {
   readonly version: "DEV-263";
-  readonly source:
-    "controlled-executor-accepted-downstream-handoff-packaging-foundation-engine";
+  readonly source: "controlled-executor-accepted-downstream-handoff-packaging-foundation-engine";
   readonly objective: string;
 
   readonly trusted: boolean;
@@ -7271,21 +4969,13 @@ export interface RiverDevControlledExecutorAcceptedDownstreamHandoffPackagingFou
   readonly handoffPackagingOnly: true;
   readonly packageIsInertData: true;
 
-  readonly packagingState:
-    RiverDevControlledExecutorAcceptedDownstreamHandoffPackagingState;
+  readonly packagingState: RiverDevControlledExecutorAcceptedDownstreamHandoffPackagingState;
 
-  readonly acceptance:
-    RiverDevControlledExecutorVerifiedDownstreamHandoffAcceptanceFoundationResult;
+  readonly acceptance: RiverDevControlledExecutorVerifiedDownstreamHandoffAcceptanceFoundationResult;
 
-  readonly receiptState:
-    RiverDevControlledExecutorVerifiedDownstreamHandoffAcceptanceFoundationResult[
-      "receiptState"
-    ];
+  readonly receiptState: RiverDevControlledExecutorVerifiedDownstreamHandoffAcceptanceFoundationResult["receiptState"];
 
-  readonly executedOperation:
-    RiverDevControlledExecutorVerifiedDownstreamHandoffAcceptanceFoundationResult[
-      "executedOperation"
-    ];
+  readonly executedOperation: RiverDevControlledExecutorVerifiedDownstreamHandoffAcceptanceFoundationResult["executedOperation"];
 
   readonly approvedExecutionScope: readonly string[];
   readonly provenance: readonly string[];
@@ -7325,8 +5015,7 @@ export type RiverDevControlledExecutorPackagedDownstreamHandoffVerificationState
 
 export interface RiverDevControlledExecutorPackagedDownstreamHandoffVerificationFoundationResult {
   readonly version: "DEV-264";
-  readonly source:
-    "controlled-executor-packaged-downstream-handoff-verification-foundation-engine";
+  readonly source: "controlled-executor-packaged-downstream-handoff-verification-foundation-engine";
   readonly objective: string;
 
   readonly trusted: boolean;
@@ -7337,21 +5026,13 @@ export interface RiverDevControlledExecutorPackagedDownstreamHandoffVerification
   readonly packageVerificationOnly: true;
   readonly verificationResultIsInertData: true;
 
-  readonly verificationState:
-    RiverDevControlledExecutorPackagedDownstreamHandoffVerificationState;
+  readonly verificationState: RiverDevControlledExecutorPackagedDownstreamHandoffVerificationState;
 
-  readonly package:
-    RiverDevControlledExecutorAcceptedDownstreamHandoffPackagingFoundationResult;
+  readonly package: RiverDevControlledExecutorAcceptedDownstreamHandoffPackagingFoundationResult;
 
-  readonly receiptState:
-    RiverDevControlledExecutorAcceptedDownstreamHandoffPackagingFoundationResult[
-      "receiptState"
-    ];
+  readonly receiptState: RiverDevControlledExecutorAcceptedDownstreamHandoffPackagingFoundationResult["receiptState"];
 
-  readonly executedOperation:
-    RiverDevControlledExecutorAcceptedDownstreamHandoffPackagingFoundationResult[
-      "executedOperation"
-    ];
+  readonly executedOperation: RiverDevControlledExecutorAcceptedDownstreamHandoffPackagingFoundationResult["executedOperation"];
 
   readonly approvedExecutionScope: readonly string[];
   readonly provenance: readonly string[];
@@ -7387,13 +5068,11 @@ export interface RiverDevControlledExecutorPackagedDownstreamHandoffVerification
 }
 
 export type RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionState =
-  | "VERIFIED_PACKAGE_ADMISSION_ELIGIBLE"
-  | "VERIFIED_PACKAGE_ADMISSION_REJECTED";
+  "VERIFIED_PACKAGE_ADMISSION_ELIGIBLE" | "VERIFIED_PACKAGE_ADMISSION_REJECTED";
 
 export interface RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionFoundationResult {
   readonly version: "DEV-265";
-  readonly source:
-    "controlled-executor-verified-package-downstream-admission-foundation-engine";
+  readonly source: "controlled-executor-verified-package-downstream-admission-foundation-engine";
   readonly objective: string;
 
   readonly trusted: boolean;
@@ -7404,21 +5083,13 @@ export interface RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionFou
   readonly downstreamAdmissionEligibilityOnly: true;
   readonly admissionResultIsInertData: true;
 
-  readonly admissionState:
-    RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionState;
+  readonly admissionState: RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionState;
 
-  readonly verification:
-    RiverDevControlledExecutorPackagedDownstreamHandoffVerificationFoundationResult;
+  readonly verification: RiverDevControlledExecutorPackagedDownstreamHandoffVerificationFoundationResult;
 
-  readonly receiptState:
-    RiverDevControlledExecutorPackagedDownstreamHandoffVerificationFoundationResult[
-      "receiptState"
-    ];
+  readonly receiptState: RiverDevControlledExecutorPackagedDownstreamHandoffVerificationFoundationResult["receiptState"];
 
-  readonly executedOperation:
-    RiverDevControlledExecutorPackagedDownstreamHandoffVerificationFoundationResult[
-      "executedOperation"
-    ];
+  readonly executedOperation: RiverDevControlledExecutorPackagedDownstreamHandoffVerificationFoundationResult["executedOperation"];
 
   readonly approvedExecutionScope: readonly string[];
   readonly provenance: readonly string[];
@@ -7456,13 +5127,11 @@ export interface RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionFou
 }
 
 export type RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionConsumptionState =
-  | "ADMISSION_CONSUMPTION_ACCEPTED"
-  | "ADMISSION_CONSUMPTION_REJECTED";
+  "ADMISSION_CONSUMPTION_ACCEPTED" | "ADMISSION_CONSUMPTION_REJECTED";
 
 export interface RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionConsumptionFoundationResult {
   readonly version: "DEV-266";
-  readonly source:
-    "controlled-executor-verified-package-downstream-admission-consumption-foundation-engine";
+  readonly source: "controlled-executor-verified-package-downstream-admission-consumption-foundation-engine";
   readonly objective: string;
 
   readonly trusted: boolean;
@@ -7473,21 +5142,13 @@ export interface RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionCon
   readonly admissionConsumptionDecisionOnly: true;
   readonly consumptionResultIsInertData: true;
 
-  readonly consumptionState:
-    RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionConsumptionState;
+  readonly consumptionState: RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionConsumptionState;
 
-  readonly admission:
-    RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionFoundationResult;
+  readonly admission: RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionFoundationResult;
 
-  readonly receiptState:
-    RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionFoundationResult[
-      "receiptState"
-    ];
+  readonly receiptState: RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionFoundationResult["receiptState"];
 
-  readonly executedOperation:
-    RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionFoundationResult[
-      "executedOperation"
-    ];
+  readonly executedOperation: RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionFoundationResult["executedOperation"];
 
   readonly approvedExecutionScope: readonly string[];
   readonly provenance: readonly string[];
@@ -7527,8 +5188,7 @@ export interface RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionCon
 }
 
 export type RiverDevControlledExecutorActiveAdmissionEligibilityState =
-  | "ACTIVE_ADMISSION_ELIGIBLE"
-  | "ACTIVE_ADMISSION_INELIGIBLE";
+  "ACTIVE_ADMISSION_ELIGIBLE" | "ACTIVE_ADMISSION_INELIGIBLE";
 
 export interface RiverDevControlledExecutorActiveAdmissionEligibilityFoundationResult {
   readonly version: "DEV-267";
@@ -7539,9 +5199,7 @@ export interface RiverDevControlledExecutorActiveAdmissionEligibilityFoundationR
   readonly activeAdmissionEligibilityDecisionOnly: true;
   readonly eligibilityResultIsInertData: true;
   readonly eligibilityState: RiverDevControlledExecutorActiveAdmissionEligibilityState;
-  readonly consumption:
-    | RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionConsumptionFoundationResult
-    | null;
+  readonly consumption: RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionConsumptionFoundationResult | null;
   readonly receiptState: string | null;
   readonly executedOperation: string | null;
   readonly approvedExecutionScope: readonly string[];
@@ -7579,8 +5237,7 @@ export interface RiverDevControlledExecutorActiveAdmissionEligibilityFoundationR
   readonly futureActiveAdmissionBoundaryRequired: true;
 }
 export type RiverDevControlledExecutorActiveAdmissionAuthorizationState =
-  | "ACTIVE_ADMISSION_AUTHORIZED"
-  | "ACTIVE_ADMISSION_UNAUTHORIZED";
+  "ACTIVE_ADMISSION_AUTHORIZED" | "ACTIVE_ADMISSION_UNAUTHORIZED";
 
 export interface RiverDevControlledExecutorActiveAdmissionAuthorizationFoundationResult {
   readonly version: "DEV-268";
@@ -7632,8 +5289,7 @@ export interface RiverDevControlledExecutorActiveAdmissionAuthorizationFoundatio
 }
 
 export type RiverDevControlledExecutorActiveAdmissionState =
-  | "ACTIVE_ADMISSION_ACCEPTED"
-  | "ACTIVE_ADMISSION_REJECTED";
+  "ACTIVE_ADMISSION_ACCEPTED" | "ACTIVE_ADMISSION_REJECTED";
 
 export interface RiverDevControlledExecutorActiveAdmissionFoundationResult {
   readonly version: "DEV-269";
@@ -7643,12 +5299,8 @@ export interface RiverDevControlledExecutorActiveAdmissionFoundationResult {
   readonly defaultPolicy: "DENY";
   readonly controlledActiveAdmissionOnly: true;
   readonly admissionState: RiverDevControlledExecutorActiveAdmissionState;
-  readonly authorization:
-    | RiverDevControlledExecutorActiveAdmissionAuthorizationFoundationResult
-    | null;
-  readonly eligibility:
-    | RiverDevControlledExecutorActiveAdmissionEligibilityFoundationResult
-    | null;
+  readonly authorization: RiverDevControlledExecutorActiveAdmissionAuthorizationFoundationResult | null;
+  readonly eligibility: RiverDevControlledExecutorActiveAdmissionEligibilityFoundationResult | null;
   readonly consumption:
     | RiverDevControlledExecutorActiveAdmissionAuthorizationFoundationResult["consumption"]
     | null;
@@ -7691,8 +5343,7 @@ export interface RiverDevControlledExecutorActiveAdmissionFoundationResult {
   readonly futureDispatchAuthorizationBoundaryRequired: true;
 }
 export type RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationState =
-  | "DISPATCH_AUTHORIZED"
-  | "DISPATCH_UNAUTHORIZED";
+  "DISPATCH_AUTHORIZED" | "DISPATCH_UNAUTHORIZED";
 
 export interface RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationFoundationResult {
   readonly version: "DEV-270";
@@ -7702,21 +5353,13 @@ export interface RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationF
   readonly defaultPolicy: "DENY";
   readonly dispatchAuthorizationDecisionOnly: true;
   readonly dispatchAuthorizationResultIsInertData: true;
-  readonly dispatchAuthorizationState:
-    RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationState;
-  readonly activeAdmission:
-    | RiverDevControlledExecutorActiveAdmissionFoundationResult
-    | null;
-  readonly authorization:
-    RiverDevControlledExecutorActiveAdmissionFoundationResult["authorization"];
-  readonly eligibility:
-    RiverDevControlledExecutorActiveAdmissionFoundationResult["eligibility"];
-  readonly consumption:
-    RiverDevControlledExecutorActiveAdmissionFoundationResult["consumption"];
-  readonly receiptState:
-    RiverDevControlledExecutorActiveAdmissionFoundationResult["receiptState"];
-  readonly executedOperation:
-    RiverDevControlledExecutorActiveAdmissionFoundationResult["executedOperation"];
+  readonly dispatchAuthorizationState: RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationState;
+  readonly activeAdmission: RiverDevControlledExecutorActiveAdmissionFoundationResult | null;
+  readonly authorization: RiverDevControlledExecutorActiveAdmissionFoundationResult["authorization"];
+  readonly eligibility: RiverDevControlledExecutorActiveAdmissionFoundationResult["eligibility"];
+  readonly consumption: RiverDevControlledExecutorActiveAdmissionFoundationResult["consumption"];
+  readonly receiptState: RiverDevControlledExecutorActiveAdmissionFoundationResult["receiptState"];
+  readonly executedOperation: RiverDevControlledExecutorActiveAdmissionFoundationResult["executedOperation"];
   readonly approvedExecutionScope: readonly string[];
   readonly provenance: readonly string[];
   readonly authorizationBoundaries: readonly string[];
@@ -7757,8 +5400,7 @@ export interface RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationF
   readonly futureExecutionBoundaryRequired: true;
 }
 export type RiverDevControlledExecutorDispatchState =
-  | "CONTROLLED_DISPATCH_ACCEPTED"
-  | "CONTROLLED_DISPATCH_REJECTED";
+  "CONTROLLED_DISPATCH_ACCEPTED" | "CONTROLLED_DISPATCH_REJECTED";
 
 export interface RiverDevControlledExecutorDispatchFoundationResult {
   readonly version: "DEV-271";
@@ -7768,21 +5410,13 @@ export interface RiverDevControlledExecutorDispatchFoundationResult {
   readonly defaultPolicy: "DENY";
   readonly controlledDispatchStateOnly: true;
   readonly dispatchState: RiverDevControlledExecutorDispatchState;
-  readonly dispatchAuthorization:
-    | RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationFoundationResult
-    | null;
-  readonly activeAdmission:
-    RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationFoundationResult["activeAdmission"];
-  readonly authorization:
-    RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationFoundationResult["authorization"];
-  readonly eligibility:
-    RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationFoundationResult["eligibility"];
-  readonly consumption:
-    RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationFoundationResult["consumption"];
-  readonly receiptState:
-    RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationFoundationResult["receiptState"];
-  readonly executedOperation:
-    RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationFoundationResult["executedOperation"];
+  readonly dispatchAuthorization: RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationFoundationResult | null;
+  readonly activeAdmission: RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationFoundationResult["activeAdmission"];
+  readonly authorization: RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationFoundationResult["authorization"];
+  readonly eligibility: RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationFoundationResult["eligibility"];
+  readonly consumption: RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationFoundationResult["consumption"];
+  readonly receiptState: RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationFoundationResult["receiptState"];
+  readonly executedOperation: RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationFoundationResult["executedOperation"];
   readonly approvedExecutionScope: readonly string[];
   readonly provenance: readonly string[];
   readonly authorizationBoundaries: readonly string[];
@@ -7823,8 +5457,7 @@ export interface RiverDevControlledExecutorDispatchFoundationResult {
   readonly futureExecutionBoundaryRequired: true;
 }
 export type RiverDevControlledExecutorInvocationAuthorizationState =
-  | "EXECUTOR_INVOCATION_AUTHORIZED"
-  | "EXECUTOR_INVOCATION_UNAUTHORIZED";
+  "EXECUTOR_INVOCATION_AUTHORIZED" | "EXECUTOR_INVOCATION_UNAUTHORIZED";
 
 export interface RiverDevControlledExecutorInvocationAuthorizationFoundationResult {
   readonly version: "DEV-272";
@@ -7834,25 +5467,15 @@ export interface RiverDevControlledExecutorInvocationAuthorizationFoundationResu
   readonly defaultPolicy: "DENY";
   readonly executorInvocationAuthorizationDecisionOnly: true;
   readonly executorInvocationAuthorizationResultIsInertData: true;
-  readonly executorInvocationAuthorizationState:
-    RiverDevControlledExecutorInvocationAuthorizationState;
-  readonly controlledDispatch:
-    | RiverDevControlledExecutorDispatchFoundationResult
-    | null;
-  readonly dispatchAuthorization:
-    RiverDevControlledExecutorDispatchFoundationResult["dispatchAuthorization"];
-  readonly activeAdmission:
-    RiverDevControlledExecutorDispatchFoundationResult["activeAdmission"];
-  readonly authorization:
-    RiverDevControlledExecutorDispatchFoundationResult["authorization"];
-  readonly eligibility:
-    RiverDevControlledExecutorDispatchFoundationResult["eligibility"];
-  readonly consumption:
-    RiverDevControlledExecutorDispatchFoundationResult["consumption"];
-  readonly receiptState:
-    RiverDevControlledExecutorDispatchFoundationResult["receiptState"];
-  readonly executedOperation:
-    RiverDevControlledExecutorDispatchFoundationResult["executedOperation"];
+  readonly executorInvocationAuthorizationState: RiverDevControlledExecutorInvocationAuthorizationState;
+  readonly controlledDispatch: RiverDevControlledExecutorDispatchFoundationResult | null;
+  readonly dispatchAuthorization: RiverDevControlledExecutorDispatchFoundationResult["dispatchAuthorization"];
+  readonly activeAdmission: RiverDevControlledExecutorDispatchFoundationResult["activeAdmission"];
+  readonly authorization: RiverDevControlledExecutorDispatchFoundationResult["authorization"];
+  readonly eligibility: RiverDevControlledExecutorDispatchFoundationResult["eligibility"];
+  readonly consumption: RiverDevControlledExecutorDispatchFoundationResult["consumption"];
+  readonly receiptState: RiverDevControlledExecutorDispatchFoundationResult["receiptState"];
+  readonly executedOperation: RiverDevControlledExecutorDispatchFoundationResult["executedOperation"];
   readonly approvedExecutionScope: readonly string[];
   readonly provenance: readonly string[];
   readonly authorizationBoundaries: readonly string[];
@@ -7895,8 +5518,7 @@ export interface RiverDevControlledExecutorInvocationAuthorizationFoundationResu
 }
 
 export type RiverDevControlledExecutorInvocationState =
-  | "CONTROLLED_EXECUTOR_INVOKED"
-  | "CONTROLLED_EXECUTOR_NOT_INVOKED";
+  "CONTROLLED_EXECUTOR_INVOKED" | "CONTROLLED_EXECUTOR_NOT_INVOKED";
 
 export interface RiverDevControlledExecutorInvocationFoundationResult {
   readonly version: "DEV-273";
@@ -7910,52 +5532,25 @@ export interface RiverDevControlledExecutorInvocationFoundationResult {
   readonly controlledExecutorInvocationBoundaryOnly: true;
   readonly controlledExecutorInvocationResultIsInertData: true;
 
-  readonly invocationState:
-    RiverDevControlledExecutorInvocationState;
+  readonly invocationState: RiverDevControlledExecutorInvocationState;
 
-  readonly invocationAuthorization:
-    | RiverDevControlledExecutorInvocationAuthorizationFoundationResult
-    | null;
+  readonly invocationAuthorization: RiverDevControlledExecutorInvocationAuthorizationFoundationResult | null;
 
-  readonly controlledDispatch:
-    RiverDevControlledExecutorInvocationAuthorizationFoundationResult[
-      "controlledDispatch"
-    ];
+  readonly controlledDispatch: RiverDevControlledExecutorInvocationAuthorizationFoundationResult["controlledDispatch"];
 
-  readonly dispatchAuthorization:
-    RiverDevControlledExecutorInvocationAuthorizationFoundationResult[
-      "dispatchAuthorization"
-    ];
+  readonly dispatchAuthorization: RiverDevControlledExecutorInvocationAuthorizationFoundationResult["dispatchAuthorization"];
 
-  readonly activeAdmission:
-    RiverDevControlledExecutorInvocationAuthorizationFoundationResult[
-      "activeAdmission"
-    ];
+  readonly activeAdmission: RiverDevControlledExecutorInvocationAuthorizationFoundationResult["activeAdmission"];
 
-  readonly authorization:
-    RiverDevControlledExecutorInvocationAuthorizationFoundationResult[
-      "authorization"
-    ];
+  readonly authorization: RiverDevControlledExecutorInvocationAuthorizationFoundationResult["authorization"];
 
-  readonly eligibility:
-    RiverDevControlledExecutorInvocationAuthorizationFoundationResult[
-      "eligibility"
-    ];
+  readonly eligibility: RiverDevControlledExecutorInvocationAuthorizationFoundationResult["eligibility"];
 
-  readonly consumption:
-    RiverDevControlledExecutorInvocationAuthorizationFoundationResult[
-      "consumption"
-    ];
+  readonly consumption: RiverDevControlledExecutorInvocationAuthorizationFoundationResult["consumption"];
 
-  readonly receiptState:
-    RiverDevControlledExecutorInvocationAuthorizationFoundationResult[
-      "receiptState"
-    ];
+  readonly receiptState: RiverDevControlledExecutorInvocationAuthorizationFoundationResult["receiptState"];
 
-  readonly executedOperation:
-    RiverDevControlledExecutorInvocationAuthorizationFoundationResult[
-      "executedOperation"
-    ];
+  readonly executedOperation: RiverDevControlledExecutorInvocationAuthorizationFoundationResult["executedOperation"];
 
   readonly approvedExecutionScope: readonly string[];
   readonly provenance: readonly string[];
@@ -8017,52 +5612,25 @@ export interface RiverDevOperationExecutionAuthorizationFoundationResult {
   readonly operationExecutionAuthorizationResultIsInertData: true;
 
   readonly operationExecutionAuthorizationState:
-    | "OPERATION_EXECUTION_AUTHORIZED"
-    | "OPERATION_EXECUTION_UNAUTHORIZED";
+    "OPERATION_EXECUTION_AUTHORIZED" | "OPERATION_EXECUTION_UNAUTHORIZED";
 
-  readonly controlledExecutorInvocation:
-    | RiverDevControlledExecutorInvocationFoundationResult
-    | null;
+  readonly controlledExecutorInvocation: RiverDevControlledExecutorInvocationFoundationResult | null;
 
-  readonly controlledDispatch:
-    RiverDevControlledExecutorInvocationFoundationResult[
-      "controlledDispatch"
-    ];
+  readonly controlledDispatch: RiverDevControlledExecutorInvocationFoundationResult["controlledDispatch"];
 
-  readonly dispatchAuthorization:
-    RiverDevControlledExecutorInvocationFoundationResult[
-      "dispatchAuthorization"
-    ];
+  readonly dispatchAuthorization: RiverDevControlledExecutorInvocationFoundationResult["dispatchAuthorization"];
 
-  readonly activeAdmission:
-    RiverDevControlledExecutorInvocationFoundationResult[
-      "activeAdmission"
-    ];
+  readonly activeAdmission: RiverDevControlledExecutorInvocationFoundationResult["activeAdmission"];
 
-  readonly authorization:
-    RiverDevControlledExecutorInvocationFoundationResult[
-      "authorization"
-    ];
+  readonly authorization: RiverDevControlledExecutorInvocationFoundationResult["authorization"];
 
-  readonly eligibility:
-    RiverDevControlledExecutorInvocationFoundationResult[
-      "eligibility"
-    ];
+  readonly eligibility: RiverDevControlledExecutorInvocationFoundationResult["eligibility"];
 
-  readonly consumption:
-    RiverDevControlledExecutorInvocationFoundationResult[
-      "consumption"
-    ];
+  readonly consumption: RiverDevControlledExecutorInvocationFoundationResult["consumption"];
 
-  readonly receiptState:
-    RiverDevControlledExecutorInvocationFoundationResult[
-      "receiptState"
-    ];
+  readonly receiptState: RiverDevControlledExecutorInvocationFoundationResult["receiptState"];
 
-  readonly executedOperation:
-    RiverDevControlledExecutorInvocationFoundationResult[
-      "executedOperation"
-    ];
+  readonly executedOperation: RiverDevControlledExecutorInvocationFoundationResult["executedOperation"];
 
   readonly approvedExecutionScope: readonly string[];
   readonly provenance: readonly string[];
@@ -8115,12 +5683,9 @@ export interface RiverDevControlledOperationExecutionBoundaryFoundationResult {
   executionResultIsDeterministicData: true;
 
   executionState:
-    | "CONTROLLED_OPERATION_EXECUTED"
-    | "CONTROLLED_OPERATION_NOT_EXECUTED";
+    "CONTROLLED_OPERATION_EXECUTED" | "CONTROLLED_OPERATION_NOT_EXECUTED";
 
-  operationExecutionAuthorization:
-    | RiverDevOperationExecutionAuthorizationFoundationResult
-    | null;
+  operationExecutionAuthorization: RiverDevOperationExecutionAuthorizationFoundationResult | null;
 
   controlledExecutorInvocation:
     | RiverDevOperationExecutionAuthorizationFoundationResult["controlledExecutorInvocation"]
@@ -8216,9 +5781,7 @@ export interface RiverDevControlledOperationExecutionReceiptFoundationResult {
     | "CONTROLLED_OPERATION_EXECUTION_RECEIPT_CREATED"
     | "CONTROLLED_OPERATION_EXECUTION_RECEIPT_NOT_CREATED";
 
-  controlledOperationExecution:
-    | RiverDevControlledOperationExecutionBoundaryFoundationResult
-    | null;
+  controlledOperationExecution: RiverDevControlledOperationExecutionBoundaryFoundationResult | null;
 
   operationExecutionAuthorization:
     | RiverDevControlledOperationExecutionBoundaryFoundationResult["operationExecutionAuthorization"]
@@ -8321,9 +5884,7 @@ export interface RiverDevControlledOperationExecutionLifecycleFoundationResult {
     | "CONTROLLED_OPERATION_EXECUTION_LIFECYCLE_ESTABLISHED"
     | "CONTROLLED_OPERATION_EXECUTION_LIFECYCLE_NOT_ESTABLISHED";
 
-  controlledOperationExecutionReceipt:
-    | RiverDevControlledOperationExecutionReceiptFoundationResult
-    | null;
+  controlledOperationExecutionReceipt: RiverDevControlledOperationExecutionReceiptFoundationResult | null;
 
   controlledOperationExecution:
     | RiverDevControlledOperationExecutionReceiptFoundationResult["controlledOperationExecution"]
@@ -8429,12 +5990,9 @@ export interface RiverDevControlledExecutionCompletionFoundationResult {
   executionCompletionResultIsDeterministicData: true;
 
   executionCompletionState:
-    | "CONTROLLED_EXECUTION_COMPLETED"
-    | "CONTROLLED_EXECUTION_NOT_COMPLETED";
+    "CONTROLLED_EXECUTION_COMPLETED" | "CONTROLLED_EXECUTION_NOT_COMPLETED";
 
-  controlledOperationExecutionLifecycle:
-    | RiverDevControlledOperationExecutionLifecycleFoundationResult
-    | null;
+  controlledOperationExecutionLifecycle: RiverDevControlledOperationExecutionLifecycleFoundationResult | null;
 
   controlledOperationExecutionReceipt:
     | RiverDevControlledOperationExecutionLifecycleFoundationResult["controlledOperationExecutionReceipt"]
@@ -8546,12 +6104,9 @@ export interface RiverDevControlledExecutionFinalizationFoundationResult {
   executionFinalizationResultIsDeterministicData: true;
 
   executionFinalizationState:
-    | "CONTROLLED_EXECUTION_FINALIZED"
-    | "CONTROLLED_EXECUTION_NOT_FINALIZED";
+    "CONTROLLED_EXECUTION_FINALIZED" | "CONTROLLED_EXECUTION_NOT_FINALIZED";
 
-  controlledExecutionCompletion:
-    | RiverDevControlledExecutionCompletionFoundationResult
-    | null;
+  controlledExecutionCompletion: RiverDevControlledExecutionCompletionFoundationResult | null;
 
   controlledOperationExecutionLifecycle:
     | RiverDevControlledExecutionCompletionFoundationResult["controlledOperationExecutionLifecycle"]
@@ -8590,12 +6145,10 @@ export interface RiverDevControlledExecutionFinalizationFoundationResult {
     | null;
 
   eligibility:
-    | RiverDevControlledExecutionCompletionFoundationResult["eligibility"]
-    | null;
+    RiverDevControlledExecutionCompletionFoundationResult["eligibility"] | null;
 
   consumption:
-    | RiverDevControlledExecutionCompletionFoundationResult["consumption"]
-    | null;
+    RiverDevControlledExecutionCompletionFoundationResult["consumption"] | null;
 
   receiptState:
     | RiverDevControlledExecutionCompletionFoundationResult["receiptState"]
@@ -8717,12 +6270,9 @@ export interface RiverDevControlledExecutionClosureFoundationResult {
   executionClosureResultIsDeterministicData: true;
 
   executionClosureState:
-    | "CONTROLLED_EXECUTION_CLOSED"
-    | "CONTROLLED_EXECUTION_NOT_CLOSED";
+    "CONTROLLED_EXECUTION_CLOSED" | "CONTROLLED_EXECUTION_NOT_CLOSED";
 
-  controlledExecutionFinalization:
-    | RiverDevControlledExecutionFinalizationFoundationResult
-    | null;
+  controlledExecutionFinalization: RiverDevControlledExecutionFinalizationFoundationResult | null;
 
   controlledExecutionCompletion:
     | RiverDevControlledExecutionFinalizationFoundationResult["controlledExecutionCompletion"]
@@ -8837,12 +6387,9 @@ export interface RiverDevControlledExecutionArchiveFoundationResult {
   executionArchiveResultIsDeterministicData: true;
 
   executionArchiveState:
-    | "CONTROLLED_EXECUTION_ARCHIVED"
-    | "CONTROLLED_EXECUTION_NOT_ARCHIVED";
+    "CONTROLLED_EXECUTION_ARCHIVED" | "CONTROLLED_EXECUTION_NOT_ARCHIVED";
 
-  controlledExecutionClosure:
-    | RiverDevControlledExecutionClosureFoundationResult
-    | null;
+  controlledExecutionClosure: RiverDevControlledExecutionClosureFoundationResult | null;
 
   controlledExecutionFinalization:
     | RiverDevControlledExecutionClosureFoundationResult["controlledExecutionFinalization"]
@@ -8885,20 +6432,16 @@ export interface RiverDevControlledExecutionArchiveFoundationResult {
     | null;
 
   authorization:
-    | RiverDevControlledExecutionClosureFoundationResult["authorization"]
-    | null;
+    RiverDevControlledExecutionClosureFoundationResult["authorization"] | null;
 
   eligibility:
-    | RiverDevControlledExecutionClosureFoundationResult["eligibility"]
-    | null;
+    RiverDevControlledExecutionClosureFoundationResult["eligibility"] | null;
 
   consumption:
-    | RiverDevControlledExecutionClosureFoundationResult["consumption"]
-    | null;
+    RiverDevControlledExecutionClosureFoundationResult["consumption"] | null;
 
   receiptState:
-    | RiverDevControlledExecutionClosureFoundationResult["receiptState"]
-    | null;
+    RiverDevControlledExecutionClosureFoundationResult["receiptState"] | null;
 
   executedOperation:
     | RiverDevControlledExecutionClosureFoundationResult["executedOperation"]
@@ -8961,12 +6504,9 @@ export interface RiverDevControlledExecutionAuditFoundationResult {
   executionAuditResultIsDeterministicData: true;
 
   executionAuditState:
-    | "CONTROLLED_EXECUTION_AUDITED"
-    | "CONTROLLED_EXECUTION_NOT_AUDITED";
+    "CONTROLLED_EXECUTION_AUDITED" | "CONTROLLED_EXECUTION_NOT_AUDITED";
 
-  controlledExecutionArchive:
-    | RiverDevControlledExecutionArchiveFoundationResult
-    | null;
+  controlledExecutionArchive: RiverDevControlledExecutionArchiveFoundationResult | null;
 
   controlledExecutionClosure:
     | RiverDevControlledExecutionArchiveFoundationResult["controlledExecutionClosure"]
@@ -9013,20 +6553,16 @@ export interface RiverDevControlledExecutionAuditFoundationResult {
     | null;
 
   authorization:
-    | RiverDevControlledExecutionArchiveFoundationResult["authorization"]
-    | null;
+    RiverDevControlledExecutionArchiveFoundationResult["authorization"] | null;
 
   eligibility:
-    | RiverDevControlledExecutionArchiveFoundationResult["eligibility"]
-    | null;
+    RiverDevControlledExecutionArchiveFoundationResult["eligibility"] | null;
 
   consumption:
-    | RiverDevControlledExecutionArchiveFoundationResult["consumption"]
-    | null;
+    RiverDevControlledExecutionArchiveFoundationResult["consumption"] | null;
 
   receiptState:
-    | RiverDevControlledExecutionArchiveFoundationResult["receiptState"]
-    | null;
+    RiverDevControlledExecutionArchiveFoundationResult["receiptState"] | null;
 
   executedOperation:
     | RiverDevControlledExecutionArchiveFoundationResult["executedOperation"]
@@ -9090,12 +6626,9 @@ export interface RiverDevControlledExecutionAttestationFoundationResult {
   executionAttestationResultIsDeterministicData: true;
 
   executionAttestationState:
-    | "CONTROLLED_EXECUTION_ATTESTED"
-    | "CONTROLLED_EXECUTION_NOT_ATTESTED";
+    "CONTROLLED_EXECUTION_ATTESTED" | "CONTROLLED_EXECUTION_NOT_ATTESTED";
 
-  controlledExecutionAudit:
-    | RiverDevControlledExecutionAuditFoundationResult
-    | null;
+  controlledExecutionAudit: RiverDevControlledExecutionAuditFoundationResult | null;
 
   controlledExecutionArchive:
     | RiverDevControlledExecutionAuditFoundationResult["controlledExecutionArchive"]
@@ -9142,24 +6675,19 @@ export interface RiverDevControlledExecutionAttestationFoundationResult {
     | null;
 
   activeAdmission:
-    | RiverDevControlledExecutionAuditFoundationResult["activeAdmission"]
-    | null;
+    RiverDevControlledExecutionAuditFoundationResult["activeAdmission"] | null;
 
   authorization:
-    | RiverDevControlledExecutionAuditFoundationResult["authorization"]
-    | null;
+    RiverDevControlledExecutionAuditFoundationResult["authorization"] | null;
 
   eligibility:
-    | RiverDevControlledExecutionAuditFoundationResult["eligibility"]
-    | null;
+    RiverDevControlledExecutionAuditFoundationResult["eligibility"] | null;
 
   consumption:
-    | RiverDevControlledExecutionAuditFoundationResult["consumption"]
-    | null;
+    RiverDevControlledExecutionAuditFoundationResult["consumption"] | null;
 
   receiptState:
-    | RiverDevControlledExecutionAuditFoundationResult["receiptState"]
-    | null;
+    RiverDevControlledExecutionAuditFoundationResult["receiptState"] | null;
 
   executedOperation:
     | RiverDevControlledExecutionAuditFoundationResult["executedOperation"]
@@ -9224,12 +6752,9 @@ export interface RiverDevControlledExecutionVerificationFoundationResult {
   executionVerificationResultIsDeterministicData: true;
 
   executionVerificationState:
-    | "CONTROLLED_EXECUTION_VERIFIED"
-    | "CONTROLLED_EXECUTION_NOT_VERIFIED";
+    "CONTROLLED_EXECUTION_VERIFIED" | "CONTROLLED_EXECUTION_NOT_VERIFIED";
 
-  controlledExecutionAttestation:
-    | RiverDevControlledExecutionAttestationFoundationResult
-    | null;
+  controlledExecutionAttestation: RiverDevControlledExecutionAttestationFoundationResult | null;
 
   controlledExecutionAudit:
     | RiverDevControlledExecutionAttestationFoundationResult["controlledExecutionAudit"]
@@ -9363,12 +6888,9 @@ export interface RiverDevControlledExecutionCertificationFoundationResult {
   executionCertificationResultIsDeterministicData: true;
 
   executionCertificationState:
-    | "CONTROLLED_EXECUTION_CERTIFIED"
-    | "CONTROLLED_EXECUTION_NOT_CERTIFIED";
+    "CONTROLLED_EXECUTION_CERTIFIED" | "CONTROLLED_EXECUTION_NOT_CERTIFIED";
 
-  controlledExecutionVerification:
-    | RiverDevControlledExecutionVerificationFoundationResult
-    | null;
+  controlledExecutionVerification: RiverDevControlledExecutionVerificationFoundationResult | null;
 
   controlledExecutionAttestation:
     | RiverDevControlledExecutionVerificationFoundationResult["controlledExecutionAttestation"]
@@ -9508,12 +7030,9 @@ export interface RiverDevControlledExecutionSealFoundationResult {
   executionSealResultIsDeterministicData: true;
 
   executionSealState:
-    | "CONTROLLED_EXECUTION_SEALED"
-    | "CONTROLLED_EXECUTION_NOT_SEALED";
+    "CONTROLLED_EXECUTION_SEALED" | "CONTROLLED_EXECUTION_NOT_SEALED";
 
-  controlledExecutionCertification:
-    | RiverDevControlledExecutionCertificationFoundationResult
-    | null;
+  controlledExecutionCertification: RiverDevControlledExecutionCertificationFoundationResult | null;
 
   controlledExecutionVerification:
     | RiverDevControlledExecutionCertificationFoundationResult["controlledExecutionVerification"]
@@ -9660,9 +7179,7 @@ export interface RiverDevControlledExecutionIntegrityFoundationResult {
     | "CONTROLLED_EXECUTION_INTEGRITY_ESTABLISHED"
     | "CONTROLLED_EXECUTION_INTEGRITY_NOT_ESTABLISHED";
 
-  controlledExecutionSeal:
-    | RiverDevControlledExecutionSealFoundationResult
-    | null;
+  controlledExecutionSeal: RiverDevControlledExecutionSealFoundationResult | null;
 
   controlledExecutionCertification:
     | RiverDevControlledExecutionSealFoundationResult["controlledExecutionCertification"]
@@ -9725,28 +7242,22 @@ export interface RiverDevControlledExecutionIntegrityFoundationResult {
     | null;
 
   activeAdmission:
-    | RiverDevControlledExecutionSealFoundationResult["activeAdmission"]
-    | null;
+    RiverDevControlledExecutionSealFoundationResult["activeAdmission"] | null;
 
   authorization:
-    | RiverDevControlledExecutionSealFoundationResult["authorization"]
-    | null;
+    RiverDevControlledExecutionSealFoundationResult["authorization"] | null;
 
   eligibility:
-    | RiverDevControlledExecutionSealFoundationResult["eligibility"]
-    | null;
+    RiverDevControlledExecutionSealFoundationResult["eligibility"] | null;
 
   consumption:
-    | RiverDevControlledExecutionSealFoundationResult["consumption"]
-    | null;
+    RiverDevControlledExecutionSealFoundationResult["consumption"] | null;
 
   receiptState:
-    | RiverDevControlledExecutionSealFoundationResult["receiptState"]
-    | null;
+    RiverDevControlledExecutionSealFoundationResult["receiptState"] | null;
 
   executedOperation:
-    | RiverDevControlledExecutionSealFoundationResult["executedOperation"]
-    | null;
+    RiverDevControlledExecutionSealFoundationResult["executedOperation"] | null;
 
   approvedExecutionScope: string[];
   provenance: string[];
@@ -9814,9 +7325,7 @@ export interface RiverDevControlledExecutionIntegrityVerificationFoundationResul
     | "CONTROLLED_EXECUTION_INTEGRITY_VERIFIED"
     | "CONTROLLED_EXECUTION_INTEGRITY_NOT_VERIFIED";
 
-  controlledExecutionIntegrity:
-    | RiverDevControlledExecutionIntegrityFoundationResult
-    | null;
+  controlledExecutionIntegrity: RiverDevControlledExecutionIntegrityFoundationResult | null;
 
   controlledExecutionSeal:
     | RiverDevControlledExecutionIntegrityFoundationResult["controlledExecutionSeal"]
@@ -9891,16 +7400,13 @@ export interface RiverDevControlledExecutionIntegrityVerificationFoundationResul
     | null;
 
   eligibility:
-    | RiverDevControlledExecutionIntegrityFoundationResult["eligibility"]
-    | null;
+    RiverDevControlledExecutionIntegrityFoundationResult["eligibility"] | null;
 
   consumption:
-    | RiverDevControlledExecutionIntegrityFoundationResult["consumption"]
-    | null;
+    RiverDevControlledExecutionIntegrityFoundationResult["consumption"] | null;
 
   receiptState:
-    | RiverDevControlledExecutionIntegrityFoundationResult["receiptState"]
-    | null;
+    RiverDevControlledExecutionIntegrityFoundationResult["receiptState"] | null;
 
   executedOperation:
     | RiverDevControlledExecutionIntegrityFoundationResult["executedOperation"]
@@ -9974,65 +7480,55 @@ export interface RiverDevControlledExecutionIntegrityCertificationFoundationResu
     | "CONTROLLED_EXECUTION_INTEGRITY_CERTIFIED"
     | "CONTROLLED_EXECUTION_INTEGRITY_NOT_CERTIFIED";
 
-  controlledExecutionIntegrityVerification:
-    RiverDevControlledExecutionIntegrityVerificationFoundationResult | null;
+  controlledExecutionIntegrityVerification: RiverDevControlledExecutionIntegrityVerificationFoundationResult | null;
 
-  controlledExecutionIntegrity:
-    RiverDevControlledExecutionIntegrityFoundationResult | null;
+  controlledExecutionIntegrity: RiverDevControlledExecutionIntegrityFoundationResult | null;
 
-  controlledExecutionSeal:
-    RiverDevControlledExecutionSealFoundationResult | null;
+  controlledExecutionSeal: RiverDevControlledExecutionSealFoundationResult | null;
 
-  controlledExecutionCertification:
-    RiverDevControlledExecutionCertificationFoundationResult | null;
+  controlledExecutionCertification: RiverDevControlledExecutionCertificationFoundationResult | null;
 
-  controlledExecutionVerification:
-    RiverDevControlledExecutionVerificationFoundationResult | null;
+  controlledExecutionVerification: RiverDevControlledExecutionVerificationFoundationResult | null;
 
-  controlledExecutionAttestation:
-    RiverDevControlledExecutionAttestationFoundationResult | null;
+  controlledExecutionAttestation: RiverDevControlledExecutionAttestationFoundationResult | null;
 
-  controlledExecutionAudit:
-    RiverDevControlledExecutionAuditFoundationResult | null;
+  controlledExecutionAudit: RiverDevControlledExecutionAuditFoundationResult | null;
 
-  controlledExecutionArchive:
-    RiverDevControlledExecutionArchiveFoundationResult | null;
+  controlledExecutionArchive: RiverDevControlledExecutionArchiveFoundationResult | null;
 
-  controlledExecutionClosure:
-    RiverDevControlledExecutionClosureFoundationResult | null;
+  controlledExecutionClosure: RiverDevControlledExecutionClosureFoundationResult | null;
 
-  controlledExecutionFinalization:
-    RiverDevControlledExecutionFinalizationFoundationResult | null;
+  controlledExecutionFinalization: RiverDevControlledExecutionFinalizationFoundationResult | null;
 
-  controlledExecutionCompletion:
-    RiverDevControlledExecutionCompletionFoundationResult | null;
+  controlledExecutionCompletion: RiverDevControlledExecutionCompletionFoundationResult | null;
 
-  controlledOperationExecutionLifecycle:
-    RiverDevControlledOperationExecutionLifecycleFoundationResult | null;
+  controlledOperationExecutionLifecycle: RiverDevControlledOperationExecutionLifecycleFoundationResult | null;
 
-  controlledOperationExecutionReceipt:
-    RiverDevControlledOperationExecutionReceiptFoundationResult | null;
+  controlledOperationExecutionReceipt: RiverDevControlledOperationExecutionReceiptFoundationResult | null;
 
   controlledOperationExecution:
-    RiverDevControlledExecutionIntegrityFoundationResult["controlledOperationExecution"] | null;
+    | RiverDevControlledExecutionIntegrityFoundationResult["controlledOperationExecution"]
+    | null;
 
-  operationExecutionAuthorization:
-    RiverDevOperationExecutionAuthorizationFoundationResult | null;
+  operationExecutionAuthorization: RiverDevOperationExecutionAuthorizationFoundationResult | null;
 
-  controlledExecutorInvocation:
-    RiverDevControlledExecutorInvocationFoundationResult | null;
+  controlledExecutorInvocation: RiverDevControlledExecutorInvocationFoundationResult | null;
 
   controlledDispatch:
-    RiverDevControlledExecutionIntegrityFoundationResult["controlledDispatch"] | null;
+    | RiverDevControlledExecutionIntegrityFoundationResult["controlledDispatch"]
+    | null;
 
   dispatchAuthorization:
-    RiverDevControlledExecutionIntegrityFoundationResult["dispatchAuthorization"] | null;
+    | RiverDevControlledExecutionIntegrityFoundationResult["dispatchAuthorization"]
+    | null;
 
   activeAdmission:
-    RiverDevControlledExecutionIntegrityFoundationResult["activeAdmission"] | null;
+    | RiverDevControlledExecutionIntegrityFoundationResult["activeAdmission"]
+    | null;
 
   authorization:
-    RiverDevControlledExecutionIntegrityFoundationResult["authorization"] | null;
+    | RiverDevControlledExecutionIntegrityFoundationResult["authorization"]
+    | null;
 
   eligibility:
     RiverDevControlledExecutionIntegrityFoundationResult["eligibility"] | null;
@@ -10044,7 +7540,8 @@ export interface RiverDevControlledExecutionIntegrityCertificationFoundationResu
     RiverDevControlledExecutionIntegrityFoundationResult["receiptState"] | null;
 
   executedOperation:
-    RiverDevControlledExecutionIntegrityFoundationResult["executedOperation"] | null;
+    | RiverDevControlledExecutionIntegrityFoundationResult["executedOperation"]
+    | null;
 
   approvedExecutionScope: string[];
 
@@ -10135,80 +7632,55 @@ export interface RiverDevControlledExecutionIntegritySealFoundationResult {
   terminalControlledExecutionIntegrityBoundary: true;
   futureControlledExecutionIntegrityBoundaryRequired: false;
 
-  controlledExecutionIntegrityCertification:
-    RiverDevControlledExecutionIntegrityCertificationFoundationResult | null;
+  controlledExecutionIntegrityCertification: RiverDevControlledExecutionIntegrityCertificationFoundationResult | null;
 
-  controlledExecutionIntegrityVerification:
-    RiverDevControlledExecutionIntegrityVerificationFoundationResult | null;
+  controlledExecutionIntegrityVerification: RiverDevControlledExecutionIntegrityVerificationFoundationResult | null;
 
-  controlledExecutionIntegrity:
-    RiverDevControlledExecutionIntegrityFoundationResult | null;
+  controlledExecutionIntegrity: RiverDevControlledExecutionIntegrityFoundationResult | null;
 
-  controlledExecutionSeal:
-    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionSeal"];
+  controlledExecutionSeal: RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionSeal"];
 
-  controlledExecutionCertification:
-    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionCertification"];
+  controlledExecutionCertification: RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionCertification"];
 
-  controlledExecutionVerification:
-    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionVerification"];
+  controlledExecutionVerification: RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionVerification"];
 
-  controlledExecutionAttestation:
-    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionAttestation"];
+  controlledExecutionAttestation: RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionAttestation"];
 
-  controlledExecutionAudit:
-    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionAudit"];
+  controlledExecutionAudit: RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionAudit"];
 
-  controlledExecutionArchive:
-    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionArchive"];
+  controlledExecutionArchive: RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionArchive"];
 
-  controlledExecutionClosure:
-    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionClosure"];
+  controlledExecutionClosure: RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionClosure"];
 
-  controlledExecutionFinalization:
-    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionFinalization"];
+  controlledExecutionFinalization: RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionFinalization"];
 
-  controlledExecutionCompletion:
-    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionCompletion"];
+  controlledExecutionCompletion: RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutionCompletion"];
 
-  controlledOperationExecutionLifecycle:
-    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledOperationExecutionLifecycle"];
+  controlledOperationExecutionLifecycle: RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledOperationExecutionLifecycle"];
 
-  controlledOperationExecutionReceipt:
-    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledOperationExecutionReceipt"];
+  controlledOperationExecutionReceipt: RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledOperationExecutionReceipt"];
 
-  controlledOperationExecution:
-    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledOperationExecution"];
+  controlledOperationExecution: RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledOperationExecution"];
 
-  operationExecutionAuthorization:
-    RiverDevControlledExecutionIntegrityCertificationFoundationResult["operationExecutionAuthorization"];
+  operationExecutionAuthorization: RiverDevControlledExecutionIntegrityCertificationFoundationResult["operationExecutionAuthorization"];
 
-  controlledExecutorInvocation:
-    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutorInvocation"];
+  controlledExecutorInvocation: RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledExecutorInvocation"];
 
-  controlledDispatch:
-    RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledDispatch"];
+  controlledDispatch: RiverDevControlledExecutionIntegrityCertificationFoundationResult["controlledDispatch"];
 
-  dispatchAuthorization:
-    RiverDevControlledExecutionIntegrityCertificationFoundationResult["dispatchAuthorization"];
+  dispatchAuthorization: RiverDevControlledExecutionIntegrityCertificationFoundationResult["dispatchAuthorization"];
 
-  activeAdmission:
-    RiverDevControlledExecutionIntegrityCertificationFoundationResult["activeAdmission"];
+  activeAdmission: RiverDevControlledExecutionIntegrityCertificationFoundationResult["activeAdmission"];
 
-  authorization:
-    RiverDevControlledExecutionIntegrityCertificationFoundationResult["authorization"];
+  authorization: RiverDevControlledExecutionIntegrityCertificationFoundationResult["authorization"];
 
-  eligibility:
-    RiverDevControlledExecutionIntegrityCertificationFoundationResult["eligibility"];
+  eligibility: RiverDevControlledExecutionIntegrityCertificationFoundationResult["eligibility"];
 
-  consumption:
-    RiverDevControlledExecutionIntegrityCertificationFoundationResult["consumption"];
+  consumption: RiverDevControlledExecutionIntegrityCertificationFoundationResult["consumption"];
 
-  receiptState:
-    RiverDevControlledExecutionIntegrityCertificationFoundationResult["receiptState"];
+  receiptState: RiverDevControlledExecutionIntegrityCertificationFoundationResult["receiptState"];
 
-  executedOperation:
-    RiverDevControlledExecutionIntegrityCertificationFoundationResult["executedOperation"];
+  executedOperation: RiverDevControlledExecutionIntegrityCertificationFoundationResult["executedOperation"];
 
   approvedExecutionScope: string[];
 
@@ -10403,8 +7875,7 @@ export interface RiverDevGovernedExecutorIntegrationHandoffVerificationFoundatio
   verificationResultIsInertData: true;
   futureDownstreamBoundaryRequired: true;
 
-  verificationState:
-    RiverDevGovernedExecutorIntegrationHandoffVerificationState;
+  verificationState: RiverDevGovernedExecutorIntegrationHandoffVerificationState;
 
   handoff: RiverDevGovernedExecutorIntegrationHandoffFoundation;
 
@@ -10455,11 +7926,9 @@ export interface RiverDevGovernedExecutorIntegrationHandoffAcceptanceFoundation 
   acceptanceResultIsInertData: true;
   futureDownstreamBoundaryRequired: true;
 
-  acceptanceState:
-    RiverDevGovernedExecutorIntegrationHandoffAcceptanceState;
+  acceptanceState: RiverDevGovernedExecutorIntegrationHandoffAcceptanceState;
 
-  verification:
-    RiverDevGovernedExecutorIntegrationHandoffVerificationFoundation;
+  verification: RiverDevGovernedExecutorIntegrationHandoffVerificationFoundation;
 
   predecessorVerificationState: string[];
   predecessorVerificationEvidence: string[];
@@ -10486,8 +7955,7 @@ export type RiverDevGovernedExecutorIntegrationAcceptedHandoffPackagingState =
 
 export interface RiverDevGovernedExecutorIntegrationAcceptedHandoffPackagingFoundationResult {
   readonly version: "DEV-297";
-  readonly source:
-    "governed-executor-integration-accepted-handoff-packaging-foundation-engine";
+  readonly source: "governed-executor-integration-accepted-handoff-packaging-foundation-engine";
 
   readonly objective: string;
 
@@ -10500,11 +7968,9 @@ export interface RiverDevGovernedExecutorIntegrationAcceptedHandoffPackagingFoun
   readonly packageIsInertData: true;
   readonly futureDownstreamBoundaryRequired: true;
 
-  readonly packagingState:
-    RiverDevGovernedExecutorIntegrationAcceptedHandoffPackagingState;
+  readonly packagingState: RiverDevGovernedExecutorIntegrationAcceptedHandoffPackagingState;
 
-  readonly acceptance:
-    RiverDevGovernedExecutorIntegrationHandoffAcceptanceFoundation;
+  readonly acceptance: RiverDevGovernedExecutorIntegrationHandoffAcceptanceFoundation;
 
   readonly predecessorVerificationState: readonly string[];
   readonly predecessorVerificationEvidence: readonly string[];
@@ -10545,8 +8011,7 @@ export type RiverDevGovernedExecutorIntegrationPackagedHandoffVerificationState 
 
 export interface RiverDevGovernedExecutorIntegrationPackagedHandoffVerificationFoundationResult {
   readonly version: "DEV-298";
-  readonly source:
-    "governed-executor-integration-packaged-handoff-verification-foundation-engine";
+  readonly source: "governed-executor-integration-packaged-handoff-verification-foundation-engine";
 
   readonly objective: string;
 
@@ -10559,11 +8024,9 @@ export interface RiverDevGovernedExecutorIntegrationPackagedHandoffVerificationF
   readonly verificationResultIsInertData: true;
   readonly futureAdmissionBoundaryRequired: true;
 
-  readonly verificationState:
-    RiverDevGovernedExecutorIntegrationPackagedHandoffVerificationState;
+  readonly verificationState: RiverDevGovernedExecutorIntegrationPackagedHandoffVerificationState;
 
-  readonly packaging:
-    RiverDevGovernedExecutorIntegrationAcceptedHandoffPackagingFoundationResult;
+  readonly packaging: RiverDevGovernedExecutorIntegrationAcceptedHandoffPackagingFoundationResult;
 
   readonly predecessorVerificationState: readonly string[];
   readonly predecessorVerificationEvidence: readonly string[];
@@ -10606,8 +8069,7 @@ export type RiverDevGovernedExecutorIntegrationVerifiedPackageDownstreamAdmissio
 
 export interface RiverDevGovernedExecutorIntegrationVerifiedPackageDownstreamAdmissionFoundationResult {
   readonly version: "DEV-299";
-  readonly source:
-    "governed-executor-integration-verified-package-downstream-admission-foundation-engine";
+  readonly source: "governed-executor-integration-verified-package-downstream-admission-foundation-engine";
 
   readonly objective: string;
 
@@ -10620,11 +8082,9 @@ export interface RiverDevGovernedExecutorIntegrationVerifiedPackageDownstreamAdm
   readonly admissionResultIsInertData: true;
   readonly futureDownstreamAdmissionConsumptionBoundaryRequired: true;
 
-  readonly admissionState:
-    RiverDevGovernedExecutorIntegrationVerifiedPackageDownstreamAdmissionState;
+  readonly admissionState: RiverDevGovernedExecutorIntegrationVerifiedPackageDownstreamAdmissionState;
 
-  readonly verification:
-    RiverDevGovernedExecutorIntegrationPackagedHandoffVerificationFoundationResult;
+  readonly verification: RiverDevGovernedExecutorIntegrationPackagedHandoffVerificationFoundationResult;
 
   readonly predecessorVerificationState: readonly string[];
   readonly predecessorVerificationEvidence: readonly string[];
@@ -10676,8 +8136,7 @@ export type RiverDevGovernedExecutorIntegrationVerifiedPackageDownstreamAdmissio
 
 export interface RiverDevGovernedExecutorIntegrationVerifiedPackageDownstreamAdmissionConsumptionFoundationResult {
   readonly version: "DEV-300";
-  readonly source:
-    "governed-executor-integration-verified-package-downstream-admission-consumption-foundation-engine";
+  readonly source: "governed-executor-integration-verified-package-downstream-admission-consumption-foundation-engine";
 
   readonly objective: string;
 
@@ -10690,14 +8149,11 @@ export interface RiverDevGovernedExecutorIntegrationVerifiedPackageDownstreamAdm
   readonly consumptionResultIsInertData: true;
   readonly futureActiveAdmissionEligibilityBoundaryRequired: true;
 
-  readonly consumptionState:
-    RiverDevGovernedExecutorIntegrationVerifiedPackageDownstreamAdmissionConsumptionState;
+  readonly consumptionState: RiverDevGovernedExecutorIntegrationVerifiedPackageDownstreamAdmissionConsumptionState;
 
-  readonly admission:
-    RiverDevGovernedExecutorIntegrationVerifiedPackageDownstreamAdmissionFoundationResult;
+  readonly admission: RiverDevGovernedExecutorIntegrationVerifiedPackageDownstreamAdmissionFoundationResult;
 
-  readonly verification:
-    RiverDevGovernedExecutorIntegrationPackagedHandoffVerificationFoundationResult;
+  readonly verification: RiverDevGovernedExecutorIntegrationPackagedHandoffVerificationFoundationResult;
 
   readonly predecessorVerificationState: readonly string[];
   readonly predecessorVerificationEvidence: readonly string[];
@@ -10739,13 +8195,11 @@ export interface RiverDevGovernedExecutorIntegrationVerifiedPackageDownstreamAdm
 }
 
 export type RiverDevGovernedExecutorIntegrationActiveAdmissionEligibilityState =
-  | "ACTIVE_ADMISSION_ELIGIBLE"
-  | "ACTIVE_ADMISSION_INELIGIBLE";
+  "ACTIVE_ADMISSION_ELIGIBLE" | "ACTIVE_ADMISSION_INELIGIBLE";
 
 export interface RiverDevGovernedExecutorIntegrationActiveAdmissionEligibilityFoundationResult {
   readonly version: "DEV-301";
-  readonly source:
-    "governed-executor-integration-active-admission-eligibility-foundation-engine";
+  readonly source: "governed-executor-integration-active-admission-eligibility-foundation-engine";
 
   readonly objective: string;
 
@@ -10758,12 +8212,9 @@ export interface RiverDevGovernedExecutorIntegrationActiveAdmissionEligibilityFo
   readonly eligibilityResultIsInertData: true;
   readonly futureActiveAdmissionAuthorizationBoundaryRequired: true;
 
-  readonly eligibilityState:
-    RiverDevGovernedExecutorIntegrationActiveAdmissionEligibilityState;
+  readonly eligibilityState: RiverDevGovernedExecutorIntegrationActiveAdmissionEligibilityState;
 
-  readonly consumption:
-    | RiverDevGovernedExecutorIntegrationVerifiedPackageDownstreamAdmissionConsumptionFoundationResult
-    | null;
+  readonly consumption: RiverDevGovernedExecutorIntegrationVerifiedPackageDownstreamAdmissionConsumptionFoundationResult | null;
 
   readonly predecessorVerificationState: readonly string[];
   readonly predecessorVerificationEvidence: readonly string[];
@@ -10806,8 +8257,7 @@ export interface RiverDevGovernedExecutorIntegrationActiveAdmissionEligibilityFo
 }
 
 export type RiverDevGovernedExecutorIntegrationActiveAdmissionAuthorizationState =
-  | "ACTIVE_ADMISSION_AUTHORIZED"
-  | "ACTIVE_ADMISSION_UNAUTHORIZED";
+  "ACTIVE_ADMISSION_AUTHORIZED" | "ACTIVE_ADMISSION_UNAUTHORIZED";
 
 export interface RiverDevGovernedExecutorIntegrationActiveAdmissionAuthorizationFoundationResult {
   readonly version: "DEV-302";
@@ -10823,14 +8273,11 @@ export interface RiverDevGovernedExecutorIntegrationActiveAdmissionAuthorization
   readonly authorizationResultIsInertData: true;
   readonly futureActiveAdmissionBoundaryRequired: true;
 
-  readonly authorizationState:
-    RiverDevGovernedExecutorIntegrationActiveAdmissionAuthorizationState;
+  readonly authorizationState: RiverDevGovernedExecutorIntegrationActiveAdmissionAuthorizationState;
 
-  readonly eligibility:
-    RiverDevGovernedExecutorIntegrationActiveAdmissionEligibilityFoundationResult | null;
+  readonly eligibility: RiverDevGovernedExecutorIntegrationActiveAdmissionEligibilityFoundationResult | null;
 
-  readonly consumption:
-    RiverDevGovernedExecutorIntegrationActiveAdmissionEligibilityFoundationResult["consumption"];
+  readonly consumption: RiverDevGovernedExecutorIntegrationActiveAdmissionEligibilityFoundationResult["consumption"];
 
   readonly predecessorVerificationState: readonly string[];
   readonly predecessorVerificationEvidence: readonly string[];
@@ -10845,6 +8292,71 @@ export interface RiverDevGovernedExecutorIntegrationActiveAdmissionAuthorization
   readonly consumptionEvidence: readonly string[];
   readonly activeAdmissionEligibilityEvidence: readonly string[];
   readonly activeAdmissionAuthorizationEvidence: readonly string[];
+
+  readonly blockedReasons: readonly string[];
+
+  readonly mayCreateExecutionAuthorization: false;
+  readonly mayAuthorizeDownstreamAction: false;
+  readonly mayAdmitIntoActiveExecutor: false;
+  readonly mayActivateAdmission: false;
+  readonly mayDispatch: false;
+  readonly mayInvokeExecutor: false;
+  readonly mayExecuteOperation: false;
+  readonly mayInvokeInspectionDependency: false;
+  readonly mayRetryExecution: false;
+  readonly mayPersistLifecycleState: false;
+
+  readonly mayModifyRepository: false;
+  readonly mayDeleteRepositoryContent: false;
+  readonly mayStageRepositoryChanges: false;
+  readonly mayCommit: false;
+  readonly mayPush: false;
+  readonly mayDeploy: false;
+
+  readonly mayAccessSecrets: false;
+  readonly mayExpandScope: false;
+  readonly mayPerformArbitraryShellExecution: false;
+  readonly mayPerformNetworkExecution: false;
+  readonly mayPerformExternalSideEffects: false;
+}
+export interface RiverDevGovernedExecutorIntegrationActiveAdmissionVerificationFoundationInput {
+  readonly activeAdmissionAuthorization: RiverDevGovernedExecutorIntegrationActiveAdmissionAuthorizationFoundationResult;
+}
+
+export interface RiverDevGovernedExecutorIntegrationActiveAdmissionVerificationFoundationResult {
+  readonly version: "DEV-303";
+  readonly source: "governed-executor-integration-active-admission-verification-foundation-engine";
+  readonly objective: string;
+
+  readonly trusted: boolean;
+  readonly ready: boolean;
+  readonly verified: boolean;
+
+  readonly defaultPolicy: "DENY";
+
+  readonly activeAdmissionVerificationDecisionOnly: true;
+  readonly verificationResultIsInertData: true;
+  readonly futureActiveAdmissionBoundaryRequired: true;
+
+  readonly verificationState:
+    | "ACTIVE_ADMISSION_AUTHORIZATION_VERIFIED"
+    | "ACTIVE_ADMISSION_AUTHORIZATION_UNVERIFIED";
+
+  readonly authorization: RiverDevGovernedExecutorIntegrationActiveAdmissionAuthorizationFoundationResult | null;
+
+  readonly predecessorVerificationState: readonly string[];
+  readonly predecessorVerificationEvidence: readonly string[];
+  readonly predecessorAcceptanceEvidence: readonly string[];
+  readonly predecessorHandoffEvidence: readonly string[];
+  readonly verificationEvidence: readonly string[];
+  readonly acceptanceEvidence: readonly string[];
+  readonly packagingEvidence: readonly string[];
+  readonly packageVerificationEvidence: readonly string[];
+  readonly admissionEvidence: readonly string[];
+  readonly consumptionEvidence: readonly string[];
+  readonly activeAdmissionEligibilityEvidence: readonly string[];
+  readonly activeAdmissionAuthorizationEvidence: readonly string[];
+  readonly activeAdmissionVerificationEvidence: readonly string[];
 
   readonly blockedReasons: readonly string[];
 
