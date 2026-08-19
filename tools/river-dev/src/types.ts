@@ -1,4 +1,4 @@
-﻿export interface RiverDevExecutionIntelligenceGovernanceStabilizationFoundation {
+export interface RiverDevExecutionIntelligenceGovernanceStabilizationFoundation {
   readonly version: "1.0.0";
 
   readonly source: string;
@@ -9456,6 +9456,93 @@ export interface RiverDevProductionExecutionAuthorityOrchestrationIntegration {
         false;
 
     readonly invokesOperationalEntry:
+        false;
+
+    readonly operationalExecutionPerformed:
+        false;
+
+    readonly repositoryMutationPerformed:
+        false;
+
+    readonly commandExecutionPerformed:
+        false;
+
+    readonly commitPerformed:
+        false;
+
+    readonly pushPerformed:
+        false;
+
+    readonly deploymentPerformed:
+        false;
+
+    readonly integrationEvidence:
+        readonly string[];
+
+    readonly blockedReasons:
+        readonly string[];
+}
+/**
+ * DEV-324
+ * Production Execution Authority Operational Entry Integration
+ *
+ * This contract adapts an already-produced DEV-323 orchestration result
+ * into the existing DEV-314 operational executor integration entry boundary.
+ * It does not create, upgrade, synthesize, broaden, or execute authority.
+ */
+export interface RiverDevProductionExecutionAuthorityOperationalEntryIntegrationInput {
+    readonly productionExecutionAuthority:
+        RiverDevProductionExecutionAuthorityOrchestrationIntegration;
+}
+
+export type RiverDevProductionExecutionAuthorityOperationalEntryIntegrationState =
+    | "PRODUCTION_EXECUTION_AUTHORITY_OPERATIONAL_ENTRY_READY"
+    | "PRODUCTION_EXECUTION_AUTHORITY_OPERATIONAL_ENTRY_BLOCKED";
+
+export interface RiverDevProductionExecutionAuthorityOperationalEntryIntegrationResult {
+    readonly version:
+        "DEV-324";
+
+    readonly source:
+        "production-execution-authority-operational-entry-integration";
+
+    readonly integrationState:
+        RiverDevProductionExecutionAuthorityOperationalEntryIntegrationState;
+
+    readonly readyForOperationalEntry:
+        boolean;
+
+    readonly requestedMode:
+        RiverDevOperationalExecutorIntegrationRequestedMode;
+
+    readonly authorization:
+        RiverDevOperationalExecutorIntegrationEntryAuthorization | null;
+
+    readonly operationalEntry:
+        RiverDevOperationalExecutorIntegrationEntryFoundationResult;
+
+    readonly admitted:
+        boolean;
+
+    readonly requestedApplyIsAuthorization:
+        false;
+
+    readonly createsAuthorization:
+        false;
+
+    readonly upgradesAuthorization:
+        false;
+
+    readonly synthesizesAuthorization:
+        false;
+
+    readonly broadensAuthorization:
+        false;
+
+    readonly broadensApprovedExecutionScope:
+        false;
+
+    readonly bypassesOperationalEntry:
         false;
 
     readonly operationalExecutionPerformed:
