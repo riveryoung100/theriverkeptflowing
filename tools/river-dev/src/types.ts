@@ -9628,3 +9628,36 @@ export interface RiverDevManifestPropagationFoundation {
     readonly mayInvokeShell:
         false;
 }
+
+
+export interface RiverDevManifestPackageExecutionRequestCompositionFoundation {
+
+    readonly version:
+        "DEV-327";
+
+    readonly source:
+        "manifest-package-execution-request-composition-foundation";
+
+    readonly compositionState:
+        "PACKAGE_EXECUTION_REQUEST_COMPOSED"
+        | "PACKAGE_EXECUTION_REQUEST_BLOCKED";
+
+    readonly composed:
+        boolean;
+
+    readonly createsAuthorization:
+        false;
+
+    readonly broadensAuthorization:
+        false;
+
+    readonly consumesAuthorization:
+        false;
+
+    readonly executesPackage:
+        false;
+
+    readonly mutatesRepository:
+        false;
+
+}
