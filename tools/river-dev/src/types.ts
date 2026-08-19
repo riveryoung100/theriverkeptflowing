@@ -1,4 +1,4 @@
-export interface RiverDevExecutionIntelligenceGovernanceStabilizationFoundation {
+﻿export interface RiverDevExecutionIntelligenceGovernanceStabilizationFoundation {
   readonly version: "1.0.0";
 
   readonly source: string;
@@ -7847,7 +7847,7 @@ export interface RiverDevGovernedExecutorIntegrationHandoffFoundation {
 }
 
 /**
- * DEV-295 � Governed Executor Integration Handoff Verification Foundation
+ * DEV-295 ï¿½ Governed Executor Integration Handoff Verification Foundation
  *
  * This boundary verifies an exact DEV-294 governed executor integration
  * handoff while preserving the handoff as inert data. Verification grants
@@ -7898,7 +7898,7 @@ export interface RiverDevGovernedExecutorIntegrationHandoffVerificationFoundatio
 }
 
 /**
- * DEV-296 — Governed Executor Integration Handoff Acceptance Foundation
+ * DEV-296 â€” Governed Executor Integration Handoff Acceptance Foundation
  *
  * Accepts or rejects an exact DEV-295 governed executor integration handoff
  * verification result while preserving the acceptance result as inert data.
@@ -8122,7 +8122,7 @@ export interface RiverDevGovernedExecutorIntegrationVerifiedPackageDownstreamAdm
 }
 
 /**
- * DEV-300 — Governed Executor Integration Verified Package
+ * DEV-300 â€” Governed Executor Integration Verified Package
  * Downstream Admission Consumption Foundation
  *
  * Consumes an exact trusted DEV-299 downstream-admission result as
@@ -9247,4 +9247,87 @@ export interface RiverDevOperationalExecutorIntegrationEntryFoundationResult {
 
   readonly evidence: readonly string[];
   readonly blockedReasons: readonly string[];
+}
+
+/**
+ * DEV-321
+ * Production Execution Authority Input Boundary Foundation
+ *
+ * This contract carries explicit production authority evidence only.
+ * It does not create execution authorization and does not execute.
+ */
+
+export interface RiverDevProductionExecutionAuthorityInputBoundaryFoundationInput {
+  readonly humanAuthorization:
+    RiverDevExecutionIntelligenceGovernanceHumanAuthorizationEvidence | null;
+
+  readonly repositoryAuthorization:
+    RiverDevExecutionIntelligenceGovernanceRepositoryAuthorizationEvidence | null;
+
+  readonly approvedScope:
+    RiverDevContextScope | null;
+
+  readonly approvalEvidence:
+    RiverDevExecutionIntelligenceGovernanceApprovalEvidence | null;
+
+  readonly requestedMode:
+    "dry-run" | "apply";
+}
+
+export interface RiverDevProductionExecutionAuthorityInputBoundaryFoundation {
+  readonly version: "DEV-321";
+
+  readonly source:
+    "production-execution-authority-input-boundary-foundation";
+
+  readonly objective:
+    "Carry explicit production execution authority inputs without creating or broadening authorization.";
+
+  readonly trusted: boolean;
+  readonly ready: boolean;
+
+  readonly requestedMode:
+    "dry-run" | "apply";
+
+  readonly humanAuthorization:
+    RiverDevExecutionIntelligenceGovernanceHumanAuthorizationEvidence | null;
+
+  readonly repositoryAuthorization:
+    RiverDevExecutionIntelligenceGovernanceRepositoryAuthorizationEvidence | null;
+
+  readonly approvedScope:
+    RiverDevContextScope | null;
+
+  readonly approvalEvidence:
+    RiverDevExecutionIntelligenceGovernanceApprovalEvidence | null;
+
+  readonly authorityState:
+    | "PRODUCTION_EXECUTION_AUTHORITY_INPUT_READY"
+    | "PRODUCTION_EXECUTION_AUTHORITY_INPUT_BLOCKED";
+
+  readonly provenance: readonly string[];
+  readonly blockedReasons: readonly string[];
+
+  readonly requestedApplyIsAuthorization: false;
+  readonly createsExecutionAuthorization: false;
+  readonly upgradesExecutionAuthorization: false;
+  readonly synthesizesExecutionAuthorization: false;
+  readonly broadensApprovedScope: false;
+
+  readonly mayConstructDev317AcquisitionInput: false;
+  readonly mayInvokeDev317: false;
+  readonly mayInvokeDev318: false;
+  readonly mayInvokeDev319: false;
+
+  readonly mayExecuteOperation: false;
+  readonly mayInvokeExecutor: false;
+  readonly mayModifyRepository: false;
+  readonly mayDeleteRepositoryContent: false;
+  readonly mayStageRepositoryChanges: false;
+  readonly mayCommitRepositoryChanges: false;
+  readonly mayPushRepositoryChanges: false;
+  readonly mayDeploy: false;
+  readonly mayAccessSecrets: false;
+  readonly mayUseNetwork: false;
+  readonly mayInvokeShell: false;
 }

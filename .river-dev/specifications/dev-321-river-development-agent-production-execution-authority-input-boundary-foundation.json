@@ -1,0 +1,49 @@
+﻿{
+    "version":  "1.0.0",
+    "id":  "DEV-321",
+    "name":  "River Development Agent Production Execution Authority Input Boundary Foundation",
+    "objective":  "Establish a narrowly scoped, explicit, fail-closed production authority-input boundary capable of carrying the human authorization, repository authorization, approved execution scope, and governance approval evidence required by the existing controlled execution-authorization chain, without treating execution intent as authorization or broadening existing authority.",
+    "branch":  "dev-321-river-development-agent-production-execution-authority-input-boundary-foundation",
+    "allowedPaths":  [
+                         ".river-dev/specifications/dev-321-river-development-agent-production-execution-authority-input-boundary-foundation.json",
+                         "tools/river-dev/src/core/production-execution-authority-input-boundary-foundation.ts",
+                         "tools/river-dev/src/core/production-execution-authority-input-boundary-foundation.test.ts",
+                         "tools/river-dev/src/types.ts"
+                     ],
+    "requirements":  [
+                         "Define the production authority-input boundary before connecting DEV-319 to real production callers.",
+                         "Preserve the DEV-317 -\u003e DEV-318 -\u003e DEV-319 authorization dependency direction.",
+                         "Carry explicit human authorization evidence rather than synthesizing it.",
+                         "Carry explicit repository authorization evidence rather than synthesizing it.",
+                         "Carry approved execution scope without broadening it.",
+                         "Carry explicit governance approval evidence rather than synthesizing it.",
+                         "Preserve requestedMode as execution intent only.",
+                         "Fail closed when required authority evidence is absent or invalid.",
+                         "Do not manufacture DEV-317 acquisition input from RiverDevOperationalExecutorIntegrationEntryAuthorization.",
+                         "Preserve DEV-314 as the final operational executor integration entry boundary.",
+                         "Do not grant commit, push, deployment, shell, network, secret-access, arbitrary repository mutation, or scope-expansion authority.",
+                         "Perform source discovery before selecting production implementation files."
+                     ],
+    "qualityGates":  [
+                         "Existing authorization evidence contracts are identified from production source.",
+                         "Existing approval evidence contracts are identified from production source.",
+                         "Existing approved-scope source is identified from production source.",
+                         "Existing repository-root source is identified from production source.",
+                         "The narrowest viable production authority-input contract is identified.",
+                         "No authorization semantics are invented.",
+                         "No production source is modified during initial DEV-321 discovery.",
+                         "Repository working scope remains DEV-321 specification-only."
+                     ],
+    "outOfScope":  [
+                       "Treating --apply as authorization.",
+                       "Synthesizing human authorization.",
+                       "Synthesizing governance approval.",
+                       "Broadening approved execution scope.",
+                       "Reversing DEV-317 -\u003e DEV-318 -\u003e DEV-319.",
+                       "Replacing DEV-314.",
+                       "Changing commit behavior.",
+                       "Changing push behavior.",
+                       "Changing deployment behavior.",
+                       "Deploying any code."
+                   ]
+}
