@@ -9331,3 +9331,82 @@ export interface RiverDevProductionExecutionAuthorityInputBoundaryFoundation {
   readonly mayUseNetwork: false;
   readonly mayInvokeShell: false;
 }
+
+/**
+ * DEV-322
+ * Production Execution Authority Composition Foundation
+ *
+ * This contract composes trusted DEV-321 production authority evidence
+ * into inert authorization-composition evidence.
+ *
+ * It does not create, upgrade, synthesize, or broaden authorization.
+ * It does not execute operations or mutate the repository.
+ */
+
+export interface RiverDevProductionExecutionAuthorityCompositionFoundationInput {
+  readonly authorityInput:
+    RiverDevProductionExecutionAuthorityInputBoundaryFoundation;
+}
+
+export interface RiverDevProductionExecutionAuthorityCompositionFoundation {
+  readonly version: "DEV-322";
+
+  readonly source:
+    "production-execution-authority-composition-foundation";
+
+  readonly objective:
+    "Compose trusted production execution authority evidence without creating or broadening authorization.";
+
+  readonly trusted: boolean;
+  readonly ready: boolean;
+
+  readonly requestedMode:
+    "dry-run" | "apply";
+
+  readonly authorityInput:
+    RiverDevProductionExecutionAuthorityInputBoundaryFoundation;
+
+  readonly humanAuthorization:
+    RiverDevExecutionIntelligenceGovernanceHumanAuthorizationEvidence | null;
+
+  readonly repositoryAuthorization:
+    RiverDevExecutionIntelligenceGovernanceRepositoryAuthorizationEvidence | null;
+
+  readonly approvedScope:
+    RiverDevContextScope | null;
+
+  readonly approvalEvidence:
+    RiverDevExecutionIntelligenceGovernanceApprovalEvidence | null;
+
+  readonly compositionState:
+    | "PRODUCTION_EXECUTION_AUTHORITY_COMPOSED"
+    | "PRODUCTION_EXECUTION_AUTHORITY_COMPOSITION_BLOCKED";
+
+  readonly provenance: readonly string[];
+  readonly blockedReasons: readonly string[];
+
+  readonly requestedApplyIsAuthorization: false;
+
+  readonly createsExecutionAuthorization: false;
+  readonly upgradesExecutionAuthorization: false;
+  readonly synthesizesExecutionAuthorization: false;
+  readonly broadensApprovedScope: false;
+
+  readonly mayInvokeDev317: false;
+  readonly mayInvokeDev318: false;
+  readonly mayInvokeDev319: false;
+
+  readonly mayExecuteOperation: false;
+  readonly mayInvokeExecutor: false;
+
+  readonly mayModifyRepository: false;
+  readonly mayDeleteRepositoryContent: false;
+  readonly mayStageRepositoryChanges: false;
+  readonly mayCommitRepositoryChanges: false;
+  readonly mayPushRepositoryChanges: false;
+  readonly mayDeploy: false;
+
+  readonly mayAccessSecrets: false;
+  readonly mayUseNetwork: false;
+  readonly mayInvokeShell: false;
+}
