@@ -1,0 +1,58 @@
+{
+    "version":  "1.0.0",
+    "id":  "DEV-323",
+    "name":  "River Development Agent Production Execution Authority Orchestration Integration",
+    "objective":  "Establish a deterministic, fail-closed, non-executing production integration boundary that consumes the trusted DEV-322 production execution authority composition and supplies its preserved authority evidence into the existing DEV-319 governed operation-execution authorization orchestration boundary, without creating, upgrading, synthesizing, or broadening authorization and without executing repository operations.",
+    "branch":  "dev-323-river-development-agent-production-execution-authority-orchestration-integration",
+    "predecessor":  "DEV-322",
+    "allowedPaths":  [
+                         ".river-dev/specifications/dev-323-river-development-agent-production-execution-authority-orchestration-integration.json",
+                         "tools/river-dev/src/core/production-execution-authority-orchestration-integration.ts",
+                         "tools/river-dev/src/core/production-execution-authority-orchestration-integration.test.ts",
+                         "tools/river-dev/src/types.ts"
+                     ],
+    "requirements":  [
+                         "Consume an existing trusted and ready DEV-322 production execution authority composition foundation.",
+                         "Require DEV-322 composition state to be PRODUCTION_EXECUTION_AUTHORITY_COMPOSED and require predecessor blockers to be absent before progression.",
+                         "Preserve requested mode, human authorization, repository authorization, approved scope, approval evidence, provenance, and all relevant authority boundaries supplied by DEV-322.",
+                         "Integrate DEV-322 production authority composition with the existing DEV-319 governed operation-execution authorization orchestration contract only through explicitly compatible existing inputs.",
+                         "Do not treat requested apply mode as authorization.",
+                         "Do not create, upgrade, synthesize, infer, or broaden execution authorization.",
+                         "Do not broaden approved execution scope.",
+                         "Fail closed when DEV-322 authority evidence cannot be mapped exactly into the existing governed authorization orchestration input contract.",
+                         "Fail closed when required human authorization, repository authorization, approval evidence, approved scope, or other required predecessor evidence is absent or invalid.",
+                         "Preserve the separation between production authority composition, authorization acquisition, authorization consumption, operational executor admission, and actual operation execution.",
+                         "Return deterministic evidence describing whether production authority was accepted for governed orchestration progression.",
+                         "DEV-323 must not itself execute a repository operation.",
+                         "DEV-323 must not itself invoke arbitrary shell execution, network execution, commit, push, deployment, secret access, or uncontrolled external side effects.",
+                         "DEV-323 must not bypass or weaken the existing DEV-317, DEV-318, DEV-319, operational executor entry, or downstream controlled execution boundaries.",
+                         "No production caller modification is authorized by this initial specification-only phase."
+                     ],
+    "safetyInvariants":  [
+                             "Requested apply mode is never authorization.",
+                             "DEV-323 cannot create execution authorization.",
+                             "DEV-323 cannot upgrade execution authorization.",
+                             "DEV-323 cannot synthesize execution authorization.",
+                             "DEV-323 cannot broaden approved execution scope.",
+                             "DEV-323 cannot independently authorize operational executor entry.",
+                             "DEV-323 cannot independently execute repository mutation.",
+                             "DEV-323 cannot bypass governed authorization acquisition or consumption.",
+                             "DEV-323 cannot bypass operational executor integration authorization.",
+                             "No repository mutation or external side effect occurs inside DEV-323."
+                         ],
+    "outOfScope":  [
+                       "Actual repository operation execution.",
+                       "Direct package execution.",
+                       "Direct command or arbitrary shell execution.",
+                       "Commit, push, deployment, or secret access.",
+                       "Creation of new human authorization.",
+                       "Creation of new repository authorization.",
+                       "Creation of new governance approval.",
+                       "Creation or broadening of approved execution scope.",
+                       "Replacement of DEV-317 authorization acquisition.",
+                       "Replacement of DEV-318 authorization consumption.",
+                       "Replacement of DEV-319 authorization orchestration.",
+                       "Modification of production callers before a separately evidenced integration seam is inspected and approved."
+                   ],
+    "nextStep":  "Implement and test the narrow DEV-323 composition boundary. DEV-323 must accept already-built DEV-322 production authority composition evidence and independently supplied existing DEV-319 governed operation-execution authorization orchestration input; it must never derive, manufacture, upgrade, or synthesize OPERATION_EXECUTION_AUTHORIZED from DEV-322 production authority evidence."
+}
