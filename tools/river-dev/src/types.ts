@@ -9410,3 +9410,75 @@ export interface RiverDevProductionExecutionAuthorityCompositionFoundation {
   readonly mayUseNetwork: false;
   readonly mayInvokeShell: false;
 }
+
+export interface RiverDevProductionExecutionAuthorityOrchestrationIntegration {
+    readonly version:
+        "DEV-323";
+
+    readonly source:
+        "production-execution-authority-orchestration-integration";
+
+    readonly integrationState:
+        | "PRODUCTION_EXECUTION_AUTHORITY_ORCHESTRATION_READY"
+        | "PRODUCTION_EXECUTION_AUTHORITY_ORCHESTRATION_BLOCKED";
+
+    readonly readyForOperationalEntry:
+        boolean;
+
+    readonly productionAuthority:
+        RiverDevProductionExecutionAuthorityCompositionFoundation;
+
+    readonly authorization:
+        RiverDevOperationalExecutorIntegrationEntryAuthorization | null;
+
+    readonly authorizationAcquired:
+        boolean;
+
+    readonly authorizationConsumed:
+        boolean;
+
+    readonly authorizationUsableForOperationalEntry:
+        boolean;
+
+    readonly requestedApplyIsAuthorization:
+        false;
+
+    readonly createsAuthorization:
+        false;
+
+    readonly upgradesAuthorization:
+        false;
+
+    readonly synthesizesAuthorization:
+        false;
+
+    readonly broadensAuthorization:
+        false;
+
+    readonly invokesOperationalEntry:
+        false;
+
+    readonly operationalExecutionPerformed:
+        false;
+
+    readonly repositoryMutationPerformed:
+        false;
+
+    readonly commandExecutionPerformed:
+        false;
+
+    readonly commitPerformed:
+        false;
+
+    readonly pushPerformed:
+        false;
+
+    readonly deploymentPerformed:
+        false;
+
+    readonly integrationEvidence:
+        readonly string[];
+
+    readonly blockedReasons:
+        readonly string[];
+}
