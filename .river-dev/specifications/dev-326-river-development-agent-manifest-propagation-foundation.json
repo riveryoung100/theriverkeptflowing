@@ -1,0 +1,67 @@
+﻿{
+  "id": "DEV-326",
+  "title": "River Development Agent Manifest Propagation Foundation",
+  "status": "planned",
+  "objective": "Establish a deterministic, non-executing foundation for propagating an already-generated implementation manifest toward downstream production execution boundaries without creating, upgrading, synthesizing, broadening, or consuming execution authorization and without mutating the repository.",
+  "context": {
+    "upstream": [
+      "DEV-08 autonomous implementation manifest generation",
+      "DEV-10 controlled artifact pipeline",
+      "DEV-321 production execution authority input boundary foundation",
+      "DEV-322 production execution authority composition foundation",
+      "DEV-323 production execution authority orchestration integration",
+      "DEV-324 production execution authority operational entry integration",
+      "DEV-325 production execution authority implement command integration"
+    ],
+    "architecturalFinding": "Implementation manifests are already generated deterministically in memory. Manifest generation and artifact persistence are distinct concerns. DEV-326 must preserve that separation while establishing an explicit manifest propagation boundary."
+  },
+  "requirements": [
+    "Accept an already-generated implementation manifest through an explicit typed input boundary.",
+    "Preserve the manifest without altering its implementation identity, plan identity, branch, description, operations, content, overwrite semantics, or deterministic operation ordering.",
+    "Represent whether a manifest is available and eligible for downstream propagation.",
+    "Expose deterministic propagation state and blocked reasons.",
+    "Do not generate a new implementation manifest.",
+    "Do not persist artifacts.",
+    "Do not write, modify, delete, rename, move, stage, commit, push, merge, or deploy repository content.",
+    "Do not execute implementation manifest operations.",
+    "Do not invoke shell commands or network operations.",
+    "Do not create execution authorization.",
+    "Do not treat requested apply mode as authorization.",
+    "Do not upgrade, synthesize, broaden, or bypass existing authorization.",
+    "Do not consume authorization.",
+    "Remain deterministic for identical inputs.",
+    "Provide focused tests proving propagation, blocked behavior, identity preservation, deterministic behavior, and non-mutation."
+  ],
+  "nonGoals": [
+    "Artifact persistence",
+    "Manifest execution",
+    "Repository mutation",
+    "Authorization acquisition",
+    "Authorization creation",
+    "Authorization consumption",
+    "Operational executor invocation",
+    "Commit creation",
+    "Push",
+    "Merge",
+    "Deployment"
+  ],
+  "expectedFiles": [
+    ".river-dev/specifications/dev-326-river-development-agent-manifest-propagation-foundation.json",
+    "tools/river-dev/src/core/manifest-propagation-foundation.ts",
+    "tools/river-dev/src/core/manifest-propagation-foundation.test.ts",
+    "tools/river-dev/src/types.ts"
+  ],
+  "acceptanceCriteria": [
+    "The DEV-326 manifest propagation foundation has an explicit typed input and result contract.",
+    "An available valid manifest is propagated without semantic mutation.",
+    "Missing or unavailable manifest input is represented as blocked rather than synthesized.",
+    "The original manifest identity and operation semantics are preserved.",
+    "Repeated identical inputs produce deeply equal results.",
+    "The foundation performs no repository writes.",
+    "The foundation performs no execution.",
+    "The foundation creates, broadens, upgrades, synthesizes, bypasses, or consumes no authorization.",
+    "Focused DEV-326 tests pass.",
+    "The complete River Dev test suite passes.",
+    "TypeScript validation passes."
+  ]
+}

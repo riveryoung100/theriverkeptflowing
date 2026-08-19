@@ -9569,3 +9569,62 @@ export interface RiverDevProductionExecutionAuthorityOperationalEntryIntegration
     readonly blockedReasons:
         readonly string[];
 }
+
+
+/**
+ * DEV-326
+ *
+ * Deterministic, non-executing propagation boundary for an
+ * already-generated implementation manifest.
+ *
+ * This contract does not generate, validate, persist, or execute the
+ * manifest. It does not create, broaden, upgrade, synthesize, bypass,
+ * or consume execution authorization.
+ */
+export type RiverDevManifestPropagationState =
+    | "MANIFEST_PROPAGATION_READY"
+    | "MANIFEST_PROPAGATION_BLOCKED";
+
+export interface RiverDevManifestPropagationFoundation {
+    readonly version:
+        "DEV-326";
+
+    readonly source:
+        "manifest-propagation-foundation";
+
+    readonly propagationState:
+        RiverDevManifestPropagationState;
+
+    readonly manifestAvailable:
+        boolean;
+
+    readonly eligibleForDownstreamPropagation:
+        boolean;
+
+    readonly manifest:
+        import("./execution/runner").RiverDevImplementationManifest | null;
+
+    readonly blockedReasons:
+        readonly string[];
+
+    readonly createsAuthorization:
+        false;
+
+    readonly broadensAuthorization:
+        false;
+
+    readonly consumesAuthorization:
+        false;
+
+    readonly executesManifest:
+        false;
+
+    readonly mutatesRepository:
+        false;
+
+    readonly mayUseNetwork:
+        false;
+
+    readonly mayInvokeShell:
+        false;
+}
