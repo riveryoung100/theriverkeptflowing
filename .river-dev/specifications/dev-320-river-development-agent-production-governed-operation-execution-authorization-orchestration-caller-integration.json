@@ -1,0 +1,83 @@
+{
+    "version":  "1.0.0",
+    "id":  "DEV-320",
+    "name":  "River Development Agent Production Governed Operation Execution Authorization Orchestration Caller Input Integration",
+    "objective":  "Establish the production input boundary required for real callers to invoke the existing DEV-319 governed operation-execution authorization orchestration using the upstream controlled execution-authorization evidence expected by DEV-317, rather than attempting to reacquire authorization from the already-narrowed DEV-314 operational-entry authorization object.",
+    "branch":  "dev-320-river-development-agent-production-governed-operation-execution-authorization-orchestration-caller-integration",
+    "allowedPaths":  [
+                         ".river-dev/specifications/dev-320-river-development-agent-production-governed-operation-execution-authorization-orchestration-caller-integration.json"
+                     ],
+    "requirements":  [
+                         "Treat RiverDevGovernedOperationExecutionAuthorizationAcquisitionInput as the authoritative DEV-319 input contract.",
+                         "Recognize that DEV-319 requires upstream executionAuthorization evidence and requestedMode.",
+                         "Recognize that RiverDevOperationalExecutorIntegrationEntryAuthorization is a downstream operational-entry authorization shape and must not be passed backward into DEV-319 acquisition.",
+                         "Do not integrate DEV-319 into tools/river-dev/src/commands/implement.ts until a production upstream source of the required DEV-317 executionAuthorization input is identified.",
+                         "Do not integrate DEV-319 into tools/river-dev/src/core/package-executor.ts until a production upstream source of the required DEV-317 executionAuthorization input is identified.",
+                         "Identify the exact production constructor or propagation path for RiverDevControlledExecutorOperationExecutionAuthorizationFoundation.",
+                         "Identify every production call site of implementRiverDevPlan and executePackage or their command wrappers that can supply governed authorization evidence.",
+                         "Determine whether the richer governed execution-authorization evidence should be propagated through existing caller request contracts or adapted at a narrowly scoped upstream boundary.",
+                         "Preserve DEV-314 as the final operational executor integration entry boundary.",
+                         "Do not manufacture DEV-317 acquisition input from RiverDevOperationalExecutorIntegrationEntryAuthorization.",
+                         "Do not reverse the authorization dependency direction.",
+                         "Do not create new authorization semantics.",
+                         "Do not modify production source during this DEV-320 discovery correction step.",
+                         "Use the resulting evidence to define the next implementation scope before any production caller modification."
+                     ],
+    "qualityGates":  [
+                         "DEV-317 acquisition input shape is proven from source.",
+                         "DEV-319 input dependency on DEV-317 acquisition input is proven from source.",
+                         "Existing production caller authorization shape is proven from source.",
+                         "The production source of RiverDevControlledExecutorOperationExecutionAuthorizationFoundation is identified.",
+                         "Production propagation paths into implementRiverDevPlan and executePackage are identified.",
+                         "No production source file is modified during corrected discovery.",
+                         "Repository working scope remains specification-only.",
+                         "Nothing is staged, committed, pushed, or deployed."
+                     ],
+    "outOfScope":  [
+                       "Passing RiverDevOperationalExecutorIntegrationEntryAuthorization into DEV-319.",
+                       "Fabricating executionAuthorization from DEV-314 authorization.",
+                       "Changing tools/river-dev/src/commands/implement.ts during this step.",
+                       "Changing tools/river-dev/src/core/package-executor.ts during this step.",
+                       "Changing tools/river-dev/src/index.ts during this step.",
+                       "Changing DEV-314 implementation.",
+                       "Changing DEV-317 implementation.",
+                       "Changing DEV-318 implementation.",
+                       "Changing DEV-319 implementation.",
+                       "Creating new execution authorization.",
+                       "Weakening fail-closed authorization behavior.",
+                       "Changing commit behavior.",
+                       "Changing push behavior.",
+                       "Changing deployment behavior."
+                   ],
+    "discoveryConclusions":  [
+                                 "RiverDevGovernedOperationExecutionAuthorizationAcquisitionInput is the authoritative DEV-317 and DEV-319 upstream input contract.",
+                                 "DEV-317 requires RiverDevControlledExecutorOperationExecutionAuthorizationFoundation executionAuthorization evidence plus requestedMode.",
+                                 "DEV-318 consumes DEV-317 acquisition and narrows successful authorization into RiverDevOperationalExecutorIntegrationEntryAuthorization without creating, upgrading, or broadening authorization.",
+                                 "DEV-319 orchestrates DEV-318 and does not create, synthesize, upgrade, broaden, or execute authorization.",
+                                 "The DEV-317 -\u003e DEV-318 -\u003e DEV-319 dependency direction is authoritative and must not be reversed.",
+                                 "RiverDevOperationalExecutorIntegrationEntryAuthorization is a downstream DEV-314 operational-entry authorization shape and cannot be used to manufacture DEV-317 acquisition input.",
+                                 "Production implementRiverDevPlan currently accepts RiverDevOperationalExecutorIntegrationEntryAuthorization and passes it to DEV-314.",
+                                 "Production executePackage currently accepts RiverDevOperationalExecutorIntegrationEntryAuthorization and passes it to DEV-314.",
+                                 "DEV-319 currently has declaration-only production reachability and has no real production caller.",
+                                 "buildControlledExecutorOperationExecutionAuthorizationFoundation currently has declaration-only production reachability.",
+                                 "Production repositoryRoot evidence exists.",
+                                 "Production approved execution scope exists through specification, context, and planner infrastructure.",
+                                 "No production human operator identity source was identified.",
+                                 "No production explicit human authorization evidence source was identified.",
+                                 "No production explicit governance approval evidence source was identified.",
+                                 "--apply intent cannot constitute authorization.",
+                                 "Missing human authorization or governance approval evidence must not be fabricated or synthesized.",
+                                 "The next implementation phase must establish a narrowly scoped explicit production authority-input boundary before DEV-319 can be connected to production callers.",
+                                 "DEV-314 must remain the final operational executor integration entry boundary."
+                             ],
+    "nextImplementationScope":  [
+                                    "Define an explicit production authority-input contract capable of carrying the missing human authorization and governance approval evidence required by the existing controlled execution-authorization chain.",
+                                    "Bind existing production repository and approved-scope evidence without broadening that scope.",
+                                    "Fail closed when required human identity, human authorization, repository authorization, approved scope, or governance approval evidence is absent or invalid.",
+                                    "Construct or propagate RiverDevControlledExecutorOperationExecutionAuthorizationFoundation only through existing authorization semantics.",
+                                    "Make the resulting upstream executionAuthorization available to DEV-319 without adapting backward from RiverDevOperationalExecutorIntegrationEntryAuthorization.",
+                                    "Preserve --apply as requested execution mode only and never as authorization.",
+                                    "Preserve DEV-314 as the downstream final operational executor entry boundary.",
+                                    "Do not grant commit, push, deployment, shell, network, secret-access, arbitrary repository mutation, or scope-expansion authority."
+                                ]
+}
