@@ -1,0 +1,53 @@
+﻿{
+  "id": "DEV-327",
+  "title": "River Development Agent Manifest Package Execution Request Composition Foundation",
+  "status": "specified",
+  "objective": "Establish the deterministic governed composition boundary that consumes a successfully propagated implementation manifest and composes the existing package execution request contract without executing the package, acquiring new authority, bypassing production execution authority, or duplicating existing execution boundaries.",
+  "dependsOn": [
+    "DEV-326"
+  ],
+  "scope": {
+    "include": [
+      "Define the manifest package execution request composition input contract.",
+      "Consume the successful DEV-326 manifest propagation result as the manifest-side source of truth.",
+      "Compose the existing RiverDevPackageExecutionRequest contract from explicitly authorized and propagated inputs.",
+      "Preserve manifest identity and propagated manifest data required by the existing package execution boundary.",
+      "Preserve the requested execution mode and existing authorization-related inputs without creating or escalating authority.",
+      "Reject or block composition when manifest propagation is not successful or required package execution request inputs are absent or invalid.",
+      "Produce deterministic composition results for equivalent inputs.",
+      "Add focused tests for successful composition, blocked composition, malformed inputs, authority preservation, manifest preservation, and determinism."
+    ],
+    "exclude": [
+      "Executing a package.",
+      "Calling executePackage.",
+      "Changing package executor behavior.",
+      "Creating, acquiring, consuming, or escalating production execution authority.",
+      "Changing DEV-323 production execution authority semantics.",
+      "Changing DEV-326 manifest propagation semantics.",
+      "Performing repository writes other than the DEV-327 implementation itself.",
+      "Committing, pushing, merging, or deploying as part of the implementation engine."
+    ]
+  },
+  "invariants": [
+    "Composition must never itself execute a package.",
+    "Composition must never create or escalate execution authority.",
+    "A manifest that has not successfully passed the DEV-326 propagation boundary must not become executable package input.",
+    "The existing RiverDevPackageExecutionRequest remains the downstream package executor contract.",
+    "Existing production execution authority boundaries remain authoritative.",
+    "Equivalent valid inputs must produce deterministic equivalent composition results.",
+    "Blocked composition must expose an explicit deterministic blocked reason.",
+    "No hidden fallback may manufacture missing manifest or execution authority data."
+  ],
+  "plannedFiles": [
+    "tools/river-dev/src/core/manifest-package-execution-request-composition-foundation.ts",
+    "tools/river-dev/src/core/manifest-package-execution-request-composition-foundation.test.ts",
+    "tools/river-dev/src/types.ts"
+  ],
+  "verification": [
+    "Run the focused DEV-327 test file.",
+    "Run TypeScript type checking.",
+    "Run the full River Development Agent test suite.",
+    "Verify exact working-tree scope before staging.",
+    "Review the complete diff before commit."
+  ]
+}

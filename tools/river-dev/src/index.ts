@@ -1,4 +1,13 @@
-﻿import {
+import {
+    existsSync
+} from "node:fs";
+
+import {
+    dirname,
+    resolve
+} from "node:path";
+
+import {
     loadRiverDevConfiguration
 } from "./core/config";
 
@@ -141,6 +150,54 @@ function parseCommand(
 }
 
 
+function resolveRepositoryRoot(
+    startingDirectory:
+        string = process.cwd()
+): string {
+
+    let candidate =
+        resolve(
+            startingDirectory
+        );
+
+    while (true) {
+
+        const policyDirectory =
+            resolve(
+                candidate,
+                ".river-dev"
+            );
+
+        if (
+            existsSync(
+                policyDirectory
+            )
+        ) {
+            return candidate;
+        }
+
+        const parent =
+            dirname(
+                candidate
+            );
+
+        if (
+            parent ===
+            candidate
+        ) {
+            throw new TypeError(
+                `Unable to locate River Dev repository root from ${startingDirectory}.`
+            );
+        }
+
+        candidate =
+            parent;
+
+    }
+
+}
+
+
 async function run(): Promise<void> {
 
     const command =
@@ -148,9 +205,12 @@ async function run(): Promise<void> {
             process.argv[2]
         );
 
+    const repositoryRoot =
+        resolveRepositoryRoot();
+
     const configuration =
         await loadRiverDevConfiguration(
-            process.cwd()
+            repositoryRoot
         );
 
     switch (command) {
