@@ -4,7 +4,7 @@ import {
 
 import type {
     RiverDevConfiguration,
-    RiverDevOperationalExecutorIntegrationEntryAuthorization
+    RiverDevProductionExecutionAuthorityOrchestrationIntegration
 } from "../types";
 
 import {
@@ -25,6 +25,10 @@ import {
     establishOperationalExecutorIntegrationEntryFoundation
 } from "../core/operational-executor-integration-entry-foundation-engine";
 
+import {
+    integrateProductionExecutionAuthorityOperationalEntry
+} from "../core/production-execution-authority-operational-entry-integration";
+
 
 export async function implementRiverDevPlan(
     configuration:
@@ -34,8 +38,8 @@ export async function implementRiverDevPlan(
     mode:
         RiverDevImplementationMode =
             "dry-run",
-    operationExecutionAuthorization:
-        RiverDevOperationalExecutorIntegrationEntryAuthorization
+    productionExecutionAuthority:
+        RiverDevProductionExecutionAuthorityOrchestrationIntegration
         | null =
             null
 ): Promise<RiverDevImplementationResult> {
@@ -55,27 +59,99 @@ export async function implementRiverDevPlan(
             resolvedManifestPath
         );
 
-    const operationalEntry =
-        establishOperationalExecutorIntegrationEntryFoundation(
-            {
-                requestedMode:
-                    mode,
-
-                authorization:
-                    operationExecutionAuthorization
-            }
-        );
+    let effectiveMode:
+        RiverDevImplementationMode | null =
+            null;
 
     if (
         mode ===
-            "apply" &&
-        operationalEntry.admitted !==
-            true
+            "dry-run"
+    ) {
+
+        const operationalEntry =
+            establishOperationalExecutorIntegrationEntryFoundation(
+                {
+                    requestedMode:
+                        mode,
+
+                    authorization:
+                        null
+                }
+            );
+
+        if (
+            operationalEntry.admitted !==
+                true
+        ) {
+            throw new TypeError(
+                operationalEntry.blockedReasons.join(
+                    " "
+                )
+            );
+        }
+
+        effectiveMode =
+            operationalEntry.effectiveMode;
+
+    }
+    else {
+
+        if (
+            productionExecutionAuthority ===
+                null
+        ) {
+            throw new TypeError(
+                "Apply requires a preexisting DEV-323 production execution authority orchestration result."
+            );
+        }
+
+        if (
+            productionExecutionAuthority.productionAuthority.requestedMode !==
+                "apply"
+        ) {
+            throw new TypeError(
+                "Apply requires DEV-323 production execution authority requestedMode to be apply."
+            );
+        }
+
+        const productionOperationalEntry =
+            integrateProductionExecutionAuthorityOperationalEntry(
+                {
+                    productionExecutionAuthority
+                }
+            );
+
+        if (
+            productionOperationalEntry.requestedMode !==
+                "apply" ||
+            productionOperationalEntry.admitted !==
+                true
+        ) {
+
+            const reasons =
+                productionOperationalEntry.blockedReasons.length >
+                    0
+                    ? productionOperationalEntry.blockedReasons.join(
+                          " "
+                      )
+                    : "DEV-324 production execution authority operational entry denied apply.";
+
+            throw new TypeError(
+                reasons
+            );
+        }
+
+        effectiveMode =
+            productionOperationalEntry.operationalEntry.effectiveMode;
+
+    }
+
+    if (
+        effectiveMode ===
+            null
     ) {
         throw new TypeError(
-            operationalEntry.blockedReasons.join(
-                " "
-            )
+            "Operational entry did not produce an effective implementation mode."
         );
     }
 
@@ -86,7 +162,7 @@ export async function implementRiverDevPlan(
 
     return runner.execute(
         manifest,
-        operationalEntry.effectiveMode
+        effectiveMode
     );
 
 }
