@@ -431,4 +431,449 @@ const breadcrumbSchema = {
 
     }
 
+/* WEBSITE PRODUCTION 023: SERIES INDEX EXPERIENCE */
+
+
+/* =========================================
+   SERIES INDEX — PAGE ATMOSPHERE
+   ========================================= */
+
+.series-page {
+    position: relative;
+    isolation: isolate;
+}
+
+.series-page::before {
+    content: "";
+    position: absolute;
+    z-index: -2;
+
+    width: min(680px, 74vw);
+    aspect-ratio: 1;
+
+    top: -240px;
+    right: -220px;
+
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            currentColor 8%,
+            transparent
+        );
+
+    border-radius: 50%;
+
+    pointer-events: none;
+}
+
+.series-page::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+
+    width: min(420px, 48vw);
+    aspect-ratio: 1;
+
+    top: 180px;
+    left: -260px;
+
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            currentColor 6%,
+            transparent
+        );
+
+    border-radius: 50%;
+
+    pointer-events: none;
+}
+
+
+/* =========================================
+   SERIES INDEX — HERO
+   ========================================= */
+
+.series-hero {
+    position: relative;
+    padding-top: 24px;
+}
+
+.series-hero::before {
+    content: "";
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 72px;
+    height: 2px;
+
+    background:
+        linear-gradient(
+            to right,
+            rgba(183, 155, 104, 0.9),
+            rgba(112, 145, 133, 0.58)
+        );
+}
+
+.series-hero::after {
+    content: "Series";
+    position: absolute;
+
+    top: -12px;
+    right: -6px;
+
+    font-size:
+        clamp(
+            4rem,
+            12vw,
+            8rem
+        );
+
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.06em;
+
+    opacity: 0.035;
+
+    pointer-events: none;
+}
+
+.series-eyebrow {
+    position: relative;
+    padding-left: 22px;
+}
+
+.series-eyebrow::before {
+    content: "";
+    position: absolute;
+
+    left: 0;
+    top: 50%;
+
+    width: 10px;
+    height: 1px;
+
+    background: currentColor;
+
+    opacity: 0.5;
+}
+
+
+/* =========================================
+   SERIES INDEX — SECTION HEADING
+   ========================================= */
+
+.series-heading {
+    position: relative;
+    padding-bottom: 24px;
+}
+
+.series-heading::after {
+    content: "";
+    position: absolute;
+
+    left: 0;
+    bottom: 0;
+
+    width: min(260px, 36%);
+    height: 1px;
+
+    background:
+        linear-gradient(
+            to right,
+            color-mix(
+                in srgb,
+                currentColor 26%,
+                transparent
+            ),
+            transparent
+        );
+}
+
+
+/* =========================================
+   SERIES INDEX — LIST
+   ========================================= */
+
+.series-list {
+    position: relative;
+}
+
+.series-card {
+    position: relative;
+    overflow: hidden;
+
+    transition:
+        transform 180ms ease,
+        border-color 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.series-card::before {
+    content: "";
+    position: absolute;
+
+    inset:
+        0
+        auto
+        0
+        0;
+
+    width: 3px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(183, 155, 104, 0.9),
+            rgba(112, 145, 133, 0.58)
+        );
+
+    opacity: 0.74;
+}
+
+.series-card::after {
+    content: "";
+    position: absolute;
+
+    width: 180px;
+    aspect-ratio: 1;
+
+    right: -110px;
+    bottom: -120px;
+
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            currentColor 8%,
+            transparent
+        );
+
+    border-radius: 50%;
+
+    pointer-events: none;
+}
+
+.series-card:hover,
+.series-card:focus-within {
+    transform: translateY(-4px);
+
+    border-color:
+        color-mix(
+            in srgb,
+            currentColor 28%,
+            transparent
+        );
+
+    box-shadow:
+        0
+        18px
+        42px
+        color-mix(
+            in srgb,
+            currentColor 7%,
+            transparent
+        );
+}
+
+.series-card__number {
+    position: relative;
+    align-self: stretch;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 74px;
+
+    border-right:
+        1px solid
+        color-mix(
+            in srgb,
+            currentColor 12%,
+            transparent
+        );
+}
+
+.series-card__collections span {
+    transition:
+        transform 160ms ease,
+        border-color 160ms ease;
+}
+
+.series-card__collections span:hover {
+    transform: translateY(-2px);
+
+    border-color:
+        color-mix(
+            in srgb,
+            currentColor 28%,
+            transparent
+        );
+}
+
+.series-card__action {
+    position: relative;
+
+    text-decoration-thickness: 1px;
+    text-underline-offset: 5px;
+
+    transition:
+        transform 160ms ease,
+        opacity 160ms ease;
+}
+
+.series-card__action:hover,
+.series-card__action:focus-visible {
+    transform: translateX(4px);
+}
+
+
+/* =========================================
+   SERIES INDEX — FOOTER
+   ========================================= */
+
+.series-footer {
+    position: relative;
+}
+
+.series-footer::before {
+    content: "";
+    position: absolute;
+
+    top: -1px;
+    left: 0;
+
+    width: min(140px, 26%);
+    height: 2px;
+
+    background:
+        linear-gradient(
+            to right,
+            rgba(183, 155, 104, 0.85),
+            rgba(112, 145, 133, 0.52)
+        );
+}
+
+.series-footer a {
+    text-underline-offset: 5px;
+
+    transition:
+        transform 160ms ease,
+        opacity 160ms ease;
+}
+
+.series-footer a:hover,
+.series-footer a:focus-visible {
+    transform: translateY(-2px);
+}
+
+
+/* =========================================
+   SERIES INDEX — FOCUS
+   ========================================= */
+
+.series-page a:focus-visible {
+    outline: 3px solid currentColor;
+    outline-offset: 4px;
+}
+
+
+/* =========================================
+   SERIES INDEX — RESPONSIVE
+   ========================================= */
+
+@media (max-width: 760px) {
+
+    .series-hero {
+        margin-bottom: 66px;
+    }
+
+    .series-card {
+        padding:
+            28px
+            24px;
+    }
+
+    .series-card__number {
+        justify-content: flex-start;
+
+        min-height: auto;
+
+        padding-bottom: 14px;
+
+        border-right: 0;
+
+        border-bottom:
+            1px solid
+            color-mix(
+                in srgb,
+                currentColor 12%,
+                transparent
+            );
+    }
+}
+
+
+@media (max-width: 560px) {
+
+    .series-page {
+        padding-top: 58px;
+    }
+
+    .series-hero {
+        padding-top: 18px;
+    }
+
+    .series-hero h1 {
+        font-size:
+            clamp(
+                2.9rem,
+                15vw,
+                4.8rem
+            );
+    }
+
+    .series-card {
+        gap: 22px;
+
+        padding:
+            24px
+            20px;
+    }
+
+    .series-footer {
+        align-items: flex-start;
+    }
+}
+
+
+/* =========================================
+   SERIES INDEX — REDUCED MOTION
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .series-card,
+    .series-card__collections span,
+    .series-card__action,
+    .series-footer a {
+        transition: none;
+    }
+
+    .series-card:hover,
+    .series-card:focus-within,
+    .series-card__collections span:hover,
+    .series-card__action:hover,
+    .series-card__action:focus-visible,
+    .series-footer a:hover,
+    .series-footer a:focus-visible {
+        transform: none;
+    }
+}
+
 </style>
