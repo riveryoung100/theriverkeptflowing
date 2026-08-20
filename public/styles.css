@@ -15857,3 +15857,518 @@ body:has(main[data-pagefind-body]) .topic-index {
         transform: none;
     }
 }
+
+/* WEBSITE PRODUCTION 017: HEADWATERS EXPERIENCE */
+
+/*
+    Production 017 strengthens Headwaters as the philosophical
+    threshold of The River Kept Flowing.
+
+    Existing markup, narrative, routing, and legacy styles remain
+    untouched. This layer is intentionally additive.
+*/
+
+
+/* ---------------------------------------------------------
+   HEADWATERS — HERO
+   --------------------------------------------------------- */
+
+.headwaters-hero {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    min-height: clamp(32rem, 72vh, 48rem);
+    display: flex;
+    align-items: flex-end;
+    padding-top: clamp(8rem, 14vw, 12rem);
+    padding-bottom: clamp(5rem, 9vw, 8rem);
+    background:
+        radial-gradient(
+            circle at 78% 28%,
+            rgba(255, 255, 255, 0.08),
+            transparent 30rem
+        ),
+        linear-gradient(
+            145deg,
+            #12231c 0%,
+            #1b3329 52%,
+            #263f35 100%
+        );
+    color: #f7f3ea;
+}
+
+.headwaters-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background:
+        linear-gradient(
+            115deg,
+            rgba(255, 255, 255, 0.025) 0%,
+            transparent 38%
+        );
+}
+
+.headwaters-hero::after {
+    content: "";
+    position: absolute;
+    right: -10rem;
+    bottom: -14rem;
+    z-index: -1;
+    width: min(42rem, 65vw);
+    aspect-ratio: 1;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 5rem rgba(255, 255, 255, 0.018),
+        0 0 0 10rem rgba(255, 255, 255, 0.012);
+}
+
+.headwaters-hero .page-hero-content {
+    width: min(100%, 76rem);
+    margin-inline: auto;
+    padding-inline: clamp(1.35rem, 5vw, 4rem);
+}
+
+.headwaters-hero .eyebrow {
+    margin-bottom: 1.35rem;
+    color: rgba(247, 243, 234, 0.72);
+    letter-spacing: 0.16em;
+}
+
+.headwaters-hero h1 {
+    max-width: 13ch;
+    margin: 0;
+    color: #ffffff;
+    font-size: clamp(3.3rem, 8vw, 7.2rem);
+    line-height: 0.94;
+    letter-spacing: -0.055em;
+    text-wrap: balance;
+}
+
+.headwaters-hero .page-hero-lead {
+    max-width: 43rem;
+    margin-top: clamp(1.75rem, 4vw, 2.75rem);
+    color: rgba(247, 243, 234, 0.82);
+    font-size: clamp(1.08rem, 2vw, 1.35rem);
+    line-height: 1.75;
+}
+
+
+/* ---------------------------------------------------------
+   HEADWATERS — OPENING STORY
+   --------------------------------------------------------- */
+
+.headwaters-hero + .story-section {
+    position: relative;
+    padding-block: clamp(5.5rem, 10vw, 9rem);
+}
+
+.headwaters-hero + .story-section .reading-shell {
+    max-width: 48rem;
+}
+
+.headwaters-hero + .story-section .section-label {
+    margin-bottom: 1.15rem;
+}
+
+.headwaters-hero + .story-section h2 {
+    max-width: 14ch;
+    margin-bottom: 2rem;
+    font-size: clamp(2.35rem, 5vw, 4.4rem);
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+}
+
+.headwaters-hero + .story-section .story-opening {
+    margin-bottom: 2rem;
+    color: var(--river-dark);
+    font-size: clamp(1.35rem, 3vw, 1.85rem);
+    line-height: 1.5;
+}
+
+.headwaters-hero + .story-section p:not(.section-label):not(.story-opening) {
+    font-size: clamp(1.04rem, 1.6vw, 1.16rem);
+    line-height: 1.85;
+}
+
+.headwaters-hero + .story-section .story-quote {
+    position: relative;
+    margin-block: clamp(3rem, 7vw, 5rem);
+    padding: clamp(2rem, 5vw, 3.25rem);
+    border: 0;
+    border-left: 3px solid var(--river);
+    background: rgba(38, 63, 53, 0.055);
+    color: var(--river-dark);
+    font-size: clamp(1.45rem, 3.4vw, 2.15rem);
+    line-height: 1.45;
+    letter-spacing: -0.025em;
+}
+
+
+/* ---------------------------------------------------------
+   HEADWATERS — MODERN CURRENT / CONTRAST
+   --------------------------------------------------------- */
+
+.headwaters-hero ~ .contrast-section {
+    padding-block: clamp(5.5rem, 10vw, 9rem);
+    background:
+        linear-gradient(
+            180deg,
+            rgba(38, 63, 53, 0.035),
+            rgba(38, 63, 53, 0.075)
+        );
+}
+
+.headwaters-hero ~ .contrast-section .centered-heading {
+    max-width: 54rem;
+    margin-inline: auto;
+    margin-bottom: clamp(3rem, 7vw, 5rem);
+    text-align: center;
+}
+
+.headwaters-hero ~ .contrast-section .centered-heading h2 {
+    max-width: 18ch;
+    margin-inline: auto;
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    line-height: 1.04;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+}
+
+.headwaters-hero ~ .contrast-section .centered-heading > p:last-child {
+    max-width: 42rem;
+    margin: 1.5rem auto 0;
+    font-size: clamp(1.02rem, 1.7vw, 1.16rem);
+    line-height: 1.75;
+}
+
+.headwaters-hero ~ .contrast-section .contrast-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 2.5vw, 1.75rem);
+}
+
+.headwaters-hero ~ .contrast-section .contrast-card {
+    position: relative;
+    min-height: 20rem;
+    padding: clamp(1.75rem, 4vw, 2.6rem);
+    border: 1px solid rgba(18, 35, 28, 0.12);
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow:
+        0 1.2rem 3rem rgba(18, 35, 28, 0.055);
+}
+
+.headwaters-hero ~ .contrast-section .contrast-card > span {
+    display: inline-flex;
+    margin-bottom: clamp(3.5rem, 8vw, 6rem);
+    color: rgba(18, 35, 28, 0.45);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+}
+
+.headwaters-hero ~ .contrast-section .contrast-card h3 {
+    margin-bottom: 1rem;
+    color: var(--river-dark);
+    font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+}
+
+.headwaters-hero ~ .contrast-section .contrast-card p {
+    margin-bottom: 0;
+    line-height: 1.75;
+}
+
+
+/* ---------------------------------------------------------
+   HEADWATERS — FOUNDATION STONES
+   --------------------------------------------------------- */
+
+.headwaters-hero ~ .foundation-section {
+    padding-block: clamp(6rem, 11vw, 10rem);
+}
+
+.headwaters-hero ~ .foundation-section .section-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(16rem, 0.85fr);
+    gap: clamp(2rem, 7vw, 6rem);
+    align-items: end;
+    margin-bottom: clamp(4rem, 8vw, 6.5rem);
+}
+
+.headwaters-hero ~ .foundation-section .section-heading h2 {
+    max-width: 13ch;
+    margin-bottom: 0;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 1;
+    letter-spacing: -0.045em;
+    text-wrap: balance;
+}
+
+.headwaters-hero ~ .foundation-section .section-heading > p {
+    max-width: 32rem;
+    margin: 0;
+    line-height: 1.8;
+}
+
+.headwaters-hero ~ .foundation-section .foundation-list {
+    border-top: 1px solid rgba(18, 35, 28, 0.14);
+}
+
+.headwaters-hero ~ .foundation-section .foundation-item {
+    display: grid;
+    grid-template-columns: clamp(3.25rem, 7vw, 6rem) minmax(0, 1fr);
+    gap: clamp(1.25rem, 4vw, 3.5rem);
+    padding-block: clamp(2.25rem, 5vw, 4rem);
+    border-bottom: 1px solid rgba(18, 35, 28, 0.14);
+}
+
+.headwaters-hero ~ .foundation-section .foundation-number {
+    padding-top: 0.35rem;
+    color: rgba(18, 35, 28, 0.42);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+}
+
+.headwaters-hero ~ .foundation-section .foundation-item h3 {
+    margin: 0 0 1rem;
+    color: var(--river-dark);
+    font-size: clamp(1.55rem, 3vw, 2.25rem);
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+}
+
+.headwaters-hero ~ .foundation-section .foundation-item p {
+    max-width: 48rem;
+    line-height: 1.8;
+}
+
+.headwaters-hero ~ .foundation-section .foundation-line {
+    margin-top: 1.4rem;
+    margin-bottom: 0;
+    color: var(--river);
+    font-weight: 650;
+}
+
+
+/* ---------------------------------------------------------
+   HEADWATERS — RIVER PHILOSOPHY
+   --------------------------------------------------------- */
+
+.headwaters-hero ~ .river-philosophy-section {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(6rem, 12vw, 11rem);
+    background:
+        radial-gradient(
+            circle at 85% 20%,
+            rgba(255, 255, 255, 0.07),
+            transparent 26rem
+        ),
+        var(--river-dark);
+    color: rgba(247, 243, 234, 0.82);
+}
+
+.headwaters-hero ~ .river-philosophy-section::after {
+    content: "";
+    position: absolute;
+    left: -12rem;
+    bottom: -16rem;
+    width: 38rem;
+    aspect-ratio: 1;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 50%;
+}
+
+.headwaters-hero ~ .river-philosophy-section .reading-shell {
+    position: relative;
+    z-index: 1;
+    max-width: 54rem;
+}
+
+.headwaters-hero ~ .river-philosophy-section .light-label {
+    color: rgba(247, 243, 234, 0.58);
+}
+
+.headwaters-hero ~ .river-philosophy-section h2 {
+    max-width: 18ch;
+    margin-bottom: clamp(3rem, 7vw, 5rem);
+    color: #ffffff;
+    font-size: clamp(2.4rem, 5.5vw, 4.75rem);
+    line-height: 1.02;
+    letter-spacing: -0.045em;
+    text-wrap: balance;
+}
+
+.headwaters-hero ~ .river-philosophy-section .philosophy-lines {
+    display: grid;
+    gap: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.13);
+}
+
+.headwaters-hero ~ .river-philosophy-section .philosophy-lines p {
+    margin: 0;
+    padding-block: 1.35rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.13);
+    color: rgba(247, 243, 234, 0.88);
+    font-size: clamp(1.1rem, 2vw, 1.3rem);
+    line-height: 1.6;
+}
+
+.headwaters-hero ~ .river-philosophy-section .philosophy-summary {
+    max-width: 42rem;
+    margin-top: clamp(3rem, 7vw, 5rem);
+    margin-bottom: 0;
+    color: rgba(247, 243, 234, 0.68);
+    font-size: clamp(1.05rem, 1.8vw, 1.2rem);
+    line-height: 1.8;
+}
+
+
+/* ---------------------------------------------------------
+   HEADWATERS — INVITATION / HANDOFF TO THE SOURCE
+   --------------------------------------------------------- */
+
+.headwaters-hero ~ .headwaters-invitation {
+    position: relative;
+    padding-block: clamp(6rem, 12vw, 10rem);
+    background:
+        linear-gradient(
+            180deg,
+            rgba(38, 63, 53, 0.035),
+            rgba(38, 63, 53, 0)
+        );
+}
+
+.headwaters-hero ~ .headwaters-invitation .reading-shell {
+    max-width: 52rem;
+}
+
+.headwaters-hero ~ .headwaters-invitation h2 {
+    max-width: 18ch;
+    margin-bottom: 2rem;
+    font-size: clamp(2.35rem, 5vw, 4.25rem);
+    line-height: 1.04;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+}
+
+.headwaters-hero ~ .headwaters-invitation p {
+    max-width: 44rem;
+    font-size: clamp(1.03rem, 1.7vw, 1.15rem);
+    line-height: 1.8;
+}
+
+.headwaters-hero ~ .headwaters-invitation .page-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+}
+
+.headwaters-hero ~ .headwaters-invitation .page-button-primary,
+.headwaters-hero ~ .headwaters-invitation .page-button-secondary {
+    min-height: 3.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* ---------------------------------------------------------
+   HEADWATERS — MOTION
+   --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+
+    .headwaters-hero ~ .contrast-section .contrast-card,
+    .headwaters-hero ~ .foundation-section .foundation-item {
+        transition:
+            transform 180ms ease,
+            border-color 180ms ease,
+            box-shadow 180ms ease;
+    }
+
+    .headwaters-hero ~ .contrast-section .contrast-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(18, 35, 28, 0.22);
+        box-shadow:
+            0 1.6rem 3.6rem rgba(18, 35, 28, 0.09);
+    }
+
+    .headwaters-hero ~ .foundation-section .foundation-item:hover {
+        transform: translateX(4px);
+    }
+}
+
+
+/* ---------------------------------------------------------
+   HEADWATERS — RESPONSIVE
+   --------------------------------------------------------- */
+
+@media (max-width: 900px) {
+
+    .headwaters-hero {
+        min-height: 38rem;
+    }
+
+    .headwaters-hero ~ .contrast-section .contrast-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .headwaters-hero ~ .contrast-section .contrast-card {
+        min-height: 0;
+    }
+
+    .headwaters-hero ~ .contrast-section .contrast-card > span {
+        margin-bottom: 3rem;
+    }
+
+    .headwaters-hero ~ .foundation-section .section-heading {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        align-items: start;
+    }
+}
+
+
+@media (max-width: 640px) {
+
+    .headwaters-hero {
+        min-height: 34rem;
+        padding-top: 7.5rem;
+        padding-bottom: 4.5rem;
+    }
+
+    .headwaters-hero h1 {
+        font-size: clamp(3rem, 15vw, 4.8rem);
+    }
+
+    .headwaters-hero + .story-section .story-quote {
+        padding: 1.75rem;
+    }
+
+    .headwaters-hero ~ .foundation-section .foundation-item {
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
+    }
+
+    .headwaters-hero ~ .foundation-section .foundation-number {
+        padding-top: 0;
+    }
+
+    .headwaters-hero ~ .headwaters-invitation .page-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .headwaters-hero ~ .headwaters-invitation .page-button-primary,
+    .headwaters-hero ~ .headwaters-invitation .page-button-secondary {
+        width: 100%;
+    }
+}
