@@ -13149,3 +13149,541 @@ body:has(main[data-pagefind-body]) .topic-index {
     }
 
 }
+
+
+/* =========================================================
+   WEBSITE PRODUCTION 008: JOURNEY NARRATIVE EXPERIENCE
+   ========================================================= */
+
+/*
+   Production 008 preserves the existing Journey architecture
+   while strengthening hierarchy, narrative movement, depth,
+   interaction, responsiveness, and long-form readability.
+*/
+
+
+/* ---------------------------------------------------------
+   HERO
+   --------------------------------------------------------- */
+
+.journey-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+.journey-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background:
+        radial-gradient(
+            circle at 72% 28%,
+            rgba(255, 255, 255, 0.08),
+            transparent 34%
+        ),
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.025),
+            transparent 46%
+        );
+}
+
+.journey-hero::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: min(76vw, 1040px);
+    height: 1px;
+    z-index: -1;
+    pointer-events: none;
+    transform: translateX(-50%);
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.24),
+            transparent
+        );
+}
+
+.journey-hero-content {
+    position: relative;
+}
+
+.journey-hero h1 {
+    max-width: 980px;
+    text-wrap: balance;
+}
+
+.journey-hero-lead {
+    max-width: 720px;
+}
+
+.journey-hero-actions {
+    margin-top: clamp(28px, 4vw, 44px);
+}
+
+
+/* ---------------------------------------------------------
+   OPENING
+   --------------------------------------------------------- */
+
+.journey-opening .reading-shell {
+    position: relative;
+}
+
+.journey-opening .reading-shell::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -34px;
+    width: 1px;
+    height: 96px;
+    background:
+        linear-gradient(
+            to bottom,
+            currentColor,
+            transparent
+        );
+    opacity: 0.2;
+}
+
+.journey-opening-lead {
+    text-wrap: balance;
+}
+
+
+/* ---------------------------------------------------------
+   PATH BEHIND
+   --------------------------------------------------------- */
+
+.journey-past-grid {
+    align-items: stretch;
+}
+
+.journey-past-card {
+    position: relative;
+    overflow: hidden;
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        border-color 180ms ease;
+}
+
+.journey-past-card::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 70px;
+    height: 70px;
+    pointer-events: none;
+    background:
+        linear-gradient(
+            135deg,
+            transparent 48%,
+            rgba(255, 255, 255, 0.045)
+        );
+}
+
+.journey-past-card:hover,
+.journey-past-card:focus-within {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.12);
+}
+
+.journey-card-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+}
+
+.journey-past-card h3 {
+    text-wrap: balance;
+}
+
+
+/* ---------------------------------------------------------
+   DIRECTION
+   --------------------------------------------------------- */
+
+.journey-direction-grid {
+    position: relative;
+}
+
+.journey-direction-heading h2 {
+    text-wrap: balance;
+}
+
+.journey-direction-body {
+    position: relative;
+}
+
+.journey-quote {
+    position: relative;
+    overflow: hidden;
+}
+
+.journey-quote::before {
+    content: "“";
+    position: absolute;
+    top: -34px;
+    left: 10px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 150px;
+    line-height: 1;
+    opacity: 0.055;
+    pointer-events: none;
+}
+
+
+/* ---------------------------------------------------------
+   PILLARS
+   --------------------------------------------------------- */
+
+.journey-pillars-grid {
+    align-items: stretch;
+}
+
+.journey-pillar-card {
+    position: relative;
+    overflow: hidden;
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        border-color 180ms ease;
+}
+
+.journey-pillar-card:hover,
+.journey-pillar-card:focus-within {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.1);
+}
+
+.journey-pillar-card > span {
+    position: relative;
+    z-index: 1;
+}
+
+.journey-pillar-card h3 {
+    text-wrap: balance;
+}
+
+
+/* ---------------------------------------------------------
+   MILESTONE TIMELINE
+   --------------------------------------------------------- */
+
+.journey-timeline {
+    position: relative;
+}
+
+.journey-timeline::before {
+    opacity: 0.72;
+}
+
+.journey-timeline-item {
+    position: relative;
+}
+
+.journey-timeline-marker {
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.journey-timeline-item:hover .journey-timeline-marker {
+    transform: scale(1.08);
+}
+
+.journey-timeline-item.active .journey-timeline-marker {
+    box-shadow:
+        0 0 0 6px rgba(255, 255, 255, 0.06),
+        0 0 28px rgba(255, 255, 255, 0.08);
+}
+
+.journey-timeline-content {
+    transition:
+        transform 180ms ease,
+        opacity 180ms ease;
+}
+
+.journey-timeline-item:hover .journey-timeline-content {
+    transform: translateX(4px);
+}
+
+.journey-timeline-content h3 {
+    text-wrap: balance;
+}
+
+
+/* ---------------------------------------------------------
+   UNCERTAINTY
+   --------------------------------------------------------- */
+
+.journey-uncertainty .reading-shell {
+    position: relative;
+}
+
+.journey-uncertainty h2 {
+    text-wrap: balance;
+}
+
+.journey-uncertainty-quote {
+    position: relative;
+}
+
+.journey-uncertainty-quote::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -20px;
+    width: 2px;
+    background: currentColor;
+    opacity: 0.25;
+}
+
+
+/* ---------------------------------------------------------
+   PHILOSOPHY
+   --------------------------------------------------------- */
+
+.journey-philosophy-heading {
+    position: relative;
+}
+
+.journey-philosophy-heading h2 {
+    text-wrap: balance;
+}
+
+.journey-principle {
+    position: relative;
+    transition:
+        transform 180ms ease,
+        opacity 180ms ease;
+}
+
+.journey-principle:hover {
+    transform: translateX(4px);
+}
+
+.journey-principle > span {
+    font-variant-numeric: tabular-nums;
+}
+
+
+/* ---------------------------------------------------------
+   INVITATION
+   --------------------------------------------------------- */
+
+.journey-invitation {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+.journey-invitation-overlay {
+    position: relative;
+}
+
+.journey-invitation-overlay::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(
+            circle at 50% 36%,
+            rgba(255, 255, 255, 0.07),
+            transparent 42%
+        );
+}
+
+.journey-invitation .reading-shell {
+    position: relative;
+    z-index: 1;
+}
+
+.journey-invitation h2 {
+    text-wrap: balance;
+}
+
+.journey-invitation-quote {
+    position: relative;
+}
+
+
+/* ---------------------------------------------------------
+   FOLLOW THE RIVER
+   --------------------------------------------------------- */
+
+.journey-follow-grid {
+    align-items: stretch;
+}
+
+.journey-follow-card {
+    position: relative;
+    overflow: hidden;
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        border-color 180ms ease;
+}
+
+.journey-follow-card:hover,
+.journey-follow-card:focus-within {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.11);
+}
+
+.journey-follow-featured::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            currentColor,
+            transparent
+        );
+    opacity: 0.35;
+}
+
+.journey-follow-card h3 {
+    text-wrap: balance;
+}
+
+.journey-text-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.journey-text-link span {
+    display: inline-block;
+    transition: transform 160ms ease;
+}
+
+.journey-text-link:hover span,
+.journey-text-link:focus-visible span {
+    transform: translateX(4px);
+}
+
+
+/* ---------------------------------------------------------
+   FINAL BEND
+   --------------------------------------------------------- */
+
+.journey-final {
+    position: relative;
+    overflow: hidden;
+}
+
+.journey-final .reading-shell {
+    position: relative;
+}
+
+.journey-final h2 {
+    text-wrap: balance;
+}
+
+.journey-final-quote {
+    position: relative;
+}
+
+.journey-final-quote::after {
+    content: "";
+    display: block;
+    width: 72px;
+    height: 1px;
+    margin-top: 28px;
+    background: currentColor;
+    opacity: 0.28;
+}
+
+
+/* ---------------------------------------------------------
+   RESPONSIVE REFINEMENT
+   --------------------------------------------------------- */
+
+@media (max-width: 900px) {
+
+    .journey-opening .reading-shell::before {
+        display: none;
+    }
+
+    .journey-past-card:hover,
+    .journey-past-card:focus-within,
+    .journey-pillar-card:hover,
+    .journey-pillar-card:focus-within,
+    .journey-follow-card:hover,
+    .journey-follow-card:focus-within {
+        transform: translateY(-2px);
+    }
+
+    .journey-timeline-item:hover .journey-timeline-content,
+    .journey-principle:hover {
+        transform: none;
+    }
+
+}
+
+
+@media (max-width: 640px) {
+
+    .journey-hero h1,
+    .journey-direction-heading h2,
+    .journey-philosophy-heading h2,
+    .journey-invitation h2,
+    .journey-final h2 {
+        text-wrap: pretty;
+    }
+
+    .journey-uncertainty-quote::before {
+        left: -12px;
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   ACCESSIBILITY
+   --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .journey-past-card,
+    .journey-pillar-card,
+    .journey-follow-card,
+    .journey-timeline-marker,
+    .journey-timeline-content,
+    .journey-principle,
+    .journey-text-link span {
+        transition: none;
+    }
+
+    .journey-past-card:hover,
+    .journey-past-card:focus-within,
+    .journey-pillar-card:hover,
+    .journey-pillar-card:focus-within,
+    .journey-follow-card:hover,
+    .journey-follow-card:focus-within,
+    .journey-timeline-item:hover .journey-timeline-marker,
+    .journey-timeline-item:hover .journey-timeline-content,
+    .journey-principle:hover,
+    .journey-text-link:hover span,
+    .journey-text-link:focus-visible span {
+        transform: none;
+    }
+
+}
