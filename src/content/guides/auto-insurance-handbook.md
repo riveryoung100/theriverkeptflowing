@@ -306,7 +306,7 @@ readingMinutes: 35
       </div></section>
 
       <nav class="handbook-pagination" aria-label="River Guide navigation">
-        <a href="/content/guides/insurance/homeowners-insurance-handbook/"><span>Previous River Guide</span><strong>Homeowners Insurance Handbook</strong></a>
+        <a href="/library/guides/homeowners-insurance-handbook/"><span>Previous River Guide</span><strong>Homeowners Insurance Handbook</strong></a>
         <a href="/river-guides/"><span>Return to</span><strong>River Guides Library</strong></a>
       </nav>
     </article>
