@@ -34,7 +34,7 @@ readingMinutes: 25
 <section class="hero">
       <div class="hero-inner">
         <p class="eyebrow">River Guide No. 005</p>
-        <h1>The Umbrella Insurance Handbook</h1>
+
         <p class="subtitle">Understanding Your Extra Layer of Liability Protection</p>
         <p class="intro">
           A practical, plain-English guide to excess liability, bodily injury,

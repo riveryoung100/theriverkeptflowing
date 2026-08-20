@@ -32,7 +32,7 @@ readingMinutes: 35
 <header class="handbook-cover auto-handbook-cover">
     <div class="handbook-cover__inner">
       <p class="publication-label">River Guides · Publication No. 002</p>
-      <h1>The Auto Insurance Handbook</h1>
+
       <p class="handbook-subtitle">Understanding Your Policy, Protecting Your Family, and Buying Coverage with Confidence</p>
       <p class="handbook-deck">A practical guide to understanding what every major auto coverage does, comparing policies correctly, and protecting yourself before the day you need it.</p>
       <div class="publication-meta" aria-label="Publication details">

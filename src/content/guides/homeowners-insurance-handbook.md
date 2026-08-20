@@ -33,7 +33,7 @@ readingMinutes: 35
 <header class="handbook-cover">
     <div class="handbook-cover__inner">
       <p class="publication-label">River Guides · Publication No. 001</p>
-      <h1>The Homeowners Insurance Handbook</h1>
+
       <p class="handbook-subtitle">Everything You Need to Understand Before You Buy a Policy</p>
       <p class="handbook-deck">
         A clear, practical guide to protecting your home, your belongings,

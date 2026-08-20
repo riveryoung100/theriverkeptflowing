@@ -31,7 +31,7 @@ readingMinutes: 35
 <header class="handbook-cover life-handbook-cover">
 <div class="handbook-cover__inner">
 <p class="publication-label">River Guides · Publication No. 004</p>
-<h1>The Life Insurance Handbook</h1>
+
 <p class="handbook-subtitle">Understanding Protection Before the People You Love Ever Need It</p>
 <p class="handbook-deck">A complete, practical guide to why life insurance exists, how policies work, how to compare coverage, and how to leave behind preparation instead of confusion.</p>
 <div class="publication-meta"><span>By River Young</span><span>Version 1.0</span><span>Published July 2026</span><span>75–90 minute read</span></div>
