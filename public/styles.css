@@ -12484,3 +12484,668 @@ body:has(main[data-pagefind-body]) .topic-index {
     }
 
 }
+
+
+/* =========================================================
+   WEBSITE PRODUCTION 007: RIVER GUIDES DISCOVERY EXPERIENCE
+   ========================================================= */
+
+/*
+   River Guides is the curated practical publishing hub.
+
+   This production layer intentionally preserves the existing
+   River Guides document structure and the separate collection-
+   driven /library/guides/ archive.
+
+   The goal is stronger hierarchy, clearer discovery, better
+   publication scanning, and a more intentional reading journey.
+*/
+
+
+/* ---------------------------------------------------------
+   HERO
+   --------------------------------------------------------- */
+
+.guides-hero {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.guides-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background:
+        radial-gradient(
+            circle at 78% 18%,
+            rgba(255, 255, 255, 0.08),
+            transparent 32%
+        ),
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.025),
+            transparent 55%
+        );
+    pointer-events: none;
+}
+
+.guides-hero::after {
+    content: "";
+    position: absolute;
+    right: clamp(24px, 7vw, 120px);
+    bottom: -110px;
+    width: clamp(220px, 30vw, 430px);
+    aspect-ratio: 1;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.guides-hero-content {
+    position: relative;
+    max-width: 850px;
+}
+
+.guides-hero h1 {
+    max-width: 760px;
+    text-wrap: balance;
+}
+
+.guides-hero-lead {
+    max-width: 720px;
+}
+
+.guides-hero-actions {
+    align-items: center;
+}
+
+
+/* ---------------------------------------------------------
+   OPENING STATEMENT
+   --------------------------------------------------------- */
+
+.guides-opening {
+    position: relative;
+}
+
+.guides-opening .reading-shell {
+    position: relative;
+}
+
+.guides-opening .reading-shell::before {
+    content: "";
+    display: block;
+    width: 64px;
+    height: 2px;
+    margin-bottom: 32px;
+    background: currentColor;
+    opacity: 0.22;
+}
+
+.guides-opening h2 {
+    max-width: 780px;
+    text-wrap: balance;
+}
+
+.guides-opening-lead {
+    font-size: clamp(1.15rem, 2vw, 1.42rem);
+    line-height: 1.65;
+}
+
+
+/* ---------------------------------------------------------
+   FEATURED GUIDE
+   --------------------------------------------------------- */
+
+.guides-featured {
+    position: relative;
+}
+
+.guides-featured-heading h2 {
+    text-wrap: balance;
+}
+
+.featured-guide-card {
+    position: relative;
+    overflow: hidden;
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        border-color 180ms ease;
+}
+
+.featured-guide-card:hover {
+    transform: translateY(-3px);
+}
+
+.featured-guide-card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 120px;
+    height: 120px;
+    background:
+        linear-gradient(
+            135deg,
+            transparent 49%,
+            rgba(255, 255, 255, 0.045) 50%
+        );
+    pointer-events: none;
+}
+
+.featured-guide-meta {
+    position: relative;
+    z-index: 1;
+}
+
+.featured-guide-body {
+    position: relative;
+    z-index: 1;
+}
+
+.featured-guide-body h3 {
+    text-wrap: balance;
+}
+
+
+/* ---------------------------------------------------------
+   GUIDE LIBRARY / SUBJECT DISCOVERY
+   --------------------------------------------------------- */
+
+.guides-library {
+    position: relative;
+}
+
+.guides-section-heading {
+    max-width: 760px;
+}
+
+.guides-section-heading h2 {
+    text-wrap: balance;
+}
+
+.guides-library-grid {
+    align-items: stretch;
+}
+
+.guide-category-card {
+    position: relative;
+    overflow: hidden;
+    min-height: 100%;
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        border-color 180ms ease;
+}
+
+.guide-category-card:hover {
+    transform: translateY(-3px);
+}
+
+.guide-category-number {
+    font-variant-numeric: tabular-nums;
+}
+
+.guide-category-card h3 {
+    text-wrap: balance;
+}
+
+.guide-category-topics {
+    margin-top: auto;
+}
+
+.guide-category-topics span {
+    transition:
+        transform 160ms ease,
+        background-color 160ms ease;
+}
+
+.guide-category-card:hover .guide-category-topics span {
+    transform: translateY(-1px);
+}
+
+.guide-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.guide-link:not(.guide-link-disabled)::after {
+    content: "→";
+    transition: transform 160ms ease;
+}
+
+.guide-link:not(.guide-link-disabled):hover::after,
+.guide-link:not(.guide-link-disabled):focus-visible::after {
+    transform: translateX(4px);
+}
+
+
+/* ---------------------------------------------------------
+   PUBLISHED GUIDES
+   --------------------------------------------------------- */
+
+.published-guides {
+    position: relative;
+}
+
+.published-guides-grid {
+    align-items: stretch;
+}
+
+.published-guide-card {
+    position: relative;
+    overflow: hidden;
+    min-height: 100%;
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        border-color 180ms ease;
+}
+
+.published-guide-card:hover {
+    transform: translateY(-3px);
+}
+
+.publication-header {
+    position: relative;
+}
+
+.publication-number {
+    font-variant-numeric: tabular-nums;
+}
+
+.publication-description {
+    text-wrap: pretty;
+}
+
+
+/* ---------------------------------------------------------
+   PUBLICATION LINKS
+   --------------------------------------------------------- */
+
+.guide-publications {
+    display: grid;
+    gap: 12px;
+}
+
+.guide-publication-link {
+    position: relative;
+    overflow: hidden;
+    transition:
+        transform 170ms ease,
+        border-color 170ms ease,
+        background-color 170ms ease,
+        box-shadow 170ms ease;
+}
+
+.guide-publication-link:hover,
+.guide-publication-link:focus-visible {
+    transform: translateY(-2px);
+}
+
+.guide-publication-link__number {
+    font-variant-numeric: tabular-nums;
+}
+
+.guide-publication-link__title {
+    text-wrap: balance;
+}
+
+.guide-publication-link__arrow {
+    transition: transform 170ms ease;
+}
+
+.guide-publication-link:hover .guide-publication-link__arrow,
+.guide-publication-link:focus-visible .guide-publication-link__arrow {
+    transform: translateX(4px);
+}
+
+
+/* ---------------------------------------------------------
+   RIVER GUIDE STANDARD
+   --------------------------------------------------------- */
+
+.guides-standard {
+    position: relative;
+}
+
+.guides-standard-heading h2 {
+    text-wrap: balance;
+}
+
+.guides-standard-list {
+    counter-reset: river-guide-standard;
+}
+
+.guides-standard-item {
+    position: relative;
+    transition:
+        transform 170ms ease,
+        border-color 170ms ease;
+}
+
+.guides-standard-item:hover {
+    transform: translateX(3px);
+}
+
+.guides-standard-item h3 {
+    text-wrap: balance;
+}
+
+
+/* ---------------------------------------------------------
+   GUIDE FORMATS
+   --------------------------------------------------------- */
+
+.guides-formats {
+    position: relative;
+}
+
+.guides-formats-heading {
+    max-width: 760px;
+}
+
+.guides-formats-heading h2 {
+    text-wrap: balance;
+}
+
+.guides-formats-grid {
+    align-items: stretch;
+}
+
+.guide-format-card {
+    min-height: 100%;
+    position: relative;
+    transition:
+        transform 170ms ease,
+        box-shadow 170ms ease;
+}
+
+.guide-format-card:hover {
+    transform: translateY(-3px);
+}
+
+.guide-format-card h3 {
+    text-wrap: balance;
+}
+
+
+/* ---------------------------------------------------------
+   RECOMMENDATIONS / PHILOSOPHY
+   --------------------------------------------------------- */
+
+.guides-recommendations,
+.guides-philosophy {
+    position: relative;
+    overflow: hidden;
+}
+
+.guides-recommendations .reading-shell,
+.guides-philosophy .reading-shell {
+    position: relative;
+    z-index: 1;
+}
+
+.guides-recommendations h2,
+.guides-philosophy h2 {
+    text-wrap: balance;
+}
+
+.guides-recommendations-quote,
+.guides-philosophy-quote {
+    position: relative;
+}
+
+.guides-recommendations-quote::before,
+.guides-philosophy-quote::before {
+    content: "“";
+    position: absolute;
+    top: -0.28em;
+    left: -0.06em;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(4rem, 8vw, 7rem);
+    line-height: 1;
+    opacity: 0.08;
+    pointer-events: none;
+}
+
+
+/* ---------------------------------------------------------
+   WORKBENCH
+   --------------------------------------------------------- */
+
+.guides-workbench {
+    position: relative;
+}
+
+.guides-workbench-heading {
+    max-width: 760px;
+}
+
+.guides-workbench-heading h2 {
+    text-wrap: balance;
+}
+
+.guides-workbench-grid {
+    align-items: stretch;
+}
+
+.guide-workbench-card {
+    position: relative;
+    min-height: 100%;
+    overflow: hidden;
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        border-color 180ms ease;
+}
+
+.guide-workbench-card:hover {
+    transform: translateY(-3px);
+}
+
+.guide-workbench-status {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+}
+
+.guide-workbench-status::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    margin-right: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.65;
+}
+
+
+/* ---------------------------------------------------------
+   CONTINUE EXPLORING
+   --------------------------------------------------------- */
+
+.guides-navigation {
+    position: relative;
+}
+
+.guides-navigation-grid {
+    align-items: stretch;
+}
+
+.guides-navigation-card {
+    position: relative;
+    min-height: 100%;
+    overflow: hidden;
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        border-color 180ms ease;
+}
+
+.guides-navigation-card:hover {
+    transform: translateY(-3px);
+}
+
+.guides-navigation-card h3 {
+    text-wrap: balance;
+}
+
+.guides-navigation-featured::after {
+    content: "";
+    position: absolute;
+    right: -65px;
+    bottom: -65px;
+    width: 150px;
+    height: 150px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+
+/* ---------------------------------------------------------
+   FINAL STATEMENT
+   --------------------------------------------------------- */
+
+.guides-final {
+    position: relative;
+    overflow: hidden;
+}
+
+.guides-final .reading-shell {
+    position: relative;
+    z-index: 1;
+}
+
+.guides-final h2 {
+    max-width: 780px;
+    text-wrap: balance;
+}
+
+.guides-final-quote {
+    position: relative;
+    max-width: 720px;
+}
+
+.guides-final-quote::before {
+    content: "";
+    display: block;
+    width: 54px;
+    height: 2px;
+    margin-bottom: 24px;
+    background: currentColor;
+    opacity: 0.35;
+}
+
+
+/* ---------------------------------------------------------
+   FOCUS / ACCESSIBILITY
+   --------------------------------------------------------- */
+
+.guides-hero a:focus-visible,
+.guides-featured a:focus-visible,
+.guides-library a:focus-visible,
+.published-guides a:focus-visible,
+.guides-standard a:focus-visible,
+.guides-formats a:focus-visible,
+.guides-workbench a:focus-visible,
+.guides-navigation a:focus-visible,
+.guides-final a:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+}
+
+
+/* ---------------------------------------------------------
+   RESPONSIVE EXPERIENCE
+   --------------------------------------------------------- */
+
+@media (max-width: 900px) {
+
+    .guides-hero::after {
+        right: -90px;
+        bottom: -120px;
+    }
+
+    .featured-guide-card:hover,
+    .guide-category-card:hover,
+    .published-guide-card:hover,
+    .guide-format-card:hover,
+    .guide-workbench-card:hover,
+    .guides-navigation-card:hover {
+        transform: none;
+    }
+
+    .guides-standard-item:hover {
+        transform: none;
+    }
+
+}
+
+
+@media (max-width: 640px) {
+
+    .guides-opening .reading-shell::before {
+        margin-bottom: 24px;
+    }
+
+    .guides-hero-actions {
+        align-items: stretch;
+    }
+
+    .guides-hero-actions .button {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .guides-section-heading,
+    .guides-formats-heading,
+    .guides-workbench-heading {
+        max-width: none;
+    }
+
+    .guides-recommendations-quote::before,
+    .guides-philosophy-quote::before {
+        font-size: 4.5rem;
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   REDUCED MOTION
+   --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .featured-guide-card,
+    .guide-category-card,
+    .published-guide-card,
+    .guide-publication-link,
+    .guide-publication-link__arrow,
+    .guides-standard-item,
+    .guide-format-card,
+    .guide-workbench-card,
+    .guides-navigation-card,
+    .guide-link::after {
+        transition: none;
+    }
+
+    .featured-guide-card:hover,
+    .guide-category-card:hover,
+    .published-guide-card:hover,
+    .guide-publication-link:hover,
+    .guides-standard-item:hover,
+    .guide-format-card:hover,
+    .guide-workbench-card:hover,
+    .guides-navigation-card:hover {
+        transform: none;
+    }
+
+}
