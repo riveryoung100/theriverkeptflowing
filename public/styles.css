@@ -16372,3 +16372,571 @@ body:has(main[data-pagefind-body]) .topic-index {
         width: 100%;
     }
 }
+
+/* WEBSITE PRODUCTION 018: THE SOURCE EXPERIENCE */
+
+/*
+    The Source is the long-form autobiography of The River Kept Flowing.
+
+    Production 018 treats the page as an editorial reading experience rather
+    than a conventional marketing page. The visual system creates a clear
+    transition from cinematic opening, into intimate reading, through long
+    narrative chapters, quotations, unfinished chapters, and the downstream
+    continuation of the river.
+
+    Existing Source markup remains authoritative.
+*/
+
+
+/* ============================================================
+   SOURCE — CINEMATIC OPENING
+   ============================================================ */
+
+.source-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: clamp(38rem, 82vh, 58rem);
+    display: flex;
+    align-items: flex-end;
+    padding-top: clamp(9rem, 16vw, 14rem);
+    padding-bottom: clamp(5rem, 10vw, 8rem);
+}
+
+.source-hero::before {
+    content: "";
+    position: absolute;
+    z-index: -2;
+    inset: 0;
+    background:
+        radial-gradient(
+            circle at 74% 26%,
+            rgba(255, 255, 255, 0.08),
+            transparent 34%
+        ),
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.025),
+            transparent 45%
+        );
+    pointer-events: none;
+}
+
+.source-hero::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.22),
+        transparent
+    );
+}
+
+.source-hero-content {
+    width: min(100% - 2rem, 78rem);
+    margin-inline: auto;
+}
+
+.source-hero .eyebrow {
+    margin-bottom: 1.35rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.source-hero h1 {
+    max-width: 13ch;
+    margin: 0;
+    font-size: clamp(3.4rem, 8vw, 7.75rem);
+    line-height: 0.94;
+    letter-spacing: -0.055em;
+    text-wrap: balance;
+}
+
+.source-hero-lead {
+    max-width: 42rem;
+    margin-top: clamp(1.75rem, 4vw, 2.75rem);
+    font-size: clamp(1.12rem, 2vw, 1.4rem);
+    line-height: 1.75;
+}
+
+.source-hero-button {
+    margin-top: 2rem;
+}
+
+
+/* ============================================================
+   SOURCE — OPENING THRESHOLD
+   ============================================================ */
+
+.source-introduction {
+    position: relative;
+    padding-top: clamp(6rem, 11vw, 10rem);
+    padding-bottom: clamp(6rem, 11vw, 10rem);
+}
+
+.source-introduction::before {
+    content: "";
+    display: block;
+    width: clamp(3.5rem, 8vw, 6rem);
+    height: 1px;
+    margin-bottom: clamp(2rem, 5vw, 3.5rem);
+    background: currentColor;
+    opacity: 0.25;
+}
+
+.source-introduction h2 {
+    max-width: 16ch;
+    margin-bottom: clamp(2rem, 5vw, 3.25rem);
+    font-size: clamp(2.5rem, 5vw, 4.8rem);
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+}
+
+.source-introduction p {
+    max-width: 46rem;
+    font-size: clamp(1.05rem, 1.7vw, 1.22rem);
+    line-height: 1.9;
+}
+
+.source-opening {
+    max-width: 40rem;
+    font-size: clamp(1.28rem, 2.4vw, 1.7rem) !important;
+    line-height: 1.72 !important;
+}
+
+
+/* ============================================================
+   SOURCE — CHAPTER ARCHITECTURE
+   ============================================================ */
+
+.source-chapter {
+    position: relative;
+    padding-top: clamp(6.5rem, 12vw, 11rem);
+    padding-bottom: clamp(7rem, 13vw, 12rem);
+}
+
+.source-chapter + .source-chapter {
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.chapter-shell {
+    width: min(100% - 2rem, 76rem);
+    margin-inline: auto;
+}
+
+.chapter-header {
+    display: grid;
+    grid-template-columns: minmax(4rem, 0.22fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 5vw, 4.5rem);
+    align-items: start;
+    margin-bottom: clamp(4rem, 9vw, 7.5rem);
+}
+
+.chapter-number {
+    display: block;
+    padding-top: 0.55rem;
+    font-size: clamp(0.75rem, 1vw, 0.9rem);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    opacity: 0.52;
+}
+
+.chapter-header h2 {
+    max-width: 15ch;
+    margin: 0;
+    font-size: clamp(2.75rem, 6vw, 5.75rem);
+    line-height: 0.98;
+    letter-spacing: -0.05em;
+    text-wrap: balance;
+}
+
+.chapter-subtitle {
+    max-width: 39rem;
+    margin-top: 1.6rem;
+    font-size: clamp(1.05rem, 1.8vw, 1.28rem);
+    line-height: 1.75;
+    opacity: 0.78;
+}
+
+.chapter-body {
+    width: min(100%, 45rem);
+    margin-inline: auto;
+}
+
+.chapter-body > p {
+    margin-top: 0;
+    margin-bottom: 1.65rem;
+    font-size: clamp(1.04rem, 1.35vw, 1.16rem);
+    line-height: 1.9;
+}
+
+.chapter-body > h3 {
+    position: relative;
+    margin-top: clamp(4.75rem, 9vw, 7rem);
+    margin-bottom: 1.65rem;
+    padding-top: 1.6rem;
+    font-size: clamp(1.7rem, 3vw, 2.55rem);
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+}
+
+.chapter-body > h3::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3.25rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.3;
+}
+
+.chapter-body > h3 + p {
+    font-size: clamp(1.08rem, 1.45vw, 1.2rem);
+}
+
+
+/* ============================================================
+   SOURCE — PULL QUOTES
+   ============================================================ */
+
+.source-quote {
+    position: relative;
+    width: min(100%, 52rem);
+    margin:
+        clamp(4rem, 9vw, 7rem)
+        auto;
+    padding:
+        clamp(2.25rem, 5vw, 4rem)
+        clamp(1.75rem, 5vw, 4rem);
+    border-top: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+    border-left: 0;
+    opacity: 1;
+    font-size: clamp(1.55rem, 3vw, 2.45rem);
+    line-height: 1.42;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+}
+
+.source-quote::before {
+    content: "“";
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: clamp(3.5rem, 8vw, 6rem);
+    line-height: 0.7;
+    opacity: 0.2;
+}
+
+
+/* ============================================================
+   SOURCE — NARRATIVE TRANSITIONS
+   ============================================================ */
+
+.chapter-transition {
+    width: min(100%, 50rem);
+    margin:
+        clamp(5rem, 10vw, 8rem)
+        auto 0;
+    padding-top: clamp(2rem, 5vw, 3.5rem);
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.chapter-transition p {
+    max-width: 40rem;
+    font-size: clamp(1.15rem, 2vw, 1.4rem);
+    line-height: 1.75;
+}
+
+
+/* ============================================================
+   SOURCE — UNFINISHED STORY
+   ============================================================ */
+
+.story-continues {
+    position: relative;
+    overflow: hidden;
+    padding-top: clamp(7rem, 13vw, 11rem);
+    padding-bottom: clamp(7rem, 13vw, 11rem);
+}
+
+.story-continues::before {
+    content: "";
+    position: absolute;
+    width: min(48rem, 80vw);
+    aspect-ratio: 1;
+    right: min(-24rem, -20vw);
+    top: -16rem;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    opacity: 0.045;
+    pointer-events: none;
+}
+
+.story-continues-heading {
+    max-width: 47rem;
+    margin-bottom: clamp(4rem, 8vw, 6rem);
+}
+
+.story-continues-heading .section-label {
+    margin-bottom: 1.25rem;
+}
+
+.story-continues-heading h2 {
+    margin: 0;
+    font-size: clamp(2.8rem, 6vw, 5.4rem);
+    line-height: 0.98;
+    letter-spacing: -0.05em;
+    text-wrap: balance;
+}
+
+.story-continues-heading > p:last-child {
+    max-width: 39rem;
+    margin-top: 1.75rem;
+    font-size: clamp(1.05rem, 1.7vw, 1.22rem);
+    line-height: 1.8;
+}
+
+.future-chapters {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid rgba(0, 0, 0, 0.13);
+}
+
+.future-chapter {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: clamp(1.25rem, 3vw, 2.25rem);
+    min-height: 15rem;
+    padding:
+        clamp(2rem, 4vw, 3.25rem)
+        clamp(1.5rem, 4vw, 3rem);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.13);
+}
+
+.future-chapter:nth-child(odd) {
+    border-right: 1px solid rgba(0, 0, 0, 0.13);
+}
+
+.future-chapter > span {
+    padding-top: 0.25rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    opacity: 0.48;
+}
+
+.future-chapter h3 {
+    margin: 0;
+    max-width: 19ch;
+    font-size: clamp(1.35rem, 2.2vw, 1.85rem);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+}
+
+.future-chapter p {
+    max-width: 31rem;
+    margin-top: 1rem;
+    margin-bottom: 0;
+    line-height: 1.75;
+    opacity: 0.72;
+}
+
+
+/* ============================================================
+   SOURCE — DOWNSTREAM NAVIGATION
+   ============================================================ */
+
+.source-navigation {
+    position: relative;
+    overflow: hidden;
+    padding-top: clamp(7rem, 13vw, 11rem);
+    padding-bottom: clamp(7rem, 13vw, 11rem);
+}
+
+.source-navigation::after {
+    content: "→";
+    position: absolute;
+    right: clamp(1rem, 6vw, 6rem);
+    bottom: clamp(-1rem, -2vw, -0.25rem);
+    font-size: clamp(8rem, 22vw, 20rem);
+    line-height: 0.75;
+    opacity: 0.035;
+    pointer-events: none;
+}
+
+.source-navigation .reading-shell {
+    position: relative;
+    z-index: 1;
+}
+
+.source-navigation .section-label {
+    margin-bottom: 1.25rem;
+}
+
+.source-navigation h2 {
+    max-width: 16ch;
+    margin: 0;
+    font-size: clamp(2.6rem, 5.5vw, 5rem);
+    line-height: 1;
+    letter-spacing: -0.045em;
+    text-wrap: balance;
+}
+
+.source-navigation p {
+    max-width: 40rem;
+    margin-top: 1.75rem;
+    font-size: clamp(1.06rem, 1.8vw, 1.25rem);
+    line-height: 1.8;
+}
+
+.source-navigation .page-actions {
+    margin-top: clamp(2.25rem, 5vw, 3.5rem);
+}
+
+
+/* ============================================================
+   SOURCE — READING RHYTHM
+   ============================================================ */
+
+.source-chapter-light .chapter-body,
+.source-chapter-warm .chapter-body {
+    position: relative;
+}
+
+.source-chapter-light .chapter-body::before,
+.source-chapter-warm .chapter-body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: clamp(-4rem, -7vw, -2rem);
+    width: 1px;
+    height: 100%;
+    background: currentColor;
+    opacity: 0.055;
+    pointer-events: none;
+}
+
+
+/* ============================================================
+   SOURCE — RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 760px) {
+
+    .source-hero {
+        min-height: 42rem;
+        padding-top: 8.5rem;
+        padding-bottom: 4.5rem;
+    }
+
+    .source-hero h1 {
+        max-width: 10ch;
+    }
+
+    .source-introduction {
+        padding-top: 5rem;
+        padding-bottom: 5.5rem;
+    }
+
+    .source-chapter {
+        padding-top: 5.5rem;
+        padding-bottom: 6rem;
+    }
+
+    .chapter-header {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-bottom: 3.5rem;
+    }
+
+    .chapter-number {
+        padding-top: 0;
+    }
+
+    .chapter-header h2 {
+        max-width: 12ch;
+    }
+
+    .chapter-body > h3 {
+        margin-top: 4.25rem;
+    }
+
+    .source-quote {
+        margin-top: 3.75rem;
+        margin-bottom: 3.75rem;
+        padding-inline: 0;
+    }
+
+    .future-chapters {
+        grid-template-columns: 1fr;
+    }
+
+    .future-chapter {
+        min-height: 0;
+        padding-inline: 0;
+    }
+
+    .future-chapter:nth-child(odd) {
+        border-right: 0;
+    }
+
+    .story-continues,
+    .source-navigation {
+        padding-top: 5.5rem;
+        padding-bottom: 6rem;
+    }
+
+    .source-chapter-light .chapter-body::before,
+    .source-chapter-warm .chapter-body::before {
+        display: none;
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    .source-hero h1 {
+        font-size: clamp(3rem, 14vw, 4.25rem);
+    }
+
+    .source-hero-lead {
+        font-size: 1.05rem;
+    }
+
+    .source-introduction h2,
+    .chapter-header h2,
+    .story-continues-heading h2,
+    .source-navigation h2 {
+        letter-spacing: -0.035em;
+    }
+
+    .future-chapter {
+        grid-template-columns: 2.25rem minmax(0, 1fr);
+        gap: 0.75rem;
+    }
+}
+
+
+/* ============================================================
+   SOURCE — ACCESSIBILITY / MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .source-hero *,
+    .source-introduction *,
+    .source-chapter *,
+    .story-continues *,
+    .source-navigation * {
+        scroll-behavior: auto;
+    }
+}
