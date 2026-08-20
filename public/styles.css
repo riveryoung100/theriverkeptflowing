@@ -14403,3 +14403,265 @@ body:has(main[data-pagefind-body]) .topic-index {
     }
 
 }
+
+/* WEBSITE PRODUCTION 011: SHOP EXPERIENCE */
+
+/* ---------------------------------------------------------
+   Marketplace atmosphere
+   --------------------------------------------------------- */
+
+.library-page .library-hero {
+    position: relative;
+}
+
+.library-page .product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    align-items: stretch;
+}
+
+
+/* ---------------------------------------------------------
+   Product / marketplace cards
+   --------------------------------------------------------- */
+
+.library-page .product-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 340px;
+    padding: 34px 32px 30px;
+    overflow: hidden;
+    border: 1px solid rgba(28, 40, 32, 0.12);
+    border-radius: 3px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.92),
+            rgba(247, 244, 236, 0.78)
+        );
+    box-shadow:
+        0 18px 48px rgba(24, 35, 28, 0.055);
+    transition:
+        transform 180ms ease,
+        border-color 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.library-page .product-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(77, 105, 82, 0.92),
+            rgba(160, 133, 84, 0.58)
+        );
+    transform: scaleX(0.32);
+    transform-origin: left center;
+    transition:
+        transform 220ms ease;
+}
+
+.library-page .product-card::after {
+    content: "";
+    position: absolute;
+    right: -72px;
+    bottom: -92px;
+    width: 190px;
+    height: 190px;
+    border-radius: 50%;
+    background:
+        radial-gradient(
+            circle,
+            rgba(135, 154, 123, 0.10) 0%,
+            rgba(135, 154, 123, 0) 70%
+        );
+    pointer-events: none;
+}
+
+.library-page .product-card:hover,
+.library-page .product-card:focus-within {
+    transform: translateY(-4px);
+    border-color: rgba(77, 105, 82, 0.24);
+    box-shadow:
+        0 24px 58px rgba(24, 35, 28, 0.09);
+}
+
+.library-page .product-card:hover::before,
+.library-page .product-card:focus-within::before {
+    transform: scaleX(1);
+}
+
+
+/* ---------------------------------------------------------
+   Marketplace taxonomy
+   --------------------------------------------------------- */
+
+.library-page .product-card .content-type {
+    position: relative;
+    z-index: 1;
+    margin: 0 0 22px;
+    color: rgba(56, 77, 62, 0.72);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+
+/* ---------------------------------------------------------
+   Product typography
+   --------------------------------------------------------- */
+
+.library-page .product-card h3 {
+    position: relative;
+    z-index: 1;
+    max-width: 15ch;
+    margin: 0 0 18px;
+    color: inherit;
+    font-size: clamp(25px, 2.2vw, 34px);
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+}
+
+.library-page .product-card > p:not(.content-type) {
+    position: relative;
+    z-index: 1;
+    max-width: 34rem;
+    margin: 0;
+    color: rgba(32, 42, 35, 0.72);
+    font-size: 15px;
+    line-height: 1.72;
+}
+
+
+/* ---------------------------------------------------------
+   Marketplace action
+   --------------------------------------------------------- */
+
+.library-page .product-card .card-link {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    margin-top: auto;
+    padding-top: 30px;
+    color: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: 0.045em;
+    text-decoration: none;
+    transition:
+        transform 160ms ease,
+        opacity 160ms ease;
+}
+
+.library-page .product-card .card-link:hover,
+.library-page .product-card .card-link:focus-visible {
+    transform: translateX(4px);
+    opacity: 0.72;
+}
+
+
+/* ---------------------------------------------------------
+   Individual marketplace character
+   --------------------------------------------------------- */
+
+.library-page .product-card:nth-child(1) {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(248, 246, 238, 0.98),
+            rgba(239, 236, 224, 0.82)
+        );
+}
+
+.library-page .product-card:nth-child(2) {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(244, 247, 242, 0.98),
+            rgba(232, 239, 230, 0.78)
+        );
+}
+
+.library-page .product-card:nth-child(3) {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(248, 246, 241, 0.98),
+            rgba(241, 237, 228, 0.82)
+        );
+}
+
+
+/* ---------------------------------------------------------
+   Responsive marketplace
+   --------------------------------------------------------- */
+
+@media (max-width: 980px) {
+
+    .library-page .product-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .library-page .product-card:last-child {
+        grid-column: 1 / -1;
+        min-height: 280px;
+    }
+
+}
+
+
+@media (max-width: 680px) {
+
+    .library-page .product-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .library-page .product-card,
+    .library-page .product-card:last-child {
+        grid-column: auto;
+        min-height: 300px;
+        padding: 28px 24px 26px;
+    }
+
+    .library-page .product-card h3 {
+        max-width: 18ch;
+        font-size: clamp(25px, 8vw, 32px);
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   Reduced motion
+   --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .library-page .product-card,
+    .library-page .product-card::before,
+    .library-page .product-card .card-link {
+        transition: none;
+    }
+
+    .library-page .product-card:hover,
+    .library-page .product-card:focus-within,
+    .library-page .product-card .card-link:hover,
+    .library-page .product-card .card-link:focus-visible {
+        transform: none;
+    }
+
+}
