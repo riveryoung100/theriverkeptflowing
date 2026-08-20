@@ -1,4 +1,4 @@
-/* =========================================
+﻿/* =========================================
 THE RIVER KEPT FLOWING
 HOME PAGE DESIGN SYSTEM
 ========================================= */
@@ -10424,6 +10424,76 @@ HOMEPAGE ECOSYSTEM
         align-items: flex-start;
         flex-direction: column;
         padding: 28px;
+    }
+
+}
+/* =========================================================
+   WEBSITE PRODUCTION 001: PRIMARY NAVIGATION EXPERIENCE
+   ========================================================= */
+
+.navbar {
+    gap: 24px;
+}
+
+.navbar .logo {
+    flex: 0 0 auto;
+}
+
+.nav-links {
+    flex: 1 1 auto;
+    justify-content: center;
+}
+
+.nav-utilities {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 14px;
+}
+
+.nav-utility-link {
+    color: inherit;
+    font-size: 13px;
+    line-height: 1;
+    text-decoration: none;
+    opacity: 0.72;
+    transition:
+        opacity 160ms ease,
+        transform 160ms ease;
+}
+
+.nav-utility-link:hover,
+.nav-utility-link:focus-visible {
+    opacity: 1;
+    transform: translateY(-1px);
+}
+
+.nav-utilities .river-search {
+    margin-left: 4px;
+}
+
+
+@media (max-width: 1100px) {
+
+    .nav-utility-link {
+        display: none;
+    }
+
+    .nav-utilities {
+        gap: 0;
+    }
+
+    .nav-utilities .river-search {
+        margin-left: 0;
+    }
+
+}
+
+
+@media (max-width: 900px) {
+
+    .navbar {
+        gap: 16px;
     }
 
 }

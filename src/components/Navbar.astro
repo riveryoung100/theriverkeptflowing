@@ -1,61 +1,72 @@
----
+﻿---
 import SearchDialog from "./search/SearchDialog.astro";
 ---
+
 <nav class="navbar" aria-label="Primary navigation">
 
-    <a href="/" class="logo">
+    <a
+        href="/"
+        class="logo"
+        aria-label="The River Kept Flowing — Home"
+    >
         The River Kept Flowing
     </a>
 
 
     <div class="nav-links">
 
-
         <a href="/journey/">
             Journey
         </a>
 
-
         <a href="/library/">
             Library
         </a>
-        <a href="/saved/">
-            Saved
-        </a>
-            <a href="/topics/">
-                Topics
-            </a>
 
+        <a href="/topics/">
+            Topics
+        </a>
 
         <a href="/river-guides/">
             Guides
         </a>
 
-
-        <a href="/shop/">
-            Shop
-        </a>
-
-
         <a href="/services/">
             Services
         </a>
-
-
-        <a href="/partner/">
-            Partner
-        </a>
-
 
         <a href="/contribute/">
             Contribute
         </a>
 
-
     </div>
 
 
+    <div class="nav-utilities">
 
-    <SearchDialog />
+        <a
+            href="/saved/"
+            class="nav-utility-link"
+        >
+            Saved
+        </a>
+
+        <a
+            href="/shop/"
+            class="nav-utility-link"
+        >
+            Shop
+        </a>
+
+        <a
+            href="/partner/"
+            class="nav-utility-link"
+        >
+            Partner
+        </a>
+
+        <SearchDialog />
+
+    </div>
 
 </nav>
