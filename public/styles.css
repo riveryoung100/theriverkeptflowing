@@ -11602,3 +11602,414 @@ HOMEPAGE ECOSYSTEM
     }
 
 }
+
+
+/* =========================================================
+   WEBSITE PRODUCTION 005: LIBRARY DISCOVERY EXPERIENCE
+   ========================================================= */
+
+/*
+    The Library is the primary discovery surface for the
+    growing River archive.
+
+    This production layer does not alter Library architecture.
+    It strengthens hierarchy, collection cards, interaction,
+    metadata, Topics discovery, and responsive behavior.
+*/
+
+
+/* ---------------------------------------------------------
+   LIBRARY COLLECTION CARDS
+   --------------------------------------------------------- */
+
+.library-hub-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 430px;
+    padding: clamp(30px, 4vw, 46px);
+    overflow: hidden;
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            currentColor 13%,
+            transparent
+        );
+    border-radius: 28px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.72),
+            rgba(255, 255, 255, 0.38)
+        );
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.6) inset,
+        0 22px 55px rgba(31, 49, 40, 0.055);
+    transition:
+        transform 220ms ease,
+        border-color 220ms ease,
+        box-shadow 220ms ease,
+        background 220ms ease;
+}
+
+
+.library-hub-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 190px;
+    height: 190px;
+    pointer-events: none;
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(158, 116, 65, 0.11),
+            transparent 69%
+        );
+}
+
+
+.library-hub-card:hover {
+    transform: translateY(-5px);
+    border-color:
+        color-mix(
+            in srgb,
+            currentColor 22%,
+            transparent
+        );
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.7) inset,
+        0 30px 70px rgba(31, 49, 40, 0.095);
+}
+
+
+.library-hub-card .eyebrow {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 28px;
+    opacity: 0.68;
+}
+
+
+.library-hub-card h3 {
+    position: relative;
+    z-index: 1;
+    max-width: 520px;
+    margin: 0 0 20px;
+    font-size: clamp(31px, 3.6vw, 48px);
+    line-height: 1.03;
+    letter-spacing: -0.045em;
+}
+
+
+.library-hub-card__description {
+    position: relative;
+    z-index: 1;
+    max-width: 610px;
+    margin: 0;
+    font-size: clamp(16px, 1.5vw, 18px);
+    line-height: 1.75;
+    opacity: 0.76;
+}
+
+
+.library-hub-card__meta {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px 20px;
+    margin-top: 30px;
+    padding-top: 21px;
+    border-top:
+        1px solid
+        color-mix(
+            in srgb,
+            currentColor 11%,
+            transparent
+        );
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.45;
+    letter-spacing: 0.045em;
+    opacity: 0.62;
+}
+
+
+.library-hub-card__meta span {
+    display: inline-flex;
+    align-items: center;
+}
+
+
+.library-hub-card__meta span + span::before {
+    content: "";
+    width: 4px;
+    height: 4px;
+    margin-right: 20px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.55;
+}
+
+
+.library-hub-card__actions {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 18px 25px;
+    margin-top: auto;
+    padding-top: 35px;
+}
+
+
+.library-hub-card .library-entry-card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+
+.library-hub-card .library-entry-card__link span {
+    display: inline-block;
+    transition: transform 180ms ease;
+}
+
+
+.library-hub-card .library-entry-card__link:hover span,
+.library-hub-card .library-entry-card__link:focus-visible span {
+    transform: translateX(5px);
+}
+
+
+.library-hub-card__latest {
+    color: inherit;
+    font-size: 13px;
+    font-weight: 650;
+    text-decoration: none;
+    opacity: 0.64;
+    transition:
+        opacity 160ms ease,
+        transform 160ms ease;
+}
+
+
+.library-hub-card__latest:hover,
+.library-hub-card__latest:focus-visible {
+    opacity: 1;
+    transform: translateX(2px);
+    text-decoration: underline;
+    text-underline-offset: 5px;
+}
+
+
+/* ---------------------------------------------------------
+   LIBRARY TOPICS BRIDGE
+   --------------------------------------------------------- */
+
+.library-topics-callout {
+    position: relative;
+    overflow: hidden;
+    margin-top: clamp(60px, 8vw, 100px);
+    padding: clamp(34px, 5vw, 58px);
+    border-radius: 28px;
+    background:
+        radial-gradient(
+            circle at 88% 15%,
+            rgba(205, 167, 103, 0.15),
+            transparent 35%
+        ),
+        color-mix(
+            in srgb,
+            currentColor 3%,
+            transparent
+        );
+}
+
+
+.library-topics-callout::after {
+    content: "";
+    position: absolute;
+    right: -70px;
+    bottom: -90px;
+    width: 260px;
+    height: 260px;
+    pointer-events: none;
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            currentColor 9%,
+            transparent
+        );
+    border-radius: 50%;
+}
+
+
+.library-topics-callout > div,
+.library-topics-callout > a {
+    position: relative;
+    z-index: 1;
+}
+
+
+.library-topics-callout h2 {
+    max-width: 720px;
+    font-size: clamp(31px, 4.5vw, 52px);
+    line-height: 1.04;
+    letter-spacing: -0.045em;
+}
+
+
+.library-topics-callout p:last-child {
+    max-width: 680px;
+    font-size: 16px;
+    line-height: 1.78;
+    opacity: 0.76;
+}
+
+
+.library-topics-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 21px;
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            currentColor 18%,
+            transparent
+        );
+    border-radius: 999px;
+    white-space: nowrap;
+    transition:
+        transform 180ms ease,
+        background 180ms ease,
+        border-color 180ms ease;
+}
+
+
+.library-topics-link:hover,
+.library-topics-link:focus-visible {
+    transform: translateY(-2px);
+    border-color:
+        color-mix(
+            in srgb,
+            currentColor 28%,
+            transparent
+        );
+    background:
+        color-mix(
+            in srgb,
+            currentColor 5%,
+            transparent
+        );
+    text-decoration: none;
+}
+
+
+/* ---------------------------------------------------------
+   ACCESSIBILITY + INTERACTION
+   --------------------------------------------------------- */
+
+.library-hub-card a:focus-visible,
+.library-topics-callout a:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 5px;
+}
+
+
+/* ---------------------------------------------------------
+   RESPONSIVE LIBRARY EXPERIENCE
+   --------------------------------------------------------- */
+
+@media (max-width: 900px) {
+
+    .library-hub-card {
+        min-height: 390px;
+    }
+
+
+    .library-hub-card__actions {
+        padding-top: 30px;
+    }
+
+}
+
+
+@media (max-width: 760px) {
+
+    .library-hub-card {
+        min-height: auto;
+        padding: 30px 26px;
+        border-radius: 22px;
+    }
+
+
+    .library-hub-card .eyebrow {
+        margin-bottom: 22px;
+    }
+
+
+    .library-hub-card__meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 7px;
+        margin-top: 25px;
+    }
+
+
+    .library-hub-card__meta span + span::before {
+        display: none;
+    }
+
+
+    .library-hub-card__actions {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 15px;
+        padding-top: 28px;
+    }
+
+
+    .library-topics-callout {
+        margin-top: 55px;
+        padding: 30px 26px;
+        border-radius: 22px;
+    }
+
+
+    .library-topics-link {
+        min-height: 46px;
+    }
+
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+    .library-hub-card,
+    .library-hub-card .library-entry-card__link span,
+    .library-hub-card__latest,
+    .library-topics-link {
+        transition: none;
+    }
+
+
+    .library-hub-card:hover,
+    .library-hub-card__latest:hover,
+    .library-hub-card__latest:focus-visible,
+    .library-topics-link:hover,
+    .library-topics-link:focus-visible {
+        transform: none;
+    }
+
+}
