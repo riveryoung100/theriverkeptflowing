@@ -11228,3 +11228,377 @@ HOMEPAGE ECOSYSTEM
     }
 
 }
+
+/* WEBSITE PRODUCTION 004: HOMEPAGE BODY EXPERIENCE */
+
+/* =========================================================
+   HOMEPAGE BODY RHYTHM
+   ========================================================= */
+
+.home-page .intro-section,
+.home-page .home-ecosystem,
+.home-page .paths-section,
+.home-page .mission-section,
+.home-page .tributaries-section,
+.home-page .latest-section,
+.home-page .invitation-section {
+    position: relative;
+}
+
+.home-page .intro-section,
+.home-page .home-ecosystem,
+.home-page .paths-section,
+.home-page .mission-section,
+.home-page .tributaries-section,
+.home-page .latest-section {
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   INTRODUCTION
+   ========================================================= */
+
+.home-page .intro-section {
+    padding-top: clamp(110px, 12vw, 168px);
+    padding-bottom: clamp(110px, 12vw, 168px);
+    background:
+        linear-gradient(
+            180deg,
+            #fbfaf7 0%,
+            #f7f3eb 100%
+        );
+}
+
+.home-page .intro-section .section-shell {
+    position: relative;
+    z-index: 1;
+}
+
+.home-page .intro-section .intro-copy {
+    max-width: 880px;
+}
+
+
+/* =========================================================
+   ECOSYSTEM
+   ========================================================= */
+
+.home-page .home-ecosystem {
+    padding-top: clamp(120px, 12vw, 168px);
+    padding-bottom: clamp(120px, 12vw, 168px);
+    background: #ffffff;
+}
+
+.home-page .home-ecosystem::before {
+    content: "";
+    position: absolute;
+    width: min(620px, 52vw);
+    aspect-ratio: 1;
+    top: -280px;
+    right: -260px;
+    border: 1px solid rgba(35, 75, 59, 0.07);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.home-page .home-ecosystem .section-shell {
+    position: relative;
+    z-index: 1;
+}
+
+
+/* =========================================================
+   PATHWAYS
+   ========================================================= */
+
+.home-page .paths-section {
+    padding-top: clamp(120px, 12vw, 168px);
+    padding-bottom: clamp(120px, 12vw, 168px);
+    background:
+        linear-gradient(
+            180deg,
+            #f5f0e6 0%,
+            #eee7da 100%
+        );
+}
+
+.home-page .path-grid {
+    align-items: stretch;
+}
+
+.home-page .path-card {
+    position: relative;
+    overflow: hidden;
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        border-color 180ms ease;
+}
+
+.home-page .path-card:hover,
+.home-page .path-card:focus-within {
+    transform: translateY(-4px);
+}
+
+
+/* =========================================================
+   MISSION
+   ========================================================= */
+
+.home-page .mission-section {
+    padding-top: clamp(128px, 13vw, 184px);
+    padding-bottom: clamp(128px, 13vw, 184px);
+    background:
+        linear-gradient(
+            135deg,
+            #172a22 0%,
+            #234b3b 54%,
+            #1a352b 100%
+        );
+    color: #ffffff;
+}
+
+.home-page .mission-section::after {
+    content: "";
+    position: absolute;
+    width: min(640px, 55vw);
+    aspect-ratio: 1;
+    right: -320px;
+    bottom: -390px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 90px rgba(255, 255, 255, 0.012),
+        0 0 0 180px rgba(255, 255, 255, 0.008);
+    pointer-events: none;
+}
+
+.home-page .mission-section .section-shell {
+    position: relative;
+    z-index: 1;
+}
+
+.home-page .mission-section h2,
+.home-page .mission-section h3 {
+    color: #ffffff;
+}
+
+.home-page .mission-section p {
+    color: rgba(255, 255, 255, 0.74);
+}
+
+.home-page .mission-principles article {
+    border-color: rgba(255, 255, 255, 0.14);
+}
+
+
+/* =========================================================
+   TRIBUTARIES
+   ========================================================= */
+
+.home-page .tributaries-section {
+    padding-top: clamp(120px, 12vw, 168px);
+    padding-bottom: clamp(120px, 12vw, 168px);
+    background: #f8f5ef;
+}
+
+.home-page .tributary-grid {
+    gap: clamp(16px, 2vw, 24px);
+}
+
+.home-page .home-tributary-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(37, 58, 48, 0.10);
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow: 0 18px 50px rgba(28, 43, 35, 0.035);
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        border-color 180ms ease;
+}
+
+.home-page .home-tributary-card:hover,
+.home-page .home-tributary-card:focus-within {
+    transform: translateY(-4px);
+    border-color: rgba(37, 58, 48, 0.18);
+    box-shadow: 0 22px 58px rgba(28, 43, 35, 0.07);
+}
+
+
+/* =========================================================
+   LATEST WORK
+   ========================================================= */
+
+.home-page .latest-section {
+    padding-top: clamp(120px, 12vw, 168px);
+    padding-bottom: clamp(120px, 12vw, 168px);
+    background: #ffffff;
+}
+
+.home-page .latest-grid {
+    gap: clamp(18px, 2vw, 26px);
+}
+
+.home-page .latest-card {
+    position: relative;
+    overflow: hidden;
+    border-color: rgba(69, 78, 69, 0.11);
+    background:
+        linear-gradient(
+            180deg,
+            #faf8f3 0%,
+            #f5f0e7 100%
+        );
+    box-shadow: 0 18px 50px rgba(28, 43, 35, 0.035);
+}
+
+.home-page .latest-card:hover,
+.home-page .latest-card:focus-within {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 60px rgba(28, 43, 35, 0.08);
+}
+
+
+/* =========================================================
+   INVITATION / HOMEPAGE CLOSE
+   ========================================================= */
+
+.home-page .invitation-section {
+    padding-top: clamp(112px, 11vw, 156px);
+    padding-bottom: clamp(112px, 11vw, 156px);
+    overflow: hidden;
+    background:
+        radial-gradient(
+            circle at 82% 20%,
+            rgba(255, 255, 255, 0.07),
+            transparent 28%
+        ),
+        linear-gradient(
+            135deg,
+            #12231c 0%,
+            #263f35 58%,
+            #172b23 100%
+        );
+}
+
+.home-page .invitation-section::after {
+    content: "";
+    position: absolute;
+    width: min(520px, 48vw);
+    aspect-ratio: 1;
+    left: -280px;
+    bottom: -340px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 80px rgba(255, 255, 255, 0.012),
+        0 0 0 160px rgba(255, 255, 255, 0.008);
+    pointer-events: none;
+}
+
+.home-page .invitation-layout {
+    position: relative;
+    z-index: 1;
+}
+
+.home-page .invitation-content h2 {
+    color: #ffffff;
+}
+
+.home-page .invitation-content p {
+    color: rgba(255, 255, 255, 0.74);
+}
+
+
+/* =========================================================
+   BODY SECTION DIVIDERS
+   ========================================================= */
+
+.home-page .home-ecosystem::after,
+.home-page .tributaries-section::after,
+.home-page .latest-section::after {
+    content: "";
+    position: absolute;
+    width: min(1180px, calc(100% - 48px));
+    height: 1px;
+    bottom: 0;
+    left: 50%;
+    background: rgba(28, 43, 35, 0.07);
+    transform: translateX(-50%);
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .home-page .intro-section,
+    .home-page .home-ecosystem,
+    .home-page .paths-section,
+    .home-page .mission-section,
+    .home-page .tributaries-section,
+    .home-page .latest-section {
+        padding-top: 104px;
+        padding-bottom: 104px;
+    }
+
+    .home-page .invitation-section {
+        padding-top: 96px;
+        padding-bottom: 96px;
+    }
+
+    .home-page .mission-section::after,
+    .home-page .invitation-section::after {
+        opacity: 0.7;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 640px) {
+
+    .home-page .intro-section,
+    .home-page .home-ecosystem,
+    .home-page .paths-section,
+    .home-page .mission-section,
+    .home-page .tributaries-section,
+    .home-page .latest-section {
+        padding-top: 82px;
+        padding-bottom: 82px;
+    }
+
+    .home-page .invitation-section {
+        padding-top: 82px;
+        padding-bottom: 82px;
+    }
+
+    .home-page .home-ecosystem::before,
+    .home-page .mission-section::after,
+    .home-page .invitation-section::after {
+        display: none;
+    }
+
+    .home-page .home-ecosystem::after,
+    .home-page .tributaries-section::after,
+    .home-page .latest-section::after {
+        width: calc(100% - 32px);
+    }
+
+    .home-page .path-card:hover,
+    .home-page .path-card:focus-within,
+    .home-page .home-tributary-card:hover,
+    .home-page .home-tributary-card:focus-within,
+    .home-page .latest-card:hover,
+    .home-page .latest-card:focus-within {
+        transform: none;
+    }
+
+}
