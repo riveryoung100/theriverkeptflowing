@@ -16940,3 +16940,738 @@ body:has(main[data-pagefind-body]) .topic-index {
         scroll-behavior: auto;
     }
 }
+
+/* WEBSITE PRODUCTION 019: TRIBUTARIES EXPERIENCE */
+
+/* ---------------------------------------------------------
+   Tributaries — visual identity
+   The page functions as the structural map of the river.
+   --------------------------------------------------------- */
+
+.tributaries-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: clamp(34rem, 78vh, 52rem);
+    display: flex;
+    align-items: center;
+}
+
+.tributaries-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background:
+        radial-gradient(
+            circle at 18% 24%,
+            rgba(255, 255, 255, 0.08),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 78% 68%,
+            rgba(255, 255, 255, 0.055),
+            transparent 34%
+        );
+}
+
+.tributaries-hero::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -10rem;
+    width: min(78rem, 120vw);
+    height: 24rem;
+    z-index: -1;
+    transform: translateX(-50%);
+    pointer-events: none;
+    border-radius: 50% 50% 0 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    opacity: 0.8;
+}
+
+.tributaries-hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.tributaries-hero h1 {
+    max-width: 13ch;
+    text-wrap: balance;
+}
+
+.tributaries-hero-lead {
+    max-width: 46rem;
+}
+
+.tributaries-hero-actions {
+    margin-top: clamp(2rem, 4vw, 3rem);
+}
+
+
+/* ---------------------------------------------------------
+   Opening — establish the governing idea
+   --------------------------------------------------------- */
+
+.tributaries-opening {
+    position: relative;
+}
+
+.tributaries-opening::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: min(72rem, calc(100% - 3rem));
+    height: 1px;
+    transform: translateX(-50%);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(35, 54, 46, 0.2),
+        transparent
+    );
+}
+
+.tributaries-opening h2 {
+    max-width: 18ch;
+    text-wrap: balance;
+}
+
+.tributaries-opening-lead {
+    position: relative;
+    padding-left: clamp(1.25rem, 3vw, 2rem);
+}
+
+.tributaries-opening-lead::before {
+    content: "";
+    position: absolute;
+    top: 0.2rem;
+    bottom: 0.2rem;
+    left: 0;
+    width: 2px;
+    border-radius: 999px;
+    background: currentColor;
+    opacity: 0.22;
+}
+
+
+/* ---------------------------------------------------------
+   Tributary map — eleven streams
+   --------------------------------------------------------- */
+
+.tributaries-map {
+    position: relative;
+    overflow: hidden;
+}
+
+.tributaries-map::before {
+    content: "";
+    position: absolute;
+    top: clamp(5rem, 10vw, 9rem);
+    left: 50%;
+    width: 1px;
+    height: calc(100% - clamp(10rem, 18vw, 15rem));
+    pointer-events: none;
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(255, 255, 255, 0.14) 12%,
+        rgba(255, 255, 255, 0.14) 88%,
+        transparent
+    );
+}
+
+.tributaries-map .section-shell {
+    position: relative;
+    z-index: 1;
+}
+
+.tributaries-map .tributaries-section-heading {
+    max-width: 48rem;
+}
+
+.tributaries-grid {
+    position: relative;
+    align-items: stretch;
+}
+
+.tributary-card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    transition:
+        transform 180ms ease,
+        border-color 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.tributary-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(
+        90deg,
+        currentColor,
+        transparent 72%
+    );
+    opacity: 0.18;
+}
+
+.tributary-card::after {
+    content: "";
+    position: absolute;
+    right: -5rem;
+    bottom: -5rem;
+    width: 10rem;
+    height: 10rem;
+    z-index: -1;
+    pointer-events: none;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    opacity: 0.055;
+    transition:
+        transform 220ms ease,
+        opacity 220ms ease;
+}
+
+.tributary-card:hover,
+.tributary-card:focus-within {
+    transform: translateY(-4px);
+}
+
+.tributary-card:hover::after,
+.tributary-card:focus-within::after {
+    transform: scale(1.12);
+    opacity: 0.09;
+}
+
+.tributary-card-featured {
+    position: relative;
+}
+
+.tributary-card-featured::before {
+    height: 3px;
+    opacity: 0.32;
+}
+
+.tributary-card-wide {
+    position: relative;
+}
+
+.tributary-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    opacity: 0.72;
+}
+
+.tributary-type {
+    letter-spacing: 0.1em;
+}
+
+.tributary-card h3 {
+    text-wrap: balance;
+}
+
+.tributary-tags {
+    gap: 0.45rem;
+}
+
+.tributary-tags span {
+    transition:
+        transform 160ms ease,
+        border-color 160ms ease;
+}
+
+.tributary-card:hover .tributary-tags span,
+.tributary-card:focus-within .tributary-tags span {
+    transform: translateY(-1px);
+}
+
+.tributary-link {
+    position: relative;
+    width: fit-content;
+}
+
+.tributary-link span {
+    display: inline-block;
+    transition: transform 160ms ease;
+}
+
+.tributary-link:hover span,
+.tributary-link:focus-visible span {
+    transform: translateX(0.25rem);
+}
+
+
+/* ---------------------------------------------------------
+   Connection — streams affect the whole river
+   --------------------------------------------------------- */
+
+.tributaries-connection {
+    position: relative;
+    overflow: hidden;
+}
+
+.tributaries-connection::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(68rem, 92vw);
+    height: min(68rem, 92vw);
+    transform: translate(-50%, -50%);
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0.035;
+}
+
+.tributaries-connection-grid {
+    position: relative;
+    z-index: 1;
+}
+
+.tributaries-connection-heading {
+    position: relative;
+}
+
+.tributaries-connection-heading::after {
+    content: "";
+    display: block;
+    width: clamp(3rem, 8vw, 5rem);
+    height: 1px;
+    margin-top: 1.75rem;
+    background: currentColor;
+    opacity: 0.24;
+}
+
+.tributaries-connection-heading h2 {
+    text-wrap: balance;
+}
+
+.tributaries-connection-body {
+    position: relative;
+}
+
+.tributaries-connection-lead {
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+}
+
+.tributaries-quote {
+    position: relative;
+    overflow: hidden;
+}
+
+.tributaries-quote::before {
+    content: "“";
+    position: absolute;
+    top: -0.55rem;
+    left: 0.5rem;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(5rem, 12vw, 8rem);
+    line-height: 1;
+    opacity: 0.08;
+    pointer-events: none;
+}
+
+
+/* ---------------------------------------------------------
+   Principles — governing laws of the river
+   --------------------------------------------------------- */
+
+.tributaries-principles {
+    position: relative;
+}
+
+.tributaries-principles-heading {
+    max-width: 48rem;
+}
+
+.tributaries-principles-grid {
+    align-items: stretch;
+}
+
+.tributaries-principle-card {
+    position: relative;
+    overflow: hidden;
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.tributaries-principle-card::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 3rem;
+    height: 3rem;
+    border-right: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+    opacity: 0.12;
+}
+
+.tributaries-principle-card:hover,
+.tributaries-principle-card:focus-within {
+    transform: translateY(-3px);
+}
+
+.tributaries-principle-card span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+}
+
+.tributaries-principle-card h3 {
+    text-wrap: balance;
+}
+
+
+/* ---------------------------------------------------------
+   Publishing structure
+   --------------------------------------------------------- */
+
+.tributaries-work {
+    position: relative;
+    overflow: hidden;
+}
+
+.tributaries-work::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(
+            135deg,
+            transparent 0%,
+            transparent 48%,
+            rgba(255, 255, 255, 0.025) 48%,
+            rgba(255, 255, 255, 0.025) 52%,
+            transparent 52%,
+            transparent 100%
+        );
+}
+
+.tributaries-work .section-shell {
+    position: relative;
+    z-index: 1;
+}
+
+.tributaries-work-grid {
+    align-items: stretch;
+}
+
+.tributaries-work-card {
+    position: relative;
+    transition:
+        transform 180ms ease,
+        border-color 180ms ease;
+}
+
+.tributaries-work-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2.75rem;
+    height: 2px;
+    background: currentColor;
+    opacity: 0.22;
+}
+
+.tributaries-work-card:hover,
+.tributaries-work-card:focus-within {
+    transform: translateY(-3px);
+}
+
+.tributaries-work-type {
+    letter-spacing: 0.1em;
+}
+
+.tributaries-work-card h3 {
+    text-wrap: balance;
+}
+
+
+/* ---------------------------------------------------------
+   Balance — stewardship rather than maximization
+   --------------------------------------------------------- */
+
+.tributaries-balance {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+.tributaries-balance::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 50%;
+    left: 50%;
+    width: min(58rem, 100vw);
+    height: min(58rem, 100vw);
+    transform: translate(-50%, -50%);
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    opacity: 0.045;
+}
+
+.tributaries-balance::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 50%;
+    left: 50%;
+    width: min(38rem, 72vw);
+    height: min(38rem, 72vw);
+    transform: translate(-50%, -50%);
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    opacity: 0.035;
+}
+
+.tributaries-balance h2 {
+    max-width: 18ch;
+    text-wrap: balance;
+}
+
+.tributaries-balance-lead {
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+}
+
+.tributaries-balance-quote {
+    position: relative;
+    max-width: 44rem;
+}
+
+.tributaries-balance-quote::before {
+    content: "";
+    position: absolute;
+    top: -1rem;
+    left: 50%;
+    width: 4rem;
+    height: 1px;
+    transform: translateX(-50%);
+    background: currentColor;
+    opacity: 0.3;
+}
+
+
+/* ---------------------------------------------------------
+   Continue exploring
+   --------------------------------------------------------- */
+
+.tributaries-navigation {
+    position: relative;
+}
+
+.tributaries-navigation::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: min(72rem, calc(100% - 3rem));
+    height: 1px;
+    transform: translateX(-50%);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(35, 54, 46, 0.18),
+        transparent
+    );
+}
+
+.tributaries-navigation-grid {
+    align-items: stretch;
+}
+
+.tributaries-navigation-card {
+    position: relative;
+    overflow: hidden;
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.tributaries-navigation-card::after {
+    content: "→";
+    position: absolute;
+    right: 1.25rem;
+    top: 1rem;
+    font-size: 1.15rem;
+    opacity: 0.12;
+    transition:
+        transform 180ms ease,
+        opacity 180ms ease;
+}
+
+.tributaries-navigation-card:hover,
+.tributaries-navigation-card:focus-within {
+    transform: translateY(-3px);
+}
+
+.tributaries-navigation-card:hover::after,
+.tributaries-navigation-card:focus-within::after {
+    transform: translateX(0.2rem);
+    opacity: 0.24;
+}
+
+.tributaries-navigation-featured::after {
+    opacity: 0.24;
+}
+
+.tributaries-navigation-type {
+    letter-spacing: 0.1em;
+}
+
+.tributaries-navigation-card h3 {
+    text-wrap: balance;
+}
+
+
+/* ---------------------------------------------------------
+   Final convergence
+   --------------------------------------------------------- */
+
+.tributaries-final {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+.tributaries-final::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    left: 50%;
+    bottom: -8rem;
+    width: min(62rem, 110vw);
+    height: 18rem;
+    transform: translateX(-50%);
+    border: 1px solid currentColor;
+    border-radius: 50% 50% 0 0;
+    opacity: 0.055;
+}
+
+.tributaries-final h2 {
+    max-width: 18ch;
+    text-wrap: balance;
+}
+
+.tributaries-final-quote {
+    position: relative;
+    max-width: 46rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.tributaries-final-quote::before,
+.tributaries-final-quote::after {
+    content: "";
+    display: block;
+    width: 3rem;
+    height: 1px;
+    margin-left: auto;
+    margin-right: auto;
+    background: currentColor;
+    opacity: 0.28;
+}
+
+.tributaries-final-quote::before {
+    margin-bottom: 1.5rem;
+}
+
+.tributaries-final-quote::after {
+    margin-top: 1.5rem;
+}
+
+
+/* ---------------------------------------------------------
+   Production 019 responsive refinement
+   --------------------------------------------------------- */
+
+@media (max-width: 900px) {
+
+    .tributaries-map::before {
+        display: none;
+    }
+
+    .tributaries-hero h1,
+    .tributaries-opening h2,
+    .tributaries-balance h2,
+    .tributaries-final h2 {
+        max-width: none;
+    }
+
+    .tributaries-connection::before {
+        width: 46rem;
+        height: 46rem;
+    }
+}
+
+@media (max-width: 640px) {
+
+    .tributaries-hero {
+        min-height: auto;
+    }
+
+    .tributaries-hero::after {
+        bottom: -14rem;
+    }
+
+    .tributaries-opening-lead {
+        padding-left: 1rem;
+    }
+
+    .tributary-card:hover,
+    .tributary-card:focus-within,
+    .tributaries-principle-card:hover,
+    .tributaries-principle-card:focus-within,
+    .tributaries-work-card:hover,
+    .tributaries-work-card:focus-within,
+    .tributaries-navigation-card:hover,
+    .tributaries-navigation-card:focus-within {
+        transform: none;
+    }
+
+    .tributaries-connection::before {
+        width: 32rem;
+        height: 32rem;
+    }
+
+    .tributaries-navigation-card::after {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .tributary-card,
+    .tributary-card::after,
+    .tributary-tags span,
+    .tributary-link span,
+    .tributaries-principle-card,
+    .tributaries-work-card,
+    .tributaries-navigation-card,
+    .tributaries-navigation-card::after {
+        transition: none;
+    }
+}
