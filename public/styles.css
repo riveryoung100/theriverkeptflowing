@@ -10497,3 +10497,421 @@ HOMEPAGE ECOSYSTEM
     }
 
 }
+
+/* WEBSITE PRODUCTION 002: HOMEPAGE VISUAL SYSTEM */
+
+/* =========================================================
+   HOMEPAGE RHYTHM
+   ========================================================= */
+
+.home-page section {
+    position: relative;
+}
+
+.home-page .section-shell,
+.home-page .home-shell {
+    width: min(1180px, calc(100% - 48px));
+    margin-inline: auto;
+}
+
+.home-page .section-label {
+    margin-bottom: 18px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.home-page .section-heading {
+    max-width: 760px;
+}
+
+.home-page .section-heading h2,
+.home-page .mission-copy h2,
+.home-page .invitation-content h2 {
+    text-wrap: balance;
+}
+
+.home-page .section-description {
+    max-width: 680px;
+}
+
+
+/* =========================================================
+   INTRODUCTION
+   ========================================================= */
+
+.home-page .intro-section {
+    padding: 120px 0;
+}
+
+.home-page .intro-section .section-shell {
+    max-width: 980px;
+}
+
+
+/* =========================================================
+   ECOSYSTEM
+   ========================================================= */
+
+.home-page .home-ecosystem {
+    padding: 132px 0;
+}
+
+.home-page .home-ecosystem .section-heading {
+    margin-bottom: 64px;
+}
+
+.home-page .home-ecosystem .path-grid {
+    align-items: stretch;
+}
+
+.home-page .home-ecosystem .path-card {
+    height: 100%;
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        border-color 180ms ease;
+}
+
+.home-page .home-ecosystem .path-card:hover {
+    transform: translateY(-4px);
+}
+
+
+/* =========================================================
+   PATHWAYS
+   ========================================================= */
+
+.home-page .paths-section {
+    padding: 128px 0;
+}
+
+.home-page .paths-section .section-heading {
+    margin-bottom: 58px;
+}
+
+.home-page .path-card {
+    overflow: hidden;
+}
+
+.home-page .path-card .card-link {
+    margin-top: auto;
+}
+
+
+/* =========================================================
+   MISSION
+   ========================================================= */
+
+.home-page .mission-section {
+    padding: 140px 0;
+}
+
+.home-page .mission-layout {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 0.9fr)
+        minmax(0, 1.1fr);
+    gap: clamp(64px, 9vw, 130px);
+    align-items: start;
+}
+
+.home-page .mission-copy {
+    position: sticky;
+    top: 130px;
+}
+
+.home-page .mission-copy h2 {
+    max-width: 580px;
+    margin-bottom: 26px;
+}
+
+.home-page .mission-copy > p:last-child {
+    max-width: 560px;
+    color: var(--muted);
+    font-size: 18px;
+    line-height: 1.8;
+}
+
+.home-page .mission-principles {
+    display: grid;
+    gap: 0;
+}
+
+.home-page .mission-principles article {
+    display: grid;
+    grid-template-columns: 54px 1fr;
+    gap: 24px;
+    padding: 30px 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.home-page .mission-principles article:last-child {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.home-page .mission-principles article > span {
+    padding-top: 5px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+.home-page .mission-principles h3 {
+    margin: 0 0 9px;
+    font-size: 27px;
+    line-height: 1.15;
+}
+
+.home-page .mission-principles p {
+    max-width: 520px;
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   TRIBUTARIES
+   ========================================================= */
+
+.home-page .tributaries-section {
+    padding: 140px 0;
+}
+
+.home-page .tributaries-section .section-heading {
+    margin-bottom: 62px;
+}
+
+.home-page .tributary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.home-page .home-tributary-card {
+    min-height: 230px;
+    padding: 34px;
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.home-page .home-tributary-card:hover {
+    transform: translateY(-3px);
+}
+
+.home-page .home-tributary-card h3 {
+    margin: 0 0 14px;
+}
+
+.home-page .home-tributary-card p {
+    line-height: 1.72;
+}
+
+
+/* =========================================================
+   LATEST WORK
+   ========================================================= */
+
+.home-page .latest-section {
+    padding: 140px 0;
+}
+
+.home-page .latest-section > .section-shell > .section-heading {
+    display: flex;
+    max-width: none;
+    margin-bottom: 58px;
+    align-items: end;
+    justify-content: space-between;
+    gap: 40px;
+}
+
+.home-page .latest-grid {
+    align-items: stretch;
+}
+
+.home-page .latest-card {
+    display: flex;
+    min-height: 360px;
+    flex-direction: column;
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.home-page .latest-card:hover {
+    transform: translateY(-4px);
+}
+
+.home-page .latest-card .card-link {
+    margin-top: auto;
+    padding-top: 28px;
+}
+
+
+/* =========================================================
+   INVITATION
+   ========================================================= */
+
+.home-page .invitation-section {
+    padding: 112px 0;
+}
+
+.home-page .invitation-layout {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(320px, 0.8fr);
+    gap: clamp(50px, 8vw, 110px);
+    align-items: center;
+}
+
+.home-page .invitation-content {
+    max-width: 650px;
+}
+
+.home-page .invitation-content h2 {
+    margin-bottom: 22px;
+}
+
+.home-page .invitation-content > p:last-child {
+    max-width: 590px;
+    line-height: 1.75;
+}
+
+.home-page .join-form {
+    display: grid;
+    gap: 12px;
+}
+
+.home-page .join-form input,
+.home-page .join-form button {
+    width: 100%;
+    min-height: 54px;
+}
+
+.home-page .join-form input {
+    padding: 0 18px;
+}
+
+.home-page .join-form button {
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   RESPONSIVE HOMEPAGE
+   ========================================================= */
+
+@media (max-width: 1000px) {
+
+    .home-page .mission-layout {
+        grid-template-columns: 1fr;
+        gap: 60px;
+    }
+
+    .home-page .mission-copy {
+        position: static;
+    }
+
+    .home-page .tributary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .home-page .invitation-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .home-page .join-form {
+        max-width: 620px;
+    }
+
+}
+
+
+@media (max-width: 760px) {
+
+    .home-page .section-shell,
+    .home-page .home-shell {
+        width: min(100% - 36px, 1180px);
+    }
+
+    .home-page .intro-section,
+    .home-page .home-ecosystem,
+    .home-page .paths-section,
+    .home-page .mission-section,
+    .home-page .tributaries-section,
+    .home-page .latest-section {
+        padding: 88px 0;
+    }
+
+    .home-page .invitation-section {
+        padding: 82px 0;
+    }
+
+    .home-page .home-ecosystem .section-heading,
+    .home-page .paths-section .section-heading,
+    .home-page .tributaries-section .section-heading {
+        margin-bottom: 42px;
+    }
+
+    .home-page .mission-layout {
+        gap: 42px;
+    }
+
+    .home-page .mission-copy > p:last-child {
+        font-size: 17px;
+    }
+
+    .home-page .mission-principles article {
+        grid-template-columns: 42px 1fr;
+        gap: 16px;
+        padding: 24px 0;
+    }
+
+    .home-page .mission-principles h3 {
+        font-size: 24px;
+    }
+
+    .home-page .tributary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .home-page .home-tributary-card {
+        min-height: 0;
+        padding: 28px 25px;
+    }
+
+    .home-page .latest-section > .section-shell > .section-heading {
+        display: block;
+        margin-bottom: 42px;
+    }
+
+    .home-page .latest-section .text-link {
+        display: inline-block;
+        margin-top: 22px;
+    }
+
+    .home-page .latest-card {
+        min-height: 0;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .home-page .section-shell,
+    .home-page .home-shell {
+        width: min(100% - 28px, 1180px);
+    }
+
+    .home-page .mission-principles article {
+        grid-template-columns: 34px 1fr;
+    }
+
+}
