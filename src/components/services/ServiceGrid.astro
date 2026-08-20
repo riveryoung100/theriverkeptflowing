@@ -11,10 +11,12 @@ interface Item {
 
 interface Props {
     items:Item[];
+    headingLevel?: 2 | 3;
 }
 
 const {
-    items
+    items,
+    headingLevel = 3
 }=Astro.props;
 ---
 
@@ -29,6 +31,7 @@ const {
             action={item.action}
             href={item.href}
             type={item.type}
+            headingLevel={headingLevel}
         />
 
     ))

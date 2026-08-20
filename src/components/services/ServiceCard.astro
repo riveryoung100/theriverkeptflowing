@@ -5,6 +5,7 @@ interface Props {
     action:string;
     href:string;
     type?:string;
+    headingLevel?: 2 | 3;
 }
 
 const {
@@ -12,8 +13,11 @@ const {
     description,
     action,
     href,
-    type="Service"
+    type="Service",
+    headingLevel = 3
 }=Astro.props;
+
+const Heading = headingLevel === 2 ? "h2" : "h3";
 ---
 
 <article class="service-card">
@@ -22,9 +26,9 @@ const {
         {type}
     </p>
 
-    <h3>
+    <Heading>
         {title}
-    </h3>
+    </Heading>
 
     <p>
         {description}
