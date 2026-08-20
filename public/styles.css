@@ -18553,3 +18553,617 @@ body:has(main[data-pagefind-body]) .topic-index {
         transform: none;
     }
 }
+
+/* WEBSITE PRODUCTION 021: THE RIVER FUND EXPERIENCE */
+
+/*
+The River Fund should feel different from an ordinary contribution
+page. It represents stewardship, generosity, service, responsibility,
+and the movement of resources toward useful work.
+
+This layer intentionally preserves the existing River Fund markup,
+FundCard component, DonationButton abstraction, and payment-provider
+contract. No payment behavior is created or changed here.
+*/
+
+
+/* ---------------------------------------------------------
+   RIVER FUND — EXPERIENCE FOUNDATION
+   --------------------------------------------------------- */
+
+.contribute-page {
+  --river-fund-deep: #213129;
+  --river-fund-forest: #405d4b;
+  --river-fund-leaf: #6f876f;
+  --river-fund-earth: #9b8059;
+  --river-fund-gold: #b79b68;
+  --river-fund-cream: #f5f1e7;
+  --river-fund-paper: #fbfaf6;
+  --river-fund-ink: #27312b;
+  --river-fund-muted: #68726b;
+  --river-fund-line: rgba(39, 49, 43, 0.13);
+  --river-fund-shadow: 0 24px 70px rgba(30, 43, 35, 0.10);
+
+  background:
+    linear-gradient(
+      180deg,
+      var(--river-fund-paper) 0%,
+      #f7f5ee 100%
+    );
+
+  color: var(--river-fund-ink);
+}
+
+
+/* ---------------------------------------------------------
+   RIVER FUND — HERO
+   --------------------------------------------------------- */
+
+.contribute-page .contribute-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  min-height: min(760px, 82vh);
+
+  display: flex;
+  align-items: center;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f8f5ec 0%,
+      #f1eee4 52%,
+      #e8ece5 100%
+    );
+}
+
+.contribute-page .contribute-hero::before {
+  content: "";
+
+  position: absolute;
+  z-index: -2;
+
+  width: min(620px, 58vw);
+  aspect-ratio: 1;
+
+  top: -22%;
+  right: -10%;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(111, 135, 111, 0.18) 0%,
+      rgba(111, 135, 111, 0.08) 40%,
+      transparent 72%
+    );
+
+  pointer-events: none;
+}
+
+.contribute-page .contribute-hero::after {
+  content: "";
+
+  position: absolute;
+  z-index: -1;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(64, 93, 75, 0.20) 20%,
+      rgba(155, 128, 89, 0.30) 50%,
+      rgba(64, 93, 75, 0.20) 80%,
+      transparent 100%
+    );
+
+  pointer-events: none;
+}
+
+.contribute-page .contribute-hero .contribute-shell {
+  position: relative;
+
+  width: min(1180px, calc(100% - 48px));
+
+  padding-top: clamp(110px, 14vw, 180px);
+  padding-bottom: clamp(96px, 12vw, 150px);
+}
+
+.contribute-page .contribute-hero .section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+
+  margin-bottom: 28px;
+
+  color: var(--river-fund-forest);
+
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.contribute-page .contribute-hero .section-label::before {
+  content: "";
+
+  width: 38px;
+  height: 1px;
+
+  background: var(--river-fund-earth);
+}
+
+.contribute-page .contribute-hero h1 {
+  max-width: 900px;
+
+  margin: 0;
+
+  color: var(--river-fund-deep);
+
+  font-size: clamp(3.4rem, 7.4vw, 7.4rem);
+  line-height: 0.93;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+}
+
+.contribute-page .contribute-hero h1 + p {
+  max-width: 700px;
+
+  margin-top: 34px;
+
+  color: var(--river-fund-muted);
+
+  font-size: clamp(1.08rem, 1.6vw, 1.32rem);
+  line-height: 1.8;
+}
+
+.contribute-page .contribute-hero .payment-button {
+  margin-top: 38px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 54px;
+
+  padding: 15px 27px;
+
+  border: 1px solid var(--river-fund-deep);
+  border-radius: 999px;
+
+  background: var(--river-fund-deep);
+  color: #fff;
+
+  box-shadow:
+    0 12px 28px rgba(33, 49, 41, 0.16);
+
+  font-weight: 700;
+  letter-spacing: 0.02em;
+
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+.contribute-page .contribute-hero .payment-button:hover,
+.contribute-page .contribute-hero .payment-button:focus-visible {
+  transform: translateY(-2px);
+
+  background: var(--river-fund-forest);
+
+  box-shadow:
+    0 18px 36px rgba(33, 49, 41, 0.20);
+}
+
+
+/* ---------------------------------------------------------
+   RIVER FUND — RESOURCE FLOW
+   --------------------------------------------------------- */
+
+.contribute-page .contribute-options {
+  position: relative;
+
+  padding:
+    clamp(88px, 11vw, 150px)
+    0
+    clamp(100px, 12vw, 160px);
+
+  background: var(--river-fund-paper);
+}
+
+.contribute-page .contribute-options::before {
+  content: "01";
+
+  position: absolute;
+
+  top: clamp(44px, 6vw, 76px);
+  right: max(24px, calc((100vw - 1180px) / 2));
+
+  color: rgba(64, 93, 75, 0.11);
+
+  font-size: clamp(4rem, 9vw, 8rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.06em;
+
+  pointer-events: none;
+}
+
+.contribute-page .contribute-options .contribute-shell {
+  width: min(1180px, calc(100% - 48px));
+}
+
+.contribute-page .contribute-options h2 {
+  max-width: 720px;
+
+  margin: 0 0 clamp(46px, 6vw, 72px);
+
+  color: var(--river-fund-deep);
+
+  font-size: clamp(2.25rem, 4.8vw, 4.6rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+
+.contribute-page .fund-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 18px;
+}
+
+.contribute-page .fund-card {
+  position: relative;
+  overflow: hidden;
+
+  min-height: 270px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
+  padding:
+    clamp(30px, 4vw, 48px);
+
+  border: 1px solid var(--river-fund-line);
+  border-radius: 4px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.92),
+      rgba(244, 242, 234, 0.94)
+    );
+
+  box-shadow:
+    0 18px 54px rgba(33, 49, 41, 0.06);
+
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    border-color 220ms ease;
+}
+
+.contribute-page .fund-card::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 4px;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--river-fund-forest),
+      var(--river-fund-earth)
+    );
+}
+
+.contribute-page .fund-card::after {
+  content: "";
+
+  position: absolute;
+
+  width: 180px;
+  height: 180px;
+
+  top: -90px;
+  right: -90px;
+
+  border: 1px solid rgba(64, 93, 75, 0.10);
+  border-radius: 50%;
+
+  transition:
+    transform 260ms ease,
+    border-color 260ms ease;
+
+  pointer-events: none;
+}
+
+.contribute-page .fund-card:hover {
+  transform: translateY(-5px);
+
+  border-color: rgba(64, 93, 75, 0.24);
+
+  box-shadow:
+    0 28px 70px rgba(33, 49, 41, 0.10);
+}
+
+.contribute-page .fund-card:hover::after {
+  transform: scale(1.12);
+
+  border-color: rgba(155, 128, 89, 0.24);
+}
+
+.contribute-page .fund-card h3 {
+  position: relative;
+
+  max-width: 390px;
+
+  margin: 0 0 14px;
+
+  color: var(--river-fund-deep);
+
+  font-size: clamp(1.45rem, 2.3vw, 2rem);
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+}
+
+.contribute-page .fund-card p {
+  position: relative;
+
+  max-width: 500px;
+
+  margin: 0;
+
+  color: var(--river-fund-muted);
+
+  font-size: 1rem;
+  line-height: 1.72;
+}
+
+.contribute-page .fund-card:nth-child(2)::before {
+  background:
+    linear-gradient(
+      90deg,
+      var(--river-fund-earth),
+      var(--river-fund-gold)
+    );
+}
+
+.contribute-page .fund-card:nth-child(3)::before {
+  background:
+    linear-gradient(
+      90deg,
+      var(--river-fund-leaf),
+      var(--river-fund-forest)
+    );
+}
+
+.contribute-page .fund-card:nth-child(4)::before {
+  background:
+    linear-gradient(
+      90deg,
+      var(--river-fund-gold),
+      var(--river-fund-forest)
+    );
+}
+
+
+/* ---------------------------------------------------------
+   RIVER FUND — STEWARDSHIP
+   --------------------------------------------------------- */
+
+.contribute-page .contribute-section {
+  position: relative;
+  overflow: hidden;
+
+  padding:
+    clamp(110px, 14vw, 180px)
+    0;
+
+  background: var(--river-fund-deep);
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.contribute-page .contribute-section::before {
+  content: "02";
+
+  position: absolute;
+
+  top: clamp(44px, 7vw, 88px);
+  right: max(24px, calc((100vw - 1180px) / 2));
+
+  color: rgba(255, 255, 255, 0.055);
+
+  font-size: clamp(5rem, 11vw, 10rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.07em;
+
+  pointer-events: none;
+}
+
+.contribute-page .contribute-section::after {
+  content: "";
+
+  position: absolute;
+
+  width: min(520px, 60vw);
+  aspect-ratio: 1;
+
+  left: -15%;
+  bottom: -52%;
+
+  border:
+    1px solid rgba(183, 155, 104, 0.13);
+
+  border-radius: 50%;
+
+  pointer-events: none;
+}
+
+.contribute-page .contribute-section .contribute-shell {
+  position: relative;
+
+  width: min(900px, calc(100% - 48px));
+
+  margin-left:
+    max(24px, calc((100vw - 1180px) / 2));
+}
+
+.contribute-page .contribute-section h2 {
+  max-width: 760px;
+
+  margin: 0 0 32px;
+
+  color: #fff;
+
+  font-size: clamp(2.4rem, 5vw, 4.8rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+
+.contribute-page .contribute-section p {
+  max-width: 760px;
+
+  margin: 0;
+
+  color: rgba(255, 255, 255, 0.72);
+
+  font-size: clamp(1.04rem, 1.5vw, 1.2rem);
+  line-height: 1.85;
+}
+
+.contribute-page .contribute-section p + p {
+  margin-top: 22px;
+
+  padding-top: 22px;
+
+  border-top:
+    1px solid rgba(255, 255, 255, 0.10);
+}
+
+
+/* ---------------------------------------------------------
+   RIVER FUND — RESPONSIVE
+   --------------------------------------------------------- */
+
+@media (max-width: 900px) {
+
+  .contribute-page .contribute-hero {
+    min-height: auto;
+  }
+
+  .contribute-page .contribute-hero .contribute-shell {
+    width: min(100% - 36px, 1180px);
+
+    padding-top: 110px;
+    padding-bottom: 92px;
+  }
+
+  .contribute-page .fund-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .contribute-page .fund-card {
+    min-height: 230px;
+  }
+
+  .contribute-page .contribute-options .contribute-shell,
+  .contribute-page .contribute-section .contribute-shell {
+    width: min(100% - 36px, 1180px);
+  }
+
+  .contribute-page .contribute-section .contribute-shell {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+
+@media (max-width: 600px) {
+
+  .contribute-page .contribute-hero .contribute-shell {
+    width: min(100% - 28px, 1180px);
+
+    padding-top: 88px;
+    padding-bottom: 76px;
+  }
+
+  .contribute-page .contribute-hero h1 {
+    font-size: clamp(3rem, 15vw, 4.6rem);
+  }
+
+  .contribute-page .contribute-hero h1 + p {
+    margin-top: 26px;
+  }
+
+  .contribute-page .contribute-hero .payment-button {
+    width: 100%;
+
+    margin-top: 30px;
+  }
+
+  .contribute-page .contribute-options {
+    padding-top: 76px;
+    padding-bottom: 88px;
+  }
+
+  .contribute-page .contribute-options .contribute-shell,
+  .contribute-page .contribute-section .contribute-shell {
+    width: min(100% - 28px, 1180px);
+  }
+
+  .contribute-page .contribute-options::before,
+  .contribute-page .contribute-section::before {
+    right: 14px;
+  }
+
+  .contribute-page .fund-card {
+    min-height: 210px;
+
+    padding: 28px 24px;
+  }
+
+  .contribute-page .contribute-section {
+    padding-top: 92px;
+    padding-bottom: 96px;
+  }
+}
+
+
+/* ---------------------------------------------------------
+   RIVER FUND — REDUCED MOTION
+   --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .contribute-page .fund-card,
+  .contribute-page .fund-card::after,
+  .contribute-page .contribute-hero .payment-button {
+    transition: none;
+  }
+
+  .contribute-page .fund-card:hover,
+  .contribute-page .contribute-hero .payment-button:hover,
+  .contribute-page .contribute-hero .payment-button:focus-visible {
+    transform: none;
+  }
+}
