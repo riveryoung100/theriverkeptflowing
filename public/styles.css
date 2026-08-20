@@ -14665,3 +14665,252 @@ body:has(main[data-pagefind-body]) .topic-index {
     }
 
 }
+
+
+
+/* WEBSITE PRODUCTION 012: PARTNER EXPERIENCE */
+
+/* ---------------------------------------------------------
+   Partner identity
+   --------------------------------------------------------- */
+
+.partner-page {
+    --partner-deep: #24342d;
+    --partner-green: #526f5d;
+    --partner-warm: #a38a5f;
+    --partner-soft: #f3f1e9;
+}
+
+
+/* ---------------------------------------------------------
+   Partnership hero
+   --------------------------------------------------------- */
+
+.partner-page .contribute-hero {
+    background:
+        radial-gradient(
+            circle at 78% 18%,
+            rgba(255, 255, 255, 0.66),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 22% 82%,
+            rgba(82, 111, 93, 0.10),
+            transparent 34%
+        ),
+        linear-gradient(
+            145deg,
+            #f4f2eb 0%,
+            #e8e5da 52%,
+            #ded9cb 100%
+        );
+}
+
+.partner-page .contribute-hero::before {
+    border-color: rgba(82, 111, 93, 0.11);
+}
+
+.partner-page .contribute-hero::after {
+    border-color: rgba(163, 138, 95, 0.10);
+}
+
+.partner-page .contribute-hero h1 {
+    max-width: 900px;
+}
+
+.partner-page .contribute-hero .section-label {
+    color: var(--partner-green);
+}
+
+
+/* ---------------------------------------------------------
+   Partnership pathways
+   --------------------------------------------------------- */
+
+.partner-page .contribute-options {
+    background:
+        linear-gradient(
+            180deg,
+            #fbfaf6 0%,
+            #f4f2eb 100%
+        );
+}
+
+.partner-page .contribution-grid {
+    gap: clamp(18px, 2.4vw, 28px);
+}
+
+.partner-page .contribution-card {
+    position: relative;
+    overflow: hidden;
+    min-height: 330px;
+    display: flex;
+    flex-direction: column;
+}
+
+.partner-page .contribution-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background:
+        linear-gradient(
+            90deg,
+            var(--partner-green),
+            var(--partner-warm)
+        );
+    transform: scaleX(0.28);
+    transform-origin: left center;
+    opacity: 0.72;
+    transition:
+        transform 200ms ease,
+        opacity 200ms ease;
+}
+
+.partner-page .contribution-card::after {
+    content: "";
+    position: absolute;
+    right: -80px;
+    bottom: -88px;
+    width: 190px;
+    height: 190px;
+    border-radius: 50%;
+    background:
+        radial-gradient(
+            circle,
+            rgba(82, 111, 93, 0.08) 0%,
+            rgba(82, 111, 93, 0) 72%
+        );
+    pointer-events: none;
+}
+
+.partner-page .contribution-card:hover::before,
+.partner-page .contribution-card:focus-within::before {
+    transform: scaleX(1);
+    opacity: 1;
+}
+
+.partner-page .contribution-card h3,
+.partner-page .contribution-card p,
+.partner-page .contribution-card a {
+    position: relative;
+    z-index: 1;
+}
+
+.partner-page .contribution-card h3 {
+    max-width: 16ch;
+}
+
+.partner-page .contribution-card a {
+    margin-top: auto;
+    padding-top: 30px;
+}
+
+
+/* ---------------------------------------------------------
+   Individual partnership character
+   --------------------------------------------------------- */
+
+.partner-page .contribution-card:nth-child(1) {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(250, 249, 245, 0.98),
+            rgba(238, 237, 230, 0.90)
+        );
+}
+
+.partner-page .contribution-card:nth-child(2) {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(246, 249, 245, 0.98),
+            rgba(230, 237, 230, 0.88)
+        );
+}
+
+.partner-page .contribution-card:nth-child(3) {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(249, 247, 241, 0.98),
+            rgba(239, 233, 220, 0.88)
+        );
+}
+
+
+/* ---------------------------------------------------------
+   Conversation destination
+   --------------------------------------------------------- */
+
+.partner-page #conversation {
+    position: relative;
+    background:
+        linear-gradient(
+            135deg,
+            var(--partner-deep) 0%,
+            #30463a 100%
+        );
+    border-top: 0;
+}
+
+.partner-page #conversation::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 10%;
+    width: 220px;
+    height: 1px;
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.36),
+            transparent
+        );
+}
+
+.partner-page #conversation h2 {
+    color: #f7f4ec;
+}
+
+.partner-page #conversation p {
+    color: rgba(247, 244, 236, 0.72);
+}
+
+
+/* ---------------------------------------------------------
+   Responsive refinement
+   --------------------------------------------------------- */
+
+@media (max-width: 900px) {
+
+    .partner-page .contribution-card {
+        min-height: 270px;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .partner-page .contribution-card {
+        min-height: 250px;
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   Reduced motion
+   --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .partner-page .contribution-card::before {
+        transition: none;
+    }
+
+}
