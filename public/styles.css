@@ -12013,3 +12013,474 @@ HOMEPAGE ECOSYSTEM
     }
 
 }
+
+
+/* =========================================================
+   WEBSITE PRODUCTION 006: TOPICS DISCOVERY EXPERIENCE
+   =========================================================
+
+   Topics are the thematic map of The River Kept Flowing.
+
+   This production layer strengthens the existing Topics
+   architecture without changing routes, content data,
+   discovery logic, or individual topic-page behavior.
+*/
+
+
+/* ---------------------------------------------------------
+   TOPICS HUB — PAGE RHYTHM
+   --------------------------------------------------------- */
+
+body:has(main[data-pagefind-body]) .topics-page,
+body:has(main[data-pagefind-body]) .topic-index {
+    position: relative;
+}
+
+
+.topics-hero,
+.topic-index-hero,
+.topics-header {
+    position: relative;
+    overflow: hidden;
+    padding-top: clamp(72px, 10vw, 132px);
+    padding-bottom: clamp(56px, 8vw, 104px);
+}
+
+
+.topics-hero::after,
+.topic-index-hero::after,
+.topics-header::after {
+    content: "";
+    position: absolute;
+    top: 8%;
+    right: -110px;
+    width: clamp(240px, 32vw, 470px);
+    aspect-ratio: 1;
+    pointer-events: none;
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            currentColor 8%,
+            transparent
+        );
+    border-radius: 50%;
+    opacity: 0.75;
+}
+
+
+.topics-hero > *,
+.topic-index-hero > *,
+.topics-header > * {
+    position: relative;
+    z-index: 1;
+}
+
+
+.topics-hero h1,
+.topic-index-hero h1,
+.topics-header h1 {
+    max-width: 900px;
+    margin-bottom: 24px;
+    font-size: clamp(46px, 8vw, 88px);
+    line-height: 0.96;
+    letter-spacing: -0.055em;
+}
+
+
+.topics-hero p,
+.topic-index-hero p,
+.topics-header p {
+    max-width: 720px;
+    font-size: clamp(17px, 2vw, 20px);
+    line-height: 1.78;
+}
+
+
+/* ---------------------------------------------------------
+   TOPIC COLLECTION GRID
+   --------------------------------------------------------- */
+
+.topics-grid,
+.topic-grid,
+.topic-list,
+.topics-list {
+    display: grid;
+    grid-template-columns:
+        repeat(
+            3,
+            minmax(0, 1fr)
+        );
+    gap: clamp(18px, 2.5vw, 30px);
+}
+
+
+.topic-card,
+.topics-card,
+.topic-entry,
+.topic-list-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 300px;
+    padding: clamp(28px, 3.5vw, 40px);
+    overflow: hidden;
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            currentColor 12%,
+            transparent
+        );
+    border-radius: 24px;
+    background:
+        color-mix(
+            in srgb,
+            currentColor 2.5%,
+            transparent
+        );
+    transition:
+        transform 180ms ease,
+        border-color 180ms ease,
+        background 180ms ease,
+        box-shadow 180ms ease;
+}
+
+
+.topic-card::after,
+.topics-card::after,
+.topic-entry::after,
+.topic-list-item::after {
+    content: "";
+    position: absolute;
+    right: -65px;
+    bottom: -75px;
+    width: 190px;
+    height: 190px;
+    pointer-events: none;
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            currentColor 7%,
+            transparent
+        );
+    border-radius: 50%;
+    transition:
+        transform 220ms ease,
+        opacity 220ms ease;
+}
+
+
+.topic-card:hover,
+.topics-card:hover,
+.topic-entry:hover,
+.topic-list-item:hover {
+    transform: translateY(-4px);
+    border-color:
+        color-mix(
+            in srgb,
+            currentColor 22%,
+            transparent
+        );
+    background:
+        color-mix(
+            in srgb,
+            currentColor 4%,
+            transparent
+        );
+    box-shadow:
+        0
+        22px
+        60px
+        rgba(0, 0, 0, 0.07);
+}
+
+
+.topic-card:hover::after,
+.topics-card:hover::after,
+.topic-entry:hover::after,
+.topic-list-item:hover::after {
+    transform: scale(1.08);
+    opacity: 0.9;
+}
+
+
+.topic-card h2,
+.topic-card h3,
+.topics-card h2,
+.topics-card h3,
+.topic-entry h2,
+.topic-entry h3,
+.topic-list-item h2,
+.topic-list-item h3 {
+    position: relative;
+    z-index: 1;
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: clamp(25px, 3vw, 34px);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+}
+
+
+.topic-card p,
+.topics-card p,
+.topic-entry p,
+.topic-list-item p {
+    position: relative;
+    z-index: 1;
+    max-width: 46ch;
+    margin-bottom: 26px;
+    line-height: 1.72;
+    opacity: 0.76;
+}
+
+
+.topic-card a,
+.topics-card a,
+.topic-entry a,
+.topic-list-item a {
+    position: relative;
+    z-index: 2;
+}
+
+
+.topic-card > a:last-child,
+.topics-card > a:last-child,
+.topic-entry > a:last-child,
+.topic-list-item > a:last-child {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    width: fit-content;
+    margin-top: auto;
+    color: inherit;
+    font-weight: 750;
+    text-decoration: none;
+}
+
+
+.topic-card > a:last-child::after,
+.topics-card > a:last-child::after,
+.topic-entry > a:last-child::after,
+.topic-list-item > a:last-child::after {
+    content: "→";
+    transition: transform 160ms ease;
+}
+
+
+.topic-card:hover > a:last-child::after,
+.topics-card:hover > a:last-child::after,
+.topic-entry:hover > a:last-child::after,
+.topic-list-item:hover > a:last-child::after {
+    transform: translateX(4px);
+}
+
+
+/* ---------------------------------------------------------
+   TOPIC LINKS / PILLS
+   --------------------------------------------------------- */
+
+.topic-links,
+.topics-links,
+.topic-tags,
+.topics-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+
+.topic-links a,
+.topics-links a,
+.topic-tags a,
+.topics-tags a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 15px;
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            currentColor 14%,
+            transparent
+        );
+    border-radius: 999px;
+    color: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    transition:
+        transform 160ms ease,
+        border-color 160ms ease,
+        background 160ms ease;
+}
+
+
+.topic-links a:hover,
+.topic-links a:focus-visible,
+.topics-links a:hover,
+.topics-links a:focus-visible,
+.topic-tags a:hover,
+.topic-tags a:focus-visible,
+.topics-tags a:hover,
+.topics-tags a:focus-visible {
+    transform: translateY(-2px);
+    border-color:
+        color-mix(
+            in srgb,
+            currentColor 28%,
+            transparent
+        );
+    background:
+        color-mix(
+            in srgb,
+            currentColor 5%,
+            transparent
+        );
+}
+
+
+/* ---------------------------------------------------------
+   INDIVIDUAL TOPIC PAGE EXPERIENCE
+   --------------------------------------------------------- */
+
+.topic-page,
+.topic-detail {
+    position: relative;
+}
+
+
+.topic-page h1,
+.topic-detail h1 {
+    max-width: 900px;
+    letter-spacing: -0.05em;
+}
+
+
+.topic-page .content-entry,
+.topic-detail .content-entry,
+.topic-page article,
+.topic-detail article {
+    transition:
+        transform 180ms ease,
+        border-color 180ms ease;
+}
+
+
+.topic-page .content-entry:hover,
+.topic-detail .content-entry:hover {
+    transform: translateY(-3px);
+}
+
+
+/* ---------------------------------------------------------
+   ACCESSIBILITY
+   --------------------------------------------------------- */
+
+.topic-card a:focus-visible,
+.topics-card a:focus-visible,
+.topic-entry a:focus-visible,
+.topic-list-item a:focus-visible,
+.topic-links a:focus-visible,
+.topics-links a:focus-visible,
+.topic-tags a:focus-visible,
+.topics-tags a:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 5px;
+}
+
+
+/* ---------------------------------------------------------
+   RESPONSIVE TOPICS EXPERIENCE
+   --------------------------------------------------------- */
+
+@media (max-width: 980px) {
+
+    .topics-grid,
+    .topic-grid,
+    .topic-list,
+    .topics-list {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+
+}
+
+
+@media (max-width: 680px) {
+
+    .topics-hero,
+    .topic-index-hero,
+    .topics-header {
+        padding-top: 58px;
+        padding-bottom: 48px;
+    }
+
+
+    .topics-grid,
+    .topic-grid,
+    .topic-list,
+    .topics-list {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+
+    .topic-card,
+    .topics-card,
+    .topic-entry,
+    .topic-list-item {
+        min-height: 0;
+        padding: 27px 24px;
+        border-radius: 20px;
+    }
+
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+    .topic-card,
+    .topics-card,
+    .topic-entry,
+    .topic-list-item,
+    .topic-card::after,
+    .topics-card::after,
+    .topic-entry::after,
+    .topic-list-item::after,
+    .topic-card > a:last-child::after,
+    .topics-card > a:last-child::after,
+    .topic-entry > a:last-child::after,
+    .topic-list-item > a:last-child::after,
+    .topic-links a,
+    .topics-links a,
+    .topic-tags a,
+    .topics-tags a {
+        transition: none;
+    }
+
+
+    .topic-card:hover,
+    .topics-card:hover,
+    .topic-entry:hover,
+    .topic-list-item:hover,
+    .topic-links a:hover,
+    .topic-links a:focus-visible,
+    .topics-links a:hover,
+    .topics-links a:focus-visible,
+    .topic-tags a:hover,
+    .topic-tags a:focus-visible,
+    .topics-tags a:hover,
+    .topics-tags a:focus-visible {
+        transform: none;
+    }
+
+}
