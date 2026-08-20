@@ -7,28 +7,28 @@ const products = [
     {
         title:"River Creations",
         description:
-            "Food, handmade products, merchandise, and resources created through The River Kept Flowing.",
-        action:"Explore creations",
-        href:"#products",
+            "Food, handmade products, merchandise, and other tangible creations belong here as they become genuinely available.",
+        action:"Explore the vision",
+        href:"/contribute/#products",
         type:"Products"
     },
 
     {
         title:"Guides and Resources",
         description:
-            "Practical knowledge, written resources, and tools created to help people build meaningful lives.",
-        action:"View resources",
+            "Explore practical guides, written resources, and tools already published through The River Kept Flowing.",
+        action:"Browse the library",
         href:"/library/",
         type:"Resources"
     },
 
     {
-        title:"Future Publications",
+        title:"Services and Guidance",
         description:
-            "Books, editions, and long-form works developed from the River archive.",
-        action:"Coming soon",
-        href:"#future",
-        type:"Publications"
+            "Work directly with the experience, lessons, and systems being developed through the River.",
+        action:"Explore services",
+        href:"/services/",
+        type:"Services"
     }
 
 ];
@@ -36,7 +36,7 @@ const products = [
 
 <MainLayout
     title="Shop | The River Kept Flowing"
-    description="Products, resources, and creations from The River Kept Flowing."
+    description="Explore creations, resources, and ways to participate in the work of The River Kept Flowing."
 >
 
 <main data-pagefind-body class="library-page">
@@ -54,8 +54,9 @@ Things created with purpose.
 </h1>
 
 <p>
-Support the River by participating in creations built from years of learning,
-crafting, teaching, and serving.
+The Shop is where useful creations from The River Kept Flowing can gather:
+practical resources, future food and handmade products, merchandise,
+publications, and other work built to serve people well.
 </p>
 
 </div>
@@ -63,11 +64,90 @@ crafting, teaching, and serving.
 </section>
 
 
-<section class="library-section">
+<section
+    id="products"
+    class="library-section"
+>
 
 <div class="library-shell">
 
+<div class="library-section__heading">
+
+<div>
+
+<p class="section-label">
+Explore the River
+</p>
+
+<h2>
+What you can find here.
+</h2>
+
+</div>
+
+<p>
+Some parts of the Shop already lead somewhere useful today.
+Physical products and direct purchasing will be added only when
+they are genuinely available.
+</p>
+
+</div>
+
 <ProductGrid items={products} />
+
+</div>
+
+</section>
+
+
+<section
+    id="future"
+    class="library-section"
+>
+
+<div class="library-shell">
+
+<div class="library-section__heading">
+
+<div>
+
+<p class="section-label">
+Built carefully
+</p>
+
+<h2>
+Commerce will grow with the work.
+</h2>
+
+</div>
+
+<p>
+The goal is not to fill a storefront with things simply to sell them.
+Products, publications, food, merchandise, and other creations will
+appear here when there is something real and worthwhile to offer.
+</p>
+
+</div>
+
+<p>
+Until then, the published library remains open to explore, services
+provide a way to work together, and the wider River shows how creation,
+service, community care, and stewardship fit into the same mission.
+</p>
+
+<p>
+<a href="/river-guides/">
+Explore River Guides
+</a>
+&nbsp;&nbsp;·&nbsp;&nbsp;
+<a href="/contribute/">
+See ways to participate
+</a>
+&nbsp;&nbsp;·&nbsp;&nbsp;
+<a href="/river-fund/">
+Learn about The River Fund
+</a>
+</p>
 
 </div>
 
