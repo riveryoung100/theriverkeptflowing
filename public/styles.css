@@ -17675,3 +17675,881 @@ body:has(main[data-pagefind-body]) .topic-index {
         transition: none;
     }
 }
+
+/* WEBSITE PRODUCTION 020: THE CURRENT EXPERIENCE */
+
+/*
+    Production 020 strengthens The Current as the living,
+    present-tense expression of The River Kept Flowing.
+
+    The experience should feel active rather than archival:
+    a field report from the life, work, responsibilities,
+    questions, commitments, faith, and systems being built now.
+
+    This layer intentionally preserves the existing Current
+    document structure and earlier Current styling while adding
+    hierarchy, depth, continuity, interaction, and responsive
+    refinement through additive overrides only.
+*/
+
+
+/* =========================================
+   CURRENT — EXPERIENCE FOUNDATION
+   ========================================= */
+
+.current-hero,
+.current-opening,
+.current-snapshot,
+.current-reality,
+.current-life,
+.current-questions,
+.current-commitments,
+.current-vision,
+.current-faith,
+.current-workbench,
+.current-navigation {
+    position: relative;
+    isolation: isolate;
+}
+
+.current-opening,
+.current-reality,
+.current-questions,
+.current-vision,
+.current-workbench,
+.current-navigation {
+    overflow: hidden;
+}
+
+
+/* =========================================
+   CURRENT — HERO
+   ========================================= */
+
+.current-hero {
+    min-height: min(920px, 92vh);
+    overflow: hidden;
+}
+
+.current-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(7, 17, 13, 0.08),
+            rgba(7, 17, 13, 0.34)
+        ),
+        radial-gradient(
+            circle at 50% 38%,
+            rgba(255, 255, 255, 0.055),
+            transparent 38%
+        );
+}
+
+.current-hero::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 34px;
+    width: 1px;
+    height: 70px;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0),
+            rgba(255, 255, 255, 0.42),
+            rgba(255, 255, 255, 0)
+        );
+}
+
+.current-hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.current-hero .eyebrow {
+    margin-bottom: 24px;
+    color: #e3c78f;
+    letter-spacing: 0.2em;
+}
+
+.current-hero h1 {
+    text-wrap: balance;
+    text-shadow:
+        0 18px 55px rgba(0, 0, 0, 0.2);
+}
+
+.current-hero-lead {
+    text-wrap: pretty;
+}
+
+.current-hero-actions {
+    margin-top: 8px;
+}
+
+.current-hero-actions .button {
+    min-width: 185px;
+    transition:
+        transform 180ms ease,
+        background-color 180ms ease,
+        border-color 180ms ease,
+        color 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.current-hero-actions .button:hover {
+    transform: translateY(-2px);
+}
+
+
+/* =========================================
+   CURRENT — OPENING
+   ========================================= */
+
+.current-opening::before {
+    content: "";
+    position: absolute;
+    top: -170px;
+    right: -150px;
+    width: 390px;
+    height: 390px;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: 50%;
+    background:
+        radial-gradient(
+            circle,
+            rgba(190, 146, 86, 0.09),
+            transparent 69%
+        );
+}
+
+.current-opening .reading-shell {
+    position: relative;
+}
+
+.current-opening .section-label {
+    margin-bottom: 25px;
+}
+
+.current-opening h2 {
+    max-width: 900px;
+    text-wrap: balance;
+}
+
+.current-opening-lead {
+    max-width: 820px;
+}
+
+.current-opening p:not(.current-opening-lead) {
+    max-width: 780px;
+}
+
+
+/* =========================================
+   CURRENT — WHAT I AM BUILDING
+   ========================================= */
+
+.current-snapshot::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.38;
+    background-image:
+        linear-gradient(
+            rgba(255, 255, 255, 0.025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.025) 1px,
+            transparent 1px
+        );
+    background-size: 72px 72px;
+    mask-image:
+        linear-gradient(
+            to bottom,
+            transparent,
+            #000 20%,
+            #000 80%,
+            transparent
+        );
+}
+
+.current-snapshot-heading h2 {
+    text-wrap: balance;
+}
+
+.current-build-grid {
+    align-items: stretch;
+}
+
+.current-build-card {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition:
+        transform 220ms ease,
+        border-color 220ms ease,
+        background-color 220ms ease,
+        box-shadow 220ms ease;
+}
+
+.current-build-card::after {
+    content: "";
+    position: absolute;
+    right: -70px;
+    bottom: -70px;
+    width: 180px;
+    height: 180px;
+    pointer-events: none;
+    border-radius: 50%;
+    background:
+        radial-gradient(
+            circle,
+            rgba(214, 182, 117, 0.12),
+            transparent 68%
+        );
+}
+
+.current-build-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(241, 223, 184, 0.25);
+    box-shadow:
+        0 24px 55px rgba(0, 0, 0, 0.15);
+}
+
+.current-card-number {
+    position: relative;
+    z-index: 1;
+}
+
+.current-build-card h3,
+.current-build-card p {
+    position: relative;
+    z-index: 1;
+}
+
+.current-build-card p {
+    margin-top: auto;
+}
+
+
+/* =========================================
+   CURRENT — REALITY OF THE SEASON
+   ========================================= */
+
+.current-reality::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 34%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        linear-gradient(
+            to left,
+            rgba(239, 232, 218, 0.48),
+            transparent
+        );
+}
+
+.current-reality-heading {
+    padding-top: 8px;
+}
+
+.current-reality-heading .section-label {
+    margin-bottom: 24px;
+}
+
+.current-reality-heading h2 {
+    text-wrap: balance;
+}
+
+.current-reality-body {
+    position: relative;
+}
+
+.current-reality-lead {
+    text-wrap: balance;
+}
+
+.current-quote {
+    position: relative;
+    text-wrap: balance;
+}
+
+.current-quote::after {
+    content: "“";
+    position: absolute;
+    top: -35px;
+    right: 12px;
+    color: rgba(189, 146, 86, 0.09);
+    font-family: Georgia, serif;
+    font-size: 150px;
+    line-height: 1;
+    pointer-events: none;
+}
+
+
+/* =========================================
+   CURRENT — ORDINARY LIFE
+   ========================================= */
+
+.current-life::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.02),
+            transparent 45%
+        );
+}
+
+.current-life-heading h2 {
+    text-wrap: balance;
+}
+
+.current-life-grid {
+    align-items: stretch;
+}
+
+.current-life-card {
+    position: relative;
+    overflow: hidden;
+    transition:
+        transform 200ms ease,
+        border-color 200ms ease,
+        background-color 200ms ease;
+}
+
+.current-life-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 38px;
+    width: 45px;
+    height: 2px;
+    background: #d6b675;
+    opacity: 0.75;
+}
+
+.current-life-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(244, 223, 183, 0.24);
+    background: rgba(255, 255, 255, 0.075);
+}
+
+.current-life-card h3 {
+    padding-top: 12px;
+}
+
+
+/* =========================================
+   CURRENT — QUESTIONS
+   ========================================= */
+
+.current-questions::before {
+    content: "";
+    position: absolute;
+    left: -130px;
+    bottom: -190px;
+    width: 420px;
+    height: 420px;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: 50%;
+    background:
+        radial-gradient(
+            circle,
+            rgba(112, 145, 133, 0.1),
+            transparent 68%
+        );
+}
+
+.current-questions-heading h2 {
+    text-wrap: balance;
+}
+
+.question-item {
+    position: relative;
+    transition:
+        padding-left 180ms ease,
+        background-color 180ms ease;
+}
+
+.question-item::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 0;
+    height: 1px;
+    background: #9b7548;
+    transition: width 260ms ease;
+}
+
+.question-item:hover {
+    padding-left: 12px;
+}
+
+.question-item:hover::after {
+    width: 100%;
+}
+
+.question-item p {
+    text-wrap: pretty;
+}
+
+
+/* =========================================
+   CURRENT — COMMITMENTS
+   ========================================= */
+
+.current-commitments::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(
+            circle at 88% 15%,
+            rgba(214, 182, 117, 0.1),
+            transparent 28%
+        );
+}
+
+.current-commitments-heading h2 {
+    text-wrap: balance;
+}
+
+.commitment-grid {
+    align-items: stretch;
+}
+
+.commitment-card {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    transition:
+        transform 210ms ease,
+        box-shadow 210ms ease,
+        background-color 210ms ease;
+}
+
+.commitment-card::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 90px;
+    height: 90px;
+    pointer-events: none;
+    border-right: 1px solid rgba(153, 114, 72, 0.16);
+    border-bottom: 1px solid rgba(153, 114, 72, 0.16);
+}
+
+.commitment-card:hover {
+    transform: translateY(-5px);
+    box-shadow:
+        0 25px 55px rgba(0, 0, 0, 0.2);
+}
+
+.commitment-card h3 {
+    text-wrap: balance;
+}
+
+.commitment-card p {
+    margin-top: auto;
+}
+
+
+/* =========================================
+   CURRENT — VISION
+   ========================================= */
+
+.current-vision::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: min(1120px, calc(100% - 48px));
+    height: 1px;
+    z-index: -1;
+    pointer-events: none;
+    transform: translateX(-50%);
+    background:
+        linear-gradient(
+            to right,
+            transparent,
+            rgba(139, 111, 73, 0.25),
+            transparent
+        );
+}
+
+.current-vision h2 {
+    max-width: 900px;
+    text-wrap: balance;
+}
+
+.current-vision-lead {
+    max-width: 820px;
+}
+
+.current-vision p {
+    max-width: 800px;
+}
+
+.current-vision-quote {
+    margin-top: 48px;
+}
+
+
+/* =========================================
+   CURRENT — FAITH
+   ========================================= */
+
+.current-faith {
+    overflow: hidden;
+}
+
+.current-faith::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 680px;
+    height: 680px;
+    z-index: -1;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background:
+        radial-gradient(
+            circle,
+            rgba(255, 255, 255, 0.055),
+            transparent 67%
+        );
+}
+
+.current-faith-overlay {
+    position: relative;
+}
+
+.current-faith h2 {
+    max-width: 920px;
+    text-wrap: balance;
+}
+
+.current-faith-lead {
+    max-width: 810px;
+}
+
+.current-faith p {
+    max-width: 790px;
+}
+
+.current-faith-quote {
+    max-width: 900px;
+    text-wrap: balance;
+}
+
+
+/* =========================================
+   CURRENT — WORKBENCH
+   ========================================= */
+
+.current-workbench::before {
+    content: "";
+    position: absolute;
+    top: -170px;
+    right: -160px;
+    width: 400px;
+    height: 400px;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: 50%;
+    background:
+        radial-gradient(
+            circle,
+            rgba(112, 145, 133, 0.09),
+            transparent 68%
+        );
+}
+
+.current-workbench-heading h2 {
+    text-wrap: balance;
+}
+
+.current-workbench-grid {
+    align-items: stretch;
+}
+
+.current-workbench-grid > * {
+    position: relative;
+    transition:
+        transform 200ms ease,
+        box-shadow 200ms ease,
+        border-color 200ms ease;
+}
+
+.current-workbench-grid > *:hover {
+    transform: translateY(-4px);
+}
+
+
+/* =========================================
+   CURRENT — NAVIGATION / CONTINUATION
+   ========================================= */
+
+.current-navigation::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: min(1120px, calc(100% - 48px));
+    height: 1px;
+    pointer-events: none;
+    transform: translateX(-50%);
+    background:
+        linear-gradient(
+            to right,
+            transparent,
+            rgba(118, 100, 73, 0.24),
+            transparent
+        );
+}
+
+.current-navigation h2 {
+    max-width: 850px;
+    text-wrap: balance;
+}
+
+.current-navigation > .reading-shell > p,
+.current-navigation > .section-shell > p {
+    max-width: 720px;
+}
+
+
+/* =========================================
+   CURRENT — FOCUS + ACCESSIBILITY
+   ========================================= */
+
+.current-hero a:focus-visible,
+.current-workbench a:focus-visible,
+.current-navigation a:focus-visible {
+    outline: 3px solid currentColor;
+    outline-offset: 5px;
+}
+
+
+/* =========================================
+   CURRENT — TABLET
+   ========================================= */
+
+@media (max-width: 900px) {
+
+    .current-hero {
+        min-height: auto;
+        padding-top: 150px;
+        padding-bottom: 120px;
+    }
+
+    .current-reality-grid {
+        grid-template-columns: 1fr;
+        gap: 55px;
+    }
+
+    .current-reality-heading {
+        position: static;
+        max-width: 720px;
+    }
+
+    .current-build-card {
+        min-height: 380px;
+    }
+
+    .current-life-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .current-life-card {
+        min-height: 300px;
+    }
+
+    .current-quote::after {
+        display: none;
+    }
+}
+
+
+/* =========================================
+   CURRENT — MOBILE
+   ========================================= */
+
+@media (max-width: 640px) {
+
+    .current-hero {
+        padding-top: 125px;
+        padding-bottom: 100px;
+    }
+
+    .current-hero::after {
+        height: 46px;
+        bottom: 24px;
+    }
+
+    .current-hero .eyebrow {
+        margin-bottom: 18px;
+    }
+
+    .current-hero h1 {
+        font-size: clamp(48px, 15vw, 68px);
+        letter-spacing: -0.055em;
+    }
+
+    .current-hero-lead {
+        margin-bottom: 34px;
+        font-size: 18px;
+        line-height: 1.68;
+    }
+
+    .current-hero-actions {
+        width: 100%;
+    }
+
+    .current-hero-actions .button {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .current-opening,
+    .current-snapshot,
+    .current-reality,
+    .current-life,
+    .current-questions,
+    .current-commitments,
+    .current-vision,
+    .current-workbench,
+    .current-navigation {
+        padding-top: 95px;
+        padding-bottom: 95px;
+    }
+
+    .current-faith-overlay {
+        padding-top: 100px;
+        padding-bottom: 100px;
+    }
+
+    .current-opening h2,
+    .current-snapshot-heading h2,
+    .current-life-heading h2,
+    .current-questions-heading h2,
+    .current-commitments-heading h2,
+    .current-vision h2,
+    .current-faith h2,
+    .current-workbench-heading h2,
+    .current-navigation h2 {
+        letter-spacing: -0.045em;
+    }
+
+    .current-build-grid,
+    .current-life-grid,
+    .commitment-grid,
+    .current-workbench-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .current-build-card,
+    .current-life-card,
+    .commitment-card {
+        min-height: 0;
+    }
+
+    .current-build-card {
+        padding: 34px 30px;
+    }
+
+    .current-card-number {
+        margin-bottom: 34px;
+    }
+
+    .current-life-card {
+        padding: 34px 30px;
+    }
+
+    .current-life-card::before {
+        left: 30px;
+    }
+
+    .question-item {
+        grid-template-columns: 44px 1fr;
+        gap: 16px;
+        padding: 27px 0;
+    }
+
+    .question-item:hover {
+        padding-left: 0;
+    }
+
+    .question-item p {
+        font-size: clamp(21px, 6vw, 28px);
+    }
+
+    .commitment-card {
+        padding: 34px 30px;
+    }
+
+    .commitment-card span {
+        margin-bottom: 34px;
+    }
+
+    .current-reality::after {
+        width: 60%;
+        opacity: 0.55;
+    }
+}
+
+
+/* =========================================
+   CURRENT — REDUCED MOTION
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .current-hero-actions .button,
+    .current-build-card,
+    .current-life-card,
+    .question-item,
+    .question-item::after,
+    .commitment-card,
+    .current-workbench-grid > * {
+        transition: none;
+    }
+
+    .current-hero-actions .button:hover,
+    .current-build-card:hover,
+    .current-life-card:hover,
+    .commitment-card:hover,
+    .current-workbench-grid > *:hover {
+        transform: none;
+    }
+}
