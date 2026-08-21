@@ -10542,9 +10542,7 @@ HOMEPAGE ECOSYSTEM
    INTRODUCTION
    ========================================================= */
 
-.home-page .intro-section {
-    padding: 120px 0;
-}
+
 
 .home-page .intro-section .section-shell {
     max-width: 980px;
@@ -10555,9 +10553,7 @@ HOMEPAGE ECOSYSTEM
    ECOSYSTEM
    ========================================================= */
 
-.home-page .home-ecosystem {
-    padding: 132px 0;
-}
+
 
 .home-page .home-ecosystem .section-heading {
     margin-bottom: 64px;
@@ -10584,9 +10580,7 @@ HOMEPAGE ECOSYSTEM
    PATHWAYS
    ========================================================= */
 
-.home-page .paths-section {
-    padding: 128px 0;
-}
+
 
 .home-page .paths-section .section-heading {
     margin-bottom: 58px;
@@ -10605,9 +10599,7 @@ HOMEPAGE ECOSYSTEM
    MISSION
    ========================================================= */
 
-.home-page .mission-section {
-    padding: 140px 0;
-}
+
 
 .home-page .mission-layout {
     display: grid;
