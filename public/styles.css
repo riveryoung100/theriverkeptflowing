@@ -10677,7 +10677,6 @@ HOMEPAGE ECOSYSTEM
 .home-page .tributary-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 18px;
 }
 
 .home-page .home-tributary-card {
