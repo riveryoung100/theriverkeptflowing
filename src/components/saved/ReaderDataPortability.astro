@@ -172,6 +172,8 @@
         dispatchReaderDataChanged,type ReaderBookmarkRecord,
         type ReaderMemoryRecord,
         type ReaderDataBackup,
+        getReaderBookmarkKey,
+        getReaderMemoryKey,
         safelyReadReaderStorage,
         safelyWriteReaderStorage
     } from "../../lib/readerPersistence";
@@ -872,8 +874,7 @@ function announce(
             ) => {
 
                 const key =
-                    READER_BOOKMARK_PREFIX +
-                    bookmark.pathname;
+                    getReaderBookmarkKey(bookmark.pathname);
 
                 const existingTimestamp =
                     readExistingTimestamp(
@@ -912,8 +913,7 @@ function announce(
                     "";
 
                 const key =
-                    READER_MEMORY_PREFIX +
-                    pathname;
+                    getReaderMemoryKey(pathname);
 
                 const existingTimestamp =
                     readExistingTimestamp(
@@ -1032,8 +1032,7 @@ function announce(
             ) => {
 
                 const key =
-                    READER_BOOKMARK_PREFIX +
-                    bookmark.pathname;
+                    getReaderBookmarkKey(bookmark.pathname);
 
                 const existingTimestamp =
                     readExistingTimestamp(
@@ -1091,8 +1090,7 @@ function announce(
                     "";
 
                 const key =
-                    READER_MEMORY_PREFIX +
-                    pathname;
+                    getReaderMemoryKey(pathname);
 
                 const existingTimestamp =
                     readExistingTimestamp(

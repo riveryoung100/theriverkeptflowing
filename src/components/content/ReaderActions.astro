@@ -95,7 +95,8 @@
         type ReaderDataChangeDetail,
         dispatchReaderDataChanged,
         type ReaderMemoryRecord,
-        getReaderStorageKey,
+        getReaderBookmarkKey,
+        getReaderMemoryKey,
         safelyReadReaderStorage,
         safelyWriteReaderStorage,
         safelyRemoveReaderStorage
@@ -493,9 +494,9 @@
             bookmarkButton,
             completeButton,
             bookmarkKey:
-                getReaderStorageKey(READER_BOOKMARK_PREFIX, window.location.pathname),
+                getReaderBookmarkKey(window.location.pathname),
             readingMemoryKey:
-                getReaderStorageKey(READER_MEMORY_PREFIX, window.location.pathname),
+                getReaderMemoryKey(window.location.pathname),
             statusTimer:
                 null
         };

@@ -50,7 +50,7 @@
         READER_MEMORY_PREFIX,
         READER_STORAGE_VERSION,
         type ReaderMemoryRecord,
-        getReaderStorageKey,
+        getReaderMemoryKey,
         safelyReadReaderStorage,
         safelyWriteReaderStorage,
         safelyRemoveReaderStorage
@@ -663,7 +663,7 @@ function getProgressPercentage(
             continueButton,
             dismissButton,
             storageKey:
-                getReaderStorageKey(READER_MEMORY_PREFIX, window.location.pathname),
+                getReaderMemoryKey(window.location.pathname),
             saveTimer:
                 null,
             lastSavedProgress:

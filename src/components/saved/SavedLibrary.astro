@@ -182,6 +182,7 @@
         dispatchReaderDataChanged,
         type ReaderBookmarkRecord,
         type ReaderMemoryRecord,
+        getReaderMemoryKey,
         safelyReadReaderStorage,
         safelyRemoveReaderStorage
     } from "../../lib/readerPersistence";
@@ -380,8 +381,7 @@ function clamp(
 
 
                 const memoryKey =
-                    READER_MEMORY_PREFIX +
-                    bookmark.pathname;
+                    getReaderMemoryKey(bookmark.pathname);
 
                 const memory =
                     parseMemory(
