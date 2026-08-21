@@ -12010,15 +12010,12 @@ HOMEPAGE ECOSYSTEM
    TOPICS HUB — PAGE RHYTHM
    --------------------------------------------------------- */
 
-body:has(main[data-pagefind-body]) .topics-page,
-body:has(main[data-pagefind-body]) .topic-index {
+body:has(main[data-pagefind-body]) .topics-page{
     position: relative;
 }
 
 
-.topics-hero,
-.topic-index-hero,
-.topics-header {
+.topics-hero{
     position: relative;
     overflow: hidden;
     padding-top: clamp(72px, 10vw, 132px);
@@ -12026,9 +12023,7 @@ body:has(main[data-pagefind-body]) .topic-index {
 }
 
 
-.topics-hero::after,
-.topic-index-hero::after,
-.topics-header::after {
+.topics-hero::after{
     content: "";
     position: absolute;
     top: 8%;
@@ -12048,17 +12043,13 @@ body:has(main[data-pagefind-body]) .topic-index {
 }
 
 
-.topics-hero > *,
-.topic-index-hero > *,
-.topics-header > * {
+.topics-hero > *{
     position: relative;
     z-index: 1;
 }
 
 
-.topics-hero h1,
-.topic-index-hero h1,
-.topics-header h1 {
+.topics-hero h1{
     max-width: 900px;
     margin-bottom: 24px;
     font-size: clamp(46px, 8vw, 88px);
@@ -12067,9 +12058,7 @@ body:has(main[data-pagefind-body]) .topic-index {
 }
 
 
-.topics-hero p,
-.topic-index-hero p,
-.topics-header p {
+.topics-hero p{
     max-width: 720px;
     font-size: clamp(17px, 2vw, 20px);
     line-height: 1.78;
@@ -12080,10 +12069,7 @@ body:has(main[data-pagefind-body]) .topic-index {
    TOPIC COLLECTION GRID
    --------------------------------------------------------- */
 
-.topics-grid,
-.topic-grid,
-.topic-list,
-.topics-list {
+.topics-grid{
     display: grid;
     grid-template-columns:
         repeat(
@@ -12094,10 +12080,7 @@ body:has(main[data-pagefind-body]) .topic-index {
 }
 
 
-.topic-card,
-.topics-card,
-.topic-entry,
-.topic-list-item {
+.topic-card{
     position: relative;
     display: flex;
     flex-direction: column;
@@ -12127,10 +12110,7 @@ body:has(main[data-pagefind-body]) .topic-index {
 }
 
 
-.topic-card::after,
-.topics-card::after,
-.topic-entry::after,
-.topic-list-item::after {
+.topic-card::after{
     content: "";
     position: absolute;
     right: -65px;
@@ -12152,10 +12132,7 @@ body:has(main[data-pagefind-body]) .topic-index {
 }
 
 
-.topic-card:hover,
-.topics-card:hover,
-.topic-entry:hover,
-.topic-list-item:hover {
+.topic-card:hover{
     transform: translateY(-4px);
     border-color:
         color-mix(
@@ -12177,23 +12154,14 @@ body:has(main[data-pagefind-body]) .topic-index {
 }
 
 
-.topic-card:hover::after,
-.topics-card:hover::after,
-.topic-entry:hover::after,
-.topic-list-item:hover::after {
+.topic-card:hover::after{
     transform: scale(1.08);
     opacity: 0.9;
 }
 
 
 .topic-card h2,
-.topic-card h3,
-.topics-card h2,
-.topics-card h3,
-.topic-entry h2,
-.topic-entry h3,
-.topic-list-item h2,
-.topic-list-item h3 {
+.topic-card h3{
     position: relative;
     z-index: 1;
     margin-top: 0;
@@ -12204,10 +12172,7 @@ body:has(main[data-pagefind-body]) .topic-index {
 }
 
 
-.topic-card p,
-.topics-card p,
-.topic-entry p,
-.topic-list-item p {
+.topic-card p{
     position: relative;
     z-index: 1;
     max-width: 46ch;
@@ -12217,19 +12182,13 @@ body:has(main[data-pagefind-body]) .topic-index {
 }
 
 
-.topic-card a,
-.topics-card a,
-.topic-entry a,
-.topic-list-item a {
+.topic-card a{
     position: relative;
     z-index: 2;
 }
 
 
-.topic-card > a:last-child,
-.topics-card > a:last-child,
-.topic-entry > a:last-child,
-.topic-list-item > a:last-child {
+.topic-card > a:last-child{
     display: inline-flex;
     align-items: center;
     gap: 9px;
@@ -12241,119 +12200,14 @@ body:has(main[data-pagefind-body]) .topic-index {
 }
 
 
-.topic-card > a:last-child::after,
-.topics-card > a:last-child::after,
-.topic-entry > a:last-child::after,
-.topic-list-item > a:last-child::after {
+.topic-card > a:last-child::after{
     content: "→";
     transition: transform 160ms ease;
 }
 
 
-.topic-card:hover > a:last-child::after,
-.topics-card:hover > a:last-child::after,
-.topic-entry:hover > a:last-child::after,
-.topic-list-item:hover > a:last-child::after {
+.topic-card:hover > a:last-child::after{
     transform: translateX(4px);
-}
-
-
-/* ---------------------------------------------------------
-   TOPIC LINKS / PILLS
-   --------------------------------------------------------- */
-
-.topic-links,
-.topics-links,
-.topic-tags,
-.topics-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-
-.topic-links a,
-.topics-links a,
-.topic-tags a,
-.topics-tags a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 40px;
-    padding: 0 15px;
-    border:
-        1px solid
-        color-mix(
-            in srgb,
-            currentColor 14%,
-            transparent
-        );
-    border-radius: 999px;
-    color: inherit;
-    font-size: 13px;
-    font-weight: 700;
-    line-height: 1;
-    text-decoration: none;
-    transition:
-        transform 160ms ease,
-        border-color 160ms ease,
-        background 160ms ease;
-}
-
-
-.topic-links a:hover,
-.topic-links a:focus-visible,
-.topics-links a:hover,
-.topics-links a:focus-visible,
-.topic-tags a:hover,
-.topic-tags a:focus-visible,
-.topics-tags a:hover,
-.topics-tags a:focus-visible {
-    transform: translateY(-2px);
-    border-color:
-        color-mix(
-            in srgb,
-            currentColor 28%,
-            transparent
-        );
-    background:
-        color-mix(
-            in srgb,
-            currentColor 5%,
-            transparent
-        );
-}
-
-
-/* ---------------------------------------------------------
-   INDIVIDUAL TOPIC PAGE EXPERIENCE
-   --------------------------------------------------------- */
-
-.topic-page,
-.topic-detail {
-    position: relative;
-}
-
-
-.topic-page h1,
-.topic-detail h1 {
-    max-width: 900px;
-    letter-spacing: -0.05em;
-}
-
-
-.topic-page .content-entry,
-.topic-detail .content-entry,
-.topic-page article,
-.topic-detail article {
-    transition:
-        transform 180ms ease,
-        border-color 180ms ease;
-}
-
-
-.topic-page .content-entry:hover,
-.topic-detail .content-entry:hover {
-    transform: translateY(-3px);
 }
 
 
@@ -12361,14 +12215,7 @@ body:has(main[data-pagefind-body]) .topic-index {
    ACCESSIBILITY
    --------------------------------------------------------- */
 
-.topic-card a:focus-visible,
-.topics-card a:focus-visible,
-.topic-entry a:focus-visible,
-.topic-list-item a:focus-visible,
-.topic-links a:focus-visible,
-.topics-links a:focus-visible,
-.topic-tags a:focus-visible,
-.topics-tags a:focus-visible {
+.topic-card a:focus-visible{
     outline: 2px solid currentColor;
     outline-offset: 5px;
 }
@@ -12380,10 +12227,7 @@ body:has(main[data-pagefind-body]) .topic-index {
 
 @media (max-width: 980px) {
 
-    .topics-grid,
-    .topic-grid,
-    .topic-list,
-    .topics-list {
+    .topics-grid{
         grid-template-columns:
             repeat(
                 2,
@@ -12396,27 +12240,19 @@ body:has(main[data-pagefind-body]) .topic-index {
 
 @media (max-width: 680px) {
 
-    .topics-hero,
-    .topic-index-hero,
-    .topics-header {
+    .topics-hero{
         padding-top: 58px;
         padding-bottom: 48px;
     }
 
 
-    .topics-grid,
-    .topic-grid,
-    .topic-list,
-    .topics-list {
+    .topics-grid{
         grid-template-columns: 1fr;
         gap: 16px;
     }
 
 
-    .topic-card,
-    .topics-card,
-    .topic-entry,
-    .topic-list-item {
+    .topic-card{
         min-height: 0;
         padding: 27px 24px;
         border-radius: 20px;
@@ -12428,37 +12264,13 @@ body:has(main[data-pagefind-body]) .topic-index {
 @media (prefers-reduced-motion: reduce) {
 
     .topic-card,
-    .topics-card,
-    .topic-entry,
-    .topic-list-item,
     .topic-card::after,
-    .topics-card::after,
-    .topic-entry::after,
-    .topic-list-item::after,
-    .topic-card > a:last-child::after,
-    .topics-card > a:last-child::after,
-    .topic-entry > a:last-child::after,
-    .topic-list-item > a:last-child::after,
-    .topic-links a,
-    .topics-links a,
-    .topic-tags a,
-    .topics-tags a {
+    .topic-card > a:last-child::after{
         transition: none;
     }
 
 
-    .topic-card:hover,
-    .topics-card:hover,
-    .topic-entry:hover,
-    .topic-list-item:hover,
-    .topic-links a:hover,
-    .topic-links a:focus-visible,
-    .topics-links a:hover,
-    .topics-links a:focus-visible,
-    .topic-tags a:hover,
-    .topic-tags a:focus-visible,
-    .topics-tags a:hover,
-    .topics-tags a:focus-visible {
+    .topic-card:hover{
         transform: none;
     }
 
