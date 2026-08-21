@@ -169,7 +169,7 @@
         READER_MEMORY_PREFIX,
         READER_BACKUP_FORMAT,
         READER_BACKUP_VERSION,
-        type ReaderBookmarkRecord,
+        dispatchReaderDataChanged,type ReaderBookmarkRecord,
         type ReaderMemoryRecord,
         type ReaderDataBackup,
         safelyReadReaderStorage,
@@ -1148,16 +1148,14 @@ function announce(
             state
         );
 
+        if (imported > 0) {
 
-        window.dispatchEvent(
-            new StorageEvent(
-                "storage",
-                {
-                    key:
-                        null
-                }
-            )
-        );
+            dispatchReaderDataChanged({
+                kind:
+                    "import"
+            });
+
+        }
 
 
         announce(

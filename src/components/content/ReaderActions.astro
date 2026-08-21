@@ -91,6 +91,9 @@
     import {
         READER_BOOKMARK_PREFIX,
         READER_MEMORY_PREFIX,
+        READER_DATA_CHANGED_EVENT,
+        type ReaderDataChangeDetail,
+        dispatchReaderDataChanged,
         type ReaderMemoryRecord,
         getReaderStorageKey,
         safelyReadReaderStorage,
@@ -358,12 +361,28 @@
         };
 
 
-        return safelyWriteReaderStorage(
-            state.readingMemoryKey,
-            JSON.stringify(
+        const written =
+            safelyWriteReaderStorage(
+                state.readingMemoryKey,
+                JSON.stringify(
                 updatedMemory
             )
-        );
+            );
+
+
+        if (written) {
+
+            dispatchReaderDataChanged({
+                kind:
+                    "memory",
+                pathname:
+                    window.location.pathname
+            });
+
+        }
+
+
+        return written;
 
     }
 
@@ -631,6 +650,15 @@
                     }
 
 
+
+                    dispatchReaderDataChanged({
+                        kind:
+                            "bookmark",
+                        pathname:
+                            window.location.pathname
+                    });
+
+
                     updateBookmarkButton(
                         state
                     );
@@ -673,6 +701,15 @@
                     return;
 
                 }
+
+
+
+                dispatchReaderDataChanged({
+                    kind:
+                        "bookmark",
+                    pathname:
+                        window.location.pathname
+                });
 
 
                 updateBookmarkButton(
@@ -736,6 +773,61 @@
 
             }
         );
+        window.addEventListener(
+            READER_DATA_CHANGED_EVENT,
+            (
+                event: Event
+            ) => {
+
+                const detail =
+                    (
+                        event as
+                        CustomEvent<ReaderDataChangeDetail>
+                    ).detail;
+
+
+                if (
+                    detail.pathname !==
+                        undefined &&
+                    detail.pathname !==
+                        window.location.pathname
+                ) {
+
+                    return;
+
+                }
+
+
+                if (
+                    detail.kind ===
+                        "bookmark" ||
+                    detail.kind ===
+                        "import"
+                ) {
+
+                    updateBookmarkButton(
+                        state
+                    );
+
+                }
+
+
+                if (
+                    detail.kind ===
+                        "memory" ||
+                    detail.kind ===
+                        "import"
+                ) {
+
+                    updateCompletionButton(
+                        state
+                    );
+
+                }
+
+            }
+        );
+
 
 
         window.addEventListener(

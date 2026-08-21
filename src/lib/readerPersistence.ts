@@ -14,6 +14,38 @@ export const READER_BACKUP_VERSION =
     1;
 
 
+
+
+export const READER_DATA_CHANGED_EVENT =
+    "river:reader-data-changed";
+
+
+export type ReaderDataChangeKind =
+    | "bookmark"
+    | "memory"
+    | "import";
+
+
+export interface ReaderDataChangeDetail {
+    kind: ReaderDataChangeKind;
+    pathname?: string;
+}
+
+
+export function dispatchReaderDataChanged(
+    detail: ReaderDataChangeDetail
+): void {
+
+    window.dispatchEvent(
+        new CustomEvent<ReaderDataChangeDetail>(
+            READER_DATA_CHANGED_EVENT,
+            {
+                detail
+            }
+        )
+    );
+
+}
 export interface ReaderBookmarkRecord {
     pathname: string;
     title: string;

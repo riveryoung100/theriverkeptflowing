@@ -177,6 +177,9 @@
     import {
         READER_BOOKMARK_PREFIX,
         READER_MEMORY_PREFIX,
+        READER_DATA_CHANGED_EVENT,
+        type ReaderDataChangeDetail,
+        dispatchReaderDataChanged,
         type ReaderBookmarkRecord,
         type ReaderMemoryRecord,
         safelyReadReaderStorage,
@@ -898,6 +901,15 @@ function clamp(
                 }
 
 
+
+                dispatchReaderDataChanged({
+                    kind:
+                        "bookmark",
+                    pathname:
+                        reading.pathname
+                });
+
+
                 announce(
                     state,
                     `${reading.title} was removed.`
@@ -1261,6 +1273,19 @@ function clamp(
 
             }
         );
+        window.addEventListener(
+            READER_DATA_CHANGED_EVENT,
+            (
+                _event: Event
+            ) => {
+
+                refreshSavedLibrary(
+                    state
+                );
+
+            }
+        );
+
 
 
         window.addEventListener(
