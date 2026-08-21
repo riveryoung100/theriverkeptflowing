@@ -1,4 +1,4 @@
-<section
+﻿<section
     class="reader-data-portability"
     data-reader-data-portability
     aria-labelledby="reader-data-portability-title"
@@ -164,41 +164,22 @@
 
 
 <script>
-
-    interface BookmarkRecord {
-        pathname: string;
-        title: string;
-        url: string;
-        savedAt: number;
-    }
-
-
-    interface ReadingMemoryRecord {
-        version?: number;
-        pathname?: string;
-        progress?: number;
-        scrollY?: number;
-        sectionId?: string;
-        sectionLabel?: string;
-        completed?: boolean;
-        updatedAt?: number;
-    }
+    import {
+        READER_BOOKMARK_PREFIX,
+        READER_MEMORY_PREFIX,
+        READER_BACKUP_FORMAT,
+        READER_BACKUP_VERSION,
+        type ReaderBookmarkRecord,
+        type ReaderMemoryRecord,
+        type ReaderDataBackup,
+        safelyReadReaderStorage,
+        safelyWriteReaderStorage
+    } from "../../lib/readerPersistence";
 
 
-    interface ReaderDataBackup {
-        format:
-            "the-river-kept-flowing-reader-data";
-        version:
-            1;
-        exportedAt:
-            number;
-        origin:
-            string;
-        bookmarks:
-            BookmarkRecord[];
-        readingMemory:
-            ReadingMemoryRecord[];
-    }
+
+
+
 
 
     interface ImportPreview {
@@ -243,66 +224,7 @@
         statusTimer:
             number | null;
     }
-
-
-    const BOOKMARK_PREFIX =
-        "river-reading-bookmark:";
-
-    const MEMORY_PREFIX =
-        "river-reading-memory:";
-
-    const BACKUP_FORMAT =
-        "the-river-kept-flowing-reader-data";
-
-    const BACKUP_VERSION =
-        1;
-
-
-    function safelyReadStorage(
-        key: string
-    ): string | null {
-
-        try {
-
-            return window.localStorage.getItem(
-                key
-            );
-
-        }
-        catch {
-
-            return null;
-
-        }
-
-    }
-
-
-    function safelyWriteStorage(
-        key: string,
-        value: string
-    ): boolean {
-
-        try {
-
-            window.localStorage.setItem(
-                key,
-                value
-            );
-
-            return true;
-
-        }
-        catch {
-
-            return false;
-
-        }
-
-    }
-
-
-    function announce(
+function announce(
         state: PortabilityState,
         message: string
     ): void {
@@ -357,7 +279,7 @@
 
     function parseBookmarkRecord(
         value: unknown
-    ): BookmarkRecord | null {
+    ): ReaderBookmarkRecord | null {
 
         if (
             typeof value !==
@@ -372,7 +294,7 @@
 
 
         const record =
-            value as Partial<BookmarkRecord>;
+            value as Partial<ReaderBookmarkRecord>;
 
 
         if (
@@ -419,7 +341,7 @@
 
     function parseMemoryRecord(
         value: unknown
-    ): ReadingMemoryRecord | null {
+    ): ReaderMemoryRecord | null {
 
         if (
             typeof value !==
@@ -434,7 +356,7 @@
 
 
         const record =
-            value as ReadingMemoryRecord;
+            value as ReaderMemoryRecord;
 
 
         if (
@@ -532,11 +454,11 @@
     function collectReaderData(): ReaderDataBackup {
 
         const bookmarks:
-            BookmarkRecord[] =
+            ReaderBookmarkRecord[] =
             [];
 
         const readingMemory:
-            ReadingMemoryRecord[] =
+            ReaderMemoryRecord[] =
             [];
 
 
@@ -563,7 +485,7 @@
 
 
                 const stored =
-                    safelyReadStorage(
+                    safelyReadReaderStorage(
                         key
                     );
 
@@ -596,7 +518,7 @@
 
                 if (
                     key.startsWith(
-                        BOOKMARK_PREFIX
+                        READER_BOOKMARK_PREFIX
                     )
                 ) {
 
@@ -622,7 +544,7 @@
 
                 if (
                     key.startsWith(
-                        MEMORY_PREFIX
+                        READER_MEMORY_PREFIX
                     )
                 ) {
 
@@ -649,9 +571,9 @@
 
             return {
                 format:
-                    BACKUP_FORMAT,
+                    READER_BACKUP_FORMAT,
                 version:
-                    BACKUP_VERSION,
+                    READER_BACKUP_VERSION,
                 exportedAt:
                     Date.now(),
                 origin:
@@ -703,9 +625,9 @@
 
         return {
             format:
-                BACKUP_FORMAT,
+                READER_BACKUP_FORMAT,
             version:
-                BACKUP_VERSION,
+                READER_BACKUP_VERSION,
             exportedAt:
                 Date.now(),
             origin:
@@ -813,9 +735,9 @@
 
         if (
             candidate.format !==
-                BACKUP_FORMAT ||
+                READER_BACKUP_FORMAT ||
             candidate.version !==
-                BACKUP_VERSION ||
+                READER_BACKUP_VERSION ||
             !Array.isArray(
                 candidate.bookmarks
             ) ||
@@ -837,7 +759,7 @@
                 .filter(
                     (
                         record
-                    ): record is BookmarkRecord => {
+                    ): record is ReaderBookmarkRecord => {
 
                         return record !==
                             null;
@@ -854,7 +776,7 @@
                 .filter(
                     (
                         record
-                    ): record is ReadingMemoryRecord => {
+                    ): record is ReaderMemoryRecord => {
 
                         return record !==
                             null;
@@ -865,9 +787,9 @@
 
         return {
             format:
-                BACKUP_FORMAT,
+                READER_BACKUP_FORMAT,
             version:
-                BACKUP_VERSION,
+                READER_BACKUP_VERSION,
             exportedAt:
                 isFiniteNumber(
                     candidate.exportedAt
@@ -894,7 +816,7 @@
     ): number {
 
         const stored =
-            safelyReadStorage(
+            safelyReadReaderStorage(
                 key
             );
 
@@ -950,7 +872,7 @@
             ) => {
 
                 const key =
-                    BOOKMARK_PREFIX +
+                    READER_BOOKMARK_PREFIX +
                     bookmark.pathname;
 
                 const existingTimestamp =
@@ -990,7 +912,7 @@
                     "";
 
                 const key =
-                    MEMORY_PREFIX +
+                    READER_MEMORY_PREFIX +
                     pathname;
 
                 const existingTimestamp =
@@ -1110,7 +1032,7 @@
             ) => {
 
                 const key =
-                    BOOKMARK_PREFIX +
+                    READER_BOOKMARK_PREFIX +
                     bookmark.pathname;
 
                 const existingTimestamp =
@@ -1134,7 +1056,7 @@
 
 
                 const written =
-                    safelyWriteStorage(
+                    safelyWriteReaderStorage(
                         key,
                         JSON.stringify(
                             bookmark
@@ -1169,7 +1091,7 @@
                     "";
 
                 const key =
-                    MEMORY_PREFIX +
+                    READER_MEMORY_PREFIX +
                     pathname;
 
                 const existingTimestamp =
@@ -1197,7 +1119,7 @@
 
 
                 const written =
-                    safelyWriteStorage(
+                    safelyWriteReaderStorage(
                         key,
                         JSON.stringify(
                             memory

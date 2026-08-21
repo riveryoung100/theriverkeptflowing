@@ -1,4 +1,4 @@
-<section
+﻿<section
     class="reader-actions"
     data-reader-actions
     aria-labelledby="reader-actions-title"
@@ -88,6 +88,15 @@
 
 
 <script>
+    import {
+        READER_BOOKMARK_PREFIX,
+        READER_MEMORY_PREFIX,
+        type ReaderMemoryRecord,
+        getReaderStorageKey,
+        safelyReadReaderStorage,
+        safelyWriteReaderStorage,
+        safelyRemoveReaderStorage
+    } from "../../lib/readerPersistence";
 
     interface ReaderActionState {
         status: HTMLElement;
@@ -100,25 +109,6 @@
         readingMemoryKey: string;
         statusTimer: number | null;
     }
-
-
-    interface ReadingMemoryRecord {
-        version?: number;
-        pathname?: string;
-        progress?: number;
-        scrollY?: number;
-        sectionId?: string;
-        sectionLabel?: string;
-        completed?: boolean;
-        updatedAt?: number;
-    }
-
-
-    const BOOKMARK_PREFIX =
-        "river-reading-bookmark:";
-
-    const READING_MEMORY_PREFIX =
-        "river-reading-memory:";
 
 
     function getPageTitle(): string {
@@ -158,84 +148,6 @@
             canonical ||
             window.location.href
         );
-
-    }
-
-
-    function getStorageKey(
-        prefix: string
-    ): string {
-
-        return (
-            prefix +
-            window.location.pathname
-        );
-
-    }
-
-
-    function safelyReadStorage(
-        key: string
-    ): string | null {
-
-        try {
-
-            return window.localStorage.getItem(
-                key
-            );
-
-        }
-        catch {
-
-            return null;
-
-        }
-
-    }
-
-
-    function safelyWriteStorage(
-        key: string,
-        value: string
-    ): boolean {
-
-        try {
-
-            window.localStorage.setItem(
-                key,
-                value
-            );
-
-            return true;
-
-        }
-        catch {
-
-            return false;
-
-        }
-
-    }
-
-
-    function safelyRemoveStorage(
-        key: string
-    ): boolean {
-
-        try {
-
-            window.localStorage.removeItem(
-                key
-            );
-
-            return true;
-
-        }
-        catch {
-
-            return false;
-
-        }
 
     }
 
@@ -349,7 +261,7 @@
     ): void {
 
         const bookmarked =
-            safelyReadStorage(
+            safelyReadReaderStorage(
                 state.bookmarkKey
             ) !==
             null;
@@ -373,10 +285,10 @@
 
     function readReadingMemory(
         state: ReaderActionState
-    ): ReadingMemoryRecord {
+    ): ReaderMemoryRecord {
 
         const stored =
-            safelyReadStorage(
+            safelyReadReaderStorage(
                 state.readingMemoryKey
             );
 
@@ -392,7 +304,7 @@
 
             return JSON.parse(
                 stored
-            ) as ReadingMemoryRecord;
+            ) as ReaderMemoryRecord;
 
         }
         catch {
@@ -416,7 +328,7 @@
 
 
         const updatedMemory:
-            ReadingMemoryRecord = {
+            ReaderMemoryRecord = {
             ...existingMemory,
             version:
                 existingMemory.version ??
@@ -446,7 +358,7 @@
         };
 
 
-        return safelyWriteStorage(
+        return safelyWriteReaderStorage(
             state.readingMemoryKey,
             JSON.stringify(
                 updatedMemory
@@ -562,13 +474,9 @@
             bookmarkButton,
             completeButton,
             bookmarkKey:
-                getStorageKey(
-                    BOOKMARK_PREFIX
-                ),
+                getReaderStorageKey(READER_BOOKMARK_PREFIX, window.location.pathname),
             readingMemoryKey:
-                getStorageKey(
-                    READING_MEMORY_PREFIX
-                ),
+                getReaderStorageKey(READER_MEMORY_PREFIX, window.location.pathname),
             statusTimer:
                 null
         };
@@ -697,7 +605,7 @@
             () => {
 
                 const currentlySaved =
-                    safelyReadStorage(
+                    safelyReadReaderStorage(
                         state.bookmarkKey
                     ) !==
                     null;
@@ -706,7 +614,7 @@
                 if (currentlySaved) {
 
                     const removed =
-                        safelyRemoveStorage(
+                        safelyRemoveReaderStorage(
                             state.bookmarkKey
                         );
 
@@ -740,7 +648,7 @@
 
 
                 const saved =
-                    safelyWriteStorage(
+                    safelyWriteReaderStorage(
                         state.bookmarkKey,
                         JSON.stringify({
                             pathname:

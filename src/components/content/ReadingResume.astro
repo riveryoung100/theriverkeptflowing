@@ -1,4 +1,4 @@
-<section
+﻿<section
     class="reading-resume"
     data-reading-resume
     aria-labelledby="reading-resume-title"
@@ -46,20 +46,16 @@
 
 
 <script>
-
-    interface ReadingMemory {
-        version: number;
-        pathname: string;
-        progress: number;
-        scrollY: number;
-        sectionId: string;
-        sectionLabel: string;
-        completed: boolean;
-        updatedAt: number;
-    }
-
-
-    interface ReadingMemoryState {
+    import {
+        READER_MEMORY_PREFIX,
+        READER_STORAGE_VERSION,
+        type ReaderMemoryRecord,
+        getReaderStorageKey,
+        safelyReadReaderStorage,
+        safelyWriteReaderStorage,
+        safelyRemoveReaderStorage
+    } from "../../lib/readerPersistence";
+interface ReadingMemoryState {
         root: HTMLElement;
         article: HTMLElement;
         message: HTMLElement;
@@ -69,15 +65,7 @@
         saveTimer: number | null;
         lastSavedProgress: number;
     }
-
-
-    const STORAGE_PREFIX =
-        "river-reading-memory:";
-
-    const STORAGE_VERSION =
-        1;
-
-    const MINIMUM_RESUME_PROGRESS =
+const MINIMUM_RESUME_PROGRESS =
         5;
 
     const MAXIMUM_RESUME_PROGRESS =
@@ -112,28 +100,14 @@
         );
 
     }
-
-
-    function getStorageKey(): string {
-
-        return (
-            STORAGE_PREFIX +
-            window.location.pathname
-        );
-
-    }
-
-
-    function readMemory(
+function readMemory(
         storageKey: string
-    ): ReadingMemory | null {
+    ): ReaderMemoryRecord | null {
 
         try {
 
             const storedValue =
-                window.localStorage.getItem(
-                    storageKey
-                );
+                safelyReadReaderStorage(storageKey);
 
 
             if (!storedValue) {
@@ -146,12 +120,12 @@
             const parsed =
                 JSON.parse(
                     storedValue
-                ) as Partial<ReadingMemory>;
+                ) as Partial<ReaderMemoryRecord>;
 
 
             if (
                 parsed.version !==
-                    STORAGE_VERSION ||
+                    READER_STORAGE_VERSION ||
                 parsed.pathname !==
                     window.location.pathname ||
                 typeof parsed.progress !==
@@ -173,9 +147,7 @@
                 MAX_MEMORY_AGE
             ) {
 
-                window.localStorage.removeItem(
-                    storageKey
-                );
+                safelyRemoveReaderStorage(storageKey);
 
                 return null;
 
@@ -184,7 +156,7 @@
 
             return {
                 version:
-                    STORAGE_VERSION,
+                    READER_STORAGE_VERSION,
                 pathname:
                     parsed.pathname,
                 progress:
@@ -220,53 +192,29 @@
 
     }
 
-
     function writeMemory(
         storageKey: string,
-        memory: ReadingMemory
+        memory: ReaderMemoryRecord
     ): void {
 
-        try {
-
-            window.localStorage.setItem(
-                storageKey,
-                JSON.stringify(
-                    memory
-                )
-            );
-
-        }
-        catch {
-
-            // Reading memory is optional.
-            // The page continues normally if storage is unavailable.
-
-        }
+        safelyWriteReaderStorage(
+            storageKey,
+            JSON.stringify(
+                memory
+            )
+        );
 
     }
-
-
-    function removeMemory(
+function removeMemory(
         storageKey: string
     ): void {
 
-        try {
-
-            window.localStorage.removeItem(
-                storageKey
-            );
-
-        }
-        catch {
-
-            // Storage may be disabled by the browser.
-
-        }
+        safelyRemoveReaderStorage(
+            storageKey
+        );
 
     }
-
-
-    function getProgressPercentage(
+function getProgressPercentage(
         article: HTMLElement
     ): number {
 
@@ -435,7 +383,7 @@
 
     function createMemory(
         state: ReadingMemoryState
-    ): ReadingMemory {
+    ): ReaderMemoryRecord {
 
         const progress =
             getProgressPercentage(
@@ -448,7 +396,7 @@
 
         return {
             version:
-                STORAGE_VERSION,
+                READER_STORAGE_VERSION,
             pathname:
                 window.location.pathname,
             progress,
@@ -541,7 +489,7 @@
 
 
     function formatResumeMessage(
-        memory: ReadingMemory
+        memory: ReaderMemoryRecord
     ): string {
 
         if (
@@ -549,7 +497,7 @@
         ) {
 
             return (
-                `You stopped near “${memory.sectionLabel}” ` +
+                `You stopped near â€œ${memory.sectionLabel}â€ ` +
                 `at ${memory.progress}% complete.`
             );
 
@@ -565,7 +513,7 @@
 
 
     function scrollToMemory(
-        memory: ReadingMemory
+        memory: ReaderMemoryRecord
     ): void {
 
         const reducedMotion =
@@ -633,7 +581,7 @@
 
 
     function shouldOfferResume(
-        memory: ReadingMemory
+        memory: ReaderMemoryRecord
     ): boolean {
 
         return (
@@ -715,7 +663,7 @@
             continueButton,
             dismissButton,
             storageKey:
-                getStorageKey(),
+                getReaderStorageKey(READER_MEMORY_PREFIX, window.location.pathname),
             saveTimer:
                 null,
             lastSavedProgress:

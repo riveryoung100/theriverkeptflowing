@@ -1,4 +1,4 @@
-<section
+﻿<section
     class="saved-library"
     data-saved-library
     aria-labelledby="saved-library-title"
@@ -174,25 +174,17 @@
 
 
 <script>
+    import {
+        READER_BOOKMARK_PREFIX,
+        READER_MEMORY_PREFIX,
+        type ReaderBookmarkRecord,
+        type ReaderMemoryRecord,
+        safelyReadReaderStorage,
+        safelyRemoveReaderStorage
+    } from "../../lib/readerPersistence";
 
-    interface BookmarkRecord {
-        pathname: string;
-        title: string;
-        url: string;
-        savedAt: number;
-    }
 
 
-    interface ReadingMemoryRecord {
-        version?: number;
-        pathname?: string;
-        progress?: number;
-        scrollY?: number;
-        sectionId?: string;
-        sectionLabel?: string;
-        completed?: boolean;
-        updatedAt?: number;
-    }
 
 
     interface SavedReading {
@@ -222,16 +214,7 @@
         statusTimer: number | null;
         readings: SavedReading[];
     }
-
-
-    const BOOKMARK_PREFIX =
-        "river-reading-bookmark:";
-
-    const MEMORY_PREFIX =
-        "river-reading-memory:";
-
-
-    function clamp(
+function clamp(
         value: number,
         minimum: number,
         maximum: number
@@ -248,59 +231,21 @@
     }
 
 
-    function safelyReadStorage(
-        key: string
-    ): string | null {
-
-        try {
-
-            return window.localStorage.getItem(
-                key
-            );
-
-        }
-        catch {
-
-            return null;
-
-        }
-
-    }
 
 
-    function safelyRemoveStorage(
-        key: string
-    ): boolean {
-
-        try {
-
-            window.localStorage.removeItem(
-                key
-            );
-
-            return true;
-
-        }
-        catch {
-
-            return false;
-
-        }
-
-    }
 
 
     function parseBookmark(
         key: string,
         value: string
-    ): BookmarkRecord | null {
+    ): ReaderBookmarkRecord | null {
 
         try {
 
             const parsed =
                 JSON.parse(
                     value
-                ) as Partial<BookmarkRecord>;
+                ) as Partial<ReaderBookmarkRecord>;
 
 
             if (
@@ -333,7 +278,7 @@
         }
         catch {
 
-            safelyRemoveStorage(
+            safelyRemoveReaderStorage(
                 key
             );
 
@@ -346,7 +291,7 @@
 
     function parseMemory(
         value: string | null
-    ): ReadingMemoryRecord {
+    ): ReaderMemoryRecord {
 
         if (!value) {
 
@@ -359,7 +304,7 @@
 
             return JSON.parse(
                 value
-            ) as ReadingMemoryRecord;
+            ) as ReaderMemoryRecord;
 
         }
         catch {
@@ -395,7 +340,7 @@
                 if (
                     !key ||
                     !key.startsWith(
-                        BOOKMARK_PREFIX
+                        READER_BOOKMARK_PREFIX
                     )
                 ) {
 
@@ -405,7 +350,7 @@
 
 
                 const storedBookmark =
-                    safelyReadStorage(
+                    safelyReadReaderStorage(
                         key
                     );
 
@@ -432,12 +377,12 @@
 
 
                 const memoryKey =
-                    MEMORY_PREFIX +
+                    READER_MEMORY_PREFIX +
                     bookmark.pathname;
 
                 const memory =
                     parseMemory(
-                        safelyReadStorage(
+                        safelyReadReaderStorage(
                             memoryKey
                         )
                     );
@@ -936,7 +881,7 @@
             () => {
 
                 const removed =
-                    safelyRemoveStorage(
+                    safelyRemoveReaderStorage(
                         reading.bookmarkKey
                     );
 
@@ -1328,10 +1273,10 @@
                     event.key ===
                         null ||
                     event.key.startsWith(
-                        BOOKMARK_PREFIX
+                        READER_BOOKMARK_PREFIX
                     ) ||
                     event.key.startsWith(
-                        MEMORY_PREFIX
+                        READER_MEMORY_PREFIX
                     )
                 ) {
 
