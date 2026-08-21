@@ -10826,18 +10826,9 @@ HOMEPAGE ECOSYSTEM
         width: min(100% - 36px, 1180px);
     }
 
-    .home-page .intro-section,
-    .home-page .home-ecosystem,
-    .home-page .paths-section,
-    .home-page .mission-section,
-    .home-page .tributaries-section,
-    .home-page .latest-section {
-        padding: 88px 0;
-    }
 
-    .home-page .invitation-section {
-        padding: 82px 0;
-    }
+
+
 
     .home-page .home-ecosystem .section-heading,
     .home-page .paths-section .section-heading,
