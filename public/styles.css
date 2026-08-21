@@ -249,11 +249,7 @@ HERO
 }
 
 
-.hero-content {
-    position: relative;
-    z-index: 1;
-    max-width: 1040px;
-}
+
 
 
 .hero .eyebrow {
