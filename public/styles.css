@@ -7005,41 +7005,12 @@ a:hover,a:focus-visible {
   margin-inline:auto
 }
 
-.site-header {
-  position:sticky;
-  top:0;
-  z-index:100;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  min-height:72px;
-  padding:0 5vw;
-  background:rgba(246,243,236,.95);
-  border-bottom:1px solid rgba(216,209,196,.85);
-  backdrop-filter:blur(12px)
-}
-
 .brand {
   color:var(--text);
   font-family:Arial,Helvetica,sans-serif;
   font-size:.96rem;
   font-weight:800;
   letter-spacing:.06em;
-  text-decoration:none;
-  text-transform:uppercase
-}
-
-.site-nav {
-  display:flex;
-  gap:26px
-}
-
-.site-nav a {
-  color:var(--text);
-  font-family:Arial,Helvetica,sans-serif;
-  font-size:.82rem;
-  font-weight:700;
-  letter-spacing:.04em;
   text-decoration:none;
   text-transform:uppercase
 }
@@ -7396,19 +7367,6 @@ blockquote {
   margin:8px 8px 0 0
 }
 
-.site-footer {
-  padding:42px 20px;
-  background:#1f2a25;
-  color:rgba(255,255,255,.72);
-  text-align:center;
-  font-family:Arial,Helvetica,sans-serif;
-  font-size:.8rem
-}
-
-.site-footer p {
-  margin:3px 0
-}
-
 @media(max-width:900px) {
   .reading-layout {
     display:block;
@@ -7446,15 +7404,6 @@ blockquote {
 @media(max-width:650px) {
   body {
     font-size:17px
-  }
-
-  .site-header {
-    min-height:64px;
-    padding-inline:20px
-  }
-
-  .site-nav a:not(:first-child) {
-    display:none
   }
 
   .brand {
@@ -7504,7 +7453,7 @@ blockquote {
 }
 
 @media print {
-  .site-header,.hero-actions,.reading-nav,.next-link,.site-footer {
+  .hero-actions,.reading-nav,.next-link {
     display:none
   }
 
