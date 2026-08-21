@@ -10678,9 +10678,7 @@ HOMEPAGE ECOSYSTEM
    TRIBUTARIES
    ========================================================= */
 
-.home-page .tributaries-section {
-    padding: 140px 0;
-}
+
 
 .home-page .tributaries-section .section-heading {
     margin-bottom: 62px;
@@ -10717,9 +10715,7 @@ HOMEPAGE ECOSYSTEM
    LATEST WORK
    ========================================================= */
 
-.home-page .latest-section {
-    padding: 140px 0;
-}
+
 
 .home-page .latest-section > .section-shell > .section-heading {
     display: flex;
@@ -10757,9 +10753,7 @@ HOMEPAGE ECOSYSTEM
    INVITATION
    ========================================================= */
 
-.home-page .invitation-section {
-    padding: 112px 0;
-}
+
 
 .home-page .invitation-layout {
     display: grid;
@@ -11228,6 +11222,16 @@ HOMEPAGE ECOSYSTEM
     }
 
 }
+
+/* WEBSITE PRODUCTION 038:
+   CANONICAL HOMEPAGE BODY-RHYTHM OWNERSHIP
+
+   Production 004 and later homepage rules are the authoritative
+   cascade layer for homepage section spacing and responsive rhythm.
+
+   Earlier Production 002 spacing declarations may remain only when
+   they provide a property not superseded by this canonical layer.
+*/
 
 /* WEBSITE PRODUCTION 004: HOMEPAGE BODY EXPERIENCE */
 
