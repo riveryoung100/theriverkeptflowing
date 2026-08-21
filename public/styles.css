@@ -5444,27 +5444,6 @@ GUIDES RESPONSIVE
 
 }
 
-.content-kicker {
-    margin: 0 0 1rem;
-    color: var(--content-gold);
-    font-size: 0.78rem;
-    font-weight: 800;
-    letter-spacing: 0.16em;
-    line-height: 1.4;
-    text-transform: uppercase;
-}
-
-.content-article a:not(.content-text-link) {
-    color: var(--content-rust);
-    text-decoration-color: rgba(134, 88, 62, 0.35);
-}
-
-.content-article a:not(.content-text-link):hover,
-.content-article a:not(.content-text-link):focus-visible {
-    color: var(--content-forest);
-    text-decoration-color: currentColor;
-}
-
 
 /* ==========================================================
    CONTENT TAGS
@@ -5492,50 +5471,6 @@ GUIDES RESPONSIVE
 .content-tags a:focus-visible {
     border-color: var(--content-gold);
     background: var(--content-parchment);
-}
-
-.content-author-note p:not(.content-kicker) {
-    max-width: 640px;
-    margin: 0 0 1rem;
-    color: rgba(255, 255, 255, 0.7);
-    line-height: 1.7;
-}
-
-.content-text-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    color: var(--content-rust);
-    font-size: 0.85rem;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    text-decoration: none;
-}
-
-.content-text-link::after {
-    content: "\2192";
-    transition: transform 160ms ease;
-}
-
-.content-text-link:hover::after,
-.content-text-link:focus-visible::after {
-    transform: translateX(0.25rem);
-}
-
-.content-related-category {
-    margin: 0 0 1rem;
-    color: var(--content-rust);
-    font-size: 0.67rem;
-    font-weight: 800;
-    letter-spacing: 0.11em;
-    text-transform: uppercase;
-}
-
-.content-related-card > p:not(.content-related-category) {
-    margin: 0 0 1.5rem;
-    color: var(--content-muted);
-    font-size: 0.9rem;
-    line-height: 1.65;
 }
 
 
