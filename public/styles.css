@@ -10586,9 +10586,7 @@ HOMEPAGE ECOSYSTEM
     margin-bottom: 58px;
 }
 
-.home-page .path-card {
-    overflow: hidden;
-}
+
 
 .home-page .path-card .card-link {
     margin-top: auto;
@@ -10685,9 +10683,6 @@ HOMEPAGE ECOSYSTEM
 .home-page .home-tributary-card {
     min-height: 230px;
     padding: 34px;
-    transition:
-        transform 180ms ease,
-        box-shadow 180ms ease;
 }
 
 .home-page .home-tributary-card:hover {
