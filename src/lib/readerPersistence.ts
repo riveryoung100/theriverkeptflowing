@@ -192,3 +192,319 @@ export function safelyRemoveReaderStorage(
     }
 
 }
+
+function isFiniteReaderNumber(
+    value: unknown
+): value is number {
+
+    return (
+        typeof value === "number" &&
+        Number.isFinite(value)
+    );
+
+}
+
+
+export function parseReaderBookmarkRecord(
+    value: unknown
+): ReaderBookmarkRecord | null {
+
+    if (
+        typeof value !== "object" ||
+        value === null
+    ) {
+
+        return null;
+
+    }
+
+
+    const record =
+        value as Partial<ReaderBookmarkRecord>;
+
+
+    if (
+        typeof record.pathname !== "string" ||
+        !record.pathname.startsWith("/") ||
+        typeof record.title !== "string" ||
+        typeof record.url !== "string" ||
+        !isFiniteReaderNumber(record.savedAt)
+    ) {
+
+        return null;
+
+    }
+
+
+    return {
+        pathname:
+            record.pathname,
+        title:
+            record.title,
+        url:
+            record.url,
+        savedAt:
+            record.savedAt
+    };
+
+}
+
+
+export function parseReaderMemoryRecord(
+    value: unknown
+): ReaderMemoryRecord | null {
+
+    if (
+        typeof value !== "object" ||
+        value === null
+    ) {
+
+        return null;
+
+    }
+
+
+    const record =
+        value as Partial<ReaderMemoryRecord>;
+
+
+    if (
+        record.version !== READER_STORAGE_VERSION ||
+        typeof record.pathname !== "string" ||
+        !record.pathname.startsWith("/") ||
+        !isFiniteReaderNumber(record.updatedAt) ||
+        !isFiniteReaderNumber(record.progress) ||
+        !isFiniteReaderNumber(record.scrollY)
+    ) {
+
+        return null;
+
+    }
+
+
+    return {
+        version:
+            READER_STORAGE_VERSION,
+        pathname:
+            record.pathname,
+        progress:
+            Math.min(
+                100,
+                Math.max(
+                    0,
+                    record.progress
+                )
+            ),
+        scrollY:
+            Math.max(
+                0,
+                record.scrollY
+            ),
+        sectionId:
+            typeof record.sectionId === "string"
+                ? record.sectionId
+                : "",
+        sectionLabel:
+            typeof record.sectionLabel === "string"
+                ? record.sectionLabel
+                : "",
+        completed:
+            record.completed ?? false,
+        updatedAt:
+            record.updatedAt
+    };
+
+}
+
+
+export function parseReaderMemoryStorage(
+    value: string | null
+): ReaderMemoryRecord | null {
+
+    if (!value) {
+
+        return null;
+
+    }
+
+
+    try {
+
+        const parsed =
+            JSON.parse(value) as unknown;
+
+        return parseReaderMemoryRecord(
+            parsed
+        );
+
+    }
+    catch {
+
+        return null;
+
+    }
+
+}
+
+
+export function parseReaderDataBackup(
+    value: unknown
+): ReaderDataBackup | null {
+
+    if (
+        typeof value !== "object" ||
+        value === null
+    ) {
+
+        return null;
+
+    }
+
+
+    const backup =
+        value as Partial<ReaderDataBackup>;
+
+
+    if (
+        backup.format !== READER_BACKUP_FORMAT ||
+        backup.version !== READER_BACKUP_VERSION ||
+        !Array.isArray(backup.bookmarks) ||
+        !Array.isArray(backup.readingMemory)
+    ) {
+
+        return null;
+
+    }
+
+
+    const bookmarks =
+        backup.bookmarks
+            .map(
+                (record) =>
+                    parseReaderBookmarkRecord(record)
+            )
+            .filter(
+                (
+                    record
+                ): record is ReaderBookmarkRecord =>
+                    record !== null
+            );
+
+    const readingMemory =
+        backup.readingMemory
+            .map(
+                (value) => {
+
+                    if (
+                        typeof value !== "object" ||
+                        value === null
+                    ) {
+
+                        return null;
+
+                    }
+
+
+                    const record =
+                        value as Partial<ReaderMemoryRecord>;
+
+
+                    if (
+                        typeof record.pathname !== "string" ||
+                        !record.pathname.startsWith("/") ||
+                        !isFiniteReaderNumber(record.updatedAt)
+                    ) {
+
+                        return null;
+
+                    }
+
+
+                    if (
+                        record.progress !== undefined &&
+                        !isFiniteReaderNumber(record.progress)
+                    ) {
+
+                        return null;
+
+                    }
+
+
+                    if (
+                        record.scrollY !== undefined &&
+                        !isFiniteReaderNumber(record.scrollY)
+                    ) {
+
+                        return null;
+
+                    }
+
+
+                    return {
+                        version:
+                            isFiniteReaderNumber(record.version)
+                                ? record.version
+                                : 1,
+                        pathname:
+                            record.pathname,
+                        progress:
+                            isFiniteReaderNumber(record.progress)
+                                ? Math.min(
+                                    100,
+                                    Math.max(
+                                        0,
+                                        record.progress
+                                    )
+                                )
+                                : 0,
+                        scrollY:
+                            isFiniteReaderNumber(record.scrollY)
+                                ? Math.max(
+                                    0,
+                                    record.scrollY
+                                )
+                                : 0,
+                        sectionId:
+                            typeof record.sectionId === "string"
+                                ? record.sectionId
+                                : "",
+                        sectionLabel:
+                            typeof record.sectionLabel === "string"
+                                ? record.sectionLabel
+                                : "",
+                        completed:
+                            record.completed === true,
+                        updatedAt:
+                            record.updatedAt
+                    };
+
+                }
+            )
+            .filter(
+                (
+                    record
+                ): record is NonNullable<typeof record> =>
+                    record !== null
+            );
+
+
+    return {
+        format:
+            READER_BACKUP_FORMAT,
+        version:
+            READER_BACKUP_VERSION,
+        exportedAt:
+            isFiniteReaderNumber(
+                backup.exportedAt
+            )
+                ? backup.exportedAt
+                : Date.now(),
+        origin:
+            typeof backup.origin === "string"
+                ? backup.origin
+                : "",
+        bookmarks,
+        readingMemory
+    };
+
+}
