@@ -19,7 +19,7 @@
     "typecheck": "astro check",
     "search:index": "pagefind --site dist",
     "preview:search": "pagefind --site dist --serve",
-    "test:assimilation": "tsx --test src/lib/assimilation/identifiers.test.ts src/lib/assimilation/validation.test.ts"
+    "test:assimilation": "tsx --test \"src/lib/assimilation/**/*.test.ts\""
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.5",
