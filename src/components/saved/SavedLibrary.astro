@@ -175,17 +175,11 @@
 
 <script>
     import {
-        READER_BOOKMARK_PREFIX,
-        READER_MEMORY_PREFIX,
-        READER_DATA_CHANGED_EVENT,
-        type ReaderDataChangeDetail,
-        dispatchReaderDataChanged,
-        type ReaderBookmarkRecord,
-        type ReaderMemoryRecord,
-        getReaderMemoryKey,
-        safelyReadReaderStorage,
-        safelyRemoveReaderStorage,
-    safelyListReaderStorageKeys
+    READER_DATA_CHANGED_EVENT,
+    isReaderStorageKey,
+    listReaderBookmarks,
+    readReaderMemory,
+    removeReaderBookmark
 } from "../../lib/readerPersistence";
 
 
@@ -240,189 +234,64 @@ function clamp(
 
 
 
-    function parseBookmark(
-        key: string,
-        value: string
-    ): ReaderBookmarkRecord | null {
-
-        try {
-
-            const parsed =
-                JSON.parse(
-                    value
-                ) as Partial<ReaderBookmarkRecord>;
-
-
-            if (
-                typeof parsed.pathname !==
-                    "string" ||
-                typeof parsed.title !==
-                    "string" ||
-                typeof parsed.url !==
-                    "string" ||
-                typeof parsed.savedAt !==
-                    "number"
-            ) {
-
-                return null;
-
-            }
-
-
-            return {
-                pathname:
-                    parsed.pathname,
-                title:
-                    parsed.title,
-                url:
-                    parsed.url,
-                savedAt:
-                    parsed.savedAt
-            };
-
-        }
-        catch {
-
-            safelyRemoveReaderStorage(
-                key
-            );
-
-            return null;
-
-        }
-
-    }
-
-
-    function parseMemory(
-        value: string | null
-    ): ReaderMemoryRecord {
-
-        if (!value) {
-
-            return {};
-
-        }
-
-
-        try {
-
-            return JSON.parse(
-                value
-            ) as ReaderMemoryRecord;
-
-        }
-        catch {
-
-            return {};
-
-        }
-
-    }
-
-
     function getSavedReadings(): SavedReading[] {
 
-        const readings:
-            SavedReading[] =
-            [];
-
-
         try {
 
-            for (const key of safelyListReaderStorageKeys()) {
+            return listReaderBookmarks().map(
+                (
+                    bookmark
+                ): SavedReading => {
 
-                if (
-                    !key.startsWith(
-                        READER_BOOKMARK_PREFIX
-                    )
-                ) {
+                    const memory =
+                        readReaderMemory(
+                            bookmark.pathname
+                        );
 
-                    continue;
-
-                }
-
-
-                const storedBookmark =
-                    safelyReadReaderStorage(
-                        key
-                    );
-
-
-                if (!storedBookmark) {
-
-                    continue;
-
-                }
-
-
-                const bookmark =
-                    parseBookmark(
-                        key,
-                        storedBookmark
-                    );
-
-
-                if (!bookmark) {
-
-                    continue;
-
-                }
-
-
-                const memoryKey =
-                    getReaderMemoryKey(bookmark.pathname);
-
-                const memory =
-                    parseMemory(
-                        safelyReadReaderStorage(
-                            memoryKey
-                        )
-                    );
-
-
-                readings.push({
-                    bookmarkKey:
-                        key,
-                    memoryKey,
-                    pathname:
-                        bookmark.pathname,
-                    title:
-                        bookmark.title,
-                    url:
-                        bookmark.url,
-                    savedAt:
-                        bookmark.savedAt,
-                    progress:
-                        clamp(
-                            typeof memory.progress ===
+                    return {
+                        bookmarkKey:
+                            "",
+                        memoryKey:
+                            "",
+                        pathname:
+                            bookmark.pathname,
+                        title:
+                            bookmark.title,
+                        url:
+                            bookmark.url,
+                        savedAt:
+                            bookmark.savedAt,
+                        progress:
+                            clamp(
+                                typeof memory?.progress ===
+                                    "number"
+                                    ? memory.progress
+                                    : 0,
+                                0,
+                                100
+                            ),
+                        completed:
+                            memory?.completed ===
+                            true,
+                        sectionId:
+                            typeof memory?.sectionId ===
+                                "string"
+                                ? memory.sectionId
+                                : "",
+                        sectionLabel:
+                            typeof memory?.sectionLabel ===
+                                "string"
+                                ? memory.sectionLabel
+                                : "",
+                        updatedAt:
+                            typeof memory?.updatedAt ===
                                 "number"
-                                ? memory.progress
-                                : 0,
-                            0,
-                            100
-                        ),
-                    completed:
-                        memory.completed ===
-                        true,
-                    sectionId:
-                        typeof memory.sectionId ===
-                            "string"
-                            ? memory.sectionId
-                            : "",
-                    sectionLabel:
-                        typeof memory.sectionLabel ===
-                            "string"
-                            ? memory.sectionLabel
-                            : "",
-                    updatedAt:
-                        typeof memory.updatedAt ===
-                            "number"
-                            ? memory.updatedAt
-                            : bookmark.savedAt
-                });
+                                ? memory.updatedAt
+                                : bookmark.savedAt
+                    };
 
-            }
+                }
+            );
 
         }
         catch {
@@ -431,11 +300,7 @@ function clamp(
 
         }
 
-
-        return readings;
-
     }
-
 
     function formatDate(
         timestamp: number
@@ -874,8 +739,8 @@ function clamp(
             () => {
 
                 const removed =
-                    safelyRemoveReaderStorage(
-                        reading.bookmarkKey
+                    removeReaderBookmark(
+                        reading.pathname
                     );
 
 
@@ -889,15 +754,6 @@ function clamp(
                     return;
 
                 }
-
-
-
-                dispatchReaderDataChanged({
-                    kind:
-                        "bookmark",
-                    pathname:
-                        reading.pathname
-                });
 
 
                 announce(
@@ -1287,11 +1143,8 @@ function clamp(
                 if (
                     event.key ===
                         null ||
-                    event.key.startsWith(
-                        READER_BOOKMARK_PREFIX
-                    ) ||
-                    event.key.startsWith(
-                        READER_MEMORY_PREFIX
+                    isReaderStorageKey(
+                        event.key
                     )
                 ) {
 

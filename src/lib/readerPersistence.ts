@@ -106,6 +106,20 @@ export function getReaderStorageKey(
 }
 
 
+export function isReaderStorageKey(
+    key: string
+): boolean {
+
+    return (
+        key.startsWith(
+            READER_BOOKMARK_PREFIX
+        ) ||
+        key.startsWith(
+            READER_MEMORY_PREFIX
+        )
+    );
+}
+
 export function getReaderBookmarkKey(
     pathname: string
 ): string {

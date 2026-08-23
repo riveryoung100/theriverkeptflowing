@@ -6,6 +6,7 @@ import {
     READER_STORAGE_VERSION,
     getReaderBookmarkKey,
     getReaderMemoryKey,
+    isReaderStorageKey,
     normalizeReaderMemoryRecord,
     readReaderBookmark,
     writeReaderBookmark,
@@ -247,7 +248,32 @@ test(
             )
         );
 
-    }
+
+    assert.equal(
+        isReaderStorageKey(
+            getReaderBookmarkKey(
+                "/guides/example"
+            )
+        ),
+        true
+    );
+
+    assert.equal(
+        isReaderStorageKey(
+            getReaderMemoryKey(
+                "/guides/example"
+            )
+        ),
+        true
+    );
+
+    assert.equal(
+        isReaderStorageKey(
+            "unrelated:key"
+        ),
+        false
+    );
+}
 );
 
 
