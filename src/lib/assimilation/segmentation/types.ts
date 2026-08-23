@@ -1,14 +1,17 @@
 ﻿import type {
+    AssetExtraction,
     AssetSegment,
     ExtractionId,
     SegmentId
 } from "../types";
+
 
 export type SegmentationStatus =
     | "pending"
     | "running"
     | "completed"
     | "failed";
+
 
 export interface SegmentationRequest {
 
@@ -20,6 +23,7 @@ export interface SegmentationRequest {
 
 }
 
+
 export interface SegmentationResult {
 
     readonly segment:
@@ -29,6 +33,7 @@ export interface SegmentationResult {
         SegmentationStatus;
 
 }
+
 
 export interface SegmentationEngineResult {
 
@@ -43,10 +48,20 @@ export interface SegmentationEngineResult {
 
 }
 
+
+export interface ExtractionReader {
+
+    read(
+        extractionId: ExtractionId
+    ): Promise<AssetExtraction | null>;
+
+}
+
+
 export interface SegmentationEngine {
 
     segment(
         extractionId: ExtractionId
-    ): SegmentationEngineResult;
+    ): Promise<SegmentationEngineResult>;
 
 }

@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
     DeterministicSegmentationEngine,
+    InMemoryExtractionReader,
     createSegmentationEngine
 } from "./engine";
 
@@ -18,6 +19,21 @@ import {
     sampleSegmentationResult
 } from "./fixtures/sampleSegmentation";
 
+
+function createReader():
+InMemoryExtractionReader {
+
+    return new InMemoryExtractionReader([
+
+        {
+            extraction:
+                sampleTextExtraction
+        }
+
+    ]);
+}
+
+
 test(
     "creates a deterministic segmentation engine",
     () => {
@@ -30,15 +46,18 @@ test(
     }
 );
 
+
 test(
-    "segment returns a completed result",
-    () => {
+    "segments resolved extraction text into a completed asset segment",
+    async () => {
 
         const engine =
-            new DeterministicSegmentationEngine();
+            new DeterministicSegmentationEngine(
+                createReader()
+            );
 
         const result =
-            engine.segment(
+            await engine.segment(
                 sampleTextExtraction.id
             );
 
@@ -47,8 +66,127 @@ test(
             "completed"
         );
 
+        assert.equal(
+            result.results.length,
+            1
+        );
+
+        const segment =
+            result.results[0].segment;
+
+        assert.equal(
+            result.segmentationId,
+            segment.id
+        );
+
+        assert.equal(
+            segment.assetId,
+            sampleTextExtraction.assetId
+        );
+
+        assert.equal(
+            segment.extractionId,
+            sampleTextExtraction.id
+        );
+
+        assert.equal(
+            segment.sourceText,
+            sampleTextExtraction.text
+        );
+
+        assert.equal(
+            segment.normalizedText,
+            sampleTextExtraction.text
+        );
+
+        assert.deepEqual(
+            segment.location,
+            {
+                type:
+                    "character",
+
+                start:
+                    0,
+
+                end:
+                    sampleTextExtraction.text?.length
+            }
+        );
+
     }
 );
+
+
+test(
+    "rejects segmentation when extraction cannot be resolved",
+    async () => {
+
+        const engine =
+            new DeterministicSegmentationEngine(
+                new InMemoryExtractionReader()
+            );
+
+        const result =
+            await engine.segment(
+                sampleTextExtraction.id
+            );
+
+        assert.equal(
+            result.status,
+            "failed"
+        );
+
+        assert.deepEqual(
+            result.results,
+            []
+        );
+
+    }
+);
+
+
+test(
+    "rejects segmentation when extraction has no text",
+    async () => {
+
+        const extraction = {
+
+            ...sampleTextExtraction,
+
+            text:
+                undefined
+
+        };
+
+        const engine =
+            new DeterministicSegmentationEngine(
+                new InMemoryExtractionReader([
+
+                    {
+                        extraction
+                    }
+
+                ])
+            );
+
+        const result =
+            await engine.segment(
+                extraction.id
+            );
+
+        assert.equal(
+            result.status,
+            "failed"
+        );
+
+        assert.deepEqual(
+            result.results,
+            []
+        );
+
+    }
+);
+
 
 test(
     "fixture validates successfully",
@@ -67,6 +205,7 @@ test(
     }
 );
 
+
 test(
     "empty segmentation is rejected",
     () => {
@@ -80,7 +219,8 @@ test(
                 status:
                     "completed",
 
-                results: []
+                results:
+                    []
 
             });
 
