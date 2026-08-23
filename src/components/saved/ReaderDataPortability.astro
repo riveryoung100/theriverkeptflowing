@@ -165,18 +165,8 @@
 
 <script>
     import {
-        READER_BOOKMARK_PREFIX,
-        READER_MEMORY_PREFIX,
-        READER_BACKUP_FORMAT,
-        READER_BACKUP_VERSION,
-        dispatchReaderDataChanged,type ReaderBookmarkRecord,
-        type ReaderMemoryRecord,
-        type ReaderDataBackup,
-        getReaderBookmarkKey,
-        getReaderMemoryKey,
-        safelyReadReaderStorage,
-        safelyWriteReaderStorage,
-    safelyListReaderStorageKeys
+    type ReaderBookmarkRecord,     type ReaderMemoryRecord,     type ReaderDataBackup,     buildReaderDataBackup,     previewReaderDataImport,     importReaderDataBackup,
+    parseReaderDataBackup,
 } from "../../lib/readerPersistence";
 
 
@@ -280,350 +270,9 @@ function announce(
     }
 
 
-    function parseBookmarkRecord(
-        value: unknown
-    ): ReaderBookmarkRecord | null {
-
-        if (
-            typeof value !==
-                "object" ||
-            value ===
-                null
-        ) {
-
-            return null;
-
-        }
-
-
-        const record =
-            value as Partial<ReaderBookmarkRecord>;
-
-
-        if (
-            typeof record.pathname !==
-                "string" ||
-            typeof record.title !==
-                "string" ||
-            typeof record.url !==
-                "string" ||
-            !isFiniteNumber(
-                record.savedAt
-            )
-        ) {
-
-            return null;
-
-        }
-
-
-        if (
-            !record.pathname.startsWith(
-                "/"
-            )
-        ) {
-
-            return null;
-
-        }
-
-
-        return {
-            pathname:
-                record.pathname,
-            title:
-                record.title,
-            url:
-                record.url,
-            savedAt:
-                record.savedAt
-        };
-
-    }
-
-
-    function parseMemoryRecord(
-        value: unknown
-    ): ReaderMemoryRecord | null {
-
-        if (
-            typeof value !==
-                "object" ||
-            value ===
-                null
-        ) {
-
-            return null;
-
-        }
-
-
-        const record =
-            value as ReaderMemoryRecord;
-
-
-        if (
-            typeof record.pathname !==
-                "string" ||
-            !record.pathname.startsWith(
-                "/"
-            ) ||
-            !isFiniteNumber(
-                record.updatedAt
-            )
-        ) {
-
-            return null;
-
-        }
-
-
-        if (
-            record.progress !==
-                undefined &&
-            !isFiniteNumber(
-                record.progress
-            )
-        ) {
-
-            return null;
-
-        }
-
-
-        if (
-            record.scrollY !==
-                undefined &&
-            !isFiniteNumber(
-                record.scrollY
-            )
-        ) {
-
-            return null;
-
-        }
-
-
-        return {
-            version:
-                isFiniteNumber(
-                    record.version
-                )
-                    ? record.version
-                    : 1,
-            pathname:
-                record.pathname,
-            progress:
-                isFiniteNumber(
-                    record.progress
-                )
-                    ? Math.min(
-                        100,
-                        Math.max(
-                            0,
-                            record.progress
-                        )
-                    )
-                    : 0,
-            scrollY:
-                isFiniteNumber(
-                    record.scrollY
-                )
-                    ? Math.max(
-                        0,
-                        record.scrollY
-                    )
-                    : 0,
-            sectionId:
-                typeof record.sectionId ===
-                    "string"
-                    ? record.sectionId
-                    : "",
-            sectionLabel:
-                typeof record.sectionLabel ===
-                    "string"
-                    ? record.sectionLabel
-                    : "",
-            completed:
-                record.completed ===
-                true,
-            updatedAt:
-                record.updatedAt
-        };
-
-    }
-
-
     function collectReaderData(): ReaderDataBackup {
-
-        const bookmarks:
-            ReaderBookmarkRecord[] =
-            [];
-
-        const readingMemory:
-            ReaderMemoryRecord[] =
-            [];
-
-
-        try {
-
-            for (const key of safelyListReaderStorageKeys()) {
-
-
-                const stored =
-                    safelyReadReaderStorage(
-                        key
-                    );
-
-
-                if (!stored) {
-
-                    continue;
-
-                }
-
-
-                let parsed:
-                    unknown;
-
-
-                try {
-
-                    parsed =
-                        JSON.parse(
-                            stored
-                        );
-
-                }
-                catch {
-
-                    continue;
-
-                }
-
-
-                if (
-                    key.startsWith(
-                        READER_BOOKMARK_PREFIX
-                    )
-                ) {
-
-                    const bookmark =
-                        parseBookmarkRecord(
-                            parsed
-                        );
-
-
-                    if (bookmark) {
-
-                        bookmarks.push(
-                            bookmark
-                        );
-
-                    }
-
-
-                    continue;
-
-                }
-
-
-                if (
-                    key.startsWith(
-                        READER_MEMORY_PREFIX
-                    )
-                ) {
-
-                    const memory =
-                        parseMemoryRecord(
-                            parsed
-                        );
-
-
-                    if (memory) {
-
-                        readingMemory.push(
-                            memory
-                        );
-
-                    }
-
-                }
-
-            }
-
-        }
-        catch {
-
-            return {
-                format:
-                    READER_BACKUP_FORMAT,
-                version:
-                    READER_BACKUP_VERSION,
-                exportedAt:
-                    Date.now(),
-                origin:
-                    window.location.origin,
-                bookmarks:
-                    [],
-                readingMemory:
-                    []
-            };
-
-        }
-
-
-        bookmarks.sort(
-            (
-                first,
-                second
-            ) => {
-
-                return (
-                    second.savedAt -
-                    first.savedAt
-                );
-
-            }
-        );
-
-
-        readingMemory.sort(
-            (
-                first,
-                second
-            ) => {
-
-                return (
-                    (
-                        second.updatedAt ??
-                        0
-                    ) -
-                    (
-                        first.updatedAt ??
-                        0
-                    )
-                );
-
-            }
-        );
-
-
-        return {
-            format:
-                READER_BACKUP_FORMAT,
-            version:
-                READER_BACKUP_VERSION,
-            exportedAt:
-                Date.now(),
-            origin:
-                window.location.origin,
-            bookmarks,
-            readingMemory
-        };
-
+        return buildReaderDataBackup(window.location.origin);
     }
-
 
     function downloadBackup(
         backup: ReaderDataBackup
@@ -699,250 +348,6 @@ function announce(
     }
 
 
-    function parseBackup(
-        value: unknown
-    ): ReaderDataBackup | null {
-
-        if (
-            typeof value !==
-                "object" ||
-            value ===
-                null
-        ) {
-
-            return null;
-
-        }
-
-
-        const candidate =
-            value as Partial<ReaderDataBackup>;
-
-
-        if (
-            candidate.format !==
-                READER_BACKUP_FORMAT ||
-            candidate.version !==
-                READER_BACKUP_VERSION ||
-            !Array.isArray(
-                candidate.bookmarks
-            ) ||
-            !Array.isArray(
-                candidate.readingMemory
-            )
-        ) {
-
-            return null;
-
-        }
-
-
-        const bookmarks =
-            candidate.bookmarks
-                .map(
-                    parseBookmarkRecord
-                )
-                .filter(
-                    (
-                        record
-                    ): record is ReaderBookmarkRecord => {
-
-                        return record !==
-                            null;
-
-                    }
-                );
-
-
-        const readingMemory =
-            candidate.readingMemory
-                .map(
-                    parseMemoryRecord
-                )
-                .filter(
-                    (
-                        record
-                    ): record is ReaderMemoryRecord => {
-
-                        return record !==
-                            null;
-
-                    }
-                );
-
-
-        return {
-            format:
-                READER_BACKUP_FORMAT,
-            version:
-                READER_BACKUP_VERSION,
-            exportedAt:
-                isFiniteNumber(
-                    candidate.exportedAt
-                )
-                    ? candidate.exportedAt
-                    : Date.now(),
-            origin:
-                typeof candidate.origin ===
-                    "string"
-                    ? candidate.origin
-                    : "",
-            bookmarks,
-            readingMemory
-        };
-
-    }
-
-
-    function readExistingTimestamp(
-        key: string,
-        field:
-            "savedAt" |
-            "updatedAt"
-    ): number {
-
-        const stored =
-            safelyReadReaderStorage(
-                key
-            );
-
-
-        if (!stored) {
-
-            return 0;
-
-        }
-
-
-        try {
-
-            const parsed =
-                JSON.parse(
-                    stored
-                ) as Record<string, unknown>;
-
-            const value =
-                parsed[field];
-
-
-            return isFiniteNumber(
-                value
-            )
-                ? value
-                : 0;
-
-        }
-        catch {
-
-            return 0;
-
-        }
-
-    }
-
-
-    function createImportPreview(
-        backup: ReaderDataBackup
-    ): ImportPreview {
-
-        let newer =
-            0;
-
-        let skipped =
-            0;
-
-
-        backup.bookmarks.forEach(
-            (
-                bookmark
-            ) => {
-
-                const key =
-                    getReaderBookmarkKey(bookmark.pathname);
-
-                const existingTimestamp =
-                    readExistingTimestamp(
-                        key,
-                        "savedAt"
-                    );
-
-
-                if (
-                    bookmark.savedAt >
-                    existingTimestamp
-                ) {
-
-                    newer +=
-                        1;
-
-                }
-                else {
-
-                    skipped +=
-                        1;
-
-                }
-
-            }
-        );
-
-
-        backup.readingMemory.forEach(
-            (
-                memory
-            ) => {
-
-                const pathname =
-                    memory.pathname ??
-                    "";
-
-                const key =
-                    getReaderMemoryKey(pathname);
-
-                const existingTimestamp =
-                    readExistingTimestamp(
-                        key,
-                        "updatedAt"
-                    );
-
-                const importedTimestamp =
-                    memory.updatedAt ??
-                    0;
-
-
-                if (
-                    importedTimestamp >
-                    existingTimestamp
-                ) {
-
-                    newer +=
-                        1;
-
-                }
-                else {
-
-                    skipped +=
-                        1;
-
-                }
-
-            }
-        );
-
-
-        return {
-            backup,
-            bookmarks:
-                backup.bookmarks.length,
-            memory:
-                backup.readingMemory.length,
-            newer,
-            skipped
-        };
-
-    }
-
-
     function showPreview(
         state: PortabilityState,
         preview: ImportPreview
@@ -979,6 +384,23 @@ function announce(
     }
 
 
+    function createImportPreview(
+        backup: ReaderDataBackup
+    ): ImportPreview {
+        const preview =
+            previewReaderDataImport(
+                backup
+            );
+
+        return {
+            backup: preview.backup,
+            bookmarks: preview.bookmarks,
+            memory: preview.memory,
+            newer: preview.newer,
+            skipped: preview.skipped
+        };
+    }
+
     function clearPreview(
         state: PortabilityState
     ): void {
@@ -991,161 +413,6 @@ function announce(
 
         state.importInput.value =
             "";
-
-    }
-
-
-    function importBackup(
-        state: PortabilityState,
-        preview: ImportPreview
-    ): void {
-
-        let imported =
-            0;
-
-        let skipped =
-            0;
-
-        let failed =
-            0;
-
-
-        preview.backup.bookmarks.forEach(
-            (
-                bookmark
-            ) => {
-
-                const key =
-                    getReaderBookmarkKey(bookmark.pathname);
-
-                const existingTimestamp =
-                    readExistingTimestamp(
-                        key,
-                        "savedAt"
-                    );
-
-
-                if (
-                    bookmark.savedAt <=
-                    existingTimestamp
-                ) {
-
-                    skipped +=
-                        1;
-
-                    return;
-
-                }
-
-
-                const written =
-                    safelyWriteReaderStorage(
-                        key,
-                        JSON.stringify(
-                            bookmark
-                        )
-                    );
-
-
-                if (written) {
-
-                    imported +=
-                        1;
-
-                }
-                else {
-
-                    failed +=
-                        1;
-
-                }
-
-            }
-        );
-
-
-        preview.backup.readingMemory.forEach(
-            (
-                memory
-            ) => {
-
-                const pathname =
-                    memory.pathname ??
-                    "";
-
-                const key =
-                    getReaderMemoryKey(pathname);
-
-                const existingTimestamp =
-                    readExistingTimestamp(
-                        key,
-                        "updatedAt"
-                    );
-
-                const importedTimestamp =
-                    memory.updatedAt ??
-                    0;
-
-
-                if (
-                    importedTimestamp <=
-                    existingTimestamp
-                ) {
-
-                    skipped +=
-                        1;
-
-                    return;
-
-                }
-
-
-                const written =
-                    safelyWriteReaderStorage(
-                        key,
-                        JSON.stringify(
-                            memory
-                        )
-                    );
-
-
-                if (written) {
-
-                    imported +=
-                        1;
-
-                }
-                else {
-
-                    failed +=
-                        1;
-
-                }
-
-            }
-        );
-
-
-        clearPreview(
-            state
-        );
-
-        if (imported > 0) {
-
-            dispatchReaderDataChanged({
-                kind:
-                    "import"
-            });
-
-        }
-
-
-        announce(
-            state,
-            failed > 0
-                ? `Imported ${imported} records, skipped ${skipped}, and could not write ${failed}.`
-                : `Imported ${imported} newer records and skipped ${skipped}.`
-        );
 
     }
 
@@ -1184,9 +451,7 @@ function announce(
                 ) as unknown;
 
             const backup =
-                parseBackup(
-                    parsed
-                );
+                parseReaderDataBackup(parsed);
 
 
             if (!backup) {
@@ -1457,5 +722,28 @@ function announce(
         "astro:page-load",
         initializeAllPortability
     );
+
+    function importBackup(
+        state: PortabilityState,
+        preview: ImportPreview
+    ): void {
+
+        const result =
+            importReaderDataBackup(
+                preview.backup
+            );
+
+        clearPreview(
+            state
+        );
+
+        announce(
+            state,
+            result.failed > 0
+                ? `Imported  records, skipped , and could not write .`
+                : `Imported  newer records and skipped .`
+        );
+
+    }
 
 </script>

@@ -979,3 +979,338 @@ export function readReaderRecordTimestamp(
     }
 
 }
+
+export interface ReaderDataImportPreview {
+    backup:
+        ReaderDataBackup;
+
+    bookmarks:
+        number;
+
+    memory:
+        number;
+
+    newer:
+        number;
+
+    skipped:
+        number;
+}
+
+
+export interface ReaderDataImportResult {
+    imported:
+        number;
+
+    skipped:
+        number;
+
+    failed:
+        number;
+}
+
+
+export function buildReaderDataBackup(
+    origin: string,
+    exportedAt:
+        number =
+        Date.now()
+): ReaderDataBackup {
+
+    const bookmarks =
+        listReaderBookmarks()
+            .sort(
+                (
+                    first,
+                    second
+                ) =>
+                    second.savedAt -
+                    first.savedAt
+            );
+
+    const readingMemory =
+        listReaderMemory()
+            .sort(
+                (
+                    first,
+                    second
+                ) =>
+                    (
+                        second.updatedAt ??
+                        0
+                    ) -
+                    (
+                        first.updatedAt ??
+                        0
+                    )
+            );
+
+
+    return {
+        format:
+            READER_BACKUP_FORMAT,
+
+        version:
+            READER_BACKUP_VERSION,
+
+        exportedAt,
+
+        origin,
+
+        bookmarks,
+
+        readingMemory
+    };
+
+}
+
+
+export function previewReaderDataImport(
+    backup:
+        ReaderDataBackup
+): ReaderDataImportPreview {
+
+    let newer =
+        0;
+
+    let skipped =
+        0;
+
+
+    backup.bookmarks.forEach(
+        (
+            bookmark
+        ) => {
+
+            const existing =
+                readReaderBookmark(
+                    bookmark.pathname
+                );
+
+            const existingTimestamp =
+                existing?.savedAt ??
+                0;
+
+
+            if (
+                bookmark.savedAt >
+                existingTimestamp
+            ) {
+
+                newer +=
+                    1;
+
+            }
+            else {
+
+                skipped +=
+                    1;
+
+            }
+
+        }
+    );
+
+
+    backup.readingMemory.forEach(
+        (
+            memory
+        ) => {
+
+            const pathname =
+                memory.pathname ??
+                "";
+
+            const existing =
+                readReaderMemory(
+                    pathname
+                );
+
+            const existingTimestamp =
+                existing?.updatedAt ??
+                0;
+
+            const importedTimestamp =
+                memory.updatedAt ??
+                0;
+
+
+            if (
+                importedTimestamp >
+                existingTimestamp
+            ) {
+
+                newer +=
+                    1;
+
+            }
+            else {
+
+                skipped +=
+                    1;
+
+            }
+
+        }
+    );
+
+
+    return {
+        backup,
+
+        bookmarks:
+            backup.bookmarks.length,
+
+        memory:
+            backup.readingMemory.length,
+
+        newer,
+
+        skipped
+    };
+
+}
+
+
+export function importReaderDataBackup(
+    backup:
+        ReaderDataBackup
+): ReaderDataImportResult {
+
+    let imported =
+        0;
+
+    let skipped =
+        0;
+
+    let failed =
+        0;
+
+
+    backup.bookmarks.forEach(
+        (
+            bookmark
+        ) => {
+
+            const existing =
+                readReaderBookmark(
+                    bookmark.pathname
+                );
+
+            const existingTimestamp =
+                existing?.savedAt ??
+                0;
+
+
+            if (
+                bookmark.savedAt <=
+                existingTimestamp
+            ) {
+
+                skipped +=
+                    1;
+
+                return;
+
+            }
+
+
+            const written =
+                writeReaderBookmark(
+                    bookmark
+                );
+
+
+            if (written) {
+
+                imported +=
+                    1;
+
+            }
+            else {
+
+                failed +=
+                    1;
+
+            }
+
+        }
+    );
+
+
+    backup.readingMemory.forEach(
+        (
+            memory
+        ) => {
+
+            const pathname =
+                memory.pathname ??
+                "";
+
+            const existing =
+                readReaderMemory(
+                    pathname
+                );
+
+            const existingTimestamp =
+                existing?.updatedAt ??
+                0;
+
+            const importedTimestamp =
+                memory.updatedAt ??
+                0;
+
+
+            if (
+                importedTimestamp <=
+                existingTimestamp
+            ) {
+
+                skipped +=
+                    1;
+
+                return;
+
+            }
+
+
+            const written =
+                writeReaderMemory(
+                    memory
+                );
+
+
+            if (written) {
+
+                imported +=
+                    1;
+
+            }
+            else {
+
+                failed +=
+                    1;
+
+            }
+
+        }
+    );
+
+
+    if (imported > 0) {
+
+        dispatchReaderDataChanged({
+            kind:
+                "import"
+        });
+
+    }
+
+
+    return {
+        imported,
+        skipped,
+        failed
+    };
+
+}

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+    READER_BACKUP_FORMAT,
     READER_STORAGE_VERSION,
     getReaderBookmarkKey,
     getReaderMemoryKey,
@@ -12,7 +13,10 @@ import {
     readReaderMemory,
     writeReaderMemory,
     removeReaderMemory,
-    setReaderMemoryCompletion
+    setReaderMemoryCompletion,
+    buildReaderDataBackup,
+    previewReaderDataImport,
+    importReaderDataBackup
 } from "./readerPersistence";
 
 
@@ -631,6 +635,477 @@ test(
             assert.equal(
                 reopened.progress,
                 95
+            );
+
+        }
+        finally {
+
+            harness.restore();
+
+        }
+
+    }
+);
+
+test(
+    "builds a sorted reader data backup",
+    () => {
+
+        const harness =
+            installBrowserHarness();
+
+        try {
+
+            assert.equal(
+                writeReaderBookmark({
+                    pathname:
+                        "/older/",
+                    title:
+                        "Older",
+                    url:
+                        "https://example.com/older/",
+                    savedAt:
+                        1000
+                }),
+                true
+            );
+
+            assert.equal(
+                writeReaderBookmark({
+                    pathname:
+                        "/newer/",
+                    title:
+                        "Newer",
+                    url:
+                        "https://example.com/newer/",
+                    savedAt:
+                        2000
+                }),
+                true
+            );
+
+            assert.equal(
+                writeReaderMemory({
+                    version:
+                        READER_STORAGE_VERSION,
+                    pathname:
+                        "/older/",
+                    progress:
+                        20,
+                    scrollY:
+                        100,
+                    sectionId:
+                        "",
+                    sectionLabel:
+                        "",
+                    completed:
+                        false,
+                    updatedAt:
+                        3000
+                }),
+                true
+            );
+
+            assert.equal(
+                writeReaderMemory({
+                    version:
+                        READER_STORAGE_VERSION,
+                    pathname:
+                        "/newer/",
+                    progress:
+                        40,
+                    scrollY:
+                        200,
+                    sectionId:
+                        "",
+                    sectionLabel:
+                        "",
+                    completed:
+                        false,
+                    updatedAt:
+                        4000
+                }),
+                true
+            );
+
+
+            const backup =
+                buildReaderDataBackup(
+                    "https://example.com",
+                    5000
+                );
+
+
+            assert.equal(
+                backup.exportedAt,
+                5000
+            );
+
+            assert.equal(
+                backup.origin,
+                "https://example.com"
+            );
+
+            assert.deepEqual(
+                backup.bookmarks.map(
+                    (
+                        bookmark
+                    ) =>
+                        bookmark.pathname
+                ),
+                [
+                    "/newer/",
+                    "/older/"
+                ]
+            );
+
+            assert.deepEqual(
+                backup.readingMemory.map(
+                    (
+                        memory
+                    ) =>
+                        memory.pathname
+                ),
+                [
+                    "/newer/",
+                    "/older/"
+                ]
+            );
+
+        }
+        finally {
+
+            harness.restore();
+
+        }
+
+    }
+);
+
+
+test(
+    "previews only strictly newer reader backup records",
+    () => {
+
+        const harness =
+            installBrowserHarness();
+
+        try {
+
+            assert.equal(
+                writeReaderBookmark({
+                    pathname:
+                        "/existing/",
+                    title:
+                        "Existing",
+                    url:
+                        "https://example.com/existing/",
+                    savedAt:
+                        2000
+                }),
+                true
+            );
+
+            assert.equal(
+                writeReaderMemory({
+                    version:
+                        READER_STORAGE_VERSION,
+                    pathname:
+                        "/existing/",
+                    progress:
+                        40,
+                    scrollY:
+                        100,
+                    sectionId:
+                        "",
+                    sectionLabel:
+                        "",
+                    completed:
+                        false,
+                    updatedAt:
+                        3000
+                }),
+                true
+            );
+
+
+            const preview =
+                previewReaderDataImport({
+                    format:
+                        READER_BACKUP_FORMAT,
+                    version:
+                        1,
+                    exportedAt:
+                        9000,
+                    origin:
+                        "https://backup.example",
+                    bookmarks: [
+                        {
+                            pathname:
+                                "/existing/",
+                            title:
+                                "Equal",
+                            url:
+                                "https://example.com/existing/",
+                            savedAt:
+                                2000
+                        },
+                        {
+                            pathname:
+                                "/new/",
+                            title:
+                                "New",
+                            url:
+                                "https://example.com/new/",
+                            savedAt:
+                                5000
+                        }
+                    ],
+                    readingMemory: [
+                        {
+                            version:
+                                READER_STORAGE_VERSION,
+                            pathname:
+                                "/existing/",
+                            progress:
+                                80,
+                            scrollY:
+                                400,
+                            sectionId:
+                                "",
+                            sectionLabel:
+                                "",
+                            completed:
+                                false,
+                            updatedAt:
+                                2500
+                        },
+                        {
+                            version:
+                                READER_STORAGE_VERSION,
+                            pathname:
+                                "/new/",
+                            progress:
+                                60,
+                            scrollY:
+                                300,
+                            sectionId:
+                                "",
+                            sectionLabel:
+                                "",
+                            completed:
+                                false,
+                            updatedAt:
+                                6000
+                        }
+                    ]
+                });
+
+
+            assert.equal(
+                preview.bookmarks,
+                2
+            );
+
+            assert.equal(
+                preview.memory,
+                2
+            );
+
+            assert.equal(
+                preview.newer,
+                2
+            );
+
+            assert.equal(
+                preview.skipped,
+                2
+            );
+
+        }
+        finally {
+
+            harness.restore();
+
+        }
+
+    }
+);
+
+
+test(
+    "imports only strictly newer reader backup records",
+    () => {
+
+        const harness =
+            installBrowserHarness();
+
+        try {
+
+            assert.equal(
+                writeReaderBookmark({
+                    pathname:
+                        "/existing/",
+                    title:
+                        "Existing",
+                    url:
+                        "https://example.com/existing/",
+                    savedAt:
+                        2000
+                }),
+                true
+            );
+
+            assert.equal(
+                writeReaderMemory({
+                    version:
+                        READER_STORAGE_VERSION,
+                    pathname:
+                        "/existing/",
+                    progress:
+                        30,
+                    scrollY:
+                        100,
+                    sectionId:
+                        "",
+                    sectionLabel:
+                        "",
+                    completed:
+                        false,
+                    updatedAt:
+                        3000
+                }),
+                true
+            );
+
+
+            const result =
+                importReaderDataBackup({
+                    format:
+                        READER_BACKUP_FORMAT,
+                    version:
+                        1,
+                    exportedAt:
+                        9000,
+                    origin:
+                        "https://backup.example",
+                    bookmarks: [
+                        {
+                            pathname:
+                                "/existing/",
+                            title:
+                                "Older attempt",
+                            url:
+                                "https://example.com/existing/",
+                            savedAt:
+                                1500
+                        },
+                        {
+                            pathname:
+                                "/new/",
+                            title:
+                                "Imported",
+                            url:
+                                "https://example.com/new/",
+                            savedAt:
+                                5000
+                        }
+                    ],
+                    readingMemory: [
+                        {
+                            version:
+                                READER_STORAGE_VERSION,
+                            pathname:
+                                "/existing/",
+                            progress:
+                                10,
+                            scrollY:
+                                50,
+                            sectionId:
+                                "",
+                            sectionLabel:
+                                "",
+                            completed:
+                                false,
+                            updatedAt:
+                                2500
+                        },
+                        {
+                            version:
+                                READER_STORAGE_VERSION,
+                            pathname:
+                                "/new/",
+                            progress:
+                                70,
+                            scrollY:
+                                500,
+                            sectionId:
+                                "part-two",
+                            sectionLabel:
+                                "Part Two",
+                            completed:
+                                false,
+                            updatedAt:
+                                6000
+                        }
+                    ]
+                });
+
+
+            assert.deepEqual(
+                result,
+                {
+                    imported:
+                        2,
+                    skipped:
+                        2,
+                    failed:
+                        0
+                }
+            );
+
+
+            assert.equal(
+                readReaderBookmark(
+                    "/existing/"
+                )?.title,
+                "Existing"
+            );
+
+            assert.equal(
+                readReaderBookmark(
+                    "/new/"
+                )?.title,
+                "Imported"
+            );
+
+            assert.equal(
+                readReaderMemory(
+                    "/existing/"
+                )?.progress,
+                30
+            );
+
+            assert.equal(
+                readReaderMemory(
+                    "/new/"
+                )?.progress,
+                70
+            );
+
+
+            const importEvents =
+                harness.dispatchedEvents.filter(
+                    (
+                        event
+                    ) =>
+                        event.type ===
+                        "river:reader-data-changed"
+                );
+
+            assert.equal(
+                importEvents.length,
+                1
             );
 
         }
