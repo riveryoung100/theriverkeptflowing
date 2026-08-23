@@ -1,4 +1,4 @@
-﻿<section
+<section
     class="reader-actions"
     data-reader-actions
     aria-labelledby="reader-actions-title"
@@ -93,13 +93,14 @@
         READER_MEMORY_PREFIX,
         READER_DATA_CHANGED_EVENT,
         type ReaderDataChangeDetail,
-        dispatchReaderDataChanged,
         type ReaderMemoryRecord,
         getReaderBookmarkKey,
         getReaderMemoryKey,
-        safelyReadReaderStorage,
-        safelyWriteReaderStorage,
-        safelyRemoveReaderStorage
+        readReaderBookmark,
+        writeReaderBookmark,
+        removeReaderBookmark,
+        readReaderMemory,
+        setReaderMemoryCompletion
     } from "../../lib/readerPersistence";
 
     interface ReaderActionState {
@@ -265,8 +266,8 @@
     ): void {
 
         const bookmarked =
-            safelyReadReaderStorage(
-                state.bookmarkKey
+            readReaderBookmark(
+                window.location.pathname
             ) !==
             null;
 
@@ -291,31 +292,12 @@
         state: ReaderActionState
     ): ReaderMemoryRecord {
 
-        const stored =
-            safelyReadReaderStorage(
-                state.readingMemoryKey
-            );
-
-
-        if (!stored) {
-
-            return {};
-
-        }
-
-
-        try {
-
-            return JSON.parse(
-                stored
-            ) as ReaderMemoryRecord;
-
-        }
-        catch {
-
-            return {};
-
-        }
+        return (
+            readReaderMemory(
+                window.location.pathname
+            ) ??
+            {}
+        );
 
     }
 
@@ -325,65 +307,11 @@
         completed: boolean
     ): boolean {
 
-        const existingMemory =
-            readReadingMemory(
-                state
-            );
-
-
-        const updatedMemory:
-            ReaderMemoryRecord = {
-            ...existingMemory,
-            version:
-                existingMemory.version ??
-                1,
-            pathname:
-                window.location.pathname,
-            progress:
-                completed
-                    ? 100
-                    : Math.min(
-                        existingMemory.progress ??
-                        0,
-                        95
-                    ),
-            scrollY:
-                existingMemory.scrollY ??
-                window.scrollY,
-            sectionId:
-                existingMemory.sectionId ??
-                "",
-            sectionLabel:
-                existingMemory.sectionLabel ??
-                "",
+        return setReaderMemoryCompletion(
+            window.location.pathname,
             completed,
-            updatedAt:
-                Date.now()
-        };
-
-
-        const written =
-            safelyWriteReaderStorage(
-                state.readingMemoryKey,
-                JSON.stringify(
-                updatedMemory
-            )
-            );
-
-
-        if (written) {
-
-            dispatchReaderDataChanged({
-                kind:
-                    "memory",
-                pathname:
-                    window.location.pathname
-            });
-
-        }
-
-
-        return written;
+            window.scrollY
+        );
 
     }
 
@@ -625,8 +553,8 @@
             () => {
 
                 const currentlySaved =
-                    safelyReadReaderStorage(
-                        state.bookmarkKey
+                    readReaderBookmark(
+                        window.location.pathname
                     ) !==
                     null;
 
@@ -634,8 +562,8 @@
                 if (currentlySaved) {
 
                     const removed =
-                        safelyRemoveReaderStorage(
-                            state.bookmarkKey
+                        removeReaderBookmark(
+                            window.location.pathname
                         );
 
 
@@ -652,12 +580,6 @@
 
 
 
-                    dispatchReaderDataChanged({
-                        kind:
-                            "bookmark",
-                        pathname:
-                            window.location.pathname
-                    });
 
 
                     updateBookmarkButton(
@@ -677,9 +599,8 @@
 
 
                 const saved =
-                    safelyWriteReaderStorage(
-                        state.bookmarkKey,
-                        JSON.stringify({
+                    writeReaderBookmark(
+                        {
                             pathname:
                                 window.location.pathname,
                             title:
@@ -688,7 +609,7 @@
                                 getCanonicalUrl(),
                             savedAt:
                                 Date.now()
-                        })
+                        }
                     );
 
 
@@ -705,12 +626,6 @@
 
 
 
-                dispatchReaderDataChanged({
-                    kind:
-                        "bookmark",
-                    pathname:
-                        window.location.pathname
-                });
 
 
                 updateBookmarkButton(

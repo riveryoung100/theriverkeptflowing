@@ -1,4 +1,4 @@
-﻿export const READER_BOOKMARK_PREFIX =
+export const READER_BOOKMARK_PREFIX =
     "river-reading-bookmark:";
 
 export const READER_MEMORY_PREFIX =
@@ -580,16 +580,110 @@ export function readReaderBookmark(
 }
 
 
+export function normalizeReaderMemoryRecord(
+    value: unknown
+): ReaderMemoryRecord | null {
+
+    if (
+        typeof value !== "object" ||
+        value === null
+    ) {
+
+        return null;
+    }
+
+
+    const record =
+        value as Partial<ReaderMemoryRecord>;
+
+
+    if (
+        record.version !==
+            READER_STORAGE_VERSION ||
+        typeof record.pathname !==
+            "string" ||
+        typeof record.progress !==
+            "number" ||
+        !Number.isFinite(
+            record.progress
+        ) ||
+        typeof record.scrollY !==
+            "number" ||
+        !Number.isFinite(
+            record.scrollY
+        ) ||
+        typeof record.updatedAt !==
+            "number" ||
+        !Number.isFinite(
+            record.updatedAt
+        )
+    ) {
+
+        return null;
+    }
+
+
+    return {
+        version:
+            READER_STORAGE_VERSION,
+        pathname:
+            record.pathname,
+        progress:
+            Math.min(
+                100,
+                Math.max(
+                    0,
+                    record.progress
+                )
+            ),
+        scrollY:
+            Math.max(
+                0,
+                record.scrollY
+            ),
+        sectionId:
+            typeof record.sectionId ===
+                "string"
+                ? record.sectionId
+                : "",
+        sectionLabel:
+            typeof record.sectionLabel ===
+                "string"
+                ? record.sectionLabel
+                : "",
+        completed:
+            record.completed === true,
+        updatedAt:
+            record.updatedAt
+    };
+
+}
+
 export function readReaderMemory(
     pathname: string
 ): ReaderMemoryRecord | null {
 
-    const key =
-        getReaderMemoryKey(pathname);
+    const stored =
+        safelyReadReaderStorage(
+            getReaderMemoryKey(pathname)
+        );
 
-    return parseReaderMemoryStorage(
-        safelyReadReaderStorage(key)
-    );
+    if (!stored) {
+
+        return null;
+    }
+
+
+    try {
+
+        return normalizeReaderMemoryRecord(
+            JSON.parse(stored)
+        );
+    }
+    catch {
+
+        return null;
+    }
 
 }
 
@@ -662,6 +756,77 @@ export function removeReaderBookmark(
 
 }
 
+
+
+export function setReaderMemoryCompletion(
+    pathname: string,
+    completed: boolean,
+    fallbackScrollY = 0
+): boolean {
+
+    const existing =
+        readReaderMemory(pathname);
+
+
+    const updated:
+        ReaderMemoryRecord = {
+
+        version:
+            READER_STORAGE_VERSION,
+
+        pathname,
+
+        progress:
+            completed
+                ? 100
+                : Math.min(
+                    existing?.progress ??
+                        0,
+                    95
+                ),
+
+        scrollY:
+            existing?.scrollY ??
+            Math.max(
+                0,
+                fallbackScrollY
+            ),
+
+        sectionId:
+            existing?.sectionId ??
+            "",
+
+        sectionLabel:
+            existing?.sectionLabel ??
+            "",
+
+        completed,
+
+        updatedAt:
+            Date.now()
+
+    };
+
+
+    const written =
+        writeReaderMemory(
+            updated
+        );
+
+
+    if (written) {
+
+        dispatchReaderDataChanged({
+            kind:
+                "memory",
+            pathname
+        });
+    }
+
+
+    return written;
+
+}
 
 export function removeReaderMemory(
     pathname: string

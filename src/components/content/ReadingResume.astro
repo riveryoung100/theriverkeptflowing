@@ -1,4 +1,4 @@
-﻿<section
+<section
     class="reading-resume"
     data-reading-resume
     aria-labelledby="reading-resume-title"
@@ -47,13 +47,11 @@
 
 <script>
     import {
-        READER_MEMORY_PREFIX,
         READER_STORAGE_VERSION,
         type ReaderMemoryRecord,
-        getReaderMemoryKey,
-        safelyReadReaderStorage,
-        safelyWriteReaderStorage,
-        safelyRemoveReaderStorage
+        readReaderMemory,
+        writeReaderMemory,
+        removeReaderMemory
     } from "../../lib/readerPersistence";
 interface ReadingMemoryState {
         root: HTMLElement;
@@ -61,7 +59,7 @@ interface ReadingMemoryState {
         message: HTMLElement;
         continueButton: HTMLButtonElement;
         dismissButton: HTMLButtonElement;
-        storageKey: string;
+        pathname: string;
         saveTimer: number | null;
         lastSavedProgress: number;
     }
@@ -100,120 +98,48 @@ const MINIMUM_RESUME_PROGRESS =
         );
 
     }
-function readMemory(
-        storageKey: string
+    function readResumeMemory(
+        pathname: string
     ): ReaderMemoryRecord | null {
 
-        try {
-
-            const storedValue =
-                safelyReadReaderStorage(storageKey);
-
-
-            if (!storedValue) {
-
-                return null;
-
-            }
+        const memory =
+            readReaderMemory(
+                pathname
+            );
 
 
-            const parsed =
-                JSON.parse(
-                    storedValue
-                ) as Partial<ReaderMemoryRecord>;
-
-
-            if (
-                parsed.version !==
-                    READER_STORAGE_VERSION ||
-                parsed.pathname !==
-                    window.location.pathname ||
-                typeof parsed.progress !==
-                    "number" ||
-                typeof parsed.scrollY !==
-                    "number" ||
-                typeof parsed.updatedAt !==
-                    "number"
-            ) {
-
-                return null;
-
-            }
-
-
-            if (
-                Date.now() -
-                    parsed.updatedAt >
-                MAX_MEMORY_AGE
-            ) {
-
-                safelyRemoveReaderStorage(storageKey);
-
-                return null;
-
-            }
-
-
-            return {
-                version:
-                    READER_STORAGE_VERSION,
-                pathname:
-                    parsed.pathname,
-                progress:
-                    clamp(
-                        parsed.progress,
-                        0,
-                        100
-                    ),
-                scrollY:
-                    Math.max(
-                        0,
-                        parsed.scrollY
-                    ),
-                sectionId:
-                    parsed.sectionId ??
-                    "",
-                sectionLabel:
-                    parsed.sectionLabel ??
-                    "",
-                completed:
-                    parsed.completed ??
-                    false,
-                updatedAt:
-                    parsed.updatedAt
-            };
-
-        }
-        catch {
+        if (!memory) {
 
             return null;
 
         }
 
+
+        const updatedAt =
+            memory.updatedAt ??
+            0;
+
+
+        if (
+            Date.now() -
+                updatedAt >
+            MAX_MEMORY_AGE
+        ) {
+
+            removeReaderMemory(
+                pathname
+            );
+
+            return null;
+
+        }
+
+
+        return memory;
+
     }
 
-    function writeMemory(
-        storageKey: string,
-        memory: ReaderMemoryRecord
-    ): void {
 
-        safelyWriteReaderStorage(
-            storageKey,
-            JSON.stringify(
-                memory
-            )
-        );
-
-    }
-function removeMemory(
-        storageKey: string
-    ): void {
-
-        safelyRemoveReaderStorage(
-            storageKey
-        );
-
-    }
 function getProgressPercentage(
         article: HTMLElement
     ): number {
@@ -433,7 +359,7 @@ function getProgressPercentage(
         if (
             !force &&
             Math.abs(
-                memory.progress -
+                (memory.progress ?? 0) -
                 state.lastSavedProgress
             ) <
                 1
@@ -445,11 +371,10 @@ function getProgressPercentage(
 
 
         state.lastSavedProgress =
-            memory.progress;
+            memory.progress ?? 0;
 
 
-        writeMemory(
-            state.storageKey,
+        writeReaderMemory(
             memory
         );
 
@@ -498,14 +423,14 @@ function getProgressPercentage(
 
             return (
                 `You stopped near â€œ${memory.sectionLabel}â€ ` +
-                `at ${memory.progress}% complete.`
+                `at ${memory.progress ?? 0}% complete.`
             );
 
         }
 
 
         return (
-            `You were ${memory.progress}% ` +
+            `You were ${memory.progress ?? 0}% ` +
             "through this reading."
         );
 
@@ -573,7 +498,7 @@ function getProgressPercentage(
 
         window.scrollTo({
             top:
-                memory.scrollY,
+                memory.scrollY ?? 0,
             behavior
         });
 
@@ -586,9 +511,9 @@ function getProgressPercentage(
 
         return (
             !memory.completed &&
-            memory.progress >=
+            (memory.progress ?? 0) >=
                 MINIMUM_RESUME_PROGRESS &&
-            memory.progress <
+            (memory.progress ?? 0) <
                 MAXIMUM_RESUME_PROGRESS &&
             window.scrollY <
                 120 &&
@@ -662,8 +587,8 @@ function getProgressPercentage(
             message,
             continueButton,
             dismissButton,
-            storageKey:
-                getReaderMemoryKey(window.location.pathname),
+            pathname:
+                window.location.pathname,
             saveTimer:
                 null,
             lastSavedProgress:
@@ -672,8 +597,8 @@ function getProgressPercentage(
 
 
         const storedMemory =
-            readMemory(
-                state.storageKey
+            readResumeMemory(
+                state.pathname
             );
 
 
@@ -715,8 +640,8 @@ function getProgressPercentage(
                     state.root.hidden =
                         true;
 
-                    removeMemory(
-                        state.storageKey
+                    removeReaderMemory(
+                        state.pathname
                     );
 
                 }
