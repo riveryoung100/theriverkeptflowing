@@ -1,4 +1,5 @@
-﻿import type {
+import type {
+    AssetClassification,
     AssetId,
     ClassificationId,
     DerivedObjectReference,
@@ -79,10 +80,18 @@ export interface DerivationEngineResult {
 }
 
 
+export interface ClassificationReader {
+
+    read(
+        classificationId: ClassificationId
+    ): Promise<AssetClassification | null>;
+
+}
+
 export interface DerivationEngine {
 
     derive(
         request: DerivationRequest
-    ): DerivationEngineResult;
+    ): Promise<DerivationEngineResult>;
 
 }

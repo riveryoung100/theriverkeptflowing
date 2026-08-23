@@ -1,4 +1,4 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
@@ -85,10 +85,14 @@ test(
             result.results[0].classification.assetId,
             sampleTextSegment.assetId
         );
-
         assert.deepEqual(
-            result.results[0].classification.sourceSegmentIds,
-            [sampleTextSegment.id]
+            result.results[0].classification.topicKeys,
+            sampleTextSegment.topicKeys
+        );
+
+        assert.equal(
+            result.results[0].classification.classifiedAt,
+            new Date(0).toISOString()
         );
 
     }

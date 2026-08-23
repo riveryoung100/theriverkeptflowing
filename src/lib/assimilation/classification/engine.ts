@@ -1,4 +1,4 @@
-﻿import {
+import {
     ASSIMILATION_SCHEMA_VERSION
 } from "../types";
 
@@ -101,43 +101,25 @@ implements ClassificationEngine {
             assetId:
                 segment.assetId,
 
-            sourceSegmentIds:
-                [segment.id],
-
-            topics:
+            domainKeys:
                 [],
 
-            entities:
+            topicKeys:
+                segment.topicKeys,
+
+            audienceKeys:
                 [],
 
-            people:
+            contentFunctions:
                 [],
 
-            organizations:
+            businessRelevance:
                 [],
 
-            places:
+            learningOutcomes:
                 [],
 
-            dates:
-                [],
-
-            products:
-                [],
-
-            services:
-                [],
-
-            themes:
-                [],
-
-            claims:
-                [],
-
-            questions:
-                [],
-
-            actions:
+            questionsAnswered:
                 [],
 
             confidence:
@@ -145,6 +127,9 @@ implements ClassificationEngine {
 
             reviewStatus:
                 "not-required" as const,
+
+            classifiedAt:
+                new Date(0).toISOString(),
 
             version:
                 1,

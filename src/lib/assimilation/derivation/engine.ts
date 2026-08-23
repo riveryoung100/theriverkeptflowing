@@ -1,4 +1,4 @@
-﻿import {
+import {
     ASSIMILATION_SCHEMA_VERSION
 } from "../types";
 
@@ -7,18 +7,106 @@ import {
 } from "../identifiers";
 
 import type {
+    AssetClassification,
+    ClassificationId
+} from "../types";
+
+import type {
+    ClassificationReader,
     DerivationEngine,
     DerivationEngineResult,
     DerivationRequest
 } from "./types";
 
 
+export interface InMemoryClassificationEntry {
+
+    readonly classification:
+        AssetClassification;
+
+}
+
+
+export class InMemoryClassificationReader
+implements ClassificationReader {
+
+    public constructor(
+        private readonly entries:
+            readonly InMemoryClassificationEntry[] = []
+    ) {}
+
+
+    public async read(
+        classificationId: ClassificationId
+    ): Promise<AssetClassification | null> {
+
+        const entry =
+            this.entries.find(
+                candidate =>
+                    candidate.classification.id ===
+                    classificationId
+            );
+
+        return entry?.classification ?? null;
+    }
+
+}
+
 export class DeterministicDerivationEngine
 implements DerivationEngine {
 
-    derive(
+    public constructor(
+        private readonly classificationReader:
+            ClassificationReader =
+                new InMemoryClassificationReader()
+    ) {}
+
+    public async derive(
         request: DerivationRequest
-    ): DerivationEngineResult {
+    ): Promise<DerivationEngineResult> {
+
+        for (
+            const classificationId of
+            request.sourceClassificationIds
+        ) {
+
+            const classification =
+                await this.classificationReader.read(
+                    classificationId
+                );
+
+            if (
+                classification === null ||
+                classification.assetId !==
+                    request.assetId
+            ) {
+
+                const derivationId =
+                    createDerivativeId();
+
+                return {
+
+                    derivationId,
+
+                    assetId:
+                        request.assetId,
+
+                    status:
+                        "failed",
+
+                    reviewStatus:
+                        "not-required",
+
+                    results:
+                        [],
+
+                    warnings: [
+                        "Source classification could not be resolved for derivation."
+                    ]
+
+                };
+            }
+        }
 
         const derivativeId =
             createDerivativeId();
@@ -96,10 +184,15 @@ implements DerivationEngine {
 }
 
 
-export function createDerivationEngine():
-DerivationEngine {
+export function createDerivationEngine(
+    classificationReader:
+        ClassificationReader =
+            new InMemoryClassificationReader()
+): DerivationEngine {
 
     return new
-        DeterministicDerivationEngine();
+        DeterministicDerivationEngine(
+            classificationReader
+        );
 
 }

@@ -1,8 +1,9 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
     DeterministicDerivationEngine,
+    InMemoryClassificationReader,
     createDerivationEngine
 } from "./engine";
 
@@ -16,10 +17,14 @@ import {
     sampleDerivationResult
 } from "./fixtures/sampleDerivation";
 
+import {
+    sampleTextClassification
+} from "../fixtures/sampleTextAsset";
+
 
 test(
     "creates a deterministic derivation engine",
-    () => {
+    async () => {
 
         const engine =
             createDerivationEngine();
@@ -34,13 +39,23 @@ test(
 
 test(
     "derives a durable object from a valid request",
-    () => {
+    async () => {
+
+        const classificationReader =
+            new InMemoryClassificationReader([
+                {
+                    classification:
+                        sampleTextClassification
+                }
+            ]);
 
         const engine =
-            new DeterministicDerivationEngine();
+            new DeterministicDerivationEngine(
+                classificationReader
+            );
 
         const result =
-            engine.derive(
+            await engine.derive(
                 sampleDerivationRequest
             );
 
@@ -91,7 +106,7 @@ test(
 
 test(
     "validates the sample derivation request",
-    () => {
+    async () => {
 
         const validation =
             validateDerivationRequest(
@@ -114,7 +129,7 @@ test(
 
 test(
     "validates the sample derivation result",
-    () => {
+    async () => {
 
         const validation =
             validateDerivationResult(
@@ -137,7 +152,7 @@ test(
 
 test(
     "rejects a request without source segments",
-    () => {
+    async () => {
 
         const validation =
             validateDerivationRequest({
@@ -172,7 +187,7 @@ test(
 
 test(
     "rejects duplicate source segment references",
-    () => {
+    async () => {
 
         const sourceSegmentId =
             sampleDerivationRequest
@@ -213,7 +228,7 @@ test(
 
 test(
     "rejects an empty completed derivation result",
-    () => {
+    async () => {
 
         const validation =
             validateDerivationResult({
@@ -248,7 +263,7 @@ test(
 
 test(
     "rejects mismatched derivative identifiers",
-    () => {
+    async () => {
 
         const validation =
             validateDerivationResult({
