@@ -1,4 +1,4 @@
-export const READER_BOOKMARK_PREFIX =
+﻿export const READER_BOOKMARK_PREFIX =
     "river-reading-bookmark:";
 
 export const READER_MEMORY_PREFIX =
@@ -545,5 +545,272 @@ export function parseReaderDataBackup(
         bookmarks,
         readingMemory
     };
+
+}
+export function readReaderBookmark(
+    pathname: string
+): ReaderBookmarkRecord | null {
+
+    const key =
+        getReaderBookmarkKey(pathname);
+
+    const stored =
+        safelyReadReaderStorage(key);
+
+    if (!stored) {
+
+        return null;
+    }
+
+
+    try {
+
+        const parsed =
+            JSON.parse(stored);
+
+        return parseReaderBookmarkRecord(
+            parsed
+        );
+    }
+    catch {
+
+        return null;
+    }
+
+}
+
+
+export function readReaderMemory(
+    pathname: string
+): ReaderMemoryRecord | null {
+
+    const key =
+        getReaderMemoryKey(pathname);
+
+    return parseReaderMemoryStorage(
+        safelyReadReaderStorage(key)
+    );
+
+}
+
+
+export function writeReaderBookmark(
+    bookmark: ReaderBookmarkRecord
+): boolean {
+
+    const parsed =
+        parseReaderBookmarkRecord(
+            bookmark
+        );
+
+    if (!parsed) {
+
+        return false;
+    }
+
+
+    return safelyWriteReaderStorage(
+        getReaderBookmarkKey(
+            parsed.pathname
+        ),
+        JSON.stringify(
+            parsed
+        )
+    );
+
+}
+
+
+export function writeReaderMemory(
+    memory: ReaderMemoryRecord
+): boolean {
+
+    const parsed =
+        parseReaderMemoryRecord(
+            memory
+        );
+
+    if (
+        !parsed ||
+        typeof parsed.pathname !==
+            "string"
+    ) {
+
+        return false;
+    }
+
+
+    return safelyWriteReaderStorage(
+        getReaderMemoryKey(
+            parsed.pathname
+        ),
+        JSON.stringify(
+            parsed
+        )
+    );
+
+}
+
+
+export function removeReaderBookmark(
+    pathname: string
+): boolean {
+
+    return safelyRemoveReaderStorage(
+        getReaderBookmarkKey(pathname)
+    );
+
+}
+
+
+export function removeReaderMemory(
+    pathname: string
+): boolean {
+
+    return safelyRemoveReaderStorage(
+        getReaderMemoryKey(pathname)
+    );
+
+}
+
+
+export function listReaderBookmarks():
+    ReaderBookmarkRecord[] {
+
+    const bookmarks:
+        ReaderBookmarkRecord[] =
+        [];
+
+
+    for (
+        const key of
+        safelyListReaderStorageKeys()
+    ) {
+
+        if (
+            !key.startsWith(
+                READER_BOOKMARK_PREFIX
+            )
+        ) {
+
+            continue;
+        }
+
+
+        const stored =
+            safelyReadReaderStorage(key);
+
+        if (!stored) {
+
+            continue;
+        }
+
+
+        try {
+
+            const bookmark =
+                parseReaderBookmarkRecord(
+                    JSON.parse(stored)
+                );
+
+            if (bookmark) {
+
+                bookmarks.push(
+                    bookmark
+                );
+            }
+        }
+        catch {
+
+            continue;
+        }
+    }
+
+
+    return bookmarks;
+
+}
+
+
+export function listReaderMemory():
+    ReaderMemoryRecord[] {
+
+    const memory:
+        ReaderMemoryRecord[] =
+        [];
+
+
+    for (
+        const key of
+        safelyListReaderStorageKeys()
+    ) {
+
+        if (
+            !key.startsWith(
+                READER_MEMORY_PREFIX
+            )
+        ) {
+
+            continue;
+        }
+
+
+        const parsed =
+            parseReaderMemoryStorage(
+                safelyReadReaderStorage(key)
+            );
+
+        if (parsed) {
+
+            memory.push(
+                parsed
+            );
+        }
+    }
+
+
+    return memory;
+
+}
+
+
+export function readReaderRecordTimestamp(
+    key: string,
+    field:
+        "savedAt" |
+        "updatedAt"
+): number {
+
+    const stored =
+        safelyReadReaderStorage(key);
+
+    if (!stored) {
+
+        return 0;
+    }
+
+
+    try {
+
+        const parsed =
+            JSON.parse(
+                stored
+            ) as Record<string, unknown>;
+
+        const value =
+            parsed[field];
+
+        return (
+            typeof value ===
+                "number" &&
+            Number.isFinite(value)
+        )
+            ? value
+            : 0;
+    }
+    catch {
+
+        return 0;
+    }
 
 }
