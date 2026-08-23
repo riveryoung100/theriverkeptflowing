@@ -1,4 +1,4 @@
-﻿<section
+<section
     class="reader-data-portability"
     data-reader-data-portability
     aria-labelledby="reader-data-portability-title"
@@ -175,8 +175,9 @@
         getReaderBookmarkKey,
         getReaderMemoryKey,
         safelyReadReaderStorage,
-        safelyWriteReaderStorage
-    } from "../../lib/readerPersistence";
+        safelyWriteReaderStorage,
+    safelyListReaderStorageKeys
+} from "../../lib/readerPersistence";
 
 
 
@@ -466,24 +467,7 @@ function announce(
 
         try {
 
-            for (
-                let index = 0;
-                index <
-                    window.localStorage.length;
-                index += 1
-            ) {
-
-                const key =
-                    window.localStorage.key(
-                        index
-                    );
-
-
-                if (!key) {
-
-                    continue;
-
-                }
+            for (const key of safelyListReaderStorageKeys()) {
 
 
                 const stored =

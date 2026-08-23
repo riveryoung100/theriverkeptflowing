@@ -1,4 +1,4 @@
-﻿<section
+<section
     class="saved-library"
     data-saved-library
     aria-labelledby="saved-library-title"
@@ -184,8 +184,9 @@
         type ReaderMemoryRecord,
         getReaderMemoryKey,
         safelyReadReaderStorage,
-        safelyRemoveReaderStorage
-    } from "../../lib/readerPersistence";
+        safelyRemoveReaderStorage,
+    safelyListReaderStorageKeys
+} from "../../lib/readerPersistence";
 
 
 
@@ -329,20 +330,9 @@ function clamp(
 
         try {
 
-            for (
-                let index = 0;
-                index < window.localStorage.length;
-                index += 1
-            ) {
-
-                const key =
-                    window.localStorage.key(
-                        index
-                    );
-
+            for (const key of safelyListReaderStorageKeys()) {
 
                 if (
-                    !key ||
                     !key.startsWith(
                         READER_BOOKMARK_PREFIX
                     )

@@ -1,4 +1,4 @@
-﻿export const READER_BOOKMARK_PREFIX =
+export const READER_BOOKMARK_PREFIX =
     "river-reading-bookmark:";
 
 export const READER_MEMORY_PREFIX =
@@ -127,6 +127,45 @@ export function getReaderMemoryKey(
     );
 }
 
+
+export function safelyListReaderStorageKeys(): string[] {
+
+    try {
+
+        const keys: string[] =
+            [];
+
+        for (
+            let index = 0;
+            index < window.localStorage.length;
+            index += 1
+        ) {
+
+            const key =
+                window.localStorage.key(
+                    index
+                );
+
+            if (key !== null) {
+
+                keys.push(
+                    key
+                );
+
+            }
+
+        }
+
+        return keys;
+
+    }
+    catch {
+
+        return [];
+
+    }
+
+}
 
 export function safelyReadReaderStorage(
     key: string
