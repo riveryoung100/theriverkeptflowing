@@ -1,45 +1,192 @@
 ﻿import {
+    ASSIMILATION_SCHEMA_VERSION
+} from "../types";
+
+import {
     createClassificationId
 } from "../identifiers";
 
 import type {
+    AssetSegment,
     SegmentId
 } from "../types";
 
 import type {
     ClassificationEngine,
-    ClassificationEngineResult
+    ClassificationEngineResult,
+    SegmentReader
 } from "./types";
 
-export class DeterministicClassificationEngine
-implements ClassificationEngine {
 
-    classify(
+export interface InMemorySegmentEntry {
+
+    readonly segment:
+        AssetSegment;
+
+}
+
+
+export class InMemorySegmentReader
+implements SegmentReader {
+
+    public constructor(
+        private readonly entries:
+            readonly InMemorySegmentEntry[] = []
+    ) {}
+
+
+    public async read(
         segmentId: SegmentId
-    ): ClassificationEngineResult {
+    ): Promise<AssetSegment | null> {
 
-        void segmentId;
+        const entry =
+            this.entries.find(
+                candidate =>
+                    candidate.segment.id ===
+                    segmentId
+            );
 
-        return {
-
-            classificationId:
-                createClassificationId(),
-
-            status:
-                "completed",
-
-            results: []
-
-        };
-
+        return entry?.segment ?? null;
     }
 
 }
 
-export function createClassificationEngine():
-ClassificationEngine {
 
-    return new
-        DeterministicClassificationEngine();
+export class DeterministicClassificationEngine
+implements ClassificationEngine {
 
+    public constructor(
+        private readonly segmentReader:
+            SegmentReader =
+                new InMemorySegmentReader()
+    ) {}
+
+
+    public async classify(
+        segmentId: SegmentId
+    ): Promise<ClassificationEngineResult> {
+
+        const classificationId =
+            createClassificationId();
+
+        const segment =
+            await this.segmentReader.read(
+                segmentId
+            );
+
+        if (
+            segment === null ||
+            typeof segment.normalizedText !== "string" ||
+            segment.normalizedText.length === 0
+        ) {
+
+            return {
+
+                classificationId,
+
+                status:
+                    "failed",
+
+                results:
+                    []
+
+            };
+        }
+
+        const classification = {
+
+            id:
+                classificationId,
+
+            assetId:
+                segment.assetId,
+
+            sourceSegmentIds:
+                [segment.id],
+
+            topics:
+                [],
+
+            entities:
+                [],
+
+            people:
+                [],
+
+            organizations:
+                [],
+
+            places:
+                [],
+
+            dates:
+                [],
+
+            products:
+                [],
+
+            services:
+                [],
+
+            themes:
+                [],
+
+            claims:
+                [],
+
+            questions:
+                [],
+
+            actions:
+                [],
+
+            confidence:
+                1,
+
+            reviewStatus:
+                "not-required" as const,
+
+            version:
+                1,
+
+            schemaVersion:
+                ASSIMILATION_SCHEMA_VERSION
+
+        };
+
+        return {
+
+            classificationId,
+
+            status:
+                "completed",
+
+            results: [
+
+                {
+
+                    classification,
+
+                    status:
+                        "completed"
+
+                }
+
+            ]
+
+        };
+    }
+
+}
+
+
+export function createClassificationEngine(
+    segmentReader:
+        SegmentReader =
+            new InMemorySegmentReader()
+): ClassificationEngine {
+
+    return new DeterministicClassificationEngine(
+        segmentReader
+    );
 }

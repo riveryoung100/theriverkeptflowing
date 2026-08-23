@@ -1,14 +1,17 @@
 ﻿import type {
     AssetClassification,
+    AssetSegment,
     ClassificationId,
     SegmentId
 } from "../types";
+
 
 export type ClassificationStatus =
     | "pending"
     | "running"
     | "completed"
     | "failed";
+
 
 export interface ClassificationRequest {
 
@@ -20,6 +23,7 @@ export interface ClassificationRequest {
 
 }
 
+
 export interface ClassificationResult {
 
     readonly classification:
@@ -29,6 +33,7 @@ export interface ClassificationResult {
         ClassificationStatus;
 
 }
+
 
 export interface ClassificationEngineResult {
 
@@ -43,10 +48,20 @@ export interface ClassificationEngineResult {
 
 }
 
+
+export interface SegmentReader {
+
+    read(
+        segmentId: SegmentId
+    ): Promise<AssetSegment | null>;
+
+}
+
+
 export interface ClassificationEngine {
 
     classify(
         segmentId: SegmentId
-    ): ClassificationEngineResult;
+    ): Promise<ClassificationEngineResult>;
 
 }

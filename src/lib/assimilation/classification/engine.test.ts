@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
     DeterministicClassificationEngine,
+    InMemorySegmentReader,
     createClassificationEngine
 } from "./engine";
 
@@ -18,6 +19,11 @@ import {
     sampleClassificationResult
 } from "./fixtures/sampleClassification";
 
+import {
+    createSegmentId
+} from "../identifiers";
+
+
 test(
     "creates a deterministic classification engine",
     () => {
@@ -30,15 +36,28 @@ test(
     }
 );
 
+
 test(
-    "classify returns a completed result",
-    () => {
+    "classifies a resolved segment into a completed asset classification",
+    async () => {
+
+        const reader =
+            new InMemorySegmentReader([
+
+                {
+                    segment:
+                        sampleTextSegment
+                }
+
+            ]);
 
         const engine =
-            new DeterministicClassificationEngine();
+            new DeterministicClassificationEngine(
+                reader
+            );
 
         const result =
-            engine.classify(
+            await engine.classify(
                 sampleTextSegment.id
             );
 
@@ -47,8 +66,108 @@ test(
             "completed"
         );
 
+        assert.equal(
+            result.results.length,
+            1
+        );
+
+        assert.equal(
+            result.results[0].status,
+            "completed"
+        );
+
+        assert.equal(
+            result.results[0].classification.id,
+            result.classificationId
+        );
+
+        assert.equal(
+            result.results[0].classification.assetId,
+            sampleTextSegment.assetId
+        );
+
+        assert.deepEqual(
+            result.results[0].classification.sourceSegmentIds,
+            [sampleTextSegment.id]
+        );
+
     }
 );
+
+
+test(
+    "rejects classification when segment cannot be resolved",
+    async () => {
+
+        const engine =
+            new DeterministicClassificationEngine(
+                new InMemorySegmentReader()
+            );
+
+        const result =
+            await engine.classify(
+                createSegmentId()
+            );
+
+        assert.equal(
+            result.status,
+            "failed"
+        );
+
+        assert.deepEqual(
+            result.results,
+            []
+        );
+
+    }
+);
+
+
+test(
+    "rejects classification when segment has no normalized text",
+    async () => {
+
+        const segment = {
+
+            ...sampleTextSegment,
+
+            normalizedText:
+                ""
+
+        };
+
+        const reader =
+            new InMemorySegmentReader([
+
+                {
+                    segment
+                }
+
+            ]);
+
+        const engine =
+            new DeterministicClassificationEngine(
+                reader
+            );
+
+        const result =
+            await engine.classify(
+                segment.id
+            );
+
+        assert.equal(
+            result.status,
+            "failed"
+        );
+
+        assert.deepEqual(
+            result.results,
+            []
+        );
+
+    }
+);
+
 
 test(
     "fixture validates successfully",
@@ -67,6 +186,7 @@ test(
     }
 );
 
+
 test(
     "empty classification is rejected",
     () => {
@@ -80,7 +200,8 @@ test(
                 status:
                     "completed",
 
-                results: []
+                results:
+                    []
 
             });
 
