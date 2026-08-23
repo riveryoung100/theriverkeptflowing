@@ -89,8 +89,6 @@
 
 <script>
     import {
-        READER_BOOKMARK_PREFIX,
-        READER_MEMORY_PREFIX,
         READER_DATA_CHANGED_EVENT,
         type ReaderDataChangeDetail,
         type ReaderMemoryRecord,
@@ -288,9 +286,7 @@
     }
 
 
-    function readReadingMemory(
-        state: ReaderActionState
-    ): ReaderMemoryRecord {
+    function readReadingMemory(): ReaderMemoryRecord {
 
         return (
             readReaderMemory(
@@ -303,7 +299,6 @@
 
 
     function writeCompletionState(
-        state: ReaderActionState,
         completed: boolean
     ): boolean {
 
@@ -321,9 +316,7 @@
     ): void {
 
         const memory =
-            readReadingMemory(
-                state
-            );
+            readReadingMemory();
 
         const completed =
             memory.completed ===
@@ -647,9 +640,7 @@
             () => {
 
                 const memory =
-                    readReadingMemory(
-                        state
-                    );
+                    readReadingMemory();
 
                 const nextCompleted =
                     memory.completed !==
@@ -658,7 +649,6 @@
 
                 const updated =
                     writeCompletionState(
-                        state,
                         nextCompleted
                     );
 
