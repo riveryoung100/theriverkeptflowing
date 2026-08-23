@@ -1,8 +1,9 @@
-﻿import type {
+import type {
     AssetId,
     AssetExtraction,
     ExtractionId,
-    SourceAsset
+    SourceAsset,
+    StorageReference
 } from "../types";
 
 export type ExtractionStatus =
@@ -44,11 +45,25 @@ export interface ExtractionEngineResult {
 
 }
 
+export interface RawSourceContent {
+
+    readonly text:
+        string;
+
+}
+
+export interface RawSourceReader {
+
+    read(
+        storage: StorageReference
+    ): Promise<RawSourceContent | null>;
+
+}
+
 export interface ExtractionEngine {
 
     extract(
         asset: SourceAsset
-    ): ExtractionEngineResult;
+    ): Promise<ExtractionEngineResult>;
 
 }
-
