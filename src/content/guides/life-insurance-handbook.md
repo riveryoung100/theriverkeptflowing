@@ -26,11 +26,11 @@ learningPath: []
 category: "Insurance Education"
 guideNumber: 6
 version: "1.0"
-readingMinutes: 35
+readingMinutes: 90
 ---
 <header class="handbook-cover life-handbook-cover">
 <div class="handbook-cover__inner">
-<p class="publication-label">River Guides · Publication No. 004</p>
+<p class="publication-label">River Guides · Publication No. 006</p>
 
 <p class="handbook-subtitle">Understanding Protection Before the People You Love Ever Need It</p>
 <p class="handbook-deck">A complete, practical guide to why life insurance exists, how policies work, how to compare coverage, and how to leave behind preparation instead of confusion.</p>
@@ -246,6 +246,4 @@ readingMinutes: 35
 <p>If the policy performs, a spouse may experience it on the hardest morning of their life. A child may experience it years later as a home that was not lost, an education that remained possible, or time their surviving parent was able to spend grieving instead of immediately scrambling.</p>
 <div class="pull-quote">The policy is not the legacy. The care, responsibility, and preparation behind it are.</div>
 </div></section>
-
-<section class="next-edition"><div class="handbook-shell next-edition-grid"><div><p class="eyebrow">Coming next in River Guides</p><p class="publication-label">River Guide · Publication No. 005</p><h2>The Umbrella Insurance Handbook</h2><p>A practical guide to excess liability, underlying home and auto requirements, covered exposures, exclusions, limits, and when another layer of protection may be worth carrying.</p></div><a class="handbook-return" href="/river-guides/">Return to River Guides →</a></div></section>
 </article>

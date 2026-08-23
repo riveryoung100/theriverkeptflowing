@@ -28,7 +28,7 @@ learningPath:
 category: "Insurance Education"
 guideNumber: 1
 version: "1.0"
-readingMinutes: 35
+readingMinutes: 30
 ---
 <header class="handbook-cover">
     <div class="handbook-cover__inner">

@@ -1,6 +1,6 @@
 ---
 series: "Insurance Handbook Series"
-seriesOrder: 2
+seriesOrder: 3
 title: "The Renters Insurance Handbook"
 description: "A practical guide to understanding renters insurance before you need it."
 published: 2026-07-26
@@ -25,7 +25,7 @@ learningPath:
 category: "Insurance Education"
 guideNumber: 3
 version: "1.0"
-readingMinutes: 25
+readingMinutes: 30
 ---
 <header class="handbook-cover">
 
@@ -2718,17 +2718,14 @@ readingMinutes: 25
                         <h3>
 
                             River Guide No. 004 ·
-                            The Umbrella Insurance Handbook
+                            The Landlord Insurance Handbook
 
                         </h3>
 
 
                         <p>
 
-                            Understanding excess liability, underlying
-                            home and auto requirements, covered exposures,
-                            exclusions, limits, and when an additional
-                            layer of protection may be worth considering.
+                            Protecting rental property, understanding dwelling and liability coverage, evaluating risk, controlling cost, and preparing before a claim ever happens.
 
                         </p>
 
