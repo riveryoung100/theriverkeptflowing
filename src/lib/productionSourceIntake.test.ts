@@ -162,3 +162,66 @@ test(
 
     }
 );
+test(
+    "rejects malformed runtime requests at the production intake boundary",
+    async () => {
+
+        const rootDirectory =
+            await mkdtemp(
+                path.join(
+                    os.tmpdir(),
+                    "river-production-source-intake-"
+                )
+            );
+
+        try {
+
+            const intake =
+                createProductionSourceIntake(
+                    rootDirectory
+                );
+
+            const malformedRequest:
+                unknown = {
+                    content:
+                        42,
+                    assetType:
+                        "note",
+                    originalFilename:
+                        "malformed-production-source-intake.txt",
+                    ownership:
+                        {},
+                    usagePermission:
+                        {}
+                };
+
+            await assert.rejects(
+                intake.ingest(
+                    malformedRequest as
+                        FileSystemSourceIngestionRequest
+                ),
+                {
+                    name:
+                        "TypeError",
+                    message:
+                        'Production source request field "content" must be a string.'
+                }
+            );
+
+        }
+        finally {
+
+            await rm(
+                rootDirectory,
+                {
+                    recursive:
+                        true,
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);

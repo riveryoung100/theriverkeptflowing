@@ -1,6 +1,9 @@
 import type {
     FileSystemSourceIngestionRequest
 } from "./assimilation/ingestion/types";
+import {
+    assertFileSystemSourceIngestionRequest
+} from "./assimilation/ingestion/validation";
 
 import {
     createWorkflowId,
@@ -123,6 +126,10 @@ export function createProductionSourceIntake(
             request:
                 FileSystemSourceIngestionRequest
         ): Promise<void> {
+
+            assertFileSystemSourceIngestionRequest(
+                request
+            );
 
             await orchestration
                 .execute(
