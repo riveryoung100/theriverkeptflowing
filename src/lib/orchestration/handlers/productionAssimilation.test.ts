@@ -334,6 +334,91 @@ test(
 
 
 test(
+    "rejects malformed production source requests at the workflow handler boundary",
+    async () => {
+
+        const rootDirectory =
+            await mkdtemp(
+                path.join(
+                    os.tmpdir(),
+                    "river-workflow-assimilation-"
+                )
+            );
+
+        try {
+
+            const handler =
+                createProductionAssimilationWorkflowStepHandler(
+                    rootDirectory
+                );
+
+            const validStep =
+                createStep(
+                    createRequest()
+                );
+
+            const step = {
+                ...validStep,
+                inputs: [
+                    {
+                        key:
+                            productionAssimilationRequestInputKey,
+                        value: {
+                            content:
+                                "Malformed workflow request."
+                        }
+                    }
+                ]
+            };
+
+            const result =
+                await handler.execute({
+                    workflowRunId:
+                        createWorkflowRunId(),
+                    step,
+                    workflowContext:
+                        {},
+                    dependencyOutputs:
+                        {},
+                    timestamp:
+                        "2026-08-24T00:00:00.000Z"
+                });
+
+            assert.equal(
+                result.status,
+                "failed"
+            );
+
+            assert.deepEqual(
+                result.outputs,
+                []
+            );
+
+            assert.match(
+                result.error ?? "",
+                /assetType.*non-empty string/
+            );
+
+        }
+        finally {
+
+            await rm(
+                rootDirectory,
+                {
+                    recursive:
+                        true,
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);
+
+
+test(
     "preserves production assimilation failure as workflow failure",
     async () => {
 

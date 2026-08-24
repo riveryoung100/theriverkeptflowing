@@ -1,6 +1,10 @@
 import type {
     FileSystemSourceIngestionRequest
 } from "../../assimilation/ingestion/types";
+import {
+    assertFileSystemSourceIngestionRequest
+} from "../../assimilation/ingestion/validation";
+
 
 import {
     createProductionSourceAssimilation
@@ -61,21 +65,11 @@ function requireAssimilationRequest(
 
     }
 
-    if (
-        input.value ===
-        null ||
-        typeof input.value !==
-            "object"
-    ) {
+    assertFileSystemSourceIngestionRequest(
+        input.value
+    );
 
-        throw new TypeError(
-            `Assimilation workflow input "${productionAssimilationRequestInputKey}" must be an object.`
-        );
-
-    }
-
-    return input.value as
-        FileSystemSourceIngestionRequest;
+    return input.value;
 
 }
 
