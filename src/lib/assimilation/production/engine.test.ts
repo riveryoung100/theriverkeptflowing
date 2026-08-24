@@ -362,3 +362,230 @@ test(
 
     }
 );
+
+test(
+    "assimilates UTF-8 Uint8Array text through the complete production pipeline",
+    async () => {
+
+        const rootDirectory =
+            await mkdtemp(
+                path.join(
+                    os.tmpdir(),
+                    "river-production-source-assimilation-"
+                )
+            );
+
+        try {
+
+            const expectedText =
+                "Binary text still becomes governed knowledge through the production pipeline.";
+
+            const content =
+                Uint8Array.from(
+                    Buffer.from(
+                        expectedText,
+                        "utf8"
+                    )
+                );
+
+            const service =
+                createProductionSourceAssimilation(
+                    rootDirectory
+                );
+
+            const result =
+                await service.ingestAndAssimilate(
+                    createRequest(
+                        content
+                    )
+                );
+
+            assert.equal(
+                result.status,
+                "completed"
+            );
+
+            assert.equal(
+                result.failedStage,
+                null
+            );
+
+            assert.ok(
+                result.asset.storage
+            );
+
+            const storedBytes =
+                await readFile(
+                    path.join(
+                        rootDirectory,
+                        result.asset.storage.key
+                    )
+                );
+
+            assert.deepEqual(
+                storedBytes,
+                Buffer.from(
+                    content
+                )
+            );
+
+            assert.ok(
+                result.extraction
+            );
+
+            assert.equal(
+                result.extraction.text,
+                expectedText
+            );
+
+            assert.ok(
+                result.segment
+            );
+
+            assert.ok(
+                result.classification
+            );
+
+            assert.ok(
+                result.derivedObject
+            );
+
+        }
+        finally {
+
+            await rm(
+                rootDirectory,
+                {
+                    recursive:
+                        true,
+
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);
+
+
+test(
+    "preserves unsupported binary source bytes and stops at extraction",
+    async () => {
+
+        const rootDirectory =
+            await mkdtemp(
+                path.join(
+                    os.tmpdir(),
+                    "river-production-source-assimilation-"
+                )
+            );
+
+        try {
+
+            const bytes =
+                Uint8Array.from(
+                    [
+                        0,
+                        1,
+                        2,
+                        10,
+                        13,
+                        255
+                    ]
+                );
+
+            const service =
+                createProductionSourceAssimilation(
+                    rootDirectory
+                );
+
+            const request =
+                createRequest(
+                    bytes
+                );
+
+            const result =
+                await service.ingestAndAssimilate({
+                    ...request,
+
+                    originalFilename:
+                        "unsupported-binary-source.bin",
+
+                    mimeType:
+                        "application/octet-stream"
+                });
+
+            assert.equal(
+                result.status,
+                "failed"
+            );
+
+            assert.equal(
+                result.failedStage,
+                "extraction"
+            );
+
+            assert.ok(
+                result.asset.storage
+            );
+
+            const storedBytes =
+                await readFile(
+                    path.join(
+                        rootDirectory,
+                        result.asset.storage.key
+                    )
+                );
+
+            assert.deepEqual(
+                storedBytes,
+                Buffer.from(
+                    bytes
+                )
+            );
+
+            assert.equal(
+                result.asset.mimeType,
+                "application/octet-stream"
+            );
+
+            assert.equal(
+                result.extraction,
+                null
+            );
+
+            assert.equal(
+                result.segment,
+                null
+            );
+
+            assert.equal(
+                result.classification,
+                null
+            );
+
+            assert.equal(
+                result.derivedObject,
+                null
+            );
+
+        }
+        finally {
+
+            await rm(
+                rootDirectory,
+                {
+                    recursive:
+                        true,
+
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);
