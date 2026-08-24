@@ -163,6 +163,72 @@ test(
     }
 );
 test(
+    "ingests Uint8Array content through production orchestration",
+    async () => {
+
+        const rootDirectory =
+            await mkdtemp(
+                path.join(
+                    os.tmpdir(),
+                    "river-production-source-intake-"
+                )
+            );
+
+        try {
+
+            const intake =
+                createProductionSourceIntake(
+                    rootDirectory
+                );
+
+            const request =
+                createRequest();
+
+            const binaryRequest: FileSystemSourceIngestionRequest = {
+                ...request,
+
+                content:
+                    Uint8Array.from(
+                        [
+                            0,
+                            1,
+                            2,
+                            10,
+                            13,
+                            255
+                        ]
+                    ),
+
+                originalFilename:
+                    "binary-production-source.bin"
+            };
+
+            await assert.doesNotReject(
+                intake.ingest(
+                    binaryRequest
+                )
+            );
+
+        }
+        finally {
+
+            await rm(
+                rootDirectory,
+                {
+                    recursive:
+                        true,
+
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);
+
+test(
     "rejects malformed runtime requests at the production intake boundary",
     async () => {
 
@@ -204,7 +270,7 @@ test(
                     name:
                         "TypeError",
                     message:
-                        'Production source request field "content" must be a string.'
+                        'Production source request field "content" must be a string or Uint8Array.'
                 }
             );
 

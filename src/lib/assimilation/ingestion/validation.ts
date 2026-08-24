@@ -27,11 +27,15 @@ export function assertFileSystemSourceIngestionRequest(
 
     if (
         typeof request.content !==
-            "string"
+            "string" &&
+        !(
+            request.content instanceof
+                Uint8Array
+        )
     ) {
 
         throw new TypeError(
-            'Production source request field "content" must be a string.'
+            'Production source request field "content" must be a string or Uint8Array.'
         );
 
     }
