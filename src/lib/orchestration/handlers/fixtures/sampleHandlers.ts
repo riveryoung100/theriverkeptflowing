@@ -1,4 +1,4 @@
-﻿import type {
+import type {
     WorkflowStepType
 } from "../../types";
 
@@ -18,9 +18,13 @@ implements WorkflowStepHandler {
     ) {}
 
 
-    execute(
+    async execute(
+
+
         context: WorkflowStepHandlerContext
-    ): WorkflowStepHandlerResult {
+
+
+    ): Promise<WorkflowStepHandlerResult> {
 
         return {
 

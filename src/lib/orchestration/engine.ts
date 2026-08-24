@@ -1,4 +1,4 @@
-﻿import {
+import {
     createHash
 } from "node:crypto";
 
@@ -127,9 +127,9 @@ implements WorkflowStepHandler {
     ) {}
 
 
-    execute(
+    async execute(
         context: WorkflowStepHandlerContext
-    ): WorkflowStepHandlerResult {
+    ): Promise<WorkflowStepHandlerResult> {
 
         return {
 
@@ -275,9 +275,13 @@ export class DeterministicWorkflowEngine {
     ) {}
 
 
-    run(
+    async run(
+
+
         request: WorkflowRunRequest
-    ): WorkflowEngineResult {
+
+
+    ): Promise<WorkflowEngineResult> {
 
         validateWorkflowRunRequest(
             request
@@ -366,7 +370,7 @@ export class DeterministicWorkflowEngine {
             );
 
             const handlerResult =
-                handler.execute(
+                await handler.execute(
                     context
                 );
 
@@ -466,8 +470,12 @@ export class DeterministicWorkflowEngine {
 
 
     execute(
+
+
         request: WorkflowRunRequest
-    ): WorkflowEngineResult {
+
+
+    ): Promise<WorkflowEngineResult> {
 
         return this.run(
             request

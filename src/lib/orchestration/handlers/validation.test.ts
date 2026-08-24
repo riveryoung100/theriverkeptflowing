@@ -1,4 +1,4 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
@@ -59,10 +59,10 @@ test(
 
 test(
     "accepts a valid handler result",
-    () => {
+    async () => {
 
         const result =
-            sampleAssimilationHandler.execute(
+            await sampleAssimilationHandler.execute(
                 sampleContext
             );
 

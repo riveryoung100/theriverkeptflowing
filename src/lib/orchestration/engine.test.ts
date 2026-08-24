@@ -1,4 +1,4 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
@@ -32,10 +32,10 @@ test(
 
 test(
     "runs workflow with default handlers",
-    () => {
+    async () => {
 
         const result =
-            createWorkflowEngine()
+            await createWorkflowEngine()
                 .run(
                     sampleWorkflowRunRequest
                 );
@@ -51,10 +51,10 @@ test(
 
 test(
     "creates one execution per workflow step",
-    () => {
+    async () => {
 
         const result =
-            createWorkflowEngine()
+            await createWorkflowEngine()
                 .run(
                     sampleWorkflowRunRequest
                 );
@@ -73,10 +73,10 @@ test(
 
 test(
     "preserves workflow identifier",
-    () => {
+    async () => {
 
         const result =
-            createWorkflowEngine()
+            await createWorkflowEngine()
                 .run(
                     sampleWorkflowRunRequest
                 );
@@ -94,18 +94,18 @@ test(
 
 test(
     "returns deterministic executions",
-    () => {
+    async () => {
 
         const engine =
             createWorkflowEngine();
 
         const first =
-            engine.run(
+            await engine.run(
                 sampleWorkflowRunRequest
             );
 
         const second =
-            engine.run(
+            await engine.run(
                 sampleWorkflowRunRequest
             );
 
@@ -120,7 +120,7 @@ test(
 
 test(
     "dispatches workflow steps through registered handlers",
-    () => {
+    async () => {
 
         const registry =
             createWorkflowStepHandlerRegistry();
@@ -135,7 +135,7 @@ test(
         }
 
         const result =
-            createWorkflowEngine(
+            await createWorkflowEngine(
                 registry
             )
                 .run(
@@ -167,20 +167,19 @@ test(
 
 test(
     "rejects workflows without registered handlers",
-    () => {
+    async () => {
 
         const emptyRegistry =
             createWorkflowStepHandlerRegistry();
 
-        assert.throws(
-            () => {
+        await assert.rejects(
+            () =>
                 createWorkflowEngine(
                     emptyRegistry
                 )
                     .run(
                         sampleWorkflowRunRequest
-                    );
-            },
+                    ),
             TypeError
         );
 

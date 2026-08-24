@@ -1,4 +1,4 @@
-﻿import type {
+import type {
     WorkflowRunId,
     WorkflowStepDefinition,
     WorkflowStepOutput,
@@ -51,7 +51,7 @@ export interface WorkflowStepHandler {
 
     execute(
         context: WorkflowStepHandlerContext
-    ): WorkflowStepHandlerResult;
+    ): Promise<WorkflowStepHandlerResult>;
 
 }
 
