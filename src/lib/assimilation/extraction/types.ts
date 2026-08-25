@@ -60,7 +60,23 @@ export interface RawSourceReader {
 
 }
 
-export interface ExtractionEngine {
+
+
+export interface BinaryRawSourceContent {
+
+    readonly bytes:
+        Uint8Array;
+
+}
+
+
+export interface BinaryRawSourceReader {
+
+    read(
+        storage: StorageReference
+    ): Promise<BinaryRawSourceContent | null>;
+
+}export interface ExtractionEngine {
 
     extract(
         asset: SourceAsset
