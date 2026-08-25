@@ -12,6 +12,17 @@ import type {
 } from "./types";
 
 
+export interface ProductionExtractionCapability {
+
+    readonly mimeType:
+        string;
+
+    readonly extractionEngine:
+        ExtractionEngine;
+
+}
+
+
 export function normalizeMimeType(
     mimeType:
         string | undefined
@@ -41,13 +52,67 @@ export function normalizeMimeType(
 
 }
 
+
+function createCapabilityMap(
+    capabilities:
+        readonly ProductionExtractionCapability[]
+): ReadonlyMap<string, ExtractionEngine> {
+
+    const capabilityMap =
+        new Map<string, ExtractionEngine>();
+
+    for (const capability of capabilities) {
+
+        const normalizedMimeType =
+            normalizeMimeType(
+                capability.mimeType
+            );
+
+        if (normalizedMimeType === undefined) {
+            throw new Error(
+                "Production extraction capability MIME type must resolve to a canonical MIME type."
+            );
+        }
+
+        if (
+            capabilityMap.has(
+                normalizedMimeType
+            )
+        ) {
+            throw new Error(
+                `Duplicate production extraction capability for MIME type: ${normalizedMimeType}`
+            );
+        }
+
+        capabilityMap.set(
+            normalizedMimeType,
+            capability.extractionEngine
+        );
+
+    }
+
+    return capabilityMap;
+
+}
+
+
 export class ProductionExtractionRouter
 implements ExtractionEngine {
 
+    private readonly capabilityMap:
+        ReadonlyMap<string, ExtractionEngine>;
+
     constructor(
-        private readonly textExtractionEngine:
-            ExtractionEngine
-    ) {}
+        capabilities:
+            readonly ProductionExtractionCapability[]
+    ) {
+
+        this.capabilityMap =
+            createCapabilityMap(
+                capabilities
+            );
+
+    }
 
     async extract(
         asset: SourceAsset
@@ -58,28 +123,34 @@ implements ExtractionEngine {
                 asset.mimeType
             );
 
-        if (
-            normalizedMimeType ===
-            "text/plain"
-        ) {
+        if (normalizedMimeType !== undefined) {
 
-            if (
-                asset.mimeType ===
-                normalizedMimeType
-            ) {
-
-                return this.textExtractionEngine.extract(
-                    asset
+            const extractionEngine =
+                this.capabilityMap.get(
+                    normalizedMimeType
                 );
 
-            }
+            if (extractionEngine !== undefined) {
 
-            return this.textExtractionEngine.extract({
-                ...asset,
-
-                mimeType:
+                if (
+                    asset.mimeType ===
                     normalizedMimeType
-            });
+                ) {
+
+                    return extractionEngine.extract(
+                        asset
+                    );
+
+                }
+
+                return extractionEngine.extract({
+                    ...asset,
+
+                    mimeType:
+                        normalizedMimeType
+                });
+
+            }
 
         }
 
@@ -102,12 +173,12 @@ implements ExtractionEngine {
 
 
 export function createProductionExtractionRouter(
-    textExtractionEngine:
-        ExtractionEngine
+    capabilities:
+        readonly ProductionExtractionCapability[]
 ): ExtractionEngine {
 
     return new ProductionExtractionRouter(
-        textExtractionEngine
+        capabilities
     );
 
 }

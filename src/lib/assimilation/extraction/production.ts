@@ -1,4 +1,4 @@
-import type {
+﻿import type {
     ExtractionEngine
 } from "./types";
 
@@ -26,8 +26,14 @@ export function createProductionExtractionEngine(
             )
         );
 
-    return createProductionExtractionRouter(
-        textExtractionEngine
-    );
+    return createProductionExtractionRouter([
+        {
+            mimeType:
+                "text/plain",
+
+            extractionEngine:
+                textExtractionEngine
+        }
+    ]);
 
 }

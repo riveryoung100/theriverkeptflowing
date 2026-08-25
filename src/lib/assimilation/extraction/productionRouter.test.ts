@@ -43,7 +43,7 @@ ExtractionEngineResult {
 
 
 test(
-    "routes text/plain assets to the configured text extraction engine",
+    "routes assets through the extraction engine registered for their canonical MIME type",
     async () => {
 
         const delegatedResult =
@@ -71,9 +71,15 @@ test(
             };
 
         const router =
-            createProductionExtractionRouter(
-                textExtractionEngine
-            );
+            createProductionExtractionRouter([
+                {
+                    mimeType:
+                        "text/plain",
+
+                    extractionEngine:
+                        textExtractionEngine
+                }
+            ]);
 
         const result =
             await router.extract(
@@ -100,7 +106,7 @@ test(
 
 
 test(
-    "rejects unsupported MIME types without invoking the text extraction engine",
+    "rejects unsupported MIME types without invoking registered extraction engines",
     async () => {
 
         let invocationCount =
@@ -121,9 +127,15 @@ test(
             };
 
         const router =
-            createProductionExtractionRouter(
-                textExtractionEngine
-            );
+            createProductionExtractionRouter([
+                {
+                    mimeType:
+                        "text/plain",
+
+                    extractionEngine:
+                        textExtractionEngine
+                }
+            ]);
 
         const unsupportedAsset:
             SourceAsset = {
@@ -164,7 +176,7 @@ test(
 
 
 test(
-    "routes parameterized text/plain MIME types through the text extractor",
+    "normalizes asset MIME parameters before resolving a registered capability",
     async () => {
 
         const receivedAssets:
@@ -192,9 +204,15 @@ test(
             };
 
         const router =
-            createProductionExtractionRouter(
-                textExtractionEngine
-            );
+            createProductionExtractionRouter([
+                {
+                    mimeType:
+                        "text/plain",
+
+                    extractionEngine:
+                        textExtractionEngine
+                }
+            ]);
 
         const originalAsset:
             SourceAsset = {
@@ -236,7 +254,7 @@ test(
 
 
 test(
-    "normalizes text MIME type casing and surrounding whitespace",
+    "normalizes asset MIME type casing and surrounding whitespace before capability resolution",
     async () => {
 
         const receivedAssets:
@@ -261,9 +279,15 @@ test(
             };
 
         const router =
-            createProductionExtractionRouter(
-                textExtractionEngine
-            );
+            createProductionExtractionRouter([
+                {
+                    mimeType:
+                        "text/plain",
+
+                    extractionEngine:
+                        textExtractionEngine
+                }
+            ]);
 
         const asset:
             SourceAsset = {
@@ -300,6 +324,234 @@ test(
 
 
 test(
+    "normalizes registered capability MIME types before resolution",
+    async () => {
+
+        let invocationCount =
+            0;
+
+        const textExtractionEngine:
+            ExtractionEngine = {
+
+                async extract():
+                Promise<ExtractionEngineResult> {
+
+                    invocationCount++;
+
+                    return createDelegatedResult();
+
+                }
+
+            };
+
+        const router =
+            createProductionExtractionRouter([
+                {
+                    mimeType:
+                        " TEXT/PLAIN ; charset=UTF-8 ",
+
+                    extractionEngine:
+                        textExtractionEngine
+                }
+            ]);
+
+        const result =
+            await router.extract(
+                sampleTextAsset
+            );
+
+        assert.equal(
+            invocationCount,
+            1
+        );
+
+        assert.equal(
+            result.status,
+            "completed"
+        );
+
+    }
+);
+
+
+test(
+    "routes different registered canonical MIME types to different extraction engines",
+    async () => {
+
+        let textInvocationCount =
+            0;
+
+        let pdfInvocationCount =
+            0;
+
+        const textExtractionEngine:
+            ExtractionEngine = {
+
+                async extract():
+                Promise<ExtractionEngineResult> {
+
+                    textInvocationCount++;
+
+                    return createDelegatedResult();
+
+                }
+
+            };
+
+        const pdfExtractionEngine:
+            ExtractionEngine = {
+
+                async extract():
+                Promise<ExtractionEngineResult> {
+
+                    pdfInvocationCount++;
+
+                    return createDelegatedResult();
+
+                }
+
+            };
+
+        const router =
+            createProductionExtractionRouter([
+                {
+                    mimeType:
+                        "text/plain",
+
+                    extractionEngine:
+                        textExtractionEngine
+                },
+                {
+                    mimeType:
+                        "application/pdf",
+
+                    extractionEngine:
+                        pdfExtractionEngine
+                }
+            ]);
+
+        const result =
+            await router.extract({
+
+                ...sampleTextAsset,
+
+                mimeType:
+                    "application/pdf"
+
+            });
+
+        assert.equal(
+            textInvocationCount,
+            0
+        );
+
+        assert.equal(
+            pdfInvocationCount,
+            1
+        );
+
+        assert.equal(
+            result.status,
+            "completed"
+        );
+
+    }
+);
+
+
+test(
+    "rejects duplicate canonical MIME capability registrations",
+    () => {
+
+        const firstEngine:
+            ExtractionEngine = {
+
+                async extract():
+                Promise<ExtractionEngineResult> {
+
+                    return createDelegatedResult();
+
+                }
+
+            };
+
+        const secondEngine:
+            ExtractionEngine = {
+
+                async extract():
+                Promise<ExtractionEngineResult> {
+
+                    return createDelegatedResult();
+
+                }
+
+            };
+
+        assert.throws(
+            () => {
+
+                createProductionExtractionRouter([
+                    {
+                        mimeType:
+                            "text/plain",
+
+                        extractionEngine:
+                            firstEngine
+                    },
+                    {
+                        mimeType:
+                            " TEXT/PLAIN ; charset=UTF-8 ",
+
+                        extractionEngine:
+                            secondEngine
+                    }
+                ]);
+
+            },
+            /Duplicate production extraction capability for MIME type: text\/plain/
+        );
+
+    }
+);
+
+
+test(
+    "rejects capability registrations without a canonical MIME type",
+    () => {
+
+        const extractionEngine:
+            ExtractionEngine = {
+
+                async extract():
+                Promise<ExtractionEngineResult> {
+
+                    return createDelegatedResult();
+
+                }
+
+            };
+
+        assert.throws(
+            () => {
+
+                createProductionExtractionRouter([
+                    {
+                        mimeType:
+                            " ; charset=UTF-8",
+
+                        extractionEngine
+                    }
+                ]);
+
+            },
+            /Production extraction capability MIME type must resolve to a canonical MIME type/
+        );
+
+    }
+);
+
+
+test(
     "continues rejecting unsupported normalized MIME types",
     async () => {
 
@@ -321,9 +573,15 @@ test(
             };
 
         const router =
-            createProductionExtractionRouter(
-                textExtractionEngine
-            );
+            createProductionExtractionRouter([
+                {
+                    mimeType:
+                        "text/plain",
+
+                    extractionEngine:
+                        textExtractionEngine
+                }
+            ]);
 
         const result =
             await router.extract({
