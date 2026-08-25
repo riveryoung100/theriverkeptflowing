@@ -22,6 +22,9 @@ import {
     PdfJsExtractionEngine
 } from "./pdfJsExtractionEngine";
 import {
+    MammothDocxExtractionEngine
+} from "./mammothDocxExtractionEngine";
+import {
     HtmlExtractionEngine
 } from "./htmlExtractionEngine";
 
@@ -38,6 +41,12 @@ export function createProductionExtractionEngine(
         );
     const pdfExtractionEngine =
         new PdfJsExtractionEngine(
+            new FileSystemBinaryRawSourceReader(
+                rawSourceRootDirectory
+            )
+        );
+    const docxExtractionEngine =
+        new MammothDocxExtractionEngine(
             new FileSystemBinaryRawSourceReader(
                 rawSourceRootDirectory
             )
@@ -69,6 +78,13 @@ export function createProductionExtractionEngine(
 
             extractionEngine:
                 pdfExtractionEngine
+        },
+        {
+            mimeType:
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+
+            extractionEngine:
+                docxExtractionEngine
         },
         {
             mimeType:
