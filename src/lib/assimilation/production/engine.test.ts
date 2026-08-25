@@ -16,6 +16,10 @@ import type {
 } from "../ingestion/types";
 
 import {
+    createSamplePdfBytes
+} from "../extraction/fixtures/samplePdfBytes";
+
+import {
     createProductionSourceAssimilation
 } from "./engine";
 
@@ -569,6 +573,182 @@ test(
             assert.equal(
                 result.derivedObject,
                 null
+            );
+
+        }
+        finally {
+
+            await rm(
+                rootDirectory,
+                {
+                    recursive:
+                        true,
+
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);
+
+test(
+    "ingests PDF bytes and assimilates them through the complete production pipeline",
+    async () => {
+
+        const rootDirectory =
+            await mkdtemp(
+                path.join(
+                    os.tmpdir(),
+                    "river-production-pdf-assimilation-"
+                )
+            );
+
+        try {
+
+            const expectedText =
+                "Faith Purpose Stewardship Legacy";
+
+            const pdfBytes =
+                createSamplePdfBytes(
+                    expectedText
+                );
+
+            const service =
+                createProductionSourceAssimilation(
+                    rootDirectory
+                );
+
+            const baseRequest =
+                createRequest(
+                    pdfBytes
+                );
+
+            const result =
+                await service.ingestAndAssimilate({
+                    ...baseRequest,
+
+                    assetType:
+                        "document",
+
+                    originalFilename:
+                        "river-production-assimilation.pdf",
+
+                    title:
+                        "River Production PDF Assimilation",
+
+                    mimeType:
+                        "application/pdf"
+                });
+
+            assert.equal(
+                result.status,
+                "completed"
+            );
+
+            assert.equal(
+                result.failedStage,
+                null
+            );
+
+            assert.equal(
+                result.asset.mimeType,
+                "application/pdf"
+            );
+
+            assert.equal(
+                result.asset.originalFilename,
+                "river-production-assimilation.pdf"
+            );
+
+            assert.ok(
+                result.asset.storage
+            );
+
+            const storedBytes =
+                await readFile(
+                    path.join(
+                        rootDirectory,
+                        result.asset.storage.key
+                    )
+                );
+
+            assert.deepEqual(
+                storedBytes,
+                Buffer.from(
+                    pdfBytes
+                )
+            );
+
+            assert.ok(
+                result.extraction
+            );
+
+            assert.equal(
+                result.extraction.assetId,
+                result.asset.id
+            );
+
+            assert.equal(
+                result.extraction.text,
+                expectedText
+            );
+
+            assert.equal(
+                result.extraction.extractorVersion,
+                "pdfjs-text-extractor-v1"
+            );
+
+            assert.ok(
+                result.segment
+            );
+
+            assert.equal(
+                result.segment.assetId,
+                result.asset.id
+            );
+
+            assert.equal(
+                result.segment.extractionId,
+                result.extraction.id
+            );
+
+            assert.equal(
+                result.segment.sourceText,
+                expectedText
+            );
+
+            assert.equal(
+                result.segment.normalizedText,
+                expectedText
+            );
+
+            assert.ok(
+                result.classification
+            );
+
+            assert.equal(
+                result.classification.assetId,
+                result.asset.id
+            );
+
+
+
+            assert.ok(
+                result.derivedObject
+            );
+
+            assert.equal(
+                result.derivedObject.assetId,
+                result.asset.id
+            );
+
+            assert.ok(
+                result.derivedObject.sourceSegmentIds.includes(
+                    result.segment.id
+                )
             );
 
         }
