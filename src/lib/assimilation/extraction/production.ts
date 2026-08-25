@@ -47,6 +47,12 @@ export function createProductionExtractionEngine(
 
             extractionEngine:
                 textExtractionEngine
+        },        {
+            mimeType:
+                "text/markdown",
+
+            extractionEngine:
+                textExtractionEngine
         },
         {
             mimeType:

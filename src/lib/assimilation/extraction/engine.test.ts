@@ -365,3 +365,66 @@ test(
 
     }
 );
+
+test(
+    "extracts stored Markdown text into a completed asset extraction",
+    async () => {
+
+        const markdownText =
+            "# Faith\n\nPurpose, stewardship, and legacy.";
+
+        const asset:
+            SourceAsset = {
+                ...createStoredTextAsset(),
+
+                mimeType:
+                    "text/markdown"
+            };
+
+        const reader =
+            new InMemoryRawSourceReader([
+                {
+                    storage:
+                        asset.storage!,
+
+                    text:
+                        markdownText
+                }
+            ]);
+
+        const engine =
+            createExtractionEngine(
+                reader
+            );
+
+        const result =
+            await engine.extract(
+                asset
+            );
+
+        assert.equal(
+            result.status,
+            "completed"
+        );
+
+        assert.equal(
+            result.results.length,
+            1
+        );
+
+        assert.equal(
+            result.results[0]
+                ?.extraction
+                .text,
+            markdownText
+        );
+
+        assert.equal(
+            result.results[0]
+                ?.extraction
+                .assetId,
+            asset.id
+        );
+
+    }
+);

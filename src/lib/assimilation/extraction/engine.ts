@@ -135,7 +135,9 @@ implements ExtractionEngine {
 
         if (
             asset.mimeType !==
-            "text/plain"
+                "text/plain" &&
+            asset.mimeType !==
+                "text/markdown"
         ) {
 
             return {

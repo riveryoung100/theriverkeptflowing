@@ -769,3 +769,125 @@ test(
 
     }
 );
+
+test(
+    "assimilates Markdown through the complete production pipeline",
+    async () => {
+
+        const rootDirectory =
+            await mkdtemp(
+                path.join(
+                    os.tmpdir(),
+                    "river-production-markdown-assimilation-"
+                )
+            );
+
+        try {
+
+            const expectedText =
+                "# Faith\n\nPurpose, stewardship, and legacy.";
+
+            const service =
+                createProductionSourceAssimilation(
+                    rootDirectory
+                );
+
+            const baseRequest =
+                createRequest(
+                    expectedText
+                );
+
+            const result =
+                await service.ingestAndAssimilate({
+                    ...baseRequest,
+
+                    assetType:
+                        "document",
+
+                    originalFilename:
+                        "river-production-assimilation.md",
+
+                    title:
+                        "River Markdown Assimilation",
+
+                    mimeType:
+                        "text/markdown"
+                });
+
+            assert.equal(
+                result.status,
+                "completed"
+            );
+
+            assert.equal(
+                result.failedStage,
+                null
+            );
+
+            assert.equal(
+                result.asset.mimeType,
+                "text/markdown"
+            );
+
+            assert.equal(
+                result.asset.originalFilename,
+                "river-production-assimilation.md"
+            );
+
+            assert.ok(
+                result.extraction
+            );
+
+            assert.equal(
+                result.extraction.text,
+                expectedText
+            );
+
+            assert.ok(
+                result.segment
+            );
+
+            assert.equal(
+                result.segment.sourceText,
+                expectedText
+            );
+
+            assert.equal(
+                result.segment.normalizedText,
+                expectedText
+            );
+
+            assert.ok(
+                result.classification
+            );
+
+            assert.ok(
+                result.derivedObject
+            );
+
+            assert.ok(
+                result.derivedObject
+                    .sourceSegmentIds
+                    .includes(
+                        result.segment.id
+                    )
+            );
+
+        }
+        finally {
+
+            await rm(
+                rootDirectory,
+                {
+                    recursive:
+                        true,
+
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);

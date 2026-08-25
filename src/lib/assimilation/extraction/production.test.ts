@@ -374,3 +374,201 @@ test(
 
     }
 );
+
+test(
+    "production extraction engine extracts filesystem-backed Markdown text",
+    async () => {
+
+        await withTemporaryStorage(
+            async rootDirectory => {
+
+                const sourceText =
+                    "# River Markdown\n\nFaith, purpose, stewardship, and legacy.";
+
+                const relativePath =
+                    "production-markdown-source.md";
+
+                const rawDirectory =
+                    join(
+                        rootDirectory,
+                        "raw"
+                    );
+
+                await mkdir(
+                    rawDirectory,
+                    {
+                        recursive:
+                            true
+                    }
+                );
+
+                await writeFile(
+                    join(
+                        rawDirectory,
+                        relativePath
+                    ),
+                    sourceText,
+                    "utf8"
+                );
+
+                const asset:
+                    SourceAsset = {
+                        ...sampleTextAsset,
+
+                        originalFilename:
+                            "production-markdown-source.md",
+
+                        mimeType:
+                            "text/markdown",
+
+                        storage: {
+                            provider:
+                                "filesystem",
+
+                            bucket:
+                                "raw",
+
+                            key:
+                                relativePath,
+
+                            versionId:
+                                "v1"
+                        }
+                    };
+
+                const engine =
+                    createProductionExtractionEngine(
+                        rootDirectory
+                    );
+
+                const result =
+                    await engine.extract(
+                        asset
+                    );
+
+                assert.equal(
+                    result.status,
+                    "completed"
+                );
+
+                assert.equal(
+                    result.results.length,
+                    1
+                );
+
+                assert.equal(
+                    result.results[0]
+                        ?.extraction
+                        .text,
+                    sourceText
+                );
+
+                assert.equal(
+                    asset.mimeType,
+                    "text/markdown"
+                );
+
+            }
+        );
+
+    }
+);
+
+test(
+    "production extraction engine accepts parameterized text/markdown MIME",
+    async () => {
+
+        await withTemporaryStorage(
+            async rootDirectory => {
+
+                const sourceText =
+                    "## Parameterized Markdown";
+
+                const relativePath =
+                    "parameterized-markdown-source.md";
+
+                const rawDirectory =
+                    join(
+                        rootDirectory,
+                        "raw"
+                    );
+
+                await mkdir(
+                    rawDirectory,
+                    {
+                        recursive:
+                            true
+                    }
+                );
+
+                await writeFile(
+                    join(
+                        rawDirectory,
+                        relativePath
+                    ),
+                    sourceText,
+                    "utf8"
+                );
+
+                const asset:
+                    SourceAsset = {
+                        ...sampleTextAsset,
+
+                        originalFilename:
+                            "parameterized-markdown-source.md",
+
+                        mimeType:
+                            "text/markdown; charset=utf-8",
+
+                        storage: {
+                            provider:
+                                "filesystem",
+
+                            bucket:
+                                "raw",
+
+                            key:
+                                relativePath,
+
+                            versionId:
+                                "v1"
+                        }
+                    };
+
+                const engine =
+                    createProductionExtractionEngine(
+                        rootDirectory
+                    );
+
+                const result =
+                    await engine.extract(
+                        asset
+                    );
+
+                assert.equal(
+                    result.status,
+                    "completed"
+                );
+
+                assert.equal(
+                    result.results.length,
+                    1
+                );
+
+                assert.equal(
+                    result.results[0]
+                        ?.extraction
+                        .text,
+                    sourceText
+                );
+
+                assert.equal(
+                    asset.mimeType,
+                    "text/markdown; charset=utf-8"
+                );
+
+            }
+        );
+
+    }
+);
