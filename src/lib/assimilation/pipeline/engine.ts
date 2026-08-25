@@ -7,8 +7,7 @@ import type {
 } from "../extraction/types";
 
 import {
-    createSegmentationEngine,
-    InMemoryExtractionReader
+    createSegmentationEngine
 } from "../segmentation/engine";
 
 import {
@@ -76,17 +75,11 @@ implements AssimilationPipeline {
 
 
         const segmentationEngine =
-            createSegmentationEngine(
-                new InMemoryExtractionReader([
-                    {
-                        extraction
-                    }
-                ])
-            );
+            createSegmentationEngine();
 
         const segmentationResult =
-            await segmentationEngine.segment(
-                extraction.id
+            await segmentationEngine.segmentExtraction(
+                extraction
             );
 
         const segment =

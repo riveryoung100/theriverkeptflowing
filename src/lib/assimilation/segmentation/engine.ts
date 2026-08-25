@@ -1,4 +1,4 @@
-﻿import {
+import {
     ASSIMILATION_SCHEMA_VERSION
 } from "../types";
 
@@ -8,7 +8,8 @@ import {
 
 import type {
     AssetExtraction,
-    ExtractionId
+    ExtractionId,
+    SegmentId
 } from "../types";
 
 import type {
@@ -73,8 +74,36 @@ implements SegmentationEngine {
                 extractionId
             );
 
+        if (extraction === null) {
+
+            return {
+
+                segmentationId,
+
+                status:
+                    "failed",
+
+                results:
+                    []
+
+            };
+        }
+
+        return this.segmentExtraction(
+            extraction,
+            segmentationId
+        );
+    }
+
+
+    public async segmentExtraction(
+        extraction: AssetExtraction,
+        segmentationId:
+            SegmentId =
+                createSegmentId()
+    ): Promise<SegmentationEngineResult> {
+
         if (
-            extraction === null ||
             extraction.status !== "complete" ||
             typeof extraction.text !== "string" ||
             extraction.text.length === 0

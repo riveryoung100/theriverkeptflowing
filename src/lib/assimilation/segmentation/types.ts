@@ -1,4 +1,4 @@
-﻿import type {
+import type {
     AssetExtraction,
     AssetSegment,
     ExtractionId,
@@ -62,6 +62,11 @@ export interface SegmentationEngine {
 
     segment(
         extractionId: ExtractionId
+    ): Promise<SegmentationEngineResult>;
+
+    segmentExtraction(
+        extraction: AssetExtraction,
+        segmentationId?: SegmentId
     ): Promise<SegmentationEngineResult>;
 
 }

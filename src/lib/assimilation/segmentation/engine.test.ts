@@ -1,4 +1,4 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
@@ -116,6 +116,73 @@ test(
     }
 );
 
+
+test(
+    "segments an AssetExtraction directly without an extraction reader",
+    async () => {
+
+        const engine =
+            new DeterministicSegmentationEngine();
+
+        const result =
+            await engine.segmentExtraction(
+                sampleTextExtraction
+            );
+
+        assert.equal(
+            result.status,
+            "completed"
+        );
+
+        assert.equal(
+            result.results.length,
+            1
+        );
+
+        const segment =
+            result.results[0].segment;
+
+        assert.equal(
+            result.segmentationId,
+            segment.id
+        );
+
+        assert.equal(
+            segment.assetId,
+            sampleTextExtraction.assetId
+        );
+
+        assert.equal(
+            segment.extractionId,
+            sampleTextExtraction.id
+        );
+
+        assert.equal(
+            segment.sourceText,
+            sampleTextExtraction.text
+        );
+
+        assert.equal(
+            segment.normalizedText,
+            sampleTextExtraction.text
+        );
+
+        assert.deepEqual(
+            segment.location,
+            {
+                type:
+                    "character",
+
+                start:
+                    0,
+
+                end:
+                    sampleTextExtraction.text?.length
+            }
+        );
+
+    }
+);
 
 test(
     "rejects segmentation when extraction cannot be resolved",
