@@ -945,6 +945,211 @@ test(
 );
 
 test(
+    "assimilates HTML through the complete production pipeline",
+    async () => {
+
+        const rootDirectory =
+            await mkdtemp(
+                path.join(
+                    os.tmpdir(),
+                    "river-production-html-assimilation-"
+                )
+            );
+
+        try {
+
+            const htmlSource =
+                `<!doctype html>
+<html>
+    <head>
+        <title>River Production HTML Assimilation</title>
+        <style>
+            body { color: red; }
+        </style>
+        <script>
+            console.log("ignore this script");
+        </script>
+    </head>
+    <body>
+        <main>
+            <h1>Faith</h1>
+            <p>Family, purpose, stewardship, and legacy.</p>
+        </main>
+    </body>
+</html>`;
+
+            const expectedText =
+                [
+                    "River Production HTML Assimilation",
+                    "Faith",
+                    "Family, purpose, stewardship, and legacy."
+                ].join("\n");
+
+            const service =
+                createProductionSourceAssimilation(
+                    rootDirectory
+                );
+
+            const baseRequest =
+                createRequest(
+                    htmlSource
+                );
+
+            const result =
+                await service.ingestAndAssimilate({
+                    ...baseRequest,
+
+                    assetType:
+                        "document",
+
+                    originalFilename:
+                        "river-production-assimilation.html",
+
+                    title:
+                        "River Production HTML Assimilation",
+
+                    mimeType:
+                        "text/html"
+                });
+
+            assert.equal(
+                result.status,
+                "completed"
+            );
+
+            assert.equal(
+                result.failedStage,
+                null
+            );
+
+            assert.equal(
+                result.asset.mimeType,
+                "text/html"
+            );
+
+            assert.equal(
+                result.asset.originalFilename,
+                "river-production-assimilation.html"
+            );
+
+            assert.ok(
+                result.asset.storage
+            );
+
+            const storedSource =
+                await readFile(
+                    path.join(
+                        rootDirectory,
+                        result.asset.storage.key
+                    ),
+                    "utf8"
+                );
+
+            assert.equal(
+                storedSource,
+                htmlSource
+            );
+
+            assert.ok(
+                result.extraction
+            );
+
+            assert.equal(
+                result.extraction.assetId,
+                result.asset.id
+            );
+
+            assert.equal(
+                result.extraction.text,
+                expectedText
+            );
+
+            assert.equal(
+                result.extraction.extractorVersion,
+                "html-text-extractor-v1"
+            );
+
+            assert.ok(
+                !result.extraction.text?.includes(
+                    "color: red"
+                )
+            );
+
+            assert.ok(
+                !result.extraction.text?.includes(
+                    "ignore this script"
+                )
+            );
+
+            assert.ok(
+                result.segment
+            );
+
+            assert.equal(
+                result.segment.assetId,
+                result.asset.id
+            );
+
+            assert.equal(
+                result.segment.extractionId,
+                result.extraction.id
+            );
+
+            assert.equal(
+                result.segment.sourceText,
+                expectedText
+            );
+
+            assert.equal(
+                result.segment.normalizedText,
+                expectedText
+            );
+
+            assert.ok(
+                result.classification
+            );
+
+            assert.equal(
+                result.classification.assetId,
+                result.asset.id
+            );
+
+            assert.ok(
+                result.derivedObject
+            );
+
+            assert.equal(
+                result.derivedObject.assetId,
+                result.asset.id
+            );
+
+            assert.ok(
+                result.derivedObject
+                    .sourceSegmentIds
+                    .includes(
+                        result.segment.id
+                    )
+            );
+
+        }
+        finally {
+
+            await rm(
+                rootDirectory,
+                {
+                    recursive:
+                        true,
+
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);
+test(
     "assimilates DOCX bytes through the complete production pipeline",
     async () => {
 
