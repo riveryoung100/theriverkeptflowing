@@ -100,6 +100,46 @@ test(
 
 
 test(
+    "classifies an AssetSegment directly without a segment reader",
+    async () => {
+
+        const engine =
+            new DeterministicClassificationEngine();
+
+        const result =
+            await engine.classifySegment(
+                sampleTextSegment
+            );
+
+        assert.equal(
+            result.status,
+            "completed"
+        );
+
+        assert.equal(
+            result.results.length,
+            1
+        );
+
+        assert.equal(
+            result.results[0].classification.assetId,
+            sampleTextSegment.assetId
+        );
+
+        assert.deepEqual(
+            result.results[0].classification.topicKeys,
+            sampleTextSegment.topicKeys
+        );
+
+        assert.equal(
+            result.results[0].classification.classifiedAt,
+            "1970-01-01T00:00:00.000Z"
+        );
+
+    }
+);
+
+test(
     "rejects classification when segment cannot be resolved",
     async () => {
 

@@ -1,4 +1,4 @@
-﻿import type {
+import type {
     AssetClassification,
     AssetSegment,
     ClassificationId,
@@ -62,6 +62,10 @@ export interface ClassificationEngine {
 
     classify(
         segmentId: SegmentId
+    ): Promise<ClassificationEngineResult>;
+
+    classifySegment(
+        segment: AssetSegment
     ): Promise<ClassificationEngineResult>;
 
 }

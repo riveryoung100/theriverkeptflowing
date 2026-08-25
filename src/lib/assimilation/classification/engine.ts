@@ -66,16 +66,41 @@ implements ClassificationEngine {
         segmentId: SegmentId
     ): Promise<ClassificationEngineResult> {
 
-        const classificationId =
-            createClassificationId();
-
         const segment =
             await this.segmentReader.read(
                 segmentId
             );
 
+        if (segment === null) {
+
+            return {
+
+                classificationId:
+                    createClassificationId(),
+
+                status:
+                    "failed",
+
+                results:
+                    []
+
+            };
+        }
+
+        return this.classifySegment(
+            segment
+        );
+    }
+
+
+    public async classifySegment(
+        segment: AssetSegment
+    ): Promise<ClassificationEngineResult> {
+
+        const classificationId =
+            createClassificationId();
+
         if (
-            segment === null ||
             typeof segment.normalizedText !== "string" ||
             segment.normalizedText.length === 0
         ) {

@@ -11,8 +11,7 @@ import {
 } from "../segmentation/engine";
 
 import {
-    createClassificationEngine,
-    InMemorySegmentReader
+    createClassificationEngine
 } from "../classification/engine";
 
 import {
@@ -112,17 +111,11 @@ implements AssimilationPipeline {
 
 
         const classificationEngine =
-            createClassificationEngine(
-                new InMemorySegmentReader([
-                    {
-                        segment
-                    }
-                ])
-            );
+            createClassificationEngine();
 
         const classificationResult =
-            await classificationEngine.classify(
-                segment.id
+            await classificationEngine.classifySegment(
+                segment
             );
 
         const classification =
