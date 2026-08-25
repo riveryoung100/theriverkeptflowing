@@ -1,4 +1,4 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
@@ -177,6 +177,66 @@ test(
 
                             key:
                                 "missing-source.txt",
+
+                            versionId:
+                                "v1"
+
+                        }
+
+                    };
+
+                const engine =
+                    createProductionExtractionEngine(
+                        rootDirectory
+                    );
+
+                const result =
+                    await engine.extract(
+                        asset
+                    );
+
+                assert.equal(
+                    result.status,
+                    "failed"
+                );
+
+                assert.deepEqual(
+                    result.results,
+                    []
+                );
+
+            }
+        );
+
+    }
+);
+
+
+test(
+    "production extraction engine rejects unsupported MIME before filesystem extraction",
+    async () => {
+
+        await withTemporaryStorage(
+            async rootDirectory => {
+
+                const asset:
+                    SourceAsset = {
+
+                        ...sampleTextAsset,
+
+                        mimeType:
+                            "application/pdf",
+
+                        storage: {
+
+                            provider:
+                                "filesystem",
+
+                            bucket:
+                                "raw",
+
+                            key:
+                                "does-not-exist.pdf",
 
                             versionId:
                                 "v1"

@@ -1,10 +1,14 @@
-﻿import type {
+import type {
     ExtractionEngine
 } from "./types";
 
 import {
     createExtractionEngine
 } from "./engine";
+
+import {
+    createProductionExtractionRouter
+} from "./productionRouter";
 
 import {
     FileSystemRawSourceReader
@@ -15,10 +19,15 @@ export function createProductionExtractionEngine(
     rawSourceRootDirectory: string
 ): ExtractionEngine {
 
-    return createExtractionEngine(
-        new FileSystemRawSourceReader(
-            rawSourceRootDirectory
-        )
+    const textExtractionEngine =
+        createExtractionEngine(
+            new FileSystemRawSourceReader(
+                rawSourceRootDirectory
+            )
+        );
+
+    return createProductionExtractionRouter(
+        textExtractionEngine
     );
 
 }
