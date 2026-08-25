@@ -12,6 +12,35 @@ import type {
 } from "./types";
 
 
+export function normalizeMimeType(
+    mimeType:
+        string | undefined
+): string | undefined {
+
+    if (mimeType === undefined) {
+        return undefined;
+    }
+
+    const mediaType =
+        mimeType
+            .split(
+                ";",
+                1
+            )[0]
+            ?.trim()
+            .toLowerCase();
+
+    if (
+        mediaType === undefined ||
+        mediaType.length === 0
+    ) {
+        return undefined;
+    }
+
+    return mediaType;
+
+}
+
 export class ProductionExtractionRouter
 implements ExtractionEngine {
 
@@ -24,14 +53,33 @@ implements ExtractionEngine {
         asset: SourceAsset
     ): Promise<ExtractionEngineResult> {
 
+        const normalizedMimeType =
+            normalizeMimeType(
+                asset.mimeType
+            );
+
         if (
-            asset.mimeType ===
+            normalizedMimeType ===
             "text/plain"
         ) {
 
-            return this.textExtractionEngine.extract(
-                asset
-            );
+            if (
+                asset.mimeType ===
+                normalizedMimeType
+            ) {
+
+                return this.textExtractionEngine.extract(
+                    asset
+                );
+
+            }
+
+            return this.textExtractionEngine.extract({
+                ...asset,
+
+                mimeType:
+                    normalizedMimeType
+            });
 
         }
 

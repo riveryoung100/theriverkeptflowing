@@ -270,3 +270,107 @@ test(
 
     }
 );
+
+
+test(
+    "production extraction engine accepts parameterized text/plain MIME",
+    async () => {
+
+        await withTemporaryStorage(
+            async rootDirectory => {
+
+                const sourceText =
+                    "Parameterized MIME text source.";
+
+                const relativePath =
+                    "parameterized-text-source.txt";
+
+                const rawDirectory =
+                    join(
+                        rootDirectory,
+                        "raw"
+                    );
+
+                await mkdir(
+                    rawDirectory,
+                    {
+                        recursive:
+                            true
+                    }
+                );
+
+                const absolutePath =
+                    join(
+                        rawDirectory,
+                        relativePath
+                    );
+
+                await writeFile(
+                    absolutePath,
+                    sourceText,
+                    "utf8"
+                );
+
+                const asset:
+                    SourceAsset = {
+
+                        ...sampleTextAsset,
+
+                        mimeType:
+                            "text/plain; charset=utf-8",
+
+                        storage: {
+
+                            provider:
+                                "filesystem",
+
+                            bucket:
+                                "raw",
+
+                            key:
+                                relativePath,
+
+                            versionId:
+                                "v1"
+
+                        }
+
+                    };
+
+                const engine =
+                    createProductionExtractionEngine(
+                        rootDirectory
+                    );
+
+                const result =
+                    await engine.extract(
+                        asset
+                    );
+
+                assert.equal(
+                    result.status,
+                    "completed"
+                );
+
+                assert.equal(
+                    result.results.length,
+                    1
+                );
+
+                assert.equal(
+                    result.results[0]
+                        ?.extraction
+                        .text,
+                    sourceText
+                );
+
+                assert.equal(
+                    asset.mimeType,
+                    "text/plain; charset=utf-8"
+                );
+
+            }
+        );
+
+    }
+);

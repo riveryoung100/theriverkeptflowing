@@ -164,7 +164,143 @@ test(
 
 
 test(
-    "preserves exact MIME matching semantics",
+    "routes parameterized text/plain MIME types through the text extractor",
+    async () => {
+
+        const receivedAssets:
+            SourceAsset[] =
+            [];
+
+        const delegatedResult =
+            createDelegatedResult();
+
+        const textExtractionEngine:
+            ExtractionEngine = {
+
+                async extract(
+                    asset: SourceAsset
+                ): Promise<ExtractionEngineResult> {
+
+                    receivedAssets.push(
+                        asset
+                    );
+
+                    return delegatedResult;
+
+                }
+
+            };
+
+        const router =
+            createProductionExtractionRouter(
+                textExtractionEngine
+            );
+
+        const originalAsset:
+            SourceAsset = {
+
+                ...sampleTextAsset,
+
+                mimeType:
+                    "text/plain; charset=utf-8"
+
+            };
+
+        const result =
+            await router.extract(
+                originalAsset
+            );
+
+        assert.equal(
+            receivedAssets.length,
+            1
+        );
+
+        assert.equal(
+            receivedAssets[0]?.mimeType,
+            "text/plain"
+        );
+
+        assert.equal(
+            originalAsset.mimeType,
+            "text/plain; charset=utf-8"
+        );
+
+        assert.equal(
+            result,
+            delegatedResult
+        );
+
+    }
+);
+
+
+test(
+    "normalizes text MIME type casing and surrounding whitespace",
+    async () => {
+
+        const receivedAssets:
+            SourceAsset[] =
+            [];
+
+        const textExtractionEngine:
+            ExtractionEngine = {
+
+                async extract(
+                    asset: SourceAsset
+                ): Promise<ExtractionEngineResult> {
+
+                    receivedAssets.push(
+                        asset
+                    );
+
+                    return createDelegatedResult();
+
+                }
+
+            };
+
+        const router =
+            createProductionExtractionRouter(
+                textExtractionEngine
+            );
+
+        const asset:
+            SourceAsset = {
+
+                ...sampleTextAsset,
+
+                mimeType:
+                    "  TEXT/PLAIN ; charset=UTF-8  "
+
+            };
+
+        const result =
+            await router.extract(
+                asset
+            );
+
+        assert.equal(
+            result.status,
+            "completed"
+        );
+
+        assert.equal(
+            receivedAssets.length,
+            1
+        );
+
+        assert.equal(
+            receivedAssets[0]?.mimeType,
+            "text/plain"
+        );
+
+    }
+);
+
+
+test(
+    "continues rejecting unsupported normalized MIME types",
     async () => {
 
         let invocationCount =
@@ -189,20 +325,15 @@ test(
                 textExtractionEngine
             );
 
-        const parameterizedTextAsset:
-            SourceAsset = {
+        const result =
+            await router.extract({
 
                 ...sampleTextAsset,
 
                 mimeType:
-                    "text/plain; charset=utf-8"
+                    " Application/PDF ; version=1.7 "
 
-            };
-
-        const result =
-            await router.extract(
-                parameterizedTextAsset
-            );
+            });
 
         assert.equal(
             invocationCount,
