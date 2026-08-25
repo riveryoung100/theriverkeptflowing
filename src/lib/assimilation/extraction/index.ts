@@ -5,3 +5,4 @@ export * from "./filesystemRawSourceReader";
 export * from "./productionRouter";
 export * from "./production";
 export * from "./filesystemBinaryRawSourceReader";
+export * from "./pdfJsExtractionEngine";

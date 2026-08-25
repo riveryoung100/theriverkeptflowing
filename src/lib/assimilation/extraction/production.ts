@@ -1,4 +1,4 @@
-﻿import type {
+import type {
     ExtractionEngine
 } from "./types";
 
@@ -14,6 +14,14 @@ import {
     FileSystemRawSourceReader
 } from "./filesystemRawSourceReader";
 
+import {
+    FileSystemBinaryRawSourceReader
+} from "./filesystemBinaryRawSourceReader";
+
+import {
+    PdfJsExtractionEngine
+} from "./pdfJsExtractionEngine";
+
 
 export function createProductionExtractionEngine(
     rawSourceRootDirectory: string
@@ -25,6 +33,12 @@ export function createProductionExtractionEngine(
                 rawSourceRootDirectory
             )
         );
+    const pdfExtractionEngine =
+        new PdfJsExtractionEngine(
+            new FileSystemBinaryRawSourceReader(
+                rawSourceRootDirectory
+            )
+        );
 
     return createProductionExtractionRouter([
         {
@@ -33,6 +47,13 @@ export function createProductionExtractionEngine(
 
             extractionEngine:
                 textExtractionEngine
+        },
+        {
+            mimeType:
+                "application/pdf",
+
+            extractionEngine:
+                pdfExtractionEngine
         }
     ]);
 
