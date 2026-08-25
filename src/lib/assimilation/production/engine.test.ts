@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
 
+import JSZip from "jszip";
+
 import {
     access,
     mkdtemp,
@@ -22,6 +24,56 @@ import {
 import {
     createProductionSourceAssimilation
 } from "./engine";
+
+
+async function createMinimalDocx(
+    text:
+        string
+): Promise<Uint8Array> {
+
+    const zip =
+        new JSZip();
+
+    zip.file(
+        "[Content_Types].xml",
+        `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+<Default Extension="xml" ContentType="application/xml"/>
+<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+</Types>`
+    );
+
+    zip.folder("_rels")?.file(
+        ".rels",
+        `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+</Relationships>`
+    );
+
+    zip.folder("word")?.file(
+        "document.xml",
+        `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+<w:body>
+<w:p>
+<w:r>
+<w:t>${text}</w:t>
+</w:r>
+</w:p>
+<w:sectPr/>
+</w:body>
+</w:document>`
+    );
+
+    return zip.generateAsync({
+        type:
+            "uint8array"
+    });
+
+}
+
 
 
 function createRequest(
@@ -863,6 +915,197 @@ test(
 
             assert.ok(
                 result.derivedObject
+            );
+
+            assert.ok(
+                result.derivedObject
+                    .sourceSegmentIds
+                    .includes(
+                        result.segment.id
+                    )
+            );
+
+        }
+        finally {
+
+            await rm(
+                rootDirectory,
+                {
+                    recursive:
+                        true,
+
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);
+
+test(
+    "assimilates DOCX bytes through the complete production pipeline",
+    async () => {
+
+        const rootDirectory =
+            await mkdtemp(
+                path.join(
+                    os.tmpdir(),
+                    "river-production-docx-assimilation-"
+                )
+            );
+
+        try {
+
+            const expectedText =
+                "Faith, family, purpose, stewardship, and legacy.";
+
+            const docxBytes =
+                await createMinimalDocx(
+                    expectedText
+                );
+
+            const service =
+                createProductionSourceAssimilation(
+                    rootDirectory
+                );
+
+            const baseRequest =
+                createRequest(
+                    docxBytes
+                );
+
+            const result =
+                await service.ingestAndAssimilate({
+                    ...baseRequest,
+
+                    assetType:
+                        "document",
+
+                    originalFilename:
+                        "river-production-assimilation.docx",
+
+                    title:
+                        "River Production DOCX Assimilation",
+
+                    mimeType:
+                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                });
+
+            assert.equal(
+                result.status,
+                "completed"
+            );
+
+            assert.equal(
+                result.failedStage,
+                null
+            );
+
+            assert.equal(
+                result.asset.mimeType,
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            );
+
+            assert.equal(
+                result.asset.originalFilename,
+                "river-production-assimilation.docx"
+            );
+
+            assert.ok(
+                result.asset.storage
+            );
+
+            const storedBytes =
+                await readFile(
+                    path.join(
+                        rootDirectory,
+                        result.asset.storage.key
+                    )
+                );
+
+            assert.deepEqual(
+                storedBytes,
+                Buffer.from(
+                    docxBytes
+                )
+            );
+
+            assert.ok(
+                result.extraction
+            );
+
+            assert.equal(
+                result.extraction.assetId,
+                result.asset.id
+            );
+
+            assert.equal(
+                typeof result.extraction.text,
+                "string"
+            );
+
+            assert.equal(
+                result.extraction.text?.trim(),
+                expectedText
+            );
+
+            assert.equal(
+                result.extraction.extractorVersion,
+                "mammoth-docx-extractor-v1"
+            );
+
+            assert.ok(
+                result.segment
+            );
+
+            assert.equal(
+                result.segment.assetId,
+                result.asset.id
+            );
+
+            assert.equal(
+                result.segment.extractionId,
+                result.extraction.id
+            );
+
+            assert.equal(
+                typeof result.segment.sourceText,
+                "string"
+            );
+
+            assert.equal(
+                result.segment.sourceText?.trim(),
+                expectedText
+            );
+
+            assert.equal(
+                typeof result.segment.normalizedText,
+                "string"
+            );
+
+            assert.equal(
+                result.segment.normalizedText?.trim(),
+                expectedText
+            );
+
+            assert.ok(
+                result.classification
+            );
+
+            assert.equal(
+                result.classification.assetId,
+                result.asset.id
+            );
+
+            assert.ok(
+                result.derivedObject
+            );
+
+            assert.equal(
+                result.derivedObject.assetId,
+                result.asset.id
             );
 
             assert.ok(
