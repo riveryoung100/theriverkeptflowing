@@ -1,4 +1,4 @@
-import type {
+﻿import type {
     ExtractionEngine
 } from "./types";
 
@@ -21,6 +21,9 @@ import {
 import {
     PdfJsExtractionEngine
 } from "./pdfJsExtractionEngine";
+import {
+    HtmlExtractionEngine
+} from "./htmlExtractionEngine";
 
 
 export function createProductionExtractionEngine(
@@ -36,6 +39,12 @@ export function createProductionExtractionEngine(
     const pdfExtractionEngine =
         new PdfJsExtractionEngine(
             new FileSystemBinaryRawSourceReader(
+                rawSourceRootDirectory
+            )
+        );
+    const htmlExtractionEngine =
+        new HtmlExtractionEngine(
+            new FileSystemRawSourceReader(
                 rawSourceRootDirectory
             )
         );
@@ -60,6 +69,13 @@ export function createProductionExtractionEngine(
 
             extractionEngine:
                 pdfExtractionEngine
+        },
+        {
+            mimeType:
+                "text/html",
+
+            extractionEngine:
+                htmlExtractionEngine
         }
     ]);
 
