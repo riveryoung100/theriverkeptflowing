@@ -38,6 +38,65 @@ test(
 
 
 test(
+    "derives directly from resolved classifications without a classification reader",
+    async () => {
+
+        const engine =
+            new DeterministicDerivationEngine();
+
+        const result =
+            await engine.deriveClassifications(
+                sampleDerivationRequest,
+                [
+                    sampleTextClassification
+                ]
+            );
+
+        assert.equal(
+            result.status,
+            "completed"
+        );
+
+        assert.equal(
+            result.results.length,
+            1
+        );
+
+        assert.equal(
+            result.results[0]
+                .derivative
+                .id,
+            result.derivationId
+        );
+
+        assert.equal(
+            result.results[0]
+                .derivative
+                .assetId,
+            sampleDerivationRequest
+                .assetId
+        );
+
+        assert.deepEqual(
+            result.results[0]
+                .derivative
+                .sourceSegmentIds,
+            sampleDerivationRequest
+                .sourceSegmentIds
+        );
+
+        assert.equal(
+            result.results[0]
+                .derivative
+                .transformationId,
+            sampleDerivationRequest
+                .transformationId
+        );
+
+    }
+);
+
+test(
     "derives a durable object from a valid request",
     async () => {
 

@@ -15,8 +15,7 @@ import {
 } from "../classification/engine";
 
 import {
-    createDerivationEngine,
-    InMemoryClassificationReader
+    createDerivationEngine
 } from "../derivation/engine";
 
 import type {
@@ -147,33 +146,34 @@ implements AssimilationPipeline {
 
 
         const derivationEngine =
-            createDerivationEngine(
-                new InMemoryClassificationReader([
-                    {
-                        classification
-                    }
-                ])
-            );
+            createDerivationEngine();
+
 
         const derivationResult =
-            await derivationEngine.derive({
-                assetId:
-                    asset.id,
-                objectType:
-                    "knowledge-entry",
-                objectId:
-                    `knowledge:${classification.id}`,
-                sourceSegmentIds: [
-                    segment.id
-                ],
-                sourceClassificationIds: [
-                    classification.id
-                ],
-                transformationId:
-                    `transformation:${classification.id}`,
-                requestedAt:
-                    classification.classifiedAt
-            });
+            await derivationEngine
+                .deriveClassifications(
+                    {
+                        assetId:
+                            asset.id,
+                        objectType:
+                            "knowledge-entry",
+                        objectId:
+                            `knowledge:${classification.id}`,
+                        sourceSegmentIds: [
+                            segment.id
+                        ],
+                        sourceClassificationIds: [
+                            classification.id
+                        ],
+                        transformationId:
+                            `transformation:${classification.id}`,
+                        requestedAt:
+                            classification.classifiedAt
+                    },
+                    [
+                        classification
+                    ]
+                );
 
         const derivedObject =
             derivationResult.results[0]

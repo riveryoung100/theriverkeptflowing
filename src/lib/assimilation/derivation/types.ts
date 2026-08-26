@@ -90,6 +90,12 @@ export interface ClassificationReader {
 
 export interface DerivationEngine {
 
+    deriveClassifications(
+        request: DerivationRequest,
+        classifications:
+            readonly AssetClassification[]
+    ): Promise<DerivationEngineResult>;
+
     derive(
         request: DerivationRequest
     ): Promise<DerivationEngineResult>;
