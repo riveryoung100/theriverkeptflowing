@@ -715,7 +715,7 @@ guides from The River Kept Flowing.
 <a class="button button-primary" href="/river-guides/">View River Guides</a>
 </div>
 
-<a class="back-to-top" href="#top">Back to the beginning</a>
+<a class="back-to-top" href="#main-content">Back to the beginning</a>
 </section>
 
 </article>

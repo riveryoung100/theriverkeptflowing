@@ -1087,7 +1087,7 @@ Educational disclaimer
 This handbook is for general educational purposes and does not change, replace, or interpret any individual insurance contract. Coverage varies by company, state, policy form, endorsements, underwriting decision, and loss circumstances. The policy language and declarations control. Review your own documents and speak with a licensed insurance professional about your situation.
 </p>
 </div>
-<a class="button button-primary" href="#top">
+<a class="button button-primary" href="#main-content">
 Back to Top
 </a>
 <a class="button button-secondary" href="/river-guides/">
