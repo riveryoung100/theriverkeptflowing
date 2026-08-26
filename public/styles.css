@@ -19441,3 +19441,1246 @@ button {
 }
 
 /* END WEBSITE 4.0 — GLOBAL SHELL 004B */
+
+/* WEBSITE 4.0 - HOMEPAGE EXPERIENCE 004C */
+
+/*
+    The River Kept Flowing
+    Website 4.0 Homepage Experience
+
+    Exact source architecture:
+      HomeHero
+      HomeIntro
+      HomeEcosystem
+      HomePaths
+      HomeMission
+      HomeTributaries
+      HomeLatest
+      HomeInvitation
+*/
+
+
+/* ============================================================
+   01 — HOMEPAGE CANVAS
+   ============================================================ */
+
+.home-v4 {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    background:
+        radial-gradient(
+            circle at 82% 4%,
+            color-mix(in srgb, #a67c52 14%, transparent),
+            transparent 28rem
+        ),
+        radial-gradient(
+            circle at 6% 35%,
+            color-mix(in srgb, #a67c52 7%, transparent),
+            transparent 32rem
+        ),
+        linear-gradient(
+            180deg,
+            #f8f4ec 0%,
+            #f2ede3 48%,
+            #eee7db 100%
+        );
+}
+
+.home-v4::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.28;
+    background-image:
+        linear-gradient(
+            to right,
+            rgba(28, 38, 33, 0.055) 1px,
+            transparent 1px
+        );
+    background-size: min(8vw, 7rem) 100%;
+    mask-image:
+        linear-gradient(
+            to bottom,
+            #000,
+            transparent 42%
+        );
+}
+
+.home-v4 > section {
+    position: relative;
+}
+
+
+/* ============================================================
+   02 — SHARED SECTION RHYTHM
+   ============================================================ */
+
+.home-v4 :where(
+    .section-shell,
+    .home-shell,
+    .home-hero-shell
+) {
+    width: min(calc(100% - 2.5rem), 76rem);
+    margin-inline: auto;
+}
+
+.home-v4 :where(
+    .intro-section,
+    .home-ecosystem,
+    .paths-section,
+    .mission-section,
+    .tributaries-section,
+    .latest-section,
+    .invitation-section
+) {
+    padding-block:
+        clamp(
+            5.5rem,
+            10vw,
+            10rem
+        );
+}
+
+.home-v4 :where(
+    .intro-section,
+    .home-ecosystem,
+    .paths-section,
+    .tributaries-section,
+    .latest-section,
+    .invitation-section
+) {
+    border-top:
+        1px solid
+        rgba(28, 38, 33, 0.09);
+}
+
+.home-v4 .section-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    font-size: 0.7rem;
+    font-weight: 750;
+    letter-spacing: 0.19em;
+    line-height: 1.3;
+    text-transform: uppercase;
+    opacity: 0.62;
+}
+
+.home-v4 .section-label::before {
+    content: "";
+    width: 2rem;
+    height: 1px;
+    flex: 0 0 auto;
+    background: currentColor;
+    opacity: 0.6;
+}
+
+.home-v4 .section-heading {
+    margin-bottom:
+        clamp(
+            2.75rem,
+            6vw,
+            5rem
+        );
+}
+
+.home-v4 .section-heading h2 {
+    max-width: 14ch;
+    margin: 0;
+    font-size:
+        clamp(
+            2.5rem,
+            5.5vw,
+            5rem
+        );
+    line-height: 0.98;
+    letter-spacing: -0.05em;
+    text-wrap: balance;
+}
+
+
+/* ============================================================
+   03 — HERO
+   ============================================================ */
+
+.home-v4 .home-hero {
+    min-height: min(90svh, 62rem);
+    position: relative;
+    display: grid;
+    align-items: center;
+    overflow: hidden;
+    padding-block:
+        clamp(
+            6rem,
+            11vw,
+            10rem
+        );
+    border-bottom:
+        1px solid
+        rgba(28, 38, 33, 0.12);
+    background:
+        radial-gradient(
+            ellipse at 82% 35%,
+            rgba(166, 124, 82, 0.18),
+            transparent 34%
+        ),
+        radial-gradient(
+            ellipse at 76% 58%,
+            rgba(28, 38, 33, 0.07),
+            transparent 31%
+        );
+}
+
+.home-v4 .home-hero::before {
+    content: "";
+    position: absolute;
+    width: clamp(25rem, 48vw, 49rem);
+    aspect-ratio: 1;
+    right: clamp(-18rem, -10vw, -5rem);
+    top: 50%;
+    transform: translateY(-50%);
+    border:
+        1px solid
+        rgba(28, 38, 33, 0.12);
+    border-radius: 50%;
+    background:
+        radial-gradient(
+            circle at 42% 42%,
+            rgba(166, 124, 82, 0.14),
+            transparent 57%
+        );
+    box-shadow:
+        0 0 0 3rem rgba(28, 38, 33, 0.018),
+        0 0 0 7rem rgba(28, 38, 33, 0.012);
+    pointer-events: none;
+}
+
+.home-v4 .home-hero::after {
+    content: "THE RIVER KEPT FLOWING";
+    position: absolute;
+    right: clamp(1rem, 4vw, 5rem);
+    bottom: clamp(1rem, 3vw, 3rem);
+    writing-mode: vertical-rl;
+    font-size: 0.66rem;
+    font-weight: 750;
+    letter-spacing: 0.3em;
+    opacity: 0.27;
+    pointer-events: none;
+}
+
+.home-v4 .home-hero-shell {
+    position: relative;
+    z-index: 2;
+}
+
+.home-v4 .home-hero-content {
+    max-width: 65rem;
+}
+
+.home-v4 .home-hero-eyebrow {
+    width: fit-content;
+    margin-bottom:
+        clamp(
+            1.5rem,
+            3vw,
+            2.5rem
+        );
+    padding: 0.55rem 0.85rem;
+    border:
+        1px solid
+        rgba(28, 38, 33, 0.17);
+    border-radius: 999px;
+    background:
+        rgba(248, 244, 236, 0.66);
+    backdrop-filter: blur(12px);
+    font-size: 0.68rem;
+    font-weight: 750;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+}
+
+.home-v4 .home-hero h1 {
+    max-width: 11ch;
+    margin: 0;
+    font-size:
+        clamp(
+            3.7rem,
+            9.3vw,
+            8.6rem
+        );
+    line-height: 0.89;
+    letter-spacing: -0.067em;
+    text-wrap: balance;
+}
+
+.home-v4 .home-hero-lead {
+    max-width: 44rem;
+    margin-top:
+        clamp(
+            2rem,
+            4vw,
+            3rem
+        );
+    font-size:
+        clamp(
+            1.08rem,
+            1.8vw,
+            1.36rem
+        );
+    line-height: 1.72;
+    opacity: 0.76;
+    text-wrap: pretty;
+}
+
+.home-v4 .home-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top:
+        clamp(
+            2rem,
+            4vw,
+            3rem
+        );
+}
+
+.home-v4 .home-hero-actions .button {
+    min-height: 3.35rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 1.4rem;
+    border-radius: 999px;
+    font-weight: 750;
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.home-v4 .home-hero-actions .button:hover {
+    transform: translateY(-2px);
+}
+
+.home-v4 .home-hero-compass {
+    margin-top:
+        clamp(
+            3.5rem,
+            7vw,
+            6rem
+        );
+    max-width: 30rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0.58;
+}
+
+.home-v4 .home-hero-compass-line {
+    width: 3.5rem;
+    height: 1px;
+    background: currentColor;
+}
+
+
+/* ============================================================
+   04 — INTRO
+   ============================================================ */
+
+.home-v4 .intro-section {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(28, 38, 33, 0.035),
+            transparent 58%
+        );
+}
+
+.home-v4 .intro-section .section-shell {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 0.82fr)
+        minmax(0, 1.18fr);
+    gap:
+        clamp(
+            3rem,
+            8vw,
+            8rem
+        );
+    align-items: start;
+}
+
+.home-v4 .intro-section h2 {
+    margin: 0;
+    font-size:
+        clamp(
+            2.7rem,
+            5.4vw,
+            5rem
+        );
+    line-height: 0.98;
+    letter-spacing: -0.052em;
+    text-wrap: balance;
+}
+
+.home-v4 .intro-section p {
+    font-size:
+        clamp(
+            1.04rem,
+            1.4vw,
+            1.18rem
+        );
+    line-height: 1.85;
+}
+
+.home-v4 .intro-section .intro-lead {
+    font-size:
+        clamp(
+            1.18rem,
+            1.9vw,
+            1.48rem
+        );
+    line-height: 1.7;
+}
+
+
+/* ============================================================
+   05 — ECOSYSTEM
+   ============================================================ */
+
+.home-v4 .home-ecosystem {
+    background:
+        rgba(28, 38, 33, 0.025);
+}
+
+.home-v4 .home-ecosystem .home-shell {
+    position: relative;
+}
+
+.home-v4 .home-ecosystem .pathway-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(12, minmax(0, 1fr));
+    gap:
+        clamp(
+            0.85rem,
+            1.6vw,
+            1.3rem
+        );
+}
+
+.home-v4 .home-ecosystem .pathway-card {
+    grid-column: span 4;
+    min-height: 21rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding:
+        clamp(
+            1.5rem,
+            3vw,
+            2.3rem
+        );
+    border:
+        1px solid
+        rgba(28, 38, 33, 0.11);
+    border-radius:
+        clamp(
+            1.1rem,
+            2vw,
+            1.7rem
+        );
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.54),
+            rgba(237, 231, 219, 0.82)
+        );
+    box-shadow:
+        0 1rem 3rem
+        rgba(28, 38, 33, 0.05);
+    transition:
+        transform 220ms ease,
+        box-shadow 220ms ease,
+        border-color 220ms ease;
+}
+
+.home-v4 .home-ecosystem .pathway-card::before {
+    content: "";
+    position: absolute;
+    width: 12rem;
+    height: 12rem;
+    right: -5rem;
+    top: -5rem;
+    border-radius: 50%;
+    background:
+        rgba(166, 124, 82, 0.11);
+    transition:
+        transform 300ms ease;
+}
+
+.home-v4 .home-ecosystem .pathway-card:hover {
+    transform: translateY(-6px);
+    border-color:
+        rgba(28, 38, 33, 0.22);
+    box-shadow:
+        0 1.5rem 4rem
+        rgba(28, 38, 33, 0.1);
+}
+
+.home-v4 .home-ecosystem .pathway-card:hover::before {
+    transform: scale(1.25);
+}
+
+.home-v4 .home-ecosystem .pathway-card:nth-child(1),
+.home-v4 .home-ecosystem .pathway-card:nth-child(4) {
+    grid-column: span 6;
+}
+
+.home-v4 .home-ecosystem .pathway-card h3 {
+    max-width: 12ch;
+    margin-top: auto;
+    font-size:
+        clamp(
+            1.7rem,
+            3vw,
+            2.7rem
+        );
+    line-height: 1.02;
+    letter-spacing: -0.038em;
+}
+
+.home-v4 .home-ecosystem .pathway-card p {
+    max-width: 34rem;
+    line-height: 1.7;
+    opacity: 0.7;
+}
+
+
+/* ============================================================
+   06 — PATHWAYS
+   ============================================================ */
+
+.home-v4 .paths-section .path-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(12, minmax(0, 1fr));
+    gap: 1px;
+    overflow: hidden;
+    border:
+        1px solid
+        rgba(28, 38, 33, 0.12);
+    border-radius:
+        clamp(
+            1rem,
+            2vw,
+            1.6rem
+        );
+    background:
+        rgba(28, 38, 33, 0.12);
+}
+
+.home-v4 .paths-section .path-card {
+    grid-column: span 4;
+    min-height: 20rem;
+    display: flex;
+    flex-direction: column;
+    padding:
+        clamp(
+            1.5rem,
+            3vw,
+            2.4rem
+        );
+    background: #f4efe6;
+    transition:
+        background 180ms ease,
+        transform 180ms ease;
+}
+
+.home-v4 .paths-section .path-card-featured {
+    grid-column: span 8;
+    background:
+        linear-gradient(
+            135deg,
+            #efe4d2,
+            #f7f2e9
+        );
+}
+
+.home-v4 .paths-section .path-card:hover {
+    background: #faf7f1;
+}
+
+.home-v4 .paths-section .card-number {
+    display: block;
+    margin-bottom:
+        clamp(
+            3rem,
+            7vw,
+            6rem
+        );
+    font-size: 0.72rem;
+    font-weight: 750;
+    letter-spacing: 0.18em;
+    opacity: 0.43;
+}
+
+.home-v4 .paths-section .path-card h3 {
+    margin-top: auto;
+    font-size:
+        clamp(
+            1.45rem,
+            2.4vw,
+            2.05rem
+        );
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+}
+
+.home-v4 .paths-section .path-card p {
+    line-height: 1.68;
+    opacity: 0.69;
+}
+
+
+/* ============================================================
+   07 — MISSION
+   ============================================================ */
+
+.home-v4 .mission-section {
+    overflow: hidden;
+    color: #f4efe6;
+    background:
+        linear-gradient(
+            135deg,
+            #17201c,
+            #26352d 54%,
+            #141c18
+        );
+}
+
+.home-v4 .mission-section::before {
+    content: "";
+    position: absolute;
+    width:
+        clamp(
+            24rem,
+            56vw,
+            54rem
+        );
+    aspect-ratio: 1;
+    right: -16%;
+    top: 50%;
+    transform: translateY(-50%);
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.11);
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 4rem rgba(255, 255, 255, 0.018),
+        0 0 0 9rem rgba(255, 255, 255, 0.012);
+}
+
+.home-v4 .mission-section .section-shell {
+    position: relative;
+    z-index: 2;
+}
+
+.home-v4 .mission-layout {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1.15fr)
+        minmax(18rem, 0.85fr);
+    gap:
+        clamp(
+            3rem,
+            8vw,
+            8rem
+        );
+    align-items: start;
+}
+
+.home-v4 .mission-section h2 {
+    max-width: 12ch;
+    margin: 0;
+    font-size:
+        clamp(
+            3rem,
+            7vw,
+            6.7rem
+        );
+    line-height: 0.92;
+    letter-spacing: -0.058em;
+    text-wrap: balance;
+}
+
+.home-v4 .mission-copy p {
+    max-width: 44rem;
+    font-size:
+        clamp(
+            1.05rem,
+            1.5vw,
+            1.26rem
+        );
+    line-height: 1.82;
+    color:
+        rgba(244, 239, 230, 0.76);
+}
+
+.home-v4 .mission-principles {
+    display: grid;
+    gap: 1px;
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.13);
+    border-radius: 1.2rem;
+    overflow: hidden;
+    background:
+        rgba(255, 255, 255, 0.11);
+}
+
+.home-v4 .mission-principles > * {
+    padding: 1.25rem 1.4rem;
+    background:
+        rgba(19, 27, 23, 0.78);
+}
+
+
+/* ============================================================
+   08 — TRIBUTARIES
+   ============================================================ */
+
+.home-v4 .tributaries-section .tributary-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+    gap:
+        clamp(
+            0.85rem,
+            1.6vw,
+            1.3rem
+        );
+}
+
+.home-v4 .home-tributary-card {
+    min-height: 17rem;
+    position: relative;
+    overflow: hidden;
+    padding:
+        clamp(
+            1.5rem,
+            2.7vw,
+            2.25rem
+        );
+    border:
+        1px solid
+        rgba(28, 38, 33, 0.1);
+    border-radius: 1.25rem;
+    background:
+        rgba(255, 255, 255, 0.43);
+}
+
+.home-v4 .home-tributary-card::before {
+    content: "";
+    display: block;
+    width: 2.4rem;
+    height: 2px;
+    margin-bottom:
+        clamp(
+            3rem,
+            6vw,
+            5rem
+        );
+    background: #a67c52;
+    opacity: 0.82;
+}
+
+.home-v4 .home-tributary-card h3 {
+    margin: 0;
+    font-size:
+        clamp(
+            1.3rem,
+            2vw,
+            1.85rem
+        );
+    letter-spacing: -0.027em;
+}
+
+.home-v4 .home-tributary-card p {
+    margin-top: 0.9rem;
+    line-height: 1.72;
+    opacity: 0.68;
+}
+
+
+/* ============================================================
+   09 — LATEST WORK
+   ============================================================ */
+
+.home-v4 .latest-section {
+    background:
+        linear-gradient(
+            180deg,
+            transparent,
+            rgba(28, 38, 33, 0.025)
+        );
+}
+
+.home-v4 .latest-section .section-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    align-items: end;
+}
+
+.home-v4 .latest-section .latest-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+    gap:
+        clamp(
+            1rem,
+            2vw,
+            1.5rem
+        );
+}
+
+.home-v4 .latest-card {
+    min-height: 23rem;
+    display: flex;
+    flex-direction: column;
+    padding:
+        clamp(
+            1.5rem,
+            3vw,
+            2.3rem
+        );
+    border:
+        1px solid
+        rgba(28, 38, 33, 0.11);
+    border-radius: 1.3rem;
+    background:
+        rgba(255, 255, 255, 0.48);
+    box-shadow:
+        0 1rem 3rem
+        rgba(28, 38, 33, 0.045);
+    transition:
+        transform 200ms ease,
+        box-shadow 200ms ease;
+}
+
+.home-v4 .latest-card:hover {
+    transform: translateY(-5px);
+    box-shadow:
+        0 1.4rem 3.5rem
+        rgba(28, 38, 33, 0.09);
+}
+
+.home-v4 .latest-card .content-type {
+    font-size: 0.69rem;
+    font-weight: 750;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.52;
+}
+
+.home-v4 .latest-card h3 {
+    margin-top: auto;
+    font-size:
+        clamp(
+            1.5rem,
+            2.4vw,
+            2.05rem
+        );
+    line-height: 1.08;
+    letter-spacing: -0.032em;
+}
+
+.home-v4 .latest-card p {
+    line-height: 1.68;
+    opacity: 0.68;
+}
+
+
+/* ============================================================
+   10 — INVITATION / JOIN THE CURRENT
+   ============================================================ */
+
+.home-v4 .invitation-section {
+    overflow: hidden;
+    color: #f5eee2;
+    background:
+        radial-gradient(
+            circle at 10% 10%,
+            rgba(166, 124, 82, 0.25),
+            transparent 25rem
+        ),
+        linear-gradient(
+            135deg,
+            #8a6242,
+            #66462f 58%,
+            #4d3526
+        );
+}
+
+.home-v4 .invitation-section::before {
+    content: "";
+    position: absolute;
+    width: 34rem;
+    height: 34rem;
+    right: -12rem;
+    bottom: -20rem;
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.12);
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 5rem rgba(255, 255, 255, 0.018);
+}
+
+.home-v4 .invitation-layout {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1.05fr)
+        minmax(20rem, 0.95fr);
+    gap:
+        clamp(
+            3rem,
+            8vw,
+            7rem
+        );
+    align-items: center;
+}
+
+.home-v4 .invitation-content h2 {
+    max-width: 11ch;
+    margin: 0;
+    font-size:
+        clamp(
+            2.8rem,
+            6vw,
+            5.6rem
+        );
+    line-height: 0.95;
+    letter-spacing: -0.052em;
+    text-wrap: balance;
+}
+
+.home-v4 .invitation-content > p:last-child {
+    max-width: 36rem;
+    margin-top: 1.4rem;
+    font-size:
+        clamp(
+            1.03rem,
+            1.5vw,
+            1.2rem
+        );
+    line-height: 1.75;
+    color:
+        rgba(245, 238, 226, 0.78);
+}
+
+.home-v4 .light-label {
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.home-v4 .join-form {
+    display: grid;
+    gap: 0.8rem;
+    padding:
+        clamp(
+            1.25rem,
+            3vw,
+            2rem
+        );
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.14);
+    border-radius: 1.35rem;
+    background:
+        rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(14px);
+}
+
+.home-v4 .join-form input {
+    min-height: 3.7rem;
+    width: 100%;
+    padding-inline: 1rem;
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.18);
+    border-radius: 0.85rem;
+    color: #f8f3eb;
+    background:
+        rgba(255, 255, 255, 0.09);
+}
+
+.home-v4 .join-form input::placeholder {
+    color:
+        rgba(255, 255, 255, 0.62);
+}
+
+.home-v4 .join-form button {
+    min-height: 3.7rem;
+    padding-inline: 1.35rem;
+    border: 0;
+    border-radius: 0.85rem;
+    font-weight: 800;
+    cursor: pointer;
+    color: #332319;
+    background: #f5eee2;
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.home-v4 .join-form button:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 0.9rem 2rem
+        rgba(0, 0, 0, 0.18);
+}
+
+
+/* ============================================================
+   11 — INTERACTION DETAIL
+   ============================================================ */
+
+.home-v4 a {
+    text-underline-offset: 0.18em;
+}
+
+.home-v4 :where(
+    .pathway-card,
+    .path-card,
+    .home-tributary-card,
+    .latest-card
+) {
+    will-change: transform;
+}
+
+.home-v4 :where(
+    a,
+    button,
+    input
+):focus-visible {
+    outline:
+        3px solid
+        currentColor;
+    outline-offset: 4px;
+}
+
+
+/* ============================================================
+   12 — TABLET
+   ============================================================ */
+
+@media (max-width: 960px) {
+
+    .home-v4 .home-hero {
+        min-height: auto;
+    }
+
+    .home-v4 .intro-section .section-shell,
+    .home-v4 .mission-layout,
+    .home-v4 .invitation-layout {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+
+    .home-v4 .home-ecosystem .pathway-card,
+    .home-v4 .home-ecosystem .pathway-card:nth-child(1),
+    .home-v4 .home-ecosystem .pathway-card:nth-child(4) {
+        grid-column: span 6;
+    }
+
+    .home-v4 .paths-section .path-card,
+    .home-v4 .paths-section .path-card-featured {
+        grid-column: span 6;
+    }
+
+    .home-v4 .tributaries-section .tributary-grid,
+    .home-v4 .latest-section .latest-grid {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+}
+
+
+/* ============================================================
+   13 — MOBILE
+   ============================================================ */
+
+@media (max-width: 680px) {
+
+    .home-v4::before {
+        display: none;
+    }
+
+    .home-v4 :where(
+        .section-shell,
+        .home-shell,
+        .home-hero-shell
+    ) {
+        width: min(calc(100% - 1.5rem), 76rem);
+    }
+
+    .home-v4 :where(
+        .intro-section,
+        .home-ecosystem,
+        .paths-section,
+        .mission-section,
+        .tributaries-section,
+        .latest-section,
+        .invitation-section
+    ) {
+        padding-block: 5rem;
+    }
+
+    .home-v4 .home-hero {
+        padding-block:
+            5.25rem
+            5.75rem;
+    }
+
+    .home-v4 .home-hero::before {
+        width: 25rem;
+        right: -16rem;
+        opacity: 0.68;
+    }
+
+    .home-v4 .home-hero::after {
+        display: none;
+    }
+
+    .home-v4 .home-hero h1 {
+        max-width: none;
+        font-size:
+            clamp(
+                3.15rem,
+                16.5vw,
+                5.4rem
+            );
+    }
+
+    .home-v4 .home-hero-lead {
+        font-size: 1.04rem;
+    }
+
+    .home-v4 .home-hero-compass {
+        grid-template-columns: 1fr;
+    }
+
+    .home-v4 .home-hero-compass-line {
+        width: 3rem;
+    }
+
+    .home-v4 .section-heading h2,
+    .home-v4 .intro-section h2 {
+        font-size:
+            clamp(
+                2.35rem,
+                12vw,
+                3.8rem
+            );
+    }
+
+    .home-v4 .home-ecosystem .pathway-grid,
+    .home-v4 .paths-section .path-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .home-v4 .home-ecosystem .pathway-card,
+    .home-v4 .home-ecosystem .pathway-card:nth-child(1),
+    .home-v4 .home-ecosystem .pathway-card:nth-child(4),
+    .home-v4 .paths-section .path-card,
+    .home-v4 .paths-section .path-card-featured {
+        grid-column: 1;
+    }
+
+    .home-v4 .home-ecosystem .pathway-card {
+        min-height: 18rem;
+    }
+
+    .home-v4 .paths-section .path-card {
+        min-height: 16rem;
+    }
+
+    .home-v4 .mission-section h2 {
+        font-size:
+            clamp(
+                3rem,
+                14vw,
+                5rem
+            );
+    }
+
+    .home-v4 .tributaries-section .tributary-grid,
+    .home-v4 .latest-section .latest-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .home-v4 .latest-section .section-heading {
+        display: block;
+    }
+
+    .home-v4 .latest-section .section-heading .text-link {
+        display: inline-block;
+        margin-top: 1.2rem;
+    }
+
+    .home-v4 .home-tributary-card {
+        min-height: 14rem;
+    }
+
+    .home-v4 .latest-card {
+        min-height: 19rem;
+    }
+
+    .home-v4 .invitation-content h2 {
+        font-size:
+            clamp(
+                2.8rem,
+                13vw,
+                4.7rem
+            );
+    }
+}
+
+
+/* ============================================================
+   14 — REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .home-v4 *,
+    .home-v4 *::before,
+    .home-v4 *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+
+    .home-v4 :where(
+        .pathway-card,
+        .latest-card,
+        .home-hero-actions .button,
+        .join-form button
+    ):hover {
+        transform: none;
+    }
+}
+
+/* END WEBSITE 4.0 - HOMEPAGE EXPERIENCE 004C */
