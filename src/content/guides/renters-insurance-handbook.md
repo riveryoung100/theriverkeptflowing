@@ -79,9 +79,7 @@ Approximately 25–30 minutes
 
 <a class="handbook-start"
 href="#welcome">
-
 Begin Reading
-
 </a>
 
 
