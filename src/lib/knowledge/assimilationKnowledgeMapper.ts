@@ -1,4 +1,6 @@
-﻿import type {
+import { createHash } from "node:crypto";
+
+import type {
   AssetClassification,
   AssetSegment,
   DerivedObjectReference,
@@ -27,7 +29,18 @@ export interface AssimilationKnowledgeInput {
 export function createKnowledgeNodeIdFromAssimilation(
   derivedObject: DerivedObjectReference,
 ): KnowledgeNodeId {
-  return `knowledge:${derivedObject.objectId}`;
+  const hash = createHash("sha256")
+    .update(derivedObject.id)
+    .digest("hex");
+
+  const uuid =
+    `${hash.slice(0, 8)}-` +
+    `${hash.slice(8, 12)}-` +
+    `4${hash.slice(13, 16)}-` +
+    `8${hash.slice(17, 20)}-` +
+    `${hash.slice(20, 32)}`;
+
+  return `knowledge:${uuid}` as KnowledgeNodeId;
 }
 
 export function createKnowledgeProvenanceFromAssimilation(

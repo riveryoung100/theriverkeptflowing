@@ -1,5 +1,7 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
 import test from "node:test";
+
+import { isKnowledgeNodeId } from "./identifiers";
 
 import {
   sampleTextAsset,
@@ -43,13 +45,18 @@ test("maps assimilation lineage into knowledge provenance", () => {
   });
 });
 
-test("creates deterministic branded knowledge node id", () => {
-  assert.equal(
-    createKnowledgeNodeIdFromAssimilation(
-      sampleDerivationResult.results[0]!.derivative,
-    ),
-    `knowledge:${sampleDerivationResult.results[0]!.derivative.objectId}`,
+test("creates deterministic valid knowledge node id", () => {
+  const first = createKnowledgeNodeIdFromAssimilation(
+    sampleDerivationResult.results[0]!.derivative,
   );
+
+  const second = createKnowledgeNodeIdFromAssimilation(
+    sampleDerivationResult.results[0]!.derivative,
+  );
+
+  assert.equal(first, second);
+
+  assert.equal(isKnowledgeNodeId(first), true);
 });
 
 test("creates deterministic knowledge engine request", () => {
@@ -69,7 +76,14 @@ test("creates deterministic knowledge engine request", () => {
 
   assert.equal(
     first.nodes[0]?.id,
-    `knowledge:${sampleDerivationResult.results[0]!.derivative.objectId}`,
+    createKnowledgeNodeIdFromAssimilation(
+      sampleDerivationResult.results[0]!.derivative,
+    ),
+  );
+
+  assert.equal(
+    isKnowledgeNodeId(first.nodes[0]?.id),
+    true,
   );
 
   assert.equal(
