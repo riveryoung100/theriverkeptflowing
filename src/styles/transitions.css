@@ -1,0 +1,64 @@
+﻿/* ============================================================
+   WEBSITE 4.0 — INTERACTION + MOTION
+   ============================================================ */
+
+a,
+button,
+input,
+textarea,
+select {
+    transition:
+        color var(--river-transition-fast),
+        background-color var(--river-transition-fast),
+        border-color var(--river-transition-fast),
+        box-shadow var(--river-transition-fast),
+        opacity var(--river-transition-fast),
+        transform var(--river-transition);
+}
+
+a {
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.2em;
+}
+
+button {
+    font: inherit;
+}
+
+.path-card,
+.latest-card,
+.home-tributary-card {
+    transition:
+        transform var(--river-transition),
+        box-shadow var(--river-transition),
+        border-color var(--river-transition);
+}
+
+.path-card:hover,
+.latest-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--river-shadow-card);
+}
+
+.home-tributary-card:hover {
+    transform: translateY(-3px);
+}
+
+.card-link,
+.text-link {
+    transition:
+        color var(--river-transition-fast),
+        gap var(--river-transition);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

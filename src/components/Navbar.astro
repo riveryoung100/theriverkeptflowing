@@ -1,72 +1,295 @@
-﻿---
+---
 import SearchDialog from "./search/SearchDialog.astro";
+
+const pathname = Astro.url.pathname;
+
+const primaryLinks = [
+    {
+        href: "/journey/",
+        label: "Journey"
+    },
+    {
+        href: "/library/",
+        label: "Library"
+    },
+    {
+        href: "/topics/",
+        label: "Topics"
+    },
+    {
+        href: "/river-guides/",
+        label: "Guides"
+    },
+    {
+        href: "/services/",
+        label: "Services"
+    }
+];
+
+const isActive = (href: string) => {
+    if (href === "/") {
+        return pathname === "/";
+    }
+
+    return pathname === href ||
+        pathname.startsWith(href);
+};
 ---
 
-<nav class="navbar" aria-label="Primary navigation">
+<header class="river-header" data-river-header>
 
-    <a
-        href="/"
-        class="logo"
-        aria-label="The River Kept Flowing — Home"
+    <div class="river-header__shell">
+
+        <a
+            href="/"
+            class="river-brand"
+            aria-label="The River Kept Flowing — Home"
+        >
+            <span class="river-brand__mark" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+            </span>
+
+            <span class="river-brand__words">
+                <span class="river-brand__name">
+                    The River Kept Flowing
+                </span>
+
+                <span class="river-brand__tagline">
+                    A life worth building.
+                </span>
+            </span>
+        </a>
+
+        <nav
+            class="river-primary-nav"
+            aria-label="Primary navigation"
+        >
+            {
+                primaryLinks.map((link) => (
+                    <a
+                        href={link.href}
+                        class:list={[
+                            "river-primary-nav__link",
+                            {
+                                "is-active": isActive(link.href)
+                            }
+                        ]}
+                        aria-current={
+                            isActive(link.href)
+                                ? "page"
+                                : undefined
+                        }
+                    >
+                        {link.label}
+                    </a>
+                ))
+            }
+        </nav>
+
+        <div class="river-header__actions">
+
+            <SearchDialog />
+
+            <a
+                href="/saved/"
+                class="river-header__utility"
+            >
+                Saved
+            </a>
+
+            <a
+                href="/contribute/"
+                class="river-header__cta"
+            >
+                Contribute
+            </a>
+
+            <button
+                class="river-menu-toggle"
+                type="button"
+                aria-label="Open navigation"
+                aria-expanded="false"
+                aria-controls="river-mobile-navigation"
+                data-river-menu-toggle
+            >
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </button>
+
+        </div>
+
+    </div>
+
+    <div
+        id="river-mobile-navigation"
+        class="river-mobile-nav"
+        data-river-mobile-nav
+        hidden
     >
-        The River Kept Flowing
-    </a>
 
+        <div class="river-mobile-nav__inner">
 
-    <div class="nav-links">
+            <p class="river-mobile-nav__eyebrow">
+                Explore the River
+            </p>
 
-        <a href="/journey/">
-            Journey
-        </a>
+            <nav aria-label="Mobile navigation">
 
-        <a href="/library/">
-            Library
-        </a>
+                {
+                    primaryLinks.map((link) => (
+                        <a
+                            href={link.href}
+                            class:list={[
+                                "river-mobile-nav__primary",
+                                {
+                                    "is-active": isActive(link.href)
+                                }
+                            ]}
+                            aria-current={
+                                isActive(link.href)
+                                    ? "page"
+                                    : undefined
+                            }
+                        >
+                            <span>{link.label}</span>
+                            <span aria-hidden="true">↗</span>
+                        </a>
+                    ))
+                }
 
-        <a href="/topics/">
-            Topics
-        </a>
+            </nav>
 
-        <a href="/river-guides/">
-            Guides
-        </a>
+            <div class="river-mobile-nav__secondary">
 
-        <a href="/services/">
-            Services
-        </a>
+                <a href="/saved/">
+                    Saved
+                </a>
 
-        <a href="/contribute/">
-            Contribute
-        </a>
+                <a href="/shop/">
+                    Shop
+                </a>
+
+                <a href="/partner/">
+                    Partner
+                </a>
+
+                <a href="/current/">
+                    Current
+                </a>
+
+            </div>
+
+            <div class="river-mobile-nav__closing">
+
+                <p>
+                    Build what matters.
+                    Protect what you build.
+                    Give what you can.
+                </p>
+
+                <a href="/contribute/">
+                    Contribute to the River
+                    <span aria-hidden="true">→</span>
+                </a>
+
+            </div>
+
+        </div>
 
     </div>
 
+</header>
 
-    <div class="nav-utilities">
+<script is:inline>
+    (() => {
+        const header =
+            document.querySelector("[data-river-header]");
 
-        <a
-            href="/saved/"
-            class="nav-utility-link"
-        >
-            Saved
-        </a>
+        const toggle =
+            document.querySelector("[data-river-menu-toggle]");
 
-        <a
-            href="/shop/"
-            class="nav-utility-link"
-        >
-            Shop
-        </a>
+        const mobileNavigation =
+            document.querySelector("[data-river-mobile-nav]");
 
-        <a
-            href="/partner/"
-            class="nav-utility-link"
-        >
-            Partner
-        </a>
+        if (!header || !toggle || !mobileNavigation) {
+            return;
+        }
 
-        <SearchDialog />
+        const setMenuState = (open) => {
+            toggle.setAttribute(
+                "aria-expanded",
+                String(open)
+            );
 
-    </div>
+            toggle.setAttribute(
+                "aria-label",
+                open
+                    ? "Close navigation"
+                    : "Open navigation"
+            );
 
-</nav>
+            mobileNavigation.hidden = !open;
+
+            header.classList.toggle(
+                "menu-is-open",
+                open
+            );
+
+            document.documentElement.classList.toggle(
+                "river-menu-open",
+                open
+            );
+        };
+
+        toggle.addEventListener("click", () => {
+            const open =
+                toggle.getAttribute("aria-expanded") ===
+                "true";
+
+            setMenuState(!open);
+        });
+
+        mobileNavigation.addEventListener(
+            "click",
+            (event) => {
+                const target = event.target;
+
+                if (
+                    target instanceof Element &&
+                    target.closest("a")
+                ) {
+                    setMenuState(false);
+                }
+            }
+        );
+
+        document.addEventListener(
+            "keydown",
+            (event) => {
+                if (
+                    event.key === "Escape" &&
+                    toggle.getAttribute("aria-expanded") ===
+                        "true"
+                ) {
+                    setMenuState(false);
+                    toggle.focus();
+                }
+            }
+        );
+
+        window.addEventListener(
+            "resize",
+            () => {
+                if (
+                    window.innerWidth > 980 &&
+                    toggle.getAttribute("aria-expanded") ===
+                        "true"
+                ) {
+                    setMenuState(false);
+                }
+            }
+        );
+    })();
+</script>

@@ -1,0 +1,152 @@
+﻿/* ============================================================
+   WEBSITE 4.0 — ATMOSPHERE
+   ============================================================ */
+
+html {
+    background: var(--river-paper);
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+    background:
+        radial-gradient(
+            circle at 12% 4%,
+            rgba(96, 127, 131, 0.10),
+            transparent 30rem
+        ),
+        radial-gradient(
+            circle at 90% 18%,
+            rgba(181, 138, 74, 0.08),
+            transparent 34rem
+        ),
+        var(--river-paper);
+}
+
+body::before {
+    position: fixed;
+    z-index: -1;
+    inset: 0;
+    pointer-events: none;
+    content: "";
+    opacity: 0.18;
+    background-image:
+        linear-gradient(
+            rgba(23, 33, 29, 0.025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(23, 33, 29, 0.02) 1px,
+            transparent 1px
+        );
+    background-size: 48px 48px;
+    mask-image:
+        linear-gradient(
+            to bottom,
+            black,
+            transparent 72%
+        );
+}
+
+::selection {
+    color: var(--river-white);
+    background: var(--river-forest);
+}
+
+img,
+picture,
+video {
+    max-width: 100%;
+}
+
+.section-shell {
+    width: min(
+        calc(100% - 3rem),
+        var(--river-shell)
+    );
+    margin-inline: auto;
+}
+
+main > section {
+    position: relative;
+}
+
+.section-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--river-space-5);
+    margin-bottom: var(--river-space-6);
+}
+
+.section-heading > div {
+    display: grid;
+    gap: var(--river-space-3);
+}
+
+.section-heading p {
+    margin: 0;
+    color: var(--river-text-soft);
+}
+
+a {
+    color: inherit;
+}
+
+.path-card,
+.latest-card,
+.home-tributary-card {
+    position: relative;
+    isolation: isolate;
+}
+
+.path-card,
+.latest-card {
+    overflow: hidden;
+}
+
+.path-card::after,
+.latest-card::after {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    content: "";
+    opacity: 0;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(96, 127, 131, 0.10),
+            rgba(181, 138, 74, 0.05)
+        );
+    transition: opacity var(--river-transition);
+}
+
+.path-card:hover::after,
+.latest-card:hover::after {
+    opacity: 1;
+}
+
+@media (max-width: 900px) {
+
+    .section-heading {
+        align-items: start;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 700px) {
+
+    .section-shell {
+        width: min(
+            calc(100% - 2rem),
+            var(--river-shell)
+        );
+    }
+
+    .section-heading {
+        gap: var(--river-space-3);
+        margin-bottom: var(--river-space-5);
+    }
+}
