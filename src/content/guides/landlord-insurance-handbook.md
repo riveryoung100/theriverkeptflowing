@@ -34,9 +34,7 @@ readingMinutes: 30
 <p class="eyebrow">
 River Guide No. 004
 </p>
-<h1>
-The Landlord Insurance Handbook
-</h1>
+
 <p class="subtitle">
 Protecting the property you worked so hard to own.
 </p>

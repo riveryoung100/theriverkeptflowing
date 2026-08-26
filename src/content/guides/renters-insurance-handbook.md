@@ -38,9 +38,7 @@ River Guides · Publication No. 003
 </p>
 
 
-<h1>
-The Renters Insurance Handbook
-</h1>
+
 
 
 <p class="handbook-subtitle">
