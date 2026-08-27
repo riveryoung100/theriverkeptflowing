@@ -20684,3 +20684,540 @@ button {
 }
 
 /* END WEBSITE 4.0 - HOMEPAGE EXPERIENCE 004C */
+
+/* ============================================================
+   WEBSITE 4.0 — HOMEPAGE VISUAL RESTORATION 001
+   Contrast + dimensional hierarchy + persistent navigation
+   ============================================================ */
+
+
+/* ---------------------------------------------------------
+   01 — PERSISTENT PUBLIC HEADER
+   --------------------------------------------------------- */
+
+.river-header {
+    position: sticky;
+    top: 0;
+    z-index: 2000;
+    box-shadow:
+        0 1px 0 rgba(18, 35, 28, 0.08),
+        0 12px 34px rgba(18, 35, 28, 0.10);
+}
+
+
+/* ---------------------------------------------------------
+   02 — HOMEPAGE HIGH-CONTRAST TYPOGRAPHY
+   --------------------------------------------------------- */
+
+.home-v4 {
+    color: #f4efe5;
+}
+
+.home-v4 :where(
+    h1,
+    h2,
+    h3,
+    h4
+) {
+    color: #faf7f0;
+    text-shadow:
+        0 2px 2px rgba(0, 0, 0, 0.12),
+        0 10px 28px rgba(0, 0, 0, 0.16);
+}
+
+.home-v4 :where(
+    p,
+    li
+) {
+    color: rgba(250, 247, 240, 0.88);
+}
+
+.home-v4 :where(
+    .section-label,
+    .eyebrow,
+    .home-kicker
+) {
+    color: #ead7ad;
+}
+
+.home-v4 :where(
+    .section-heading p,
+    .intro-section p,
+    .mission-section p,
+    .tributaries-section p,
+    .latest-section p,
+    .invitation-section p
+) {
+    color: rgba(250, 247, 240, 0.88);
+}
+
+
+/* ---------------------------------------------------------
+   03 — LIGHT SURFACES MUST REMAIN DARK-TEXT
+   --------------------------------------------------------- */
+
+.home-v4 :where(
+    .pathway-card,
+    .path-card,
+    .latest-card
+) {
+    color: #18251f;
+}
+
+.home-v4 :where(
+    .pathway-card,
+    .path-card,
+    .latest-card
+) :where(
+    h2,
+    h3,
+    h4
+) {
+    color: #18251f;
+    text-shadow: none;
+}
+
+.home-v4 :where(
+    .pathway-card,
+    .path-card,
+    .latest-card
+) :where(
+    p,
+    li
+) {
+    color: #34463d;
+}
+
+
+/* ---------------------------------------------------------
+   04 — DIMENSIONAL CARD HIERARCHY
+   --------------------------------------------------------- */
+
+.home-v4 :where(
+    .pathway-card,
+    .path-card,
+    .latest-card
+) {
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.72);
+
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.72) inset,
+        0 2px 3px rgba(18, 35, 28, 0.10),
+        0 14px 30px rgba(18, 35, 28, 0.16),
+        0 32px 72px rgba(8, 18, 14, 0.18);
+
+    transform: translateZ(0);
+
+    transition:
+        transform var(--river-transition),
+        box-shadow var(--river-transition),
+        border-color var(--river-transition);
+}
+
+.home-v4 :where(
+    .pathway-card,
+    .path-card,
+    .latest-card
+):hover {
+    transform:
+        translateY(-7px)
+        translateZ(0);
+
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.82) inset,
+        0 3px 5px rgba(18, 35, 28, 0.10),
+        0 20px 42px rgba(18, 35, 28, 0.20),
+        0 42px 90px rgba(8, 18, 14, 0.22);
+}
+
+.home-v4 .home-tributary-card {
+    border:
+        1px solid
+        rgba(234, 215, 173, 0.24);
+
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.08) inset,
+        0 14px 34px rgba(7, 18, 13, 0.18);
+
+    transition:
+        transform var(--river-transition),
+        box-shadow var(--river-transition),
+        border-color var(--river-transition);
+}
+
+.home-v4 .home-tributary-card:hover {
+    transform: translateY(-5px);
+
+    border-color:
+        rgba(234, 215, 173, 0.46);
+
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.12) inset,
+        0 22px 48px rgba(7, 18, 13, 0.25);
+}
+
+
+/* ---------------------------------------------------------
+   05 — KEEP DESKTOP NAVIGATION VISIBLE
+   --------------------------------------------------------- */
+
+@media (min-width: 761px) and (max-width: 1180px) {
+
+    .river-header__shell {
+        grid-template-columns:
+            minmax(180px, auto)
+            1fr
+            auto;
+
+        gap: clamp(14px, 2vw, 28px);
+    }
+
+    .river-primary-nav {
+        display: flex;
+        justify-content: center;
+    }
+
+    .river-primary-nav__link {
+        font-size: clamp(
+            0.72rem,
+            1vw,
+            0.88rem
+        );
+
+        padding-inline:
+            clamp(
+                0.35rem,
+                0.8vw,
+                0.7rem
+            );
+    }
+
+    .river-menu-toggle {
+        display: none;
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   06 — MOBILE READABILITY + CARD PROPORTION
+   --------------------------------------------------------- */
+
+@media (max-width: 680px) {
+
+    .home-v4 :where(
+        .intro-section,
+        .home-ecosystem,
+        .paths-section,
+        .mission-section,
+        .tributaries-section,
+        .latest-section,
+        .invitation-section
+    ) {
+        padding-block: 4.25rem;
+    }
+
+    .home-v4 .home-hero h1 {
+        font-size:
+            clamp(
+                2.8rem,
+                13.5vw,
+                4.35rem
+            );
+
+        line-height: 0.94;
+        overflow-wrap: anywhere;
+    }
+
+    .home-v4 .section-heading h2,
+    .home-v4 .intro-section h2 {
+        font-size:
+            clamp(
+                2.15rem,
+                10.5vw,
+                3.35rem
+            );
+
+        line-height: 1;
+        overflow-wrap: anywhere;
+    }
+
+    .home-v4 .mission-section h2 {
+        font-size:
+            clamp(
+                2.55rem,
+                11.5vw,
+                3.8rem
+            );
+
+        line-height: 0.98;
+        overflow-wrap: anywhere;
+    }
+
+    .home-v4 .home-ecosystem .pathway-card,
+    .home-v4 .paths-section .path-card {
+        min-height: 0;
+        height: auto;
+    }
+
+    .home-v4 :where(
+        .pathway-card,
+        .path-card,
+        .latest-card
+    ) {
+        box-shadow:
+            0 1px 0 rgba(255, 255, 255, 0.72) inset,
+            0 10px 24px rgba(18, 35, 28, 0.16),
+            0 24px 54px rgba(8, 18, 14, 0.18);
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   07 — TRUE MOBILE DRAWER ONLY
+   --------------------------------------------------------- */
+
+@media (max-width: 760px) {
+
+    .river-primary-nav {
+        display: none;
+    }
+
+    .river-menu-toggle {
+        display: inline-flex;
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   08 — REDUCED MOTION
+   --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .home-v4 :where(
+        .pathway-card,
+        .path-card,
+        .latest-card,
+        .home-tributary-card
+    ):hover {
+        transform: none;
+    }
+
+}
+
+/* END WEBSITE 4.0 — HOMEPAGE VISUAL RESTORATION 001 */
+
+/* ============================================================
+   WEBSITE 4.0 — HOMEPAGE VISUAL RESTORATION 002
+   Seamless dark canvas + foreground surfaces
+   ============================================================ */
+
+
+/* ---------------------------------------------------------
+   01 — ONE CONTINUOUS RIVER CANVAS
+   --------------------------------------------------------- */
+
+.home-v4 :where(
+    .home-hero,
+    .intro-section,
+    .home-ecosystem,
+    .paths-section,
+    .mission-section,
+    .tributaries-section,
+    .latest-section,
+    .invitation-section
+) {
+    background-color: transparent;
+}
+
+.home-v4 :where(
+    .intro-section,
+    .home-ecosystem,
+    .paths-section,
+    .mission-section,
+    .tributaries-section,
+    .latest-section,
+    .invitation-section
+) {
+    color: #f4efe5;
+}
+
+
+/* ---------------------------------------------------------
+   02 — UNAMBIGUOUS SECTION TYPOGRAPHY
+   --------------------------------------------------------- */
+
+.home-v4 :where(
+    .intro-section,
+    .home-ecosystem,
+    .paths-section,
+    .mission-section,
+    .tributaries-section,
+    .latest-section,
+    .invitation-section
+) :where(
+    h1,
+    h2,
+    h3
+) {
+    color: #faf7f0;
+}
+
+.home-v4 :where(
+    .intro-section,
+    .home-ecosystem,
+    .paths-section,
+    .mission-section,
+    .tributaries-section,
+    .latest-section,
+    .invitation-section
+) > :where(
+    p,
+    .section-shell p
+) {
+    color: rgba(250, 247, 240, 0.90);
+}
+
+
+/* ---------------------------------------------------------
+   03 — LIGHT FOREGROUND CARDS
+   --------------------------------------------------------- */
+
+.home-v4 :where(
+    .pathway-card,
+    .path-card,
+    .latest-card
+) {
+    background:
+        linear-gradient(
+            145deg,
+            #fffdf8 0%,
+            #f5efe3 58%,
+            #ebe1d1 100%
+        );
+
+    color: #18251f;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.86);
+
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.95) inset,
+        0 -1px 0 rgba(18, 35, 28, 0.06) inset,
+        0 6px 12px rgba(7, 18, 13, 0.08),
+        0 24px 52px rgba(7, 18, 13, 0.22),
+        0 52px 100px rgba(7, 18, 13, 0.18);
+}
+
+.home-v4 :where(
+    .pathway-card,
+    .path-card,
+    .latest-card
+) :where(
+    h2,
+    h3,
+    h4,
+    strong
+) {
+    color: #163027;
+    text-shadow: none;
+}
+
+.home-v4 :where(
+    .pathway-card,
+    .path-card,
+    .latest-card
+) :where(
+    p,
+    li
+) {
+    color: #405249;
+}
+
+
+/* ---------------------------------------------------------
+   04 — GOLD / COPPER ACCENTS STAY VISIBLE
+   --------------------------------------------------------- */
+
+.home-v4 :where(
+    .section-label,
+    .eyebrow,
+    .home-kicker
+) {
+    color: #d8ad79;
+    text-shadow:
+        0 1px 0 rgba(0, 0, 0, 0.18);
+}
+
+
+/* ---------------------------------------------------------
+   05 — MOBILE CARDS SHOULD FEEL LIKE CARDS, NOT SCREENS
+   --------------------------------------------------------- */
+
+@media (max-width: 680px) {
+
+    .home-v4 :where(
+        .pathway-card,
+        .path-card,
+        .latest-card
+    ) {
+        min-height: 0;
+        height: auto;
+
+        padding:
+            clamp(
+                1.4rem,
+                6vw,
+                2rem
+            );
+
+        border-radius:
+            clamp(
+                1.15rem,
+                5vw,
+                1.7rem
+            );
+    }
+
+    .home-v4 :where(
+        .pathway-card,
+        .path-card,
+        .latest-card
+    ) :where(
+        h2,
+        h3
+    ) {
+        overflow-wrap: normal;
+        word-break: normal;
+        hyphens: auto;
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   06 — HEADER GLASS DEPTH
+   --------------------------------------------------------- */
+
+.river-header {
+    background:
+        color-mix(
+            in srgb,
+            #f8f4ec 94%,
+            transparent
+        );
+
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.80) inset,
+        0 1px 0 rgba(18, 35, 28, 0.09),
+        0 12px 36px rgba(7, 18, 13, 0.13);
+}
+
+
+/* END WEBSITE 4.0 — HOMEPAGE VISUAL RESTORATION 002 */
