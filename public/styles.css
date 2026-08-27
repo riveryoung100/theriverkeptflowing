@@ -19471,19 +19471,19 @@ button {
     background:
         radial-gradient(
             circle at 82% 4%,
-            color-mix(in srgb, #a67c52 14%, transparent),
+            rgba(255, 255, 255, 0.055),
             transparent 28rem
         ),
         radial-gradient(
             circle at 6% 35%,
-            color-mix(in srgb, #a67c52 7%, transparent),
+            rgba(215, 183, 120, 0.055),
             transparent 32rem
         ),
         linear-gradient(
             180deg,
-            #f8f4ec 0%,
-            #f2ede3 48%,
-            #eee7db 100%
+            #12231c 0%,
+            #263f35 52%,
+            #172b23 100%
         );
 }
 
