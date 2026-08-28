@@ -507,3 +507,319 @@ select {
         transform: none;
     }
 }
+
+/* =========================================================
+   WEBSITE 4.0 — MUTATION 003
+   GLOBAL SHELL + LONG-FORM READING SYSTEM
+   ========================================================= */
+
+:root {
+    --river-reading-wide: 66rem;
+    --river-reading-narrow: 39rem;
+    --river-rule: rgba(24, 35, 29, 0.14);
+    --river-rule-light: rgba(247, 242, 232, 0.18);
+    --river-interface-small: 0.78rem;
+    --river-interface-tracking: 0.12em;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: var(--river-paper);
+    color: var(--river-ink);
+}
+
+/* Global interface voice */
+.river-primary-nav,
+.river-header__actions,
+.content-entry__meta,
+.content-type,
+.eyebrow,
+.section-label {
+    font-family: var(--river-interface);
+}
+
+.river-primary-nav {
+    letter-spacing: 0.01em;
+}
+
+.river-primary-nav a,
+.river-header__actions a,
+.river-header__actions button {
+    text-underline-offset: 0.24em;
+}
+
+.eyebrow,
+.section-label,
+.content-type {
+    font-size: var(--river-interface-small);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: var(--river-interface-tracking);
+    text-transform: uppercase;
+}
+
+/* Footer becomes editorial, not utility-heavy */
+.river-footer__statement {
+    border-top: 1px solid var(--river-rule);
+}
+
+.river-footer__statement h2 {
+    max-width: 11ch;
+    font-size: clamp(3rem, 7vw, 7.25rem);
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    font-weight: 400;
+}
+
+/* Library / collection opening */
+.library-hero {
+    padding-block: clamp(5.5rem, 10vw, 10rem) clamp(4rem, 7vw, 7rem);
+    border-bottom: 1px solid var(--river-rule);
+}
+
+.library-hero h1 {
+    max-width: 11ch;
+    margin: 0;
+    font-family: var(--river-display);
+    font-size: clamp(3.5rem, 8vw, 8rem);
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    font-weight: 400;
+    text-wrap: balance;
+}
+
+.library-hero p {
+    max-width: 42rem;
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+    font-family: var(--river-body);
+    font-size: clamp(1.15rem, 1.65vw, 1.45rem);
+    line-height: 1.58;
+}
+
+/* Long-form entry opening */
+.content-entry__header {
+    max-width: var(--river-reading-wide);
+    margin-inline: auto;
+    padding-block: clamp(5.5rem, 10vw, 9rem) clamp(3rem, 6vw, 5.5rem);
+}
+
+.content-entry__header h1 {
+    max-width: 12ch;
+    margin: 0;
+    font-size: clamp(3.25rem, 7vw, 7.4rem);
+    line-height: 0.92;
+    letter-spacing: -0.05em;
+}
+
+.content-entry__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem 1rem;
+    margin-bottom: clamp(1.4rem, 3vw, 2.4rem);
+    font-size: 0.78rem;
+    line-height: 1.35;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.content-entry__description {
+    max-width: 40rem;
+    margin-top: clamp(1.75rem, 3vw, 2.75rem);
+    color: var(--river-ink-soft);
+    font-size: clamp(1.25rem, 1.9vw, 1.6rem);
+    line-height: 1.52;
+}
+
+/* Reading column */
+.content-entry__body {
+    width: min(100% - 2rem, var(--river-reading-wide));
+    margin-inline: auto;
+    padding-bottom: clamp(6rem, 12vw, 11rem);
+    font-family: var(--river-body);
+    font-size: clamp(1.06rem, 1.15vw, 1.18rem);
+    line-height: 1.78;
+}
+
+.content-entry__body > *,
+.content-entry__body article > * {
+    max-width: var(--river-reading-width);
+    margin-inline: auto;
+}
+
+.content-entry__body p {
+    text-wrap: pretty;
+}
+
+.content-entry__body p + p {
+    margin-top: 1.45em;
+}
+
+.content-entry__body h2,
+.content-entry__body h3,
+.content-entry__body h4 {
+    color: var(--river-ink);
+    font-family: var(--river-display);
+    font-weight: 400;
+    text-wrap: balance;
+}
+
+.content-entry__body h2 {
+    margin-top: clamp(3.5rem, 7vw, 6rem);
+    margin-bottom: 1.15rem;
+    font-size: clamp(2rem, 3.8vw, 3.35rem);
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+}
+
+.content-entry__body h3 {
+    margin-top: 3rem;
+    margin-bottom: 0.9rem;
+    font-size: clamp(1.55rem, 2.6vw, 2.2rem);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+}
+
+.content-entry__body ul,
+.content-entry__body ol {
+    padding-left: 1.4em;
+}
+
+.content-entry__body li + li {
+    margin-top: 0.55em;
+}
+
+.content-entry__body a {
+    text-decoration-thickness: 0.06em;
+    text-underline-offset: 0.16em;
+}
+
+.content-entry__body blockquote {
+    max-width: min(48rem, 100%);
+    margin-block: clamp(3rem, 6vw, 5rem);
+    padding: 0 0 0 clamp(1.25rem, 3vw, 2.25rem);
+    border-left: 2px solid var(--river-accent);
+    color: var(--river-green-deep);
+    font-family: var(--river-display);
+    font-size: clamp(1.45rem, 2.6vw, 2.2rem);
+    line-height: 1.42;
+    letter-spacing: -0.02em;
+}
+
+.content-entry__body hr {
+    width: min(16rem, 55%);
+    margin-block: clamp(4rem, 8vw, 7rem);
+    border: 0;
+    border-top: 1px solid var(--river-rule);
+}
+
+/* Let visual and technical material breathe beyond the prose measure */
+.content-entry__body > :where(figure, picture, img, video, iframe, table, pre),
+.content-entry__body article > :where(figure, picture, img, video, iframe, table, pre) {
+    max-width: min(100%, var(--river-reading-wide));
+}
+
+.content-entry__body img,
+.content-entry__body video {
+    height: auto;
+    border-radius: clamp(0.8rem, 1.6vw, 1.4rem);
+}
+
+.content-entry__body figure {
+    margin-block: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+.content-entry__body figcaption {
+    max-width: var(--river-reading-width);
+    margin: 0.8rem auto 0;
+    color: var(--river-ink-soft);
+    font-family: var(--river-interface);
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+.content-entry__body pre,
+.content-entry__body table {
+    overflow-x: auto;
+}
+
+.content-entry__body table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--river-interface);
+    font-size: 0.94rem;
+}
+
+.content-entry__body th,
+.content-entry__body td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--river-rule);
+    text-align: left;
+}
+
+/* Related reading closes the essay like a journal, not a widget */
+.related-content__header {
+    padding-top: clamp(3rem, 6vw, 5rem);
+    border-top: 1px solid var(--river-rule);
+}
+
+.related-content__header h2 {
+    max-width: 12ch;
+    margin: 0;
+    font-family: var(--river-display);
+    font-size: clamp(2.2rem, 4.4vw, 4.4rem);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    font-weight: 400;
+}
+
+/* Buttons stay interface-like against the editorial typography */
+.button,
+button {
+    font-family: var(--river-interface);
+    font-weight: 650;
+    letter-spacing: 0.015em;
+}
+
+@media (max-width: 760px) {
+    .library-hero {
+        padding-block: 4.5rem 3.5rem;
+    }
+
+    .library-hero h1,
+    .content-entry__header h1 {
+        max-width: 12ch;
+        font-size: clamp(3rem, 14vw, 5rem);
+        line-height: 0.94;
+    }
+
+    .content-entry__header {
+        padding-block: 4.5rem 3rem;
+    }
+
+    .content-entry__body {
+        width: min(100% - 2rem, var(--river-reading-wide));
+        font-size: 1.05rem;
+        line-height: 1.72;
+    }
+
+    .content-entry__body h2 {
+        margin-top: 3.5rem;
+    }
+
+    .content-entry__body blockquote {
+        margin-block: 2.75rem;
+    }
+
+    .river-footer__statement h2 {
+        font-size: clamp(2.8rem, 14vw, 4.9rem);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+}
