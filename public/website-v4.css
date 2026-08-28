@@ -1,0 +1,509 @@
+/* =========================================================
+   WEBSITE 4.0 — EDITORIAL RIVER
+   TYPOGRAPHY + VISUAL FOUNDATION
+   ========================================================= */
+
+:root {
+    --river-display: Georgia, "Times New Roman", serif;
+    --river-body: Georgia, "Times New Roman", serif;
+    --river-interface: "Helvetica Neue", Arial, sans-serif;
+    --river-type-display-xl: clamp(4rem, 9vw, 8.75rem);
+    --river-type-display-lg: clamp(3.1rem, 6.5vw, 6.5rem);
+    --river-type-display-md: clamp(2.35rem, 4.6vw, 4.5rem);
+    --river-type-heading: clamp(1.75rem, 3vw, 2.75rem);
+    --river-type-lead: clamp(1.2rem, 1.8vw, 1.5rem);
+    --river-type-body: clamp(1.05rem, 1.15vw, 1.16rem);
+    --river-leading-display: 0.94;
+    --river-leading-heading: 1.04;
+    --river-leading-body: 1.72;
+    --river-tracking-display: -0.045em;
+    --river-reading-width: 43rem;
+}
+
+/* Editorial identity */
+.home-v4 h1,
+.home-v4 h2,
+.library-hero h1,
+.content-entry__header h1,
+.related-content__header h2,
+.river-footer__statement h2 {
+    font-family: var(--river-display);
+    font-weight: 400;
+    text-wrap: balance;
+}
+
+.home-v4 h1 {
+    font-size: var(--river-type-display-xl);
+    line-height: var(--river-leading-display);
+    letter-spacing: var(--river-tracking-display);
+}
+
+.home-v4 h2 {
+    font-size: var(--river-type-display-md);
+    line-height: var(--river-leading-heading);
+    letter-spacing: -0.035em;
+}
+
+.library-hero h1,
+.content-entry__header h1 {
+    font-size: var(--river-type-display-lg);
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+}
+
+/* Reading voice */
+.content-entry__description {
+    max-width: 42rem;
+    font-family: var(--river-body);
+    font-size: var(--river-type-lead);
+    line-height: 1.55;
+}
+
+.content-entry__body {
+    font-family: var(--river-body);
+    font-size: var(--river-type-body);
+    line-height: var(--river-leading-body);
+}
+
+.content-entry__body > *,
+.content-entry__body article > * {
+    max-width: var(--river-reading-width);
+}
+
+.content-entry__body h2,
+.content-entry__body h3 {
+    font-family: var(--river-display);
+    font-weight: 400;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+}
+
+.content-entry__body h2 {
+    font-size: var(--river-type-heading);
+}
+
+.content-entry__body blockquote {
+    font-family: var(--river-display);
+    font-size: clamp(1.35rem, 2.2vw, 1.85rem);
+    line-height: 1.45;
+}
+
+/* Interface voice */
+.river-primary-nav,
+.river-header__actions,
+.eyebrow,
+.section-label,
+.content-type,
+.content-entry__meta,
+.library-collection-controls,
+.library-collection-summary,
+.button,
+button,
+input,
+select {
+    font-family: var(--river-interface);
+}
+
+/* Long-form polish */
+.content-entry__body p {
+    hanging-punctuation: first last;
+}
+
+.content-entry__body p + p {
+    margin-top: 1.35em;
+}
+
+.content-entry__body strong {
+    font-weight: 650;
+}
+
+@media (max-width: 760px) {
+    :root {
+        --river-type-display-xl: clamp(3.25rem, 15vw, 5.5rem);
+        --river-type-display-lg: clamp(2.8rem, 12vw, 4.6rem);
+        --river-type-display-md: clamp(2.15rem, 9vw, 3.6rem);
+        --river-type-body: 1.05rem;
+        --river-leading-body: 1.68;
+    }
+}
+
+/* =========================================================
+   WEBSITE 4.0 — MUTATION 002
+   MAJOR HOMEPAGE COMPOSITION + TYPOGRAPHIC HIERARCHY
+   ========================================================= */
+
+:root {
+    --river-ink: #18231d;
+    --river-ink-soft: #435047;
+    --river-paper: #f4f0e6;
+    --river-paper-deep: #e9e1d2;
+    --river-mist: #dce5dc;
+    --river-green: #183f32;
+    --river-green-deep: #102e25;
+    --river-line: rgba(24, 35, 29, 0.16);
+    --river-accent: #a46f3d;
+    --river-shell: min(1180px, calc(100vw - 3rem));
+    --river-section-space: clamp(5.5rem, 10vw, 10rem);
+    --river-radius-card: 1.5rem;
+    --river-shadow-soft: 0 24px 70px rgba(16, 46, 37, 0.10);
+}
+
+.home-v4 {
+    background: var(--river-paper);
+    color: var(--river-ink);
+}
+
+.home-v4 > section {
+    position: relative;
+    padding-block: var(--river-section-space);
+}
+
+.home-v4 :where(.home-shell, .home-hero-shell, .section-shell) {
+    width: var(--river-shell);
+    margin-inline: auto;
+}
+
+.home-v4 .home-hero {
+    min-height: min(920px, calc(100svh - 4rem));
+    display: grid;
+    align-items: center;
+    overflow: hidden;
+    padding-block: clamp(6rem, 11vw, 10rem);
+    background:
+        radial-gradient(circle at 82% 18%, rgba(164, 111, 61, 0.16), transparent 30%),
+        linear-gradient(145deg, var(--river-green-deep) 0%, var(--river-green) 58%, #285542 100%);
+    color: #f7f2e8;
+}
+
+.home-v4 .home-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        repeating-linear-gradient(118deg, transparent 0 86px, rgba(255,255,255,0.028) 87px 88px),
+        linear-gradient(90deg, rgba(255,255,255,0.04), transparent 38%);
+}
+
+.home-v4 .home-hero-shell {
+    position: relative;
+    z-index: 1;
+}
+
+.home-v4 .home-hero-content {
+    max-width: 68rem;
+}
+
+.home-v4 .home-hero-eyebrow,
+.home-v4 .section-label,
+.home-v4 .home-kicker {
+    font-family: var(--river-interface);
+    font-size: 0.76rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.home-v4 .home-hero-eyebrow {
+    color: rgba(247, 242, 232, 0.72);
+    margin-bottom: clamp(1.5rem, 3vw, 2.75rem);
+}
+
+.home-v4 .home-hero h1 {
+    max-width: 10.5ch;
+    margin: 0;
+    color: #fffaf0;
+    font-size: clamp(4.25rem, 9.2vw, 9rem);
+    line-height: 0.88;
+    letter-spacing: -0.055em;
+    text-wrap: balance;
+}
+
+.home-v4 .home-hero-lead {
+    max-width: 37rem;
+    margin-top: clamp(2rem, 4vw, 3.25rem);
+    color: rgba(247, 242, 232, 0.82);
+    font-family: var(--river-body);
+    font-size: clamp(1.2rem, 1.8vw, 1.55rem);
+    line-height: 1.55;
+}
+
+.home-v4 .home-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-top: clamp(2rem, 4vw, 3rem);
+}
+
+.home-v4 .home-hero-actions .button {
+    min-height: 3.25rem;
+    padding: 0.9rem 1.35rem;
+    border-radius: 999px;
+    letter-spacing: 0.02em;
+}
+
+.home-v4 .home-hero-compass {
+    margin-top: clamp(3.5rem, 7vw, 6rem);
+    color: rgba(247, 242, 232, 0.58);
+}
+
+.home-v4 .intro-section {
+    background: var(--river-paper);
+}
+
+.home-v4 .intro-section .section-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(2.5rem, 8vw, 8rem);
+    align-items: start;
+}
+
+.home-v4 .intro-section h2,
+.home-v4 .section-heading h2,
+.home-v4 .mission-section h2,
+.home-v4 .invitation-content h2 {
+    margin: 0;
+    color: var(--river-ink);
+    font-size: clamp(2.8rem, 5.7vw, 6rem);
+    line-height: 0.96;
+    letter-spacing: -0.045em;
+}
+
+.home-v4 .intro-section p,
+.home-v4 .mission-copy p,
+.home-v4 .tributaries-section p,
+.home-v4 .latest-section p {
+    color: var(--river-ink-soft);
+    font-size: clamp(1.05rem, 1.25vw, 1.2rem);
+    line-height: 1.72;
+}
+
+.home-v4 .intro-section .intro-lead {
+    color: var(--river-ink);
+    font-family: var(--river-body);
+    font-size: clamp(1.35rem, 2vw, 1.75rem);
+    line-height: 1.5;
+}
+
+.home-v4 .home-ecosystem,
+.home-v4 .paths-section,
+.home-v4 .tributaries-section,
+.home-v4 .latest-section {
+    border-top: 1px solid var(--river-line);
+}
+
+.home-v4 .section-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 2rem;
+    align-items: end;
+    margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+.home-v4 .home-ecosystem .pathway-grid,
+.home-v4 .paths-section .path-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: clamp(1rem, 2vw, 1.5rem);
+}
+
+.home-v4 .home-ecosystem .pathway-card,
+.home-v4 .paths-section .path-card {
+    grid-column: span 6;
+    min-height: 21rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: clamp(1.75rem, 3vw, 3rem);
+    border: 1px solid var(--river-line);
+    border-radius: var(--river-radius-card);
+    background: rgba(255,255,255,0.34);
+    box-shadow: none;
+    transition: transform 220ms ease, box-shadow 220ms ease, background-color 220ms ease;
+}
+
+.home-v4 .home-ecosystem .pathway-card:nth-child(1),
+.home-v4 .home-ecosystem .pathway-card:nth-child(4),
+.home-v4 .paths-section .path-card-featured {
+    grid-column: span 7;
+}
+
+.home-v4 .home-ecosystem .pathway-card:nth-child(2),
+.home-v4 .home-ecosystem .pathway-card:nth-child(3) {
+    grid-column: span 5;
+}
+
+.home-v4 :where(.pathway-card, .path-card):hover {
+    transform: translateY(-6px);
+    background: rgba(255,255,255,0.58);
+    box-shadow: var(--river-shadow-soft);
+}
+
+.home-v4 :where(.pathway-card, .path-card) h3,
+.home-v4 .home-tributary-card h3,
+.home-v4 .latest-card h3 {
+    font-family: var(--river-display);
+    font-weight: 400;
+    font-size: clamp(1.8rem, 3vw, 3rem);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+}
+
+.home-v4 .mission-section {
+    overflow: hidden;
+    background: var(--river-green-deep);
+    color: #f7f2e8;
+}
+
+.home-v4 .mission-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at 12% 30%, rgba(164,111,61,0.18), transparent 32%);
+}
+
+.home-v4 .mission-layout {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(17rem, 0.85fr);
+    gap: clamp(3rem, 9vw, 9rem);
+    align-items: start;
+}
+
+.home-v4 .mission-section h2,
+.home-v4 .mission-section p {
+    color: inherit;
+}
+
+.home-v4 .mission-copy p {
+    color: rgba(247,242,232,0.76);
+}
+
+.home-v4 .mission-principles {
+    border-top: 1px solid rgba(247,242,232,0.22);
+}
+
+.home-v4 .mission-principles > * {
+    padding-block: 1.15rem;
+    border-bottom: 1px solid rgba(247,242,232,0.16);
+}
+
+.home-v4 .tributaries-section .tributary-grid,
+.home-v4 .latest-section .latest-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: clamp(1rem, 2vw, 1.5rem);
+}
+
+.home-v4 .home-tributary-card {
+    grid-column: span 4;
+    min-height: 19rem;
+    padding: clamp(1.5rem, 2.5vw, 2.25rem);
+    border-top: 2px solid var(--river-green);
+    background: transparent;
+}
+
+.home-v4 .latest-card {
+    grid-column: span 4;
+    min-height: 22rem;
+    padding: clamp(1.5rem, 2.5vw, 2.25rem);
+    border: 1px solid var(--river-line);
+    border-radius: var(--river-radius-card);
+    background: #faf7ef;
+}
+
+.home-v4 .latest-card:first-child {
+    grid-column: span 8;
+}
+
+.home-v4 .invitation-section {
+    overflow: hidden;
+    background: var(--river-paper-deep);
+    border-top: 1px solid var(--river-line);
+}
+
+.home-v4 .invitation-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
+    gap: clamp(3rem, 8vw, 8rem);
+    align-items: end;
+}
+
+.home-v4 .join-form {
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    border: 1px solid var(--river-line);
+    border-radius: var(--river-radius-card);
+    background: rgba(255,255,255,0.42);
+}
+
+.home-v4 .join-form input {
+    min-height: 3.25rem;
+}
+
+.home-v4 .join-form button {
+    min-height: 3.25rem;
+}
+
+@media (max-width: 900px) {
+    .home-v4 .intro-section .section-shell,
+    .home-v4 .mission-layout,
+    .home-v4 .invitation-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .home-v4 .home-ecosystem .pathway-card,
+    .home-v4 .home-ecosystem .pathway-card:nth-child(1),
+    .home-v4 .home-ecosystem .pathway-card:nth-child(2),
+    .home-v4 .home-ecosystem .pathway-card:nth-child(3),
+    .home-v4 .home-ecosystem .pathway-card:nth-child(4),
+    .home-v4 .paths-section .path-card,
+    .home-v4 .paths-section .path-card-featured {
+        grid-column: span 12;
+        min-height: 17rem;
+    }
+
+    .home-v4 .home-tributary-card,
+    .home-v4 .latest-card,
+    .home-v4 .latest-card:first-child {
+        grid-column: span 6;
+    }
+}
+
+@media (max-width: 640px) {
+    :root {
+        --river-shell: min(100% - 2rem, 1180px);
+        --river-section-space: clamp(4.25rem, 18vw, 6rem);
+    }
+
+    .home-v4 .home-hero {
+        min-height: auto;
+        padding-block: 6rem 5rem;
+    }
+
+    .home-v4 .home-hero h1 {
+        max-width: 11ch;
+        font-size: clamp(3.45rem, 16vw, 5.25rem);
+    }
+
+    .home-v4 .section-heading {
+        grid-template-columns: 1fr;
+    }
+
+    .home-v4 .home-tributary-card,
+    .home-v4 .latest-card,
+    .home-v4 .latest-card:first-child {
+        grid-column: span 12;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .home-v4 :where(.pathway-card, .path-card) {
+        transition: none;
+    }
+
+    .home-v4 :where(.pathway-card, .path-card):hover {
+        transform: none;
+    }
+}
