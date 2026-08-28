@@ -823,3 +823,272 @@ button {
         scroll-behavior: auto;
     }
 }
+
+/* ===================================================
+   WEBSITE 4.0 - MUTATION 004
+   NARRATIVE PATHWAYS + MAJOR PAGE-FAMILY EDITORIAL SYSTEM
+   ======================================================== */
+
+:root {
+    --river-page-shell: min(1180px, calc(100vw - 3rem));
+    --river-prose-shell: min(760px, calc(100vw - 3rem));
+    --river-section-rule: rgba(24, 35, 29, 0.14);
+}
+
+/* Shared narrative-page opening */
+:where(.headwaters-hero, .source-hero, .tributaries-hero, .current-hero, .journey-hero, .guides-hero) {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(6.5rem, 13vw, 12rem);
+    background:
+        radial-gradient(circle at 82% 18%, rgba(244, 240, 230, 0.10), transparent 28rem),
+        linear-gradient(145deg, var(--river-green-deep), var(--river-green));
+    color: var(--river-paper);
+    border-bottom: 1px solid rgba(244, 240, 230, 0.12);
+}
+
+:where(.headwaters-hero, .source-hero, .tributaries-hero, .current-hero, .journey-hero, .guides-hero)::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent 0 67%, rgba(244, 240, 230, 0.055) 67% 67.08%, transparent 67.08%);
+}
+
+:where(.page-hero-content, .source-hero-content, .tributaries-hero-content, .current-hero-content, .journey-hero-content, .guides-hero-content) {
+    position: relative;
+    z-index: 1;
+    width: var(--river-page-shell);
+    margin-inline: auto;
+}
+
+:where(.headwaters-hero, .source-hero, .tributaries-hero, .current-hero, .journey-hero, .guides-hero) h1 {
+    max-width: 11ch;
+    margin: 0;
+    font-family: var(--river-display);
+    font-size: clamp(4rem, 9vw, 9rem);
+    font-weight: 400;
+    line-height: 0.88;
+    letter-spacing: -0.055em;
+    text-wrap: balance;
+}
+
+:where(.page-hero-lead, .source-hero-lead, .tributaries-hero-lead, .current-hero-lead, .journey-hero-lead, .guides-hero-lead) {
+    max-width: 38rem;
+    margin-top: clamp(1.75rem, 4vw, 3rem);
+    font-family: var(--river-body);
+    font-size: clamp(1.2rem, 1.8vw, 1.55rem);
+    line-height: 1.55;
+    color: rgba(244, 240, 230, 0.84);
+}
+
+:where(.page-actions, .tributaries-hero-actions, .current-hero-actions, .journey-hero-actions, .guides-hero-actions) {
+    margin-top: clamp(2rem, 4vw, 3.25rem);
+}
+
+/* Shared section rhythm and editorial headings */
+:where(.story-section, .foundation-section, .river-philosophy-section, .source-introduction, .source-chapter, .tributaries-opening, .tributaries-map, .tributaries-principles, .tributaries-work, .tributaries-balance, .tributaries-connection, .current-opening, .current-workbench, .current-reality, .current-life, .current-commitments, .current-vision, .current-questions, .journey-opening, .journey-path-behind, .journey-direction, .journey-pillars, .journey-milestones, .journey-uncertainty, .journey-philosophy, .journey-follow, .guides-opening, .guides-library, .guides-philosophy, .guides-formats, .guides-standard, .guides-workbench, .guides-featured, .guides-recommendations, .guides-navigation) {
+    padding-block: var(--river-section-space);
+}
+
+:where(.section-shell, .reading-shell, .chapter-shell) {
+    width: var(--river-page-shell);
+    margin-inline: auto;
+}
+
+:where(.centered-heading, .tributaries-section-heading, .current-workbench-heading, .current-reality-heading, .current-life-heading, .current-commitments-heading, .current-snapshot-heading, .current-questions-heading, .journey-section-heading, .journey-direction-heading, .journey-philosophy-heading, .guides-section-heading, .guides-standard-heading, .guides-featured-heading, .story-continues-heading) {
+    max-width: 14ch;
+    font-family: var(--river-display);
+    font-size: clamp(2.7rem, 5.5vw, 5.8rem);
+    font-weight: 400;
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    text-wrap: balance;
+}
+
+/* Prose openings */
+:where(.story-opening, .source-opening, .tributaries-opening-lead, .current-opening-lead, .journey-opening-lead, .guides-opening-lead) {
+    max-width: 42rem;
+    font-family: var(--river-body);
+    font-size: clamp(1.25rem, 2vw, 1.65rem);
+    line-height: 1.62;
+}
+
+/* Cards become quiet editorial surfaces */
+:where(.contrast-card, .tributary-card, .tributaries-principle-card, .tributaries-work_card, .tributaries-navigation-card, .current-build-card, .current-life-card, .commitment-card, .workbench-card, .journey-past-card, .journey-pillar-card, .journey-follow-card, .guide-category-card, .guide-format-card, .guide-workbench-card, .published-guide-card, .guides-navigation-card, .featured-guide-card) {
+    border: 1px solid var(--river-section-rule);
+    border-radius: var(--river-card-radius);
+    box-shadow: var(--river-card-shadow);
+}
+
+:where(.tributary-card, .tributaries-principle-card, .tributaries-work-card, .tributaries-navigation-card, .current-build-card, .current-life-card, .commitment-card, .workbench-card, .journey-past-card, .journey-pillar-card, .journey-follow-card, .guide-category-card, .guide-format-card, .guide-workbench-card, .published-guide-card, .guides-navigation-card, .featured-guide-card) {
+    transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+:where(.tributary-card, .tributaries-navigation-card, .current-build-card, .workbench-card, .journey-pillar-card, .journey-follow-card, .guide-category-card, .published-guide-card, .guides-navigation-card):hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 60px rgba(16, 46, 37, 0.12);
+}
+
+/* Source reads as a continuous memoir */
+.source-introduction,
+.source-chapter-light {
+    background: var(--river-paper);
+}
+
+.source-chapter-warm {
+    background: var(--river-paper-deep);
+}
+
+.source-chapter {
+    border-top: 1px solid var(--river-section-rule);
+}
+
+.chapter-number,
+.chapter-subtitle,
+.chapter-transition {
+    font-family: var(--river-interface);
+}
+
+.chapter-header h2,
+.chapter-opening h2 {
+    max-width: 13ch;
+    font-family: var(--river-display);
+    font-size: clamp(2.8rem, 5.5vw, 5.6rem);
+    font-weight: 400;
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    text-wrap: balance;
+}
+
+.chapter-body {
+    max-width: 43rem;
+    font-family: var(--river-body);
+    font-size: clamp(1.05rem, 1.25vw, 1.16rem);
+    line-height: 1.78;
+}
+
+/* Contrast fields create a recurring river cadence */
+:where(.contrast-section, .tributaries-balance, .current-faith, .journey-invitation, .guides-philosophy, .guides-recommendations) {
+    background: var(--river-green-deep);
+    color: var(--river-paper);
+}
+
+:where(.story-quote, .source-quote, .tributaries-quote, .tributaries-balance-quote, .current-quote, .current-faith-quote, .journey-quote, .journey-uncertainty-quote, .journey-invitation-quote, .guides-philosophy-quote, .guides-recommendations-quote, .guides-final-quote) {
+    font-family: var(--river-display);
+    font-weight: 400;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+}
+
+/* Timeline and numbered systems */
+:where(.foundation-number, .tributary-number, .current-card-number, .journey-card-number, .guide-category-number, .publication-number, .featured-guide-step) {
+    font-family: var(--river-interface);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+.journey-timeline {
+    border-left: 1px solid var(--river-section-rule);
+}
+
+.journey-timeline-item {
+    padding-block: clamp(1.25rem, 3vw, 2rem);
+}
+
+/* Final invitations feel conclusive */
+:where(.headwaters-invitation, .tributaries-final, .journey-final, .guides-final, .story-continues) {
+    padding-block: clamp(6rem, 12vw, 11rem);
+    border-top: 1px solid var(--river-section-rule);
+}
+
+:where(.headwaters-invitation, .tributaries-final, .journey-final, .guides-final) h2 {
+    max-width: 13ch;
+    font-family: var(--river-display);
+    font-size: clamp(3rem, 6vw, 6.4rem);
+    font-weight: 400;
+    line-height: 0.96;
+    letter-spacing: -0.045em;
+}
+
+/* Directory pages: Series + Topics */
+:where(.series-hero, .topics-hero) {
+    padding-block: clamp(6rem, 11vw, 10rem);
+    border-bottom: 1px solid var(--river-section-rule);
+}
+
+:where(.series-heading, .topics-hero h1) {
+    max-width: 11ch;
+    margin: 0;
+    font-family: var(--river-display);
+    font-size: clamp(4rem, 8vw, 8rem);
+    font-weight: 400;
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+}
+
+:where(.series-list, .topics-grid) {
+    gap: clamp(1rem, 2vw, 1.5rem);
+}
+
+:where(.series-card, .topic-card) {
+    border: 1px solid var(--river-section-rule);
+    border-radius: var(--river-card-radius);
+    background: rgba(255, 255, 255, 0.28);
+    box-shadow: 0 12px 34px rgba(16, 46, 37, 0.06);
+}
+
+:where(.series-card, .topic-card) h2,
+:where(.series-card, .topic-card) h3 {
+    font-family: var(--river-display);
+    font-weight: 400;
+    letter-spacing: -0.025em;
+}
+
+/* Responsive editorial restraint */
+@media (max-width: 900px) {
+    :where(.headwaters-hero, .source-hero, .tributaries-hero, .current-hero, .journey-hero, .guides-hero) {
+        padding-block: 6rem;
+    }
+
+    :where(.headwaters-hero, .source-hero, .tributaries-hero, .current-hero, .journey-hero, .guides-hero) h1 {
+        font-size: clamp(3.6rem, 12vw, 6.5rem);
+    }
+}
+
+@media (max-width: 640px) {
+    :root {
+        --river-page-shell: min(100% - 2rem, 1180px);
+        --river-prose-shell: min(100% - 2rem, 760px);
+    }
+
+    :where(.headwaters-hero, .source-hero, .tributaries-hero, .current-hero, .journey-hero, .guides-hero) {
+        padding-block: 4.75rem 5.5rem;
+    }
+
+    :where(.headwaters-hero, .source-hero, .tributaries-hero, .current-hero, .journey-hero, .guides-hero) h1 {
+        max-width: 12ch;
+        font-size: clamp(3.1rem, 15vw, 4.7rem);
+        line-height: 0.92;
+    }
+
+    :where(.centered-heading, .tributaries-section-heading, .current-workbench-heading, .current-reality-heading, .current-life-heading, .current-commitments-heading, .current-snapshot-heading, .current-questions-heading, .journey-section-heading, .journey-direction-heading, .journey-philosophy-heading, .guides-section-heading, .guides-standard-heading, .guides-featured-heading, .story-continues-heading) {
+        font-size: clamp(2.4rem, 11vw, 3.8rem);
+    }
+
+    .chapter-header h2,
+    .chapter-opening h2 {
+        font-size: clamp(2.4rem, 11vw, 3.8rem);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :where(.tributary-card, .tributaries-navigation-card, .current-build-card, .workbench-card, .journey-pillar-card, .journey-follow-card, .guide-category-card, .published-guide-card, .guides-navigation-card) {
+        transition: none;
+    }
+
+    :where(.tributary-card, .tributaries-navigation-card, .current-build-card, .workbench-card, .journey-pillar-card, .journey-follow-card, .guide-category-card, .published-guide-card, .guides-navigation-card):hover {
+        transform: none;
+    }
+}
