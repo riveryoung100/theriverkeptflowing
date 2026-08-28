@@ -1092,3 +1092,255 @@ button {
         transform: none;
     }
 }
+
+
+/* WEBSITE 4.0 - MUTATION 005 - UTILITY + CONVERSION + KNOWLEDGE EXPERIENCE */
+
+:where(.contribute-page, .partner-page, .library-page, .knowledge-page, .saved-library-page) {
+  --v4-utility-shell: min(1180px, calc(100vw - 3rem));
+  --v4-utility-reading: min(760px, calc(100vw - 3rem));
+}
+
+.contribute-page .contribute-shell,
+.library-page .library-shell,
+.knowledge-page > *,
+.saved-library__shell {
+  width: var(--v4-utility-shell);
+  margin-inline: auto;
+}
+
+.contribute-page .contribute-hero,
+.library-page .library-hero,
+.knowledge-hero,
+.saved-library__hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.contribute-page .contribute-hero h1,
+.library-page .library-hero h1,
+.knowledge-hero h1,
+.saved-library__hero h1,
+.letters-hero h1 {
+  font-family: var(--river-display);
+  font-weight: 500;
+  line-height: 0.92;
+  letter-spacing: -0.05em;
+  text-wrap: balance;
+}
+
+.contribute-page .contribute-hero h1,
+.library-page .library-hero h1,
+.knowledge-hero h1,
+.saved-library__hero h1 {
+  font-size: clamp(3.75rem, 8vw, 7.75rem);
+}
+
+:where(.contribute-page, .library-page, .knowledge-page, .saved-library-page) :where(.section-label, .eyebrow, .content-type, .knowledge-eyebrow, .saved-library__eyebrow) {
+  font-family: var(--river-interface);
+  font-size: var(--river-interface-small, 0.75rem);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.contribute-page :where(.contribute-options, .contribute-section),
+.library-page .library-section,
+.knowledge-section {
+  padding-block: clamp(4.5rem, 8vw, 8rem);
+}
+
+.contribute-page :where(.contribution-card, .fund-card),
+.library-page :where(.service-card, .product-card),
+.knowledge-node,
+.knowledge-connection,
+.saved-library__grid > * {
+  border-radius: var(--river-card-radius, 1.5rem);
+}
+
+.contribute-page .contribution-card h3,
+.library-page :where(.service-card, .product-card) h3,
+.knowledge-node h3,
+.knowledge-connection h3,
+.saved-library__grid h2,
+.saved-library__grid h3 {
+  font-family: var(--river-display);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+
+.partner-page .contribute-hero {
+  background: linear-gradient(145deg, var(--river-paper) 0%, var(--river-paper-deep) 100%);
+}
+
+.partner-page .contribute-options {
+  background: var(--river-green-deep);
+  color: var(--river-paper);
+}
+
+.partner-page .contribute-options :where(h2, h3, p, a) {
+  color: inherit;
+}
+
+.knowledge-page {
+  background: var(--river-paper);
+  color: var(--river-ink);
+}
+
+.knowledge-hero {
+  padding-block: clamp(6rem, 11vw, 11rem) clamp(4rem, 7vw, 7rem);
+  border-bottom: 1px solid var(--river-line);
+}
+
+.knowledge-introduction {
+  max-width: 42rem;
+  font-family: var(--river-body);
+  font-size: clamp(1.2rem, 2vw, 1.55rem);
+  line-height: 1.6;
+}
+
+.knowledge-summary,
+.knowledge-explorer-controls {
+  border: 1px solid var(--river-line);
+  border-radius: var(--river-card-radius, 1.5rem);
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.knowledge-card-grid,
+.knowledge-connections {
+  gap: clamp(1rem, 2vw, 1.75rem);
+}
+
+.knowledge-node,
+.knowledge-connection {
+  border: 1px solid var(--river-line);
+  background: rgba(255, 255, 255, 0.42);
+  box-shadow: 0 18px 50px rgba(16, 46, 37, 0.06);
+}
+
+.knowledge-explorer-field :where(label, select, input),
+.saved-library__controls :where(label, select, input, button),
+.reader-data-portability :where(button, input) {
+  font-family: var(--river-interface);
+}
+
+.saved-library-page {
+  background: var(--river-paper);
+  color: var(--river-ink);
+}
+
+.saved-library__hero {
+  padding-top: clamp(5rem, 9vw, 9rem);
+}
+
+.saved-library__privacy {
+  max-width: 46rem;
+  font-family: var(--river-body);
+  line-height: 1.65;
+}
+
+.saved-library__controls,
+.reader-data-portability {
+  border: 1px solid var(--river-line);
+  border-radius: var(--river-card-radius, 1.5rem);
+  background: rgba(255, 255, 255, 0.38);
+  box-shadow: 0 18px 50px rgba(16, 46, 37, 0.05);
+}
+
+.letters-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.letters-hero h1 {
+  font-size: clamp(4.5rem, 10vw, 9rem);
+}
+
+.letters-opening h2,
+.letters-featured-heading h2,
+.letters-section-heading h2,
+.letters-ordinary h2,
+.letters-purpose-heading h2,
+.letters-reader h2,
+.letters-final h2 {
+  font-family: var(--river-display);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.letter-collection-card h3,
+.unwritten-letter-card h3,
+.letters-navigation-card h3,
+.letters-purpose-item h3 {
+  font-family: var(--river-display);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+}
+
+.letters-opening :where(p, blockquote),
+.letters-ordinary :where(p, blockquote),
+.letters-reader :where(p, blockquote),
+.letters-final :where(p, blockquote) {
+  font-family: var(--river-body);
+}
+
+.letters-ordinary-quote,
+.letters-reader-quote,
+.letters-final-quote {
+  font-size: clamp(1.5rem, 3vw, 2.4rem);
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+
+.contribute-page :where(.contribution-card, .fund-card),
+.library-page :where(.service-card, .product-card),
+.knowledge-node,
+.knowledge-connection,
+.letter-collection-card,
+.unwritten-letter-card,
+.letters-navigation-card {
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.contribute-page :where(.contribution-card, .fund-card):hover,
+.library-page :where(.service-card, .product-card):hover,
+.knowledge-node:hover,
+.knowledge-connection:hover,
+.letter-collection-card:hover,
+.unwritten-letter-card:hover,
+.letters-navigation-card:hover {
+  transform: translateY(-3px);
+}
+
+@media (max-width: 760px) {
+  :where(.contribute-page, .partner-page, .library-page, .knowledge-page, .saved-library-page) {
+    --v4-utility-shell: min(100% - 2rem, 1180px);
+  }
+
+  .contribute-page :where(.contribute-options, .contribute-section),
+  .library-page .library-section,
+  .knowledge-section {
+    padding-block: 4rem;
+  }
+
+  .letters-hero h1 {
+    font-size: clamp(3.5rem, 17vw, 6rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contribute-page :where(.contribution-card, .fund-card),
+  .library-page :where(.service-card, .product-card),
+  .knowledge-node,
+  .knowledge-connection,
+  .letter-collection-card,
+  .unwritten-letter-card,
+  .letters-navigation-card {
+    transition: none;
+    transform: none;
+  }
+}
