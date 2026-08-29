@@ -1,0 +1,65 @@
+{
+    "id":  "DEV-332",
+    "title":  "River Development Agent Production Execution Verification Artifact Integration",
+    "status":  "specified",
+    "dependsOn":  [
+                      "DEV-331"
+                  ],
+    "objective":  "Establish the missing production boundary that materializes authoritative RiverDevVerificationResult evidence into the RiverDevExecutionVerificationMetadata artifact consumed by execution-package creation, preserving verification outcomes derived by the existing verification runner without manufacturing pass state, rerunning verification, duplicating verification semantics, or executing implementation operations.",
+    "architecture":  {
+                         "authoritativeSource":  "RiverDevVerificationResult produced by the existing RiverDevVerificationRunner through verifyRiverDev",
+                         "targetArtifact":  "RiverDevExecutionVerificationMetadata",
+                         "transformation":  [
+                                                "Preserve verificationId exactly from the authoritative verification result.",
+                                                "Preserve passed exactly from the authoritative verification result; callers cannot provide or override pass state.",
+                                                "Set verifiedAt only when the completed authoritative verification result is materialized as package verification metadata.",
+                                                "Derive commands deterministically from the authoritative command results by preserving their command names in result order.",
+                                                "Preserve warnings exactly from the authoritative verification result.",
+                                                "Reject malformed or internally inconsistent authoritative verification results rather than manufacturing valid metadata."
+                                            ],
+                         "persistence":  [
+                                             "Persist the derived RiverDevExecutionVerificationMetadata as a repository artifact suitable for direct consumption by createExecutionPackageRiverDev.",
+                                             "Use deterministic repository-safe path handling and deterministic JSON serialization.",
+                                             "Do not overwrite an existing verification artifact; persistence is immutable/fail-closed."
+                                         ],
+                         "exclusions":  [
+                                            "Do not create a second verification runner.",
+                                            "Do not rerun verification commands inside the adapter.",
+                                            "Do not allow callers to provide passed=true independently of authoritative verification evidence.",
+                                            "Do not create or broaden operation execution authorization.",
+                                            "Do not invoke the implementation runner, package executor, DEV-329 execution, or DEV-331 lifecycle.",
+                                            "Do not modify legacy implementRiverDevPlan in DEV-332."
+                                        ]
+                     },
+    "acceptanceCriteria":  [
+                               "A real RiverDevVerificationResult can be converted into RiverDevExecutionVerificationMetadata without caller-supplied pass state.",
+                               "The metadata passed field is exactly the authoritative verification result passed field.",
+                               "Command names and warnings preserve authoritative verification evidence deterministically.",
+                               "A verifiedAt timestamp records materialization time without influencing pass/fail semantics.",
+                               "The metadata artifact is persisted immutably at a deterministic repository-safe path.",
+                               "The persisted artifact can be consumed directly as the verificationPath input to createExecutionPackageRiverDev.",
+                               "Failed authoritative verification remains failed in the persisted metadata and cannot become implementation-ready through this boundary.",
+                               "No verification command is rerun and no implementation operation is executed by this boundary.",
+                               "Focused tests and TypeScript validation pass.",
+                               "Repository hygiene remains controlled and no push is performed."
+                           ],
+    "plannedFiles":  [
+                         "tools/river-dev/src/commands/persist-execution-verification.ts",
+                         "tools/river-dev/src/commands/persist-execution-verification.test.ts"
+                     ],
+    "commitPlan":  [
+                       {
+                           "message":  "DEV-332: Specify River Development Agent production execution verification artifact integration",
+                           "files":  [
+                                         ".river-dev/specifications/dev-332-river-development-agent-production-execution-verification-artifact-integration.json"
+                                     ]
+                       },
+                       {
+                           "message":  "DEV-332: Integrate production execution verification artifact lifecycle",
+                           "files":  [
+                                         "tools/river-dev/src/commands/persist-execution-verification.ts",
+                                         "tools/river-dev/src/commands/persist-execution-verification.test.ts"
+                                     ]
+                       }
+                   ]
+}
