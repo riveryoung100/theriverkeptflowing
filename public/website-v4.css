@@ -2183,3 +2183,21 @@ button {
 @media (min-width: 981px) { .river-menu-toggle, .river-mobile-nav { display: none !important; } }
 @media (max-width: 640px) { .river-header__inner { min-height: 64px; } .river-mobile-nav { max-height: calc(100dvh - 64px); } .river-mobile-nav__inner { padding-inline: 1rem; } .river-mobile-nav__primary { min-height: 52px; } }
 @media (prefers-reduced-motion: reduce) { .river-primary-nav a, .river-header__actions a, .river-header__actions button, .river-menu-toggle, .river-mobile-nav a { transition: none !important; } }
+
+
+/* WEBSITE 4.0 - 010C - MOBILE PROPORTION + READABILITY COMPLETION */
+@media (max-width: 760px) {
+  .library-page .library-hero .library-shell { min-height: 0; }
+  .library-page .library-hero h1 { font-size: clamp(2.75rem, 13vw, 4.25rem); line-height: 0.96; }
+  .library-page .library-hub-card { min-height: 0; }
+  .library-page .library-section { padding-block: clamp(3rem, 10vw, 4rem); }
+  .library-page .library-collection-controls :where(input, select), .saved-library__controls :where(input, select, button), .knowledge-explorer-field :where(input, select) { min-height: 3.25rem; font-size: 1rem; }
+  .reading-page-shell .content-entry__header h1, .reading-page-shell .content-entry__body h1 { overflow-wrap: anywhere; }
+  .reading-page-shell .content-entry__body :where(img, video, iframe, table, pre) { max-width: 100%; }
+  .reading-page-shell .content-entry__body pre { overflow-x: auto; }
+}
+@media (max-width: 480px) {
+  .library-page .library-hero h1 { font-size: clamp(2.5rem, 12vw, 3.5rem); }
+  .library-page .library-hub-card, .library-page .library-entry-item .content-card { border-radius: 1.35rem; }
+  .home-v4 .home-orientation__primary, .home-v4 .home-orientation__alternatives a { border-radius: 1.35rem; }
+}
