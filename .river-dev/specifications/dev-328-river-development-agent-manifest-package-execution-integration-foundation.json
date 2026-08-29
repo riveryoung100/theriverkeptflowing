@@ -1,0 +1,62 @@
+{
+    "id":  "DEV-328",
+    "title":  "River Development Agent Manifest Package Execution Integration Foundation",
+    "status":  "specified",
+    "objective":  "Establish the deterministic governed integration boundary that consumes an already-successful DEV-327 manifest package execution request composition and delegates its exact composed RiverDevPackageExecutionRequest into the existing executePackage boundary, allowing only the execution behavior already authorized and enforced by the package executor without creating, reacquiring, broadening, synthesizing, or bypassing execution authority and without duplicating package execution semantics.",
+    "dependsOn":  [
+                      "DEV-327"
+                  ],
+    "scope":  {
+                  "include":  [
+                                  "Define the DEV-328 manifest package execution integration input and result contracts.",
+                                  "Consume only an already-successful DEV-327 manifest package execution request composition result.",
+                                  "Require DEV-327 compositionState to be PACKAGE_EXECUTION_REQUEST_COMPOSED, composed to be true, the composed request to be present, and blockedReasons to be empty before delegation.",
+                                  "Delegate the exact RiverDevPackageExecutionRequest produced by DEV-327 into the existing executePackage function without reconstructing or semantically altering that request.",
+                                  "Preserve the execution package, requested mode, manifest identity, and any preexisting governed operation-execution authorization carried by the DEV-327 request.",
+                                  "Allow the existing package executor and its existing operational-entry boundary to remain authoritative for dry-run admission, apply authorization, request validation, and implementation runner invocation.",
+                                  "Return deterministic explicit integration state and execution-result data for equivalent inputs and equivalent downstream execution outcomes.",
+                                  "Fail closed with explicit deterministic blocked reasons when the DEV-327 composition is unsuccessful, inconsistent, blocked, or missing its composed request.",
+                                  "Add focused tests proving successful dry-run delegation, authorized apply delegation, blocked composition rejection, missing request rejection, exact request preservation, no authority manufacture or broadening, no package-executor bypass, and deterministic pre-execution validation behavior."
+                              ],
+                  "exclude":  [
+                                  "Creating or recomposing a RiverDevPackageExecutionRequest.",
+                                  "Calling DEV-326 manifest propagation directly.",
+                                  "Calling DEV-327 composition internally as a hidden fallback.",
+                                  "Changing executePackage or package-executor validation behavior.",
+                                  "Creating, acquiring, upgrading, synthesizing, or broadening production execution authority.",
+                                  "Treating requested apply mode as authorization.",
+                                  "Bypassing the existing operational executor integration entry boundary.",
+                                  "Calling createImplementationRunner or runner.execute directly from DEV-328.",
+                                  "Changing DEV-323, DEV-324, DEV-325, DEV-326, or DEV-327 semantics.",
+                                  "Integrating DEV-328 into implementRiverDevPlan or the CLI command surface; real caller integration remains a later explicit boundary.",
+                                  "Committing, pushing, merging, deploying, or performing unrelated repository mutation as part of the DEV-328 engine."
+                              ]
+              },
+    "invariants":  [
+                       "DEV-328 must never manufacture a package execution request; the exact successful DEV-327 request is the only downstream request source.",
+                       "DEV-328 must never create, reacquire, upgrade, synthesize, or broaden execution authority.",
+                       "Requested apply mode alone must never authorize repository mutation.",
+                       "The existing executePackage function remains the only package-execution boundary DEV-328 may invoke.",
+                       "DEV-328 must not call createImplementationRunner or runner.execute directly.",
+                       "The package executor remains authoritative for request validation, operational admission, effective mode, governed apply authorization, and implementation execution.",
+                       "A blocked or inconsistent DEV-327 composition must never reach executePackage.",
+                       "DEV-328 must preserve the DEV-327-composed request without semantic mutation.",
+                       "No hidden fallback may invoke DEV-326 or DEV-327 to manufacture missing predecessor state.",
+                       "Equivalent blocked inputs must produce deterministic equivalent blocked integration results."
+                   ],
+    "plannedFiles":  [
+                         "tools/river-dev/src/core/manifest-package-execution-integration-foundation.ts",
+                         "tools/river-dev/src/core/manifest-package-execution-integration-foundation.test.ts",
+                         "tools/river-dev/src/types.ts"
+                     ],
+    "verification":  [
+                         "Run the focused DEV-328 test file.",
+                         "Run TypeScript type checking.",
+                         "Run the complete River Development Agent test topology.",
+                         "Verify the DEV-327 request passed to executePackage is the exact composed request object and is not reconstructed.",
+                         "Verify no DEV-328 code directly imports or invokes createImplementationRunner or runner.execute.",
+                         "Verify apply without valid preexisting governed authorization still fails through the existing package executor boundary.",
+                         "Verify exact working-tree scope before staging.",
+                         "Review the complete diff before commit."
+                     ]
+}
