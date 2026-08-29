@@ -384,6 +384,69 @@ test(
 
 
 test(
+    "executes apply mode with existing governed operation-execution authorization",
+    async () => {
+
+        await withTemporaryRepository(
+            async (
+                repositoryRoot,
+                configuration
+            ) => {
+
+                const packagePath =
+                    PACKAGE_FILE;
+
+                const authorization = {
+                    authorizationState:
+                        "OPERATION_EXECUTION_AUTHORIZED" as const
+                };
+
+                const result =
+                    await executePackageRiverDev(
+                        configuration,
+                        packagePath,
+                        "apply",
+                        authorization
+                    );
+
+                assert.equal(
+                    result.mode,
+                    "apply"
+                );
+
+                assert.equal(
+                    result.explicitApplyAuthorized,
+                    true
+                );
+
+                assert.equal(
+                    result.implementation.applied,
+                    true
+                );
+
+                const generatedPath =
+                    join(
+                        repositoryRoot,
+                        "generated",
+                        "dev-14-command.ts"
+                    );
+
+                assert.equal(
+                    await readFile(
+                        generatedPath,
+                        "utf8"
+                    ),
+                    "export const dev14Command = true;\n"
+                );
+
+            }
+        );
+
+    }
+);
+
+
+test(
     "formats package execution results",
     async () => {
 

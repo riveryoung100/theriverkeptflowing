@@ -1,9 +1,10 @@
-﻿import {
+import {
     readFile
 } from "node:fs/promises";
 
 import type {
-    RiverDevConfiguration
+    RiverDevConfiguration,
+    RiverDevOperationalExecutorIntegrationEntryAuthorization
 } from "../types";
 
 import {
@@ -15,8 +16,16 @@ import type {
 } from "../core/execution-package";
 
 import {
-    executePackage
-} from "../core/package-executor";
+    createManifestPropagationFoundation
+} from "../core/manifest-propagation-foundation";
+
+import {
+    composeManifestPackageExecutionRequest
+} from "../core/manifest-package-execution-request-composition-foundation";
+
+import {
+    integrateManifestPackageExecution
+} from "../core/manifest-package-execution-integration-foundation";
 
 import type {
     RiverDevPackageExecutionResult
@@ -87,7 +96,11 @@ export async function executePackageRiverDev(
         string,
     mode:
         RiverDevImplementationMode =
-            "dry-run"
+            "dry-run",
+    operationExecutionAuthorization:
+        RiverDevOperationalExecutorIntegrationEntryAuthorization
+        | null =
+            null
 ): Promise<RiverDevPackageExecutionResult> {
 
     const executionPackage =
@@ -96,13 +109,57 @@ export async function executePackageRiverDev(
             packagePath
         );
 
-    return executePackage(
-        configuration,
-        {
-            executionPackage,
-            mode
-        }
-    );
+    const manifestPropagation =
+        createManifestPropagationFoundation(
+            {
+                manifest:
+                    executionPackage.manifest,
+
+                manifestAvailable:
+                    true
+            }
+        );
+
+    const composition =
+        composeManifestPackageExecutionRequest(
+            {
+                manifestPropagation,
+
+                executionPackage,
+
+                mode,
+
+                operationExecutionAuthorization
+            }
+        );
+
+    const integration =
+        await integrateManifestPackageExecution(
+            {
+                configuration,
+                composition
+            }
+        );
+
+    if (
+        integration.integrated !== true ||
+        integration.executionResult === null
+    ) {
+
+        const reasons =
+            integration.blockedReasons.length > 0
+                ? integration.blockedReasons.join(
+                    " "
+                )
+                : "DEV-329 governed manifest package execution integration did not produce an execution result.";
+
+        throw new TypeError(
+            reasons
+        );
+
+    }
+
+    return integration.executionResult;
 
 }
 
