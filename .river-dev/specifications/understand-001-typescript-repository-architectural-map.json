@@ -1,0 +1,64 @@
+{
+    "id":  "UNDERSTAND-001",
+    "title":  "TypeScript Repository Architectural Map",
+    "capability":  "UNDERSTAND",
+    "status":  "specified",
+    "dependsOn":  [
+                      "DEV-333"
+                  ],
+    "objective":  "Transform the existing safe deterministic repository inventory into a deterministic machine-readable architectural map of the TypeScript codebase so the River Development Agent can reason from actual module relationships rather than path inventory alone.",
+    "problem":  {
+                    "provenExistingCapability":  "Repository discovery deterministically inventories, normalizes, classifies, and protects repository paths.",
+                    "provenGap":  "Production code has no demonstrated dependency graph, import graph, symbol graph, architecture map, call graph, or impact-analysis capability.",
+                    "graduationRequirement":  "The Agent must be able to identify TypeScript modules and their direct architectural relationships before higher-level planning or autonomous change generation can be considered grounded."
+                },
+    "architecture":  {
+                         "sourceOfRepositoryScope":  "Existing repository discovery remains authoritative for safe repository scope and protected-path behavior.",
+                         "analysisBoundary":  "Analyze discovered TypeScript source files only; do not independently traverse protected or denied repository paths.",
+                         "parser":  "Use the already-available TypeScript compiler API when resolvable; do not add a new parser dependency merely for this capability.",
+                         "modules":  "Produce deterministic normalized module records keyed by repository-relative path.",
+                         "imports":  "Extract static TypeScript import declarations and export-from declarations, preserving raw module specifiers and resolving repository-local relationships when deterministically possible.",
+                         "exports":  "Extract top-level named export declarations sufficient to expose module API shape without executing source code.",
+                         "dependencies":  "For each analyzed module, expose deterministic direct repository-local dependencies.",
+                         "dependents":  "Derive deterministic reverse direct dependents from resolved local dependencies.",
+                         "entryPoints":  "Expose deterministic entry-point signals from known project/configuration structure and zero-dependent/root characteristics without claiming semantic certainty that cannot be proven.",
+                         "impact":  "Given one or more repository-relative module paths, compute direct dependents as the first bounded impact primitive; transitive impact is not required by UNDERSTAND-001 unless naturally safe and deterministic.",
+                         "unresolvedImports":  "Preserve unresolved or external import specifiers explicitly rather than inventing repository targets.",
+                         "determinism":  "Equivalent repository state must produce deeply equal architectural maps.",
+                         "safety":  "No source execution, repository mutation, package installation, network access, secret traversal, authorization creation, command execution, commit, or push.",
+                         "integration":  "This capability is factual architectural substrate. It must not be represented as autonomous reasoning, planning, or implementation intelligence.",
+                         "extensibility":  "Design the result so later UNDERSTAND capabilities can add symbol relationships, semantic classification, transitive impact, and objective relevance without replacing this primitive."
+                     },
+    "invariants":  [
+                       "Repository discovery remains the safe scope authority.",
+                       "Protected and denied paths are never independently traversed by architectural analysis.",
+                       "No module specifier is silently treated as a local dependency unless it resolves deterministically to a discovered TypeScript module.",
+                       "Architecture analysis never executes repository source code.",
+                       "Module, import, export, dependency, dependent, entry-point, and impact outputs are deterministically ordered.",
+                       "External and unresolved imports remain visible rather than being discarded or guessed.",
+                       "The architectural map is evidence about repository structure, not authorization to mutate it.",
+                       "No new execution/governance foundation is introduced by this capability."
+                   ],
+    "acceptance":  [
+                       "A fixture containing multiple TypeScript modules produces deterministic module records.",
+                       "Static relative imports resolve to discovered repository-local modules.",
+                       "Export-from relationships participate in dependency mapping.",
+                       "External package imports remain explicit and unresolved as repository-local dependencies.",
+                       "Named top-level exports are reported deterministically.",
+                       "Reverse direct dependents are derived correctly.",
+                       "Direct impact for a changed module identifies its immediate dependent modules.",
+                       "Protected paths remain excluded according to existing repository-discovery scope.",
+                       "Repeated analysis of unchanged repository state is deeply equal.",
+                       "Malformed or unsupported source syntax fails or degrades explicitly without executing source code or inventing relationships.",
+                       "Focused UNDERSTAND-001 tests pass.",
+                       "TypeScript validation passes.",
+                       "Complete River Development Agent regression passes.",
+                       "Repository hygiene passes.",
+                       "No push is performed."
+                   ],
+    "plannedFiles":  [
+                         "tools/river-dev/src/core/repository-architecture-map.ts",
+                         "tools/river-dev/src/core/repository-architecture-map.test.ts",
+                         "tools/river-dev/src/types.ts"
+                     ]
+}
