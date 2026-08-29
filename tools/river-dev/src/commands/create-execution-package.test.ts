@@ -1,10 +1,11 @@
-﻿import {
+import {
     strict as assert
 } from "node:assert";
 
 import {
     mkdtemp,
     rm,
+    readFile,
     writeFile
 } from "node:fs/promises";
 
@@ -351,5 +352,82 @@ test(
             }
         );
 
+    }
+);
+
+
+test(
+    "propagates creator rejection for an unapproved proposal",
+    async () => {
+        await withTemporaryRepository(
+            async (repositoryRoot, configuration) => {
+                const fixtures = await writeFixtureFiles(repositoryRoot);
+                const proposal = JSON.parse(await readFile(fixtures.proposalPath, "utf8"));
+                proposal.approved = false;
+                await writeFile(fixtures.proposalPath, JSON.stringify(proposal, null, 2), "utf8");
+                await assert.rejects(
+                    createExecutionPackageRiverDev(configuration, fixtures.proposalPath, fixtures.manifestPath, fixtures.verificationPath),
+                    /requires an approved proposal/
+                );
+            }
+        );
+    }
+);
+
+test(
+    "derives non-ready lifecycle state from failed verification",
+    async () => {
+        await withTemporaryRepository(
+            async (repositoryRoot, configuration) => {
+                const fixtures = await writeFixtureFiles(repositoryRoot);
+                const verification = JSON.parse(await readFile(fixtures.verificationPath, "utf8"));
+                verification.passed = false;
+                await writeFile(fixtures.verificationPath, JSON.stringify(verification, null, 2), "utf8");
+                const result = await createExecutionPackageRiverDev(configuration, fixtures.proposalPath, fixtures.manifestPath, fixtures.verificationPath);
+                assert.equal(result.executionPackage.state, "blocked");
+                assert.equal(result.executionPackage.implementationReady, false);
+                assert.equal(result.executionPackage.implementationWritesPerformed, false);
+                assert.equal(result.implementationWritesPerformed, false);
+            }
+        );
+    }
+);
+
+test(
+    "snapshots loaded source artifacts into the execution package",
+    async () => {
+        await withTemporaryRepository(
+            async (repositoryRoot, configuration) => {
+                const fixtures = await writeFixtureFiles(repositoryRoot);
+                const result = await createExecutionPackageRiverDev(configuration, fixtures.proposalPath, fixtures.manifestPath, fixtures.verificationPath);
+                const proposalBefore = structuredClone(result.executionPackage.proposal);
+                const manifestBefore = structuredClone(result.executionPackage.manifest);
+                const verificationBefore = structuredClone(result.executionPackage.verification);
+                await writeFile(fixtures.proposalPath, JSON.stringify({ changed: true }), "utf8");
+                await writeFile(fixtures.manifestPath, JSON.stringify({ changed: true }), "utf8");
+                await writeFile(fixtures.verificationPath, JSON.stringify({ changed: true }), "utf8");
+                assert.deepEqual(result.executionPackage.proposal, proposalBefore);
+                assert.deepEqual(result.executionPackage.manifest, manifestBefore);
+                assert.deepEqual(result.executionPackage.verification, verificationBefore);
+                assert.equal(result.executionPackage.implementationWritesPerformed, false);
+                assert.equal(result.implementationWritesPerformed, false);
+            }
+        );
+    }
+);
+
+test(
+    "produces deterministic execution package results from identical repository artifacts",
+    async () => {
+        await withTemporaryRepository(
+            async (repositoryRoot, configuration) => {
+                const fixtures = await writeFixtureFiles(repositoryRoot);
+                const first = await createExecutionPackageRiverDev(configuration, fixtures.proposalPath, fixtures.manifestPath, fixtures.verificationPath);
+                const second = await createExecutionPackageRiverDev(configuration, fixtures.proposalPath, fixtures.manifestPath, fixtures.verificationPath);
+                assert.deepEqual(first, second);
+                assert.equal(first.implementationWritesPerformed, false);
+                assert.equal(second.implementationWritesPerformed, false);
+            }
+        );
     }
 );
