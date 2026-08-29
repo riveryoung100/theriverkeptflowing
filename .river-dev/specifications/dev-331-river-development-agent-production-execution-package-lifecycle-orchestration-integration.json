@@ -1,0 +1,83 @@
+{
+    "id":  "DEV-331",
+    "title":  "River Development Agent Production Execution-Package Lifecycle Orchestration Integration",
+    "status":  "specified",
+    "dependsOn":  [
+                      "DEV-330",
+                      "DEV-329",
+                      "DEV-328",
+                      "DEV-327",
+                      "DEV-326"
+                  ],
+    "objective":  "Establish the missing production lifecycle orchestration boundary that composes the existing authoritative execution-package creation, immutable persistence, and governed execution command boundaries into one fail-closed lifecycle, preserving the exact execution package produced by creation through persistence and executing only the persisted package through the existing DEV-329 governed execution path without reconstructing package state, duplicating lifecycle semantics, directly invoking the implementation runner, or manufacturing or broadening execution authority.",
+    "architecture":  {
+                         "lifecycle":  "existing proposal, implementation-manifest, and execution-verification repository artifacts -\u003e createExecutionPackageRiverDev -\u003e exact resulting executionPackage object -\u003e persistExecutionPackageRiverDev -\u003e exact persistence repositoryPath -\u003e executePackageRiverDev",
+                         "creationBoundary":  "createExecutionPackageRiverDev remains the authoritative repository-safe source-artifact loading and execution-package creation boundary established and contract-hardened through DEV-330.",
+                         "persistenceBoundary":  "persistExecutionPackageRiverDev remains the authoritative immutable persistence boundary. DEV-331 passes the exact executionPackage object returned by creation into this boundary and does not use creator serialization as a persistence contract.",
+                         "executionBoundary":  "executePackageRiverDev remains the authoritative production persisted-package loading and governed execution boundary established by DEV-329. DEV-331 executes by passing the persistence result repositoryPath into this existing command boundary.",
+                         "packageProvenance":  "DEV-331 must not reconstruct, normalize, repair, clone, or synthesize a second execution package between creation and persistence. The exact executionPackage object returned by createExecutionPackageRiverDev is supplied to persistExecutionPackageRiverDev. Execution subsequently reloads the persisted representation through the existing executePackageRiverDev/loadExecutionPackage boundary.",
+                         "persistenceProvenance":  "The repositoryPath returned by authoritative persistence is the downstream package path supplied to executePackageRiverDev. DEV-331 must not independently derive or invent the persisted package path.",
+                         "executionAuthority":  "DEV-331 creates, acquires, upgrades, synthesizes, broadens, or repairs no execution authorization. Any preexisting operationExecutionAuthorization accepted by the lifecycle is forwarded unchanged to executePackageRiverDev. Requested apply mode alone is never authorization.",
+                         "execution":  "DEV-331 does not directly call createImplementationRunner, runner.execute, executePackage, DEV-326, DEV-327, or DEV-328. Governed execution remains owned by executePackageRiverDev and its established DEV-329 chain.",
+                         "failureSemantics":  "Lifecycle stages are strictly ordered and fail closed. Creation failure prevents persistence and execution. Persistence failure prevents execution. Governed execution failure propagates without fallback or alternate execution.",
+                         "mutationSemantics":  "Creation performs no implementation writes. Persistence may create only the immutable execution-package artifact through its existing create-only contract. Implementation repository mutation, if any, may occur only downstream through executePackageRiverDev when independently authorized apply execution is admitted.",
+                         "determinism":  "For identical authoritative inputs and equivalent repository state, lifecycle composition must preserve deterministic package creation and established deterministic downstream behavior. DEV-331 introduces no nondeterministic package reconstruction.",
+                         "legacyImplementBoundary":  "DEV-331 does not rewrite, remove, or reroute implementRiverDevPlan. Reconciliation of the legacy direct-manifest implementation path is a later explicit integration boundary after the canonical package lifecycle exists and is proven.",
+                         "defaultDeny":  "Missing, inaccessible, malformed, inconsistent, unapproved, unverified, non-ready, non-persistable, already-persisted-conflicting, unauthorized, or otherwise invalid lifecycle state must fail closed through the authoritative stage that owns that validation."
+                     },
+    "invariants":  [
+                       "No second execution-package creator or representation is introduced.",
+                       "No second persistence implementation or persistence-path derivation is introduced.",
+                       "No second persisted-package loader is introduced.",
+                       "No execution package is reconstructed between creation and persistence.",
+                       "Creator serialization is not treated as the persistence contract.",
+                       "The exact created executionPackage object is supplied to authoritative persistence.",
+                       "The authoritative persistence repositoryPath is supplied to executePackageRiverDev.",
+                       "No direct implementation runner invocation is permitted from DEV-331.",
+                       "No direct executePackage invocation is permitted from DEV-331.",
+                       "DEV-331 does not bypass DEV-329, DEV-328, DEV-327, or DEV-326.",
+                       "DEV-331 does not create, reacquire, synthesize, upgrade, broaden, or repair execution authorization.",
+                       "Apply intent alone never grants execution authority.",
+                       "Creation failure stops persistence and execution.",
+                       "Persistence failure stops governed execution.",
+                       "Execution failure propagates without fallback.",
+                       "Immutable persistence semantics are preserved.",
+                       "Implementation writes can occur only through independently authorized governed execution.",
+                       "Legacy implementRiverDevPlan remains unchanged by DEV-331."
+                   ],
+    "acceptanceCriteria":  [
+                               "A production lifecycle command accepts repository paths for the existing proposal, implementation manifest, and execution verification artifacts plus execution mode and optional preexisting operation execution authorization.",
+                               "The lifecycle delegates source loading and package creation to createExecutionPackageRiverDev rather than loading or constructing those artifacts independently.",
+                               "The exact executionPackage object returned by creation is passed to persistExecutionPackageRiverDev.",
+                               "The lifecycle uses the repositoryPath returned by persistence as the package path passed to executePackageRiverDev.",
+                               "Dry-run lifecycle execution requires no manufactured apply authorization and remains governed by the existing execution chain.",
+                               "Apply lifecycle execution cannot succeed merely because apply mode was requested and requires authorization already accepted by the existing governed execution boundary.",
+                               "Creation-stage rejection prevents persistence and execution.",
+                               "Persistence-stage rejection prevents execution.",
+                               "Governed execution rejection propagates without direct-runner or alternate-executor fallback.",
+                               "The lifecycle performs no direct implementation runner invocation and does not duplicate package-executor semantics.",
+                               "Immutable persistence remains authoritative and conflicting overwrite attempts fail closed.",
+                               "The lifecycle exposes sufficient result provenance to identify creation, persistence, and governed execution outcomes without creating a second package representation.",
+                               "Tests prove valid dry-run lifecycle composition, exact created-package handoff, persistence-path handoff, creation failure short-circuiting, persistence failure short-circuiting, unauthorized apply rejection, authorized apply forwarding without authority modification, no direct runner/executor bypass, and deterministic lifecycle behavior."
+                           ],
+    "plannedFiles":  [
+                         "tools/river-dev/src/commands/execution-package-lifecycle.ts",
+                         "tools/river-dev/src/commands/execution-package-lifecycle.test.ts"
+                     ],
+    "excludedFiles":  [
+                          "tools/river-dev/src/commands/create-execution-package.ts",
+                          "tools/river-dev/src/commands/persist-execution-package.ts",
+                          "tools/river-dev/src/commands/execute-package.ts",
+                          "tools/river-dev/src/core/execution-package.ts",
+                          "tools/river-dev/src/core/execution-package-persistence.ts",
+                          "tools/river-dev/src/core/package-executor.ts",
+                          "tools/river-dev/src/commands/implement.ts",
+                          "tools/river-dev/src/index.ts",
+                          "tools/river-dev/src/types.ts",
+                          "src/components/Navbar.astro"
+                      ],
+    "commitPlan":  {
+                       "specification":  "DEV-331: Specify River Development Agent production execution-package lifecycle orchestration integration",
+                       "implementation":  "DEV-331: Integrate production execution-package lifecycle orchestration"
+                   }
+}
