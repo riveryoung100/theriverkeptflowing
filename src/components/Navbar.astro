@@ -60,9 +60,9 @@ const isActive = (href: string) => {
             class="river-primary-nav"
             aria-label="Primary navigation"
         >
+            <a href="/headwaters/" class="river-nav__start">Start Here</a>
             {
                 primaryLinks.map((link) => (
-                    <a href="/pages/headwaters/" class="river-nav__start">Start Here</a>
         <a
                         href={link.href}
                         class:list={[
@@ -132,9 +132,13 @@ const isActive = (href: string) => {
 
             <nav aria-label="Mobile navigation">
 
+                <a href="/headwaters/" class="river-nav__start river-mobile-nav__primary">
+                    <span>Start Here</span>
+                    <span aria-hidden="true">&rarr;</span>
+                </a>
+
                 {
                     primaryLinks.map((link) => (
-                        <a href="/pages/headwaters/" class="river-nav__start">Start Here</a>
         <a
                             href={link.href}
                             class:list={[
