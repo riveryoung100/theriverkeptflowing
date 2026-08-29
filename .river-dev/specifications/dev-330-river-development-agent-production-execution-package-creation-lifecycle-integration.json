@@ -1,0 +1,64 @@
+{
+    "id":  "DEV-330",
+    "title":  "River Development Agent Production Execution-Package Creation Lifecycle Integration",
+    "status":  "specified",
+    "dependsOn":  [
+                      "DEV-329"
+                  ],
+    "objective":  "Establish the production integration boundary that consumes existing proposal, implementation-manifest, and execution-verification artifacts through the existing repository-safe artifact-loading contract and delegates those loaded artifacts to the authoritative execution-package creator without reconstructing upstream artifacts, duplicating package creation, executing implementation operations, or manufacturing execution authority.",
+    "architecture":  {
+                         "authoritativeCreationBoundary":  "createExecutionPackage remains the sole authoritative execution-package construction boundary.",
+                         "execution":  "DEV-330 does not directly invoke the implementation runner or execute package operations.",
+                         "downstreamLifecycle":  "A successfully created execution package must remain compatible with the existing persistence lifecycle and the DEV-329 governed persisted-package execution path.",
+                         "snapshotSemantics":  "The existing createExecutionPackage boundary intentionally structuredClone snapshots proposal, manifest, and verification into the execution package. DEV-330 must preserve source provenance and semantic content across that boundary and must not impose reference-identity requirements that contradict the authoritative creator.",
+                         "executionAuthority":  "DEV-330 creates no operation-execution authorization, broadens no authorization, consumes no authorization, and does not treat apply mode as authorization.",
+                         "existingProductionCommand":  "createExecutionPackageRiverDev is the already-established authoritative repository-path loading and package-creation command boundary. DEV-330 contract-hardens and proves this existing boundary through command-level integration coverage; no production-command mutation is required absent a demonstrated behavior gap.",
+                         "defaultDeny":  "Missing, inaccessible, malformed, inconsistent, unapproved, unverified, or otherwise invalid source artifacts must continue to fail closed through existing policy and execution-package validation boundaries.",
+                         "authoritativeInputs":  [
+                                                     "Existing RiverDevImplementationProposal artifact loaded from its repository path.",
+                                                     "Existing RiverDevImplementationManifest artifact loaded from its repository path.",
+                                                     "Existing RiverDevExecutionVerificationMetadata artifact loaded from its repository path."
+                                                 ]
+                     },
+    "invariants":  [
+                       "Do not create a second proposal representation or producer.",
+                       "Do not create a second implementation-manifest representation, loader, or producer.",
+                       "Do not create a second execution-verification representation or manufacture verification state.",
+                       "Do not reconstruct proposal, manifest, or verification content merely to satisfy the integration boundary.",
+                       "Do not bypass createExecutionPackage when constructing an execution package.",
+                       "Preserve createExecutionPackage structuredClone snapshot semantics.",
+                       "Do not directly invoke executePackage, the implementation runner, or repository mutation operations from the DEV-330 creation integration.",
+                       "Do not manufacture, acquire, synthesize, upgrade, or broaden operation-execution authorization.",
+                       "Do not infer authorization from requested apply mode.",
+                       "Do not weaken existing plan ID, branch, proposal approval, verification, operation, readiness, or package validation invariants.",
+                       "Preserve repository-path safety for all artifact inputs.",
+                       "Preserve deterministic package creation for equivalent valid source artifacts."
+                   ],
+    "acceptanceCriteria":  [
+                               "Production integration consumes proposal, manifest, and verification from their existing repository artifact paths.",
+                               "Repository path validation remains authoritative for all three source artifact paths.",
+                               "Loaded proposal, manifest, and verification are supplied to the existing createExecutionPackage boundary without an alternate package-construction implementation.",
+                               "The resulting package retains semantic content and provenance from the loaded source artifacts while respecting createExecutionPackage structuredClone snapshot semantics.",
+                               "Invalid or inconsistent proposal/manifest/verification inputs remain rejected by existing validation rather than repaired or normalized by DEV-330.",
+                               "Successful creation performs no implementation writes.",
+                               "Successful creation creates or broadens no execution authorization.",
+                               "The resulting execution package remains compatible with the existing immutable persistence lifecycle.",
+                               "A persisted resulting package remains compatible with the DEV-329 governed execute-package lifecycle.",
+                               "Tests cover valid creation, repository-path rejection, malformed or invalid lifecycle inputs where applicable, proposal/manifest consistency enforcement, verification readiness enforcement, structuredClone snapshot behavior where relevant, absence of implementation writes, and deterministic results."
+                           ],
+    "plannedFiles":  [
+                         "tools/river-dev/src/commands/create-execution-package.test.ts"
+                     ],
+    "excludedFiles":  [
+                          "tools/river-dev/src/core/execution-package.ts",
+                          "tools/river-dev/src/core/package-executor.ts",
+                          "tools/river-dev/src/execution/runner.ts",
+                          "tools/river-dev/src/commands/execute-package.ts",
+                          "tools/river-dev/src/types.ts",
+                          "src/components/Navbar.astro"
+                      ],
+    "commitPlan":  {
+                       "implementation":  "DEV-330: Integrate production execution-package creation lifecycle",
+                       "specification":  "DEV-330: Specify River Development Agent production execution-package creation lifecycle integration"
+                   }
+}
