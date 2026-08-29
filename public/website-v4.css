@@ -2165,3 +2165,21 @@ button {
 @media (max-width: 900px) { .home-v4 .home-orientation__shell { grid-template-columns: 1fr; gap: 2rem; } .home-v4 .home-orientation__introduction h2 { max-width: 18ch; } }
 @media (max-width: 640px) { .home-v4 .home-orientation__alternatives { grid-template-columns: 1fr; } .home-v4 .home-orientation__primary { grid-template-columns: 1fr auto; gap: 1rem; min-height: 0; height: auto; aspect-ratio: auto; } .home-v4 .home-orientation__number { grid-column: 1 / -1; } .home-v4 .home-orientation__alternatives a { min-height: 0; height: auto; aspect-ratio: auto; } }
 @media (prefers-reduced-motion: reduce) { .home-v4 .home-orientation__primary, .home-v4 .home-orientation__alternatives a { transition: none; } }
+
+/* WEBSITE 4.0 - 009B - NAVIGATION + RESPONSIVE SHELL */
+.river-header { position: sticky; top: 0; z-index: 1000; width: 100%; }
+.river-header__inner, .river-brand, .river-brand__words, .river-primary-nav { min-width: 0; }
+.river-brand__name { line-height: 1.05; }
+.river-primary-nav { align-items: center; }
+.river-primary-nav a { white-space: nowrap; }
+.river-primary-nav > .river-nav__start, .river-header__actions, .river-menu-toggle { flex: 0 0 auto; }
+.river-primary-nav a:focus-visible, .river-header__actions a:focus-visible, .river-header__actions button:focus-visible, .river-menu-toggle:focus-visible, .river-mobile-nav a:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+.river-mobile-nav[hidden] { display: none !important; }
+.river-menu-open { overflow: hidden; }
+.river-mobile-nav nav { display: grid; gap: .35rem; }
+.river-mobile-nav__primary { min-height: 48px; }
+@media (max-width: 1180px) { .river-primary-nav { gap: .55rem; } .river-primary-nav a { font-size: .92rem; } .river-header__actions { gap: .55rem; } }
+@media (max-width: 980px) { .river-primary-nav, .river-header__actions { display: none; } .river-menu-toggle { display: inline-flex; } .river-header__inner { min-height: 72px; } .river-brand__name { font-size: clamp(1.05rem, 4vw, 1.35rem); } .river-brand__tagline { display: none; } .river-mobile-nav { max-height: calc(100dvh - 72px); overflow-y: auto; overscroll-behavior: contain; } .river-mobile-nav__inner { padding-bottom: max(2rem, env(safe-area-inset-bottom)); } }
+@media (min-width: 981px) { .river-menu-toggle, .river-mobile-nav { display: none !important; } }
+@media (max-width: 640px) { .river-header__inner { min-height: 64px; } .river-mobile-nav { max-height: calc(100dvh - 64px); } .river-mobile-nav__inner { padding-inline: 1rem; } .river-mobile-nav__primary { min-height: 52px; } }
+@media (prefers-reduced-motion: reduce) { .river-primary-nav a, .river-header__actions a, .river-header__actions button, .river-menu-toggle, .river-mobile-nav a { transition: none !important; } }
