@@ -45,13 +45,7 @@ const isActive = (href: string) => {
             class="river-brand"
             aria-label="The River Kept Flowing — Home"
         >
-            <span class="river-brand__mark" aria-hidden="true">
-                <span></span>
-                <span></span>
-                <span></span>
-            </span>
-
-            <span class="river-brand__words">
+        <span class="river-brand__words">
                 <span class="river-brand__name">
                     The River Kept Flowing
                 </span>
@@ -68,7 +62,8 @@ const isActive = (href: string) => {
         >
             {
                 primaryLinks.map((link) => (
-                    <a
+                    <a href="/pages/headwaters/" class="river-nav__start">Start Here</a>
+        <a
                         href={link.href}
                         class:list={[
                             "river-primary-nav__link",
@@ -139,7 +134,8 @@ const isActive = (href: string) => {
 
                 {
                     primaryLinks.map((link) => (
-                        <a
+                        <a href="/pages/headwaters/" class="river-nav__start">Start Here</a>
+        <a
                             href={link.href}
                             class:list={[
                                 "river-mobile-nav__primary",

@@ -2,7 +2,6 @@
 import { getCollection, render } from "astro:content";
 import ReadingLayout from "../../../layouts/ReadingLayout.astro";
 import ContentEntry from "../../../components/content/ContentEntry.astro";
-import RelatedContent from "../../../components/content/RelatedContent.astro";
 import SeriesNavigation from "../../../components/content/SeriesNavigation.astro";
 
 import {
@@ -81,12 +80,5 @@ const canonical = new URL(
             />
         )
     }
-
-
-    <RelatedContent
-        currentCollection="guides"
-        currentId={guide.id}
-        currentTags={guide.data.tags}
-    />
 
 </ReadingLayout>
