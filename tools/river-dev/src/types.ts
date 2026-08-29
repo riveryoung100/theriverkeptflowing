@@ -9661,3 +9661,42 @@ export interface RiverDevManifestPackageExecutionRequestCompositionFoundation {
         false;
 
 }
+
+
+export interface RiverDevManifestPackageExecutionIntegrationFoundation {
+
+    readonly version:
+        "DEV-328";
+
+    readonly source:
+        "manifest-package-execution-integration-foundation";
+
+    readonly integrationState:
+        "PACKAGE_EXECUTION_INTEGRATED"
+        | "PACKAGE_EXECUTION_INTEGRATION_BLOCKED";
+
+    readonly integrated:
+        boolean;
+
+    readonly blockedReasons:
+        readonly string[];
+
+    readonly createsAuthorization:
+        false;
+
+    readonly broadensAuthorization:
+        false;
+
+    readonly reacquiresAuthorization:
+        false;
+
+    readonly synthesizesAuthorization:
+        false;
+
+    readonly executesPackage:
+        boolean;
+
+    readonly bypassesPackageExecutor:
+        false;
+
+}
