@@ -1,0 +1,56 @@
+{
+    "id":  "DEV-333",
+    "title":  "River Development Agent Production Implementation Execution Path Reconciliation",
+    "status":  "specified",
+    "dependsOn":  [
+                      "DEV-332"
+                  ],
+    "objective":  "Reconcile the legacy production implementation execution path with the canonical governed execution-package architecture by retiring repository-mutating apply behavior from implementRiverDevPlan, preserving its non-mutating dry-run compatibility, and leaving governed apply execution exclusively to the existing execution-package lifecycle and authoritative package executor.",
+    "architecture":  {
+                         "authoritativeMutationBoundary":  "The existing package executor reached through the governed execution-package lifecycle remains the single authoritative production repository-mutation boundary.",
+                         "legacyBoundary":  "implementRiverDevPlan remains only as a manifest-based compatibility boundary for non-mutating dry-run evaluation.",
+                         "legacyApply":  "implementRiverDevPlan must fail closed for apply and direct callers to the governed execution-package lifecycle rather than reconstructing missing proposal, verification, package, persistence, or authorization state.",
+                         "dryRunCompatibility":  "Legacy dry-run may continue loading the implementation manifest and invoking the existing runner explicitly in dry-run mode because that path is non-mutating and non-authorizing.",
+                         "artifactIntegrity":  "The manifest-only legacy API does not possess the proposal and verification artifact paths required by the canonical lifecycle, so DEV-333 must not invent, derive, or reconstruct those artifacts.",
+                         "authorityIntegrity":  "Legacy DEV-323/DEV-324 authority plumbing is removed from implementRiverDevPlan rather than adapted into a second apply path. Apply intent alone never authorizes execution.",
+                         "canonicalApply":  "Authorized repository-mutating implementation remains available only through the existing governed execution-package lifecycle, which owns package creation, persistence, loading, composition, admission, authorization provenance, and package execution.",
+                         "runnerBoundary":  "The package executor remains the only production boundary permitted to invoke the runner in a potentially mutating mode. implementRiverDevPlan may invoke the runner only with the literal dry-run mode.",
+                         "noNewEngine":  "DEV-333 introduces no new execution engine, package executor, runner abstraction, authorization mechanism, artifact reconstruction, or persistence path.",
+                         "scope":  "The demonstrated implementation scope is implement.ts plus implement.test.ts. Existing canonical lifecycle modules remain unchanged.",
+                         "push":  "No push is performed as part of DEV-333."
+                     },
+    "invariants":  [
+                       "Exactly one authoritative production repository-mutation boundary remains: the existing package executor reached through the governed execution-package lifecycle.",
+                       "implementRiverDevPlan cannot perform repository-mutating apply execution.",
+                       "implementRiverDevPlan may retain runner invocation only when the effective mode is explicitly dry-run.",
+                       "Legacy apply fails closed instead of manufacturing or reconstructing proposal, verification, package, persistence, admission, or authorization state.",
+                       "Apply intent alone cannot create or broaden authorization.",
+                       "The existing canonical execution-package lifecycle and package executor remain unchanged and authoritative.",
+                       "Historical DEV-323/DEV-324 modules may remain in the repository but no longer form a competing apply path through implementRiverDevPlan.",
+                       "No repository mutation occurs through the legacy implementation command path.",
+                       "No push is performed."
+                   ],
+    "acceptanceCriteria":  [
+                               "implementRiverDevPlan preserves non-mutating dry-run behavior.",
+                               "implementRiverDevPlan rejects apply and identifies the governed execution-package lifecycle as the required production path.",
+                               "implementRiverDevPlan no longer accepts or consumes the historical productionExecutionAuthority argument.",
+                               "The legacy implementation command contains no potentially mutating runner.execute invocation.",
+                               "The package executor remains the existing authoritative potentially mutating runner invocation boundary.",
+                               "Obsolete DEV-323 authority fixtures and direct-apply success expectations are removed from implement.test.ts.",
+                               "Focused implement tests prove dry-run remains non-mutating and legacy apply fails closed before repository writes.",
+                               "TypeScript validation passes.",
+                               "git diff --check passes.",
+                               "Full River Development Agent regression passes before implementation commit.",
+                               "Repository hygiene passes before commits.",
+                               "Specification is committed separately before implementation and tests.",
+                               "No push is performed."
+                           ],
+    "plannedFiles":  [
+                         "tools/river-dev/src/commands/implement.ts",
+                         "tools/river-dev/src/commands/implement.test.ts"
+                     ],
+    "commitPlan":  [
+                       "DEV-333: Specify River Development Agent production implementation execution path reconciliation",
+                       "DEV-333: Reconcile production implementation execution path"
+                   ]
+}
