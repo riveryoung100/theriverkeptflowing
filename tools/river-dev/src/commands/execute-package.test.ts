@@ -1,4 +1,4 @@
-﻿import {
+import {
     strict as assert
 } from "node:assert";
 
@@ -353,7 +353,7 @@ test(
 
 
 test(
-    "executes a package in apply mode when explicitly requested",
+    "rejects apply mode when governed operation-execution authorization is absent",
     async () => {
 
         await withTemporaryRepository(
@@ -362,41 +362,18 @@ test(
                 configuration
             ) => {
 
-                const result =
-                    await executePackageRiverDev(
+                void repositoryRoot;
+
+                await assert.rejects(
+                    executePackageRiverDev(
                         configuration,
                         PACKAGE_FILE,
                         "apply"
-                    );
-
-                assert.equal(
-                    result.mode,
-                    "apply"
-                );
-
-                assert.equal(
-                    result.explicitApplyAuthorized,
-                    true
-                );
-
-                assert.equal(
-                    result.implementation.applied,
-                    true
-                );
-
-                const content =
-                    await readFile(
-                        join(
-                            repositoryRoot,
-                            "generated",
-                            "dev-14-command.ts"
-                        ),
-                        "utf8"
-                    );
-
-                assert.equal(
-                    content,
-                    "export const dev14Command = true;\n"
+                    ),
+                    {
+                        name: "TypeError",
+                        message: "Apply denied because governed operation-execution authorization is absent."
+                    }
                 );
 
             }

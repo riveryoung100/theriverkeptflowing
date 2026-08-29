@@ -1,4 +1,4 @@
-﻿import test from "node:test";
+import test from "node:test";
 import assert from "node:assert/strict";
 
 import {
@@ -59,7 +59,7 @@ reasoning.blockedReasons.length,
 
 assert.equal(
 reasoning.reasoning[0],
-"execution evaluation accepted"
+"trusted interpretation state accepted"
 );
 
 }
@@ -111,7 +111,7 @@ false
 
 assert.equal(
 reasoning.blockedReasons[0],
-"execution intelligence evaluation not approved"
+"execution interpretation not trusted"
 );
 
 }
@@ -157,7 +157,7 @@ reasoning.source,
 
 assert.equal(
 reasoning.provenance[0],
-"execution evaluation verified"
+"interpretation trust verified"
 );
 
 assert.equal(

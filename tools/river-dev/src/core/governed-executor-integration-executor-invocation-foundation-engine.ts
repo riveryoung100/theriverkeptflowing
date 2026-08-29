@@ -1,4 +1,4 @@
-﻿import {
+import type {
   RiverDevGovernedExecutorIntegrationExecutorInvocationAuthorizationFoundationResult,
   RiverDevGovernedExecutorIntegrationExecutorInvocationFoundationResult
 } from "../types";

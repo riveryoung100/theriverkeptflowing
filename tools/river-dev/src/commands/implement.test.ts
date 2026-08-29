@@ -18,8 +18,7 @@ import {
 } from "node:os";
 
 import {
-    join,
-    resolve
+    join
 } from "node:path";
 
 import {
@@ -370,12 +369,7 @@ async function createConfiguration(
         }
     );
 
-    const sourceRepositoryRoot =
-        resolve(
-            process.cwd(),
-            "..",
-            ".."
-        );
+    const sourceRepositoryRoot = process.cwd();
 
     const baseConfiguration =
         await loadRiverDevConfiguration(

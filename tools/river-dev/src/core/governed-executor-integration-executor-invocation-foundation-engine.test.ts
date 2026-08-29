@@ -1,7 +1,7 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
 import test from "node:test";
 
-import {
+import type {
   RiverDevGovernedExecutorIntegrationExecutorInvocationAuthorizationFoundationResult
 } from "../types";
 
