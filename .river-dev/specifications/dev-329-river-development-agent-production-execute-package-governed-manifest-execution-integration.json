@@ -1,0 +1,69 @@
+{
+    "id":  "DEV-329",
+    "title":  "River Development Agent Production Execute-Package Governed Manifest Execution Integration",
+    "status":  "specified",
+    "dependsOn":  [
+                      "DEV-328"
+                  ],
+    "objective":  "Integrate the existing production execute-package command with the completed governed manifest-to-package execution chain by consuming the exact RiverDevExecutionPackage already loaded through the existing loadExecutionPackage boundary, propagating that package\u0027s exact manifest through DEV-326, composing the exact loaded package into the existing RiverDevPackageExecutionRequest through DEV-327, and delegating successful composition through DEV-328 into the existing package executor, without reconstructing execution-package state, manufacturing or broadening execution authority, treating apply intent as authorization, bypassing predecessor boundaries, or duplicating package execution semantics.",
+    "includes":  [
+                     "Preserve the existing loadExecutionPackage function as the authoritative persisted execution-package loading boundary for the production execute-package command.",
+                     "Modify the production executePackageRiverDev caller so the exact loaded RiverDevExecutionPackage is retained as the authoritative package object for downstream governed integration.",
+                     "Propagate the exact manifest object owned by the loaded execution package through the existing DEV-326 manifest propagation boundary.",
+                     "Compose the exact loaded execution package, requested implementation mode, and any already-produced operation-execution authorization through the existing DEV-327 manifest package execution request composition boundary.",
+                     "Delegate only an already-successful DEV-327 composition through the existing DEV-328 manifest package execution integration boundary.",
+                     "Preserve exact execution-package identity and exact manifest object identity across loading, propagation, composition, and integration.",
+                     "Keep the existing package executor authoritative for package validation, operational executor admission, effective mode, implementation runner invocation, and explicit apply authorization enforcement.",
+                     "Preserve default-deny behavior: apply intent alone must never constitute execution authorization.",
+                     "Fail closed when manifest propagation, request composition, or execution integration cannot progress successfully.",
+                     "Add focused tests proving dry-run production caller integration, fail-closed unauthorized apply behavior, exact loaded package and manifest preservation, no package reconstruction, no authority manufacture or broadening, and authorized apply behavior when valid preexisting authorization is supplied through the caller contract.",
+                     "Maintain deterministic behavior for equivalent inputs and predecessor results."
+                 ],
+    "excludes":  [
+                     "Creating a new execution-package loader or replacing loadExecutionPackage.",
+                     "Creating, reconstructing, cloning, normalizing, or synthesizing a RiverDevExecutionPackage after it has been loaded.",
+                     "Changing execution-package persistence semantics or persisted execution-package format.",
+                     "Changing DEV-326 manifest propagation semantics.",
+                     "Changing DEV-327 request composition semantics.",
+                     "Changing DEV-328 package execution integration semantics.",
+                     "Changing package-executor validation or execution semantics.",
+                     "Calling createImplementationRunner directly from the production execute-package command.",
+                     "Calling executePackage directly from the production execute-package command after DEV-329 integration.",
+                     "Creating, acquiring, upgrading, synthesizing, broadening, or implicitly granting operation-execution authorization.",
+                     "Treating --apply, apply mode, requested mode, package readiness, proposal approval, verification success, or manifest propagation as execution authorization.",
+                     "Bypassing DEV-326, DEV-327, DEV-328, the package executor, or the operational executor integration entry boundary.",
+                     "Integrating the governed package chain into implementRiverDevPlan or other production callers; those remain later explicit boundaries.",
+                     "Unrelated repository writes, commits, pushes, merges, deployments, or Website 4.0 changes as part of the DEV-329 implementation."
+                 ],
+    "invariants":  [
+                       "The RiverDevExecutionPackage returned by loadExecutionPackage is the authoritative package object consumed downstream; DEV-329 must not manufacture replacement package state.",
+                       "The manifest propagated through DEV-326 must be the exact manifest object owned by the authoritative loaded execution package.",
+                       "DEV-327 must receive the exact authoritative loaded execution package rather than a reconstructed package.",
+                       "DEV-328 may be invoked only with a successful DEV-327 composition.",
+                       "The production execute-package command must not call executePackage directly after DEV-329 integration.",
+                       "The production execute-package command must not call createImplementationRunner directly.",
+                       "Apply mode alone never authorizes repository mutation.",
+                       "DEV-329 must not create, reacquire, synthesize, upgrade, or broaden operation-execution authorization.",
+                       "The existing package executor remains the sole package execution boundary and remains authoritative for package validation and execution admission.",
+                       "Blocked or inconsistent predecessor results must never reach package execution.",
+                       "Equivalent inputs and equivalent predecessor results must produce deterministic integration behavior."
+                   ],
+    "plannedFiles":  [
+                         "tools/river-dev/src/commands/execute-package.ts",
+                         "tools/river-dev/src/commands/execute-package.test.ts"
+                     ],
+    "acceptanceCriteria":  [
+                               "The existing production execute-package command continues to load persisted execution packages through loadExecutionPackage.",
+                               "The exact loaded execution package and its exact manifest object are preserved through the governed chain without reconstruction.",
+                               "The command invokes the existing DEV-326 manifest propagation boundary before request composition.",
+                               "The command invokes the existing DEV-327 request composition boundary using the exact loaded package.",
+                               "The command delegates successful composition through the existing DEV-328 integration boundary.",
+                               "The command no longer directly invokes executePackage.",
+                               "The command never directly invokes createImplementationRunner.",
+                               "Dry-run execution remains admissible through the governed chain without manufacturing execution authority.",
+                               "Apply without valid governed operation-execution authorization remains fail closed.",
+                               "Authorized apply can proceed only when valid preexisting authorization is explicitly supplied through the caller contract and accepted by existing downstream boundaries.",
+                               "Focused tests prove package identity, manifest identity, default-deny apply behavior, authorized apply behavior, no package reconstruction, no authority manufacture or broadening, and deterministic behavior.",
+                               "TypeScript validation and the complete River Development Agent test topology remain green."
+                           ]
+}
