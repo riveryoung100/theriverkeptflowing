@@ -2201,3 +2201,19 @@ button {
   .library-page .library-hub-card, .library-page .library-entry-item .content-card { border-radius: 1.35rem; }
   .home-v4 .home-orientation__primary, .home-v4 .home-orientation__alternatives a { border-radius: 1.35rem; }
 }
+
+
+/* WEBSITE 4.0 - 011B - FINAL INTERACTION + ACCESSIBILITY COMPLETION */
+.home-v4 .home-orientation__primary:focus-visible, .home-v4 .home-orientation__alternatives a:focus-visible, .library-page a:focus-visible, .reading-page-shell a:focus-visible, .series-navigation__link:focus-visible, .river-search-result__link:focus-visible { outline: 3px solid currentColor; outline-offset: 4px; }
+.library-page :where(input, select, button):focus-visible, .saved-library__controls :where(input, select, button):focus-visible, .knowledge-explorer-field :where(input, select, button):focus-visible, .home-v4 .invitation-section :where(input, textarea, button):focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+.library-page :where(input, textarea)::placeholder, .saved-library__controls :where(input, textarea)::placeholder, .knowledge-explorer-field :where(input, textarea)::placeholder { color: #69766f; opacity: 1; }
+:where(button, input, select, textarea):disabled { cursor: not-allowed; opacity: .58; }
+.library-page :where(button, input, select), .saved-library__controls :where(button, input, select), .knowledge-explorer-field :where(button, input, select), .home-v4 .invitation-section :where(button, input, textarea) { min-height: 3rem; }
+.library-page, .reading-page-shell, .home-v4 { overflow-wrap: break-word; }
+@media (max-width: 760px) {
+  .home-v4 .home-orientation__primary, .home-v4 .home-orientation__alternatives a, .series-navigation__link, .river-mobile-nav__primary { min-height: 48px; }
+  .library-page :where(button, input, select), .saved-library__controls :where(button, input, select), .knowledge-explorer-field :where(button, input, select), .home-v4 .invitation-section :where(button, input, textarea) { min-height: 3.25rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-v4 .home-orientation__primary, .home-v4 .home-orientation__alternatives a, .library-page a, .reading-page-shell a, .series-navigation__link, .river-search-result__link { transition: none !important; transform: none !important; }
+}
