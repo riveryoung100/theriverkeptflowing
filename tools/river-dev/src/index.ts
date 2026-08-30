@@ -64,6 +64,13 @@ import {
     generateManifestRiverDev
 } from "./commands/generate-manifest";
 import {
+    formatIntentGenerationResult
+} from "./commands/generate-intent";
+import {
+    GENERATE_LIVE_INTENT_AUTHORIZATION,
+    generateLiveIntentRiverDev
+} from "./commands/generate-live-intent";
+import {
     formatImplementationResult,
     getDefaultImplementationManifestPath,
     implementRiverDevPlan
@@ -130,6 +137,7 @@ function parseCommand(
         case "audit-execution":
         case "persist-artifacts":
         case "generate-proposal":
+        case "generate-live-intent":
         case "generate-manifest":
         case "implement":
         case "orchestrate":
@@ -194,6 +202,29 @@ function resolveRepositoryRoot(
             parent;
 
     }
+
+}
+
+
+export async function readGenerateLiveIntentCredentialFromStdin(
+    input: NodeJS.ReadableStream = process.stdin
+): Promise<string> {
+
+    let credential =
+        "";
+
+    input.setEncoding(
+        "utf8"
+    );
+
+    for await (
+        const chunk of input
+    ) {
+        credential +=
+            String(chunk);
+    }
+
+    return credential.trim();
 
 }
 
@@ -587,6 +618,97 @@ case "persist-execution-package": {
 
             process.stdout.write(
                 `${formatProposalGenerationResult(result)}\n`
+            );
+
+            return;
+
+        }
+
+        case "generate-live-intent": {
+
+            const commandArguments =
+                process.argv.slice(
+                    3
+                );
+
+            const positionalArguments =
+                commandArguments.filter(
+                    (argument) => {
+                        return !argument.startsWith(
+                            "--"
+                        );
+                    }
+                );
+
+            const planPath =
+                positionalArguments[0];
+
+            const specificationPath =
+                positionalArguments[1];
+
+            const endpoint =
+                positionalArguments[2];
+
+            const model =
+                positionalArguments[3];
+
+            const authorized =
+                commandArguments.includes(
+                    "--authorize-live-model-invocation"
+                );
+
+            const unexpectedFlags =
+                commandArguments.filter(
+                    (argument) => {
+                        return (
+                            argument.startsWith("--") &&
+                            argument !==
+                                "--authorize-live-model-invocation"
+                        );
+                    }
+                );
+
+            if (
+                planPath === undefined ||
+                specificationPath === undefined ||
+                endpoint === undefined ||
+                model === undefined ||
+                positionalArguments.length !== 4 ||
+                unexpectedFlags.length !== 0
+            ) {
+                throw new TypeError(
+                    "Usage: generate-live-intent <plan-path> <specification-path> <endpoint> <model> --authorize-live-model-invocation < credential-via-stdin"
+                );
+            }
+
+            if (!authorized) {
+                throw new TypeError(
+                    "Explicit live model invocation authorization is required."
+                );
+            }
+
+            const result =
+                await generateLiveIntentRiverDev(
+                    {
+                        repositoryRoot:
+                            configuration.repositoryRoot,
+                        configuration,
+                        planPath,
+                        specificationPath,
+                        endpoint,
+                        model,
+                        authorization:
+                            GENERATE_LIVE_INTENT_AUTHORIZATION,
+                        readCredential:
+                            () =>
+                                readGenerateLiveIntentCredentialFromStdin(),
+                        generatedAt:
+                            new Date().toISOString()
+                    }
+                );
+
+            process.stdout.write(
+                `${formatIntentGenerationResult(result)}\n`
             );
 
             return;

@@ -1498,6 +1498,7 @@ export type RiverDevCommandName =
   | "generate-artifacts"
   | "generate-proposal"
   | "generate-manifest"
+  | "generate-live-intent"
   | "implement"
   | "verify"
   | "review"
@@ -7847,7 +7848,7 @@ export interface RiverDevGovernedExecutorIntegrationHandoffFoundation {
 }
 
 /**
- * DEV-295 ï¿½ Governed Executor Integration Handoff Verification Foundation
+ * DEV-295 Ã¯Â¿Â½ Governed Executor Integration Handoff Verification Foundation
  *
  * This boundary verifies an exact DEV-294 governed executor integration
  * handoff while preserving the handoff as inert data. Verification grants
@@ -7898,7 +7899,7 @@ export interface RiverDevGovernedExecutorIntegrationHandoffVerificationFoundatio
 }
 
 /**
- * DEV-296 â€” Governed Executor Integration Handoff Acceptance Foundation
+ * DEV-296 Ã¢â‚¬â€ Governed Executor Integration Handoff Acceptance Foundation
  *
  * Accepts or rejects an exact DEV-295 governed executor integration handoff
  * verification result while preserving the acceptance result as inert data.
@@ -8122,7 +8123,7 @@ export interface RiverDevGovernedExecutorIntegrationVerifiedPackageDownstreamAdm
 }
 
 /**
- * DEV-300 â€” Governed Executor Integration Verified Package
+ * DEV-300 Ã¢â‚¬â€ Governed Executor Integration Verified Package
  * Downstream Admission Consumption Foundation
  *
  * Consumes an exact trusted DEV-299 downstream-admission result as
