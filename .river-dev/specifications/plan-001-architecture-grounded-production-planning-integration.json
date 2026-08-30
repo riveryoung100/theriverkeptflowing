@@ -16,14 +16,15 @@
                                                   "tools/river-dev/src/commands/plan.ts",
                                                   "tools/river-dev/src/core/planner.ts",
                                                   "tools/river-dev/src/core/planner.test.ts",
-                                                  "tools/river-dev/src/types.ts"
+                                                  "tools/river-dev/src/types.ts",
+                                                  "tools/river-dev/src/core/context-engine.ts",
+                                                  "tools/river-dev/src/core/context-engine.test.ts"
                                               ],
                           "creatablePaths":  [
                                                  "tools/river-dev/src/commands/plan.test.ts"
                                              ],
                           "excludedPaths":  [
                                                 "tools/river-dev/src/core/planning-engine.ts",
-                                                "tools/river-dev/src/core/context-engine.ts",
                                                 "tools/river-dev/src/core/context-understanding.ts",
                                                 "tools/river-dev/src/core/repository-architecture-map.ts",
                                                 "tools/river-dev/src/core/package-executor.ts",
