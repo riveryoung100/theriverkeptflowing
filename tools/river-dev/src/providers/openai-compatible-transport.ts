@@ -70,6 +70,22 @@ function validateEndpoint(
         );
     }
 
+    if (parsed.protocol === "http:") {
+        const loopbackHosts =
+            new Set([
+                "localhost",
+                "127.0.0.1",
+                "[::1]",
+                "[0000:0000:0000:0000:0000:0000:0000:0001]"
+            ]);
+
+        if (!loopbackHosts.has(parsed.hostname.toLowerCase())) {
+            throw new TypeError(
+                "Remote model endpoints must use HTTPS; HTTP is allowed only for explicit loopback-local endpoints."
+            );
+        }
+    }
+
     return parsed.toString();
 }
 

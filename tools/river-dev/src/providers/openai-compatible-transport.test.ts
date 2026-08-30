@@ -228,3 +228,163 @@ test(
         );
     }
 );
+
+test(
+    "GENERATE-003 rejects remote HTTP before network execution",
+    () => {
+        let called = false;
+
+        assert.throws(
+            () =>
+                createOpenAICompatibleTransport(
+                    {
+                        endpoint: "http://model.example.test/v1/chat/completions",
+                        model: "model",
+                        credential: "GENERATE_003_CREDENTIAL_SENTINEL"
+                    },
+                    async () => {
+                        called = true;
+                        return new Response();
+                    }
+                ),
+            /must use HTTPS/
+        );
+
+        assert.equal(called, false);
+    }
+);
+
+test(
+    "GENERATE-003 permits HTTP only for explicit loopback-local endpoints",
+    async () => {
+        const endpoints = [
+            "http://localhost:11434/v1/chat/completions",
+            "http://127.0.0.1:11434/v1/chat/completions",
+            "http://[::1]:11434/v1/chat/completions"
+        ];
+
+        for (const endpoint of endpoints) {
+            let calls = 0;
+
+            const transport =
+                createOpenAICompatibleTransport(
+                    {
+                        endpoint,
+                        model: "model",
+                        credential: "credential"
+                    },
+                    async () => {
+                        calls += 1;
+
+                        return new Response(
+                            JSON.stringify({
+                                choices: [
+                                    {
+                                        message: {
+                                            content: "export const local = true;\n"
+                                        }
+                                    }
+                                ]
+                            }),
+                            {
+                                status: 200,
+                                headers: {
+                                    "content-type": "application/json"
+                                }
+                            }
+                        );
+                    }
+                );
+
+            const result =
+                await transport({
+                    system: "system",
+                    user: "user"
+                });
+
+            assert.equal(calls, 1);
+            assert.equal(result.content, "export const local = true;\n");
+        }
+    }
+);
+
+test(
+    "GENERATE-003 rejects non-explicit localhost-like HTTP hosts",
+    () => {
+        for (const endpoint of [
+            "http://api.localhost:11434/v1/chat/completions",
+            "http://127.0.0.2:11434/v1/chat/completions",
+            "http://example.com/v1/chat/completions"
+        ]) {
+            let called = false;
+
+            assert.throws(
+                () =>
+                    createOpenAICompatibleTransport(
+                        {
+                            endpoint,
+                            model: "model",
+                            credential: "credential"
+                        },
+                        async () => {
+                            called = true;
+                            return new Response();
+                        }
+                    ),
+                /must use HTTPS/
+            );
+
+            assert.equal(called, false);
+        }
+    }
+);
+
+test(
+    "GENERATE-003 transport errors do not expose caller credentials",
+    async () => {
+        const credential = "GENERATE_003_CREDENTIAL_SENTINEL";
+        let configurationError = "";
+
+        try {
+            createOpenAICompatibleTransport(
+                {
+                    endpoint: "http://remote.example.test/v1/chat/completions",
+                    model: "model",
+                    credential
+                },
+                async () => new Response()
+            );
+        } catch (error) {
+            configurationError = String(error);
+        }
+
+        assert.equal(configurationError.includes(credential), false);
+
+        const transport =
+            createOpenAICompatibleTransport(
+                {
+                    endpoint: "https://model.example.test/v1/chat/completions",
+                    model: "model",
+                    credential
+                },
+                async () =>
+                    new Response(
+                        "denied",
+                        { status: 401 }
+                    )
+            );
+
+        let responseError = "";
+
+        try {
+            await transport({
+                system: "system",
+                user: "user"
+            });
+        } catch (error) {
+            responseError = String(error);
+        }
+
+        assert.equal(responseError.includes(credential), false);
+    }
+);

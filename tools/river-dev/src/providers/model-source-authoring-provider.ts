@@ -1,8 +1,4 @@
 import type {
-    RiverDevDevelopmentContext
-} from "../types";
-
-import type {
     RiverDevImplementationContentGenerationProvider,
     RiverDevImplementationContentGenerationRequest
 } from "../core/implementation-intent-generator";
@@ -27,14 +23,139 @@ function requireGeneratedContent(
     return content;
 }
 
-function serializeDevelopmentContext(
-    context: RiverDevDevelopmentContext
+interface RiverDevModelFacingContextArtifact {
+    readonly path: string;
+    readonly classification: string;
+    readonly reason: string;
+    readonly content: string;
+}
+
+interface RiverDevModelFacingContextProjection {
+    readonly version: "1.0.0";
+    readonly targetPath: string;
+    readonly artifacts: readonly RiverDevModelFacingContextArtifact[];
+}
+
+function normalizeModelContextPath(
+    value: string
 ): string {
-    return JSON.stringify(
-        context,
-        null,
-        2
+    return value
+        .replace(/\\/g, "/")
+        .replace(/^\.\/+/, "");
+}
+
+function isSameOrDescendantModelContextPath(
+    candidate: string,
+    boundary: string
+): boolean {
+    const normalizedCandidate =
+        normalizeModelContextPath(candidate);
+    const normalizedBoundary =
+        normalizeModelContextPath(boundary)
+            .replace(/\/+$/, "");
+
+    return (
+        normalizedCandidate === normalizedBoundary ||
+        normalizedCandidate.startsWith(
+            `${normalizedBoundary}/`
+        )
     );
+}
+
+function isSecretLikeModelContextPath(
+    path: string
+): boolean {
+    const normalized =
+        normalizeModelContextPath(path)
+            .toLowerCase();
+    const segments =
+        normalized.split("/");
+
+    return segments.some((segment) =>
+        segment === ".env" ||
+        segment.startsWith(".env.") ||
+        segment === ".git" ||
+        segment === "node_modules" ||
+        segment === "dist" ||
+        segment === "secrets"
+    );
+}
+
+function createModelFacingContextProjection(
+    request: RiverDevImplementationContentGenerationRequest
+): RiverDevModelFacingContextProjection {
+    const targetPath =
+        normalizeModelContextPath(
+            request.decision.path
+        );
+    const excludedPaths =
+        request.plan.excludedPaths.map(
+            normalizeModelContextPath
+        );
+    const relevantPaths =
+        new Set(
+            request.context.understanding.relevance
+                .filter((entry) => entry.score > 0)
+                .map((entry) =>
+                    normalizeModelContextPath(
+                        entry.path
+                    )
+                )
+        );
+
+    const artifacts =
+        request.context.artifacts.artifacts
+            .filter((artifact) => {
+                const path =
+                    normalizeModelContextPath(
+                        artifact.path
+                    );
+
+                if (
+                    isSecretLikeModelContextPath(path)
+                ) {
+                    return false;
+                }
+
+                if (
+                    excludedPaths.some((excludedPath) =>
+                        isSameOrDescendantModelContextPath(
+                            path,
+                            excludedPath
+                        )
+                    )
+                ) {
+                    return false;
+                }
+
+                return (
+                    path === targetPath ||
+                    relevantPaths.has(path)
+                );
+            })
+            .map((artifact) => ({
+                path:
+                    normalizeModelContextPath(
+                        artifact.path
+                    ),
+                classification:
+                    artifact.classification,
+                reason:
+                    artifact.reason,
+                content:
+                    artifact.content
+            }))
+            .sort((left, right) =>
+                left.path.localeCompare(
+                    right.path
+                )
+            );
+
+    return {
+        version: "1.0.0",
+        targetPath,
+        artifacts
+    };
 }
 
 function createSystemInstruction(): string {
@@ -57,8 +178,10 @@ function createUserInstruction(
         `Planning reason: ${request.decision.reason}`,
         "",
         "Authoritative architecture-grounded development context:",
-        serializeDevelopmentContext(
-            request.context
+        JSON.stringify(
+            createModelFacingContextProjection(request),
+            null,
+            2
         ),
         "",
         `Return only the complete candidate content for ${request.decision.path}.`

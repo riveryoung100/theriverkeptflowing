@@ -1,0 +1,151 @@
+{
+    "version":  "1.0.0",
+    "id":  "generate-003-governed-model-context-externalization-transport-security-hardening",
+    "name":  "Governed Model Context Externalization and Transport Security Hardening",
+    "objective":  "Harden the graduated GENERATE model-source-authoring boundary before any live model invocation by replacing whole RiverDevDevelopmentContext serialization with an explicit governed model-facing context projection that retains only source-authoring context required for the already-approved planning decision, excludes protected or excluded repository content from externalization, and requires TLS for remote credential-bearing model transport while preserving explicitly local loopback HTTP compatibility and all existing GENERATE-001 and GENERATE-002 governance, mutation, approval, and execution boundaries.",
+    "branch":  "generate-003-governed-model-context-externalization-transport-security-hardening",
+    "commitMessage":  "GENERATE-003: Harden model context externalization and transport security",
+    "approvedScope":  {
+                          "allowedPaths":  [
+                                               ".river-dev/specifications/generate-003-governed-model-context-externalization-transport-security-hardening.json",
+                                               "tools/river-dev/src/providers/model-source-authoring-provider.ts",
+                                               "tools/river-dev/src/providers/model-source-authoring-provider.test.ts",
+                                               "tools/river-dev/src/providers/openai-compatible-transport.ts",
+                                               "tools/river-dev/src/providers/openai-compatible-transport.test.ts"
+                                           ],
+                          "excludedPaths":  [
+                                                ".env",
+                                                ".git",
+                                                "public",
+                                                "src",
+                                                "tools/river-dev/src/core/context-artifact-loader.ts",
+                                                "tools/river-dev/src/core/context-engine.ts",
+                                                "tools/river-dev/src/core/implementation-intent-generator.ts",
+                                                "tools/river-dev/src/core/proposal-generator.ts",
+                                                "tools/river-dev/src/core/manifest-generator.ts",
+                                                "tools/river-dev/src/core/artifact-pipeline.ts",
+                                                "tools/river-dev/src/commands/generate-intent.ts",
+                                                "tools/river-dev/src/commands/generate-proposal.ts",
+                                                "tools/river-dev/src/commands/generate-manifest.ts",
+                                                "tools/river-dev/src/commands/generate-artifacts.ts",
+                                                "tools/river-dev/src/commands/implement.ts",
+                                                "tools/river-dev/src/commands/execute-package.ts",
+                                                "tools/river-dev/src/execution",
+                                                ".river-dev/commands.json"
+                                            ]
+                      },
+    "requirements":  {
+                         "graduatedGenerate001ContractRequired":  true,
+                         "graduatedGenerate002ProviderBoundaryRequired":  true,
+                         "authoritativePlanRequired":  true,
+                         "architectureGroundedContextRequired":  true,
+                         "governedModelContextProjectionRequired":  true,
+                         "wholeDevelopmentContextSerializationForbidden":  true,
+                         "governedSourceContextRetentionRequired":  true,
+                         "protectedContextExternalizationForbidden":  true,
+                         "excludedContextExternalizationForbidden":  true,
+                         "providerPathSelectionForbidden":  true,
+                         "providerScopeExpansionForbidden":  true,
+                         "providerRepositoryMutationForbidden":  true,
+                         "providerGitAuthorityForbidden":  true,
+                         "providerShellAuthorityForbidden":  true,
+                         "providerExecutionAuthorityForbidden":  true,
+                         "providerProposalApprovalForbidden":  true,
+                         "providerManifestGenerationForbidden":  true,
+                         "providerCommitAuthorityForbidden":  true,
+                         "providerPushAuthorityForbidden":  true,
+                         "providerDeploymentAuthorityForbidden":  true,
+                         "callerSuppliedCredentialRequired":  true,
+                         "ambientSecretDiscoveryForbidden":  true,
+                         "secretFileReadingForbidden":  true,
+                         "networkAccessLimitedToTransportBoundary":  true,
+                         "remoteHttpsRequired":  true,
+                         "remoteCredentialBearingHttpForbidden":  true,
+                         "explicitLoopbackHttpCompatibilityAllowed":  true,
+                         "modelOutputMustRemainCandidateContentOnly":  true,
+                         "implementationIntentValidationRequired":  true,
+                         "existingGenerate001GovernanceMustRemainAuthoritative":  true,
+                         "existingGenerate002TransportBoundaryMustRemainAuthoritative":  true,
+                         "existingDownstreamProposalLifecycleMustRemainAuthoritative":  true,
+                         "historicalManualIntentCompatibilityRequired":  true,
+                         "liveModelInvocationAuthorized":  false
+                     },
+    "generationContract":  {
+                               "providerInput":  [
+                                                     "RiverDevImplementationPlan",
+                                                     "RiverDevDevelopmentContext",
+                                                     "RiverDevPlanningDecision"
+                                                 ],
+                               "providerOutput":  [
+                                                      "content",
+                                                      "overwrite",
+                                                      "reason"
+                                                  ],
+                               "modelContextResponsibility":  "Construct an explicit model-facing projection from the authoritative GENERATE-001 provider input for the already-selected planning decision. Preserve sufficient governed repository source context for candidate source authoring without serializing the entire internal RiverDevDevelopmentContext.",
+                               "sourceContextBoundary":  "Model-facing context may include bounded source content only from context artifacts already admitted by authoritative context governance and relevant to the approved source-authoring request. Protected, excluded, secret-like, unrelated internal state, session state, and unnecessary repository metadata must not be externalized merely because they exist in RiverDevDevelopmentContext.",
+                               "governanceResponsibility":  "GENERATE-001 remains solely responsible for choosing approved decisions, enforcing allowed and excluded paths, duplicate rejection, overwrite semantics, deterministic intent assembly, and final RiverDevImplementationIntent validation.",
+                               "transportResponsibility":  "GENERATE-002 transport remains the only network boundary. Remote model endpoints carrying credentials must use HTTPS. Plain HTTP may be accepted only for explicit loopback-local endpoints used for local model transport.",
+                               "credentialBoundary":  "Credentials remain explicit caller-supplied inputs. GENERATE-003 must not discover environment credentials, dotenv files, repository secret files, or arbitrary credential stores.",
+                               "mutationBoundary":  "Provider and transport return in-memory candidate content only and perform no repository mutation.",
+                               "scopeBoundary":  "The model cannot select, add, replace, or broaden the target path. The exact target decision originates from authoritative GENERATE-001 governance.",
+                               "approvalBoundary":  "Model output creates no proposal approval, implementation approval, execution authorization, commit authorization, push authorization, or deployment authorization.",
+                               "liveInvocationBoundary":  "Live model invocation remains unauthorized by GENERATE-003 itself and requires a later explicit operator-controlled graduation boundary."
+                           },
+    "acceptanceCriteria":  [
+                               "The model source-authoring provider no longer serializes the complete RiverDevDevelopmentContext into the model request.",
+                               "The provider constructs a deterministic explicit model-facing context projection for the exact governance-selected planning decision.",
+                               "The projection retains bounded governed source content sufficient for source authoring while omitting unnecessary internal development-context state.",
+                               "Protected, excluded, and secret-like repository content is not externalized through the model-facing projection.",
+                               "The provider cannot choose or broaden the target path and gains no repository, Git, shell, approval, execution, commit, push, or deployment authority.",
+                               "The OpenAI-compatible transport rejects credential-bearing remote HTTP endpoints before network execution.",
+                               "The transport accepts HTTPS remote endpoints.",
+                               "The transport may accept plain HTTP only for explicit loopback-local endpoints such as localhost, 127.0.0.1, or IPv6 loopback.",
+                               "Credentials remain explicit caller-supplied inputs and are not discovered from environment variables, dotenv files, repository files, or arbitrary secret stores.",
+                               "Transport and provider errors do not intentionally include credential values.",
+                               "Existing GENERATE-001 implementation-intent governance and downstream proposal lifecycle remain unchanged.",
+                               "Fake-transport and fake-fetch tests prove context and transport hardening without live network access or credentials.",
+                               "Historical manually authored implementation intents remain compatible.",
+                               "No live model invocation is authorized by this phase."
+                           ],
+    "requiredTests":  [
+                          "tools/river-dev/src/providers/model-source-authoring-provider.test.ts",
+                          "tools/river-dev/src/providers/openai-compatible-transport.test.ts",
+                          "tools/river-dev/src/core/implementation-intent-generator.test.ts",
+                          "tools/river-dev/src/commands/generate-intent.test.ts",
+                          "tools/river-dev/src/core/implementation-intent.test.ts",
+                          "tools/river-dev/src/core/proposal-generator.test.ts"
+                      ],
+    "requiredQualityGates":  [
+                                 "git-diff-check",
+                                 "focused-tests",
+                                 "river-dev-regression",
+                                 "typecheck",
+                                 "scope-review",
+                                 "governance-review",
+                                 "model-context-boundary-review",
+                                 "secret-externalization-review",
+                                 "network-boundary-review",
+                                 "credential-boundary-review"
+                             ],
+    "approvedCommands":  [
+                             "git-status",
+                             "git-diff",
+                             "git-diff-staged",
+                             "typecheck",
+                             "test-tsx"
+                         ],
+    "repairLimits":  {
+                         "maximumAttempts":  3,
+                         "scopeExpansionAllowed":  false
+                     },
+    "approvalBoundaries":  [
+                               "No protected, excluded, secret-like, or unnecessary internal development-context content may be externalized merely because it exists in RiverDevDevelopmentContext.",
+                               "No repository mutation authority may originate from model output.",
+                               "No execution authority may originate from model output.",
+                               "No proposal approval may originate from model output.",
+                               "No commit or push authority may originate from model output.",
+                               "No ambient credential discovery is authorized.",
+                               "No credential-bearing remote plaintext HTTP transport is authorized.",
+                               "Live credential configuration and live model invocation remain a separate explicit operator-controlled boundary."
+                           ]
+}
