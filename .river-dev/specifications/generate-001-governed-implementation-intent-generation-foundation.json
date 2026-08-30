@@ -1,0 +1,119 @@
+{
+    "version":  "1.0.0",
+    "id":  "generate-001-governed-implementation-intent-generation-foundation",
+    "name":  "Governed Implementation Intent Generation Foundation",
+    "objective":  "Establish the authoritative GENERATE production boundary that converts an approved architecture-grounded RiverDevImplementationPlan and repository development context into a deterministic validated RiverDevImplementationIntent through an explicit bounded content-generation provider, without expanding specification governance, writing repository files, approving proposals, creating execution authority, committing, pushing, or performing network access.",
+    "branch":  "generate-001-governed-implementation-intent-generation-foundation",
+    "commitMessage":  "GENERATE-001: Build governed implementation intent generation foundation",
+    "approvedScope":  {
+                          "allowedPaths":  [
+                                               ".river-dev/specifications/generate-001-governed-implementation-intent-generation-foundation.json",
+                                               "tools/river-dev/src/core/implementation-intent-generator.ts",
+                                               "tools/river-dev/src/core/implementation-intent-generator.test.ts",
+                                               "tools/river-dev/src/commands/generate-intent.ts",
+                                               "tools/river-dev/src/commands/generate-intent.test.ts",
+                                               "tools/river-dev/src/core/implementation-intent.ts",
+                                               "tools/river-dev/src/core/implementation-intent.test.ts",
+                                               "tools/river-dev/src/index.ts",
+                                               "tools/river-dev/src/types.ts"
+                                           ],
+                          "excludedPaths":  [
+                                                ".env",
+                                                ".git",
+                                                "public",
+                                                "src",
+                                                "tools/river-dev/src/core/proposal-generator.ts",
+                                                "tools/river-dev/src/core/manifest-generator.ts",
+                                                "tools/river-dev/src/core/artifact-pipeline.ts",
+                                                "tools/river-dev/src/commands/generate-proposal.ts",
+                                                "tools/river-dev/src/commands/generate-manifest.ts",
+                                                "tools/river-dev/src/commands/generate-artifacts.ts",
+                                                "tools/river-dev/src/commands/implement.ts",
+                                                "tools/river-dev/src/commands/execute-package.ts"
+                                            ]
+                      },
+    "requirements":  {
+                         "authoritativePlanRequired":  true,
+                         "architectureGroundedContextRequired":  true,
+                         "explicitContentGenerationProviderRequired":  true,
+                         "deterministicIntentAssemblyRequired":  true,
+                         "generatedOperationsMustRemainWithinPlanAllowedPaths":  true,
+                         "excludedPlanPathsMustRemainForbidden":  true,
+                         "providerCannotExpandScope":  true,
+                         "implementationIntentValidationRequired":  true,
+                         "emptyIntentForbidden":  true,
+                         "duplicateOperationPathsForbidden":  true,
+                         "overwriteMustBeExplicit":  true,
+                         "proposalGenerationAllowed":  false,
+                         "proposalApprovalAllowed":  false,
+                         "manifestGenerationAllowed":  false,
+                         "repositoryWritesAllowed":  false,
+                         "executionAuthorityAllowed":  false,
+                         "implementationAllowed":  false,
+                         "commitAllowed":  false,
+                         "pushAllowed":  false,
+                         "networkAccessAllowed":  false,
+                         "existingProposalGeneratorMustRemainAuthoritativeDownstream":  true,
+                         "existingManifestGeneratorMustRemainAuthoritativeDownstream":  true,
+                         "historicalIntentCompatibilityRequired":  true
+                     },
+    "generationContract":  {
+                               "input":  [
+                                             "RiverDevImplementationPlan",
+                                             "RiverDevDevelopmentContext",
+                                             "bounded content-generation provider"
+                                         ],
+                               "output":  "RiverDevImplementationIntent",
+                               "supportedOperationTypes":  [
+                                                               "write-file"
+                                                           ],
+                               "providerResponsibility":  "Return candidate content only for explicitly requested approved-scope paths.",
+                               "governanceResponsibility":  "Select approved generation targets from the authoritative plan, provide architecture-grounded context, reject out-of-scope or excluded operations, assemble deterministic intent metadata and operation ordering, and validate the final intent before returning it.",
+                               "mutationBoundary":  "Generation returns an in-memory intent only and performs no repository writes.",
+                               "approvalBoundary":  "Generated intent does not approve any implementation proposal or execution.",
+                               "executionBoundary":  "Generated intent creates no execution authority."
+                           },
+    "acceptanceCriteria":  [
+                               "A production generate-intent command exists and consumes the authoritative persisted implementation plan rather than reconstructing specification governance.",
+                               "Generation uses real RiverDev development context for architecture grounding.",
+                               "Generation targets are bounded to paths already approved by the authoritative implementation plan.",
+                               "A bounded provider interface can author candidate file content without receiving authority to mutate the repository.",
+                               "The final RiverDevImplementationIntent is validated by the existing implementation-intent governance contract.",
+                               "Generated operations are deterministic in ordering and identity for identical plan, context, provider output, and generation timestamp inputs.",
+                               "Out-of-scope paths, excluded paths, duplicate paths, empty operations, and invalid overwrite semantics are rejected.",
+                               "Generation performs no repository writes, proposal approval, manifest generation, execution, commit, push, or network activity.",
+                               "Existing proposal-generator, manifest-generator, artifact-pipeline, and execution lifecycle remain downstream and are not replaced or weakened.",
+                               "Historical manually authored implementation-intent artifacts remain compatible."
+                           ],
+    "requiredTests":  [
+                          "tools/river-dev/src/core/implementation-intent-generator.test.ts",
+                          "tools/river-dev/src/commands/generate-intent.test.ts",
+                          "tools/river-dev/src/core/implementation-intent.test.ts",
+                          "tools/river-dev/src/core/proposal-generator.test.ts"
+                      ],
+    "requiredQualityGates":  [
+                                 "git-diff-check",
+                                 "focused-tests",
+                                 "river-dev-regression",
+                                 "typecheck",
+                                 "scope-review",
+                                 "governance-review"
+                             ],
+    "approvedCommands":  [
+                             "git-status",
+                             "git-diff",
+                             "git-diff-staged",
+                             "typecheck",
+                             "test-tsx"
+                         ],
+    "repairLimits":  {
+                         "maximumAttempts":  3,
+                         "allowScopeExpansion":  false
+                     },
+    "approvalBoundaries":  [
+                               "Any expansion beyond approved plan paths requires a new or amended authoritative specification.",
+                               "Repository mutation remains outside GENERATE and requires the existing governed execution lifecycle.",
+                               "Proposal approval remains explicit and outside GENERATE.",
+                               "Commit and push remain explicit user-controlled boundaries."
+                           ]
+}
