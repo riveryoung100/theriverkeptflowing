@@ -1,4 +1,4 @@
-﻿import {
+import {
     createHash
 } from "node:crypto";
 
@@ -8,7 +8,9 @@ import {
 
 import type {
     RiverDevApprovalRequirement,
-    RiverDevConfiguration
+    RiverDevConfiguration,
+    RiverDevContextUnderstanding,
+    RiverDevPlanningDecision
 } from "../types";
 
 import {
@@ -102,6 +104,17 @@ export interface RiverDevPlanStep {
 }
 
 
+export interface RiverDevGovernedPlanningIntelligence {
+
+    readonly version:
+        "1.0.0";
+
+    readonly decisions:
+        readonly RiverDevPlanningDecision[];
+
+}
+
+
 export interface RiverDevImplementationPlan {
 
     readonly version:
@@ -151,6 +164,9 @@ export interface RiverDevImplementationPlan {
 
     readonly approvalBoundaries:
         readonly RiverDevApprovalRequirement[];
+
+    readonly planningIntelligence?:
+        RiverDevGovernedPlanningIntelligence;
 
     readonly steps:
         readonly RiverDevPlanStep[];
@@ -568,7 +584,9 @@ export function createImplementationPlan(
         RiverDevPhaseSpecification,
     generatedAt:
         string = new Date()
-            .toISOString()
+            .toISOString(),
+    understanding?:
+        RiverDevContextUnderstanding
 ): RiverDevImplementationPlan {
 
     validatePhaseSpecification(
@@ -585,6 +603,44 @@ export function createImplementationPlan(
             .creatablePaths
     ]
         .sort();
+
+    const allowedPathSet =
+        new Set(
+            allowedPaths
+        );
+
+    const decisions:
+        RiverDevPlanningDecision[] =
+        (understanding?.relevance ?? [])
+            .filter(
+                (item) =>
+                    allowedPathSet.has(
+                        item.path
+                    )
+            )
+            .map(
+                (item) => ({
+                    path:
+                        item.path,
+                    priority:
+                        item.score,
+                    reason:
+                        item.reasons.length > 0
+                        ? item.reasons.join("; ")
+                        : "approved scope repository artifact",
+                    action:
+                        (
+                            specification.approvedScope.creatablePaths.includes(item.path)
+                            ? "create"
+                            : "modify"
+                        ) as RiverDevPlanningDecision["action"]
+                })
+            )
+            .sort(
+                (a, b) =>
+                    b.priority - a.priority ||
+                    a.path.localeCompare(b.path)
+            );
 
     return {
 
@@ -646,6 +702,12 @@ export function createImplementationPlan(
         approvalBoundaries:
             specification
                 .approvalBoundaries,
+
+        planningIntelligence: {
+            version:
+                "1.0.0",
+            decisions
+        },
 
         steps:
             createPlanSteps(

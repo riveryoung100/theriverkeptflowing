@@ -1,4 +1,4 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
@@ -240,6 +240,136 @@ test(
                 );
             },
             TypeError
+        );
+
+    }
+);
+
+test(
+    "bounds architecture-grounded planning intelligence to approved scope",
+    async () => {
+
+        const configuration =
+            await loadRiverDevConfiguration(
+                repositoryRoot
+            );
+
+        const specification =
+            await loadPhaseSpecification(
+                specificationPath
+            );
+
+        const approvedPath =
+            specification.approvedScope.modifiablePaths[0];
+
+        assert.ok(
+            approvedPath
+        );
+
+        const understanding = {
+            version: "1.0.0" as const,
+            artifactCount: 2,
+            metadata: [],
+            relationships: [],
+            relevance: [
+                {
+                    path: approvedPath,
+                    score: 9,
+                    reasons: [
+                        "has repository-local dependents"
+                    ]
+                },
+                {
+                    path: "unapproved/outside-scope.ts",
+                    score: 100,
+                    reasons: [
+                        "high relevance must not broaden governance"
+                    ]
+                }
+            ]
+        };
+
+        const first =
+            createImplementationPlan(
+                configuration,
+                specification,
+                "2026-08-30T02:00:00.000Z",
+                understanding
+            );
+
+        const second =
+            createImplementationPlan(
+                configuration,
+                specification,
+                "2026-08-30T02:00:00.000Z",
+                understanding
+            );
+
+        assert.deepEqual(
+            first,
+            second
+        );
+
+        assert.ok(
+            first.planningIntelligence
+        );
+
+        const planningIntelligence =
+            first.planningIntelligence;
+
+        assert.deepEqual(
+            planningIntelligence.decisions,
+            [
+                {
+                    path: approvedPath,
+                    priority: 9,
+                    reason: "has repository-local dependents",
+                    action: "modify"
+                }
+            ]
+        );
+
+        assert.equal(
+            planningIntelligence.decisions.some(
+                (decision) =>
+                    decision.path === "unapproved/outside-scope.ts"
+            ),
+            false
+        );
+
+        assert.deepEqual(
+            first.allowedPaths,
+            [
+                ...specification.approvedScope.modifiablePaths,
+                ...specification.approvedScope.creatablePaths
+            ].sort()
+        );
+
+        assert.deepEqual(
+            first.excludedPaths,
+            [
+                ...specification.approvedScope.excludedPaths
+            ].sort()
+        );
+
+        assert.deepEqual(
+            first.approvedCommands,
+            specification.approvedCommands
+        );
+
+        assert.deepEqual(
+            first.approvalBoundaries,
+            specification.approvalBoundaries
+        );
+
+        assert.equal(
+            first.maximumRepairAttempts,
+            specification.repairLimits.maximumAttempts
+        );
+
+        assert.equal(
+            first.scopeExpansionAllowed,
+            specification.repairLimits.allowScopeExpansion
         );
 
     }

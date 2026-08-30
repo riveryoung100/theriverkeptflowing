@@ -1,4 +1,4 @@
-﻿import {
+import {
     resolve
 } from "node:path";
 
@@ -9,6 +9,10 @@ import type {
 import {
     createRiverDevPolicyEngine
 } from "../safety/policy";
+
+import {
+    createRiverDevDevelopmentContext
+} from "../core/context-engine";
 
 import {
     createImplementationPlan,
@@ -44,10 +48,18 @@ export async function planRiverDevPhase(
             resolvedPath
         );
 
+    const context =
+        await createRiverDevDevelopmentContext(
+            configuration,
+            generatedAt,
+            resolvedPath
+        );
+
     return createImplementationPlan(
         configuration,
         specification,
-        generatedAt
+        generatedAt,
+        context.understanding
     );
 
 }

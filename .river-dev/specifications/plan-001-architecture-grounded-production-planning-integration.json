@@ -51,24 +51,23 @@
                           "TypeScript validation",
                           "Complete River Development Agent regression suite"
                       ],
-    "requiredQualityGates":  [
-                                 "Exact PLAN-001 scope",
-                                 "No governance broadening",
-                                 "Deterministic planning intelligence",
-                                 "Persisted-plan backward compatibility",
-                                 "No competing planner authority",
-                                 "No production mutation or execution",
-                                 "Repository hygiene"
-                             ],
+    "requiredQualityGates": [
+    "expected-branch",
+    "scope-check",
+    "tests",
+    "typecheck",
+    "documentation",
+    "exports",
+    "secret-scan",
+    "review",
+    "staged-diff"
+  ],
     "approvedCommands":  [
-                             "npm test",
-                             "npm run build",
-                             "npx tsc --noEmit",
-                             "node --test",
-                             "git diff",
-                             "git status",
-                             "git add",
-                             "git commit"
+                             "typecheck",
+                             "build",
+                             "test-tsx",
+                             "git-diff",
+                             "git-status"
                          ],
     "repairLimits":  {
                          "maximumAttempts":  3,

@@ -390,10 +390,13 @@ export async function createRiverDevDevelopmentContext(
         RiverDevConfiguration,
     generatedAt:
         string = new Date()
-            .toISOString()
+            .toISOString(),
+    requestedSpecificationPath?:
+        string
 ): Promise<RiverDevDevelopmentContext> {
 
     const specificationPath =
+        requestedSpecificationPath ??
         await resolvePhaseSpecification(
             configuration
         );

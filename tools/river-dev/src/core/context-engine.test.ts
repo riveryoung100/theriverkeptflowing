@@ -895,3 +895,118 @@ test(
 
     }
 );
+test(
+    "uses an explicitly requested phase specification",
+    async () => {
+
+        const {
+            root,
+            configuration
+        } =
+            await createFixture();
+
+        try {
+
+            const requestedSpecificationPath =
+                join(
+                    root,
+                    ".river-dev",
+                    "specifications",
+                    "explicit-plan-specification.json"
+                );
+
+            const requestedSpecification = {
+                phase:
+                    "PLAN-EXPLICIT",
+                branch:
+                    "dev-19-context-engine",
+                commitMessage:
+                    "Explicit planning specification",
+                objective:
+                    "Prove explicit specification context selection.",
+                architecturalContext: [
+                    "Explicit specification context."
+                ],
+                approvedScope: {
+                    modifiablePaths: [
+                        "src/feature.ts"
+                    ],
+                    creatablePaths: [],
+                    excludedPaths: []
+                },
+                acceptanceCriteria: [
+                    "Explicit specification is selected."
+                ],
+                requiredTests: [],
+                requiredQualityGates: [],
+                approvedCommands: [],
+                repairLimits: {
+                    maximumAttempts:
+                        1,
+                    allowScopeExpansion:
+                        false
+                },
+                approvalBoundaries: []
+            };
+
+            await writeFile(
+                requestedSpecificationPath,
+                JSON.stringify(
+                    requestedSpecification,
+                    null,
+                    2
+                ) + "\n",
+                "utf8"
+            );
+
+            const context =
+                await createRiverDevDevelopmentContext(
+                    configuration,
+                    "2026-08-30T01:00:00.000Z",
+                    requestedSpecificationPath
+                );
+
+            assert.equal(
+                context.phase.phase,
+                "PLAN-EXPLICIT"
+            );
+
+            assert.equal(
+                context.phase.objective,
+                "Prove explicit specification context selection."
+            );
+
+            assert.equal(
+                context.phase.commitMessage,
+                "Explicit planning specification"
+            );
+
+            assert.deepEqual(
+                context.scope.modifiablePaths,
+                [
+                    "src/feature.ts"
+                ]
+            );
+
+            assert.equal(
+                context.identity.specificationPath,
+                ".river-dev/specifications/explicit-plan-specification.json"
+            );
+
+        }
+        finally {
+
+            await rm(
+                root,
+                {
+                    recursive:
+                        true,
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);
