@@ -9700,3 +9700,35 @@ export interface RiverDevManifestPackageExecutionIntegrationFoundation {
         false;
 
 }
+
+export interface RiverDevRepositoryArchitectureImport {
+  readonly specifier: string;
+  readonly kind: "import" | "export-from";
+  readonly resolvedPath: string | null;
+  readonly external: boolean;
+}
+
+export interface RiverDevRepositoryArchitectureModule {
+  readonly path: string;
+  readonly classification: RiverDevRepositoryPathClassification;
+  readonly imports: readonly RiverDevRepositoryArchitectureImport[];
+  readonly exports: readonly string[];
+  readonly dependencies: readonly string[];
+  readonly dependents: readonly string[];
+  readonly entryPoint: boolean;
+}
+
+export interface RiverDevRepositoryArchitectureMap {
+  readonly version: "1.0.0";
+  readonly repositoryRoot: string;
+  readonly projectName: string;
+  readonly branch: string;
+  readonly commit: string;
+  readonly discoveredAt: string;
+  readonly modules: readonly RiverDevRepositoryArchitectureModule[];
+}
+
+export interface RiverDevRepositoryArchitectureImpact {
+  readonly changedPaths: readonly string[];
+  readonly directDependents: readonly string[];
+}
