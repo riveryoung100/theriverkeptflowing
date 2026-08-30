@@ -16,11 +16,10 @@
                                                   "tools/river-dev/src/commands/plan.ts",
                                                   "tools/river-dev/src/core/planner.ts",
                                                   "tools/river-dev/src/core/planner.test.ts",
-                                                  "tools/river-dev/src/commands/plan.test.ts",
                                                   "tools/river-dev/src/types.ts"
                                               ],
                           "creatablePaths":  [
-
+                                                 "tools/river-dev/src/commands/plan.test.ts"
                                              ],
                           "excludedPaths":  [
                                                 "tools/river-dev/src/core/planning-engine.ts",
