@@ -1,4 +1,4 @@
-﻿import {
+import {
     readFile
 } from "node:fs/promises";
 
@@ -92,23 +92,14 @@ export async function loadContextArtifacts(
             [];
 
 
-    const sortedEntries =
+    const prioritizedEntries =
         [
             ...entries
-        ]
-        .sort(
-            (
-                a,
-                b
-            ) =>
-                a.path.localeCompare(
-                    b.path
-                )
-        );
+        ];
 
 
     for (
-        const entry of sortedEntries
+        const entry of prioritizedEntries
     ) {
 
         if (

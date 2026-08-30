@@ -1,4 +1,4 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
@@ -79,6 +79,102 @@ test(
     }
 );
 
+
+
+test(
+    "preserves caller priority when the total byte budget is exhausted",
+    async () => {
+
+        const root =
+            await mkdtemp(
+                join(
+                    tmpdir(),
+                    "river-dev-context-priority-"
+                )
+            );
+
+
+        await writeFile(
+            join(
+                root,
+                "z-priority.txt"
+            ),
+            "z".repeat(
+                200000
+            )
+        );
+
+
+        await writeFile(
+            join(
+                root,
+                "a-lower-priority.txt"
+            ),
+            "a".repeat(
+                200000
+            )
+        );
+
+
+        const result =
+            await loadContextArtifacts(
+                root,
+                [
+                    {
+                        path:
+                            "z-priority.txt",
+                        kind:
+                            "file",
+                        classification:
+                            "source",
+                        reason:
+                            "approved-modifiable-scope"
+                    },
+                    {
+                        path:
+                            "a-lower-priority.txt",
+                        kind:
+                            "file",
+                        classification:
+                            "source",
+                        reason:
+                            "river-dev-system"
+                    }
+                ]
+            );
+
+
+        assert.equal(
+            result.loadedCount,
+            2
+        );
+
+
+        assert.equal(
+            result.artifacts[0]!.path,
+            "z-priority.txt"
+        );
+
+
+        assert.equal(
+            result.artifacts[0]!.reason,
+            "approved-modifiable-scope"
+        );
+
+
+        assert.equal(
+            result.artifacts[1]!.path,
+            "a-lower-priority.txt"
+        );
+
+
+        assert.ok(
+            result.artifacts[1]!.loadedBytes <
+            result.artifacts[1]!.originalBytes
+        );
+
+    }
+);
 
 
 test(

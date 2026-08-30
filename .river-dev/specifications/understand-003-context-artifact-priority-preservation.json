@@ -1,0 +1,80 @@
+{
+    "version":  "1.0.0",
+    "phase":  "UNDERSTAND-003",
+    "title":  "Context Artifact Priority Preservation",
+    "branch":  "understand-003-context-artifact-priority-preservation",
+    "objective":  "Preserve authoritative context relevance priority through bounded artifact loading so higher-priority selected context cannot be displaced by lower-priority paths solely because of alphabetical reordering.",
+    "architecturalContext":  [
+                                 "Repository context selection already produces deterministic relevance-ranked RiverDevContextRelevantEntry records.",
+                                 "loadContextArtifacts currently re-sorts those ranked entries alphabetically before applying its bounded total-byte budget.",
+                                 "The alphabetical re-sort can omit approved-scope artifacts while lower-priority context consumes the byte budget, causing downstream architecture-grounded understanding to lose authoritative selected context.",
+                                 "The repair must preserve deterministic behavior, existing byte limits, protected-path blocking, per-artifact truncation, and bundle accounting while retaining caller-provided deterministic relevance order."
+                             ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "tools/river-dev/src/core/context-artifact-loader.ts",
+                                                  "tools/river-dev/src/core/context-artifact-loader.test.ts"
+                                              ],
+                          "creatablePaths":  [
+
+                                             ],
+                          "excludedPaths":  [
+                                                "tools/river-dev/src/core/context-engine.ts",
+                                                "tools/river-dev/src/core/context-understanding.ts",
+                                                "tools/river-dev/src/core/repository-discovery.ts",
+                                                "tools/river-dev/src/core/repository-architecture-map.ts",
+                                                "tools/river-dev/src/core/planner.ts",
+                                                "tools/river-dev/src/commands/plan.ts",
+                                                "src/components/Navbar.astro"
+                                            ]
+                      },
+    "acceptanceCriteria":  [
+                               "loadContextArtifacts preserves the deterministic caller-provided relevance order when applying the bounded total-byte loading budget.",
+                               "Higher-priority entries supplied earlier by authoritative context selection are not displaced solely by alphabetical path ordering.",
+                               "Existing maximum per-artifact and total-byte limits remain unchanged.",
+                               "Existing protected-path blocking remains unchanged.",
+                               "Existing oversized-artifact truncation remains unchanged.",
+                               "Bundle loadedBytes, loadedCount, truncatedCount, omittedCount, and artifact metadata remain correct.",
+                               "Regression tests prove priority preservation under a byte budget with deliberately reverse-alphabetical high-priority input.",
+                               "No context-selection ranking, planning governance, architecture analysis, repository discovery, execution, authorization, or network behavior is broadened or rewritten."
+                           ],
+    "requiredTests":  [
+                          "UNDERSTAND-003 context artifact loader priority-preservation tests",
+                          "Existing context artifact loader regression tests",
+                          "TypeScript validation",
+                          "Complete River Development Agent regression suite"
+                      ],
+    "requiredQualityGates":  [
+                                 "expected-branch",
+                                 "scope-check",
+                                 "tests",
+                                 "typecheck",
+                                 "documentation",
+                                 "exports",
+                                 "secret-scan",
+                                 "review",
+                                 "staged-diff"
+                             ],
+    "approvedCommands":  [
+                             "typecheck",
+                             "build",
+                             "test-tsx",
+                             "git-diff",
+                             "git-status"
+                         ],
+    "repairLimits":  {
+                         "maximumAttempts":  3,
+                         "allowScopeExpansion":  false
+                     },
+    "approvalBoundaries":  [
+                               "Do not push.",
+                               "Do not deploy.",
+                               "Do not broaden approved scope.",
+                               "Do not modify context selection ranking.",
+                               "Do not change artifact byte-budget constants.",
+                               "Do not weaken protected-path handling.",
+                               "Do not modify PLAN-001 checkpoint state.",
+                               "Stop if the repair requires changing context-engine, context-understanding, repository discovery, planning, execution, authorization, or architecture-map boundaries."
+                           ],
+    "commitMessage":  "UNDERSTAND-003: Preserve context artifact relevance priority"
+}
