@@ -1,4 +1,4 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
@@ -139,7 +139,17 @@ Promise<{
             "src",
             "feature.ts"
         ),
-        "export const feature = true;\n",
+        'import { helper } from "./helper";\nexport const feature = helper;\n',
+        "utf8"
+    );
+
+    await writeFile(
+        join(
+            root,
+            "src",
+            "helper.ts"
+        ),
+        "export const helper = true;\n",
         "utf8"
     );
 
@@ -738,6 +748,88 @@ test(
 );
 
 
+
+test(
+    "grounds production context relationships in the repository architecture map",
+    async () => {
+
+        const {
+            root,
+            configuration
+        } =
+            await createFixture();
+
+        try {
+
+            const context =
+                await createRiverDevDevelopmentContext(
+                    configuration,
+                    "2026-08-30T00:00:00.000Z"
+                );
+
+            const relationship =
+                context.understanding.relationships.find(
+                    (item) =>
+                        item.from === "src/feature.ts" &&
+                        item.to === "src/helper.ts"
+                );
+
+            assert.deepEqual(
+                relationship,
+                {
+                    from: "src/feature.ts",
+                    to: "src/helper.ts",
+                    type: "imports",
+                    reason: "repository architecture dependency"
+                }
+            );
+
+            assert.equal(
+                context.understanding.relationships.some(
+                    (item) => item.to === "./helper"
+                ),
+                false
+            );
+
+            const featureRelevance =
+                context.understanding.relevance.find(
+                    (item) => item.path === "src/feature.ts"
+                );
+
+            const helperRelevance =
+                context.understanding.relevance.find(
+                    (item) => item.path === "src/helper.ts"
+                );
+
+            assert.equal(
+                featureRelevance?.reasons.includes(
+                    "has repository-local dependencies"
+                ),
+                true
+            );
+
+            assert.equal(
+                helperRelevance?.reasons.includes(
+                    "has repository-local dependents"
+                ),
+                true
+            );
+
+        }
+        finally {
+
+            await rm(
+                root,
+                {
+                    recursive: true,
+                    force: true
+                }
+            );
+
+        }
+
+    }
+);
 test(
     "bounds relevant repository context",
     async () => {

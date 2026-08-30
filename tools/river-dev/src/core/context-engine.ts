@@ -1,4 +1,4 @@
-﻿import {
+import {
     relative
 } from "node:path";
 
@@ -40,6 +40,9 @@ loadContextArtifacts
 import {
     analyzeContextArtifacts
 } from "./context-understanding";
+import {
+    createRepositoryArchitectureMap
+} from "./repository-architecture-map";
 
 
 export const RIVER_DEV_CONTEXT_VERSION =
@@ -469,9 +472,16 @@ export async function createRiverDevDevelopmentContext(
             relevantEntries
         );
 
+    const architecture =
+        await createRepositoryArchitectureMap(
+            discovery
+        );
+
+
     const understanding =
         analyzeContextArtifacts(
-            artifacts
+            artifacts,
+            architecture
         );
 
     return {

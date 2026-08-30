@@ -1,229 +1,128 @@
-﻿import type {
-RiverDevContextArtifactBundle,
-RiverDevContextArtifactMetadata,
-RiverDevContextArtifactRelationship,
-RiverDevContextRelevanceScore,
-RiverDevContextUnderstanding
+import type {
+    RiverDevContextArtifactBundle,
+    RiverDevContextArtifactMetadata,
+    RiverDevContextArtifactRelationship,
+    RiverDevContextRelevanceScore,
+    RiverDevContextUnderstanding,
+    RiverDevRepositoryArchitectureMap
 } from "../types";
 
 
 function getExtension(
-path:
-string
+    path: string
 ): string {
 
-const parts =
-    path.split(".");
+    const parts =
+        path.split(".");
 
-return parts.length > 1
-    ? "." + parts.at(-1)
-    : "";
-
-}
-
-
-function detectImports(
-content:
-string
-): readonly string[] {
-
-const matches =
-    [
-        ...content.matchAll(
-            /from\s+["'](.+?)["']/g
-        )
-    ];
-
-return matches.map(
-    (match) =>
-        match[1] ?? ""
-).filter(
-    Boolean
-);
-
-}
-
-
-function detectExports(
-content:
-string
-): readonly string[] {
-
-const exports =
-    [];
-
-if (
-    /export\s+(interface|type|const|function|class)/.test(
-        content
-    )
-) {
-    exports.push(
-        "typescript-export"
-    );
-}
-
-return exports;
+    return parts.length > 1
+        ? "." + parts.at(-1)
+        : "";
 
 }
 
 
 function calculateScore(
-path:
-string,
-relationships:
-readonly RiverDevContextArtifactRelationship[]
-):
-RiverDevContextRelevanceScore {
+    path: string,
+    relationships: readonly RiverDevContextArtifactRelationship[]
+): RiverDevContextRelevanceScore {
 
-const reasons:
-string[] =
-    [];
+    const reasons: string[] = [];
+    let score = 0;
 
-let score =
-    0;
+    const outgoingCount =
+        relationships.filter(
+            (relationship) => relationship.from === path
+        ).length;
 
+    const incomingCount =
+        relationships.filter(
+            (relationship) => relationship.to === path
+        ).length;
 
-if (
-    path.includes(
-        "context"
-    )
-) {
-    score += 5;
+    if (outgoingCount > 0) {
+        score += outgoingCount;
+        reasons.push("has repository-local dependencies");
+    }
 
-    reasons.push(
-        "context-related artifact"
-    );
-}
+    if (incomingCount > 0) {
+        score += incomingCount;
+        reasons.push("has repository-local dependents");
+    }
 
-
-const relationshipCount =
-    relationships.filter(
-        (relationship) =>
-            relationship.from === path ||
-            relationship.to === path
-    ).length;
-
-
-if (
-    relationshipCount > 0
-) {
-    score += relationshipCount;
-
-    reasons.push(
-        "connected through artifact relationships"
-    );
-}
-
-
-return {
-    path,
-    score,
-    reasons
-};
+    return {
+        path,
+        score,
+        reasons
+    };
 
 }
 
 
 export function analyzeContextArtifacts(
-bundle:
-RiverDevContextArtifactBundle
-):
-RiverDevContextUnderstanding {
+    bundle: RiverDevContextArtifactBundle,
+    architecture: RiverDevRepositoryArchitectureMap
+): RiverDevContextUnderstanding {
 
-
-const metadata:
-RiverDevContextArtifactMetadata[] =
-    [];
-
-
-const relationships:
-RiverDevContextArtifactRelationship[] =
-    [];
-
-
-for (
-    const artifact of bundle.artifacts
-) {
-
-    metadata.push(
-        {
-            path:
-                artifact.path,
-
-            extension:
-                getExtension(
-                    artifact.path
-                ),
-
-            bytes:
-                artifact.loadedBytes,
-
-            classification:
-                artifact.classification
-        }
+    const metadata: RiverDevContextArtifactMetadata[] = [];
+    const relationships: RiverDevContextArtifactRelationship[] = [];
+    const loadedPaths = new Set(
+        bundle.artifacts.map((artifact) => artifact.path)
     );
 
+    for (const artifact of bundle.artifacts) {
 
-    const imports =
-        detectImports(
-            artifact.content
-        );
-
-
-    for (
-        const imported of imports
-    ) {
-
-        relationships.push(
-            {
-                from:
-                    artifact.path,
-
-                to:
-                    imported,
-
-                type:
-                    "imports",
-
-                reason:
-                    "typescript import detected"
-            }
-        );
+        metadata.push({
+            path: artifact.path,
+            extension: getExtension(artifact.path),
+            bytes: artifact.loadedBytes,
+            classification: artifact.classification
+        });
 
     }
 
+    const architectureModules =
+        architecture.modules
+            .filter((module) => loadedPaths.has(module.path))
+            .slice()
+            .sort((left, right) => left.path.localeCompare(right.path));
 
-    detectExports(
-        artifact.content
+    for (const module of architectureModules) {
+
+        for (const dependency of module.dependencies) {
+
+            relationships.push({
+                from: module.path,
+                to: dependency,
+                type: "imports",
+                reason: "repository architecture dependency"
+            });
+
+        }
+
+    }
+
+    relationships.sort((left, right) =>
+        left.from.localeCompare(right.from) ||
+        left.to.localeCompare(right.to) ||
+        left.type.localeCompare(right.type) ||
+        left.reason.localeCompare(right.reason)
     );
 
-}
-
-
-const relevance =
-    metadata.map(
-        (artifact) =>
+    const relevance =
+        metadata.map((artifact) =>
             calculateScore(
                 artifact.path,
                 relationships
             )
-    );
+        );
 
-
-return {
-
-    version:
-        "1.0.0",
-
-    artifactCount:
-        metadata.length,
-
-    metadata,
-
-    relationships,
-
-    relevance
-
-};
+    return {
+        version: "1.0.0",
+        artifactCount: metadata.length,
+        metadata,
+        relationships,
+        relevance
+    };
 
 }
