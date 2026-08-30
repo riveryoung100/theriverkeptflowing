@@ -1,0 +1,87 @@
+{
+    "version":  "1.0.0",
+    "phase":  "PLAN-001",
+    "title":  "Architecture-Grounded Production Planning Integration",
+    "branch":  "plan-001-architecture-grounded-production-planning-integration",
+    "objective":  "Integrate the architecture-grounded River Development Context into the authoritative production planning path so governed implementation plans carry deterministic planning intelligence without weakening, replacing, reconstructing, or broadening specification-defined governance.",
+    "architecturalContext":  [
+                                 "UNDERSTAND-001 established a deterministic TypeScript repository architectural map.",
+                                 "UNDERSTAND-002 integrated repository architecture into RiverDevContextUnderstanding and RiverDevDevelopmentContext.",
+                                 "The existing core/planner.ts RiverDevImplementationPlan remains the authoritative governed implementation-plan contract for downstream proposal, intent, manifest, artifact, repair, review, and execution systems.",
+                                 "The existing core/planning-engine.ts provides architecture-aware RiverDevPlanningDecision records but must not become a competing governance authority.",
+                                 "Persisted governed plans are currently JSON-loaded structurally by downstream production commands, allowing additive deterministic planning intelligence without replacing existing governed fields."
+                             ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "tools/river-dev/src/commands/plan.ts",
+                                                  "tools/river-dev/src/core/planner.ts",
+                                                  "tools/river-dev/src/core/planner.test.ts",
+                                                  "tools/river-dev/src/commands/plan.test.ts",
+                                                  "tools/river-dev/src/types.ts"
+                                              ],
+                          "creatablePaths":  [
+
+                                             ],
+                          "excludedPaths":  [
+                                                "tools/river-dev/src/core/planning-engine.ts",
+                                                "tools/river-dev/src/core/context-engine.ts",
+                                                "tools/river-dev/src/core/context-understanding.ts",
+                                                "tools/river-dev/src/core/repository-architecture-map.ts",
+                                                "tools/river-dev/src/core/package-executor.ts",
+                                                "tools/river-dev/src/commands/implement.ts",
+                                                "tools/river-dev/src/commands/execute-package.ts",
+                                                "src/components/Navbar.astro"
+                                            ]
+                      },
+    "acceptanceCriteria":  [
+                               "The production plan command obtains the authoritative RiverDevDevelopmentContext for the requested phase before producing the governed implementation plan.",
+                               "The existing specification-driven createImplementationPlan path remains the authoritative source of branch, commit message, objective, allowed paths, excluded paths, acceptance criteria, required tests, required quality gates, approved commands, repair limits, approval boundaries, and governed plan steps.",
+                               "The governed implementation plan is additively enriched with deterministic architecture-grounded planning intelligence derived from the development context rather than replaced by the lightweight planning-engine plan shape.",
+                               "Planning intelligence is bounded to specification-approved scope and cannot add an unapproved modifiable or creatable path, remove an excluded path, broaden an approved command, weaken an approval boundary, increase repair authority, permit scope expansion, or authorize execution.",
+                               "Architecture-grounded planning intelligence preserves deterministic path, priority, reason, and action information sufficient for later GENERATE capability work.",
+                               "Existing persisted-plan consumers remain compatible with enriched plans.",
+                               "Equivalent specification, repository state, development context, and generatedAt inputs produce deep-equal governed planning intelligence.",
+                               "No repository mutation, command execution, authorization creation, package execution, commit, push, network access, dependency installation, or secret traversal is introduced by planning.",
+                               "Existing historical planning-engine behavior is not duplicated or rewritten unless an exact integration requirement demonstrates it is necessary.",
+                               "Tests prove production integration, governance preservation, deterministic intelligence, scope bounding, and persisted-plan compatibility."
+                           ],
+    "requiredTests":  [
+                          "PLAN-001 focused planner tests",
+                          "PLAN-001 production plan command tests",
+                          "TypeScript validation",
+                          "Complete River Development Agent regression suite"
+                      ],
+    "requiredQualityGates":  [
+                                 "Exact PLAN-001 scope",
+                                 "No governance broadening",
+                                 "Deterministic planning intelligence",
+                                 "Persisted-plan backward compatibility",
+                                 "No competing planner authority",
+                                 "No production mutation or execution",
+                                 "Repository hygiene"
+                             ],
+    "approvedCommands":  [
+                             "npm test",
+                             "npm run build",
+                             "npx tsc --noEmit",
+                             "node --test",
+                             "git diff",
+                             "git status",
+                             "git add",
+                             "git commit"
+                         ],
+    "repairLimits":  {
+                         "maximumAttempts":  3,
+                         "allowScopeExpansion":  false
+                     },
+    "approvalBoundaries":  [
+                               "Do not push.",
+                               "Do not deploy.",
+                               "Do not broaden approved scope.",
+                               "Do not weaken specification-defined governance.",
+                               "Do not authorize or execute repository mutations.",
+                               "Do not introduce external model/network reasoning.",
+                               "Stop if implementation requires changing excluded execution, authorization, or UNDERSTAND boundaries."
+                           ],
+    "commitMessage":  "PLAN-001: Integrate architecture-grounded production planning"
+}
