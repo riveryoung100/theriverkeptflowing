@@ -1,0 +1,137 @@
+{
+  "version": "1.0.0",
+  "id": "generate-002-explicit-model-source-authoring-provider-boundary",
+  "name": "Explicit Model Source-Authoring Provider Boundary",
+  "objective": "Establish the first production-capable model-facing source-authoring provider behind the graduated GENERATE-001 implementation-content-generation contract, using an explicitly bounded transport and explicit caller-supplied credentials/configuration while preserving authoritative planning scope, repository immutability, downstream intent validation, and all existing approval and execution boundaries.",
+  "branch": "generate-002-explicit-model-source-authoring-provider-boundary",
+  "commitMessage": "GENERATE-002: Build explicit model source-authoring provider boundary",
+  "approvedScope": {
+    "allowedPaths": [
+      ".river-dev/specifications/generate-002-explicit-model-source-authoring-provider-boundary.json",
+      "tools/river-dev/src/providers/model-source-authoring-provider.ts",
+      "tools/river-dev/src/providers/model-source-authoring-provider.test.ts",
+      "tools/river-dev/src/providers/openai-compatible-transport.ts",
+      "tools/river-dev/src/providers/openai-compatible-transport.test.ts",
+      "tools/river-dev/src/core/implementation-intent-generator.ts",
+      "tools/river-dev/src/core/implementation-intent-generator.test.ts",
+      "tools/river-dev/src/commands/generate-intent.ts",
+      "tools/river-dev/src/commands/generate-intent.test.ts",
+      "tools/river-dev/src/types.ts"
+    ],
+    "excludedPaths": [
+      ".env",
+      ".git",
+      "public",
+      "src",
+      "tools/river-dev/src/core/proposal-generator.ts",
+      "tools/river-dev/src/core/manifest-generator.ts",
+      "tools/river-dev/src/core/artifact-pipeline.ts",
+      "tools/river-dev/src/commands/generate-proposal.ts",
+      "tools/river-dev/src/commands/generate-manifest.ts",
+      "tools/river-dev/src/commands/generate-artifacts.ts",
+      "tools/river-dev/src/commands/implement.ts",
+      "tools/river-dev/src/commands/execute-package.ts",
+      "tools/river-dev/src/execution",
+      ".river-dev/commands.json"
+    ]
+  },
+  "requirements": {
+    "graduatedGenerate001ContractRequired": true,
+    "authoritativePlanRequired": true,
+    "architectureGroundedContextRequired": true,
+    "explicitModelProviderRequired": true,
+    "explicitTransportBoundaryRequired": true,
+    "callerSuppliedCredentialRequired": true,
+    "ambientSecretDiscoveryForbidden": true,
+    "secretFileReadingForbidden": true,
+    "providerPathSelectionForbidden": true,
+    "providerScopeExpansionForbidden": true,
+    "providerRepositoryMutationForbidden": true,
+    "providerGitAuthorityForbidden": true,
+    "providerShellAuthorityForbidden": true,
+    "providerExecutionAuthorityForbidden": true,
+    "providerProposalApprovalForbidden": true,
+    "providerManifestGenerationForbidden": true,
+    "providerCommitAuthorityForbidden": true,
+    "providerPushAuthorityForbidden": true,
+    "providerDeploymentAuthorityForbidden": true,
+    "networkAccessLimitedToTransportBoundary": true,
+    "modelOutputMustRemainCandidateContentOnly": true,
+    "implementationIntentValidationRequired": true,
+    "existingGenerate001GovernanceMustRemainAuthoritative": true,
+    "existingDownstreamProposalLifecycleMustRemainAuthoritative": true,
+    "sdkDependencyRequired": false,
+    "historicalManualIntentCompatibilityRequired": true
+  },
+  "generationContract": {
+    "providerInput": [
+      "RiverDevImplementationPlan",
+      "RiverDevDevelopmentContext",
+      "RiverDevPlanningDecision"
+    ],
+    "providerOutput": [
+      "content",
+      "overwrite",
+      "reason"
+    ],
+    "providerResponsibility": "Construct a bounded source-authoring request from the exact GENERATE-001 provider input, invoke only the supplied model transport, and return candidate source content for the already-selected decision path.",
+    "governanceResponsibility": "GENERATE-001 remains solely responsible for choosing approved decisions, enforcing allowed and excluded paths, duplicate rejection, overwrite semantics, deterministic intent assembly, and final RiverDevImplementationIntent validation.",
+    "transportResponsibility": "Perform one explicitly requested model interaction from caller-supplied endpoint, model, credential, and request payload; return model response data without repository, Git, shell, approval, execution, commit, push, deployment, or scope authority.",
+    "credentialBoundary": "Credentials are supplied explicitly by the caller to the provider or transport configuration. GENERATE-002 must not search environment variables, dotenv files, repository secret files, or arbitrary credential stores.",
+    "networkBoundary": "Network access is permitted only inside the explicit model transport adapter. GENERATE core, planning, context, proposal, manifest, and execution governance remain non-networking.",
+    "mutationBoundary": "Provider and transport return in-memory candidate content only and perform no repository mutation.",
+    "scopeBoundary": "The model cannot select, add, replace, or broaden the target path. The exact target decision originates from the authoritative GENERATE-001 governance layer.",
+    "approvalBoundary": "Model output creates no proposal approval, implementation approval, execution authorization, commit authorization, push authorization, or deployment authorization."
+  },
+  "acceptanceCriteria": [
+    "A production model source-authoring provider implements the existing RiverDevImplementationContentGenerationProvider contract without changing its authoritative scope semantics.",
+    "The provider receives the exact plan, development context, and planning decision supplied by GENERATE-001 and cannot select a different target path.",
+    "The provider converts architecture-grounded context into a bounded model request sufficient to author candidate source content.",
+    "An explicit OpenAI-compatible transport boundary can perform the model interaction without introducing a model SDK dependency.",
+    "Endpoint, model identifier, credential, and transport are explicit configuration inputs rather than ambient secret discovery.",
+    "The provider never reads .env files, secret files, arbitrary environment credentials, or repository credentials.",
+    "Only the explicit transport adapter may perform network activity.",
+    "Provider and transport perform no repository write, Git mutation, shell execution, proposal approval, manifest generation, implementation, commit, push, or deployment.",
+    "Malformed, empty, structurally invalid, or unusable model responses fail closed before an implementation intent is returned.",
+    "Returned source content remains subject to the existing GENERATE-001 overwrite and implementation-intent validation boundaries.",
+    "Injected fake transport tests prove deterministic provider behavior without network access.",
+    "Existing GENERATE-001 tests and historical manually authored implementation intents remain compatible."
+  ],
+  "requiredTests": [
+    "tools/river-dev/src/providers/model-source-authoring-provider.test.ts",
+    "tools/river-dev/src/providers/openai-compatible-transport.test.ts",
+    "tools/river-dev/src/core/implementation-intent-generator.test.ts",
+    "tools/river-dev/src/commands/generate-intent.test.ts",
+    "tools/river-dev/src/core/implementation-intent.test.ts",
+    "tools/river-dev/src/core/proposal-generator.test.ts"
+  ],
+  "requiredQualityGates": [
+    "git-diff-check",
+    "focused-tests",
+    "river-dev-regression",
+    "typecheck",
+    "scope-review",
+    "governance-review",
+    "network-boundary-review",
+    "credential-boundary-review"
+  ],
+  "approvedCommands": [
+    "git-status",
+    "git-diff",
+    "git-diff-staged",
+    "typecheck",
+    "test-tsx"
+  ],
+  "repairLimits": {
+    "maximumAttempts": 3,
+    "scopeExpansionAllowed": false
+  },
+  "approvalBoundaries": [
+    "No repository mutation authority may originate from model output.",
+    "No execution authority may originate from model output.",
+    "No proposal approval may originate from model output.",
+    "No commit or push authority may originate from model output.",
+    "No ambient credential discovery is authorized.",
+    "Live credential configuration and live model invocation remain a separate explicit operator-controlled boundary."
+  ]
+}
