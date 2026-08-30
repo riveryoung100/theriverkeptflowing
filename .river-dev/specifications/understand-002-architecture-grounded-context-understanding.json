@@ -1,0 +1,92 @@
+{
+    "phase":  "UNDERSTAND-002",
+    "title":  "Architecture-Grounded Context Understanding",
+    "objective":  "Integrate the authoritative TypeScript repository architectural map into the existing River Development Agent production context-understanding path so loaded development context is grounded in resolved repository-local architecture instead of independently inferred TypeScript relationships.",
+    "branch":  "understand-002-architecture-grounded-context-understanding",
+    "architecturalContext":  [
+                                 "UNDERSTAND-001 is the authoritative deterministic TypeScript repository architectural map and already resolves repository-local imports, exports, direct dependencies, direct dependents, and bounded entry-point signals.",
+                                 "createRiverDevDevelopmentContext is the existing production context boundary. It already performs repository discovery, selects relevant entries, loads context artifacts, invokes analyzeContextArtifacts, and returns RiverDevDevelopmentContext.",
+                                 "RiverDevDevelopmentContext already exposes a RiverDevContextUnderstanding field. UNDERSTAND-002 must strengthen that existing understanding contract rather than create a parallel context system.",
+                                 "The current context-understanding implementation independently detects TypeScript imports with regular expressions and scores relevance using path-name and relationship-count heuristics. Those architectural guesses must no longer compete with the authoritative architecture map.",
+                                 "Planning behavior is outside UNDERSTAND-002. This capability supplies stronger factual context; PLAN capability work will consume it later."
+                             ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "tools/river-dev/src/core/context-engine.ts",
+                                                  "tools/river-dev/src/core/context-understanding.ts",
+                                                  "tools/river-dev/src/core/context-engine.test.ts",
+                                                  "tools/river-dev/src/core/context-understanding.test.ts",
+                                                  "tools/river-dev/src/types.ts"
+                                              ],
+                          "creatablePaths":  [
+
+                                             ],
+                          "excludedPaths":  [
+                                                "tools/river-dev/src/core/planner.ts",
+                                                "tools/river-dev/src/commands/plan.ts",
+                                                "tools/river-dev/src/execution/**",
+                                                "tools/river-dev/src/core/package-executor.ts",
+                                                "src/**",
+                                                "public/**"
+                                            ]
+                      },
+    "acceptanceCriteria":  [
+                               "createRiverDevDevelopmentContext constructs the authoritative repository architecture map from the exact repository discovery report already validated against the current repository snapshot.",
+                               "The production context-understanding call receives the authoritative architecture map together with the existing loaded artifact bundle.",
+                               "TypeScript architectural relationships exposed by RiverDevContextUnderstanding are grounded in resolved UNDERSTAND-001 repository-local relationships rather than independently reconstructed with regular-expression import parsing.",
+                               "For loaded TypeScript artifacts represented in the architecture map, context relationships use normalized resolved repository-relative module paths and preserve deterministic ordering.",
+                               "Repository-local dependencies and dependents relevant to loaded artifacts can contribute deterministic architectural relevance reasons without inventing relationships that are absent from the authoritative architecture map.",
+                               "Non-TypeScript artifact metadata remains supported and deterministic; UNDERSTAND-002 does not require the architecture map to fabricate module relationships for unsupported artifact types.",
+                               "The existing RiverDevDevelopmentContext production boundary remains authoritative; no parallel context engine, repository discovery implementation, architecture parser, or planning path is introduced.",
+                               "UNDERSTAND-001 remains authoritative for TypeScript parsing and module resolution; context-understanding does not duplicate TypeScript compiler parsing or local module resolution.",
+                               "Repository discovery identity, branch, commit, protected-path behavior, artifact loading boundaries, approved scope, session behavior, and existing context safety invariants remain unchanged.",
+                               "The resulting context-understanding output is deterministic for equivalent discovery, architecture, and artifact inputs.",
+                               "Existing callers of createRiverDevDevelopmentContext continue to receive RiverDevDevelopmentContext through the existing production API.",
+                               "Direct unit tests prove architecture-grounded relationships and relevance, absence of regex-only fabricated TypeScript relationships, deterministic output, and preservation of non-TypeScript artifact metadata.",
+                               "Context-engine integration tests prove the production context path actually constructs and consumes UNDERSTAND-001 architecture rather than leaving the architectural map test-only.",
+                               "TypeScript compilation and the complete River Development Agent regression suite pass."
+                           ],
+    "requiredTests":  [
+                          "tools/river-dev/src/core/context-understanding.test.ts",
+                          "tools/river-dev/src/core/context-engine.test.ts",
+                          "tools/river-dev/src/core/repository-architecture-map.test.ts"
+                      ],
+    "requiredQualityGates":  [
+                                 "TypeScript compilation passes.",
+                                 "Focused UNDERSTAND-001 and UNDERSTAND-002 tests pass.",
+                                 "Complete River Development Agent regression suite passes.",
+                                 "git diff --check passes.",
+                                 "No production planning, execution, authorization, commit, push, website, or unrelated repository behavior is modified."
+                             ],
+    "approvedCommands":  [
+                             "repository-safe source inspection",
+                             "TypeScript compilation",
+                             "Node test runner through existing repository tooling",
+                             "git diff",
+                             "git diff --check",
+                             "git status",
+                             "git add for the exact UNDERSTAND-002 specification or later approved implementation scope",
+                             "git commit for separately validated UNDERSTAND-002 specification and implementation commits"
+                         ],
+    "repairLimits":  {
+                         "maximumAttempts":  3,
+                         "allowScopeExpansion":  false
+                     },
+    "approvalBoundaries":  [
+                               "Do not push.",
+                               "Do not deploy.",
+                               "Do not modify website source.",
+                               "Do not expand into PLAN capability work.",
+                               "Do not create a second repository discovery or architecture engine.",
+                               "Do not introduce network, model-provider, package-installation, secret-access, or repository-execution behavior.",
+                               "Stop if the authoritative UNDERSTAND-001 architecture contract proves insufficient rather than silently reconstructing architecture elsewhere."
+                           ],
+    "plannedFiles":  [
+                         "tools/river-dev/src/core/context-engine.ts",
+                         "tools/river-dev/src/core/context-understanding.ts",
+                         "tools/river-dev/src/core/context-engine.test.ts",
+                         "tools/river-dev/src/core/context-understanding.test.ts",
+                         "tools/river-dev/src/types.ts"
+                     ],
+    "commitMessage":  "UNDERSTAND-002: Ground development context in repository architecture"
+}
