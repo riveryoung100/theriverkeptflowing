@@ -442,3 +442,139 @@ test(
 
     }
 );
+
+
+test(
+    "exposes governed production objective orchestration CLI without legacy DEV-07 orchestration authority",
+    async () => {
+
+        const source =
+            await import("node:fs/promises").then(
+                ({ readFile }) =>
+                    readFile(
+                        resolve(
+                            repositoryRoot,
+                            "tools",
+                            "river-dev",
+                            "src",
+                            "index.ts"
+                        ),
+                        "utf8"
+                    )
+            );
+
+        assert.match(
+            source,
+            /orchestrateProductionObjectiveRiverDev/
+        );
+
+        assert.match(
+            source,
+            /createModelSourceAuthoringProvider/
+        );
+
+        assert.match(
+            source,
+            /createOpenAICompatibleTransport/
+        );
+
+        assert.match(
+            source,
+            /--authorize-live-model-invocation/
+        );
+
+        assert.match(
+            source,
+            /readGenerateLiveIntentCredentialFromStdin/
+        );
+
+        assert.match(
+            source,
+            /mode:\s*"dry-run"/
+        );
+
+        assert.doesNotMatch(
+            source,
+            /from "\.\/commands\/orchestrate"/
+        );
+
+        assert.doesNotMatch(
+            source,
+            /\.river-dev\/specifications\/dev-07-/
+        );
+
+    }
+);
+
+
+test(
+    "keeps orchestrate CLI apply and ambient credential authority absent",
+    async () => {
+
+        const source =
+            await import("node:fs/promises").then(
+                ({ readFile }) =>
+                    readFile(
+                        resolve(
+                            repositoryRoot,
+                            "tools",
+                            "river-dev",
+                            "src",
+                            "index.ts"
+                        ),
+                        "utf8"
+                    )
+            );
+
+        const orchestrateStart =
+            source.indexOf(
+                'case "orchestrate": {'
+            );
+
+        const resumeStart =
+            source.indexOf(
+                'case "resume": {',
+                orchestrateStart
+            );
+
+        assert.ok(
+            orchestrateStart >= 0
+        );
+
+        assert.ok(
+            resumeStart > orchestrateStart
+        );
+
+        const orchestrateBlock =
+            source.slice(
+                orchestrateStart,
+                resumeStart
+            );
+
+        assert.doesNotMatch(
+            orchestrateBlock,
+            /--apply/
+        );
+
+        assert.doesNotMatch(
+            orchestrateBlock,
+            /process\.env/
+        );
+
+        assert.doesNotMatch(
+            orchestrateBlock,
+            /\bgit\s+commit\b/i
+        );
+
+        assert.doesNotMatch(
+            orchestrateBlock,
+            /\bgit\s+push\b/i
+        );
+
+        assert.doesNotMatch(
+            orchestrateBlock,
+            /commitRiverDev/
+        );
+
+    }
+);

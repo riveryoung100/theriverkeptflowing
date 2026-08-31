@@ -70,11 +70,6 @@ import {
     GENERATE_LIVE_INTENT_AUTHORIZATION,
     generateLiveIntentRiverDev
 } from "./commands/generate-live-intent";
-import {
-    formatImplementationResult,
-    getDefaultImplementationManifestPath,
-    implementRiverDevPlan
-} from "./commands/implement";
 
 import {
     formatImplementationPlan,
@@ -91,15 +86,14 @@ import {
     verifyRiverDev
 } from "./commands/verify";
 import {
-    formatOrchestratorResult,
-    getDefaultOrchestratorSpecificationPath,
-    orchestrateRiverDev
-} from "./commands/orchestrate";
+    orchestrateProductionObjectiveRiverDev
+} from "./commands/orchestrate-objective";
 import {
-    formatRepairResult,
-    getDefaultRepairSpecificationPath,
-    repairRiverDev
-} from "./commands/repair";
+    createModelSourceAuthoringProvider
+} from "./providers/model-source-authoring-provider";
+import {
+    createOpenAICompatibleTransport
+} from "./providers/openai-compatible-transport";
 import {
     formatReviewResult,
     getDefaultReviewSpecificationPath,
@@ -770,8 +764,8 @@ case "persist-execution-package": {
                     3
                 );
 
-            const specificationArgument =
-                commandArguments.find(
+            const positionalArguments =
+                commandArguments.filter(
                     (argument) => {
                         return !argument.startsWith(
                             "--"
@@ -780,188 +774,104 @@ case "persist-execution-package": {
                 );
 
             const specificationPath =
-                specificationArgument ??
-                getDefaultOrchestratorSpecificationPath(
-                    configuration
-                );
+                positionalArguments[0];
 
-            const apply =
+            const endpoint =
+                positionalArguments[1];
+
+            const model =
+                positionalArguments[2];
+
+            const authorized =
                 commandArguments.includes(
-                    "--apply"
+                    "--authorize-live-model-invocation"
                 );
 
-            const result =
-                await orchestrateRiverDev(
-                    configuration,
-                    specificationPath,
-                    apply,
+            const approveProposal =
+                commandArguments.includes(
+                    "--approve-proposal"
+                );
+
+            const unexpectedFlags =
+                commandArguments.filter(
+                    (argument) => {
+                        return (
+                            argument.startsWith("--") &&
+                            argument !==
+                                "--authorize-live-model-invocation" &&
+                            argument !==
+                                "--approve-proposal"
+                        );
+                    }
+                );
+
+            if (
+                specificationPath === undefined ||
+                endpoint === undefined ||
+                model === undefined ||
+                positionalArguments.length !== 3 ||
+                unexpectedFlags.length !== 0
+            ) {
+                throw new TypeError(
+                    "Usage: orchestrate <specification-path> <endpoint> <model> --authorize-live-model-invocation [--approve-proposal] < credential-via-stdin"
+                );
+            }
+
+            if (!authorized) {
+                throw new TypeError(
+                    "Explicit live model invocation authorization is required."
+                );
+            }
+
+            const credential =
+                (await readGenerateLiveIntentCredentialFromStdin())
+                    .trim();
+
+            if (credential.length === 0) {
+                throw new TypeError(
+                    "Model credential is required through standard input."
+                );
+            }
+
+            const transport =
+                createOpenAICompatibleTransport(
                     {
+                        endpoint,
+                        model,
+                        credential
+                    }
+                );
 
-                        getCurrentBranch:
-                            async () => {
-                                return "dev-07-end-to-end-orchestrator";
-                            },
+            const provider =
+                createModelSourceAuthoringProvider(
+                    {
+                        transport
+                    }
+                );
 
-                        isWorkingTreeClean:
-                            async () => {
-                                return true;
-                            },
-
-                        inspect:
-                            async () => {
-
-                                await runTrackedInspection(
-                                    configuration
-                                );
-
-                                return true;
-
-                            },
-
-                        plan:
-                            async () => {
-
-                                const planningSpecificationPath =
-                                    configuration.repositoryRoot +
-                                    "/.river-dev/specifications/dev-07-planning.json";
-
-                                const plan =
-                                    await planRiverDevPhase(
-                                        configuration,
-                                        planningSpecificationPath
-                                    );
-
-                                return (
-                                    plan.branch ===
-                                        "dev-07-end-to-end-orchestrator" &&
-                                    plan.allowedPaths.length >
-                                        0 &&
-                                    plan.requiredTests.length >
-                                        0
-                                );
-
-                            },
-
-                        implement:
-                            async (
-                                dryRun
-                            ) => {
-
-                                const manifestPath =
-                                    configuration.repositoryRoot +
-                                    "/.river-dev/specifications/dev-07-implementation-manifest.json";
-
-                                const result =
-                                    await implementRiverDevPlan(
-                                        configuration,
-                                        manifestPath,
-                                        dryRun
-                                            ? "dry-run"
-                                            : "apply"
-                                    );
-
-                                return (
-                                    result.branch ===
-                                        "dev-07-end-to-end-orchestrator" &&
-                                    result.operationCount >
-                                        0 &&
-                                    result.applied ===
-                                        !dryRun
-                                );
-
-                            },
-
-                        verify:
-                            async () => {
-
-                                const verificationPath =
-                                    configuration.repositoryRoot +
-                                    "/.river-dev/specifications/dev-07-verification.json";
-
-                                const result =
-                                    await verifyRiverDev(
-                                        configuration,
-                                        verificationPath
-                                    );
-
-                                return result.passed;
-
-                            },
-
-                        repair:
-                            async (
-                                dryRun
-                            ) => {
-
-                                const repairSpecificationPath =
-                                    configuration.repositoryRoot +
-                                    "/.river-dev/specifications/dev-07-repair.json";
-
-                                const result =
-                                    await repairRiverDev(
-                                        configuration,
-                                        repairSpecificationPath,
-                                        !dryRun
-                                    );
-
-                                return result.passed;
-
-                            },
-
-                        review:
-                            async () => {
-
-                                const reviewSpecificationPath =
-                                    configuration.repositoryRoot +
-                                    "/.river-dev/specifications/dev-07-review.json";
-
-                                const result =
-                                    await reviewRiverDev(
-                                        configuration,
-                                        reviewSpecificationPath
-                                    );
-
-                                return result.passed;
-
-                            },
-
-                        commit:
-                            async () => {
-
-                                const commitSpecificationPath =
-                                    configuration.repositoryRoot +
-                                    "/.river-dev/specifications/dev-07-commit.json";
-
-                                const result =
-                                    await commitRiverDev(
-                                        configuration,
-                                        commitSpecificationPath,
-                                        {
-                                            verificationPassed:
-                                                true,
-
-                                            reviewPassed:
-                                                true,
-
-                                            apply:
-                                                true
-                                        }
-                                    );
-
-                                return result.committed;
-
-                            }
-
+            const result =
+                await orchestrateProductionObjectiveRiverDev(
+                    {
+                        configuration,
+                        specificationPath,
+                        provider,
+                        generatedAt:
+                            new Date().toISOString()
+                    },
+                    {
+                        mode:
+                            "dry-run",
+                        approveProposal
                     }
                 );
 
             process.stdout.write(
-                `${formatOrchestratorResult(result)}\n`
+                `${JSON.stringify(result, null, 2)}\n`
             );
 
             if (
-                result.passed ===
-                false
+                result.orchestration.outcome !==
+                "completed"
             ) {
                 process.exitCode =
                     1;
@@ -970,89 +880,6 @@ case "persist-execution-package": {
             return;
 
         }
-
-        case "implement": {
-
-            const manifestPath =
-                process.argv[3] ??
-                getDefaultImplementationManifestPath(
-                    configuration
-                );
-
-            const mode =
-                process.argv.includes(
-                    "--apply"
-                )
-                    ? "apply" as const
-                    : "dry-run" as const;
-
-            const result =
-                await implementRiverDevPlan(
-                    configuration,
-                    manifestPath,
-                    mode
-                );
-
-            process.stdout.write(
-                `${formatImplementationResult(result)}\n`
-            );
-
-            return;
-
-        }
-
-        case "repair": {
-
-            const commandArguments =
-                process.argv.slice(
-                    3
-                );
-
-            const specificationArgument =
-                commandArguments.find(
-                    (argument) => {
-                        return !argument.startsWith(
-                            "--"
-                        );
-                    }
-                );
-
-            const specificationPath =
-                specificationArgument ??
-                getDefaultRepairSpecificationPath(
-                    configuration
-                );
-
-            const apply =
-                commandArguments.includes(
-                    "--apply"
-                );
-
-            const result =
-                await repairRiverDev(
-                    configuration,
-                    specificationPath,
-                    apply
-                );
-
-            process.stdout.write(
-                `${formatRepairResult(result)}\n`
-            );
-
-            if (
-                result.passed ===
-                    false &&
-                result.outcome !==
-                    "blocked"
-            ) {
-                process.exitCode =
-                    1;
-            }
-
-            return;
-
-        }
-
         case "resume": {
 
             const report =
