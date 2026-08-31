@@ -1,8 +1,9 @@
-﻿import type {
+import type {
     AssetClassification,
     AssetExtraction,
     AssetSegment,
     DerivedObjectReference,
+    TransformationRecord,
     SourceAsset
 } from "../types";
 
@@ -38,6 +39,9 @@ export interface AssimilationPipelineResult {
 
     readonly classification:
         AssetClassification | null;
+
+    readonly transformation:
+        TransformationRecord | null;
 
     readonly derivedObject:
         DerivedObjectReference | null;

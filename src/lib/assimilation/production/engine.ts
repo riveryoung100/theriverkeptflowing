@@ -10,6 +10,14 @@ import {
     createProductionAssimilationPipeline
 } from "../pipeline/production";
 
+import {
+    createFileSystemAssimilationGeneratedRecordPersistence
+} from "../persistence";
+
+import type {
+    AssimilationGeneratedRecordPersistence
+} from "../persistence";
+
 import type {
     AssimilationPipeline
 } from "../pipeline/types";
@@ -28,6 +36,9 @@ implements ProductionSourceAssimilationService {
     private readonly pipeline:
         AssimilationPipeline;
 
+    private readonly persistence:
+        AssimilationGeneratedRecordPersistence;
+
 
     public constructor(
         rawSourceRootDirectory: string
@@ -40,6 +51,11 @@ implements ProductionSourceAssimilationService {
 
         this.pipeline =
             createProductionAssimilationPipeline(
+                rawSourceRootDirectory
+            );
+
+        this.persistence =
+            createFileSystemAssimilationGeneratedRecordPersistence(
                 rawSourceRootDirectory
             );
 
@@ -56,9 +72,30 @@ implements ProductionSourceAssimilationService {
                 request
             );
 
-        return this.pipeline.assimilate(
-            asset
-        );
+        const result =
+            await this.pipeline.assimilate(
+                asset
+            );
+
+        if (
+            result.status === "completed" &&
+            result.extraction &&
+            result.segment &&
+            result.classification &&
+            result.transformation &&
+            result.derivedObject
+        ) {
+            await this.persistence.persist({
+                asset: result.asset,
+                extraction: result.extraction,
+                segment: result.segment,
+                classification: result.classification,
+                transformation: result.transformation,
+                derivedObject: result.derivedObject
+            });
+        }
+
+        return result;
 
     }
 

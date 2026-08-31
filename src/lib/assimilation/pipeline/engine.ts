@@ -1,3 +1,7 @@
+import {
+    ASSIMILATION_SCHEMA_VERSION
+} from "../types";
+
 import type {
     SourceAsset
 } from "../types";
@@ -65,6 +69,8 @@ implements AssimilationPipeline {
                     null,
                 classification:
                     null,
+                transformation:
+                    null,
                 derivedObject:
                     null
             };
@@ -102,6 +108,8 @@ implements AssimilationPipeline {
                     null,
                 classification:
                     null,
+                transformation:
+                    null,
                 derivedObject:
                     null
             };
@@ -137,6 +145,8 @@ implements AssimilationPipeline {
                 extraction,
                 segment,
                 classification:
+                    null,
+                transformation:
                     null,
                 derivedObject:
                     null
@@ -195,12 +205,45 @@ implements AssimilationPipeline {
                 extraction,
                 segment,
                 classification,
+                transformation:
+                    null,
                 derivedObject:
                     null
             };
 
         }
 
+
+        const transformation = {
+            id:
+                derivedObject.transformationId,
+            inputObjectIds: [
+                classification.id
+            ],
+            outputObjectIds: [
+                derivedObject.id
+            ],
+            transformationType:
+                "normalization" as const,
+            tool:
+                "system" as const,
+            instructions:
+                "Deterministically derive the governed object reference from the validated classification.",
+            confidence:
+                classification.confidence,
+            createdAt:
+                derivedObject.createdAt,
+            createdBy: {
+                type:
+                    "system" as const,
+                id:
+                    "assimilation:deterministic-derivation"
+            },
+            version:
+                1,
+            schemaVersion:
+                ASSIMILATION_SCHEMA_VERSION
+        };
 
         return {
             status:
@@ -211,6 +254,7 @@ implements AssimilationPipeline {
             extraction,
             segment,
             classification,
+            transformation,
             derivedObject
         };
 

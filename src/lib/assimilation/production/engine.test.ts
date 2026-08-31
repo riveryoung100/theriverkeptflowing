@@ -1339,3 +1339,43 @@ test(
 
     }
 );
+
+test(
+    "persists the complete generated record set after successful production assimilation",
+    async () => {
+        const rootDirectory = await mkdtemp(path.join(os.tmpdir(), "river-production-persistence-success-"));
+        try {
+            const service = createProductionSourceAssimilation(rootDirectory);
+            const result = await service.ingestAndAssimilate(createRequest());
+            assert.equal(result.status, "completed");
+            assert.ok(result.extraction); assert.ok(result.segment); assert.ok(result.classification); assert.ok(result.transformation); assert.ok(result.derivedObject);
+            const generatedRecordPath = path.join(rootDirectory, "generated-records", encodeURIComponent(result.asset.id) + ".json");
+            const generatedRecords = JSON.parse(await readFile(generatedRecordPath, "utf8"));
+            assert.deepEqual(generatedRecords, { asset: result.asset, extraction: result.extraction, segment: result.segment, classification: result.classification, transformation: result.transformation, derivedObject: result.derivedObject });
+        } finally {
+            await rm(rootDirectory, { recursive: true, force: true });
+        }
+    }
+);
+
+test(
+    "does not persist generated records when production assimilation fails",
+    async () => {
+        const rootDirectory = await mkdtemp(path.join(os.tmpdir(), "river-production-persistence-failure-"));
+        try {
+            const service = createProductionSourceAssimilation(rootDirectory);
+            const bytes = Uint8Array.from([0, 1, 2, 3, 255]);
+            const request = createRequest(bytes);
+            const result = await service.ingestAndAssimilate({ ...request, originalFilename: "unsupported-persistence-source.bin", mimeType: "application/octet-stream" });
+            assert.equal(result.status, "failed");
+            assert.equal(result.failedStage, "extraction");
+            assert.ok(result.asset.storage);
+            const rawSourcePath = path.join(rootDirectory, result.asset.storage.key);
+            await access(rawSourcePath);
+            const generatedRecordPath = path.join(rootDirectory, "generated-records", encodeURIComponent(result.asset.id) + ".json");
+            await assert.rejects(() => access(generatedRecordPath));
+        } finally {
+            await rm(rootDirectory, { recursive: true, force: true });
+        }
+    }
+);

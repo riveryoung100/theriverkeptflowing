@@ -1,0 +1,93 @@
+{
+    "version":  "1.0.0",
+    "phase":  "ASSIMILATION-001",
+    "title":  "Durable Assimilation Record Persistence Foundation",
+    "branch":  "assimilation-001-durable-assimilation-record-persistence-foundation",
+    "objective":  "Establish the authoritative durable persistence boundary for records produced by the existing deterministic Assimilation pipeline so generated extraction, segment, classification, transformation, and derived-object records can survive process memory while preserving existing identifiers, provenance, deterministic pipeline behavior, raw-source immutability, and subsystem authority boundaries.",
+    "architecturalContext":  [
+                                 "The production Assimilation pipeline already performs deterministic extraction, segmentation, classification, and derivation.",
+                                 "Filesystem ingestion already durably preserves immutable raw source bytes and source-asset storage references.",
+                                 "Generated Assimilation records currently remain in memory after pipeline completion despite architecture and ADR contracts describing them as durable records.",
+                                 "The existing Knowledge bridge consumes Assimilation records in memory, but Knowledge persistence and production Knowledge handoff are separate concerns and are excluded from this objective.",
+                                 "River Development Agent persistence systems establish the architectural convention of keeping persistence behind explicit boundaries rather than embedding storage authority into deterministic engines."
+                             ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "src/lib/assimilation/production/engine.ts",
+                                                  "src/lib/assimilation/production/engine.test.ts",
+                                                  "src/lib/assimilation/production/index.ts",
+                                                  "src/lib/assimilation/index.ts",
+                                                  "src/lib/assimilation/pipeline/engine.ts",
+                                                  "src/lib/assimilation/pipeline/types.ts"
+                                              ],
+                          "creatablePaths":  [
+                                                 "src/lib/assimilation/persistence/filesystem.ts",
+                                                 "src/lib/assimilation/persistence/filesystem.test.ts",
+                                                 "src/lib/assimilation/persistence/index.ts"
+                                             ],
+                          "excludedPaths":  [
+                                                "src/lib/assimilation/ingestion/filesystem.ts",
+                                                "src/lib/assimilation/extraction",
+                                                "src/lib/assimilation/segmentation",
+                                                "src/lib/assimilation/classification",
+                                                "src/lib/assimilation/derivation",
+                                                "src/lib/knowledge",
+                                                "src/lib/orchestration",
+                                                "tools/river-dev",
+                                                "src/components/Navbar.astro"
+                                            ]
+                      },
+    "acceptanceCriteria":  [
+                               "A dedicated Assimilation persistence boundary durably stores generated extraction, segment, classification, transformation, and derived-object records produced by a successful production Assimilation run.",
+                               "Persistence preserves the existing record identifiers and complete serialized record data without reconstructing or replacing deterministic pipeline outputs.",
+                               "Persisted generated records are separated from immutable raw-source storage and do not modify, overwrite, or reinterpret source bytes or source-asset provenance.",
+                               "Production Assimilation composes persistence after successful deterministic assimilation rather than granting persistence authority to extraction, segmentation, classification, derivation, or pipeline engines.",
+                               "A failed Assimilation pipeline does not persist a misleading complete generated-record set.",
+                               "Equivalent successful Assimilation results persist deterministically except for filesystem/environmental location details that are explicitly outside record identity.",
+                               "The persistence boundary rejects unsafe record paths or identifier-derived traversal rather than allowing records to escape the configured persistence root.",
+                               "Existing production Assimilation callers remain compatible unless an additive return value is required and proven necessary.",
+                               "Knowledge persistence, Knowledge Engine mutation, production Knowledge handoff, databases, remote object storage, model invocation, network access, commit, push, and deployment are not introduced.",
+                               "Tests prove durable round-trip storage, identifier preservation, raw-source separation, traversal safety, successful production integration, failure behavior, and existing Assimilation regression compatibility."
+                           ],
+    "requiredTests":  [
+                          "ASSIMILATION-001 focused persistence tests",
+                          "ASSIMILATION-001 production Assimilation integration tests",
+                          "Existing Assimilation regression suite",
+                          "TypeScript validation",
+                          "Production build validation"
+                      ],
+    "requiredQualityGates":  [
+                                 "expected-branch",
+                                 "scope-check",
+                                 "tests",
+                                 "typecheck",
+                                 "build-when-required",
+                                 "documentation",
+                                 "exports",
+                                 "secret-scan",
+                                 "review",
+                                 "staged-diff"
+                             ],
+    "approvedCommands":  [
+                             "typecheck",
+                             "build",
+                             "test-tsx",
+                             "git-diff",
+                             "git-status"
+                         ],
+    "repairLimits":  {
+                         "maximumAttempts":  3,
+                         "allowScopeExpansion":  false
+                     },
+    "approvalBoundaries":  [
+                               "Do not push.",
+                               "Do not deploy.",
+                               "Do not modify raw-source ingestion or immutable source storage.",
+                               "Do not add Knowledge persistence or production Knowledge handoff.",
+                               "Do not introduce database, remote storage, network, model, credential, execution-authorization, commit, or publication authority.",
+                               "Approved scope amendment: pipeline/engine.ts and pipeline/types.ts may change only to additively expose the authoritative TransformationRecord produced for derivation to production composition.",
+                               "Do not otherwise redesign deterministic extraction, segmentation, classification, derivation, or pipeline behavior.",
+                               "No further scope expansion is authorized."
+                           ],
+    "commitMessage":  "ASSIMILATION-001: Build durable assimilation record persistence foundation"
+}

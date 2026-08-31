@@ -1,0 +1,152 @@
+{
+    "version":  "1.0.0",
+    "planId":  "plan:5fcd4ea3053271040615cc16",
+    "phase":  "ASSIMILATION-001",
+    "branch":  "assimilation-001-durable-assimilation-record-persistence-foundation",
+    "commitMessage":  "ASSIMILATION-001: Build durable assimilation record persistence foundation",
+    "objective":  "Establish the authoritative durable persistence boundary for records produced by the existing deterministic Assimilation pipeline so generated extraction, segment, classification, transformation, and derived-object records can survive process memory while preserving existing identifiers, provenance, deterministic pipeline behavior, raw-source immutability, and subsystem authority boundaries.",
+    "generatedAt":  "2026-08-31T17:41:34.728Z",
+    "allowedPaths":  [
+                         "src/lib/assimilation/index.ts",
+                         "src/lib/assimilation/persistence/filesystem.test.ts",
+                         "src/lib/assimilation/persistence/filesystem.ts",
+                         "src/lib/assimilation/persistence/index.ts",
+                         "src/lib/assimilation/production/engine.test.ts",
+                         "src/lib/assimilation/production/engine.ts",
+                         "src/lib/assimilation/production/index.ts",
+                         "src/lib/assimilation/pipeline/engine.ts",
+                         "src/lib/assimilation/pipeline/types.ts"
+                     ],
+    "excludedPaths":  [
+                          "src/components/Navbar.astro",
+                          "src/lib/assimilation/classification",
+                          "src/lib/assimilation/derivation",
+                          "src/lib/assimilation/extraction",
+                          "src/lib/assimilation/ingestion/filesystem.ts",
+                          "src/lib/assimilation/segmentation",
+                          "src/lib/knowledge",
+                          "src/lib/orchestration",
+                          "tools/river-dev"
+                      ],
+    "acceptanceCriteria":  [
+                               "A dedicated Assimilation persistence boundary durably stores generated extraction, segment, classification, transformation, and derived-object records produced by a successful production Assimilation run.",
+                               "Persistence preserves the existing record identifiers and complete serialized record data without reconstructing or replacing deterministic pipeline outputs.",
+                               "Persisted generated records are separated from immutable raw-source storage and do not modify, overwrite, or reinterpret source bytes or source-asset provenance.",
+                               "Production Assimilation composes persistence after successful deterministic assimilation rather than granting persistence authority to extraction, segmentation, classification, derivation, or pipeline engines.",
+                               "A failed Assimilation pipeline does not persist a misleading complete generated-record set.",
+                               "Equivalent successful Assimilation results persist deterministically except for filesystem/environmental location details that are explicitly outside record identity.",
+                               "The persistence boundary rejects unsafe record paths or identifier-derived traversal rather than allowing records to escape the configured persistence root.",
+                               "Existing production Assimilation callers remain compatible unless an additive return value is required and proven necessary.",
+                               "Knowledge persistence, Knowledge Engine mutation, production Knowledge handoff, databases, remote object storage, model invocation, network access, commit, push, and deployment are not introduced.",
+                               "Tests prove durable round-trip storage, identifier preservation, raw-source separation, traversal safety, successful production integration, failure behavior, and existing Assimilation regression compatibility."
+                           ],
+    "requiredTests":  [
+                          "ASSIMILATION-001 focused persistence tests",
+                          "ASSIMILATION-001 production Assimilation integration tests",
+                          "Existing Assimilation regression suite",
+                          "TypeScript validation",
+                          "Production build validation"
+                      ],
+    "requiredQualityGates":  [
+                                 "expected-branch",
+                                 "scope-check",
+                                 "tests",
+                                 "typecheck",
+                                 "build-when-required",
+                                 "documentation",
+                                 "exports",
+                                 "secret-scan",
+                                 "review",
+                                 "staged-diff"
+                             ],
+    "approvedCommands":  [
+                             "typecheck",
+                             "build",
+                             "test-tsx",
+                             "git-diff",
+                             "git-status"
+                         ],
+    "maximumRepairAttempts":  3,
+    "scopeExpansionAllowed":  false,
+    "approvalBoundaries":  [
+                               "Do not push.",
+                               "Do not deploy.",
+                               "Do not modify raw-source ingestion or immutable source storage.",
+                               "Do not add Knowledge persistence or production Knowledge handoff.",
+                               "Do not introduce database, remote storage, network, model, credential, execution-authorization, commit, or publication authority.",
+                               "Approved scope amendment: pipeline/engine.ts and pipeline/types.ts may change only to additively expose the authoritative TransformationRecord produced for derivation to production composition.",
+                               "Do not otherwise redesign deterministic extraction, segmentation, classification, derivation, or pipeline behavior.",
+                               "No further scope expansion is authorized."
+                           ],
+    "planningIntelligence":  {
+                                 "version":  "1.0.0",
+                                 "decisions":  [
+                                                   {
+                                                       "path":  "src/lib/assimilation/production/engine.ts",
+                                                       "priority":  7,
+                                                       "reason":  "has repository-local dependencies; has repository-local dependents",
+                                                       "action":  "modify"
+                                                   },
+                                                   {
+                                                       "path":  "src/lib/assimilation/index.ts",
+                                                       "priority":  6,
+                                                       "reason":  "has repository-local dependencies",
+                                                       "action":  "modify"
+                                                   },
+                                                   {
+                                                       "path":  "src/lib/assimilation/production/engine.test.ts",
+                                                       "priority":  3,
+                                                       "reason":  "has repository-local dependencies",
+                                                       "action":  "modify"
+                                                   },
+                                                   {
+                                                       "path":  "src/lib/assimilation/production/index.ts",
+                                                       "priority":  3,
+                                                       "reason":  "has repository-local dependencies; has repository-local dependents",
+                                                       "action":  "modify"
+                                                   }
+                                               ]
+                             },
+    "steps":  [
+                  {
+                      "order":  1,
+                      "type":  "inspect",
+                      "description":  "Inspect the repository branch, commit, and working-tree state."
+                  },
+                  {
+                      "order":  2,
+                      "type":  "validate-scope",
+                      "description":  "Validate every proposed path and command against River Dev policy."
+                  },
+                  {
+                      "order":  3,
+                      "type":  "implement",
+                      "description":  "Implement the approved objective within 9 allowed paths, including the explicitly approved additive transformation-result pipeline seam."
+                  },
+                  {
+                      "order":  4,
+                      "type":  "test",
+                      "description":  "Run 5 required test targets."
+                  },
+                  {
+                      "order":  5,
+                      "type":  "typecheck",
+                      "description":  "Run River Dev and main-project typechecking."
+                  },
+                  {
+                      "order":  6,
+                      "type":  "review",
+                      "description":  "Review the final diff against scope, safety, documentation, exports, and acceptance criteria."
+                  },
+                  {
+                      "order":  7,
+                      "type":  "stage",
+                      "description":  "Stage only files explicitly permitted by the approved plan."
+                  },
+                  {
+                      "order":  8,
+                      "type":  "commit",
+                      "description":  "Create the local commit: ASSIMILATION-001: Build durable assimilation record persistence foundation"
+                  }
+              ]
+}
