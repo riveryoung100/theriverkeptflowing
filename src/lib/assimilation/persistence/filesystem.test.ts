@@ -1,11 +1,12 @@
 import assert from "node:assert/strict";
-import { access, mkdtemp, readFile, rm } from "node:fs/promises";
+import { access, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 
 import { createExtractionEngine, InMemoryRawSourceReader } from "../extraction/engine";
 import { sampleTextAsset } from "../fixtures/sampleTextAsset";
+import { createAssetId } from "../identifiers";
 import { createAssimilationPipeline } from "../pipeline/engine";
 import type { AssetId, SourceAsset, StorageReference } from "../types";
 import { createFileSystemAssimilationGeneratedRecordPersistence } from "./filesystem";
@@ -75,6 +76,98 @@ test("contains traversal-shaped asset identities inside generated-record storage
         const storedPath = await createFileSystemAssimilationGeneratedRecordPersistence(root).persist(hostile);
         assert.equal(storedPath, join(root, "generated-records", `${encodeURIComponent(hostile.asset.id)}.json`));
         await access(storedPath);
+        await assert.rejects(() => access(join(root, "outside.json")));
+    } finally { await rm(root, { recursive: true, force: true }); }
+});
+
+test("retrieves the complete durable generated record set without mutating it", async () => {
+    const root = await mkdtemp(join(tmpdir(), "assimilation-retrieval-"));
+    try {
+        const records = await createRecords();
+        const persistence = createFileSystemAssimilationGeneratedRecordPersistence(root);
+        const storedPath = await persistence.persist(records);
+        const before = await readFile(storedPath, "utf8");
+        const retrieved = await persistence.retrieve(records.asset.id);
+        assert.deepEqual(retrieved, records);
+        assert.equal(await readFile(storedPath, "utf8"), before);
+    } finally { await rm(root, { recursive: true, force: true }); }
+});
+
+test("fails closed when a durable generated record does not exist", async () => {
+    const root = await mkdtemp(join(tmpdir(), "assimilation-retrieval-"));
+    try {
+        const persistence = createFileSystemAssimilationGeneratedRecordPersistence(root);
+        await assert.rejects(() => persistence.retrieve("asset:missing" as AssetId));
+    } finally { await rm(root, { recursive: true, force: true }); }
+});
+
+test("fails closed when durable generated-record JSON is malformed", async () => {
+    const root = await mkdtemp(join(tmpdir(), "assimilation-retrieval-"));
+    try {
+        const records = await createRecords();
+        const persistence = createFileSystemAssimilationGeneratedRecordPersistence(root);
+        const storedPath = await persistence.persist(records);
+        await writeFile(storedPath, "{malformed", "utf8");
+        await assert.rejects(() => persistence.retrieve(records.asset.id), /malformed JSON/);
+    } finally { await rm(root, { recursive: true, force: true }); }
+});
+
+test("fails closed when a persisted generated record has an invalid schema version", async () => {
+    const root = await mkdtemp(join(tmpdir(), "assimilation-retrieval-"));
+    try {
+        const records = await createRecords();
+        const persistence = createFileSystemAssimilationGeneratedRecordPersistence(root);
+        const storedPath = await persistence.persist(records);
+        const corrupted = { ...records, transformation: { ...records.transformation, schemaVersion: "0.0.0" } };
+        await writeFile(storedPath, JSON.stringify(corrupted), "utf8");
+        await assert.rejects(() => persistence.retrieve(records.asset.id), /transformation record failed validation/);
+    } finally { await rm(root, { recursive: true, force: true }); }
+});
+
+test("fails closed when the requested asset identity differs from the persisted bundle identity", async () => {
+    const root = await mkdtemp(join(tmpdir(), "assimilation-retrieval-"));
+    try {
+        const records = await createRecords();
+        const requestedAssetId = createAssetId();
+        assert.notEqual(requestedAssetId, records.asset.id);
+        const targetPath = join(root, "generated-records", `${encodeURIComponent(requestedAssetId)}.json`);
+        await mkdir(join(root, "generated-records"), { recursive: true });
+        await writeFile(targetPath, JSON.stringify(records), "utf8");
+        const persistence = createFileSystemAssimilationGeneratedRecordPersistence(root);
+        await assert.rejects(() => persistence.retrieve(requestedAssetId), /inconsistent identity or provenance links/);
+    } finally { await rm(root, { recursive: true, force: true }); }
+});
+
+test("fails closed when transformation and derived-object provenance are inconsistent", async () => {
+    const root = await mkdtemp(join(tmpdir(), "assimilation-retrieval-"));
+    try {
+        const records = await createRecords();
+        const persistence = createFileSystemAssimilationGeneratedRecordPersistence(root);
+        const storedPath = await persistence.persist(records);
+        const corrupted = { ...records, transformation: { ...records.transformation, outputObjectIds: [] } };
+        await writeFile(storedPath, JSON.stringify(corrupted), "utf8");
+        await assert.rejects(() => persistence.retrieve(records.asset.id), /inconsistent identity or provenance links/);
+    } finally { await rm(root, { recursive: true, force: true }); }
+});
+
+test("contains traversal-shaped retrieval identities and remains read-only", async () => {
+    const root = await mkdtemp(join(tmpdir(), "assimilation-retrieval-"));
+    try {
+        const records = await createRecords();
+        const hostileAssetId = "asset:../../outside" as AssetId;
+        const hostile = {
+            ...records,
+            asset: { ...records.asset, id: hostileAssetId },
+            extraction: { ...records.extraction, assetId: hostileAssetId },
+            segment: { ...records.segment, assetId: hostileAssetId },
+            classification: { ...records.classification, assetId: hostileAssetId },
+            derivedObject: { ...records.derivedObject, assetId: hostileAssetId }
+        };
+        const persistence = createFileSystemAssimilationGeneratedRecordPersistence(root);
+        const storedPath = await persistence.persist(hostile);
+        const before = await readFile(storedPath, "utf8");
+        await assert.rejects(() => persistence.retrieve(hostileAssetId), /valid asset identifier/);
+        assert.equal(await readFile(storedPath, "utf8"), before);
         await assert.rejects(() => access(join(root, "outside.json")));
     } finally { await rm(root, { recursive: true, force: true }); }
 });

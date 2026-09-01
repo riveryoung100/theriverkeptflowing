@@ -1,0 +1,92 @@
+{
+    "version":  "1.0.0",
+    "phase":  "ASSIMILATION-002",
+    "title":  "Durable Assimilation Record Retrieval Foundation",
+    "branch":  "assimilation-002-durable-assimilation-record-retrieval-foundation",
+    "objective":  "Establish the authoritative durable retrieval boundary for generated Assimilation record sets persisted by ASSIMILATION-001 so complete records can be reopened after process termination while preserving exact identities, provenance, deterministic semantics, filesystem containment, raw-source immutability, and subsystem authority boundaries.",
+    "architecturalContext":  [
+                                 "ASSIMILATION-001 durably persists complete generated record sets under the dedicated generated-records filesystem boundary.",
+                                 "The existing persistence interface is write-only and currently exposes no authoritative retrieval operation.",
+                                 "Existing Assimilation validators cover source assets, extraction, segments, classifications, identifier formats, and derived-object derivation semantics, but there is no standalone TransformationRecord validator.",
+                                 "Retrieval must treat persisted JSON as untrusted durable data and fail closed rather than returning unchecked type casts.",
+                                 "Knowledge execution and orchestration remain separate downstream concerns and are excluded from this objective."
+                             ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "src/lib/assimilation/persistence/filesystem.ts",
+                                                  "src/lib/assimilation/persistence/filesystem.test.ts"
+                                              ],
+                          "creatablePaths":  [
+
+                                             ],
+                          "excludedPaths":  [
+                                                "src/lib/assimilation/production",
+                                                "src/lib/assimilation/pipeline",
+                                                "src/lib/assimilation/ingestion",
+                                                "src/lib/assimilation/extraction",
+                                                "src/lib/assimilation/segmentation",
+                                                "src/lib/assimilation/classification",
+                                                "src/lib/assimilation/derivation",
+                                                "src/lib/knowledge",
+                                                "src/lib/orchestration",
+                                                "tools/river-dev",
+                                                "src/components/Navbar.astro"
+                                            ]
+                      },
+    "acceptanceCriteria":  [
+                               "The existing generated-record persistence boundary exposes an additive typed retrieval operation by authoritative asset identifier.",
+                               "Retrieval resolves the same traversal-safe generated-record path convention established by ASSIMILATION-001.",
+                               "A successful retrieval returns the complete persisted asset, extraction, segment, classification, transformation, and derived-object record set while preserving exact identifiers and serialized values.",
+                               "Persisted JSON is parsed as untrusted data and validated before being returned as an AssimilationGeneratedRecordSet.",
+                               "Existing reusable Assimilation validators and identifier predicates are composed where applicable rather than duplicating subsystem validation logic.",
+                               "TransformationRecord structure and cross-record relationships are validated narrowly inside the persistence boundary without modifying deterministic pipeline or derivation behavior.",
+                               "Retrieval fails closed for missing files, malformed JSON, structurally invalid records, invalid identifiers, schema/version violations, or inconsistent cross-record identities/provenance.",
+                               "Retrieved asset identity must match the asset identifier requested by the caller.",
+                               "Transformation and derived-object linkage must remain internally consistent, including transformation output identity and derived-object transformation reference.",
+                               "Traversal-shaped asset identifiers remain contained within generated-record storage and cannot escape the configured persistence root.",
+                               "Retrieval is read-only and does not modify persisted generated records, immutable raw-source storage, or source-asset provenance.",
+                               "Existing persistence overwrite protection and ASSIMILATION-001 behavior remain unchanged.",
+                               "Knowledge execution, Knowledge persistence, production Knowledge handoff, orchestration changes, databases, remote storage, network access, model invocation, credential access, commit, push, and deployment are not introduced."
+                           ],
+    "requiredTests":  [
+                          "ASSIMILATION-002 focused persist-to-retrieve round-trip tests",
+                          "ASSIMILATION-002 missing, malformed, invalid, inconsistent, and traversal-safe retrieval tests",
+                          "Existing ASSIMILATION-001 persistence regression tests",
+                          "Existing Assimilation regression suite",
+                          "TypeScript validation",
+                          "Production build validation"
+                      ],
+    "requiredQualityGates":  [
+                                 "expected-branch",
+                                 "scope-check",
+                                 "tests",
+                                 "typecheck",
+                                 "build-when-required",
+                                 "documentation",
+                                 "exports",
+                                 "secret-scan",
+                                 "review",
+                                 "staged-diff"
+                             ],
+    "approvedCommands":  [
+                             "typecheck",
+                             "build",
+                             "test-tsx",
+                             "git-diff",
+                             "git-status"
+                         ],
+    "repairLimits":  {
+                         "maximumAttempts":  3,
+                         "allowScopeExpansion":  false
+                     },
+    "approvalBoundaries":  [
+                               "Do not push.",
+                               "Do not deploy.",
+                               "Do not modify raw-source ingestion or immutable source storage.",
+                               "Do not modify production Assimilation, pipeline, extraction, segmentation, classification, derivation, Knowledge, or orchestration boundaries.",
+                               "Do not introduce database, remote storage, network, model, credential, execution-authorization, commit, or publication authority.",
+                               "Do not weaken validation or return unchecked parsed JSON as trusted Assimilation records.",
+                               "No scope expansion is authorized."
+                           ],
+    "commitMessage":  "ASSIMILATION-002: Build durable assimilation record retrieval foundation"
+}
