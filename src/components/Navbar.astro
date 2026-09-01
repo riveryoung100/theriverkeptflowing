@@ -4,26 +4,9 @@ import SearchDialog from "./search/SearchDialog.astro";
 const pathname = Astro.url.pathname;
 
 const primaryLinks = [
-    {
-        href: "/journey/",
-        label: "Journey"
-    },
-    {
-        href: "/library/",
-        label: "Library"
-    },
-    {
-        href: "/topics/",
-        label: "Topics"
-    },
-    {
-        href: "/river-guides/",
-        label: "Guides"
-    },
-    {
-        href: "/services/",
-        label: "Services"
-    }
+    { label: "Explore", href: "/tributaries/" },
+    { label: "Guides", href: "/guides/" },
+    { label: "About", href: "/source/" }
 ];
 
 const isActive = (href: string) => {
@@ -275,19 +258,6 @@ const isActive = (href: string) => {
                 ) {
                     setMenuState(false);
                     toggle.focus();
-                }
-            }
-        );
-
-        window.addEventListener(
-            "resize",
-            () => {
-                if (
-                    window.innerWidth > 980 &&
-                    toggle.getAttribute("aria-expanded") ===
-                        "true"
-                ) {
-                    setMenuState(false);
                 }
             }
         );
