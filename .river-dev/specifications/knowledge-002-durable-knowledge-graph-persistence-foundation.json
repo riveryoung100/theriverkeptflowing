@@ -1,0 +1,82 @@
+{
+    "phase":  "KNOWLEDGE-002",
+    "title":  "Durable Knowledge Graph Persistence Foundation",
+    "baseline":  "1416a97769bf7285059cd8a920ae91fca84c918b",
+    "branch":  "knowledge-002-durable-knowledge-graph-persistence-foundation",
+    "objective":  "Establish a deterministic durable persistence and authoritative retrieval boundary for validated KnowledgeGraph aggregates while preserving the existing typed knowledge node, relation, claim, revision, and provenance contracts and keeping validateKnowledgeGraph as the semantic integrity authority.",
+    "architecturalDecision":  {
+                                  "durablePayload":  "KnowledgeGraph",
+                                  "rationale":  "The existing KnowledgeGraph is the canonical validated aggregate of the four durable Knowledge record categories. Persistence preserves those typed categories and their identities rather than introducing a second record model or an opaque replacement graph format.",
+                                  "persistenceIdentity":  "An explicit caller-supplied graph persistence key will identify the stored aggregate for this foundation phase because the existing KnowledgeGraph contract has no canonical graph identifier. KNOWLEDGE-002 must not invent or retrofit a graph ID into the core record model without separate architectural evidence.",
+                                  "validationAuthority":  "validateKnowledgeGraph remains the authoritative semantic and cross-record integrity validator for retrieved Knowledge graphs. Persistence may perform structural guards required to safely reach authoritative validation but must not duplicate Knowledge semantic rules."
+                              },
+    "approvedModifiablePaths":  [
+                                    "src/lib/knowledge/persistence/filesystem.ts",
+                                    "src/lib/knowledge/persistence/filesystem.test.ts",
+                                    "src/lib/knowledge/persistence/index.ts",
+                                    "src/lib/knowledge/index.ts"
+                                ],
+    "allowedBehavior":  [
+                            "Define a typed Knowledge graph persistence interface supporting persist and retrieve operations.",
+                            "Implement filesystem-backed durable persistence for an existing validated KnowledgeGraph aggregate.",
+                            "Require a non-empty caller-supplied persistence key and deterministically resolve it beneath a controlled Knowledge persistence root.",
+                            "Serialize the existing KnowledgeGraph shape without replacing or flattening its nodes, relations, claims, revisions, or provenance.",
+                            "Retrieve persisted JSON, fail closed on missing or malformed durable data, establish the minimum structural shape necessary for safe validation, and delegate semantic and cross-record integrity authority to validateKnowledgeGraph.",
+                            "Reject retrieval when authoritative Knowledge graph validation reports errors.",
+                            "Preserve deterministic round-trip identity and provenance for nodes, relations, claims, and revisions.",
+                            "Keep persistence local and filesystem-backed with no network, database, model, credential, deployment, publication, or autonomous execution authority.",
+                            "Expose the persistence surface additively through the Knowledge subsystem index."
+                        ],
+    "nonGoals":  [
+                     "Production integration with AssimilationKnowledgeExecution.",
+                     "Automatic persistence inside the Knowledge Engine.",
+                     "Knowledge Engine redesign.",
+                     "KnowledgeGraph core type redesign.",
+                     "Introduction of a canonical graph ID.",
+                     "Individual per-record files or a database schema.",
+                     "Knowledge query changes.",
+                     "Knowledge reasoning changes.",
+                     "Knowledge insight changes.",
+                     "Knowledge revision semantics changes.",
+                     "Assimilation changes.",
+                     "River Companion.",
+                     "CRM, content publishing, monetization, or sales systems.",
+                     "Remote storage, database, network, model, credentials, deployment, publication, or autonomous execution authority."
+                 ],
+    "acceptanceCriteria":  [
+                               "A validated KnowledgeGraph can be persisted under an explicit persistence key and retrieved deterministically.",
+                               "The retrieved graph preserves exact node, relation, claim, revision, and provenance data from the persisted aggregate.",
+                               "Persistence paths remain contained beneath the configured Knowledge persistence root.",
+                               "Malformed durable JSON fails closed.",
+                               "Persisted data that cannot safely represent the required KnowledgeGraph aggregate shape fails closed.",
+                               "A structurally readable graph that fails authoritative validateKnowledgeGraph semantic or cross-record validation fails closed.",
+                               "Persistence does not create a second semantic Knowledge validation authority.",
+                               "Existing Knowledge Engine, mapping, query, reasoning, and insight behavior remains unchanged.",
+                               "No production Assimilation-to-Knowledge persistence integration is introduced in this phase.",
+                               "No network, database, model, credential, deployment, publication, or autonomous execution authority is introduced."
+                           ],
+    "requiredTests":  [
+                          "Successful KnowledgeGraph persistence and retrieval round trip.",
+                          "Exact preservation of all four record categories and provenance.",
+                          "Deterministic persistence-key path behavior.",
+                          "Persistence-root containment / unsafe-key rejection.",
+                          "Missing durable record failure.",
+                          "Malformed JSON failure.",
+                          "Invalid structural graph-shape failure.",
+                          "Authoritative validateKnowledgeGraph rejection of semantically or cross-record invalid persisted graph.",
+                          "Existing Knowledge validation and engine regression suite.",
+                          "Existing Assimilation-to-Knowledge mapper/execution regression suite.",
+                          "Complete Knowledge test suite.",
+                          "TypeScript baseline regression check preserving only established pre-existing diagnostics.",
+                          "Production build."
+                      ],
+    "safeguards":  [
+                       "No commit until implementation, focused tests, complete Knowledge regression, TypeScript baseline check, production build, architecture review, diff review, and staged pre-commit gate pass.",
+                       "No push until the exact KNOWLEDGE-002 commit is independently verified and publication is explicitly reached.",
+                       "Do not modify Knowledge node, relation, claim, revision, provenance, query, reasoning, or insight contracts unless a failing authoritative test proves a required compatibility repair.",
+                       "Do not duplicate validateKnowledgeGraph semantic rules inside persistence.",
+                       "Do not access Assimilation generated-record files from Knowledge persistence.",
+                       "Do not add database, network, model, credential, process-execution, deployment, or publication authority."
+                   ],
+    "commitMessage":  "KNOWLEDGE-002: Build durable knowledge graph persistence foundation"
+}
