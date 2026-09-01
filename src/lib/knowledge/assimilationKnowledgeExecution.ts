@@ -1,10 +1,18 @@
-﻿import {
+import {
   createKnowledgeRequestFromAssimilation,
 } from "./assimilationKnowledgeMapper";
 
 import {
   DeterministicKnowledgeEngine,
 } from "./engine";
+
+import type {
+  AssetId,
+} from "../assimilation/types";
+
+import type {
+  ProductionSourceAssimilationService,
+} from "../assimilation/production/types";
 
 import type {
   AssimilationKnowledgeInput,
@@ -19,6 +27,11 @@ export interface AssimilationKnowledgeExecutionService {
   execute(
     input: AssimilationKnowledgeInput,
   ): KnowledgeEngineResult;
+
+  executeFromProductionRecords(
+    assetId: AssetId,
+    assimilation: Pick<ProductionSourceAssimilationService, "retrieveGeneratedRecords">,
+  ): Promise<KnowledgeEngineResult>;
 }
 
 export class AssimilationKnowledgeExecution
@@ -44,6 +57,18 @@ implements AssimilationKnowledgeExecutionService {
     return this.knowledgeEngine.build(
       request,
     );
+  }
+
+  public async executeFromProductionRecords(
+    assetId: AssetId,
+    assimilation: Pick<ProductionSourceAssimilationService, "retrieveGeneratedRecords">,
+  ): Promise<KnowledgeEngineResult> {
+    const records =
+      await assimilation.retrieveGeneratedRecords(
+        assetId,
+      );
+
+    return this.execute(records);
   }
 }
 

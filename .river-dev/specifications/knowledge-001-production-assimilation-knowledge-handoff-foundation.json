@@ -1,0 +1,91 @@
+{
+    "phase":  "KNOWLEDGE-001",
+    "title":  "Production Assimilation Knowledge Handoff Foundation",
+    "branch":  "knowledge-001-production-assimilation-knowledge-handoff-foundation",
+    "baseline":  "383d78458012a558c32f9a27759941ddc96025a5",
+    "objective":  "Connect the existing deterministic Assimilation-to-Knowledge mapping and execution boundary to authoritative production durable Assimilation records so validated persisted source lineage can enter the Knowledge Engine through an explicit production handoff without duplicating persistence validation or redesigning either subsystem.",
+    "architecturalContext":  [
+                                 "ASSIMILATION-001 established durable generated-record persistence after successful production assimilation.",
+                                 "ASSIMILATION-002 established authoritative validated durable generated-record retrieval.",
+                                 "ASSIMILATION-003 exposed that authoritative retrieval through the production Assimilation service.",
+                                 "ASSIMILATION-004 preserved direct source-classification provenance on DerivedObjectReference and strengthened durable cross-record provenance validation.",
+                                 "The Knowledge subsystem already contains deterministic Assimilation-to-Knowledge mapping and execution behavior; KNOWLEDGE-001 must integrate that existing boundary rather than create a second mapper or Knowledge Engine.",
+                                 "Knowledge provenance is required to retain source asset, derivative, segment, classification, and transformation identifiers.",
+                                 "Production durable Assimilation retrieval remains the authority for persisted generated-record parsing, structural validation, identifier validation, and cross-record provenance validation."
+                             ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "src/lib/knowledge/assimilationKnowledgeExecution.ts",
+                                                  "src/lib/knowledge/assimilationKnowledgeExecution.test.ts",
+                                                  "src/lib/knowledge/assimilationKnowledgeMapper.ts",
+                                                  "src/lib/knowledge/assimilationKnowledgeMapper.test.ts",
+                                                  "src/lib/knowledge/types.ts",
+                                                  "src/lib/knowledge/index.ts",
+                                                  "src/lib/assimilation/production/types.ts",
+                                                  "src/lib/assimilation/production/engine.ts",
+                                                  "src/lib/assimilation/production/engine.test.ts"
+                                              ],
+                          "allowedBehavior":  [
+                                                  "Add an explicit production handoff that consumes an authoritative AssimilationGeneratedRecordSet obtained through the production Assimilation retrieval boundary.",
+                                                  "Reuse the existing Assimilation-to-Knowledge mapper and deterministic Knowledge execution behavior rather than duplicate mapping logic.",
+                                                  "Preserve exact source asset, derivative, segment, classification, and transformation provenance from the validated durable Assimilation record set into Knowledge output.",
+                                                  "Delegate durable generated-record retrieval to the existing production Assimilation service and its persistence authority; do not independently read, parse, or validate generated-record JSON in Knowledge code.",
+                                                  "Keep the handoff deterministic and free of network, model, credential, deployment, or autonomous execution authority.",
+                                                  "Preserve existing ingestAndAssimilate and retrieveGeneratedRecords behavior and compatibility unless an additive typed production handoff surface is proven necessary.",
+                                                  "Fail closed when authoritative Assimilation retrieval fails or when existing Knowledge validation rejects mapped input."
+                                              ],
+                          "nonGoals":  [
+                                           "Knowledge persistence.",
+                                           "Knowledge Graph persistence.",
+                                           "Knowledge reasoning changes.",
+                                           "Knowledge insight changes.",
+                                           "River Companion implementation.",
+                                           "Content publishing or monetization implementation.",
+                                           "CRM or lead automation.",
+                                           "Assimilation persistence redesign.",
+                                           "Assimilation deterministic pipeline redesign.",
+                                           "Database or remote object storage.",
+                                           "Network or model invocation.",
+                                           "Credential access.",
+                                           "Deployment or publication authority."
+                                       ]
+                      },
+    "acceptanceCriteria":  [
+                               "A production caller can begin from an AssetId whose generated Assimilation records have already been durably persisted and produce deterministic Knowledge output through the existing Knowledge mapping/execution boundary.",
+                               "The handoff obtains AssimilationGeneratedRecordSet through the existing authoritative production retrieval operation rather than filesystem access or duplicate parsing.",
+                               "Knowledge provenance preserves the retrieved asset identifier, derived-object identifier, source segment identifier, source classification identifier, and transformation identifier.",
+                               "The existing mapper remains the single mapping authority for Assimilation-to-Knowledge conversion.",
+                               "Existing Knowledge validation remains authoritative for Knowledge record/graph validity.",
+                               "Missing, malformed, structurally invalid, or provenance-inconsistent persisted Assimilation records continue to fail closed through the existing retrieval authority.",
+                               "Existing production Assimilation behavior remains compatible.",
+                               "Existing deterministic Knowledge engine, query, reasoning, and insight behavior remains unchanged.",
+                               "No Knowledge persistence, model invocation, network access, credential access, commit, push, or deployment authority is introduced."
+                           ],
+    "requiredTests":  [
+                          "KNOWLEDGE-001 focused production handoff success test.",
+                          "KNOWLEDGE-001 exact provenance preservation test.",
+                          "KNOWLEDGE-001 authoritative retrieval delegation test.",
+                          "KNOWLEDGE-001 missing-record failure propagation test.",
+                          "KNOWLEDGE-001 fail-closed invalid/inconsistent durable-record propagation test where existing test seams permit deterministic proof without duplicating persistence validation.",
+                          "Existing Assimilation-to-Knowledge mapper and execution regression tests.",
+                          "Existing production Assimilation regression tests.",
+                          "Existing Knowledge regression suite.",
+                          "Existing Assimilation regression suite.",
+                          "Astro TypeScript regression check against known baseline diagnostics.",
+                          "Production build."
+                      ],
+    "safeguards":  [
+                       "Do not commit.",
+                       "Do not push.",
+                       "Do not deploy.",
+                       "Do not add a second Assimilation-to-Knowledge mapper.",
+                       "Do not independently access generated-record filesystem paths from Knowledge code.",
+                       "Do not duplicate Assimilation persistence parsing, structural validation, identifier validation, or cross-record provenance validation.",
+                       "Do not modify deterministic extraction, segmentation, classification, derivation, or pipeline behavior.",
+                       "Do not add Knowledge persistence.",
+                       "Do not modify Knowledge query, reasoning, or insight behavior.",
+                       "Do not introduce database, remote storage, network, model, credential, execution-authorization, commit, publication, or deployment authority.",
+                       "No scope expansion is authorized without repository evidence."
+                   ],
+    "commitMessage":  "KNOWLEDGE-001: Build production assimilation knowledge handoff foundation"
+}

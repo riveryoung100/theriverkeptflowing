@@ -1,9 +1,11 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
   sampleTextAsset,
   sampleTextClassification,
+  sampleTextExtraction,
+  sampleTextTransformation,
   sampleTextSegment,
 } from "../assimilation/fixtures/sampleTextAsset";
 
@@ -197,5 +199,79 @@ test(
       second,
       first,
     );
+  },
+);
+
+test(
+  "executes authoritative production assimilation records through the existing knowledge boundary",
+  async () => {
+    const input = createInput();
+    let retrievalCalls = 0;
+    const assimilation = {
+      async retrieveGeneratedRecords(assetId: import("../assimilation/types").AssetId) {
+        retrievalCalls += 1;
+        assert.equal(assetId, input.asset.id);
+        return {
+          asset: input.asset,
+          extraction: sampleTextExtraction,
+          segment: input.segment,
+          classification: input.classification,
+          transformation: sampleTextTransformation,
+          derivedObject: input.derivedObject,
+        };
+      },
+    };
+
+    const actual =
+      await createAssimilationKnowledgeExecution()
+        .executeFromProductionRecords(
+          input.asset.id,
+          assimilation,
+        );
+
+    const expected =
+      createAssimilationKnowledgeExecution()
+        .execute(input);
+
+    assert.equal(retrievalCalls, 1);
+    assert.deepEqual(actual, expected);
+    const source = actual.graph.nodes[0]?.provenance.sources[0];
+    assert.equal(source?.assetId, input.asset.id);
+    assert.equal(source?.derivativeId, input.derivedObject.id);
+    assert.deepEqual(source?.segmentIds, [input.segment.id]);
+    assert.deepEqual(source?.classificationIds, [input.classification.id]);
+    assert.deepEqual(source?.transformationIds, [input.derivedObject.transformationId]);
+  },
+);
+
+test(
+  "propagates authoritative production assimilation retrieval failure without executing knowledge",
+  async () => {
+    const input = createInput();
+    let knowledgeCalls = 0;
+    const knowledgeEngine = {
+      build() {
+        knowledgeCalls += 1;
+        throw new Error("knowledge must not execute");
+      },
+    };
+    const retrievalFailure = new Error("authoritative retrieval failed");
+    const assimilation = {
+      async retrieveGeneratedRecords() {
+        throw retrievalFailure;
+      },
+    };
+
+    await assert.rejects(
+      () =>
+        createAssimilationKnowledgeExecution(knowledgeEngine)
+          .executeFromProductionRecords(
+            input.asset.id,
+            assimilation,
+          ),
+      (error: unknown) => error === retrievalFailure,
+    );
+
+    assert.equal(knowledgeCalls, 0);
   },
 );
