@@ -1,0 +1,80 @@
+{
+    "phase":  "KNOWLEDGE-003",
+    "title":  "Production Durable Knowledge Graph Persistence Integration",
+    "branch":  "knowledge-003-production-durable-knowledge-graph-persistence-integration",
+    "objective":  "Integrate the existing production Assimilation-to-Knowledge execution boundary with the authoritative durable KnowledgeGraph persistence boundary so a successfully built validated Knowledge graph can be durably persisted under an explicit caller-supplied persistence key without granting storage authority to the deterministic Knowledge Engine, duplicating validation authority, or broadening orchestration authority.",
+    "architecturalDecision":  {
+                                  "compositionBoundary":  "AssimilationKnowledgeExecution remains the production composition boundary for authoritative Assimilation retrieval and deterministic Knowledge execution. KNOWLEDGE-003 adds explicit persistence composition there rather than inside DeterministicKnowledgeEngine or the orchestration layer.",
+                                  "durablePayload":  "Persist KnowledgeEngineResult.graph directly as the existing canonical KnowledgeGraph aggregate. Do not introduce a second graph model, record model, serialization model, or graph identifier.",
+                                  "persistenceIdentity":  "The caller supplies the explicit Knowledge graph persistence key established by KNOWLEDGE-002. AssetId is not silently redefined as a canonical KnowledgeGraph identifier.",
+                                  "validationAuthority":  "KnowledgeGraphPersistence remains authoritative for persistence-time graph validation and containment. AssimilationKnowledgeExecution delegates persistence and does not duplicate validateKnowledgeGraph semantic rules.",
+                                  "failureOrdering":  "Authoritative Assimilation retrieval must succeed before Knowledge execution; Knowledge execution must succeed before persistence; persistence failure propagates to the caller. No later stage runs after an earlier-stage failure."
+                              },
+    "modifiablePaths":  [
+                            "src/lib/knowledge/assimilationKnowledgeExecution.ts",
+                            "src/lib/knowledge/assimilationKnowledgeExecution.test.ts"
+                        ],
+    "allowedBehavior":  [
+                            "Extend AssimilationKnowledgeExecutionService with one explicit asynchronous production execution-and-persistence operation accepting AssetId, caller-supplied Knowledge graph persistence key, authoritative production Assimilation retrieval dependency, and KnowledgeGraphPersistence dependency.",
+                            "Delegate authoritative generated-record retrieval through ProductionSourceAssimilationService.retrieveGeneratedRecords exactly as the existing production handoff does.",
+                            "Reuse the existing execute path for Assimilation-to-Knowledge mapping and deterministic KnowledgeEngine execution rather than creating a second mapper or Knowledge execution path.",
+                            "After successful Knowledge execution, delegate result.graph directly to KnowledgeGraphPersistence.persist using the exact caller-supplied persistence key.",
+                            "Return the existing KnowledgeEngineResult unchanged after successful persistence.",
+                            "Propagate authoritative Assimilation retrieval failure without executing Knowledge or persistence.",
+                            "Propagate Knowledge execution failure without invoking persistence.",
+                            "Propagate KnowledgeGraphPersistence.persist failure rather than reporting successful production completion.",
+                            "Preserve existing execute and executeFromProductionRecords behavior unchanged.",
+                            "Keep production composition local and explicit with no orchestration, network, database, model, credential, deployment, publication, or autonomous execution authority."
+                        ],
+    "nonGoals":  [
+                     "Changes to DeterministicKnowledgeEngine or automatic persistence inside the Knowledge Engine.",
+                     "Changes to KnowledgeGraph, KnowledgeEngineResult, Knowledge node, relation, claim, revision, or provenance contracts.",
+                     "Changes to KNOWLEDGE-002 filesystem persistence implementation, path rules, serialization, retrieval, or validation behavior.",
+                     "Production KnowledgeGraph retrieval integration.",
+                     "Query, reasoning, insight, revision semantics, or Knowledge intelligence changes.",
+                     "Changes to ProductionSourceAssimilationService or Assimilation persistence.",
+                     "Changes to src/lib/orchestration or workflow handlers.",
+                     "Choosing AssetId as a canonical KnowledgeGraph identifier.",
+                     "Remote storage, databases, network access, model invocation, credential access, deployment, commit, push, or publication authority."
+                 ],
+    "acceptanceCriteria":  [
+                               "A caller can execute the authoritative production Assimilation-to-Knowledge path and persist the resulting KnowledgeEngineResult.graph through an injected KnowledgeGraphPersistence dependency under an explicit caller-supplied persistence key.",
+                               "The exact KnowledgeEngineResult returned by the existing Knowledge execution path is returned unchanged after successful persistence.",
+                               "Persistence receives exactly the caller-supplied key and exactly the graph contained in the successful KnowledgeEngineResult.",
+                               "Authoritative production Assimilation retrieval is invoked exactly once for the requested AssetId.",
+                               "Existing Assimilation-to-Knowledge mapping and KnowledgeEngine execution are reused rather than duplicated.",
+                               "Assimilation retrieval failure propagates and causes zero Knowledge execution and zero Knowledge persistence.",
+                               "Knowledge execution failure propagates and causes zero Knowledge persistence.",
+                               "Persistence failure propagates after successful retrieval and Knowledge execution.",
+                               "Existing execute and executeFromProductionRecords behavior remain unchanged.",
+                               "No persistence validation semantics are duplicated in AssimilationKnowledgeExecution.",
+                               "No deterministic Knowledge Engine, orchestration, query, reasoning, insight, Assimilation persistence, or filesystem persistence implementation behavior is redesigned.",
+                               "No forbidden network, database, model, credential, process execution, deployment, publication, or autonomous authority is introduced."
+                           ],
+    "requiredTests":  [
+                          "KNOWLEDGE-003 successful production retrieval-execution-persistence integration test.",
+                          "Exact caller-supplied persistence-key delegation test.",
+                          "Exact KnowledgeEngineResult.graph persistence delegation test.",
+                          "Exact unchanged KnowledgeEngineResult return test.",
+                          "Authoritative production Assimilation retrieval delegation count and AssetId test.",
+                          "Assimilation retrieval failure short-circuit test proving zero Knowledge execution and zero persistence.",
+                          "Knowledge execution failure short-circuit test proving zero persistence.",
+                          "Persistence failure propagation test.",
+                          "Existing KNOWLEDGE-001 executeFromProductionRecords regression tests.",
+                          "Existing KNOWLEDGE-002 persistence regression tests.",
+                          "Complete Knowledge test suite.",
+                          "Established TypeScript baseline verification with zero KNOWLEDGE-003 diagnostics.",
+                          "Production build."
+                      ],
+    "safeguards":  [
+                       "Do not commit until focused tests, complete Knowledge regression tests, established TypeScript baseline review, production build, architecture review, diff review, and exact staging review pass.",
+                       "Do not push until the exact KNOWLEDGE-003 commit is verified and the explicit publication gate is reached.",
+                       "Do not modify DeterministicKnowledgeEngine, KnowledgeGraph core types, KnowledgeGraphPersistence implementation, Assimilation production service, or orchestration handlers absent a failing authoritative test and a separately reviewed scope amendment.",
+                       "Do not duplicate validateKnowledgeGraph or persistence path/serialization validation inside AssimilationKnowledgeExecution.",
+                       "Do not silently derive the Knowledge persistence key from AssetId; preserve the explicit caller-supplied identity contract from KNOWLEDGE-002.",
+                       "Do not persist before successful Knowledge execution.",
+                       "Do not swallow retrieval, Knowledge execution, or persistence failures.",
+                       "Do not introduce network, database, model, credential, process execution, deployment, publication, or autonomous authority."
+                   ],
+    "commitMessage":  "KNOWLEDGE-003: Integrate production durable knowledge graph persistence"
+}

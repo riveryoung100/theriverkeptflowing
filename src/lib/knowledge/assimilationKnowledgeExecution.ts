@@ -19,6 +19,10 @@ import type {
 } from "./assimilationKnowledgeMapper";
 
 import type {
+  KnowledgeGraphPersistence,
+} from "./persistence";
+
+import type {
   KnowledgeEngine,
   KnowledgeEngineResult,
 } from "./types";
@@ -31,6 +35,13 @@ export interface AssimilationKnowledgeExecutionService {
   executeFromProductionRecords(
     assetId: AssetId,
     assimilation: Pick<ProductionSourceAssimilationService, "retrieveGeneratedRecords">,
+  ): Promise<KnowledgeEngineResult>;
+
+  executeAndPersistFromProductionRecords(
+    assetId: AssetId,
+    persistenceKey: string,
+    assimilation: Pick<ProductionSourceAssimilationService, "retrieveGeneratedRecords">,
+    persistence: Pick<KnowledgeGraphPersistence, "persist">,
   ): Promise<KnowledgeEngineResult>;
 }
 
@@ -69,6 +80,26 @@ implements AssimilationKnowledgeExecutionService {
       );
 
     return this.execute(records);
+  }
+
+  public async executeAndPersistFromProductionRecords(
+    assetId: AssetId,
+    persistenceKey: string,
+    assimilation: Pick<ProductionSourceAssimilationService, "retrieveGeneratedRecords">,
+    persistence: Pick<KnowledgeGraphPersistence, "persist">,
+  ): Promise<KnowledgeEngineResult> {
+    const result =
+      await this.executeFromProductionRecords(
+        assetId,
+        assimilation,
+      );
+
+    await persistence.persist(
+      persistenceKey,
+      result.graph,
+    );
+
+    return result;
   }
 }
 
