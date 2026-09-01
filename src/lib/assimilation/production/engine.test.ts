@@ -1359,6 +1359,52 @@ test(
 );
 
 test(
+    "retrieves the exact durable generated record set through the production service",
+    async () => {
+        const rootDirectory = await mkdtemp(path.join(os.tmpdir(), "river-production-retrieval-success-"));
+        try {
+            const service = createProductionSourceAssimilation(rootDirectory);
+            const result = await service.ingestAndAssimilate(createRequest());
+            assert.equal(result.status, "completed");
+            assert.ok(result.extraction);
+            assert.ok(result.segment);
+            assert.ok(result.classification);
+            assert.ok(result.transformation);
+            assert.ok(result.derivedObject);
+            const retrieved = await service.retrieveGeneratedRecords(result.asset.id);
+            assert.deepEqual(retrieved, {
+                asset: result.asset,
+                extraction: result.extraction,
+                segment: result.segment,
+                classification: result.classification,
+                transformation: result.transformation,
+                derivedObject: result.derivedObject
+            });
+            const generatedRecordPath = path.join(rootDirectory, "generated-records", encodeURIComponent(result.asset.id) + ".json");
+            const beforeRetrieval = await readFile(generatedRecordPath, "utf8");
+            await service.retrieveGeneratedRecords(result.asset.id);
+            const afterRetrieval = await readFile(generatedRecordPath, "utf8");
+            assert.equal(afterRetrieval, beforeRetrieval);
+        } finally {
+            await rm(rootDirectory, { recursive: true, force: true });
+        }
+    }
+);
+
+test(
+    "propagates missing durable generated-record failure through the production service",
+    async () => {
+        const rootDirectory = await mkdtemp(path.join(os.tmpdir(), "river-production-retrieval-missing-"));
+        try {
+            const service = createProductionSourceAssimilation(rootDirectory);
+            await assert.rejects(() => service.retrieveGeneratedRecords("asset:missing" as import("../types").AssetId));
+        } finally {
+            await rm(rootDirectory, { recursive: true, force: true });
+        }
+    }
+);
+
+test(
     "does not persist generated records when production assimilation fails",
     async () => {
         const rootDirectory = await mkdtemp(path.join(os.tmpdir(), "river-production-persistence-failure-"));

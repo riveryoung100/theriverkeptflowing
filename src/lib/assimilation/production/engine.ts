@@ -15,8 +15,13 @@ import {
 } from "../persistence";
 
 import type {
-    AssimilationGeneratedRecordPersistence
+    AssimilationGeneratedRecordPersistence,
+    AssimilationGeneratedRecordSet
 } from "../persistence";
+
+import type {
+    AssetId
+} from "../types";
 
 import type {
     AssimilationPipeline
@@ -96,6 +101,17 @@ implements ProductionSourceAssimilationService {
         }
 
         return result;
+
+    }
+
+    public async retrieveGeneratedRecords(
+        assetId:
+            AssetId
+    ): Promise<AssimilationGeneratedRecordSet> {
+
+        return this.persistence.retrieve(
+            assetId
+        );
 
     }
 

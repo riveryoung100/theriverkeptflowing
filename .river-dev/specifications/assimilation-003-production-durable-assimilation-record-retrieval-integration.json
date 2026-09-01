@@ -1,0 +1,92 @@
+{
+    "version":  "1.0.0",
+    "phase":  "ASSIMILATION-003",
+    "title":  "Production Durable Assimilation Record Retrieval Integration",
+    "branch":  "assimilation-003-production-durable-assimilation-record-retrieval-integration",
+    "objective":  "Expose the authoritative durable generated-record retrieval capability established by ASSIMILATION-002 through the existing production Assimilation service so production callers can reopen complete persisted Assimilation record sets by asset identifier without bypassing persistence validation, duplicating validation authority, modifying deterministic pipeline behavior, or weakening raw-source immutability and subsystem boundaries.",
+    "architecturalContext":  [
+                                 "ASSIMILATION-001 established durable generated-record persistence and production composition already persists complete successful Assimilation results.",
+                                 "ASSIMILATION-002 established a validated read-only retrieval operation on AssimilationGeneratedRecordPersistence that treats persisted JSON as untrusted durable data and returns a complete AssimilationGeneratedRecordSet only after validation.",
+                                 "ProductionSourceAssimilation already owns the generated-record persistence boundary but currently exposes only ingestAndAssimilate, leaving durable retrieval unavailable through the production service.",
+                                 "Current retrieval usage is confined to persistence tests; production callers have no production-level method for reopening a previously persisted generated-record set.",
+                                 "The persistence boundary remains the single authority for path containment, parsing, structural validation, identifier validation, and cross-record identity/provenance validation."
+                             ],
+    "approvedScope":  {
+                          "modifiablePaths":  [
+                                                  "src/lib/assimilation/production/types.ts",
+                                                  "src/lib/assimilation/production/engine.ts",
+                                                  "src/lib/assimilation/production/engine.test.ts"
+                                              ],
+                          "creatablePaths":  [
+
+                                             ],
+                          "excludedPaths":  [
+                                                "src/lib/assimilation/persistence",
+                                                "src/lib/assimilation/pipeline",
+                                                "src/lib/assimilation/ingestion",
+                                                "src/lib/assimilation/extraction",
+                                                "src/lib/assimilation/segmentation",
+                                                "src/lib/assimilation/classification",
+                                                "src/lib/assimilation/derivation",
+                                                "src/lib/knowledge",
+                                                "src/lib/orchestration",
+                                                "tools/river-dev",
+                                                "src/components/Navbar.astro"
+                                            ]
+                      },
+    "acceptanceCriteria":  [
+                               "ProductionSourceAssimilationService exposes an additive typed operation that retrieves a complete durable AssimilationGeneratedRecordSet by authoritative AssetId.",
+                               "ProductionSourceAssimilation delegates retrieval directly to its existing AssimilationGeneratedRecordPersistence dependency rather than reading generated-record files itself or duplicating persistence validation logic.",
+                               "The production retrieval operation returns the exact complete record set persisted for a successful production Assimilation run, preserving asset, extraction, segment, classification, transformation, and derived-object identities and values.",
+                               "Production retrieval inherits fail-closed behavior from the authoritative persistence boundary for missing records, malformed or invalid durable data, invalid asset identifiers, and inconsistent identity or provenance relationships.",
+                               "Production retrieval is read-only and does not modify generated records, immutable raw-source bytes, source-asset provenance, pipeline results, or persistence state.",
+                               "Existing ingestAndAssimilate behavior and successful generated-record persistence remain unchanged.",
+                               "No deterministic pipeline, ingestion, extraction, segmentation, classification, derivation, or persistence implementation behavior is redesigned or granted new authority.",
+                               "Existing public production exports remain compatible; no new export file is required unless compilation proves an additive export is necessary.",
+                               "Knowledge execution, Knowledge persistence, production Knowledge handoff, orchestration changes, databases, remote storage, network access, model invocation, credential access, commit, push, and deployment are not introduced.",
+                               "Tests prove successful production assimilate-persist-retrieve round trip, exact record identity/value preservation, production missing-record failure propagation, read-only retrieval behavior, and existing Assimilation regression compatibility."
+                           ],
+    "requiredTests":  [
+                          "ASSIMILATION-003 focused production durable retrieval integration tests",
+                          "Existing ASSIMILATION-002 retrieval regression tests",
+                          "Existing ASSIMILATION-001 production persistence regression tests",
+                          "Existing Assimilation regression suite",
+                          "TypeScript validation",
+                          "Production build validation"
+                      ],
+    "requiredQualityGates":  [
+                                 "expected-branch",
+                                 "scope-check",
+                                 "tests",
+                                 "typecheck",
+                                 "build-when-required",
+                                 "documentation",
+                                 "exports",
+                                 "secret-scan",
+                                 "review",
+                                 "staged-diff"
+                             ],
+    "approvedCommands":  [
+                             "typecheck",
+                             "build",
+                             "test-tsx",
+                             "git-diff",
+                             "git-status"
+                         ],
+    "repairLimits":  {
+                         "maximumAttempts":  3,
+                         "allowScopeExpansion":  false
+                     },
+    "approvalBoundaries":  [
+                               "Do not push.",
+                               "Do not deploy.",
+                               "Do not modify the persistence implementation or weaken ASSIMILATION-002 validation.",
+                               "Do not modify raw-source ingestion or immutable source storage.",
+                               "Do not modify deterministic pipeline, extraction, segmentation, classification, or derivation behavior.",
+                               "Do not add Knowledge persistence or production Knowledge handoff.",
+                               "Do not introduce database, remote storage, network, model, credential, execution-authorization, commit, or publication authority.",
+                               "Production retrieval must delegate to the existing authoritative persistence retrieve operation; do not independently parse or validate generated-record files in the production layer.",
+                               "No scope expansion is authorized."
+                           ],
+    "commitMessage":  "ASSIMILATION-003: Integrate production durable assimilation record retrieval"
+}
