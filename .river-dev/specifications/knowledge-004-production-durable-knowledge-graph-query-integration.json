@@ -1,0 +1,58 @@
+{
+    "id":  "KNOWLEDGE-004",
+    "title":  "Production Durable Knowledge Graph Query Integration",
+    "objective":  "Integrate authoritative durable KnowledgeGraph retrieval with the existing deterministic Knowledge query boundary so callers can execute validated queries against a persisted graph identified by an explicit caller-supplied persistence key, without granting persistence authority to the deterministic query engine or broadening reasoning, insight, orchestration, network, deployment, or publication authority.",
+    "baselineCommit":  "c1063ef725354b26585ea735e11af15d0440fb44",
+    "branch":  "knowledge-004-production-durable-knowledge-graph-query-integration",
+    "commitMessage":  "KNOWLEDGE-004: Integrate production durable knowledge graph querying",
+    "architecture":  {
+                         "compositionBoundary":  "A dedicated production Knowledge query composition boundary retrieves one authoritative durable KnowledgeGraph through KnowledgeGraphPersistence.retrieve and delegates that graph plus the caller-supplied KnowledgeQueryRequest to the existing KnowledgeQueryEngine.",
+                         "durableIdentity":  "The caller supplies the persistence key explicitly. The integration must not derive durable identity from AssetId, query contents, graph contents, timestamps, or any other hidden source.",
+                         "retrievalAuthority":  "KnowledgeGraphPersistence remains the sole durable graph retrieval authority and retains its existing retrieval-time structural and semantic validation.",
+                         "queryAuthority":  "KnowledgeQueryEngine remains the sole deterministic query execution authority. The production composition boundary must not duplicate query validation, filtering, searching, traversal, pagination, or result construction.",
+                         "failureOrdering":  "Durable retrieval occurs before query execution. Query execution must not occur when retrieval fails. Retrieval and query failures propagate unchanged."
+                     },
+    "allowedBehavior":  [
+                            "Add one narrowly scoped production Knowledge query composition service or equivalent boundary under src/lib/knowledge.",
+                            "Accept an explicit persistence key, a KnowledgeQueryRequest, a dependency limited to KnowledgeGraphPersistence.retrieve, and a dependency limited to KnowledgeQueryEngine.query.",
+                            "Retrieve the durable KnowledgeGraph exactly once for the caller-supplied persistence key.",
+                            "After successful retrieval, delegate the retrieved graph and original request to the existing KnowledgeQueryEngine exactly once.",
+                            "Return the existing KnowledgeQueryResult unchanged.",
+                            "Propagate persistence retrieval failure unchanged and execute zero queries after retrieval failure.",
+                            "Propagate Knowledge query failure unchanged."
+                        ],
+    "nonGoals":  [
+                     "No changes to deterministic Knowledge graph construction.",
+                     "No changes to Assimilation production services or KNOWLEDGE-001/003 production write path.",
+                     "No changes to KNOWLEDGE-002 persistence semantics, serialization, key validation, containment, or graph validation.",
+                     "No reasoning integration.",
+                     "No insight integration.",
+                     "No query algorithm, query validation, filtering, search, neighbor traversal, pagination, or result-shape changes.",
+                     "No graph mutation or revision integration.",
+                     "No AssetId-derived persistence identity.",
+                     "No remote database, network, credential, deployment, orchestration, or publication authority."
+                 ],
+    "acceptanceTests":  [
+                            "Successful durable retrieval followed by deterministic query execution returns the existing KnowledgeQueryResult unchanged.",
+                            "Persistence retrieve receives the exact caller-supplied persistence key exactly once.",
+                            "KnowledgeQueryEngine.query receives the exact retrieved KnowledgeGraph and exact caller-supplied KnowledgeQueryRequest exactly once.",
+                            "Retrieval failure propagates and KnowledgeQueryEngine.query is never called.",
+                            "Knowledge query failure propagates unchanged after one successful retrieval.",
+                            "Existing KNOWLEDGE-001, KNOWLEDGE-002, and KNOWLEDGE-003 tests remain passing.",
+                            "Existing query engine and validation regressions remain passing.",
+                            "Complete Knowledge regression suite passes.",
+                            "Established TypeScript baseline contains zero KNOWLEDGE-004 diagnostics.",
+                            "Production build passes."
+                        ],
+    "safeguards":  [
+                       "Do not commit until focused tests, complete Knowledge regressions, established TypeScript baseline, production build, architecture review, diff review, and exact staged review pass.",
+                       "Do not push until the exact commit is verified and a separate publication gate passes.",
+                       "Do not duplicate KnowledgeGraphPersistence retrieval validation.",
+                       "Do not duplicate KnowledgeQueryEngine request validation or query semantics.",
+                       "Do not derive or rewrite the persistence key.",
+                       "Do not mutate the retrieved KnowledgeGraph or caller request.",
+                       "Do not execute the query before successful durable retrieval.",
+                       "Do not swallow or replace retrieval/query failures.",
+                       "Do not add filesystem, serialization, network, credential, deployment, orchestration, or publication authority to the production query composition boundary."
+                   ]
+}
