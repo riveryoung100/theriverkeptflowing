@@ -85,6 +85,14 @@ test(
                 .sourceSegmentIds
         );
 
+        assert.deepEqual(
+            result.results[0]
+                .derivative
+                .sourceClassificationIds,
+            sampleDerivationRequest
+                .sourceClassificationIds
+        );
+
         assert.equal(
             result.results[0]
                 .derivative
@@ -149,6 +157,14 @@ test(
                 .sourceSegmentIds,
             sampleDerivationRequest
                 .sourceSegmentIds
+        );
+
+        assert.deepEqual(
+            result.results[0]
+                .derivative
+                .sourceClassificationIds,
+            sampleDerivationRequest
+                .sourceClassificationIds
         );
 
         assert.equal(

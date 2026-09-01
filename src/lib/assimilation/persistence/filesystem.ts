@@ -367,6 +367,8 @@ function assertDerivedObjectReference(
         value.objectId.trim().length === 0 ||
         !Array.isArray(value.sourceSegmentIds) ||
         !value.sourceSegmentIds.every(isSegmentId) ||
+        !Array.isArray(value.sourceClassificationIds) ||
+        !value.sourceClassificationIds.every(isClassificationId) ||
         !isTransformationId(value.transformationId) ||
         typeof value.reviewStatus !== "string" ||
         !reviewStatuses.has(value.reviewStatus) ||
@@ -446,6 +448,9 @@ function validateRetrievedRecordSet(
         records.derivedObject.assetId !== records.asset.id ||
         !records.derivedObject.sourceSegmentIds.includes(
             records.segment.id
+        ) ||
+        !records.derivedObject.sourceClassificationIds.includes(
+            records.classification.id
         ) ||
         records.transformation.id !==
             records.derivedObject.transformationId ||

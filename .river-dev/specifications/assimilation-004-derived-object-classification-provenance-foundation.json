@@ -1,0 +1,38 @@
+{
+    "phase":  "ASSIMILATION-004",
+    "title":  "Derived Object Classification Provenance Foundation",
+    "status":  "planned",
+    "baseline":  "00dea76daeff2e56e0e46e2763f5bb60ffa79927",
+    "objective":  "Preserve validated source-classification provenance directly on derived object references so derived knowledge retains an explicit, durable, and verifiable relationship to the classifications from which it was produced.",
+    "scope":  [
+                  "Extend DerivedObjectReference with direct source classification identifiers.",
+                  "Propagate validated sourceClassificationIds from derivation requests into generated derived object references.",
+                  "Preserve classification provenance through pipeline-generated derived objects.",
+                  "Validate persisted derived-object classification identifiers.",
+                  "Fail closed during durable retrieval when derived-object classification provenance is inconsistent with the persisted classification and transformation lineage.",
+                  "Add focused derivation, pipeline, persistence, and retrieval regression coverage."
+              ],
+    "nonGoals":  [
+                     "Knowledge Engine implementation.",
+                     "Knowledge Graph implementation.",
+                     "River Companion implementation.",
+                     "Content publishing or monetization implementation.",
+                     "CRM or lead automation.",
+                     "Changes to ingestion, extraction, segmentation, or classification behavior.",
+                     "Changes to production retrieval service authority beyond consuming the strengthened persisted contract."
+                 ],
+    "authority":  [
+                      "Derivation remains responsible for constructing derived object references from validated derivation requests.",
+                      "Persistence retrieval remains authoritative for validation of durable generated-record structure and cross-record identity/provenance.",
+                      "No duplicate production-service validation is introduced."
+                  ],
+    "candidatePaths":  [
+                           "src/lib/assimilation/types.ts",
+                           "src/lib/assimilation/derivation/engine.ts",
+                           "src/lib/assimilation/derivation/engine.test.ts",
+                           "src/lib/assimilation/derivation/fixtures/sampleDerivation.ts",
+                           "src/lib/assimilation/pipeline/engine.test.ts",
+                           "src/lib/assimilation/persistence/filesystem.ts",
+                           "src/lib/assimilation/persistence/filesystem.test.ts"
+                       ]
+}

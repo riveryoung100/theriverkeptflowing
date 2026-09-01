@@ -1,4 +1,4 @@
-﻿import {
+import {
     ASSIMILATION_SCHEMA_VERSION
 } from "../../types";
 
@@ -58,6 +58,10 @@ DerivationEngineResult = {
 
                 sourceSegmentIds: [
                     sampleTextSegment.id
+                ],
+
+                sourceClassificationIds: [
+                    sampleTextClassification.id
                 ],
 
                 transformationId:

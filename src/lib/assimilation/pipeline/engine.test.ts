@@ -134,6 +134,11 @@ test(
             result.transformation.id
         );
 
+        assert.deepEqual(
+            result.derivedObject.sourceClassificationIds,
+            [result.classification.id]
+        );
+
     }
 );
 

@@ -150,6 +150,9 @@ implements DerivationEngine {
                         sourceSegmentIds:
                             request.sourceSegmentIds,
 
+                sourceClassificationIds:
+                    request.sourceClassificationIds,
+
                         transformationId:
                             request.transformationId,
 
@@ -177,7 +180,7 @@ implements DerivationEngine {
             warnings:
                 request.sourceClassificationIds.length > 0
                     ? [
-                        "Classification references are preserved by the derivation request but are not yet represented directly on DerivedObjectReference."
+                        "Classification references are preserved directly on DerivedObjectReference."
                     ]
                     : []
 
@@ -270,6 +273,9 @@ implements DerivationEngine {
                         sourceSegmentIds:
                             request.sourceSegmentIds,
 
+                sourceClassificationIds:
+                    request.sourceClassificationIds,
+
                         transformationId:
                             request.transformationId,
 
@@ -297,7 +303,7 @@ implements DerivationEngine {
             warnings:
                 request.sourceClassificationIds.length > 0
                     ? [
-                        "Classification references are preserved by the derivation request but are not yet represented directly on DerivedObjectReference."
+                        "Classification references are preserved directly on DerivedObjectReference."
                     ]
                     : []
 

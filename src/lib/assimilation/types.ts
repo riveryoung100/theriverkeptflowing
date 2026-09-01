@@ -462,6 +462,9 @@ export interface DerivedObjectReference {
     readonly sourceSegmentIds:
         readonly SegmentId[];
 
+    readonly sourceClassificationIds:
+        readonly ClassificationId[];
+
     readonly transformationId:
         TransformationId;
 

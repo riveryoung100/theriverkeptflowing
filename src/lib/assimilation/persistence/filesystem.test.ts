@@ -43,6 +43,7 @@ test("persists the complete generated record set with exact identities and round
         assert.equal(stored.derivedObject.id, records.derivedObject.id);
         assert.equal(stored.transformation.outputObjectIds[0], records.derivedObject.id);
         assert.equal(stored.derivedObject.transformationId, records.transformation.id);
+        assert.deepEqual(stored.derivedObject.sourceClassificationIds, [records.classification.id]);
     } finally { await rm(root, { recursive: true, force: true }); }
 });
 
@@ -135,6 +136,18 @@ test("fails closed when the requested asset identity differs from the persisted 
         await writeFile(targetPath, JSON.stringify(records), "utf8");
         const persistence = createFileSystemAssimilationGeneratedRecordPersistence(root);
         await assert.rejects(() => persistence.retrieve(requestedAssetId), /inconsistent identity or provenance links/);
+    } finally { await rm(root, { recursive: true, force: true }); }
+});
+
+test("fails closed when derived-object classification provenance is inconsistent", async () => {
+    const root = await mkdtemp(join(tmpdir(), "assimilation-retrieval-"));
+    try {
+        const records = await createRecords();
+        const persistence = createFileSystemAssimilationGeneratedRecordPersistence(root);
+        const storedPath = await persistence.persist(records);
+        const corrupted = { ...records, derivedObject: { ...records.derivedObject, sourceClassificationIds: [] } };
+        await writeFile(storedPath, JSON.stringify(corrupted), "utf8");
+        await assert.rejects(() => persistence.retrieve(records.asset.id), /inconsistent identity or provenance links/);
     } finally { await rm(root, { recursive: true, force: true }); }
 });
 
