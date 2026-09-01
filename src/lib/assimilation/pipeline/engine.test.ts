@@ -10,6 +10,10 @@ import {
     sampleTextAsset
 } from "../fixtures/sampleTextAsset";
 
+import {
+    isTransformationId
+} from "../identifiers";
+
 import type {
     SourceAsset,
     StorageReference
@@ -114,6 +118,20 @@ test(
         assert.equal(
             result.classification.assetId,
             pipelineAsset.id
+        );
+
+        assert.ok(
+            result.transformation
+        );
+
+        assert.equal(
+            isTransformationId(result.transformation.id),
+            true
+        );
+
+        assert.equal(
+            result.derivedObject.transformationId,
+            result.transformation.id
         );
 
     }

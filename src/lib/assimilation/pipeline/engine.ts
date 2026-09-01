@@ -6,6 +6,10 @@ import type {
     SourceAsset
 } from "../types";
 
+import {
+    createTransformationId
+} from "../identifiers";
+
 import type {
     ExtractionEngine
 } from "../extraction/types";
@@ -176,7 +180,7 @@ implements AssimilationPipeline {
                             classification.id
                         ],
                         transformationId:
-                            `transformation:${classification.id}`,
+                            createTransformationId(),
                         requestedAt:
                             classification.classifiedAt
                     },
