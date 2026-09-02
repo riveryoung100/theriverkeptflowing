@@ -6,5 +6,6 @@ export * from "./query";
 export * from "./productionKnowledgeQueryExecution";
 export * from "./reasoning";
 export * from "./productionKnowledgeReasoningExecution";
+export * from "./productionKnowledgeInsightExecution";
 export * from "./insight";
 export * from "./persistence";

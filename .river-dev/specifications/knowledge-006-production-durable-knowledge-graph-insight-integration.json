@@ -1,0 +1,22 @@
+{
+  "id": "KNOWLEDGE-006",
+  "title": "Production Durable Knowledge Graph Insight Integration",
+  "objective": "Integrate authoritative durable KnowledgeGraph retrieval with deterministic Knowledge reasoning and deterministic Knowledge insight creation so callers can request an insight against a persisted graph without supplying or replacing the authoritative reasoning result.",
+  "architecture": [
+    "Accept an explicit caller persistence key.",
+    "Accept an existing KnowledgeReasoningRequest.",
+    "Accept caller-owned KnowledgeInsightRequest metadata without its reasoning field.",
+    "Retrieve the durable KnowledgeGraph exactly once through KnowledgeGraphPersistence.retrieve.",
+    "Execute reasoning exactly once against the retrieved graph.",
+    "Construct the KnowledgeInsightRequest using the exact reasoning result produced by that execution.",
+    "Execute insight creation exactly once and return the existing KnowledgeInsightEngineResult unchanged.",
+    "Do not grant persistence authority to reasoning or insight engines.",
+    "Do not grant insight callers authority to inject a reasoning result.",
+    "Do not broaden network, deployment, publication, orchestration, or unrelated persistence authority."
+  ],
+  "failureSemantics": [
+    "Retrieval failure propagates unchanged and prevents reasoning and insight creation.",
+    "Reasoning failure propagates unchanged and prevents insight creation.",
+    "Insight failure propagates unchanged after exactly one successful retrieval and one successful reasoning execution."
+  ]
+}
