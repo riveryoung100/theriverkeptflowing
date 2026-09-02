@@ -1,0 +1,57 @@
+{
+    "id":  "KNOWLEDGE-005",
+    "title":  "Production Durable Knowledge Graph Reasoning Integration",
+    "objective":  "Integrate authoritative durable KnowledgeGraph retrieval with the existing deterministic Knowledge reasoning boundary so callers can execute validated reasoning requests against a persisted graph identified by an explicit caller-supplied persistence key, without granting persistence authority to the deterministic reasoning engine or broadening insight, orchestration, network, deployment, or publication authority.",
+    "architecture":  {
+                         "compositionBoundary":  "Add one narrowly scoped production Knowledge reasoning composition boundary under src/lib/knowledge.",
+                         "retrievalAuthority":  "KnowledgeGraphPersistence remains the sole durable graph retrieval and retrieval-time validation authority.",
+                         "reasoningAuthority":  "KnowledgeReasoningEngine remains the sole deterministic reasoning execution authority.",
+                         "identity":  "The caller supplies the persistence key explicitly. The production composition boundary must not derive or rewrite durable identity from AssetId, the reasoning request, graph content, timestamps, or hidden state.",
+                         "delegation":  "After successful durable retrieval, pass the exact retrieved KnowledgeGraph and exact caller-supplied KnowledgeReasoningRequest to KnowledgeReasoningEngine.reason. The composition boundary must not duplicate reasoning validation, traversal, evidence construction, conclusion construction, or result construction.",
+                         "failureOrdering":  "Durable retrieval occurs before reasoning execution. Reasoning must not occur when retrieval fails. Retrieval and reasoning failures propagate unchanged."
+                     },
+    "allowedBehavior":  [
+                            "Add one narrowly scoped production Knowledge reasoning composition service or equivalent boundary under src/lib/knowledge.",
+                            "Accept an explicit persistence key, a KnowledgeReasoningRequest, a dependency limited to KnowledgeGraphPersistence.retrieve, and a dependency limited to KnowledgeReasoningEngine.reason.",
+                            "Retrieve the durable KnowledgeGraph exactly once for the caller-supplied persistence key.",
+                            "After successful retrieval, delegate the retrieved graph and original request to the existing KnowledgeReasoningEngine exactly once.",
+                            "Return the existing KnowledgeReasoningResult unchanged.",
+                            "Propagate persistence retrieval failure unchanged and execute zero reasoning operations after retrieval failure.",
+                            "Propagate Knowledge reasoning failure unchanged."
+                        ],
+    "nonGoals":  [
+                     "No changes to deterministic Knowledge graph construction.",
+                     "No changes to Assimilation production services or KNOWLEDGE-001/003 production write path.",
+                     "No changes to KNOWLEDGE-002 persistence semantics, serialization, key validation, containment, or graph validation.",
+                     "No changes to KNOWLEDGE-004 production query integration.",
+                     "No insight integration.",
+                     "No reasoning algorithm, reasoning validation, traversal, evidence construction, conclusion construction, or result-shape changes.",
+                     "No graph mutation or revision integration.",
+                     "No AssetId-derived persistence identity.",
+                     "No remote database, network, credential, deployment, orchestration, or publication authority."
+                 ],
+    "acceptanceTests":  [
+                            "Successful durable retrieval followed by deterministic reasoning returns the existing KnowledgeReasoningResult unchanged.",
+                            "Persistence retrieve receives the exact caller-supplied persistence key exactly once.",
+                            "KnowledgeReasoningEngine.reason receives the exact retrieved KnowledgeGraph and exact caller-supplied KnowledgeReasoningRequest exactly once.",
+                            "Retrieval failure propagates and KnowledgeReasoningEngine.reason is never called.",
+                            "Knowledge reasoning failure propagates unchanged after one successful retrieval.",
+                            "Existing KNOWLEDGE-001, KNOWLEDGE-002, KNOWLEDGE-003, and KNOWLEDGE-004 tests remain passing.",
+                            "Existing reasoning engine and validation regressions remain passing.",
+                            "Complete Knowledge regression suite passes.",
+                            "Established TypeScript baseline contains zero KNOWLEDGE-005 diagnostics.",
+                            "Production build passes."
+                        ],
+    "safeguards":  [
+                       "Do not commit until focused tests, complete Knowledge regressions, established TypeScript baseline, production build, architecture review, diff review, and exact staged review pass.",
+                       "Do not push until the exact commit is verified and a separate publication gate passes.",
+                       "Do not duplicate KnowledgeGraphPersistence retrieval validation.",
+                       "Do not duplicate KnowledgeReasoningEngine request validation or reasoning semantics.",
+                       "Do not derive or rewrite the persistence key.",
+                       "Do not mutate the retrieved KnowledgeGraph or caller request.",
+                       "Do not execute reasoning before successful durable retrieval.",
+                       "Do not swallow or replace retrieval/reasoning failures.",
+                       "Do not add filesystem, serialization, network, credential, deployment, orchestration, or publication authority to the production reasoning composition boundary."
+                   ],
+    "commitMessage":  "KNOWLEDGE-005: Integrate production durable knowledge graph reasoning"
+}
