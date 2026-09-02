@@ -21625,3 +21625,348 @@ button {
 }
 
 /* END WEBSITE 4.0 — DESIGN-001 AUTHORITATIVE RESPONSIVE SYSTEM */
+
+
+/* =========================================================
+   DESIGN-002 AUTHORITATIVE SITE-WIDE RESPONSIVE CONSISTENCY
+   Shared responsive authority for production pages outside
+   the DESIGN-001 homepage system.
+   ========================================================= */
+
+/* ---------- Shared production safety ---------- */
+
+html,
+body {
+    max-width: 100%;
+    overflow-x: clip;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+    max-width: 100%;
+}
+
+img,
+video {
+    height: auto;
+}
+
+:where(
+    .reading-shell,
+    .reading-page-shell,
+    .section-shell,
+    .contribute-shell,
+    .library-page,
+    .topics-page,
+    .topic-archive-page
+) {
+    max-width: 100%;
+}
+
+:where(
+    .content-entry,
+    .content-entry__body,
+    .library-entry-card,
+    .guide-category-card,
+    .published-guide-card,
+    .topic-card,
+    .fund-card,
+    .commitment-card
+) {
+    min-width: 0;
+}
+
+:where(
+    .content-entry,
+    .content-entry__body,
+    .library-entry-card,
+    .guide-category-card,
+    .published-guide-card,
+    .topic-card,
+    .fund-card,
+    .commitment-card
+) :where(
+    h1,
+    h2,
+    h3,
+    h4,
+    p,
+    li,
+    a
+) {
+    overflow-wrap: anywhere;
+}
+
+/* ---------- Tablet consistency ---------- */
+
+@media (max-width: 900px) {
+
+    :where(
+        .reading-shell,
+        .section-shell
+    ) {
+        width: min(calc(100% - 40px), 1180px);
+        margin-inline: auto;
+    }
+
+    :where(
+        .library-grid,
+        .topics-grid,
+        .topic-content-grid,
+        .fund-grid,
+        .commitment-grid,
+        .current-workbench-grid,
+        .published-guides-grid
+    ) {
+        gap: clamp(1rem, 3vw, 1.75rem);
+    }
+
+    :where(
+        .guide-category-card,
+        .published-guide-card,
+        .library-entry-card,
+        .fund-card,
+        .commitment-card,
+        .topic-card
+    ) {
+        max-width: 100%;
+    }
+}
+
+/* ---------- Mobile production authority ---------- */
+
+@media (max-width: 760px) {
+
+    :where(
+        .reading-shell,
+        .section-shell
+    ) {
+        width: min(calc(100% - 32px), 1180px);
+        margin-inline: auto;
+    }
+
+    .reading-page-shell {
+        width: min(calc(100% - 32px), 900px);
+    }
+
+    :where(
+        .library-page,
+        .topics-page,
+        .topic-archive-page
+    ) {
+        width: min(calc(100% - 32px), 1180px);
+        margin-inline: auto;
+    }
+
+    :where(
+        .library-grid,
+        .topics-grid,
+        .topic-content-grid,
+        .fund-grid,
+        .commitment-grid,
+        .current-workbench-grid,
+        .published-guides-grid,
+        .tributaries-grid,
+        .tributaries-work-grid,
+        .tributaries-navigation-grid,
+        .tributaries-principles-grid,
+        .tributaries-connection-grid
+    ) {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    :where(
+        .library-entry-card,
+        .guide-category-card,
+        .published-guide-card,
+        .fund-card,
+        .commitment-card,
+        .topic-card,
+        .topic-card > a,
+        .tributary-card,
+        .tributaries-work-card,
+        .tributaries-navigation-card,
+        .tributaries-principle-card
+    ) {
+        min-height: 0;
+        height: auto;
+    }
+
+    :where(
+        .page-hero h1,
+        .current-hero h1,
+        .tributaries-hero h1,
+        .source-hero h1,
+        .letters-hero h1,
+        .journey-hero h1
+    ) {
+        font-size: clamp(2.75rem, 12vw, 4.5rem);
+        line-height: 0.98;
+        text-wrap: balance;
+    }
+
+    :where(
+        .reading-shell,
+        .section-shell,
+        .reading-page-shell,
+        .library-page,
+        .contribute-page,
+        .partner-page,
+        .topics-page,
+        .topic-archive-page,
+        .knowledge-page,
+        .saved-library-page,
+        .series-page
+    ) :where(h2) {
+        text-wrap: balance;
+    }
+
+    :where(
+        .current-opening,
+        .current-snapshot,
+        .current-reality,
+        .current-life,
+        .current-questions,
+        .current-commitments,
+        .current-vision,
+        .current-workbench,
+        .current-navigation,
+        .tributaries-opening,
+        .tributaries-map,
+        .tributaries-principles,
+        .tributaries-work,
+        .tributaries-navigation,
+        .tributaries-final
+    ) {
+        padding-top: clamp(4.5rem, 14vw, 6rem);
+        padding-bottom: clamp(4.5rem, 14vw, 6rem);
+    }
+
+    :where(
+        a,
+        button,
+        input,
+        select,
+        textarea
+    ) {
+        max-width: 100%;
+    }
+
+    :where(
+        .page-actions a,
+        .current-hero-actions .button,
+        .tributaries-hero-actions a,
+        .tributaries-navigation-card a,
+        .library-entry-card__link,
+        .payment-button
+    ) {
+        min-height: 44px;
+    }
+
+    .content-entry__body {
+        max-width: 100%;
+    }
+
+    .content-entry__body :where(
+        pre,
+        table
+    ) {
+        max-width: 100%;
+        overflow-x: auto;
+    }
+
+    .content-entry__body pre {
+        white-space: pre;
+    }
+
+    .content-entry__body :where(
+        img,
+        iframe,
+        video
+    ) {
+        max-width: 100%;
+    }
+
+    .contribute-page .fund-card,
+    .partner-page :where(
+        .partner-card,
+        .partner-option
+    ) {
+        min-height: 0;
+        height: auto;
+    }
+}
+
+/* ---------- Small-phone refinement ---------- */
+
+@media (max-width: 480px) {
+
+    :where(
+        .reading-shell,
+        .section-shell
+    ) {
+        width: min(calc(100% - 24px), 1180px);
+    }
+
+    .reading-page-shell {
+        width: min(calc(100% - 24px), 900px);
+    }
+
+    :where(
+        .library-page,
+        .topics-page,
+        .topic-archive-page
+    ) {
+        width: min(calc(100% - 24px), 1180px);
+    }
+
+    :where(
+        .guide-category-card,
+        .published-guide-card,
+        .library-entry-card,
+        .fund-card,
+        .commitment-card,
+        .topic-card > a,
+        .tributary-card,
+        .tributaries-work-card,
+        .tributaries-navigation-card,
+        .tributaries-principle-card
+    ) {
+        padding-left: clamp(1.25rem, 6vw, 1.75rem);
+        padding-right: clamp(1.25rem, 6vw, 1.75rem);
+    }
+
+    :where(
+        .page-hero h1,
+        .current-hero h1,
+        .tributaries-hero h1,
+        .source-hero h1,
+        .letters-hero h1,
+        .journey-hero h1
+    ) {
+        font-size: clamp(2.5rem, 13vw, 3.75rem);
+    }
+}
+
+/* ---------- Motion accessibility ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    :where(
+        .library-entry-card,
+        .guide-category-card,
+        .published-guide-card,
+        .fund-card,
+        .commitment-card,
+        .topic-card,
+        .tributary-card,
+        .tributaries-work-card,
+        .tributaries-navigation-card,
+        .tributaries-principle-card
+    ) {
+        transition: none;
+    }
+}
