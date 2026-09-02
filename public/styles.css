@@ -21229,3 +21229,399 @@ button {
 
 
 /* END WEBSITE 4.0 — HOMEPAGE VISUAL RESTORATION 002 */
+
+
+/* ============================================================
+   WEBSITE 4.0 — DESIGN-001 AUTHORITATIVE RESPONSIVE SYSTEM
+   Mobile navigation + contrast + proportion + vertical rhythm
+   This final layer intentionally supersedes conflicting legacy
+   responsive declarations without altering desktop V4.
+   ============================================================ */
+
+
+/* ---------------------------------------------------------
+   01 — RESPONSIVE HEADER AUTHORITY
+   --------------------------------------------------------- */
+
+@media (min-width: 1181px) {
+
+    .river-primary-nav {
+        display: flex;
+    }
+
+    .river-menu-toggle {
+        display: none;
+    }
+
+}
+
+
+@media (min-width: 761px) and (max-width: 1180px) {
+
+    .river-primary-nav {
+        display: flex;
+    }
+
+    .river-menu-toggle {
+        display: none;
+    }
+
+}
+
+
+@media (max-width: 760px) {
+
+    :root {
+        --river-header-height: 68px;
+    }
+
+    .river-header {
+        position: sticky;
+        top: 0;
+        z-index: 2000;
+    }
+
+    .river-header__shell {
+        min-height: var(--river-header-height);
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 0.75rem;
+        padding-inline: clamp(1rem, 4.5vw, 1.4rem);
+    }
+
+    .river-primary-nav {
+        display: none;
+    }
+
+    .river-menu-toggle {
+        display: inline-flex;
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 44px;
+        cursor: pointer;
+        touch-action: manipulation;
+    }
+
+    .river-mobile-nav:not([hidden]) {
+        display: block;
+    }
+
+    .river-mobile-nav[hidden] {
+        display: none !important;
+    }
+
+    .river-mobile-nav {
+        max-height: calc(100dvh - var(--river-header-height));
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .river-mobile-nav__inner {
+        width: min(100% - 2rem, 42rem);
+        margin-inline: auto;
+        padding-top: clamp(1.25rem, 5vw, 2rem);
+        padding-bottom: max(2rem, env(safe-area-inset-bottom));
+    }
+
+    .river-mobile-nav a {
+        min-height: 44px;
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   02 — HOMEPAGE MOBILE CANVAS
+   --------------------------------------------------------- */
+
+@media (max-width: 680px) {
+
+    .home-v4 {
+        overflow-x: clip;
+    }
+
+    .home-v4 :where(
+        .section-shell,
+        .home-shell
+    ) {
+        width: min(100% - 2rem, 44rem);
+        margin-inline: auto;
+    }
+
+    .home-v4 :where(
+        .intro-section,
+        .home-ecosystem,
+        .paths-section,
+        .mission-section,
+        .tributaries-section,
+        .latest-section,
+        .invitation-section
+    ) {
+        padding-block: clamp(3.25rem, 12vw, 4.75rem);
+    }
+
+    .home-v4 .home-hero {
+        min-height: auto;
+        padding-block:
+            clamp(4.75rem, 18vw, 7rem)
+            clamp(4rem, 15vw, 6rem);
+    }
+
+    .home-v4 .home-hero-shell {
+        width: min(100% - 2rem, 44rem);
+        margin-inline: auto;
+    }
+
+    .home-v4 .home-hero h1 {
+        max-width: 10ch;
+        font-size: clamp(2.65rem, 12vw, 4rem);
+        line-height: 0.98;
+        letter-spacing: -0.045em;
+        overflow-wrap: normal;
+        word-break: normal;
+    }
+
+    .home-v4 .home-hero-lead {
+        max-width: 34rem;
+        font-size: clamp(1.02rem, 4.5vw, 1.18rem);
+        line-height: 1.65;
+    }
+
+    .home-v4 .section-heading h2,
+    .home-v4 .intro-section h2,
+    .home-v4 .mission-section h2,
+    .home-v4 .invitation-content h2 {
+        font-size: clamp(2rem, 9.5vw, 3rem);
+        line-height: 1.04;
+        letter-spacing: -0.035em;
+        overflow-wrap: normal;
+        word-break: normal;
+    }
+
+    .home-v4 :where(
+        .section-heading p,
+        .intro-section p,
+        .mission-section p,
+        .tributaries-section p,
+        .latest-section p,
+        .invitation-section p
+    ) {
+        font-size: clamp(1rem, 4.1vw, 1.1rem);
+        line-height: 1.68;
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   03 — MOBILE CARD PROPORTION
+   --------------------------------------------------------- */
+
+@media (max-width: 680px) {
+
+    .home-v4 .home-ecosystem .pathway-grid,
+    .home-v4 .home-ecosystem .path-grid,
+    .home-v4 .paths-section .path-grid,
+    .home-v4 .tributaries-section .tributary-grid,
+    .home-v4 .latest-section .latest-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1rem;
+    }
+
+    .home-v4 :where(
+        .pathway-card,
+        .path-card,
+        .latest-card
+    ) {
+        width: 100%;
+        min-width: 0;
+        min-height: 0;
+        height: auto;
+        padding: clamp(1.35rem, 5.5vw, 1.8rem);
+        border-radius: clamp(1rem, 4vw, 1.35rem);
+        transform: none;
+    }
+
+    .home-v4 :where(
+        .pathway-card,
+        .path-card,
+        .latest-card
+    ):hover {
+        transform: none;
+    }
+
+    .home-v4 :where(
+        .pathway-card,
+        .path-card,
+        .latest-card
+    ) h3 {
+        font-size: clamp(1.45rem, 6.5vw, 1.9rem);
+        line-height: 1.08;
+        letter-spacing: -0.025em;
+    }
+
+    .home-v4 :where(
+        .pathway-card,
+        .path-card,
+        .latest-card
+    ) p {
+        font-size: clamp(0.98rem, 4vw, 1.06rem);
+        line-height: 1.58;
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   04 — AUTHORITATIVE LIGHT-CARD CONTRAST
+   --------------------------------------------------------- */
+
+.home-v4 :where(
+    .pathway-card,
+    .path-card,
+    .latest-card
+) {
+    color: #18251f;
+}
+
+.home-v4 :where(
+    .pathway-card,
+    .path-card,
+    .latest-card
+) :where(
+    h2,
+    h3,
+    h4,
+    strong
+) {
+    color: #163027;
+    text-shadow: none;
+}
+
+.home-v4 :where(
+    .pathway-card,
+    .path-card,
+    .latest-card
+) :where(
+    p,
+    li
+) {
+    color: #34463d;
+    opacity: 1;
+}
+
+.home-v4 :where(
+    .pathway-card,
+    .path-card,
+    .latest-card
+) :where(
+    .content-type,
+    .card-number
+) {
+    color: #76532f;
+    opacity: 1;
+}
+
+.home-v4 :where(
+    .pathway-card,
+    .path-card,
+    .latest-card
+) .card-link {
+    color: #67431f;
+    opacity: 1;
+    font-weight: 700;
+}
+
+
+/* ---------------------------------------------------------
+   05 — PHONE TOUCH + ACTION RHYTHM
+   --------------------------------------------------------- */
+
+@media (max-width: 680px) {
+
+    .home-v4 .home-hero-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        width: 100%;
+    }
+
+    .home-v4 .home-hero-actions .button {
+        width: 100%;
+        min-height: 48px;
+        justify-content: center;
+    }
+
+    .home-v4 .card-link {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .home-v4 .join-form {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .home-v4 .join-form input,
+    .home-v4 .join-form button {
+        width: 100%;
+        min-height: 48px;
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   06 — VERY SMALL PHONES
+   --------------------------------------------------------- */
+
+@media (max-width: 420px) {
+
+    .river-header__shell {
+        padding-inline: 0.85rem;
+    }
+
+    .river-brand__name {
+        font-size: 0.9rem;
+    }
+
+    .home-v4 :where(
+        .section-shell,
+        .home-shell
+    ),
+    .home-v4 .home-hero-shell {
+        width: min(100% - 1.5rem, 44rem);
+    }
+
+    .home-v4 .home-hero h1 {
+        font-size: clamp(2.4rem, 12vw, 3.25rem);
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   07 — REDUCED MOTION
+   --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .home-v4 :where(
+        .pathway-card,
+        .path-card,
+        .latest-card,
+        .home-tributary-card
+    ) {
+        transition: none;
+    }
+
+}
+
+/* END WEBSITE 4.0 — DESIGN-001 AUTHORITATIVE RESPONSIVE SYSTEM */
