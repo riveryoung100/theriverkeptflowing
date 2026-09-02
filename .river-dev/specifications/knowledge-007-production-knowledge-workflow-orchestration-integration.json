@@ -1,0 +1,42 @@
+{
+    "id":  "KNOWLEDGE-007",
+    "title":  "Production Knowledge Workflow Orchestration Integration",
+    "status":  "implementation",
+    "baseline":  "16b5734f6b0de357eee0637b4c5e706c9eab1725",
+    "objective":  "Integrate the existing production Knowledge build, durable query, durable reasoning, and durable insight execution boundaries into the existing production workflow orchestration registry so declared knowledge-build, knowledge-query, knowledge-reasoning, and knowledge-insight workflow steps execute through their authoritative Knowledge services.",
+    "architecture":  [
+                         "Preserve the existing orchestration engine and workflow execution model as the sole workflow authority.",
+                         "Register production handlers for knowledge-build, knowledge-query, knowledge-reasoning, and knowledge-insight alongside the existing production Assimilation handler.",
+                         "Provide an explicit knowledgeGraphRootDirectory production dependency separate from rawSourceRootDirectory.",
+                         "Use FilesystemKnowledgeGraphPersistence as the durable KnowledgeGraph persistence authority.",
+                         "Use AssimilationKnowledgeExecution for knowledge-build and durable persistence.",
+                         "Use ProductionKnowledgeQueryExecution for knowledge-query.",
+                         "Use ProductionKnowledgeReasoningExecution for knowledge-reasoning.",
+                         "Use ProductionKnowledgeInsightExecution for knowledge-insight.",
+                         "Use existing deterministic Knowledge query, reasoning, and insight engines rather than reproducing their logic in orchestration handlers.",
+                         "Preserve workflow dependency-output semantics and existing Knowledge result types.",
+                         "Do not add network, deployment, publication, Git push, deletion, secret access, or unrelated execution authority."
+                     ],
+    "requiredBehavior":  [
+                             "knowledge-build consumes the authoritative production Assimilation generated-record source required by AssimilationKnowledgeExecution and persists the resulting KnowledgeGraph under an explicit persistence key.",
+                             "knowledge-query retrieves the authoritative persisted graph exactly once and executes the existing Knowledge query engine exactly once.",
+                             "knowledge-reasoning retrieves the authoritative persisted graph exactly once and executes the existing Knowledge reasoning engine exactly once.",
+                             "knowledge-insight retrieves the authoritative persisted graph exactly once, executes reasoning exactly once, and creates the Insight exactly once using the reasoning result produced by that execution.",
+                             "Production workflow construction requires an explicit knowledgeGraphRootDirectory rather than reusing rawSourceRootDirectory implicitly.",
+                             "Existing production Assimilation workflow behavior remains unchanged."
+                         ],
+    "failureSemantics":  [
+                             "Knowledge persistence retrieval and persistence failures propagate through the workflow step without replacement.",
+                             "Knowledge query, reasoning, and insight failures propagate from their authoritative services.",
+                             "A failed prerequisite Knowledge operation must not execute downstream authoritative operations within that handler.",
+                             "No handler may broaden workflow, filesystem, network, deployment, publication, or execution authority."
+                         ],
+    "validation":  [
+                       "Focused KNOWLEDGE-007 production handler and orchestration tests pass.",
+                       "Complete Knowledge test suite passes.",
+                       "Existing orchestration tests pass.",
+                       "TypeScript contains zero Knowledge or KNOWLEDGE-007 diagnostics beyond the exact known unrelated Assimilation baseline.",
+                       "Astro production build passes.",
+                       "Final diff contains only the exact KNOWLEDGE-007 specification and implementation/test/export/composition paths required by this integration."
+                   ]
+}

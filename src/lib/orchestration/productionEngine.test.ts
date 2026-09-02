@@ -112,6 +112,7 @@ test(
 
             assert.ok(
                 createProductionWorkflowEngine(
+                    rootDirectory,
                     rootDirectory
                 )
             );
@@ -230,6 +231,7 @@ test(
 
             const result =
                 await createProductionWorkflowEngine(
+                    rootDirectory,
                     rootDirectory
                 )
                     .run(

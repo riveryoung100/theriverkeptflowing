@@ -1,3 +1,5 @@
+import path from "node:path";
+
 import type {
     FileSystemSourceIngestionRequest
 } from "./assimilation/ingestion/types";
@@ -117,7 +119,11 @@ export function createProductionSourceIntake(
 
     const orchestration =
         createProductionOrchestration(
-            rawSourceRootDirectory
+            rawSourceRootDirectory,
+            path.join(
+                rawSourceRootDirectory,
+                "knowledge-graphs"
+            )
         );
 
     return {

@@ -28,12 +28,14 @@ implements ProductionOrchestrationService {
 
 
     public constructor(
-        rawSourceRootDirectory: string
+        rawSourceRootDirectory: string,
+        knowledgeGraphRootDirectory: string
     ) {
 
         this.execution =
             createProductionWorkflowExecution(
-                rawSourceRootDirectory
+                rawSourceRootDirectory,
+                knowledgeGraphRootDirectory
             );
 
     }
@@ -54,11 +56,13 @@ implements ProductionOrchestrationService {
 
 
 export function createProductionOrchestration(
-    rawSourceRootDirectory: string
+    rawSourceRootDirectory: string,
+    knowledgeGraphRootDirectory: string
 ): ProductionOrchestrationService {
 
     return new ProductionOrchestration(
-        rawSourceRootDirectory
+        rawSourceRootDirectory,
+        knowledgeGraphRootDirectory
     );
 
 }

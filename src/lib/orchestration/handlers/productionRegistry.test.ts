@@ -30,6 +30,7 @@ test(
 
             const registry =
                 createProductionWorkflowStepHandlerRegistry(
+                    rootDirectory,
                     rootDirectory
                 );
 
@@ -50,8 +51,12 @@ test(
             assert.deepEqual(
                 registry.list(),
                 [
-                    "assimilation"
-                ]
+    "assimilation",
+    "knowledge-build",
+    "knowledge-insight",
+    "knowledge-query",
+    "knowledge-reasoning"
+]
             );
 
         }
@@ -97,11 +102,13 @@ test(
 
             const firstRegistry =
                 createProductionWorkflowStepHandlerRegistry(
+                    firstRootDirectory,
                     firstRootDirectory
                 );
 
             const secondRegistry =
                 createProductionWorkflowStepHandlerRegistry(
+                    secondRootDirectory,
                     secondRootDirectory
                 );
 
@@ -127,8 +134,12 @@ test(
             assert.deepEqual(
                 firstRegistry.list(),
                 [
-                    "assimilation"
-                ]
+    "assimilation",
+    "knowledge-build",
+    "knowledge-insight",
+    "knowledge-query",
+    "knowledge-reasoning"
+]
             );
 
         }

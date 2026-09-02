@@ -1,4 +1,4 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
 import {
     mkdtemp,
     rm
@@ -33,6 +33,7 @@ test(
 
             const execution =
                 createProductionWorkflowExecution(
+                    rootDirectory,
                     rootDirectory
                 );
 

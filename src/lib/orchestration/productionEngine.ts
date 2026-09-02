@@ -1,4 +1,4 @@
-﻿import {
+import {
     createWorkflowEngine
 } from "./engine";
 
@@ -12,12 +12,14 @@ import {
 
 
 export function createProductionWorkflowEngine(
-    rawSourceRootDirectory: string
+    rawSourceRootDirectory: string,
+    knowledgeGraphRootDirectory: string
 ): DeterministicWorkflowEngine {
 
     const registry =
         createProductionWorkflowStepHandlerRegistry(
-            rawSourceRootDirectory
+            rawSourceRootDirectory,
+            knowledgeGraphRootDirectory
         );
 
     return createWorkflowEngine(

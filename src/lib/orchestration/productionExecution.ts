@@ -28,12 +28,14 @@ implements ProductionWorkflowExecutionService {
 
 
     public constructor(
-        rawSourceRootDirectory: string
+        rawSourceRootDirectory: string,
+        knowledgeGraphRootDirectory: string
     ) {
 
         this.engine =
             createProductionWorkflowEngine(
-                rawSourceRootDirectory
+                rawSourceRootDirectory,
+                knowledgeGraphRootDirectory
             );
 
     }
@@ -54,11 +56,13 @@ implements ProductionWorkflowExecutionService {
 
 
 export function createProductionWorkflowExecution(
-    rawSourceRootDirectory: string
+    rawSourceRootDirectory: string,
+    knowledgeGraphRootDirectory: string
 ): ProductionWorkflowExecutionService {
 
     return new ProductionWorkflowExecution(
-        rawSourceRootDirectory
+        rawSourceRootDirectory,
+        knowledgeGraphRootDirectory
     );
 
 }

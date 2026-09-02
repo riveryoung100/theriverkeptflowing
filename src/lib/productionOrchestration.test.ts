@@ -194,6 +194,7 @@ test(
 
             const orchestration =
                 createProductionOrchestration(
+                    rootDirectory,
                     rootDirectory
                 );
 
@@ -250,6 +251,7 @@ test(
 
             const result =
                 await createProductionOrchestration(
+                    rootDirectory,
                     rootDirectory
                 )
                     .execute(
