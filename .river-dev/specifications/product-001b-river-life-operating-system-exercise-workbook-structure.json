@@ -1,0 +1,470 @@
+{
+    "specificationId":  "PRODUCT-001B",
+    "parentSpecificationId":  "PRODUCT-001",
+    "prerequisiteSpecificationId":  "PRODUCT-001A",
+    "title":  "River Life Operating System Exercise System and Workbook Structure",
+    "status":  "planned",
+    "product":  {
+                    "name":  "The River Life Operating System",
+                    "version":  "v1",
+                    "format":  "digital guided life-planning system",
+                    "targetPageRange":  {
+                                            "minimum":  30,
+                                            "maximum":  40,
+                                            "workingTarget":  35
+                                        }
+                },
+    "designPrinciple":  "Every exercise ends with a named decision artifact, and every artifact has an explicit downstream use in the accumulating River Life Operating System.",
+    "exercisePattern":  {
+                            "sourceGroundedTeaching":  true,
+                            "clearPurpose":  true,
+                            "concretePromptsOrInventory":  true,
+                            "readerWrittenDecisions":  true,
+                            "namedCarryForwardOutput":  true,
+                            "downstreamConnection":  true
+                        },
+    "sections":  [
+                     {
+                         "id":  "headwaters",
+                         "name":  "Headwaters",
+                         "intendedClarity":  "inherited-life clarity",
+                         "workingPages":  5,
+                         "exercises":  [
+                                           {
+                                               "order":  1,
+                                               "id":  "the-life-that-shaped-me",
+                                               "title":  "The Life That Shaped Me",
+                                               "purpose":  "Identify formative experiences, environments, roles, expectations, adaptations, successes, failures, and identities that helped shape the reader\u0027s present life.",
+                                               "mechanics":  [
+                                                                 "Map formative seasons and experiences.",
+                                                                 "Name what each season taught or trained.",
+                                                                 "Identify roles or identities adopted in response.",
+                                                                 "Separate useful formation from inherited assumptions."
+                                                             ],
+                                               "output":  {
+                                                              "name":  "Formative Life Map",
+                                                              "type":  "map",
+                                                              "requiredDecisions":  [
+                                                                                        "What shaped me?",
+                                                                                        "What did it teach me?",
+                                                                                        "What identity or adaptation did I carry from it?"
+                                                                                    ],
+                                                              "downstreamUse":  [
+                                                                                    "Exercise 2 uses this map to decide what should be carried, repaired, released, or reconsidered.",
+                                                                                    "Exercise 4 uses identity observations when evaluating who the current life is making the reader."
+                                                                                ]
+                                                          }
+                                           },
+                                           {
+                                               "order":  2,
+                                               "id":  "what-comes-with-me",
+                                               "title":  "What Comes With Me?",
+                                               "purpose":  "Decide which inherited lessons, responsibilities, values, ambitions, adaptations, identities, and patterns should continue into the life being built.",
+                                               "mechanics":  [
+                                                                 "Review the Formative Life Map.",
+                                                                 "Sort significant inherited patterns into carry, repair, release, or reconsider.",
+                                                                 "Name why each important item belongs in its category.",
+                                                                 "Identify one inherited identity that no longer gets to govern future decisions."
+                                                             ],
+                                               "output":  {
+                                                              "name":  "Carry / Repair / Release Ledger",
+                                                              "type":  "decision-ledger",
+                                                              "requiredDecisions":  [
+                                                                                        "Carry",
+                                                                                        "Repair",
+                                                                                        "Release",
+                                                                                        "Reconsider"
+                                                                                    ],
+                                                              "downstreamUse":  [
+                                                                                    "Exercises 3 and 4 begin from what the reader intentionally chooses to carry forward.",
+                                                                                    "Exercise 12 uses release and repair decisions when forming the Personal Operating Plan."
+                                                                                ]
+                                                          }
+                                           }
+                                       ]
+                     },
+                     {
+                         "id":  "source",
+                         "name":  "The Source",
+                         "intendedClarity":  "desired-life clarity",
+                         "workingPages":  5,
+                         "exercises":  [
+                                           {
+                                               "order":  3,
+                                               "id":  "what-is-worth-wanting",
+                                               "title":  "What Is Worth Wanting?",
+                                               "purpose":  "Examine desire and distinguish personally meaningful aims from inherited, performative, comparative, or insufficient desires.",
+                                               "mechanics":  [
+                                                                 "List major things currently wanted.",
+                                                                 "Identify where each desire came from.",
+                                                                 "Test what receiving each desire would require and what it would become in the reader\u0027s hands.",
+                                                                 "Separate wants worth pursuing from wants that should be loosened or released.",
+                                                                 "Define what enough means in the areas where endless accumulation is possible."
+                                                             ],
+                                               "output":  {
+                                                              "name":  "Worth-Wanting Statement",
+                                                              "type":  "priority-statement",
+                                                              "requiredDecisions":  [
+                                                                                        "What is genuinely worth wanting?",
+                                                                                        "What is no longer worth organizing life around?",
+                                                                                        "What does enough mean?"
+                                                                                    ],
+                                                              "downstreamUse":  [
+                                                                                    "Exercise 4 tests whether these desires produce the person the reader wants to become.",
+                                                                                    "Exercises 7 through 11 compare actual allocation, repetition, boundaries, and costs against these declared desires.",
+                                                                                    "Exercise 12 carries the selected desires into final priorities."
+                                                                                ]
+                                                          }
+                                           },
+                                           {
+                                               "order":  4,
+                                               "id":  "who-is-this-life-making-me",
+                                               "title":  "Who Is This Life Making Me?",
+                                               "purpose":  "Evaluate the character and identity being formed by current pursuits rather than judging life only by achievement or appearance.",
+                                               "mechanics":  [
+                                                                 "Name the major paths currently being pursued.",
+                                                                 "For each path, identify the traits it repeatedly trains.",
+                                                                 "Distinguish achievement from identity.",
+                                                                 "Identify traits worth strengthening and traits that signal a path needs adjustment."
+                                                             ],
+                                               "output":  {
+                                                              "name":  "Becoming Profile",
+                                                              "type":  "character-profile",
+                                                              "requiredDecisions":  [
+                                                                                        "Who am I becoming?",
+                                                                                        "Who do I want to become?",
+                                                                                        "Which current pursuits support or contradict that direction?"
+                                                                                    ],
+                                                              "downstreamUse":  [
+                                                                                    "Exercise 5 uses the Becoming Profile as part of whole-life evaluation.",
+                                                                                    "Exercises 9 and 11 test whether repeated behavior and accepted costs support the desired person.",
+                                                                                    "Exercise 12 incorporates chosen character direction."
+                                                                                ]
+                                                          }
+                                           }
+                                       ]
+                     },
+                     {
+                         "id":  "tributaries",
+                         "name":  "Tributaries",
+                         "intendedClarity":  "stewardship clarity",
+                         "workingPages":  7,
+                         "exercises":  [
+                                           {
+                                               "order":  5,
+                                               "id":  "the-life-inventory",
+                                               "title":  "The Life Inventory",
+                                               "purpose":  "Assess the present condition and importance of the major domains of life.",
+                                               "mechanics":  [
+                                                                 "Inventory faith, marriage and family, relationships and community, work, money, home, service, and personal capacity.",
+                                                                 "Describe current condition without pretending every domain must be maximized.",
+                                                                 "Identify what is healthy, neglected, overloaded, unstable, or receiving inappropriate weight.",
+                                                                 "Name the domains that require deliberate attention in the present season."
+                                                             ],
+                                               "output":  {
+                                                              "name":  "Whole-Life Inventory",
+                                                              "type":  "domain-inventory",
+                                                              "requiredDecisions":  [
+                                                                                        "What matters here?",
+                                                                                        "What is the present condition?",
+                                                                                        "What requires attention now?",
+                                                                                        "What does not need to be maximized?"
+                                                                                    ],
+                                                              "downstreamUse":  [
+                                                                                    "Exercise 6 distinguishes genuine responsibilities inside these domains.",
+                                                                                    "Exercise 7 tests whether allocation matches the domains declared important.",
+                                                                                    "Exercise 12 uses present-condition findings when selecting priorities."
+                                                                                ]
+                                                          }
+                                           },
+                                           {
+                                               "order":  6,
+                                               "id":  "what-has-actually-been-entrusted-to-me",
+                                               "title":  "What Has Actually Been Entrusted to Me?",
+                                               "purpose":  "Distinguish genuine responsibility from control, availability, guilt, expectation, or the attempt to carry everything.",
+                                               "mechanics":  [
+                                                                 "List major responsibilities and burdens currently carried.",
+                                                                 "Test each against commitment, role, genuine dependence, and reasonable transferability.",
+                                                                 "Identify responsibilities that belong, responsibilities that should be shared or delegated, and burdens that should be released.",
+                                                                 "Identify what receives less whenever unnecessary responsibility is accepted."
+                                                             ],
+                                               "output":  {
+                                                              "name":  "Responsibility Map",
+                                                              "type":  "responsibility-map",
+                                                              "requiredDecisions":  [
+                                                                                        "Mine to carry",
+                                                                                        "Shared",
+                                                                                        "Delegate",
+                                                                                        "Release",
+                                                                                        "Wait"
+                                                                                    ],
+                                                              "downstreamUse":  [
+                                                                                    "Exercise 7 uses genuine responsibilities when evaluating allocation.",
+                                                                                    "Exercise 10 uses them to determine what needs protection.",
+                                                                                    "Exercise 12 converts accepted responsibilities into operating commitments."
+                                                                                ]
+                                                          }
+                                           },
+                                           {
+                                               "order":  7,
+                                               "id":  "who-and-what-receives-my-best",
+                                               "title":  "Who and What Receives My Best?",
+                                               "purpose":  "Compare stated priorities with the actual distribution of time, attention, energy, money, patience, preparation, and presence.",
+                                               "mechanics":  [
+                                                                 "Identify where major personal resources currently go.",
+                                                                 "Separate first portions from leftovers.",
+                                                                 "Compare actual allocation with the Worth-Wanting Statement, Whole-Life Inventory, and Responsibility Map.",
+                                                                 "Identify the most important allocation mismatches."
+                                                             ],
+                                               "output":  {
+                                                              "name":  "Priority Allocation Audit",
+                                                              "type":  "allocation-audit",
+                                                              "requiredDecisions":  [
+                                                                                        "Who or what receives my best now?",
+                                                                                        "Who or what should receive my best?",
+                                                                                        "Which allocations must change?"
+                                                                                    ],
+                                                              "downstreamUse":  [
+                                                                                    "Exercise 8 checks how these allocations appear inside an ordinary day.",
+                                                                                    "Exercise 10 identifies gates required to protect corrected allocations.",
+                                                                                    "Exercise 12 converts selected reallocations into operating priorities."
+                                                                                ]
+                                                          }
+                                           }
+                                       ]
+                     },
+                     {
+                         "id":  "current",
+                         "name":  "The Current",
+                         "intendedClarity":  "lived-reality clarity",
+                         "workingPages":  7,
+                         "exercises":  [
+                                           {
+                                               "order":  8,
+                                               "id":  "the-ordinary-day-audit",
+                                               "title":  "The Ordinary Day Audit",
+                                               "purpose":  "Map actual ordinary life and test whether it is inhabitable, sustainable, and aligned with stated priorities.",
+                                               "mechanics":  [
+                                                                 "Map a recent ordinary weekday from waking through sleep.",
+                                                                 "Record work, transitions, attention, meals, family presence, rest, consumption, maintenance, and unassigned time.",
+                                                                 "Identify where the day supports or contradicts declared priorities.",
+                                                                 "Describe an ordinary day that could realistically be repeated without abandoning important responsibilities."
+                                                             ],
+                                               "output":  {
+                                                              "name":  "Actual-Day Map",
+                                                              "type":  "time-and-life-map",
+                                                              "requiredDecisions":  [
+                                                                                        "What does my ordinary day actually contain?",
+                                                                                        "What is unsustainable or misaligned?",
+                                                                                        "What should an inhabitable ordinary day protect?"
+                                                                                    ],
+                                                              "downstreamUse":  [
+                                                                                    "Exercise 9 projects repeated daily patterns into future direction.",
+                                                                                    "Exercise 10 identifies structural gates needed to protect a better ordinary day.",
+                                                                                    "Exercise 12 incorporates selected ordinary-day changes."
+                                                                                ]
+                                                          }
+                                           },
+                                           {
+                                               "order":  9,
+                                               "id":  "the-repetition-audit",
+                                               "title":  "The Repetition Audit",
+                                               "purpose":  "Identify repeated behaviors and choices currently compounding into future direction.",
+                                               "mechanics":  [
+                                                                 "Identify significant repeated behaviors across work, spending, relationships, body, attention, consumption, and use of discretionary time.",
+                                                                 "Project important repetitions forward five to ten years.",
+                                                                 "Identify repetitions that build the desired life and repetitions that quietly undermine it.",
+                                                                 "Choose what should continue, change, begin, or stop."
+                                                             ],
+                                               "output":  {
+                                                              "name":  "Repetition and Direction Map",
+                                                              "type":  "trajectory-map",
+                                                              "requiredDecisions":  [
+                                                                                        "Continue",
+                                                                                        "Change",
+                                                                                        "Begin",
+                                                                                        "Stop"
+                                                                                    ],
+                                                              "downstreamUse":  [
+                                                                                    "Exercise 10 designs protection against destructive repetitions and support for constructive ones.",
+                                                                                    "Exercise 11 tests the costs of changing direction.",
+                                                                                    "Exercise 12 selects a small number of repeated practices for the operating plan."
+                                                                                ]
+                                                          }
+                                           },
+                                           {
+                                               "order":  10,
+                                               "id":  "the-gates",
+                                               "title":  "The Gates",
+                                               "purpose":  "Convert intention into structural protection through boundaries, refusals, removals, limits, and environmental changes.",
+                                               "mechanics":  [
+                                                                 "Identify what deserves protection.",
+                                                                 "Identify what repeatedly defeats stated intentions.",
+                                                                 "Determine where access, availability, consumption, commitments, or environment require limits.",
+                                                                 "Design specific gates that reduce dependence on willpower alone."
+                                                             ],
+                                               "output":  {
+                                                              "name":  "Protection and Boundary Plan",
+                                                              "type":  "structural-plan",
+                                                              "requiredDecisions":  [
+                                                                                        "Protect",
+                                                                                        "Refuse",
+                                                                                        "Remove",
+                                                                                        "Limit",
+                                                                                        "Restructure"
+                                                                                    ],
+                                                              "downstreamUse":  [
+                                                                                    "Exercise 11 tests whether the reader accepts the costs created by these protections.",
+                                                                                    "Exercise 12 converts selected gates into explicit operating rules."
+                                                                                ]
+                                                          }
+                                           }
+                                       ]
+                     },
+                     {
+                         "id":  "destination",
+                         "name":  "The Destination",
+                         "intendedClarity":  "deliberate-direction clarity",
+                         "workingPages":  5,
+                         "exercises":  [
+                                           {
+                                               "order":  11,
+                                               "id":  "count-the-cost",
+                                               "title":  "Count the Cost",
+                                               "purpose":  "Confront the sacrifices, limitations, opportunity costs, responsibilities, patience, and discipline attached to desired futures.",
+                                               "mechanics":  [
+                                                                 "Select the most important desired directions from prior exercises.",
+                                                                 "List the recurring costs each direction requires.",
+                                                                 "Identify what each choice makes harder, slower, smaller, unavailable, or necessary.",
+                                                                 "Decide which costs are willingly accepted and which reveal that a desired future is not actually wanted."
+                                                             ],
+                                               "output":  {
+                                                              "name":  "Tradeoff Ledger",
+                                                              "type":  "tradeoff-ledger",
+                                                              "requiredDecisions":  [
+                                                                                        "Cost I accept",
+                                                                                        "Cost I do not accept",
+                                                                                        "What this choice protects",
+                                                                                        "What this choice requires me to release"
+                                                                                    ],
+                                                              "downstreamUse":  [
+                                                                                    "Exercise 12 only carries forward directions whose real costs the reader has consciously accepted."
+                                                                                ]
+                                                          }
+                                           },
+                                           {
+                                               "order":  12,
+                                               "id":  "the-next-right-step",
+                                               "title":  "The Next Right Step",
+                                               "purpose":  "Synthesize the entire workbook into a small, deliberate operating plan without requiring certainty about the whole future.",
+                                               "mechanics":  [
+                                                                 "Review every prior carry-forward artifact.",
+                                                                 "Choose a deliberately small set of present-season priorities.",
+                                                                 "Name accepted responsibilities.",
+                                                                 "Name explicit protections and refusals.",
+                                                                 "Choose repeated practices that support the desired direction.",
+                                                                 "Choose concrete next actions.",
+                                                                 "Identify what can remain unresolved for now."
+                                                             ],
+                                               "output":  {
+                                                              "name":  "Personal Operating Plan",
+                                                              "type":  "final-operating-plan",
+                                                              "requiredDecisions":  [
+                                                                                        "What matters most in this season?",
+                                                                                        "What am I responsible for?",
+                                                                                        "What will receive my best?",
+                                                                                        "What will I protect?",
+                                                                                        "What will I refuse?",
+                                                                                        "What will I repeatedly practice?",
+                                                                                        "What are my next right actions?",
+                                                                                        "What am I allowed not to solve yet?"
+                                                                                    ],
+                                                              "downstreamUse":  [
+                                                                                    "This is the primary final artifact of The River Life Operating System v1.",
+                                                                                    "It should be usable after the reader closes the workbook.",
+                                                                                    "It should summarize decisions rather than reproduce every prior worksheet."
+                                                                                ]
+                                                          }
+                                           }
+                                       ]
+                     }
+                 ],
+    "accumulationModel":  [
+                              {
+                                  "stage":  "Headwaters",
+                                  "inputs":  [
+                                                 "Formative Life Map",
+                                                 "Carry / Repair / Release Ledger"
+                                             ],
+                                  "produces":  "inherited-life clarity"
+                              },
+                              {
+                                  "stage":  "The Source",
+                                  "inputs":  [
+                                                 "Worth-Wanting Statement",
+                                                 "Becoming Profile"
+                                             ],
+                                  "produces":  "desired-life clarity"
+                              },
+                              {
+                                  "stage":  "Tributaries",
+                                  "inputs":  [
+                                                 "Whole-Life Inventory",
+                                                 "Responsibility Map",
+                                                 "Priority Allocation Audit"
+                                             ],
+                                  "produces":  "stewardship clarity"
+                              },
+                              {
+                                  "stage":  "The Current",
+                                  "inputs":  [
+                                                 "Actual-Day Map",
+                                                 "Repetition and Direction Map",
+                                                 "Protection and Boundary Plan"
+                                             ],
+                                  "produces":  "lived-reality clarity"
+                              },
+                              {
+                                  "stage":  "The Destination",
+                                  "inputs":  [
+                                                 "Tradeoff Ledger",
+                                                 "All prior carry-forward outputs"
+                                             ],
+                                  "produces":  "Personal Operating Plan"
+                              }
+                          ],
+    "pageBudget":  {
+                       "openingAndOrientation":  3,
+                       "headwaters":  5,
+                       "source":  5,
+                       "tributaries":  7,
+                       "current":  7,
+                       "destination":  5,
+                       "finalOperatingPlan":  3,
+                       "total":  35
+                   },
+    "contentRules":  [
+                         "Teaching must be grounded in the existing River source corpus and preserve provenance.",
+                         "Exercises must require reader decisions rather than passive reflection alone.",
+                         "Each exercise must produce the named carry-forward output.",
+                         "Each carry-forward output must have an explicit downstream use.",
+                         "The final Personal Operating Plan must synthesize prior decisions rather than introduce a new unrelated framework.",
+                         "The workbook must remain practical and concise enough for the PRODUCT-001 V1 page range.",
+                         "The workbook must not become a repackaged essay collection.",
+                         "The workbook must not become twelve disconnected journal prompts.",
+                         "The workbook must not present generic AI self-help as River-authored insight.",
+                         "The workbook must not claim therapy, medical, legal, or financial authority.",
+                         "The workbook must not guarantee transformation or outcomes.",
+                         "Faith may remain present where supported by River source authority without requiring unsupported claims about God\u0027s specific intent for the reader."
+                     ],
+    "completionGate":  {
+                           "sectionCount":  5,
+                           "exerciseCount":  12,
+                           "namedOutputCount":  12,
+                           "workingPageCount":  35,
+                           "everyExerciseRequiresDecision":  true,
+                           "everyExerciseRequiresNamedOutput":  true,
+                           "everyOutputRequiresDownstreamUse":  true,
+                           "finalArtifact":  "Personal Operating Plan"
+                       }
+}
