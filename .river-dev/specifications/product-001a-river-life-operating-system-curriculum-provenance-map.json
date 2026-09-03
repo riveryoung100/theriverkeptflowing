@@ -1,0 +1,250 @@
+{
+    "specificationId":  "PRODUCT-001A",
+    "parentSpecificationId":  "PRODUCT-001",
+    "title":  "River Life Operating System Curriculum and Source Provenance Map",
+    "status":  "planned",
+    "principle":  "Paid value comes from structured application, guided reflection, synthesis, sequencing, exercises, and deliberate execution built from River\u0027s existing body of work rather than merely republishing free essays.",
+    "progression":  [
+                        "story",
+                        "identity",
+                        "responsibilities",
+                        "reality",
+                        "deliberate action"
+                    ],
+    "sections":  [
+                     {
+                         "order":  1,
+                         "id":  "headwaters",
+                         "title":  "Headwaters",
+                         "purpose":  "Understand what shaped the reader, identify inherited patterns and identities, learn from what has happened, and decide what deserves to continue forward.",
+                         "exercises":  [
+                                           {
+                                               "order":  1,
+                                               "id":  "the-life-that-shaped-me",
+                                               "title":  "The Life That Shaped Me",
+                                               "objective":  "Identify formative experiences, inherited beliefs, successes, failures, survival patterns, ambitions, and identities that have influenced the reader\u0027s present life.",
+                                               "primarySources":  [
+                                                                      "src/content/essays/you-do-not-have-to-carry-every-version-of-yourself-forward.md",
+                                                                      "src/content/essays/you-are-allowed-to-outgrow-the-life-you-built.md",
+                                                                      "src/content/essays/achievement-is-not-identity.md"
+                                                                  ],
+                                               "supportingSources":  [
+                                                                         "src/content/essays/the-person-you-become-is-part-of-what-you-are-building.md",
+                                                                         "src/content/essays/your-life-does-not-need-to-make-sense-to-everyone.md"
+                                                                     ]
+                                           },
+                                           {
+                                               "order":  2,
+                                               "id":  "what-comes-with-me",
+                                               "title":  "What Comes With Me?",
+                                               "objective":  "Separate history from identity and decide what lessons, responsibilities, values, ambitions, adaptations, and patterns should be carried forward, repaired, released, or reconsidered.",
+                                               "primarySources":  [
+                                                                      "src/content/essays/you-do-not-have-to-carry-every-version-of-yourself-forward.md",
+                                                                      "src/content/essays/you-are-allowed-to-outgrow-the-life-you-built.md"
+                                                                  ],
+                                               "supportingSources":  [
+                                                                         "src/content/essays/the-things-you-refuse-shape-your-life-too.md",
+                                                                         "src/content/essays/you-cannot-keep-every-door-open.md"
+                                                                     ]
+                                           }
+                                       ]
+                     },
+                     {
+                         "order":  2,
+                         "id":  "source",
+                         "title":  "The Source",
+                         "purpose":  "Clarify what is worth wanting, what enough means, what the reader believes, who they are becoming, and what deserves to organize the life being built.",
+                         "exercises":  [
+                                           {
+                                               "order":  3,
+                                               "id":  "what-is-worth-wanting",
+                                               "title":  "What Is Worth Wanting?",
+                                               "objective":  "Examine desire and define what is genuinely worth wanting across money, recognition, comfort, freedom, family, character, useful work, peace, faith, gratitude, and enough.",
+                                               "primarySources":  [
+                                                                      "src/content/essays/what-is-worth-wanting.md"
+                                                                  ],
+                                               "supportingSources":  [
+                                                                         "src/content/essays/the-life-you-want-will-ask-something-of-you.md",
+                                                                         "src/content/essays/you-do-not-need-to-own-everything-you-enjoy.md",
+                                                                         "src/content/essays/you-do-not-need-to-become-more-impressive.md"
+                                                                     ]
+                                           },
+                                           {
+                                               "order":  4,
+                                               "id":  "who-is-this-life-making-me",
+                                               "title":  "Who Is This Life Making Me?",
+                                               "objective":  "Examine the person current pursuits are training the reader to become and separate character, identity, usefulness, and faithfulness from achievement or appearance.",
+                                               "primarySources":  [
+                                                                      "src/content/essays/the-person-you-become-is-part-of-what-you-are-building.md",
+                                                                      "src/content/essays/achievement-is-not-identity.md"
+                                                                  ],
+                                               "supportingSources":  [
+                                                                         "src/content/essays/you-do-not-need-to-become-more-impressive.md",
+                                                                         "src/content/essays/what-you-practice-in-private-eventually-appears-in-public.md",
+                                                                         "src/content/essays/a-good-life-needs-something-you-are-willing-to-serve.md"
+                                                                     ]
+                                           }
+                                       ]
+                     },
+                     {
+                         "order":  3,
+                         "id":  "tributaries",
+                         "title":  "Tributaries",
+                         "purpose":  "Examine the major streams receiving and carrying the reader\u0027s life and determine what responsibilities, relationships, resources, and forms of service deserve deliberate stewardship.",
+                         "exercises":  [
+                                           {
+                                               "order":  5,
+                                               "id":  "the-life-inventory",
+                                               "title":  "The Life Inventory",
+                                               "objective":  "Assess the present condition and importance of the major domains of life including faith, marriage and family, relationships and community, work, money, home, service, and personal capacity.",
+                                               "primarySources":  [
+                                                                      "src/content/essays/a-good-life-needs-something-you-are-willing-to-serve.md",
+                                                                      "src/content/essays/make-your-life-easier-to-come-home-to.md",
+                                                                      "src/content/essays/the-goal-is-not-to-escape-responsibility.md"
+                                                                  ],
+                                               "supportingSources":  [
+                                                                         "src/content/essays/you-cannot-build-a-life-everywhere.md",
+                                                                         "src/content/essays/the-people-you-love-need-your-presence-more-than-your-potential.md",
+                                                                         "src/content/essays/what-you-build-should-make-life-better-somewhere.md"
+                                                                     ]
+                                           },
+                                           {
+                                               "order":  6,
+                                               "id":  "what-has-actually-been-entrusted-to-me",
+                                               "title":  "What Has Actually Been Entrusted to Me?",
+                                               "objective":  "Distinguish responsibility from control, identify responsibilities that genuinely belong to the reader, and recognize responsibilities or expectations that should not be carried.",
+                                               "primarySources":  [
+                                                                      "src/content/essays/responsibility-is-not-the-same-as-carrying-everything.md",
+                                                                      "src/content/essays/the-goal-is-not-to-escape-responsibility.md",
+                                                                      "src/content/essays/you-are-not-supposed-to-carry-everything-at-once.md"
+                                                                  ],
+                                               "supportingSources":  [
+                                                                         "src/content/essays/you-are-responsible-for-the-life-you-keep-choosing.md",
+                                                                         "src/content/essays/the-things-you-refuse-shape-your-life-too.md"
+                                                                     ]
+                                           },
+                                           {
+                                               "order":  7,
+                                               "id":  "who-and-what-receives-my-best",
+                                               "title":  "Who and What Receives My Best?",
+                                               "objective":  "Inspect how the reader allocates attention, energy, presence, money, time, and capacity and determine whether stated priorities receive meaningful first portions or only leftovers.",
+                                               "primarySources":  [
+                                                                      "src/content/essays/you-have-to-decide-what-deserves-your-best.md",
+                                                                      "src/content/essays/the-people-you-love-need-your-presence-more-than-your-potential.md",
+                                                                      "src/content/essays/what-you-give-your-attention-to-grows.md"
+                                                                  ],
+                                               "supportingSources":  [
+                                                                         "src/content/essays/the-people-you-love-should-not-have-to-compete-with-your-ambition.md",
+                                                                         "src/content/essays/the-life-you-want-requires-protecting-what-matters-from-what-does-not.md"
+                                                                     ]
+                                           }
+                                       ]
+                     },
+                     {
+                         "order":  4,
+                         "id":  "current",
+                         "title":  "The Current",
+                         "purpose":  "Compare stated priorities with the reader\u0027s actual ordinary life by examining days, repetitions, attention, environment, commitments, pace, margin, and structural boundaries.",
+                         "exercises":  [
+                                           {
+                                               "order":  8,
+                                               "id":  "the-ordinary-day-audit",
+                                               "title":  "The Ordinary Day Audit",
+                                               "objective":  "Map an actual normal day and evaluate whether ordinary life is inhabitable, sustainable, aligned with stated priorities, and capable of becoming a life the reader would want repeated.",
+                                               "primarySources":  [
+                                                                      "src/content/essays/the-life-you-build-is-built-from-ordinary-days.md",
+                                                                      "src/content/essays/you-cannot-save-time-for-later.md"
+                                                                  ],
+                                               "supportingSources":  [
+                                                                         "src/content/essays/the-life-you-keep-postponing-is-still-your-life.md",
+                                                                         "src/content/essays/you-will-never-feel-finished-enough-to-begin-living.md",
+                                                                         "src/content/essays/stop-waiting-for-life-to-feel-settled.md"
+                                                                     ]
+                                           },
+                                           {
+                                               "order":  9,
+                                               "id":  "the-repetition-audit",
+                                               "title":  "The Repetition Audit",
+                                               "objective":  "Identify the repeated behaviors, environments, commitments, and choices currently compounding into direction and project where those repetitions are likely to lead.",
+                                               "primarySources":  [
+                                                                      "src/content/essays/the-life-you-want-is-hidden-inside-what-you-repeat.md",
+                                                                      "src/content/essays/you-are-responsible-for-the-life-you-keep-choosing.md",
+                                                                      "src/content/essays/the-life-you-build-is-built-from-ordinary-days.md"
+                                                                  ],
+                                               "supportingSources":  [
+                                                                         "src/content/essays/what-you-practice-in-private-eventually-appears-in-public.md"
+                                                                     ]
+                                           },
+                                           {
+                                               "order":  10,
+                                               "id":  "the-gates",
+                                               "title":  "The Gates",
+                                               "objective":  "Identify what deserves protection, what repeatedly defeats the reader\u0027s intentions, where access needs limits, and which boundaries, refusals, removals, or environmental changes should become structural.",
+                                               "primarySources":  [
+                                                                      "src/content/essays/the-life-you-want-requires-protecting-what-matters-from-what-does-not.md",
+                                                                      "src/content/essays/the-things-you-refuse-shape-your-life-too.md",
+                                                                      "src/content/essays/what-you-give-your-attention-to-grows.md"
+                                                                  ],
+                                               "supportingSources":  [
+                                                                         "src/content/essays/you-are-not-supposed-to-carry-everything-at-once.md",
+                                                                         "src/content/essays/you-cannot-build-a-sustainable-life-on-permanent-emergency.md"
+                                                                     ]
+                                           }
+                                       ]
+                     },
+                     {
+                         "order":  5,
+                         "id":  "destination",
+                         "title":  "The Destination",
+                         "purpose":  "Turn reflection into deliberate direction by confronting tradeoffs, choosing what deserves protection and sacrifice, and identifying the next faithful and responsible actions.",
+                         "exercises":  [
+                                           {
+                                               "order":  11,
+                                               "id":  "count-the-cost",
+                                               "title":  "Count the Cost",
+                                               "objective":  "Compare desired futures with the sacrifices, limitations, responsibilities, opportunity costs, patience, and forms of discipline they actually require.",
+                                               "primarySources":  [
+                                                                      "src/content/essays/the-cost-of-a-life-is-what-you-give-up-to-live-it.md",
+                                                                      "src/content/essays/the-life-you-want-will-ask-something-of-you.md"
+                                                                  ],
+                                               "supportingSources":  [
+                                                                         "src/content/essays/you-cannot-keep-every-door-open.md",
+                                                                         "src/content/essays/you-do-not-need-to-rush-what-you-want-to-keep.md"
+                                                                     ]
+                                           },
+                                           {
+                                               "order":  12,
+                                               "id":  "the-next-right-step",
+                                               "title":  "The Next Right Step",
+                                               "objective":  "Translate the entire system into a small set of deliberate priorities, protections, refusals, responsibilities, and concrete next actions without demanding certainty about the entire future.",
+                                               "primarySources":  [
+                                                                      "src/content/essays/you-do-not-need-to-see-the-whole-road-to-take-the-next-right-step.md",
+                                                                      "src/content/essays/you-are-responsible-for-the-life-you-keep-choosing.md"
+                                                                  ],
+                                               "supportingSources":  [
+                                                                         "src/content/essays/the-life-you-want-requires-protecting-what-matters-from-what-does-not.md",
+                                                                         "src/content/essays/the-things-you-refuse-shape-your-life-too.md",
+                                                                         "src/content/essays/the-cost-of-a-life-is-what-you-give-up-to-live-it.md"
+                                                                     ]
+                                           }
+                                       ]
+                     }
+                 ],
+    "provenanceRules":  [
+                            "Every substantive teaching claim in the eventual product should be traceable to River source authority or clearly identified as new synthesis.",
+                            "Primary sources establish the central teaching authority for an exercise.",
+                            "Supporting sources may deepen, qualify, connect, or provide additional prompts for an exercise.",
+                            "Source material may be synthesized and reorganized but should not be presented as newly discovered authority when it already exists publicly.",
+                            "Paid value should come from sequencing, synthesis, guided application, exercises, inventories, planning tools, and implementation rather than hiding existing free essays.",
+                            "New exercises may be created from source principles when the derivation remains identifiable.",
+                            "No source assignment in this map authorizes unsupported therapeutic, medical, legal, financial, professional, or guaranteed-outcome claims."
+                        ],
+    "completionGate":  {
+                           "sectionCount":  5,
+                           "exerciseCount":  12,
+                           "allExercisesRequirePrimarySource":  true,
+                           "sourceExistenceRequired":  true,
+                           "uniqueExerciseIdsRequired":  true,
+                           "sequentialExerciseOrderRequired":  true
+                       }
+}
