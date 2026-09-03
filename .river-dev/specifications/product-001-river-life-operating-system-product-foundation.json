@@ -1,0 +1,120 @@
+{
+    "specificationId":  "PRODUCT-001",
+    "title":  "River Life Operating System Product Foundation",
+    "status":  "planned",
+    "product":  {
+                    "name":  "The River Life Operating System",
+                    "positioning":  "A practical system for building a life around what matters most.",
+                    "productType":  "digital guided life-planning system",
+                    "intendedOutcome":  "Help a person examine the life they have inherited and built, identify what matters most, evaluate where their time, attention, responsibilities, relationships, work, money, habits, and ambitions are actually carrying them, and leave with a smaller set of deliberate priorities and next actions.",
+                    "version":  "v1",
+                    "workingPriceUsd":  29,
+                    "pricePublicationAuthorized":  false,
+                    "availabilityPublicationAuthorized":  false
+                },
+    "sourceAuthority":  {
+                            "principle":  "The product must be distilled from River Young\u0027s existing published body of work and repository authority rather than fabricated as generic self-help material.",
+                            "primarySourceRoot":  "src/content/essays",
+                            "supportingSourceRoots":  [
+                                                          "src/content/letters",
+                                                          "src/content/journal",
+                                                          "src/content/guides",
+                                                          "src/pages"
+                                                      ],
+                            "provenanceRequired":  true,
+                            "unsupportedClaimsProhibited":  true
+                        },
+    "architecture":  [
+                         {
+                             "order":  1,
+                             "id":  "headwaters",
+                             "title":  "Headwaters",
+                             "purpose":  "Examine where the reader has come from, what has shaped them, what should be learned from the past, what requires repair, and what no longer needs to be carried forward."
+                         },
+                         {
+                             "order":  2,
+                             "id":  "source",
+                             "title":  "The Source",
+                             "purpose":  "Clarify identity, beliefs, values, desires, service, purpose, enough, and the kind of person the reader wants to become."
+                         },
+                         {
+                             "order":  3,
+                             "id":  "tributaries",
+                             "title":  "Tributaries",
+                             "purpose":  "Examine the major streams carrying the reader\u0027s life, including faith, family, relationships, community, work, money, responsibility, leadership, home, and service."
+                         },
+                         {
+                             "order":  4,
+                             "id":  "current",
+                             "title":  "The Current",
+                             "purpose":  "Evaluate how the reader is actually living now through ordinary days, repeated behavior, time, attention, money, commitments, pace, margin, environment, responsibilities, and contradictions between stated and lived priorities."
+                         },
+                         {
+                             "order":  5,
+                             "id":  "destination",
+                             "title":  "The Destination",
+                             "purpose":  "Translate reflection into direction by deciding what deserves protection, what should be refused or released, what costs are worth paying, what responsibilities belong, and what the next right steps are."
+                         }
+                     ],
+    "v1Scope":  {
+                    "targetLengthPages":  "30-40",
+                    "targetSubstantiveExercises":  12,
+                    "delivery":  "digital",
+                    "physicalInventory":  false,
+                    "requiredCapabilities":  [
+                                                 "ordered five-part curriculum",
+                                                 "source-grounded River teaching",
+                                                 "guided reflection questions",
+                                                 "written exercises",
+                                                 "life inventory",
+                                                 "priority clarification",
+                                                 "current-life assessment",
+                                                 "next-step planning",
+                                                 "clear distinction between free River content and paid structured application"
+                                             ]
+                },
+    "boundaries":  {
+                       "notTherapy":  true,
+                       "notMedicalAdvice":  true,
+                       "notLegalAdvice":  true,
+                       "notFinancialAdvice":  true,
+                       "notProfessionalCertification":  true,
+                       "noGuaranteedOutcomes":  true,
+                       "noInventedTestimonials":  true,
+                       "noInventedAudienceProof":  true,
+                       "noInventedCustomerResults":  true,
+                       "noUnsupportedCoachingAuthority":  true,
+                       "noPublishedPriceBeforeCommerceReady":  true,
+                       "noPublishedAvailabilityBeforeFulfillmentReady":  true
+                   },
+    "commerceState":  {
+                          "existingProductCard":  true,
+                          "existingProductGrid":  true,
+                          "existingPurchaseButton":  true,
+                          "checkoutImplemented":  false,
+                          "cartImplemented":  false,
+                          "stripeImplemented":  false,
+                          "digitalProductFulfillmentImplemented":  false,
+                          "customerOrderSystemImplemented":  false,
+                          "note":  "Existing commerce components are primitives only and must not be interpreted as production-ready product commerce."
+                      },
+    "implementationSequence":  [
+                                   "PRODUCT-001A — curriculum and source provenance map",
+                                   "PRODUCT-001B — exercise system and workbook structure",
+                                   "PRODUCT-001C — River Life Operating System v1 content artifact",
+                                   "PRODUCT-001D — digital delivery and fulfillment foundation",
+                                   "PRODUCT-001E — commerce integration",
+                                   "PRODUCT-001F — product presentation and public launch path"
+                               ],
+    "completionCriteria":  [
+                               "Five-part product architecture is represented in a source-grounded curriculum map.",
+                               "At least twelve substantive exercises are defined and tied to the product curriculum.",
+                               "Material derived from existing River work preserves identifiable source provenance.",
+                               "Paid product value is based on structured application and guided execution rather than merely republishing free essays.",
+                               "A complete v1 digital product artifact exists.",
+                               "Digital fulfillment exists before public availability is claimed.",
+                               "Commerce exists before a public price or purchase path is activated.",
+                               "No unsupported professional, therapeutic, financial, legal, medical, coaching, customer-result, audience, or testimonial claims are introduced.",
+                               "Repository validation passes for every implementation slice before publication."
+                           ]
+}
