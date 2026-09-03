@@ -1,0 +1,333 @@
+{
+    "id":  "PRODUCT-001D",
+    "title":  "River Life Operating System Delivery and Fulfillment Foundation",
+    "status":  "planned",
+    "parentProduct":  "PRODUCT-001",
+    "product":  {
+                    "name":  "The River Life Operating System",
+                    "version":  "v1",
+                    "type":  "digital-guided-life-planning-system",
+                    "manuscript":  "src/content/products/river-life-operating-system-v1.md",
+                    "manuscriptAuthorityCommit":  "90b537d7080586ab26c6472d5e51f84b53d5d1fb"
+                },
+    "purpose":  "Define the governed delivery and fulfillment contract required to transform a completed River digital product artifact into a reliably deliverable customer product without coupling fulfillment correctness to any specific payment provider.",
+    "currentState":  {
+                         "manuscriptComplete":  true,
+                         "manuscriptCommitted":  true,
+                         "publicAvailabilityAuthorized":  false,
+                         "pricePublicationAuthorized":  false,
+                         "checkoutImplemented":  false,
+                         "paymentProviderIntegrated":  false,
+                         "orderSystemImplemented":  false,
+                         "customerSystemImplemented":  false,
+                         "entitlementSystemImplemented":  false,
+                         "digitalFulfillmentImplemented":  false,
+                         "transactionalEmailImplemented":  false,
+                         "webhookInfrastructureImplemented":  false,
+                         "applicationApiImplemented":  false,
+                         "siteRuntime":  "Astro static output deployed through Cloudflare assets"
+                     },
+    "governingPrinciples":  [
+                                "Payment and fulfillment are separate concerns.",
+                                "A successful payment must not itself be treated as proof that fulfillment completed.",
+                                "A fulfillment operation must have an explicit product identity, order identity, customer delivery destination, fulfillment state, and delivery result.",
+                                "Fulfillment must be safe to retry without accidentally creating uncontrolled duplicate delivery behavior.",
+                                "Provider-specific payment payloads must be normalized before entering the fulfillment domain.",
+                                "The product artifact delivered to a customer must be derived from an explicitly approved product release artifact, not directly from an arbitrary working-tree manuscript.",
+                                "The private source manuscript must not become publicly addressable merely because commerce is implemented.",
+                                "A customer must not receive access before the corresponding purchase has reached an authorized paid state.",
+                                "Fulfillment failures must remain observable and recoverable rather than silently losing a paid order.",
+                                "No implementation may claim that delivery exists until an end-to-end fulfillment path has been verified."
+                            ],
+    "fulfillmentDomain":  {
+                              "requiredInputs":  [
+                                                     "orderId",
+                                                     "productId",
+                                                     "productVersion",
+                                                     "customerId-or-provider-customer-reference",
+                                                     "deliveryEmail",
+                                                     "paymentState",
+                                                     "paymentReference",
+                                                     "purchasedAt",
+                                                     "fulfillmentRequestId"
+                                                 ],
+                              "normalizedPaymentStates":  [
+                                                              "pending",
+                                                              "paid",
+                                                              "failed",
+                                                              "refunded",
+                                                              "disputed",
+                                                              "unknown"
+                                                          ],
+                              "fulfillmentStates":  [
+                                                        "not-ready",
+                                                        "ready",
+                                                        "processing",
+                                                        "delivered",
+                                                        "failed",
+                                                        "revoked"
+                                                    ],
+                              "deliveryStates":  [
+                                                     "not-attempted",
+                                                     "attempting",
+                                                     "sent",
+                                                     "failed"
+                                                 ],
+                              "requiredOutputs":  [
+                                                      "fulfillmentId",
+                                                      "orderId",
+                                                      "productId",
+                                                      "productVersion",
+                                                      "fulfillmentState",
+                                                      "deliveryState",
+                                                      "deliveryAttemptedAt",
+                                                      "deliveredAt-if-successful",
+                                                      "failureReason-if-failed"
+                                                  ]
+                          },
+    "productReleaseContract":  {
+                                   "principle":  "Customer fulfillment operates against an approved release artifact rather than the editable source manuscript.",
+                                   "sourceManuscript":  "src/content/products/river-life-operating-system-v1.md",
+                                   "requiredReleaseMetadata":  [
+                                                                   "productId",
+                                                                   "productVersion",
+                                                                   "releaseId",
+                                                                   "artifactFilename",
+                                                                   "artifactFormat",
+                                                                   "artifactByteSize",
+                                                                   "artifactSha256",
+                                                                   "createdAt",
+                                                                   "releaseStatus"
+                                                               ],
+                                   "releaseStatuses":  [
+                                                           "draft",
+                                                           "approved",
+                                                           "retired"
+                                                       ],
+                                   "deliveryEligibleStatus":  "approved",
+                                   "v1IntendedFormat":  "PDF",
+                                   "sourceManuscriptPubliclyAddressable":  false,
+                                   "releaseArtifactPubliclyAddressableByDefault":  false
+                               },
+    "orderContract":  {
+                          "requiredFields":  [
+                                                 "orderId",
+                                                 "provider",
+                                                 "providerOrderOrSessionId",
+                                                 "providerPaymentReference",
+                                                 "customerReference",
+                                                 "deliveryEmail",
+                                                 "productId",
+                                                 "productVersion",
+                                                 "amount",
+                                                 "currency",
+                                                 "paymentState",
+                                                 "createdAt",
+                                                 "paidAt-if-paid"
+                                             ],
+                          "requirements":  [
+                                               "Order identity must remain stable across payment-provider retries.",
+                                               "Duplicate provider events must not create duplicate orders.",
+                                               "Fulfillment may begin only from an authorized paid order.",
+                                               "Provider-specific data must not become the canonical River order model.",
+                                               "Refund and dispute states must remain representable even if V1 does not automate access revocation."
+                                           ]
+                      },
+    "entitlementContract":  {
+                                "purpose":  "Represent whether a customer is authorized to receive or access a specific product release.",
+                                "requiredFields":  [
+                                                       "entitlementId",
+                                                       "orderId",
+                                                       "customerReference",
+                                                       "productId",
+                                                       "productVersion",
+                                                       "releaseId",
+                                                       "status",
+                                                       "createdAt",
+                                                       "revokedAt-if-revoked"
+                                                   ],
+                                "statuses":  [
+                                                 "active",
+                                                 "revoked"
+                                             ],
+                                "creationRule":  "An entitlement may be created only for an authorized paid order and an approved product release.",
+                                "duplicateRule":  "Retrying fulfillment for the same order and release must resolve to the existing entitlement rather than creating uncontrolled duplicates."
+                            },
+    "deliveryContract":  {
+                             "v1Channel":  "transactional-email",
+                             "deliveryDestination":  "validated customer email associated with the paid order",
+                             "deliveryPayload":  "secure customer access to the approved digital release artifact",
+                             "directPublicSourcePathProhibited":  true,
+                             "permanentUnauthenticatedPublicArtifactUrlProhibited":  true,
+                             "requirements":  [
+                                                  "Delivery must reference the exact product release fulfilled.",
+                                                  "A delivery attempt must be recordable independently from the payment event.",
+                                                  "Failed delivery must preserve enough state for a controlled retry.",
+                                                  "A successful delivery must record completion evidence.",
+                                                  "Customer-facing delivery must not expose repository paths, internal object identifiers, secrets, or provider credentials."
+                                              ]
+                         },
+    "idempotencyContract":  {
+                                "principle":  "The same authorized purchase may be processed repeatedly without creating uncontrolled duplicate business state.",
+                                "stableKeys":  [
+                                                   "provider event identity",
+                                                   "order identity",
+                                                   "fulfillment request identity",
+                                                   "order-plus-product-release entitlement identity"
+                                               ],
+                                "duplicateProviderEventBehavior":  "Return or resolve existing normalized order and fulfillment state.",
+                                "duplicateFulfillmentBehavior":  "Resume, return, or retry the existing fulfillment lifecycle according to its current state rather than creating a second independent fulfillment."
+                            },
+    "failureRecovery":  {
+                            "observableFailures":  [
+                                                       "invalid payment state",
+                                                       "unknown product",
+                                                       "unapproved product release",
+                                                       "missing delivery email",
+                                                       "entitlement creation failure",
+                                                       "delivery provider failure",
+                                                       "delivery retry exhaustion",
+                                                       "unexpected internal failure"
+                                                   ],
+                            "requirements":  [
+                                                 "A paid order must never disappear because fulfillment failed.",
+                                                 "Failure state must be explicit.",
+                                                 "Failure reason must be retained.",
+                                                 "Recovery must not require fabricating a new purchase.",
+                                                 "Retry behavior must respect idempotency."
+                                             ]
+                        },
+    "securityBoundaries":  [
+                               "Never commit payment-provider secrets.",
+                               "Never commit transactional-email-provider secrets.",
+                               "Never expose provider secret keys to browser-delivered JavaScript.",
+                               "Never trust browser-provided paid status.",
+                               "Never authorize fulfillment solely from a client redirect or success page.",
+                               "Never make the editable source manuscript the customer delivery artifact.",
+                               "Never publish a permanent unauthenticated URL to a paid release artifact by default.",
+                               "Never log full payment credentials or sensitive provider secrets.",
+                               "Validate provider-originated payment events before converting them into River order state."
+                           ],
+    "privacyBoundaries":  [
+                              "Collect only customer information required for purchase, delivery, support, accounting, fraud prevention, or legal obligations.",
+                              "Do not place customer email addresses or order data into the static site repository.",
+                              "Do not expose customer purchase records through static build output.",
+                              "Customer delivery information must remain server-side or provider-side."
+                          ],
+    "providerBoundary":  {
+                             "paymentProvider":  "unselected",
+                             "transactionalEmailProvider":  "unselected",
+                             "persistenceProvider":  "unselected",
+                             "artifactStorageProvider":  "unselected",
+                             "rule":  "PRODUCT-001D defines provider-independent fulfillment behavior. Provider selection and commerce implementation occur only after this contract is established."
+                         },
+    "v1MinimumFulfillmentPath":  [
+                                     "An approved River product release artifact exists.",
+                                     "A customer completes an authorized payment through the future commerce layer.",
+                                     "The provider payment event is validated server-side.",
+                                     "The event is normalized into River order state.",
+                                     "The paid order resolves the purchased product and approved release.",
+                                     "An active entitlement is created or recovered idempotently.",
+                                     "A fulfillment lifecycle is created or recovered idempotently.",
+                                     "Secure delivery is attempted through transactional email.",
+                                     "Delivery success or failure is recorded.",
+                                     "A failed fulfillment remains recoverable without requiring another purchase."
+                                 ],
+    "explicitlyDeferred":  [
+                               "shopping cart",
+                               "multi-product checkout",
+                               "customer account portal",
+                               "subscription billing",
+                               "membership system",
+                               "license-key system",
+                               "affiliate attribution",
+                               "discount and coupon engine",
+                               "automated tax architecture",
+                               "automated refund workflow",
+                               "automated dispute workflow",
+                               "complex download analytics",
+                               "mobile application delivery",
+                               "physical-product fulfillment",
+                               "CRM synchronization",
+                               "marketing automation",
+                               "recommendation engine"
+                           ],
+    "implementationSequence":  [
+                                   {
+                                       "id":  "PRODUCT-001D-01",
+                                       "name":  "Fulfillment domain types and lifecycle",
+                                       "outcome":  "Provider-independent order, release, entitlement, fulfillment, and delivery contracts exist in code."
+                                   },
+                                   {
+                                       "id":  "PRODUCT-001D-02",
+                                       "name":  "Approved product release artifact foundation",
+                                       "outcome":  "The source manuscript can produce an explicitly identified delivery artifact without exposing the source manuscript publicly."
+                                   },
+                                   {
+                                       "id":  "PRODUCT-001D-03",
+                                       "name":  "Persistence boundary",
+                                       "outcome":  "Order, entitlement, fulfillment, and delivery state have a durable provider-independent storage interface."
+                                   },
+                                   {
+                                       "id":  "PRODUCT-001D-04",
+                                       "name":  "Delivery provider boundary",
+                                       "outcome":  "Transactional delivery can be invoked through a provider-independent interface."
+                                   },
+                                   {
+                                       "id":  "PRODUCT-001D-05",
+                                       "name":  "Fulfillment orchestration",
+                                       "outcome":  "A validated paid order can move idempotently through entitlement and delivery lifecycle."
+                                   },
+                                   {
+                                       "id":  "PRODUCT-001D-06",
+                                       "name":  "Failure and retry verification",
+                                       "outcome":  "Duplicate events, provider failure, delivery failure, and retry behavior are covered by deterministic tests."
+                                   },
+                                   {
+                                       "id":  "PRODUCT-001D-07",
+                                       "name":  "End-to-end fulfillment readiness gate",
+                                       "outcome":  "The product may advance to commerce integration only after delivery can be demonstrated safely from normalized paid order to recorded delivery result."
+                                   }
+                               ],
+    "product001eHandoff":  {
+                               "nextPhase":  "PRODUCT-001E",
+                               "title":  "Commerce Integration",
+                               "PRODUCT001EMaySelect":  [
+                                                            "payment provider",
+                                                            "checkout mechanism",
+                                                            "payment event transport",
+                                                            "provider-specific order adapter",
+                                                            "price publication mechanism"
+                                                        ],
+                               "PRODUCT001EMustNotRedefine":  [
+                                                                  "canonical River order identity",
+                                                                  "approved product release requirement",
+                                                                  "entitlement creation rule",
+                                                                  "fulfillment lifecycle",
+                                                                  "idempotency guarantees",
+                                                                  "delivery success and failure semantics",
+                                                                  "private source manuscript boundary"
+                                                              ]
+                           },
+    "publicationBoundary":  {
+                                "pricePublicationAuthorized":  false,
+                                "availabilityPublicationAuthorized":  false,
+                                "checkoutPublicationAuthorized":  false,
+                                "customerPurchaseAuthorized":  false,
+                                "reason":  "PRODUCT-001D establishes delivery and fulfillment foundations only. Public commerce remains unauthorized until PRODUCT-001E and later launch gates are complete."
+                            },
+    "completionCriteria":  [
+                               "Provider-independent fulfillment contract is specified.",
+                               "Approved release artifact boundary is specified.",
+                               "Canonical order contract is specified.",
+                               "Entitlement lifecycle is specified.",
+                               "Delivery lifecycle is specified.",
+                               "Idempotency behavior is specified.",
+                               "Failure recovery behavior is specified.",
+                               "Security and privacy boundaries are specified.",
+                               "V1 minimum fulfillment path is specified.",
+                               "Deferred scope is explicit.",
+                               "PRODUCT-001E provider-selection boundary is explicit.",
+                               "Price, availability, checkout, and customer purchase remain unauthorized."
+                           ]
+}
