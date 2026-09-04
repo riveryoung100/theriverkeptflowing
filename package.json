@@ -19,7 +19,8 @@
     "typecheck": "astro check",
     "search:index": "pagefind --site dist",
     "preview:search": "pagefind --site dist --serve",
-    "test:assimilation": "tsx --test \"src/lib/assimilation/**/*.test.ts\""
+    "test:assimilation": "tsx --test \"src/lib/assimilation/**/*.test.ts\"",
+    "product:release": "tsx scripts/build-river-life-operating-system-release.ts"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.5",
@@ -27,7 +28,8 @@
     "@astrojs/sitemap": "^3.7.3",
     "astro": "^7.1.6",
     "mammoth": "1.12.1",
-    "pdfjs-dist": "6.2.108"
+    "pdfjs-dist": "6.2.108",
+    "pdf-lib": "1.17.1"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",

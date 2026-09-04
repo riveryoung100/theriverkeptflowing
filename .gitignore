@@ -16,3 +16,6 @@ Thumbs.db
 
 # Obsolete pre-Astro page restored by OneDrive
 /public/pages/tributaries.html
+
+# Private generated product release artifacts
+.river-release-artifacts/
