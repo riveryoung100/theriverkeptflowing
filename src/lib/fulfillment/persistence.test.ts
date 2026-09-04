@@ -27,7 +27,7 @@ function createOrder(
         deliveryEmail: "customer@example.com",
         productId: "river-life-operating-system",
         productVersion: "v1",
-        amountMinor: 1000,
+        amount: 1000,
         currency: "USD",
         paymentState: "paid",
         createdAt: "2026-09-04T18:30:00.000Z",
@@ -66,6 +66,8 @@ function createFulfillmentRequest(
         customerReference: "customer-001",
         deliveryEmail: "customer@example.com",
         paymentState: "paid",
+        paymentReference: "payment-001",
+        purchasedAt: "2026-09-04T18:30:00.000Z",
         ...overrides
     };
 }

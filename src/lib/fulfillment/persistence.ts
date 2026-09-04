@@ -215,7 +215,7 @@ implements FulfillmentPersistence {
                 "deliveryEmail",
                 "productId",
                 "productVersion",
-                "amountMinor",
+                "amount",
                 "currency",
                 "createdAt"
             ],
