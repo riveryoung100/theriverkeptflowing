@@ -1,4 +1,4 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
 
 import {
     describe,
@@ -700,5 +700,137 @@ describe(
             }
         );
 
+
+        it(
+            "records a thrown provider exception as recoverable failed fulfillment state",
+            async () => {
+
+                const artifactBytes =
+                    new Uint8Array([
+                        1,
+                        2,
+                        3,
+                        4
+                    ]);
+
+                const persistence =
+                    new InMemoryFulfillmentPersistence();
+
+                let providerCalls =
+                    0;
+
+                const deliveryProvider:
+                    DeliveryProvider = {
+
+                        async send() {
+
+                            providerCalls +=
+                                1;
+
+                            throw new Error(
+                                "simulated provider transport failure"
+                            );
+
+                        }
+
+                    };
+
+                const result =
+                    await orchestrateFulfillment(
+                        createInput(
+                            artifactBytes
+                        ),
+                        {
+                            persistence,
+                            deliveryProvider
+                        }
+                    );
+
+                assert.equal(
+                    providerCalls,
+                    1
+                );
+
+                assert.equal(
+                    result.providerInvoked,
+                    true
+                );
+
+                assert.equal(
+                    result.deliveryResult?.status,
+                    "failed"
+                );
+
+                if (
+                    result.deliveryResult?.status !==
+                    "failed"
+                ) {
+                    assert.fail(
+                        "Expected failed delivery result."
+                    );
+                }
+
+                assert.equal(
+                    result.deliveryResult.code,
+                    "DELIVERY_PROVIDER_EXCEPTION"
+                );
+
+                assert.equal(
+                    result.deliveryResult.message,
+                    "simulated provider transport failure"
+                );
+
+                assert.equal(
+                    result.deliveryResult.retryable,
+                    true
+                );
+
+                assert.equal(
+                    result.fulfillmentRecord.fulfillmentState,
+                    "failed"
+                );
+
+                assert.equal(
+                    result.fulfillmentRecord.deliveryState,
+                    "failed"
+                );
+
+                assert.equal(
+                    result.fulfillmentRecord.failureReason,
+                    "DELIVERY_PROVIDER_EXCEPTION: simulated provider transport failure"
+                );
+
+                const persistedRecord =
+                    await persistence
+                        .getFulfillmentRecordByOrderId(
+                            "order-001"
+                        );
+
+                assert.ok(
+                    persistedRecord
+                );
+
+                assert.equal(
+                    persistedRecord.fulfillmentId,
+                    result.fulfillmentRecord.fulfillmentId
+                );
+
+                assert.equal(
+                    persistedRecord.fulfillmentState,
+                    "failed"
+                );
+
+                assert.equal(
+                    persistedRecord.deliveryState,
+                    "failed"
+                );
+
+                assert.equal(
+                    persistedRecord.failureReason,
+                    "DELIVERY_PROVIDER_EXCEPTION: simulated provider transport failure"
+                );
+
+            }
+        );
     }
 );

@@ -1,4 +1,4 @@
-﻿import type {
+import type {
     Entitlement,
     FulfillmentRecord,
     FulfillmentRequest,
@@ -745,15 +745,43 @@ export async function orchestrateFulfillment(
         providerRequest
     );
 
-    const deliveryResult =
-        await dependencies.deliveryProvider
-            .send(
-                providerRequest
-            );
+    let deliveryResult:
+        DeliveryProviderResult;
 
-    assertDeliveryProviderResult(
-        deliveryResult
-    );
+    try {
+
+        deliveryResult =
+            await dependencies.deliveryProvider
+                .send(
+                    providerRequest
+                );
+
+        assertDeliveryProviderResult(
+            deliveryResult
+        );
+
+    }
+    catch (error) {
+
+        const failureMessage =
+            error instanceof Error
+                ? error.message
+                : String(error);
+
+        deliveryResult = {
+            status:
+                "failed",
+            code:
+                "DELIVERY_PROVIDER_EXCEPTION",
+            message:
+                failureMessage.length > 0
+                    ? failureMessage
+                    : "Delivery provider threw an unknown exception.",
+            retryable:
+                true
+        };
+
+    }
 
     if (
         deliveryResult.status ===
