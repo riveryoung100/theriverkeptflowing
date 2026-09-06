@@ -1,9 +1,17 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "theriverkeptflowing-site",
-  "compatibility_date": "2026-07-24",
-  "assets": {
-    "directory": "./dist",
-    "html_handling": "auto-trailing-slash"
-  }
+    "$schema":  "node_modules/wrangler/config-schema.json",
+    "name":  "theriverkeptflowing-site",
+    "compatibility_date":  "2026-07-24",
+    "assets":  {
+                   "directory":  "./dist",
+                   "html_handling":  "auto-trailing-slash"
+               },
+    "d1_databases":  [
+                         {
+                             "binding":  "RIVER_COMMERCE_DB",
+                             "database_name":  "river-commerce",
+                             "database_id":  "00000000-0000-0000-0000-000000000000",
+                             "migrations_dir":  "migrations"
+                         }
+                     ]
 }
