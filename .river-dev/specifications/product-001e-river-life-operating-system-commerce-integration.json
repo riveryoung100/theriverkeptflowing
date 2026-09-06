@@ -94,10 +94,10 @@
                            "orderIdentityDriftRule":  "An existing canonical order identity may receive legitimate payment-state updates but may not silently drift across provider identity, customer identity, product identity, price identity, or currency identity."
                        },
     "providerSelection":  {
-                              "paymentProvider":  "unselected",
+                              "paymentProvider":  "stripe",
                               "checkoutMechanism":  "unselected",
                               "paymentEventTransport":  "unselected",
-                              "providerSpecificOrderAdapter":  "unselected",
+                              "providerSpecificOrderAdapter":  "stripe-payment-adapter",
                               "pricePublicationMechanism":  "unselected",
                               "existingStripeHostedContributionLinksAreProductProviderSelection":  false,
                               "rule":  "Existing Stripe-hosted contribution-link architecture is prior evidence for contribution flows only and does not itself select Stripe for PRODUCT-001E product commerce."
