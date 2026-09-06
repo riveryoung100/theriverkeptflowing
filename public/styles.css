@@ -8625,7 +8625,7 @@ HOMEPAGE ECOSYSTEM
 
 
 /* =========================================================
-   HERO → INTRO TRANSITION
+   HERO â†’ INTRO TRANSITION
    ========================================================= */
 
 .home-page .home-hero + .intro-section {
@@ -9564,7 +9564,7 @@ HOMEPAGE ECOSYSTEM
 
 
 /* ---------------------------------------------------------
-   TOPICS HUB — PAGE RHYTHM
+   TOPICS HUB â€” PAGE RHYTHM
    --------------------------------------------------------- */
 
 body:has(main[data-pagefind-body]) .topics-page{
@@ -9758,7 +9758,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 .topic-card > a:last-child::after{
-    content: "→";
+    content: "â†’";
     transition: transform 160ms ease;
 }
 
@@ -10063,7 +10063,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 }
 
 .guide-link:not(.guide-link-disabled)::after {
-    content: "→";
+    content: "â†’";
     transition: transform 160ms ease;
 }
 
@@ -10251,7 +10251,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 .guides-recommendations-quote::before,
 .guides-philosophy-quote::before {
-    content: "“";
+    content: "â€œ";
     position: absolute;
     top: -0.28em;
     left: -0.06em;
@@ -10678,7 +10678,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 }
 
 .journey-quote::before {
-    content: "“";
+    content: "â€œ";
     position: absolute;
     top: -34px;
     left: 10px;
@@ -12672,7 +12672,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ---------------------------------------------------------
-   HERO â€” A LETTER BEFORE THE LETTERS
+   HERO Ã¢â‚¬â€ A LETTER BEFORE THE LETTERS
    --------------------------------------------------------- */
 
 .letters-hero {
@@ -12727,7 +12727,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ---------------------------------------------------------
-   OPENING â€” QUIET READING SPACE
+   OPENING Ã¢â‚¬â€ QUIET READING SPACE
    --------------------------------------------------------- */
 
 .letters-opening .reading-shell {
@@ -12768,7 +12768,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ---------------------------------------------------------
-   FEATURED LETTER â€” PAPER / ARCHIVE PRESENCE
+   FEATURED LETTER Ã¢â‚¬â€ PAPER / ARCHIVE PRESENCE
    --------------------------------------------------------- */
 
 .letters-featured-grid {
@@ -12833,7 +12833,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ---------------------------------------------------------
-   LETTER COLLECTION â€” ARCHIVE SHELVES
+   LETTER COLLECTION Ã¢â‚¬â€ ARCHIVE SHELVES
    --------------------------------------------------------- */
 
 .letters-archive {
@@ -12929,7 +12929,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ---------------------------------------------------------
-   ORDINARY DAYS â€” PAUSE IN THE CURRENT
+   ORDINARY DAYS Ã¢â‚¬â€ PAUSE IN THE CURRENT
    --------------------------------------------------------- */
 
 .letters-ordinary .reading-shell {
@@ -12943,7 +12943,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 }
 
 .letters-ordinary-quote::before {
-    content: "â€œ";
+    content: "Ã¢â‚¬Å“";
     position: absolute;
     top: -1.2rem;
     left: -0.2rem;
@@ -12956,7 +12956,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ---------------------------------------------------------
-   PURPOSE â€” SIX REASONS TO WRITE
+   PURPOSE Ã¢â‚¬â€ SIX REASONS TO WRITE
    --------------------------------------------------------- */
 
 .letters-purpose-grid {
@@ -12990,7 +12990,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ---------------------------------------------------------
-   UNWRITTEN LETTERS â€” FUTURE ARCHIVE
+   UNWRITTEN LETTERS Ã¢â‚¬â€ FUTURE ARCHIVE
    --------------------------------------------------------- */
 
 .letters-unwritten {
@@ -13033,7 +13033,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ---------------------------------------------------------
-   READER â€” LETTERS FIND THEIR PEOPLE
+   READER Ã¢â‚¬â€ LETTERS FIND THEIR PEOPLE
    --------------------------------------------------------- */
 
 .letters-reader .reading-shell {
@@ -13218,7 +13218,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ---------------------------------------------------------
-   HEADWATERS — HERO
+   HEADWATERS â€” HERO
    --------------------------------------------------------- */
 
 .headwaters-hero {
@@ -13305,7 +13305,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ---------------------------------------------------------
-   HEADWATERS — OPENING STORY
+   HEADWATERS â€” OPENING STORY
    --------------------------------------------------------- */
 
 .headwaters-hero + .story-section {
@@ -13357,7 +13357,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ---------------------------------------------------------
-   HEADWATERS — MODERN CURRENT / CONTRAST
+   HEADWATERS â€” MODERN CURRENT / CONTRAST
    --------------------------------------------------------- */
 
 .headwaters-hero ~ .contrast-section {
@@ -13433,7 +13433,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ---------------------------------------------------------
-   HEADWATERS — FOUNDATION STONES
+   HEADWATERS â€” FOUNDATION STONES
    --------------------------------------------------------- */
 
 .headwaters-hero ~ .foundation-section {
@@ -13505,7 +13505,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ---------------------------------------------------------
-   HEADWATERS — RIVER PHILOSOPHY
+   HEADWATERS â€” RIVER PHILOSOPHY
    --------------------------------------------------------- */
 
 .headwaters-hero ~ .river-philosophy-section {
@@ -13579,7 +13579,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ---------------------------------------------------------
-   HEADWATERS — INVITATION / HANDOFF TO THE SOURCE
+   HEADWATERS â€” INVITATION / HANDOFF TO THE SOURCE
    --------------------------------------------------------- */
 
 .headwaters-hero ~ .headwaters-invitation {
@@ -13629,7 +13629,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ---------------------------------------------------------
-   HEADWATERS — MOTION
+   HEADWATERS â€” MOTION
    --------------------------------------------------------- */
 
 @media (prefers-reduced-motion: no-preference) {
@@ -13656,7 +13656,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ---------------------------------------------------------
-   HEADWATERS — RESPONSIVE
+   HEADWATERS â€” RESPONSIVE
    --------------------------------------------------------- */
 
 @media (max-width: 900px) {
@@ -13737,7 +13737,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ============================================================
-   SOURCE — CINEMATIC OPENING
+   SOURCE â€” CINEMATIC OPENING
    ============================================================ */
 
 .source-hero {
@@ -13819,7 +13819,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ============================================================
-   SOURCE — OPENING THRESHOLD
+   SOURCE â€” OPENING THRESHOLD
    ============================================================ */
 
 .source-introduction {
@@ -13861,7 +13861,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ============================================================
-   SOURCE — CHAPTER ARCHITECTURE
+   SOURCE â€” CHAPTER ARCHITECTURE
    ============================================================ */
 
 .source-chapter {
@@ -13953,7 +13953,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ============================================================
-   SOURCE — PULL QUOTES
+   SOURCE â€” PULL QUOTES
    ============================================================ */
 
 .source-quote {
@@ -13976,7 +13976,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 }
 
 .source-quote::before {
-    content: "“";
+    content: "â€œ";
     display: block;
     margin-bottom: 0.4rem;
     font-size: clamp(3.5rem, 8vw, 6rem);
@@ -13986,7 +13986,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ============================================================
-   SOURCE — NARRATIVE TRANSITIONS
+   SOURCE â€” NARRATIVE TRANSITIONS
    ============================================================ */
 
 .chapter-transition {
@@ -14006,7 +14006,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ============================================================
-   SOURCE — UNFINISHED STORY
+   SOURCE â€” UNFINISHED STORY
    ============================================================ */
 
 .story-continues {
@@ -14100,7 +14100,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ============================================================
-   SOURCE — DOWNSTREAM NAVIGATION
+   SOURCE â€” DOWNSTREAM NAVIGATION
    ============================================================ */
 
 .source-navigation {
@@ -14111,7 +14111,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 }
 
 .source-navigation::after {
-    content: "→";
+    content: "â†’";
     position: absolute;
     right: clamp(1rem, 6vw, 6rem);
     bottom: clamp(-1rem, -2vw, -0.25rem);
@@ -14152,7 +14152,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ============================================================
-   SOURCE — READING RHYTHM
+   SOURCE â€” READING RHYTHM
    ============================================================ */
 
 .source-chapter-light .chapter-body,
@@ -14175,7 +14175,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ============================================================
-   SOURCE — RESPONSIVE
+   SOURCE â€” RESPONSIVE
    ============================================================ */
 
 @media (max-width: 760px) {
@@ -14275,7 +14275,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ============================================================
-   SOURCE — ACCESSIBILITY / MOTION
+   SOURCE â€” ACCESSIBILITY / MOTION
    ============================================================ */
 
 @media (prefers-reduced-motion: reduce) {
@@ -14292,7 +14292,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 /* WEBSITE PRODUCTION 019: TRIBUTARIES EXPERIENCE */
 
 /* ---------------------------------------------------------
-   Tributaries — visual identity
+   Tributaries â€” visual identity
    The page functions as the structural map of the river.
    --------------------------------------------------------- */
 
@@ -14359,7 +14359,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ---------------------------------------------------------
-   Opening — establish the governing idea
+   Opening â€” establish the governing idea
    --------------------------------------------------------- */
 
 .tributaries-opening {
@@ -14406,7 +14406,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ---------------------------------------------------------
-   Tributary map — eleven streams
+   Tributary map â€” eleven streams
    --------------------------------------------------------- */
 
 .tributaries-map {
@@ -14564,7 +14564,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ---------------------------------------------------------
-   Connection — streams affect the whole river
+   Connection â€” streams affect the whole river
    --------------------------------------------------------- */
 
 .tributaries-connection {
@@ -14623,7 +14623,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 }
 
 .tributaries-quote::before {
-    content: "“";
+    content: "â€œ";
     position: absolute;
     top: -0.55rem;
     left: 0.5rem;
@@ -14636,7 +14636,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ---------------------------------------------------------
-   Principles — governing laws of the river
+   Principles â€” governing laws of the river
    --------------------------------------------------------- */
 
 .tributaries-principles {
@@ -14759,7 +14759,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* ---------------------------------------------------------
-   Balance — stewardship rather than maximization
+   Balance â€” stewardship rather than maximization
    --------------------------------------------------------- */
 
 .tributaries-balance {
@@ -14860,7 +14860,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 }
 
 .tributaries-navigation-card::after {
-    content: "→";
+    content: "â†’";
     position: absolute;
     right: 1.25rem;
     top: 1rem;
@@ -15042,7 +15042,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* =========================================
-   CURRENT — EXPERIENCE FOUNDATION
+   CURRENT â€” EXPERIENCE FOUNDATION
    ========================================= */
 
 .current-hero,
@@ -15071,7 +15071,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* =========================================
-   CURRENT — HERO
+   CURRENT â€” HERO
    ========================================= */
 
 .current-hero {
@@ -15157,7 +15157,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* =========================================
-   CURRENT — OPENING
+   CURRENT â€” OPENING
    ========================================= */
 
 .current-opening::before {
@@ -15201,7 +15201,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* =========================================
-   CURRENT — WHAT I AM BUILDING
+   CURRENT â€” WHAT I AM BUILDING
    ========================================= */
 
 .current-snapshot::before {
@@ -15293,7 +15293,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* =========================================
-   CURRENT — REALITY OF THE SEASON
+   CURRENT â€” REALITY OF THE SEASON
    ========================================= */
 
 .current-reality::after {
@@ -15339,7 +15339,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 }
 
 .current-quote::after {
-    content: "“";
+    content: "â€œ";
     position: absolute;
     top: -35px;
     right: 12px;
@@ -15352,7 +15352,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* =========================================
-   CURRENT — ORDINARY LIFE
+   CURRENT â€” ORDINARY LIFE
    ========================================= */
 
 .current-life::after {
@@ -15409,7 +15409,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* =========================================
-   CURRENT — QUESTIONS
+   CURRENT â€” QUESTIONS
    ========================================= */
 
 .current-questions::before {
@@ -15466,7 +15466,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* =========================================
-   CURRENT — COMMITMENTS
+   CURRENT â€” COMMITMENTS
    ========================================= */
 
 .current-commitments::before {
@@ -15531,7 +15531,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* =========================================
-   CURRENT — VISION
+   CURRENT â€” VISION
    ========================================= */
 
 .current-vision::before {
@@ -15572,7 +15572,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* =========================================
-   CURRENT — FAITH
+   CURRENT â€” FAITH
    ========================================= */
 
 .current-faith {
@@ -15622,7 +15622,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* =========================================
-   CURRENT — WORKBENCH
+   CURRENT â€” WORKBENCH
    ========================================= */
 
 .current-workbench::before {
@@ -15665,7 +15665,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* =========================================
-   CURRENT — NAVIGATION / CONTINUATION
+   CURRENT â€” NAVIGATION / CONTINUATION
    ========================================= */
 
 .current-navigation::before {
@@ -15698,7 +15698,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* =========================================
-   CURRENT — FOCUS + ACCESSIBILITY
+   CURRENT â€” FOCUS + ACCESSIBILITY
    ========================================= */
 
 .current-hero a:focus-visible,
@@ -15710,7 +15710,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* =========================================
-   CURRENT — TABLET
+   CURRENT â€” TABLET
    ========================================= */
 
 @media (max-width: 900px) {
@@ -15750,7 +15750,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* =========================================
-   CURRENT — MOBILE
+   CURRENT â€” MOBILE
    ========================================= */
 
 @media (max-width: 640px) {
@@ -15878,7 +15878,7 @@ body:has(main[data-pagefind-body]) .topics-page{
 
 
 /* =========================================
-   CURRENT — REDUCED MOTION
+   CURRENT â€” REDUCED MOTION
    ========================================= */
 
 @media (prefers-reduced-motion: reduce) {
@@ -15916,7 +15916,7 @@ contract. No payment behavior is created or changed here.
 
 
 /* ---------------------------------------------------------
-   RIVER FUND — EXPERIENCE FOUNDATION
+   RIVER FUND â€” EXPERIENCE FOUNDATION
    --------------------------------------------------------- */
 
 .contribute-page {
@@ -15944,7 +15944,7 @@ contract. No payment behavior is created or changed here.
 
 
 /* ---------------------------------------------------------
-   RIVER FUND — HERO
+   RIVER FUND â€” HERO
    --------------------------------------------------------- */
 
 .contribute-page .contribute-hero {
@@ -16115,7 +16115,7 @@ contract. No payment behavior is created or changed here.
 
 
 /* ---------------------------------------------------------
-   RIVER FUND — RESOURCE FLOW
+   RIVER FUND â€” RESOURCE FLOW
    --------------------------------------------------------- */
 
 .contribute-page .contribute-options {
@@ -16315,7 +16315,7 @@ contract. No payment behavior is created or changed here.
 
 
 /* ---------------------------------------------------------
-   RIVER FUND — STEWARDSHIP
+   RIVER FUND â€” STEWARDSHIP
    --------------------------------------------------------- */
 
 .contribute-page .contribute-section {
@@ -16410,7 +16410,7 @@ contract. No payment behavior is created or changed here.
 
 
 /* ---------------------------------------------------------
-   RIVER FUND — RESPONSIVE
+   RIVER FUND â€” RESPONSIVE
    --------------------------------------------------------- */
 
 @media (max-width: 900px) {
@@ -16498,7 +16498,7 @@ contract. No payment behavior is created or changed here.
 
 
 /* ---------------------------------------------------------
-   RIVER FUND — REDUCED MOTION
+   RIVER FUND â€” REDUCED MOTION
    --------------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
@@ -16968,7 +16968,7 @@ contract. No payment behavior is created or changed here.
 }
 
 /* ==========================================================
-   WEBSITE PRODUCTION 025 — LIBRARY READING EXPERIENCE
+   WEBSITE PRODUCTION 025 â€” LIBRARY READING EXPERIENCE
    Shared production treatment for Library detail reading.
 ========================================================== */
 
@@ -18004,7 +18004,7 @@ contract. No payment behavior is created or changed here.
 
 /* ============================================================
    THE RIVER KEPT FLOWING
-   WEBSITE 4.0 — PRODUCTION DESIGN SYSTEM
+   WEBSITE 4.0 â€” PRODUCTION DESIGN SYSTEM
    ------------------------------------------------------------
    This layer intentionally follows the legacy stylesheet.
    Website 4.0 progressively supersedes the historical visual
@@ -18014,7 +18014,7 @@ contract. No payment behavior is created or changed here.
 
 /* ============================================================
    THE RIVER KEPT FLOWING
-   WEBSITE 4.0 — GLOBAL DESIGN TOKENS
+   WEBSITE 4.0 â€” GLOBAL DESIGN TOKENS
    ============================================================ */
 
 :root {
@@ -18130,7 +18130,7 @@ contract. No payment behavior is created or changed here.
 
 
 /* ============================================================
-   WEBSITE 4.0 — TYPOGRAPHY
+   WEBSITE 4.0 â€” TYPOGRAPHY
    ============================================================ */
 
 html {
@@ -18243,7 +18243,7 @@ small {
 
 
 /* ============================================================
-   WEBSITE 4.0 — ATMOSPHERE
+   WEBSITE 4.0 â€” ATMOSPHERE
    ============================================================ */
 
 html {
@@ -18398,7 +18398,7 @@ a {
 
 
 /* ============================================================
-   WEBSITE 4.0 — INTERACTION + MOTION
+   WEBSITE 4.0 â€” INTERACTION + MOTION
    ============================================================ */
 
 a,
@@ -18465,7 +18465,7 @@ button {
 
 
 /* ============================================================
-   WEBSITE 4.0 — ACCESSIBILITY
+   WEBSITE 4.0 â€” ACCESSIBILITY
    ============================================================ */
 
 :focus-visible {
@@ -18498,10 +18498,10 @@ button {
 
 
 /* ============================================================
-   END WEBSITE 4.0 — PRODUCTION DESIGN SYSTEM
+   END WEBSITE 4.0 â€” PRODUCTION DESIGN SYSTEM
    ============================================================ */
 
-/* WEBSITE 4.0 — GLOBAL SHELL 004B */
+/* WEBSITE 4.0 â€” GLOBAL SHELL 004B */
 
 /*
     The River Kept Flowing
@@ -19440,7 +19440,7 @@ button {
 
 }
 
-/* END WEBSITE 4.0 — GLOBAL SHELL 004B */
+/* END WEBSITE 4.0 â€” GLOBAL SHELL 004B */
 
 /* WEBSITE 4.0 - HOMEPAGE EXPERIENCE 004C */
 
@@ -19461,7 +19461,7 @@ button {
 
 
 /* ============================================================
-   01 — HOMEPAGE CANVAS
+   01 â€” HOMEPAGE CANVAS
    ============================================================ */
 
 .home-v4 {
@@ -19515,7 +19515,7 @@ button {
 
 
 /* ============================================================
-   02 — SHARED SECTION RHYTHM
+   02 â€” SHARED SECTION RHYTHM
    ============================================================ */
 
 .home-v4 :where(
@@ -19604,7 +19604,7 @@ button {
 
 
 /* ============================================================
-   03 — HERO
+   03 â€” HERO
    ============================================================ */
 
 .home-v4 .home-hero {
@@ -19788,7 +19788,7 @@ button {
 
 
 /* ============================================================
-   04 — INTRO
+   04 â€” INTRO
    ============================================================ */
 
 .home-v4 .intro-section {
@@ -19849,7 +19849,7 @@ button {
 
 
 /* ============================================================
-   05 — ECOSYSTEM
+   05 â€” ECOSYSTEM
    ============================================================ */
 
 .home-v4 .home-ecosystem {
@@ -19963,7 +19963,7 @@ button {
 
 
 /* ============================================================
-   06 — PATHWAYS
+   06 â€” PATHWAYS
    ============================================================ */
 
 .home-v4 .paths-section .path-grid {
@@ -20049,7 +20049,7 @@ button {
 
 
 /* ============================================================
-   07 — MISSION
+   07 â€” MISSION
    ============================================================ */
 
 .home-v4 .mission-section {
@@ -20152,7 +20152,7 @@ button {
 
 
 /* ============================================================
-   08 — TRIBUTARIES
+   08 â€” TRIBUTARIES
    ============================================================ */
 
 .home-v4 .tributaries-section .tributary-grid {
@@ -20219,7 +20219,7 @@ button {
 
 
 /* ============================================================
-   09 — LATEST WORK
+   09 â€” LATEST WORK
    ============================================================ */
 
 .home-v4 .latest-section {
@@ -20308,7 +20308,7 @@ button {
 
 
 /* ============================================================
-   10 — INVITATION / JOIN THE CURRENT
+   10 â€” INVITATION / JOIN THE CURRENT
    ============================================================ */
 
 .home-v4 .invitation-section {
@@ -20450,7 +20450,7 @@ button {
 
 
 /* ============================================================
-   11 — INTERACTION DETAIL
+   11 â€” INTERACTION DETAIL
    ============================================================ */
 
 .home-v4 a {
@@ -20479,7 +20479,7 @@ button {
 
 
 /* ============================================================
-   12 — TABLET
+   12 â€” TABLET
    ============================================================ */
 
 @media (max-width: 960px) {
@@ -20518,7 +20518,7 @@ button {
 
 
 /* ============================================================
-   13 — MOBILE
+   13 â€” MOBILE
    ============================================================ */
 
 @media (max-width: 680px) {
@@ -20659,7 +20659,7 @@ button {
 
 
 /* ============================================================
-   14 — REDUCED MOTION
+   14 â€” REDUCED MOTION
    ============================================================ */
 
 @media (prefers-reduced-motion: reduce) {
@@ -20686,13 +20686,13 @@ button {
 /* END WEBSITE 4.0 - HOMEPAGE EXPERIENCE 004C */
 
 /* ============================================================
-   WEBSITE 4.0 — HOMEPAGE VISUAL RESTORATION 001
+   WEBSITE 4.0 â€” HOMEPAGE VISUAL RESTORATION 001
    Contrast + dimensional hierarchy + persistent navigation
    ============================================================ */
 
 
 /* ---------------------------------------------------------
-   01 — PERSISTENT PUBLIC HEADER
+   01 â€” PERSISTENT PUBLIC HEADER
    --------------------------------------------------------- */
 
 .river-header {
@@ -20706,7 +20706,7 @@ button {
 
 
 /* ---------------------------------------------------------
-   02 — HOMEPAGE HIGH-CONTRAST TYPOGRAPHY
+   02 â€” HOMEPAGE HIGH-CONTRAST TYPOGRAPHY
    --------------------------------------------------------- */
 
 .home-v4 {
@@ -20753,7 +20753,7 @@ button {
 
 
 /* ---------------------------------------------------------
-   03 — LIGHT SURFACES MUST REMAIN DARK-TEXT
+   03 â€” LIGHT SURFACES MUST REMAIN DARK-TEXT
    --------------------------------------------------------- */
 
 .home-v4 :where(
@@ -20790,7 +20790,7 @@ button {
 
 
 /* ---------------------------------------------------------
-   04 — DIMENSIONAL CARD HIERARCHY
+   04 â€” DIMENSIONAL CARD HIERARCHY
    --------------------------------------------------------- */
 
 .home-v4 :where(
@@ -20860,7 +20860,7 @@ button {
 
 
 /* ---------------------------------------------------------
-   05 — KEEP DESKTOP NAVIGATION VISIBLE
+   05 â€” KEEP DESKTOP NAVIGATION VISIBLE
    --------------------------------------------------------- */
 
 @media (min-width: 761px) and (max-width: 1180px) {
@@ -20902,7 +20902,7 @@ button {
 
 
 /* ---------------------------------------------------------
-   06 — MOBILE READABILITY + CARD PROPORTION
+   06 â€” MOBILE READABILITY + CARD PROPORTION
    --------------------------------------------------------- */
 
 @media (max-width: 680px) {
@@ -20977,7 +20977,7 @@ button {
 
 
 /* ---------------------------------------------------------
-   07 — TRUE MOBILE DRAWER ONLY
+   07 â€” TRUE MOBILE DRAWER ONLY
    --------------------------------------------------------- */
 
 @media (max-width: 760px) {
@@ -20994,7 +20994,7 @@ button {
 
 
 /* ---------------------------------------------------------
-   07B — GLOBAL SITE-MAP MENU
+   07B â€” GLOBAL SITE-MAP MENU
    --------------------------------------------------------- */
 
 .river-menu-toggle {
@@ -21002,7 +21002,7 @@ button {
 }
 
 /* ---------------------------------------------------------
-   08 — REDUCED MOTION
+   08 â€” REDUCED MOTION
    --------------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
@@ -21018,16 +21018,16 @@ button {
 
 }
 
-/* END WEBSITE 4.0 — HOMEPAGE VISUAL RESTORATION 001 */
+/* END WEBSITE 4.0 â€” HOMEPAGE VISUAL RESTORATION 001 */
 
 /* ============================================================
-   WEBSITE 4.0 — HOMEPAGE VISUAL RESTORATION 002
+   WEBSITE 4.0 â€” HOMEPAGE VISUAL RESTORATION 002
    Seamless dark canvas + foreground surfaces
    ============================================================ */
 
 
 /* ---------------------------------------------------------
-   01 — ONE CONTINUOUS RIVER CANVAS
+   01 â€” ONE CONTINUOUS RIVER CANVAS
    --------------------------------------------------------- */
 
 .home-v4 :where(
@@ -21057,7 +21057,7 @@ button {
 
 
 /* ---------------------------------------------------------
-   02 — UNAMBIGUOUS SECTION TYPOGRAPHY
+   02 â€” UNAMBIGUOUS SECTION TYPOGRAPHY
    --------------------------------------------------------- */
 
 .home-v4 :where(
@@ -21093,7 +21093,7 @@ button {
 
 
 /* ---------------------------------------------------------
-   03 — LIGHT FOREGROUND CARDS
+   03 â€” LIGHT FOREGROUND CARDS
    --------------------------------------------------------- */
 
 .home-v4 :where(
@@ -21150,7 +21150,7 @@ button {
 
 
 /* ---------------------------------------------------------
-   04 — GOLD / COPPER ACCENTS STAY VISIBLE
+   04 â€” GOLD / COPPER ACCENTS STAY VISIBLE
    --------------------------------------------------------- */
 
 .home-v4 :where(
@@ -21165,7 +21165,7 @@ button {
 
 
 /* ---------------------------------------------------------
-   05 — MOBILE CARDS SHOULD FEEL LIKE CARDS, NOT SCREENS
+   05 â€” MOBILE CARDS SHOULD FEEL LIKE CARDS, NOT SCREENS
    --------------------------------------------------------- */
 
 @media (max-width: 680px) {
@@ -21210,7 +21210,7 @@ button {
 
 
 /* ---------------------------------------------------------
-   06 — HEADER GLASS DEPTH
+   06 â€” HEADER GLASS DEPTH
    --------------------------------------------------------- */
 
 .river-header {
@@ -21228,11 +21228,11 @@ button {
 }
 
 
-/* END WEBSITE 4.0 — HOMEPAGE VISUAL RESTORATION 002 */
+/* END WEBSITE 4.0 â€” HOMEPAGE VISUAL RESTORATION 002 */
 
 
 /* ============================================================
-   WEBSITE 4.0 — DESIGN-001 AUTHORITATIVE RESPONSIVE SYSTEM
+   WEBSITE 4.0 â€” DESIGN-001 AUTHORITATIVE RESPONSIVE SYSTEM
    Mobile navigation + contrast + proportion + vertical rhythm
    This final layer intentionally supersedes conflicting legacy
    responsive declarations without altering desktop V4.
@@ -21240,7 +21240,7 @@ button {
 
 
 /* ---------------------------------------------------------
-   01 — RESPONSIVE HEADER AUTHORITY
+   01 â€” RESPONSIVE HEADER AUTHORITY
    --------------------------------------------------------- */
 
 @media (min-width: 1181px) {
@@ -21335,7 +21335,7 @@ button {
 
 
 /* ---------------------------------------------------------
-   02 — HOMEPAGE MOBILE CANVAS
+   02 â€” HOMEPAGE MOBILE CANVAS
    --------------------------------------------------------- */
 
 @media (max-width: 680px) {
@@ -21418,7 +21418,7 @@ button {
 
 
 /* ---------------------------------------------------------
-   03 — MOBILE CARD PROPORTION
+   03 â€” MOBILE CARD PROPORTION
    --------------------------------------------------------- */
 
 @media (max-width: 680px) {
@@ -21477,7 +21477,7 @@ button {
 
 
 /* ---------------------------------------------------------
-   04 — AUTHORITATIVE LIGHT-CARD CONTRAST
+   04 â€” AUTHORITATIVE LIGHT-CARD CONTRAST
    --------------------------------------------------------- */
 
 .home-v4 :where(
@@ -21538,7 +21538,7 @@ button {
 
 
 /* ---------------------------------------------------------
-   05 — PHONE TOUCH + ACTION RHYTHM
+   05 â€” PHONE TOUCH + ACTION RHYTHM
    --------------------------------------------------------- */
 
 @media (max-width: 680px) {
@@ -21579,7 +21579,7 @@ button {
 
 
 /* ---------------------------------------------------------
-   06 — VERY SMALL PHONES
+   06 â€” VERY SMALL PHONES
    --------------------------------------------------------- */
 
 @media (max-width: 420px) {
@@ -21608,7 +21608,7 @@ button {
 
 
 /* ---------------------------------------------------------
-   07 — REDUCED MOTION
+   07 â€” REDUCED MOTION
    --------------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
@@ -21624,7 +21624,7 @@ button {
 
 }
 
-/* END WEBSITE 4.0 — DESIGN-001 AUTHORITATIVE RESPONSIVE SYSTEM */
+/* END WEBSITE 4.0 â€” DESIGN-001 AUTHORITATIVE RESPONSIVE SYSTEM */
 
 
 /* =========================================================
@@ -21969,4 +21969,40 @@ video {
     ) {
         transition: none;
     }
+}
+
+/* MOBILE NAVIGATION INTERACTION 207 */
+
+@media (max-width: 900px) {
+
+    .river-mobile-nav[hidden] {
+        display: none !important;
+    }
+
+    html.river-mobile-nav-open,
+    html.river-mobile-nav-open body {
+        overflow: hidden;
+    }
+
+    .river-mobile-nav {
+        max-height: calc(
+            100dvh - var(--river-header-height)
+        );
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .river-mobile-nav a {
+        min-height: 44px;
+    }
+
+}
+
+@media (min-width: 901px) {
+
+    .river-mobile-nav {
+        display: none !important;
+    }
+
 }

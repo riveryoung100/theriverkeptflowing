@@ -26,7 +26,7 @@ const isActive = (href: string) => {
         <a
             href="/"
             class="river-brand"
-            aria-label="The River Kept Flowing — Home"
+            aria-label="The River Kept Flowing ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Home"
         >
         <span class="river-brand__words">
                 <span class="river-brand__name">
@@ -137,7 +137,7 @@ const isActive = (href: string) => {
                             }
                         >
                             <span>{link.label}</span>
-                            <span aria-hidden="true">↗</span>
+                            <span aria-hidden="true">ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â€</span>
                         </a>
                     ))
                 }
@@ -174,7 +174,7 @@ const isActive = (href: string) => {
 
                 <a href="/contribute/">
                     Contribute to the River
-                    <span aria-hidden="true">→</span>
+                    <span aria-hidden="true">ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢</span>
                 </a>
 
             </div>
@@ -261,5 +261,37 @@ const isActive = (href: string) => {
                 }
             }
         );
+
+        const desktopQuery =
+            window.matchMedia(
+                "(min-width: 901px)"
+            );
+
+        const handleDesktopTransition =
+            (event) => {
+                if (event.matches) {
+                    setMenuState(false);
+                }
+            };
+
+        if (
+            typeof desktopQuery.addEventListener ===
+            "function"
+        ) {
+            desktopQuery.addEventListener(
+                "change",
+                handleDesktopTransition
+            );
+        }
+        else if (
+            typeof desktopQuery.addListener ===
+            "function"
+        ) {
+            desktopQuery.addListener(
+                handleDesktopTransition
+            );
+        }
+
+        /* MOBILE-NAV-AUTHORITY-208 */
     })();
 </script>
