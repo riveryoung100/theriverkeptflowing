@@ -96,7 +96,7 @@
     "providerSelection":  {
                               "paymentProvider":  "stripe",
                               "checkoutMechanism":  "unselected",
-                              "paymentEventTransport":  "unselected",
+                              "paymentEventTransport":  "stripe-signed-webhook",
                               "providerSpecificOrderAdapter":  "stripe-payment-adapter",
                               "pricePublicationMechanism":  "unselected",
                               "existingStripeHostedContributionLinksAreProductProviderSelection":  false,
@@ -104,8 +104,8 @@
                           },
     "runtimeBoundary":  {
                             "currentSiteRuntime":  "Astro static-default output with Cloudflare Workers on-demand execution through @astrojs/cloudflare 14.2.0",
-                            "applicationApiImplemented":  false,
-                            "paymentWebhookImplemented":  false,
+                            "applicationApiImplemented":  true,
+                            "paymentWebhookImplemented":  true,
                             "serverRuntimeSelectionRequiredBeforeVerifiedWebhookImplementation":  true,
                             "rule":  "PRODUCT-001E must not pretend that the current static asset runtime can securely receive and verify private payment events without an explicitly selected server-side execution boundary."
                         },
