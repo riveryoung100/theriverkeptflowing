@@ -103,7 +103,7 @@
                               "rule":  "Existing Stripe-hosted contribution-link architecture is prior evidence for contribution flows only and does not itself select Stripe for PRODUCT-001E product commerce."
                           },
     "runtimeBoundary":  {
-                            "currentSiteRuntime":  "Astro static output deployed through Cloudflare assets",
+                            "currentSiteRuntime":  "Astro static-default output with Cloudflare Workers on-demand execution through @astrojs/cloudflare 14.2.0",
                             "applicationApiImplemented":  false,
                             "paymentWebhookImplemented":  false,
                             "serverRuntimeSelectionRequiredBeforeVerifiedWebhookImplementation":  true,

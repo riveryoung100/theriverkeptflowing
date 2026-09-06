@@ -19,3 +19,6 @@ Thumbs.db
 
 # Private generated product release artifacts
 .river-release-artifacts/
+
+# Local Wrangler generated state
+.wrangler/

@@ -23,13 +23,14 @@
     "product:release": "tsx scripts/build-river-life-operating-system-release.ts"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "14.2.0",
     "@astrojs/mdx": "^7.0.5",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
     "astro": "^7.1.6",
     "mammoth": "1.12.1",
-    "pdfjs-dist": "6.2.108",
-    "pdf-lib": "1.17.1"
+    "pdf-lib": "1.17.1",
+    "pdfjs-dist": "6.2.108"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
