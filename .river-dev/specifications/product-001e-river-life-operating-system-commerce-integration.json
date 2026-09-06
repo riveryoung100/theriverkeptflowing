@@ -1,0 +1,216 @@
+{
+    "id":  "PRODUCT-001E",
+    "title":  "River Life Operating System Commerce Integration",
+    "status":  "planned",
+    "parentProduct":  "PRODUCT-001",
+    "prerequisiteSpecification":  "PRODUCT-001D",
+    "product":  {
+                    "name":  "The River Life Operating System",
+                    "version":  "v1",
+                    "type":  "digital-guided-life-planning-system",
+                    "workingPriceUsd":  29,
+                    "workingPriceIsPublicationAuthority":  false
+                },
+    "purpose":  "Integrate a governed commerce path that converts verified provider payment evidence into the existing canonical River order and fulfillment domains without allowing payment-provider details to redefine fulfillment correctness.",
+    "prerequisiteState":  {
+                              "product001dComplete":  true,
+                              "fulfillmentReadinessGateVerified":  true,
+                              "canonicalRiverOrderExists":  true,
+                              "fulfillmentPersistenceBoundaryExists":  true,
+                              "deliveryProviderBoundaryExists":  true,
+                              "fulfillmentOrchestrationExists":  true,
+                              "publicPriceAuthorized":  false,
+                              "publicAvailabilityAuthorized":  false,
+                              "publicCheckoutAuthorized":  false,
+                              "customerPurchaseAuthorized":  false
+                          },
+    "governingPrinciples":  [
+                                "Payment and fulfillment remain separate concerns.",
+                                "Provider-specific payment payloads must be authenticated or otherwise verified before they can authorize a paid River order.",
+                                "Provider-specific payment payloads must be normalized before entering the canonical River fulfillment domain.",
+                                "The canonical RiverOrder contract established by PRODUCT-001D remains authoritative.",
+                                "Duplicate provider events must not create duplicate canonical orders, entitlements, fulfillment requests, or deliveries.",
+                                "Provider retries and event redelivery must be safe under stable provider payment identity.",
+                                "A provider event must not authorize fulfillment unless its normalized payment state is paid.",
+                                "A paid order must resolve to an explicitly approved product release before fulfillment.",
+                                "Commerce integration must preserve the private source manuscript boundary.",
+                                "Secrets, webhook verification material, and private provider credentials must never enter public client bundles or static repository content.",
+                                "A public price or purchase path must not be activated merely because provider integration code exists.",
+                                "Commerce readiness must be demonstrated end-to-end before public purchase authorization."
+                            ],
+    "preservedProduct001DBoundaries":  [
+                                           "canonical River order identity",
+                                           "approved product release requirement",
+                                           "entitlement creation rule",
+                                           "fulfillment lifecycle",
+                                           "idempotency guarantees",
+                                           "delivery success and failure semantics",
+                                           "private source manuscript boundary"
+                                       ],
+    "commerceDomain":  {
+                           "providerIndependentPaymentEventRequired":  true,
+                           "paymentEventRequiredInputs":  [
+                                                              "provider",
+                                                              "providerEventId",
+                                                              "providerOrderOrSessionId",
+                                                              "providerPaymentReference",
+                                                              "customerReference",
+                                                              "deliveryEmail",
+                                                              "productId",
+                                                              "productVersion",
+                                                              "amount",
+                                                              "currency",
+                                                              "paymentState",
+                                                              "eventCreatedAt",
+                                                              "paidAt-when-paid"
+                                                          ],
+                           "normalizedPaymentStates":  [
+                                                           "pending",
+                                                           "paid",
+                                                           "failed",
+                                                           "refunded",
+                                                           "disputed",
+                                                           "unknown"
+                                                       ],
+                           "normalizationTarget":  "RiverOrder",
+                           "canonicalOrderRequiredFields":  [
+                                                                "orderId",
+                                                                "provider",
+                                                                "providerOrderOrSessionId",
+                                                                "providerPaymentReference",
+                                                                "customerReference",
+                                                                "deliveryEmail",
+                                                                "productId",
+                                                                "productVersion",
+                                                                "amount",
+                                                                "currency",
+                                                                "paymentState",
+                                                                "createdAt",
+                                                                "paidAt-when-paid"
+                                                            ],
+                           "providerEventIdentityRule":  "A provider event identity must be stable enough to recognize provider redelivery without creating a second commerce effect.",
+                           "providerPaymentIdentityRule":  "A provider payment reference may resolve to only one canonical River order.",
+                           "canonicalOrderIdentityRule":  "Repeated normalization of the same legitimate provider payment must recover or reproduce the same canonical River order identity rather than create a second order.",
+                           "orderIdentityDriftRule":  "An existing canonical order identity may receive legitimate payment-state updates but may not silently drift across provider identity, customer identity, product identity, price identity, or currency identity."
+                       },
+    "providerSelection":  {
+                              "paymentProvider":  "unselected",
+                              "checkoutMechanism":  "unselected",
+                              "paymentEventTransport":  "unselected",
+                              "providerSpecificOrderAdapter":  "unselected",
+                              "pricePublicationMechanism":  "unselected",
+                              "existingStripeHostedContributionLinksAreProductProviderSelection":  false,
+                              "rule":  "Existing Stripe-hosted contribution-link architecture is prior evidence for contribution flows only and does not itself select Stripe for PRODUCT-001E product commerce."
+                          },
+    "runtimeBoundary":  {
+                            "currentSiteRuntime":  "Astro static output deployed through Cloudflare assets",
+                            "applicationApiImplemented":  false,
+                            "paymentWebhookImplemented":  false,
+                            "serverRuntimeSelectionRequiredBeforeVerifiedWebhookImplementation":  true,
+                            "rule":  "PRODUCT-001E must not pretend that the current static asset runtime can securely receive and verify private payment events without an explicitly selected server-side execution boundary."
+                        },
+    "securityAndPrivacy":  {
+                               "providerSecretsServerOnly":  true,
+                               "webhookVerificationServerOnly":  true,
+                               "noSecretsInPublicEnvironmentVariables":  true,
+                               "noCustomerOrderDataInStaticRepository":  true,
+                               "noCustomerEmailInStaticRepository":  true,
+                               "noRawProviderPayloadRequiredInFulfillmentDomain":  true,
+                               "minimumCustomerDataCollection":  true
+                           },
+    "explicitlyDeferred":  [
+                               "shopping cart",
+                               "multi-product checkout",
+                               "customer account portal",
+                               "subscription billing",
+                               "membership system",
+                               "license-key system",
+                               "affiliate attribution",
+                               "discount and coupon engine",
+                               "automated tax architecture",
+                               "automated refund workflow",
+                               "automated dispute workflow",
+                               "complex download analytics",
+                               "physical-product fulfillment",
+                               "CRM synchronization",
+                               "marketing automation",
+                               "recommendation engine"
+                           ],
+    "implementationSequence":  [
+                                   {
+                                       "id":  "PRODUCT-001E-01",
+                                       "name":  "Commerce payment-event contract foundation",
+                                       "outcome":  "Provider-independent payment-event identity, verification state, normalization inputs, and canonical RiverOrder mapping rules exist in code and deterministic tests."
+                                   },
+                                   {
+                                       "id":  "PRODUCT-001E-02",
+                                       "name":  "Payment provider selection and adapter",
+                                       "outcome":  "A concrete payment provider is selected deliberately and isolated behind the provider-independent commerce contract."
+                                   },
+                                   {
+                                       "id":  "PRODUCT-001E-03",
+                                       "name":  "Verified payment-event ingestion",
+                                       "outcome":  "Provider payment events can enter through a server-side verification boundary and unverified events cannot authorize paid orders."
+                                   },
+                                   {
+                                       "id":  "PRODUCT-001E-04",
+                                       "name":  "Durable commerce persistence integration",
+                                       "outcome":  "Verified provider event identity and canonical order state can be persisted and recovered safely across retries and event redelivery."
+                                   },
+                                   {
+                                       "id":  "PRODUCT-001E-05",
+                                       "name":  "Checkout mechanism",
+                                       "outcome":  "The selected provider can create or expose the minimum governed checkout path required for the River Life Operating System without activating public commerce prematurely."
+                                   },
+                                   {
+                                       "id":  "PRODUCT-001E-06",
+                                       "name":  "Paid-order fulfillment integration",
+                                       "outcome":  "A verified paid provider event can normalize into the canonical RiverOrder and enter the existing PRODUCT-001D fulfillment orchestration without redefining fulfillment semantics."
+                                   },
+                                   {
+                                       "id":  "PRODUCT-001E-07",
+                                       "name":  "End-to-end commerce readiness gate",
+                                       "outcome":  "Commerce may advance toward public product presentation only after checkout, verified payment evidence, canonical order persistence, approved release resolution, entitlement creation, and recorded delivery can be demonstrated safely and idempotently."
+                                   }
+                               ],
+    "product001fHandoff":  {
+                               "nextPhase":  "PRODUCT-001F",
+                               "title":  "Product Presentation and Public Launch Path",
+                               "PRODUCT001FMayConsider":  [
+                                                              "public price presentation",
+                                                              "public availability presentation",
+                                                              "customer-facing purchase call to action",
+                                                              "product sales-page integration",
+                                                              "launch sequencing"
+                                                          ],
+                               "PRODUCT001FMustNotBypass":  [
+                                                                "PRODUCT-001E end-to-end commerce readiness gate",
+                                                                "approved product release requirement",
+                                                                "verified payment requirement",
+                                                                "canonical River order identity",
+                                                                "fulfillment idempotency",
+                                                                "private source manuscript boundary"
+                                                            ]
+                           },
+    "publicationBoundary":  {
+                                "pricePublicationAuthorized":  false,
+                                "availabilityPublicationAuthorized":  false,
+                                "checkoutPublicationAuthorized":  false,
+                                "customerPurchaseAuthorized":  false,
+                                "reason":  "PRODUCT-001E establishes commerce integration. Public product commerce remains unauthorized until the end-to-end commerce readiness gate and the later PRODUCT-001F presentation and launch gates explicitly permit publication."
+                            },
+    "completionCriteria":  [
+                               "Provider-independent payment-event contract exists.",
+                               "Provider event verification boundary exists.",
+                               "Provider-specific payment evidence normalizes into the canonical RiverOrder contract.",
+                               "Provider event redelivery is idempotent.",
+                               "Provider payment identity cannot create duplicate canonical River orders.",
+                               "A concrete payment provider and checkout mechanism are selected deliberately.",
+                               "Provider-specific commerce details remain isolated from fulfillment-domain semantics.",
+                               "Verified paid orders can enter existing PRODUCT-001D fulfillment orchestration.",
+                               "Commerce persistence survives retry and event redelivery.",
+                               "Secrets and customer commerce data remain outside public static content.",
+                               "End-to-end commerce readiness is verified.",
+                               "Price, availability, checkout publication, and customer purchase remain unauthorized until explicitly advanced through the publication boundary."
+                           ]
+}
