@@ -10,4 +10,5 @@ export * from "./youtube-channel-handle-resolver";
 export * from "./content-source-discovery-provenance";
 export * from "./content-transcript-acquisition-provider";
 export * from "./content-transcript-record";
+export * from "./content-transcript-intake";
 
