@@ -7,4 +7,5 @@ export * from "./content-source-discovery-provider";
 export * from "./content-source-discovery-intake";
 export * from "./youtube-content-source-discovery-provider";
 export * from "./youtube-channel-handle-resolver";
+export * from "./content-source-discovery-provenance";
 
