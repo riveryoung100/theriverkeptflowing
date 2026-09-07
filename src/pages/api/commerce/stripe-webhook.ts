@@ -1,10 +1,15 @@
-import type {
+﻿import type {
     APIRoute
 } from "astro";
 
 import {
     env
 } from "cloudflare:workers";
+
+import {
+    processStripeWebhookPaymentAtRuntime,
+    type StripeWebhookRuntimeEnvironment
+} from "../../../lib/commerce/stripe-webhook-runtime";
 
 import {
     verifyAndIngestStripeWebhook
@@ -28,6 +33,7 @@ function jsonResponse(
         ),
         {
             status,
+
             headers: {
                 "content-type":
                     "application/json; charset=utf-8",
@@ -41,20 +47,34 @@ function jsonResponse(
 }
 
 
-function getWebhookSecret(): string {
+function getRuntimeEnvironment():
+StripeWebhookRuntimeEnvironment {
 
-    const runtimeEnvironment =
-        env as unknown as
-            Record<string, unknown>;
+    return env as unknown as
+        StripeWebhookRuntimeEnvironment;
+
+}
+
+
+function getWebhookSecret(
+    runtimeEnvironment:
+        StripeWebhookRuntimeEnvironment
+): string {
 
     const value =
-        runtimeEnvironment
-            .STRIPE_WEBHOOK_SECRET;
+        (
+            runtimeEnvironment as
+                unknown as
+                Record<string, unknown>
+        ).STRIPE_WEBHOOK_SECRET;
 
     if (
-        typeof value !== "string" ||
-        value.length === 0 ||
-        value.trim() !== value
+        typeof value !==
+            "string" ||
+        value.length ===
+            0 ||
+        value.trim() !==
+            value
     ) {
 
         throw new Error(
@@ -80,8 +100,10 @@ async ({
         );
 
     if (
-        signature === null ||
-        signature.length === 0
+        signature ===
+            null ||
+        signature.length ===
+            0
     ) {
 
         return jsonResponse(
@@ -97,13 +119,18 @@ async ({
 
     }
 
+    const runtimeEnvironment =
+        getRuntimeEnvironment();
+
     let webhookSecret:
         string;
 
     try {
 
         webhookSecret =
-            getWebhookSecret();
+            getWebhookSecret(
+                runtimeEnvironment
+            );
 
     }
     catch {
@@ -124,32 +151,21 @@ async ({
     const rawBody =
         await request.text();
 
+    let ingestion:
+        Awaited<
+            ReturnType<
+                typeof verifyAndIngestStripeWebhook
+            >
+        >;
+
     try {
 
-        const result =
+        ingestion =
             await verifyAndIngestStripeWebhook({
                 rawBody,
                 signature,
                 webhookSecret
             });
-
-        return jsonResponse(
-            {
-                received:
-                    true,
-
-                handled:
-                    result.status ===
-                    "handled",
-
-                eventType:
-                    result.eventType,
-
-                providerEventId:
-                    result.providerEventId
-            },
-            200
-        );
 
     }
     catch {
@@ -166,5 +182,127 @@ async ({
         );
 
     }
+
+    if (
+        ingestion.status ===
+            "ignored"
+    ) {
+
+        return jsonResponse(
+            {
+                received:
+                    true,
+
+                handled:
+                    false,
+
+                eventType:
+                    ingestion.eventType,
+
+                providerEventId:
+                    ingestion.providerEventId
+            },
+            200
+        );
+
+    }
+
+    if (
+        ingestion.paymentEvent
+            .paymentState !==
+            "paid"
+    ) {
+
+        return jsonResponse(
+            {
+                received:
+                    true,
+
+                handled:
+                    true,
+
+                fulfilled:
+                    false,
+
+                paymentState:
+                    ingestion.paymentEvent
+                        .paymentState,
+
+                eventType:
+                    ingestion.eventType,
+
+                providerEventId:
+                    ingestion.providerEventId
+            },
+            200
+        );
+
+    }
+
+    try {
+
+        await processStripeWebhookPaymentAtRuntime({
+            paymentEvent:
+                ingestion.paymentEvent,
+
+            environment:
+                runtimeEnvironment
+        });
+
+    }
+    catch (error) {
+
+        console.error(
+            "Stripe paid-order runtime processing failed.",
+            error
+        );
+
+        /*
+         * Returning a non-2xx response is intentional.
+         * Stripe may redeliver the verified event, while
+         * durable fulfillment idempotency prevents a
+         * successful delivery from being duplicated.
+         */
+        return jsonResponse(
+            {
+                received:
+                    false,
+
+                handled:
+                    true,
+
+                fulfilled:
+                    false,
+
+                error:
+                    "Paid-order runtime processing failed.",
+
+                providerEventId:
+                    ingestion.providerEventId
+            },
+            500
+        );
+
+    }
+
+    return jsonResponse(
+        {
+            received:
+                true,
+
+            handled:
+                true,
+
+            fulfilled:
+                true,
+
+            eventType:
+                ingestion.eventType,
+
+            providerEventId:
+                ingestion.providerEventId
+        },
+        200
+    );
 
 };
