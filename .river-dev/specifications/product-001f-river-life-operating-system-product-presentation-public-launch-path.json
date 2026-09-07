@@ -1,0 +1,209 @@
+{
+    "id":  "PRODUCT-001F",
+    "title":  "River Life Operating System Product Presentation and Public Launch Path",
+    "status":  "planned",
+    "parentProduct":  "PRODUCT-001",
+    "prerequisiteSpecification":  "PRODUCT-001E",
+    "product":  {
+                    "name":  "The River Life Operating System",
+                    "version":  "v1",
+                    "type":  "digital-guided-life-planning-system",
+                    "workingPriceUsd":  29,
+                    "workingPriceIsPublicationAuthority":  false
+                },
+    "purpose":  "Define and implement the governed customer-facing presentation and public launch path for The River Life Operating System only after PRODUCT-001E end-to-end commerce readiness has been demonstrated, while preserving the approved release, verified payment, canonical order, fulfillment idempotency, privacy, security, and private-source boundaries established by prior PRODUCT-001 phases.",
+    "prerequisiteState":  {
+                              "product001eComplete":  true,
+                              "commerceReadinessGateVerified":  true,
+                              "checkoutMechanismImplemented":  true,
+                              "verifiedPaymentIngestionImplemented":  true,
+                              "durableCommercePersistenceImplemented":  true,
+                              "approvedReleaseResolutionImplemented":  true,
+                              "paidOrderFulfillmentImplemented":  true,
+                              "recordedDeliveryDemonstrated":  true,
+                              "publicPriceAuthorized":  false,
+                              "publicAvailabilityAuthorized":  false,
+                              "publicCheckoutAuthorized":  false,
+                              "customerPurchaseAuthorized":  false
+                          },
+    "governingPrinciples":  [
+                                "Public presentation is a separate governance concern from technical commerce readiness.",
+                                "A technically functional checkout must not become publicly discoverable or customer-usable until PRODUCT-001F explicitly advances the publication boundary.",
+                                "The working product price is not publication authority.",
+                                "Public availability must be deliberate rather than inferred from the existence of product, checkout, fulfillment, or delivery code.",
+                                "The customer-facing product presentation must accurately describe the actual V1 product and may not promise capabilities, outcomes, services, or proof that do not exist.",
+                                "The paid value proposition must remain structured application and guided execution rather than merely republishing freely available River essays.",
+                                "Product presentation must remain consistent with the source-grounded PRODUCT-001 curriculum and completed V1 artifact.",
+                                "The approved release requirement remains authoritative.",
+                                "Verified provider payment remains required before fulfillment.",
+                                "Canonical River order identity remains authoritative.",
+                                "Fulfillment idempotency remains authoritative.",
+                                "The private source manuscript boundary remains authoritative.",
+                                "No customer commerce data may enter public static content.",
+                                "No provider secret, webhook secret, transactional-email secret, private artifact identity, or internal repository path may enter browser-delivered content.",
+                                "Launch authorization must be explicit and must not be inferred merely because all implementation tests pass.",
+                                "Public launch must be reversible without corrupting existing order, entitlement, fulfillment, or delivery state."
+                            ],
+    "presentationContract":  {
+                                 "requiredCustomerFacingElements":  [
+                                                                        "product name",
+                                                                        "clear product positioning",
+                                                                        "accurate description of the V1 outcome",
+                                                                        "five-part product architecture",
+                                                                        "what the customer receives",
+                                                                        "digital delivery expectation",
+                                                                        "price only when price publication is authorized",
+                                                                        "availability only when availability publication is authorized",
+                                                                        "purchase call to action only when checkout publication and customer purchase are authorized",
+                                                                        "appropriate non-professional-advice boundaries"
+                                                                    ],
+                                 "productArchitecture":  [
+                                                             {
+                                                                 "order":  1,
+                                                                 "id":  "headwaters",
+                                                                 "title":  "Headwaters"
+                                                             },
+                                                             {
+                                                                 "order":  2,
+                                                                 "id":  "source",
+                                                                 "title":  "The Source"
+                                                             },
+                                                             {
+                                                                 "order":  3,
+                                                                 "id":  "tributaries",
+                                                                 "title":  "Tributaries"
+                                                             },
+                                                             {
+                                                                 "order":  4,
+                                                                 "id":  "current",
+                                                                 "title":  "The Current"
+                                                             },
+                                                             {
+                                                                 "order":  5,
+                                                                 "id":  "destination",
+                                                                 "title":  "The Destination"
+                                                             }
+                                                         ],
+                                 "customerDeliverable":  "The approved River Life Operating System v1 digital PDF release delivered through the governed transactional fulfillment path.",
+                                 "prohibitedPresentation":  [
+                                                                "invented testimonials",
+                                                                "invented customer results",
+                                                                "invented audience proof",
+                                                                "guaranteed outcomes",
+                                                                "unsupported coaching authority",
+                                                                "therapy claims",
+                                                                "medical advice claims",
+                                                                "legal advice claims",
+                                                                "financial advice claims",
+                                                                "professional certification claims",
+                                                                "claims that the product includes capabilities deferred by PRODUCT-001D or PRODUCT-001E"
+                                                            ]
+                             },
+    "launchSurfaceContract":  {
+                                  "primarySurface":  "River-owned website",
+                                  "existingShopSurfaceMayBeUsed":  true,
+                                  "existingProductPresentationPrimitivesMayBeUsed":  true,
+                                  "requirements":  [
+                                                       "The River website remains the authoritative customer-facing presentation surface.",
+                                                       "Product presentation must use River-owned page structure and visual language rather than delegating product identity to the payment provider.",
+                                                       "Stripe may own secure payment collection but must not become the product presentation authority.",
+                                                       "Customer-facing checkout initiation must originate from a governed River-owned launch surface.",
+                                                       "Success and cancellation states must return customers to River-owned website paths.",
+                                                       "No permanent unauthenticated paid artifact URL may be exposed."
+                                                   ]
+                              },
+    "publicationState":  {
+                             "pricePublicationAuthorized":  false,
+                             "availabilityPublicationAuthorized":  false,
+                             "checkoutPublicationAuthorized":  false,
+                             "customerPurchaseAuthorized":  false,
+                             "publicLaunchAuthorized":  false,
+                             "rule":  "Each publication capability remains closed until the corresponding PRODUCT-001F implementation and launch-readiness gates explicitly advance it. Creating this specification does not itself authorize publication."
+                         },
+    "publicationAdvancementRules":  [
+                                        "Price may be presented publicly only after the presentation contract and price-display implementation pass their governed validation.",
+                                        "Availability may be presented publicly only after customer-facing delivery expectations and launch-state behavior are validated.",
+                                        "Checkout may be exposed publicly only after the purchase CTA points to the already-verified governed checkout mechanism.",
+                                        "Customer purchase may be authorized only after the complete public path from presentation through checkout, verified payment, persistence, fulfillment, and recorded delivery is represented and validated.",
+                                        "Public launch may be authorized only after final PRODUCT-001F launch-readiness verification.",
+                                        "No individual implementation slice may silently flip a later publication authorization."
+                                    ],
+    "preservedProduct001EBoundaries":  [
+                                           "verified provider payment requirement",
+                                           "canonical River order identity",
+                                           "provider-event redelivery idempotency",
+                                           "durable commerce persistence",
+                                           "approved product release requirement",
+                                           "entitlement creation rule",
+                                           "fulfillment lifecycle",
+                                           "delivery success and failure semantics",
+                                           "private source manuscript boundary",
+                                           "server-only provider secrets"
+                                       ],
+    "explicitlyDeferred":  [
+                               "shopping cart",
+                               "multi-product checkout",
+                               "customer account portal",
+                               "subscription billing",
+                               "membership system",
+                               "license-key system",
+                               "affiliate attribution",
+                               "discount and coupon engine",
+                               "automated tax architecture",
+                               "automated refund workflow",
+                               "automated dispute workflow",
+                               "complex download analytics",
+                               "physical-product fulfillment",
+                               "CRM synchronization",
+                               "marketing automation",
+                               "recommendation engine"
+                           ],
+    "implementationSequence":  [
+                                   {
+                                       "id":  "PRODUCT-001F-01",
+                                       "name":  "Public presentation contract and launch-state foundation",
+                                       "outcome":  "Customer-facing product presentation requirements, launch-state boundaries, and explicit publication authorization states exist in code or governed configuration without exposing commerce publicly."
+                                   },
+                                   {
+                                       "id":  "PRODUCT-001F-02",
+                                       "name":  "River Life Operating System product presentation",
+                                       "outcome":  "The River-owned website contains an accurate customer-facing presentation of the V1 product, its purpose, five-part architecture, deliverable, boundaries, and value without yet exposing unauthorized purchase capability."
+                                   },
+                                   {
+                                       "id":  "PRODUCT-001F-03",
+                                       "name":  "Public price and availability presentation",
+                                       "outcome":  "The governed  V1 price and product availability can be represented accurately on River-owned presentation surfaces only after their publication gates are deliberately advanced."
+                                   },
+                                   {
+                                       "id":  "PRODUCT-001F-04",
+                                       "name":  "Customer-facing purchase call to action",
+                                       "outcome":  "A governed River-owned purchase CTA can initiate the already-verified Stripe Checkout path without moving payment correctness or fulfillment authority into browser-delivered code."
+                                   },
+                                   {
+                                       "id":  "PRODUCT-001F-05",
+                                       "name":  "Customer launch-path integration",
+                                       "outcome":  "Presentation, price, availability, checkout initiation, success and cancellation return paths, and customer-facing delivery expectations operate as one coherent launch path while preserving all PRODUCT-001D and PRODUCT-001E boundaries."
+                                   },
+                                   {
+                                       "id":  "PRODUCT-001F-06",
+                                       "name":  "Public launch readiness gate",
+                                       "outcome":  "Public product launch may be authorized only after the complete customer-facing path is validated against presentation accuracy, publication authority, commerce readiness, fulfillment correctness, security, privacy, and reversibility requirements."
+                                   }
+                               ],
+    "completionCriteria":  [
+                               "A governed customer-facing presentation contract exists.",
+                               "The five-part River Life Operating System architecture is accurately represented.",
+                               "The customer deliverable is described accurately.",
+                               "Paid value is represented as structured application and guided execution rather than simple republication of free essays.",
+                               "No unsupported testimonials, audience proof, customer results, professional authority, or guaranteed outcomes are introduced.",
+                               "Price publication occurs only through explicit PRODUCT-001F authority.",
+                               "Availability publication occurs only through explicit PRODUCT-001F authority.",
+                               "Checkout publication occurs only through explicit PRODUCT-001F authority.",
+                               "Customer purchase authorization occurs only through explicit PRODUCT-001F authority.",
+                               "The public purchase CTA uses the existing governed checkout mechanism rather than creating a second commerce path.",
+                               "The complete customer path preserves verified payment, canonical order, approved release, entitlement, fulfillment, delivery, idempotency, privacy, and security boundaries.",
+                               "The paid artifact remains private except through governed fulfillment.",
+                               "Repository validation passes for every PRODUCT-001F implementation slice.",
+                               "Final public launch authorization occurs only through PRODUCT-001F-06."
+                           ]
+}
