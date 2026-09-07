@@ -204,7 +204,46 @@ async ({
         );
 
     }
-    catch {
+    catch (error) {
+
+        const stripeError =
+            error as {
+                type?: unknown;
+                code?: unknown;
+                param?: unknown;
+                statusCode?: unknown;
+                requestId?: unknown;
+            };
+
+        console.error(
+            "Stripe checkout session creation failed.",
+            {
+                type:
+                    typeof stripeError.type === "string"
+                        ? stripeError.type
+                        : null,
+
+                code:
+                    typeof stripeError.code === "string"
+                        ? stripeError.code
+                        : null,
+
+                param:
+                    typeof stripeError.param === "string"
+                        ? stripeError.param
+                        : null,
+
+                statusCode:
+                    typeof stripeError.statusCode === "number"
+                        ? stripeError.statusCode
+                        : null,
+
+                requestId:
+                    typeof stripeError.requestId === "string"
+                        ? stripeError.requestId
+                        : null
+            }
+        );
 
         return jsonResponse(
             {
