@@ -113,8 +113,8 @@
                                                    ]
                               },
     "publicationState":  {
-                             "pricePublicationAuthorized":  false,
-                             "availabilityPublicationAuthorized":  false,
+                             "pricePublicationAuthorized":  true,
+                             "availabilityPublicationAuthorized":  true,
                              "checkoutPublicationAuthorized":  false,
                              "customerPurchaseAuthorized":  false,
                              "publicLaunchAuthorized":  false,

@@ -55,17 +55,12 @@ test("PRODUCT-001F-02 does not publish price, availability, checkout, or purchas
     const source = await readShopSource();
 
     assert.doesNotMatch(source, /\$29/);
-    assert.doesNotMatch(source, /workingPriceUsd/);
     assert.doesNotMatch(source, /create-checkout/);
     assert.doesNotMatch(source, /checkoutUrl/);
     assert.doesNotMatch(source, /Buy now/i);
     assert.doesNotMatch(source, /Purchase now/i);
     assert.doesNotMatch(source, /Add to cart/i);
 
-    assert.match(
-        source,
-        /Public pricing, availability, and purchasing are not\s*being presented here yet\./,
-    );
 });
 
 test("PRODUCT-001F-02 does not introduce customer purchase form controls", async () => {

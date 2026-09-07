@@ -3,9 +3,25 @@ import MainLayout from "../../layouts/MainLayout.astro";
 
 import {
     RIVER_LIFE_OPERATING_SYSTEM_PRESENTATION,
+    RIVER_LIFE_OPERATING_SYSTEM_WORKING_PRICE_USD,
 } from "../../lib/commerce/product-presentation";
 
+import {
+    PRODUCT_001F_03_PRICE_AVAILABILITY_PUBLICATION_STATE,
+    buildPublicPriceAvailabilityPresentation,
+    hasPublicPriceAvailabilityPresentation,
+} from "../../lib/commerce/product-price-availability-presentation";
+
 const product = RIVER_LIFE_OPERATING_SYSTEM_PRESENTATION;
+
+const publicOffer = buildPublicPriceAvailabilityPresentation({
+    publicationState: PRODUCT_001F_03_PRICE_AVAILABILITY_PUBLICATION_STATE,
+    workingPriceUsd: RIVER_LIFE_OPERATING_SYSTEM_WORKING_PRICE_USD,
+    digitallyDeliverable: true,
+});
+
+const hasPublicOffer =
+    hasPublicPriceAvailabilityPresentation(publicOffer);
 ---
 
 <MainLayout
@@ -136,7 +152,7 @@ what is shaping it now, and where it is carrying you next.
                             : section.id === "source"
                               ? "Identify what you actually believe matters most before schedules, obligations, habits, and ambition decide those priorities for you."
                               : section.id === "tributaries"
-                                ? "Look at the major streams feeding your life — relationships, work, money, responsibilities, habits, attention, health, service, and the other areas competing for limited capacity."
+                                ? "Look at the major streams feeding your life Ã¢â‚¬â€ relationships, work, money, responsibilities, habits, attention, health, service, and the other areas competing for limited capacity."
                                 : section.id === "current"
                                   ? "Examine the direction created by your ordinary days: where your time goes, what repeats, what receives your best energy, and what your present patterns are producing."
                                   : "Choose the direction you want to move toward and reduce that direction into deliberate priorities and next actions you can actually carry into ordinary life."
@@ -279,6 +295,61 @@ decisions into more deliberate next actions.
 </section>
 
 
+{
+    hasPublicOffer && (
+        <section
+            id="product-offer"
+            class="library-section"
+        >
+
+        <div class="library-shell">
+
+        <div class="library-section__heading">
+
+        <div>
+
+        <p class="section-label">
+        Product details
+        </p>
+
+        <h2>
+        The River Life Operating System V1
+        </h2>
+
+        </div>
+
+        <div>
+            {
+                publicOffer.priceLabel && (
+                    <p>
+                        <strong>{publicOffer.priceLabel}</strong>
+                    </p>
+                )
+            }
+
+            {
+                publicOffer.availabilityLabel && (
+                    <p>
+                        {publicOffer.availabilityLabel}
+                    </p>
+                )
+            }
+        </div>
+
+        </div>
+
+        <p>
+        The product is delivered digitally through the governed River
+        fulfillment path after verified payment.
+        </p>
+
+        </div>
+
+        </section>
+    )
+}
+
+
 <section
     id="release-state"
     class="library-section"
@@ -302,8 +373,9 @@ The product is being prepared carefully before public release.
 
 <p>
 This page describes the actual River Life Operating System V1 and what it
-is designed to do. Public pricing, availability, and purchasing are not
-being presented here yet.
+is designed to do. Pricing and digital availability are now presented
+here. Customer purchasing remains closed until the later governed launch
+steps explicitly authorize it.
 </p>
 
 </div>
