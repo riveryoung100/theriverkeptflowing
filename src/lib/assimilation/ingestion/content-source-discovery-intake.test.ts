@@ -1,4 +1,5 @@
 ﻿import assert from "node:assert/strict";
+import test from "node:test";
 
 import {
     mkdtemp,
@@ -6,37 +7,37 @@ import {
 } from "node:fs/promises";
 
 import {
-    tmpdir
-} from "node:os";
-
-import {
     join
 } from "node:path";
 
-import test from "node:test";
+import {
+    tmpdir
+} from "node:os";
 
 import {
     createFileSystemCanonicalContentSourcePersistence
 } from "../persistence/canonical-content-source-filesystem";
 
 import {
-    type ContentSourceDiscoveryProvider
-} from "./content-source-discovery-provider";
-
-import {
-    createGovernedContentSourceDiscoveryIntake
-} from "./content-source-discovery-intake";
+    createFileSystemContentSourceDiscoveryProvenancePersistence
+} from "../persistence/content-source-discovery-provenance-filesystem";
 
 import {
     createGovernedPublishedContentSourceIntake
 } from "./published-content-source-intake";
 
+import {
+    createGovernedContentSourceDiscoveryIntake
+} from "./content-source-discovery-intake";
 
-function createProvider():
-ContentSourceDiscoveryProvider {
+import type {
+    ContentSourceDiscoveryProvider
+} from "./content-source-discovery-provider";
+
+
+function createProvider(): ContentSourceDiscoveryProvider {
 
     return {
-
         platform:
             "youtube",
 
@@ -45,61 +46,89 @@ ContentSourceDiscoveryProvider {
             return {
                 platform:
                     "youtube",
+
+                nextCursor:
+                    "page-two",
+
                 sources: [
                     {
                         providerRecordId:
                             "youtube:abc123",
+
                         discoveredAt:
                             "2026-09-07T18:00:00.000Z",
+
                         source: {
                             platform:
                                 "youtube",
+
                             url:
                                 "https://www.youtube.com/watch?v=abc123",
+
                             externalPlatformId:
                                 "abc123",
+
                             title:
-                                "First Published River Video",
+                                "Published River Video",
+
+                            description:
+                                "Already-posted River source.",
+
                             publishedAt:
-                                "2026-09-07T12:00:00.000Z",
-                            durationSeconds:
-                                420
+                                "2026-09-07T12:00:00.000Z"
+                        },
+
+                        providerMetadata: {
+                            id: {
+                                kind:
+                                    "youtube#video",
+
+                                videoId:
+                                    "abc123"
+                            },
+
+                            snippet: {
+                                title:
+                                    "Published River Video"
+                            }
                         }
                     },
+
                     {
                         providerRecordId:
                             "youtube:def456",
+
                         discoveredAt:
                             "2026-09-07T18:00:00.000Z",
+
                         source: {
                             platform:
                                 "youtube",
+
                             url:
                                 "https://www.youtube.com/watch?v=def456",
+
                             externalPlatformId:
                                 "def456",
+
                             title:
                                 "Second Published River Video",
+
                             publishedAt:
-                                "2026-09-07T13:00:00.000Z",
-                            durationSeconds:
-                                360
+                                "2026-09-06T12:00:00.000Z"
                         }
                     }
-                ],
-                nextCursor:
-                    "page-two"
+                ]
             };
 
         }
-
     };
 
 }
 
 
 test(
-    "discovers validates normalizes and persists provider sources through one governed path",
+    "discovers validates preserves provenance normalizes and persists provider sources through one governed path",
     async () => {
 
         const root =
@@ -112,31 +141,36 @@ test(
 
         try {
 
-            const persistence =
+            const canonicalPersistence =
                 createFileSystemCanonicalContentSourcePersistence(
+                    root
+                );
+
+            const provenancePersistence =
+                createFileSystemContentSourceDiscoveryProvenancePersistence(
                     root
                 );
 
             const intake =
                 createGovernedPublishedContentSourceIntake(
-                    persistence
+                    canonicalPersistence
                 );
 
-            const orchestration =
+            const orchestrator =
                 createGovernedContentSourceDiscoveryIntake(
                     createProvider(),
-                    intake
+                    intake,
+                    provenancePersistence
                 );
 
             const result =
-                await orchestration.execute(
+                await orchestrator.execute(
                     {
                         platform:
                             "youtube",
+
                         publisherId:
-                            "river-channel",
-                        limit:
-                            25
+                            "river-channel"
                     },
                     {
                         now:
@@ -145,8 +179,8 @@ test(
                 );
 
             assert.equal(
-                result.discovery.sources.length,
-                2
+                result.discovery.nextCursor,
+                "page-two"
             );
 
             assert.equal(
@@ -155,42 +189,81 @@ test(
             );
 
             assert.equal(
-                result.ingested[0]!
-                    .record
-                    .sourceId,
+                result.provenance.length,
+                2
+            );
+
+            assert.equal(
+                result.ingested[0]?.record.sourceId,
                 "source:youtube:abc123"
             );
 
             assert.equal(
-                result.ingested[1]!
-                    .record
-                    .sourceId,
+                result.ingested[1]?.record.sourceId,
                 "source:youtube:def456"
             );
 
             assert.equal(
-                result.discovery.nextCursor,
-                "page-two"
+                result.provenance[0]?.record.sourceId,
+                "source:youtube:abc123"
             );
 
-            const first =
-                await persistence.retrieve(
+            assert.equal(
+                result.provenance[0]?.record.providerRecordId,
+                "youtube:abc123"
+            );
+
+            assert.equal(
+                result.provenance[0]?.record.discoveredAt,
+                "2026-09-07T18:00:00.000Z"
+            );
+
+            assert.equal(
+                result.provenance[0]?.record.capturedAt,
+                "2026-09-07T19:00:00.000Z"
+            );
+
+            assert.deepEqual(
+                result.provenance[0]?.record.providerMetadata,
+                {
+                    id: {
+                        kind:
+                            "youtube#video",
+
+                        videoId:
+                            "abc123"
+                    },
+
+                    snippet: {
+                        title:
+                            "Published River Video"
+                    }
+                }
+            );
+
+            const canonical =
+                await canonicalPersistence.retrieve(
                     "source:youtube:abc123"
                 );
 
-            const second =
-                await persistence.retrieve(
-                    "source:youtube:def456"
+            const provenance =
+                await provenancePersistence.retrieve(
+                    "discovery-provenance:source:youtube:abc123:youtube:abc123"
                 );
 
             assert.equal(
-                first.title,
-                "First Published River Video"
+                canonical.sourceId,
+                provenance.sourceId
             );
 
             assert.equal(
-                second.title,
-                "Second Published River Video"
+                "providerRecordId" in canonical,
+                false
+            );
+
+            assert.equal(
+                "providerMetadata" in canonical,
+                false
             );
 
         } finally {
@@ -200,6 +273,7 @@ test(
                 {
                     recursive:
                         true,
+
                     force:
                         true
                 }
@@ -212,58 +286,65 @@ test(
 
 
 test(
-    "does not invoke intake when provider discovery fails validation",
+    "does not invoke persistence when provider discovery fails validation",
     async () => {
 
-        let intakeCalls =
+        let canonicalCalls =
+            0;
+
+        let provenanceCalls =
             0;
 
         const provider:
-            ContentSourceDiscoveryProvider = {
+            ContentSourceDiscoveryProvider =
+            {
+                platform:
+                    "youtube",
 
-            platform:
-                "youtube",
+                async discover() {
 
-            async discover() {
+                    return {
+                        platform:
+                            "instagram",
 
-                return {
-                    platform:
-                        "youtube",
-                    sources: [
-                        {
-                            providerRecordId:
-                                "bad-source",
-                            discoveredAt:
-                                "2026-09-07T18:00:00.000Z",
-                            source: {
-                                platform:
-                                    "instagram",
-                                url:
-                                    "https://www.instagram.com/reel/example/",
-                                title:
-                                    "Wrong Platform",
-                                publishedAt:
-                                    "2026-09-07T12:00:00.000Z"
-                            }
-                        }
-                    ]
-                };
+                        sources:
+                            []
+                    };
 
-            }
+                }
+            };
 
-        };
-
-        const orchestration =
+        const orchestrator =
             createGovernedContentSourceDiscoveryIntake(
                 provider,
                 {
                     async ingest() {
 
-                        intakeCalls +=
+                        canonicalCalls +=
                             1;
 
                         throw new Error(
-                            "Intake must not execute."
+                            "should not execute"
+                        );
+
+                    }
+                },
+                {
+                    async persist() {
+
+                        provenanceCalls +=
+                            1;
+
+                        throw new Error(
+                            "should not execute"
+                        );
+
+                    },
+
+                    async retrieve() {
+
+                        throw new Error(
+                            "should not execute"
                         );
 
                     }
@@ -272,19 +353,24 @@ test(
 
         await assert.rejects(
             () =>
-                orchestration.execute(
+                orchestrator.execute(
                     {
                         platform:
                             "youtube",
+
                         publisherId:
                             "river-channel"
                     }
-                ),
-            /source platform does not match/
+                )
         );
 
         assert.equal(
-            intakeCalls,
+            canonicalCalls,
+            0
+        );
+
+        assert.equal(
+            provenanceCalls,
             0
         );
 
@@ -293,7 +379,260 @@ test(
 
 
 test(
-    "fails closed when a discovered source collides with an existing durable River identity",
+    "prevalidates the complete discovery batch before creating durable provenance",
+    async () => {
+
+        let provenanceCalls =
+            0;
+
+        const provider:
+            ContentSourceDiscoveryProvider =
+            {
+                platform:
+                    "youtube",
+
+                async discover() {
+
+                    return {
+                        platform:
+                            "youtube",
+
+                        sources: [
+                            {
+                                providerRecordId:
+                                    "youtube:abc123",
+
+                                discoveredAt:
+                                    "2026-09-07T18:00:00.000Z",
+
+                                source: {
+                                    platform:
+                                        "youtube",
+
+                                    url:
+                                        "https://www.youtube.com/watch?v=abc123",
+
+                                    externalPlatformId:
+                                        "abc123",
+
+                                    title:
+                                        "Valid",
+
+                                    publishedAt:
+                                        "2026-09-07T12:00:00.000Z"
+                                }
+                            },
+
+                            {
+                                providerRecordId:
+                                    "youtube:bad",
+
+                                discoveredAt:
+                                    "2026-09-07T18:00:00.000Z",
+
+                                source: {
+                                    platform:
+                                        "youtube",
+
+                                    url:
+                                        "not-a-valid-url",
+
+                                    externalPlatformId:
+                                        "bad",
+
+                                    title:
+                                        "Invalid",
+
+                                    publishedAt:
+                                        "2026-09-07T12:00:00.000Z"
+                                }
+                            }
+                        ]
+                    };
+
+                }
+            };
+
+        const orchestrator =
+            createGovernedContentSourceDiscoveryIntake(
+                provider,
+                {
+                    async ingest() {
+
+                        throw new Error(
+                            "should not execute"
+                        );
+
+                    }
+                },
+                {
+                    async persist() {
+
+                        provenanceCalls +=
+                            1;
+
+                        return "unexpected";
+                    },
+
+                    async retrieve() {
+
+                        throw new Error(
+                            "should not execute"
+                        );
+
+                    }
+                }
+            );
+
+        await assert.rejects(
+            () =>
+                orchestrator.execute(
+                    {
+                        platform:
+                            "youtube",
+
+                        publisherId:
+                            "river-channel"
+                    }
+                )
+        );
+
+        assert.equal(
+            provenanceCalls,
+            0
+        );
+
+    }
+);
+
+
+test(
+    "preserves provenance when canonical persistence fails after discovery evidence is captured",
+    async () => {
+
+        let provenancePersisted =
+            false;
+
+        const provider:
+            ContentSourceDiscoveryProvider =
+            {
+                platform:
+                    "youtube",
+
+                async discover() {
+
+                    return {
+                        platform:
+                            "youtube",
+
+                        sources: [
+                            {
+                                providerRecordId:
+                                    "youtube:abc123",
+
+                                discoveredAt:
+                                    "2026-09-07T18:00:00.000Z",
+
+                                source: {
+                                    platform:
+                                        "youtube",
+
+                                    url:
+                                        "https://www.youtube.com/watch?v=abc123",
+
+                                    externalPlatformId:
+                                        "abc123",
+
+                                    title:
+                                        "Published River Video",
+
+                                    publishedAt:
+                                        "2026-09-07T12:00:00.000Z"
+                                },
+
+                                providerMetadata: {
+                                    raw:
+                                        "provider-evidence"
+                                }
+                            }
+                        ]
+                    };
+
+                }
+            };
+
+        const orchestrator =
+            createGovernedContentSourceDiscoveryIntake(
+                provider,
+                {
+                    async ingest() {
+
+                        assert.equal(
+                            provenancePersisted,
+                            true
+                        );
+
+                        throw new Error(
+                            "canonical persistence failed"
+                        );
+
+                    }
+                },
+                {
+                    async persist(
+                        record
+                    ) {
+
+                        assert.equal(
+                            record.sourceId,
+                            "source:youtube:abc123"
+                        );
+
+                        provenancePersisted =
+                            true;
+
+                        return "provenance-path";
+                    },
+
+                    async retrieve() {
+
+                        throw new Error(
+                            "not required"
+                        );
+
+                    }
+                }
+            );
+
+        await assert.rejects(
+            () =>
+                orchestrator.execute(
+                    {
+                        platform:
+                            "youtube",
+
+                        publisherId:
+                            "river-channel"
+                    },
+                    {
+                        now:
+                            "2026-09-07T19:00:00.000Z"
+                    }
+                ),
+            /canonical persistence failed/
+        );
+
+        assert.equal(
+            provenancePersisted,
+            true
+        );
+
+    }
+);
+
+
+test(
+    "fails closed when immutable provenance already exists on rerun",
     async () => {
 
         const root =
@@ -306,58 +645,72 @@ test(
 
         try {
 
-            const persistence =
+            const canonicalPersistence =
                 createFileSystemCanonicalContentSourcePersistence(
+                    root
+                );
+
+            const provenancePersistence =
+                createFileSystemContentSourceDiscoveryProvenancePersistence(
                     root
                 );
 
             const intake =
                 createGovernedPublishedContentSourceIntake(
-                    persistence
+                    canonicalPersistence
                 );
 
-            const orchestration =
+            const orchestrator =
                 createGovernedContentSourceDiscoveryIntake(
                     createProvider(),
-                    intake
+                    intake,
+                    provenancePersistence
                 );
 
-            const options = {
-                now:
-                    "2026-09-07T19:00:00.000Z"
-            };
-
-            await orchestration.execute(
+            await orchestrator.execute(
                 {
                     platform:
                         "youtube",
+
                     publisherId:
                         "river-channel"
                 },
-                options
+                {
+                    now:
+                        "2026-09-07T19:00:00.000Z"
+                }
             );
 
             await assert.rejects(
                 () =>
-                    orchestration.execute(
+                    orchestrator.execute(
                         {
                             platform:
                                 "youtube",
+
                             publisherId:
                                 "river-channel"
                         },
-                        options
+                        {
+                            now:
+                                "2026-09-07T19:00:00.000Z"
+                        }
                     )
             );
 
-            const first =
-                await persistence.retrieve(
+            const existingCanonical =
+                await canonicalPersistence.retrieve(
                     "source:youtube:abc123"
                 );
 
+            const existingProvenance =
+                await provenancePersistence.retrieve(
+                    "discovery-provenance:source:youtube:abc123:youtube:abc123"
+                );
+
             assert.equal(
-                first.title,
-                "First Published River Video"
+                existingCanonical.sourceId,
+                existingProvenance.sourceId
             );
 
         } finally {
@@ -367,6 +720,7 @@ test(
                 {
                     recursive:
                         true,
+
                     force:
                         true
                 }
@@ -379,7 +733,7 @@ test(
 
 
 test(
-    "preserves provider pagination metadata without allowing it into canonical records",
+    "keeps provider pagination state outside canonical and provenance records",
     async () => {
 
         const root =
@@ -392,54 +746,65 @@ test(
 
         try {
 
-            const persistence =
+            const canonicalPersistence =
                 createFileSystemCanonicalContentSourcePersistence(
                     root
                 );
 
-            const result =
-                await createGovernedContentSourceDiscoveryIntake(
+            const provenancePersistence =
+                createFileSystemContentSourceDiscoveryProvenancePersistence(
+                    root
+                );
+
+            const intake =
+                createGovernedPublishedContentSourceIntake(
+                    canonicalPersistence
+                );
+
+            const orchestrator =
+                createGovernedContentSourceDiscoveryIntake(
                     createProvider(),
-                    createGovernedPublishedContentSourceIntake(
-                        persistence
-                    )
-                )
-                    .execute(
-                        {
-                            platform:
-                                "youtube",
-                            publisherId:
-                                "river-channel"
-                        },
-                        {
-                            now:
-                                "2026-09-07T19:00:00.000Z"
-                        }
-                    );
+                    intake,
+                    provenancePersistence
+                );
+
+            const result =
+                await orchestrator.execute(
+                    {
+                        platform:
+                            "youtube",
+
+                        publisherId:
+                            "river-channel",
+
+                        cursor:
+                            "page-one"
+                    },
+                    {
+                        now:
+                            "2026-09-07T19:00:00.000Z"
+                    }
+                );
 
             assert.equal(
                 result.discovery.nextCursor,
                 "page-two"
             );
 
-            for (
-                const item of
-                result.ingested
-            ) {
+            assert.equal(
+                "nextCursor" in result.ingested[0]!.record,
+                false
+            );
 
-                assert.equal(
-                    "nextCursor" in
-                    item.record,
-                    false
-                );
+            assert.equal(
+                "nextCursor" in result.provenance[0]!.record,
+                false
+            );
 
-                assert.equal(
-                    "providerRecordId" in
-                    item.record,
-                    false
-                );
-
-            }
+            assert.equal(
+                "cursor" in result.provenance[0]!.record,
+                false
+            );
 
         } finally {
 
@@ -448,6 +813,7 @@ test(
                 {
                     recursive:
                         true,
+
                     force:
                         true
                 }
