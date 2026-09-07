@@ -1,42 +1,16 @@
 ---
 import MainLayout from "../../layouts/MainLayout.astro";
-import ProductGrid from "../../components/commerce/ProductGrid.astro";
 
-const products = [
+import {
+    RIVER_LIFE_OPERATING_SYSTEM_PRESENTATION,
+} from "../../lib/commerce/product-presentation";
 
-    {
-        title:"River Creations",
-        description:
-            "Food, handmade products, merchandise, and other tangible creations belong here as they become genuinely available.",
-        action:"Explore the vision",
-        href:"/contribute/#products",
-        type:"Products"
-    },
-
-    {
-        title:"Guides and Resources",
-        description:
-            "Explore practical guides, written resources, and tools already published through The River Kept Flowing.",
-        action:"Browse the library",
-        href:"/library/",
-        type:"Resources"
-    },
-
-    {
-        title:"Services and Guidance",
-        description:
-            "Work directly with the experience, lessons, and systems being developed through the River.",
-        action:"Explore services",
-        href:"/services/",
-        type:"Services"
-    }
-
-];
+const product = RIVER_LIFE_OPERATING_SYSTEM_PRESENTATION;
 ---
 
 <MainLayout
-    title="Shop | The River Kept Flowing"
-    description="Explore creations, resources, and ways to participate in the work of The River Kept Flowing."
+    title={`${product.productName} | The River Kept Flowing`}
+    description={product.positioning}
 >
 
 <main data-pagefind-body class="library-page">
@@ -46,17 +20,22 @@ const products = [
 <div class="library-shell">
 
 <p class="section-label">
-The Marketplace
+River Life Operating System
 </p>
 
 <h1>
-Things created with purpose.
+Build a life around what matters most.
 </h1>
 
 <p>
-The Shop is where useful creations from The River Kept Flowing can gather:
-practical resources, future food and handmade products, merchandise,
-publications, and other work built to serve people well.
+{product.positioning}
+</p>
+
+<p>
+The River Life Operating System is a guided digital system for examining
+the life you have inherited and built, seeing more clearly where it is
+actually carrying you, and choosing a smaller set of deliberate priorities
+and next actions.
 </p>
 
 </div>
@@ -65,7 +44,7 @@ publications, and other work built to serve people well.
 
 
 <section
-    id="products"
+    id="purpose"
     class="library-section"
 >
 
@@ -76,24 +55,31 @@ publications, and other work built to serve people well.
 <div>
 
 <p class="section-label">
-Explore the River
+The purpose
 </p>
 
 <h2>
-What you can find here.
+A life can fill up before you decide what it is for.
 </h2>
 
 </div>
 
 <p>
-Some parts of the Shop already lead somewhere useful today.
-Physical products and direct purchasing will be added only when
-they are genuinely available.
+This system is designed to help you slow the pattern down long enough to
+look at it clearly: what receives your time, what shapes your attention,
+what your responsibilities are asking of you, what your relationships need,
+what your work and money are serving, what your habits are reinforcing,
+and what your ambitions are quietly costing.
 </p>
 
 </div>
 
-<ProductGrid items={products} />
+<p>
+The goal is not to optimize every part of life or create a perfect plan.
+It is to identify what matters most, recognize what is pulling you away
+from it, and leave with fewer priorities that can actually guide the way
+you live.
+</p>
 
 </div>
 
@@ -101,7 +87,7 @@ they are genuinely available.
 
 
 <section
-    id="future"
+    id="architecture"
     class="library-section"
 >
 
@@ -112,41 +98,220 @@ they are genuinely available.
 <div>
 
 <p class="section-label">
-Built carefully
+The system
 </p>
 
 <h2>
-Commerce will grow with the work.
+Five parts. One life examined as a whole.
 </h2>
 
 </div>
 
 <p>
-The goal is not to fill a storefront with things simply to sell them.
-Products, publications, food, merchandise, and other creations will
-appear here when there is something real and worthwhile to offer.
+The River Life Operating System moves through five connected parts.
+Each one asks a different question about where your life came from,
+what is shaping it now, and where it is carrying you next.
+</p>
+
+</div>
+
+{
+    product.architecture.map((section) => (
+        <section class="library-section">
+            <div class="library-section__heading">
+                <div>
+                    <p class="section-label">
+                        {String(section.order).padStart(2, "0")}
+                    </p>
+
+                    <h3>
+                        {section.title}
+                    </h3>
+                </div>
+
+                <p>
+                    {
+                        section.id === "headwaters"
+                            ? "Examine what formed you: the experiences, assumptions, expectations, environments, and inherited patterns that helped shape the life you began building."
+                            : section.id === "source"
+                              ? "Identify what you actually believe matters most before schedules, obligations, habits, and ambition decide those priorities for you."
+                              : section.id === "tributaries"
+                                ? "Look at the major streams feeding your life — relationships, work, money, responsibilities, habits, attention, health, service, and the other areas competing for limited capacity."
+                                : section.id === "current"
+                                  ? "Examine the direction created by your ordinary days: where your time goes, what repeats, what receives your best energy, and what your present patterns are producing."
+                                  : "Choose the direction you want to move toward and reduce that direction into deliberate priorities and next actions you can actually carry into ordinary life."
+                    }
+                </p>
+            </div>
+        </section>
+    ))
+}
+
+</div>
+
+</section>
+
+
+<section
+    id="what-you-receive"
+    class="library-section"
+>
+
+<div class="library-shell">
+
+<div class="library-section__heading">
+
+<div>
+
+<p class="section-label">
+What you receive
+</p>
+
+<h2>
+A guided system you can work through, not just something to read.
+</h2>
+
+</div>
+
+<p>
+{product.customerDeliverable}
 </p>
 
 </div>
 
 <p>
-Until then, the published library remains open to explore, services
-provide a way to work together, and the wider River shows how creation,
-service, community care, and stewardship fit into the same mission.
+The value of the system is in structured application and guided execution.
+It brings the ideas into one deliberate process so you can write, examine,
+compare, decide, and leave with something usable rather than simply consume
+another collection of thoughts.
 </p>
 
 <p>
-<a href="/river-guides/">
-Explore River Guides
-</a>
-&nbsp;&nbsp;·&nbsp;&nbsp;
-<a href="/contribute/">
-See ways to participate
-</a>
-&nbsp;&nbsp;·&nbsp;&nbsp;
-<a href="/river-fund/">
-Learn about The River Fund
-</a>
+The V1 system is built as a digital guided experience around the completed
+five-part architecture: Headwaters, The Source, Tributaries, The Current,
+and The Destination.
+</p>
+
+</div>
+
+</section>
+
+
+<section
+    id="who-it-is-for"
+    class="library-section"
+>
+
+<div class="library-shell">
+
+<div class="library-section__heading">
+
+<div>
+
+<p class="section-label">
+Who it is for
+</p>
+
+<h2>
+For people who want to live more deliberately.
+</h2>
+
+</div>
+
+<p>
+You do not need to be in crisis, reinvent your entire life, or have every
+answer before beginning. The system is for someone willing to examine
+their life carefully and make more deliberate decisions about what deserves
+their time, attention, responsibility, and effort.
+</p>
+
+</div>
+
+<p>
+It may be especially useful when life feels crowded, when success and
+direction no longer feel like the same thing, when too many good things
+are competing for the same limited capacity, or when you know something
+needs to change but do not yet know what deserves to remain.
+</p>
+
+</div>
+
+</section>
+
+
+<section
+    id="boundaries"
+    class="library-section"
+>
+
+<div class="library-shell">
+
+<div class="library-section__heading">
+
+<div>
+
+<p class="section-label">
+Built with boundaries
+</p>
+
+<h2>
+A life-planning system, not a promise of outcomes.
+</h2>
+
+</div>
+
+<p>
+The River Life Operating System is an educational and reflective planning
+resource. It does not replace therapy, medical care, legal advice,
+financial advice, or another licensed professional relationship.
+</p>
+
+</div>
+
+<p>
+The system does not promise a particular result. It gives you a structure
+for examining your own life, making your own decisions, and turning those
+decisions into more deliberate next actions.
+</p>
+
+</div>
+
+</section>
+
+
+<section
+    id="release-state"
+    class="library-section"
+>
+
+<div class="library-shell">
+
+<div class="library-section__heading">
+
+<div>
+
+<p class="section-label">
+V1 presentation
+</p>
+
+<h2>
+The product is being prepared carefully before public release.
+</h2>
+
+</div>
+
+<p>
+This page describes the actual River Life Operating System V1 and what it
+is designed to do. Public pricing, availability, and purchasing are not
+being presented here yet.
+</p>
+
+</div>
+
+<p>
+The River Kept Flowing is keeping those steps separate on purpose:
+the product should be represented accurately first, and commerce should
+only become public when the complete launch path is deliberately ready.
 </p>
 
 </div>
