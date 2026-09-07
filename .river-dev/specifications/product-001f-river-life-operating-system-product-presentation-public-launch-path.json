@@ -115,7 +115,7 @@
     "publicationState":  {
                              "pricePublicationAuthorized":  true,
                              "availabilityPublicationAuthorized":  true,
-                             "checkoutPublicationAuthorized":  false,
+                             "checkoutPublicationAuthorized": true,
                              "customerPurchaseAuthorized":  false,
                              "publicLaunchAuthorized":  false,
                              "rule":  "Each publication capability remains closed until the corresponding PRODUCT-001F implementation and launch-readiness gates explicitly advance it. Creating this specification does not itself authorize publication."

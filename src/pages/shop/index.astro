@@ -12,6 +12,11 @@ import {
     hasPublicPriceAvailabilityPresentation,
 } from "../../lib/commerce/product-price-availability-presentation";
 
+import {
+    PRODUCT_001F_04_CHECKOUT_PUBLICATION_STATE,
+    buildPublicPurchaseCta,
+} from "../../lib/commerce/product-purchase-cta";
+
 const product = RIVER_LIFE_OPERATING_SYSTEM_PRESENTATION;
 
 const publicOffer = buildPublicPriceAvailabilityPresentation({
@@ -22,6 +27,11 @@ const publicOffer = buildPublicPriceAvailabilityPresentation({
 
 const hasPublicOffer =
     hasPublicPriceAvailabilityPresentation(publicOffer);
+
+const purchaseCta =
+    buildPublicPurchaseCta(
+        PRODUCT_001F_04_CHECKOUT_PUBLICATION_STATE
+    );
 ---
 
 <MainLayout
@@ -152,7 +162,7 @@ what is shaping it now, and where it is carrying you next.
                             : section.id === "source"
                               ? "Identify what you actually believe matters most before schedules, obligations, habits, and ambition decide those priorities for you."
                               : section.id === "tributaries"
-                                ? "Look at the major streams feeding your life Ã¢â‚¬â€ relationships, work, money, responsibilities, habits, attention, health, service, and the other areas competing for limited capacity."
+                                ? "Look at the major streams feeding your life ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â relationships, work, money, responsibilities, habits, attention, health, service, and the other areas competing for limited capacity."
                                 : section.id === "current"
                                   ? "Examine the direction created by your ordinary days: where your time goes, what repeats, what receives your best energy, and what your present patterns are producing."
                                   : "Choose the direction you want to move toward and reduce that direction into deliberate priorities and next actions you can actually carry into ordinary life."
@@ -343,6 +353,37 @@ decisions into more deliberate next actions.
         fulfillment path after verified payment.
         </p>
 
+        {
+            purchaseCta && (
+                <form
+                    id="product-purchase"
+                    data-checkout-endpoint={purchaseCta.checkoutEndpoint}
+                >
+                    <label for="delivery-email">
+                        Delivery email
+                    </label>
+
+                    <input
+                        id="delivery-email"
+                        name="deliveryEmail"
+                        type="email"
+                        autocomplete="email"
+                        required
+                    />
+
+                    <button type="submit">
+                        {purchaseCta.label}
+                    </button>
+
+                    <p
+                        id="purchase-status"
+                        role="status"
+                        aria-live="polite"
+                    ></p>
+                </form>
+            )
+        }
+
         </div>
 
         </section>
@@ -391,5 +432,125 @@ only become public when the complete launch path is deliberately ready.
 </section>
 
 </main>
+
+{
+    purchaseCta && (
+        <script>
+            const purchaseForm =
+                document.querySelector<HTMLFormElement>(
+                    "#product-purchase"
+                );
+
+            purchaseForm?.addEventListener(
+                "submit",
+                async (event) => {
+
+                    event.preventDefault();
+
+                    const status =
+                        document.querySelector<HTMLElement>(
+                            "#purchase-status"
+                        );
+
+                    const submitButton =
+                        purchaseForm.querySelector<HTMLButtonElement>(
+                            'button[type="submit"]'
+                        );
+
+                    const deliveryEmailInput =
+                        purchaseForm.querySelector<HTMLInputElement>(
+                            'input[name="deliveryEmail"]'
+                        );
+
+                    const checkoutEndpoint =
+                        purchaseForm.dataset
+                            .checkoutEndpoint;
+
+                    if (
+                        !status ||
+                        !submitButton ||
+                        !deliveryEmailInput ||
+                        !checkoutEndpoint
+                    ) {
+                        return;
+                    }
+
+                    const deliveryEmail =
+                        deliveryEmailInput
+                            .value
+                            .trim();
+
+                    if (!deliveryEmail) {
+                        status.textContent =
+                            "Enter the email address where you want the product delivered.";
+
+                        return;
+                    }
+
+                    submitButton.disabled =
+                        true;
+
+                    status.textContent =
+                        "Preparing secure checkout...";
+
+                    try {
+
+                        const customerReference =
+                            crypto.randomUUID();
+
+                        const response =
+                            await fetch(
+                                checkoutEndpoint,
+                                {
+                                    method:
+                                        "POST",
+
+                                    headers: {
+                                        "content-type":
+                                            "application/json",
+                                    },
+
+                                    body:
+                                        JSON.stringify({
+                                            customerReference,
+                                            deliveryEmail,
+                                        }),
+                                }
+                            );
+
+                        const result =
+                            await response.json() as {
+                                created?: boolean;
+                                checkoutUrl?: string;
+                            };
+
+                        if (
+                            !response.ok ||
+                            result.created !== true ||
+                            typeof result.checkoutUrl !== "string" ||
+                            result.checkoutUrl.length === 0
+                        ) {
+                            throw new Error(
+                                "Checkout creation failed."
+                            );
+                        }
+
+                        window.location.assign(
+                            result.checkoutUrl
+                        );
+                    }
+                    catch {
+
+                        submitButton.disabled =
+                            false;
+
+                        status.textContent =
+                            "Secure checkout could not be prepared. Please try again.";
+                    }
+                }
+            );
+        </script>
+    )
+}
 
 </MainLayout>

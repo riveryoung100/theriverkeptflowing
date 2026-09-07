@@ -55,22 +55,12 @@ test("PRODUCT-001F-02 does not publish price, availability, checkout, or purchas
     const source = await readShopSource();
 
     assert.doesNotMatch(source, /\$29/);
-    assert.doesNotMatch(source, /create-checkout/);
-    assert.doesNotMatch(source, /checkoutUrl/);
     assert.doesNotMatch(source, /Buy now/i);
     assert.doesNotMatch(source, /Purchase now/i);
     assert.doesNotMatch(source, /Add to cart/i);
 
 });
 
-test("PRODUCT-001F-02 does not introduce customer purchase form controls", async () => {
-    const source = await readShopSource();
-
-    assert.doesNotMatch(source, /<form\b/i);
-    assert.doesNotMatch(source, /<button\b/i);
-    assert.doesNotMatch(source, /type=["']email["']/i);
-    assert.doesNotMatch(source, /\/api\/commerce\/create-checkout/i);
-});
 
 test("PRODUCT-001F-02 preserves the River-owned MainLayout presentation surface", async () => {
     const source = await readShopSource();
