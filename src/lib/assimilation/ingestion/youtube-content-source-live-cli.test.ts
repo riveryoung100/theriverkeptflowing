@@ -368,3 +368,260 @@ test(
 
     }
 );
+
+test(
+    "CIF-019 parses an exact YouTube video lookup without discovery pagination options",
+    () => {
+
+        assert.deepEqual(
+            parseYouTubeContentSourceLiveCliArguments(
+                [
+                    ".river-content",
+                    "@TheRiverKeptFlowing",
+                    "--authorize-live-youtube-discovery",
+                    "--video-id",
+                    "dkBgPbiFTX0"
+                ]
+            ),
+            {
+                persistenceRoot:
+                    ".river-content",
+
+                handle:
+                    "@TheRiverKeptFlowing",
+
+                videoId:
+                    "dkBgPbiFTX0"
+            }
+        );
+
+    }
+);
+
+
+test(
+    "CIF-019 rejects direct video lookup combined with discovery pagination before credential consumption",
+    async () => {
+
+        let credentialReads =
+            0;
+
+        await assert.rejects(
+            () =>
+                runYouTubeContentSourceLiveCli(
+                    {
+                        arguments: [
+                            ".river-content",
+                            "@TheRiverKeptFlowing",
+                            "--authorize-live-youtube-discovery",
+                            "--video-id",
+                            "dkBgPbiFTX0",
+                            "--limit",
+                            "1"
+                        ],
+
+                        readCredential:
+                            async () => {
+
+                                credentialReads +=
+                                    1;
+
+                                return "must-not-be-read";
+
+                            }
+                    }
+                ),
+            /Direct YouTube video lookup cannot be combined with discovery limit or cursor/
+        );
+
+        assert.equal(
+            credentialReads,
+            0
+        );
+
+    }
+);
+
+
+test(
+    "CIF-019 CLI reaches governed durable direct video intake through injected boundaries",
+    async () => {
+
+        const root =
+            await mkdtemp(
+                join(
+                    tmpdir(),
+                    "youtube-live-video-cli-"
+                )
+            );
+
+        try {
+
+            let credentialReads =
+                0;
+
+            let fetchCalls =
+                0;
+
+            const fetcher:
+                typeof fetch =
+                async (
+                    input
+                ) => {
+
+                    fetchCalls +=
+                        1;
+
+                    const url =
+                        new URL(
+                            input.toString()
+                        );
+
+                    assert.equal(
+                        url.searchParams.get(
+                            "key"
+                        ),
+                        "test-youtube-credential"
+                    );
+
+                    if (
+                        url.searchParams.has(
+                            "forHandle"
+                        )
+                    ) {
+
+                        return new Response(
+                            JSON.stringify(
+                                {
+                                    items: [
+                                        {
+                                            id:
+                                                "UC_RIVER_CHANNEL"
+                                        }
+                                    ]
+                                }
+                            ),
+                            {
+                                status:
+                                    200
+                            }
+                        );
+
+                    }
+
+                    assert.equal(
+                        url.pathname,
+                        "/youtube/v3/videos"
+                    );
+
+                    assert.equal(
+                        url.searchParams.get(
+                            "id"
+                        ),
+                        "dkBgPbiFTX0"
+                    );
+
+                    return new Response(
+                        JSON.stringify(
+                            {
+                                items: [
+                                    {
+                                        id:
+                                            "dkBgPbiFTX0",
+
+                                        snippet: {
+                                            title:
+                                                "Gods Grace is Sufficient (Word of Perseverance)",
+
+                                            description:
+                                                "Published River source.",
+
+                                            publishedAt:
+                                                "2025-09-01T12:00:00.000Z",
+
+                                            channelId:
+                                                "UC_RIVER_CHANNEL"
+                                        }
+                                    }
+                                ]
+                            }
+                        ),
+                        {
+                            status:
+                                200
+                        }
+                    );
+
+                };
+
+            const result =
+                await runYouTubeContentSourceLiveCli(
+                    {
+                        arguments: [
+                            root,
+                            "@TheRiverKeptFlowing",
+                            "--authorize-live-youtube-discovery",
+                            "--video-id",
+                            "dkBgPbiFTX0"
+                        ],
+
+                        readCredential:
+                            async () => {
+
+                                credentialReads +=
+                                    1;
+
+                                return "test-youtube-credential";
+
+                            },
+
+                        now:
+                            () =>
+                                "2026-09-08T18:10:00.000Z",
+
+                        fetcher
+                    }
+                );
+
+            assert.equal(
+                credentialReads,
+                1
+            );
+
+            assert.equal(
+                fetchCalls,
+                2
+            );
+
+            assert.equal(
+                result.channel.channelId,
+                "UC_RIVER_CHANNEL"
+            );
+
+            assert.equal(
+                result.intake.ingested.length,
+                1
+            );
+
+            assert.equal(
+                result.intake.ingested[0]?.record.sourceId,
+                "source:youtube:dkBgPbiFTX0"
+            );
+
+        } finally {
+
+            await rm(
+                root,
+                {
+                    recursive:
+                        true,
+
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);

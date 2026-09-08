@@ -1,4 +1,4 @@
-import {
+﻿import {
     createGovernedContentSourceDiscoveryIntake,
     type ContentSourceDiscoveryIntakeResult
 } from "./content-source-discovery-intake";
@@ -15,6 +15,10 @@ import {
 import {
     createYouTubeContentSourceDiscoveryProvider
 } from "./youtube-content-source-discovery-provider";
+
+import {
+    createYouTubeContentSourceVideoProvider
+} from "./youtube-content-source-video-provider";
 
 import {
     createFileSystemCanonicalContentSourcePersistence
@@ -50,6 +54,9 @@ export interface YouTubeContentSourceLiveExecutionOptions {
         number;
 
     readonly cursor?:
+        string;
+
+    readonly videoId?:
         string;
 
     readonly fetcher?:
@@ -171,6 +178,28 @@ export async function executeYouTubeContentSourceLiveDiscovery(
                 "Discovery cursor"
             );
 
+    const videoId =
+        options.videoId === undefined
+            ? undefined
+            : requireNonEmpty(
+                options.videoId,
+                "YouTube video identifier"
+            );
+
+    if (
+        videoId !== undefined &&
+        (
+            options.limit !== undefined ||
+            cursor !== undefined
+        )
+    ) {
+
+        throw new TypeError(
+            "Direct YouTube video lookup cannot be combined with discovery limit or cursor."
+        );
+
+    }
+
     if (
         typeof options.readCredential !==
         "function"
@@ -232,25 +261,47 @@ export async function executeYouTubeContentSourceLiveDiscovery(
         );
 
     const provider =
-        createYouTubeContentSourceDiscoveryProvider(
-            {
-                apiKey:
-                    credential,
+        videoId === undefined
+            ? createYouTubeContentSourceDiscoveryProvider(
+                {
+                    apiKey:
+                        credential,
 
-                now:
-                    () =>
-                        now,
+                    now:
+                        () =>
+                            now,
 
-                ...(
-                    options.fetcher === undefined
-                        ? {}
-                        : {
-                            fetcher:
-                                options.fetcher
-                        }
-                )
-            }
-        );
+                    ...(
+                        options.fetcher === undefined
+                            ? {}
+                            : {
+                                fetcher:
+                                    options.fetcher
+                            }
+                    )
+                }
+            )
+            : createYouTubeContentSourceVideoProvider(
+                {
+                    apiKey:
+                        credential,
+
+                    videoId,
+
+                    now:
+                        () =>
+                            now,
+
+                    ...(
+                        options.fetcher === undefined
+                            ? {}
+                            : {
+                                fetcher:
+                                    options.fetcher
+                            }
+                    )
+                }
+            );
 
     const canonicalPersistence =
         createFileSystemCanonicalContentSourcePersistence(
@@ -284,20 +335,22 @@ export async function executeYouTubeContentSourceLiveDiscovery(
                     channel.channelId,
 
                 ...(
-                    cursor === undefined
-                        ? {}
-                        : {
+                    videoId === undefined &&
+                    cursor !== undefined
+                        ? {
                             cursor
                         }
+                        : {}
                 ),
 
                 ...(
-                    options.limit === undefined
-                        ? {}
-                        : {
+                    videoId === undefined &&
+                    options.limit !== undefined
+                        ? {
                             limit:
                                 options.limit
                         }
+                        : {}
                 )
             },
             {

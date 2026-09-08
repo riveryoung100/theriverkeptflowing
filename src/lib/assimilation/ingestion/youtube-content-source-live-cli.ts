@@ -1,4 +1,4 @@
-import type {
+﻿import type {
     YouTubeContentSourceLiveExecutionResult
 } from "./youtube-content-source-live-execution";
 
@@ -24,6 +24,9 @@ export interface YouTubeContentSourceLiveCliArguments {
         number;
 
     readonly cursor?:
+        string;
+
+    readonly videoId?:
         string;
 
 }
@@ -94,6 +97,9 @@ export function parseYouTubeContentSourceLiveCliArguments(
         number | undefined;
 
     let cursor:
+        string | undefined;
+
+    let videoId:
         string | undefined;
 
     for (
@@ -192,6 +198,34 @@ export function parseYouTubeContentSourceLiveCliArguments(
         }
 
         if (
+            argument ===
+            "--video-id"
+        ) {
+
+            if (
+                videoId !== undefined
+            ) {
+
+                throw new TypeError(
+                    "YouTube video identifier may be specified only once."
+                );
+
+            }
+
+            videoId =
+                requireNonEmpty(
+                    arguments_[index + 1],
+                    "YouTube video identifier"
+                );
+
+            index +=
+                1;
+
+            continue;
+
+        }
+
+        if (
             argument?.startsWith(
                 "--"
             )
@@ -218,7 +252,21 @@ export function parseYouTubeContentSourceLiveCliArguments(
     ) {
 
         throw new TypeError(
-            "Usage: content:youtube:discover <persistence-root> <handle> --authorize-live-youtube-discovery [--limit <positive-integer>] [--cursor <token>] < credential-via-stdin"
+            "Usage: content:youtube:discover <persistence-root> <handle> --authorize-live-youtube-discovery [--limit <positive-integer>] [--cursor <token>] [--video-id <video-id>] < credential-via-stdin"
+        );
+
+    }
+
+    if (
+        videoId !== undefined &&
+        (
+            limit !== undefined ||
+            cursor !== undefined
+        )
+    ) {
+
+        throw new TypeError(
+            "Direct YouTube video lookup cannot be combined with discovery limit or cursor."
         );
 
     }
@@ -243,6 +291,14 @@ export function parseYouTubeContentSourceLiveCliArguments(
                 ? {}
                 : {
                     cursor
+                }
+        ),
+
+        ...(
+            videoId === undefined
+                ? {}
+                : {
+                    videoId
                 }
         )
     };
@@ -325,6 +381,15 @@ export async function runYouTubeContentSourceLiveCli(
                     : {
                         cursor:
                             parsed.cursor
+                    }
+            ),
+
+            ...(
+                parsed.videoId === undefined
+                    ? {}
+                    : {
+                        videoId:
+                            parsed.videoId
                     }
             ),
 
