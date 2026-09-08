@@ -12,3 +12,4 @@ export * from "./content-transcript-acquisition-provider";
 export * from "./content-transcript-record";
 export * from "./content-transcript-intake";
 export * from "./youtube-content-source-live-execution";
+export * from "./youtube-content-source-live-cli";
