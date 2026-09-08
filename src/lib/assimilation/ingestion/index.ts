@@ -1,4 +1,4 @@
-﻿export * from "./types";
+export * from "./types";
 export * from "./filesystem";
 export * from "./canonical-content-source";
 export * from "./content-source-normalization";
@@ -11,4 +11,4 @@ export * from "./content-source-discovery-provenance";
 export * from "./content-transcript-acquisition-provider";
 export * from "./content-transcript-record";
 export * from "./content-transcript-intake";
-
+export * from "./youtube-content-source-live-execution";
