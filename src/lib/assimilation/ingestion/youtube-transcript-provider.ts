@@ -1,0 +1,735 @@
+﻿import type {
+    ContentTranscriptAcquisitionProvider,
+    ContentTranscriptAcquisitionRequest,
+    ContentTranscriptAcquisitionResult
+} from "./content-transcript-acquisition-provider";
+
+
+type FetchFunction =
+    (
+        input:
+            string,
+        init?:
+            RequestInit
+    ) => Promise<Response>;
+
+
+export interface YouTubeTranscriptProviderOptions {
+
+    readonly watchEndpoint?:
+        string;
+
+    readonly fetcher?:
+        FetchFunction;
+
+    readonly now?:
+        () => string;
+
+}
+
+
+interface YouTubeCaptionTrack {
+
+    readonly baseUrl?:
+        string;
+
+    readonly languageCode?:
+        string;
+
+    readonly kind?:
+        string;
+
+}
+
+
+function requireNormalized(
+    value:
+        string,
+    label:
+        string
+): string {
+
+    if (
+        typeof value !== "string" ||
+        value.length === 0 ||
+        value.trim() !==
+            value
+    ) {
+
+        throw new TypeError(
+            `${label} must be a normalized non-empty string.`
+        );
+
+    }
+
+    return value;
+
+}
+
+
+function requireHttpsEndpoint(
+    value:
+        string
+): string {
+
+    const normalized =
+        requireNormalized(
+            value,
+            "YouTube transcript watch endpoint"
+        );
+
+    let url:
+        URL;
+
+    try {
+
+        url =
+            new URL(
+                normalized
+            );
+
+    } catch {
+
+        throw new TypeError(
+            "YouTube transcript watch endpoint must be a valid HTTPS URL."
+        );
+
+    }
+
+    if (
+        url.protocol !==
+        "https:"
+    ) {
+
+        throw new TypeError(
+            "YouTube transcript watch endpoint must use HTTPS."
+        );
+
+    }
+
+    return normalized;
+
+}
+
+
+function decodeHtmlEntities(
+    value:
+        string
+): string {
+
+    return value
+        .replace(
+            /&#(\d+);/g,
+            (
+                _match,
+                decimal:
+                    string
+            ) =>
+                String.fromCodePoint(
+                    Number(
+                        decimal
+                    )
+                )
+        )
+        .replace(
+            /&#x([0-9a-f]+);/gi,
+            (
+                _match,
+                hexadecimal:
+                    string
+            ) =>
+                String.fromCodePoint(
+                    Number.parseInt(
+                        hexadecimal,
+                        16
+                    )
+                )
+        )
+        .replace(
+            /&quot;/g,
+            '"'
+        )
+        .replace(
+            /&apos;/g,
+            "'"
+        )
+        .replace(
+            /&#39;/g,
+            "'"
+        )
+        .replace(
+            /&amp;/g,
+            "&"
+        )
+        .replace(
+            /&lt;/g,
+            "<"
+        )
+        .replace(
+            /&gt;/g,
+            ">"
+        );
+
+}
+
+
+function extractCaptionTracks(
+    html:
+        string
+): readonly YouTubeCaptionTrack[] {
+
+    const marker =
+        '"captionTracks":';
+
+    const markerIndex =
+        html.indexOf(
+            marker
+        );
+
+    if (
+        markerIndex <
+        0
+    ) {
+
+        throw new Error(
+            "YouTube transcript captions are unavailable for this video."
+        );
+
+    }
+
+    const arrayStart =
+        html.indexOf(
+            "[",
+            markerIndex +
+                marker.length
+        );
+
+    if (
+        arrayStart <
+        0
+    ) {
+
+        throw new TypeError(
+            "YouTube transcript caption metadata is malformed."
+        );
+
+    }
+
+    let inString =
+        false;
+
+    let escaped =
+        false;
+
+    let depth =
+        0;
+
+    for (
+        let index =
+            arrayStart;
+        index <
+            html.length;
+        index +=
+            1
+    ) {
+
+        const character =
+            html[index];
+
+        if (
+            inString
+        ) {
+
+            if (
+                escaped
+            ) {
+
+                escaped =
+                    false;
+
+            } else if (
+                character ===
+                "\\"
+            ) {
+
+                escaped =
+                    true;
+
+            } else if (
+                character ===
+                '"'
+            ) {
+
+                inString =
+                    false;
+
+            }
+
+            continue;
+
+        }
+
+        if (
+            character ===
+            '"'
+        ) {
+
+            inString =
+                true;
+
+            continue;
+
+        }
+
+        if (
+            character ===
+            "["
+        ) {
+
+            depth +=
+                1;
+
+            continue;
+
+        }
+
+        if (
+            character ===
+            "]"
+        ) {
+
+            depth -=
+                1;
+
+            if (
+                depth ===
+                0
+            ) {
+
+                const serialized =
+                    html.slice(
+                        arrayStart,
+                        index +
+                            1
+                    );
+
+                let parsed:
+                    unknown;
+
+                try {
+
+                    parsed =
+                        JSON.parse(
+                            serialized
+                        );
+
+                } catch {
+
+                    throw new TypeError(
+                        "YouTube transcript caption metadata contains malformed JSON."
+                    );
+
+                }
+
+                if (
+                    !Array.isArray(
+                        parsed
+                    )
+                ) {
+
+                    throw new TypeError(
+                        "YouTube transcript caption metadata must be an array."
+                    );
+
+                }
+
+                return parsed as
+                    readonly YouTubeCaptionTrack[];
+
+            }
+
+        }
+
+    }
+
+    throw new TypeError(
+        "YouTube transcript caption metadata is incomplete."
+    );
+
+}
+
+
+function selectCaptionTrack(
+    tracks:
+        readonly YouTubeCaptionTrack[],
+    preferredLanguage:
+        string | undefined
+): YouTubeCaptionTrack {
+
+    const usable =
+        tracks.filter(
+            (
+                track
+            ) =>
+                typeof track.baseUrl ===
+                    "string" &&
+                track.baseUrl.trim().length >
+                    0
+        );
+
+    if (
+        usable.length ===
+        0
+    ) {
+
+        throw new Error(
+            "YouTube transcript captions are unavailable for this video."
+        );
+
+    }
+
+    if (
+        preferredLanguage
+    ) {
+
+        const preferred =
+            usable.find(
+                (
+                    track
+                ) =>
+                    track.languageCode ===
+                        preferredLanguage
+            );
+
+        if (
+            preferred
+        ) {
+
+            return preferred;
+
+        }
+
+    }
+
+    const manual =
+        usable.find(
+            (
+                track
+            ) =>
+                track.kind !==
+                    "asr"
+        );
+
+    return (
+        manual ??
+        usable[0]!
+    );
+
+}
+
+
+function parseTimedText(
+    body:
+        string
+): string {
+
+    const segments:
+        string[] =
+        [];
+
+    const pattern =
+        /<text\b[^>]*>([\s\S]*?)<\/text>/gi;
+
+    let match:
+        RegExpExecArray | null;
+
+    while (
+        (
+            match =
+                pattern.exec(
+                    body
+                )
+        ) !==
+        null
+    ) {
+
+        const decoded =
+            decodeHtmlEntities(
+                match[1]!
+                    .replace(
+                        /<[^>]+>/g,
+                        ""
+                    )
+            )
+                .replace(
+                    /\s+/g,
+                    " "
+                )
+                .trim();
+
+        if (
+            decoded.length >
+            0
+        ) {
+
+            segments.push(
+                decoded
+            );
+
+        }
+
+    }
+
+    const transcript =
+        segments
+            .join(
+                " "
+            )
+            .trim();
+
+    if (
+        transcript.length ===
+        0
+    ) {
+
+        throw new Error(
+            "YouTube transcript response contained no transcript text."
+        );
+
+    }
+
+    return transcript;
+
+}
+
+
+export class YouTubeTranscriptProvider
+implements ContentTranscriptAcquisitionProvider {
+
+    public readonly platform =
+        "youtube" as const;
+
+    private readonly watchEndpoint:
+        string;
+
+    private readonly fetcher:
+        FetchFunction;
+
+    private readonly now:
+        () => string;
+
+
+    public constructor(
+        options:
+            YouTubeTranscriptProviderOptions = {}
+    ) {
+
+        this.watchEndpoint =
+            requireHttpsEndpoint(
+                options.watchEndpoint ??
+                "https://www.youtube.com/watch"
+            );
+
+        const fetcher =
+            options.fetcher ??
+            fetch;
+
+        this.fetcher =
+            (
+                input,
+                init
+            ) =>
+                fetcher(
+                    input,
+                    init
+                );
+
+        this.now =
+            options.now ??
+            (
+                () =>
+                    new Date()
+                        .toISOString()
+            );
+
+    }
+
+
+    public async acquire(
+        request:
+            ContentTranscriptAcquisitionRequest
+    ): Promise<ContentTranscriptAcquisitionResult> {
+
+        if (
+            request.source.platform !==
+            "youtube"
+        ) {
+
+            throw new TypeError(
+                "YouTube transcript provider only accepts YouTube canonical sources."
+            );
+
+        }
+
+        const videoId =
+            requireNormalized(
+                request.source.externalPlatformId,
+                "YouTube transcript video identifier"
+            );
+
+        const watchUrl =
+            new URL(
+                this.watchEndpoint
+            );
+
+        watchUrl.searchParams.set(
+            "v",
+            videoId
+        );
+
+        let watchResponse:
+            Response;
+
+        try {
+
+            watchResponse =
+                await this.fetcher(
+                    watchUrl.toString(),
+                    {
+                        method:
+                            "GET",
+                        headers: {
+                            "Accept":
+                                "text/html"
+                        }
+                    }
+                );
+
+        } catch {
+
+            throw new Error(
+                "YouTube transcript watch-page transport failed."
+            );
+
+        }
+
+        if (
+            !watchResponse.ok
+        ) {
+
+            throw new Error(
+                `YouTube transcript watch-page request failed with HTTP ${watchResponse.status}.`
+            );
+
+        }
+
+        const html =
+            await watchResponse.text();
+
+        const track =
+            selectCaptionTrack(
+                extractCaptionTracks(
+                    html
+                ),
+                request.preferredLanguage
+            );
+
+        const captionUrl =
+            requireHttpsEndpoint(
+                requireNormalized(
+                    track.baseUrl ?? "",
+                    "YouTube transcript caption endpoint"
+                )
+            );
+
+        let captionResponse:
+            Response;
+
+        try {
+
+            captionResponse =
+                await this.fetcher(
+                    captionUrl,
+                    {
+                        method:
+                            "GET",
+                        headers: {
+                            "Accept":
+                                "text/xml,application/xml"
+                        }
+                    }
+                );
+
+        } catch {
+
+            throw new Error(
+                "YouTube transcript caption transport failed."
+            );
+
+        }
+
+        if (
+            !captionResponse.ok
+        ) {
+
+            throw new Error(
+                `YouTube transcript caption request failed with HTTP ${captionResponse.status}.`
+            );
+
+        }
+
+        const text =
+            parseTimedText(
+                await captionResponse.text()
+            );
+
+        return {
+            sourceId:
+                request.source.sourceId,
+
+            platform:
+                "youtube",
+
+            transcript: {
+                text,
+
+                provenance: {
+                    type:
+                        "platform",
+
+                    provider:
+                        "youtube",
+
+                    ...(
+                        typeof track.languageCode ===
+                            "string" &&
+                        track.languageCode.trim().length >
+                            0
+                            ? {
+                                language:
+                                    track.languageCode
+                            }
+                            : {}
+                    ),
+
+                    capturedAt:
+                        this.now()
+                }
+            }
+        };
+
+    }
+
+}
+
+
+export function createYouTubeTranscriptProvider(
+    options:
+        YouTubeTranscriptProviderOptions = {}
+): ContentTranscriptAcquisitionProvider {
+
+    return new YouTubeTranscriptProvider(
+        options
+    );
+
+}

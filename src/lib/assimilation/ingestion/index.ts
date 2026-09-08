@@ -1,4 +1,4 @@
-﻿export * from "./types";
+export * from "./types";
 export * from "./filesystem";
 export * from "./canonical-content-source";
 export * from "./content-source-normalization";
@@ -14,3 +14,6 @@ export * from "./content-transcript-record";
 export * from "./content-transcript-intake";
 export * from "./youtube-content-source-live-execution";
 export * from "./youtube-content-source-live-cli";
+export * from "./youtube-transcript-provider";
+export * from "./youtube-transcript-live-execution";
+export * from "./youtube-transcript-live-cli";
