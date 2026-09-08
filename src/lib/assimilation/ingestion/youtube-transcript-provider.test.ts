@@ -294,6 +294,93 @@ test(
 
 
 test(
+    "CIF-022 reports safe response metadata when caption text cannot be parsed",
+    async () => {
+
+        let calls =
+            0;
+
+        const provider =
+            createYouTubeTranscriptProvider(
+                {
+                    fetcher:
+                        async () => {
+
+                            calls +=
+                                1;
+
+                            if (
+                                calls ===
+                                1
+                            ) {
+
+                                return new Response(
+                                    '<html>"captionTracks":[{"baseUrl":"https://www.youtube.com/api/timedtext?v=dkBgPbiFTX0&lang=en","languageCode":"en"}]</html>',
+                                    {
+                                        status:
+                                            200
+                                    }
+                                );
+
+                            }
+
+                            return new Response(
+                                "<html>opaque diagnostic fixture</html>",
+                                {
+                                    status:
+                                        200,
+
+                                    headers: {
+                                        "Content-Type":
+                                            "text/html; charset=utf-8"
+                                    }
+                                }
+                            );
+
+                        }
+                }
+            );
+
+        await assert.rejects(
+            () =>
+                provider.acquire(
+                    {
+                        source:
+                            createSource()
+                    }
+                ),
+            (
+                error:
+                    unknown
+            ) => {
+
+                assert.ok(
+                    error instanceof
+                        Error
+                );
+
+                assert.equal(
+                    error.message,
+                    "YouTube transcript response contained no transcript text (contentType=text/html, bodyLength=38, shape=html-like)."
+                );
+
+                assert.equal(
+                    error.message.includes(
+                        "opaque diagnostic fixture"
+                    ),
+                    false
+                );
+
+                return true;
+
+            }
+        );
+
+    }
+);
+
+
+test(
     "CIF-020 rejects non-YouTube canonical sources before network execution",
     async () => {
 

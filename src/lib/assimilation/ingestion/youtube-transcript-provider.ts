@@ -589,8 +589,81 @@ function parseJson3TimedText(
 }
 
 
+function describeTimedTextResponse(
+    body:
+        string,
+    contentType?:
+        string
+): string {
+
+    const normalizedContentType =
+        typeof contentType ===
+            "string" &&
+        contentType.trim().length >
+            0
+            ? contentType
+                .split(
+                    ";"
+                )[0]!
+                .trim()
+                .toLowerCase()
+            : "unknown";
+
+    const trimmed =
+        body.trim();
+
+    let shape =
+        "other";
+
+    if (
+        trimmed.length ===
+        0
+    ) {
+
+        shape =
+            "empty";
+
+    } else if (
+        trimmed.startsWith(
+            "{"
+        ) ||
+        trimmed.startsWith(
+            "["
+        )
+    ) {
+
+        shape =
+            "json-like";
+
+    } else if (
+        /^<!doctype\s+html\b|^<html\b/i.test(
+            trimmed
+        )
+    ) {
+
+        shape =
+            "html-like";
+
+    } else if (
+        /^<\?xml\b|^<(transcript|timedtext|body|text|p)\b/i.test(
+            trimmed
+        )
+    ) {
+
+        shape =
+            "xml-like";
+
+    }
+
+    return `contentType=${normalizedContentType}, bodyLength=${body.length}, shape=${shape}`;
+
+}
+
+
 function parseTimedText(
     body:
+        string,
+    contentType?:
         string
 ): string {
 
@@ -658,7 +731,10 @@ function parseTimedText(
     ) {
 
         throw new Error(
-            "YouTube transcript response contained no transcript text."
+            `YouTube transcript response contained no transcript text (${describeTimedTextResponse(
+                body,
+                contentType
+            )}).`
         );
 
     }
@@ -850,9 +926,16 @@ implements ContentTranscriptAcquisitionProvider {
 
         }
 
+        const captionBody =
+            await captionResponse.text();
+
         const text =
             parseTimedText(
-                await captionResponse.text()
+                captionBody,
+                captionResponse.headers.get(
+                    "content-type"
+                ) ??
+                    undefined
             );
 
         return {
