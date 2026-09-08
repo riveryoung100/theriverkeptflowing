@@ -22,3 +22,6 @@ Thumbs.db
 
 # Local Wrangler generated state
 .wrangler/
+
+# Private durable content-ingestion records
+.river-content/
