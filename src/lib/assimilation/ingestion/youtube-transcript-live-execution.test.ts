@@ -138,7 +138,7 @@ test(
 
                                 assert.equal(
                                     url,
-                                    "https://www.youtube.com/api/timedtext?v=dkBgPbiFTX0&lang=en"
+                                    "https://www.youtube.com/api/timedtext?v=dkBgPbiFTX0&lang=en&fmt=json3"
                                 );
 
                                 return new Response(

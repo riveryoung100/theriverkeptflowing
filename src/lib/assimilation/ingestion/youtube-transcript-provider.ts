@@ -428,17 +428,191 @@ function selectCaptionTrack(
 }
 
 
+function normalizeTranscriptText(
+    value:
+        string
+): string {
+
+    return decodeHtmlEntities(
+        value.replace(
+            /<[^>]+>/g,
+            ""
+        )
+    )
+        .replace(
+            /\s+/g,
+            " "
+        )
+        .trim();
+
+}
+
+
+function parseJson3TimedText(
+    body:
+        string
+): string | null {
+
+    let parsed:
+        unknown;
+
+    try {
+
+        parsed =
+            JSON.parse(
+                body
+            );
+
+    } catch {
+
+        return null;
+
+    }
+
+    if (
+        typeof parsed !==
+            "object" ||
+        parsed ===
+            null ||
+        !Array.isArray(
+            (
+                parsed as {
+                    events?:
+                        unknown;
+                }
+            ).events
+        )
+    ) {
+
+        return null;
+
+    }
+
+    const segments:
+        string[] =
+        [];
+
+    for (
+        const event of
+        (
+            parsed as {
+                events:
+                    unknown[];
+            }
+        ).events
+    ) {
+
+        if (
+            typeof event !==
+                "object" ||
+            event ===
+                null ||
+            !Array.isArray(
+                (
+                    event as {
+                        segs?:
+                            unknown;
+                    }
+                ).segs
+            )
+        ) {
+
+            continue;
+
+        }
+
+        for (
+            const segment of
+            (
+                event as {
+                    segs:
+                        unknown[];
+                }
+            ).segs
+        ) {
+
+            if (
+                typeof segment !==
+                    "object" ||
+                segment ===
+                    null ||
+                typeof (
+                    segment as {
+                        utf8?:
+                            unknown;
+                    }
+                ).utf8 !==
+                    "string"
+            ) {
+
+                continue;
+
+            }
+
+            const normalized =
+                normalizeTranscriptText(
+                    (
+                        segment as {
+                            utf8:
+                                string;
+                        }
+                    ).utf8
+                );
+
+            if (
+                normalized.length >
+                0
+            ) {
+
+                segments.push(
+                    normalized
+                );
+
+            }
+
+        }
+
+    }
+
+    const transcript =
+        segments
+            .join(
+                " "
+            )
+            .trim();
+
+    return transcript.length >
+        0
+        ? transcript
+        : null;
+
+}
+
+
 function parseTimedText(
     body:
         string
 ): string {
+
+    const json3Transcript =
+        parseJson3TimedText(
+            body
+        );
+
+    if (
+        json3Transcript
+    ) {
+
+        return json3Transcript;
+
+    }
 
     const segments:
         string[] =
         [];
 
     const pattern =
-        /<text\b[^>]*>([\s\S]*?)<\/text>/gi;
+        /<(text|p)\b[^>]*>([\s\S]*?)<\/\1>/gi;
 
     let match:
         RegExpExecArray | null;
@@ -454,18 +628,9 @@ function parseTimedText(
     ) {
 
         const decoded =
-            decodeHtmlEntities(
-                match[1]!
-                    .replace(
-                        /<[^>]+>/g,
-                        ""
-                    )
-            )
-                .replace(
-                    /\s+/g,
-                    " "
-                )
-                .trim();
+            normalizeTranscriptText(
+                match[2]!
+            );
 
         if (
             decoded.length >
@@ -635,12 +800,19 @@ implements ContentTranscriptAcquisitionProvider {
             );
 
         const captionUrl =
-            requireHttpsEndpoint(
-                requireNormalized(
-                    track.baseUrl ?? "",
-                    "YouTube transcript caption endpoint"
+            new URL(
+                requireHttpsEndpoint(
+                    requireNormalized(
+                        track.baseUrl ?? "",
+                        "YouTube transcript caption endpoint"
+                    )
                 )
             );
+
+        captionUrl.searchParams.set(
+            "fmt",
+            "json3"
+        );
 
         let captionResponse:
             Response;
@@ -649,13 +821,13 @@ implements ContentTranscriptAcquisitionProvider {
 
             captionResponse =
                 await this.fetcher(
-                    captionUrl,
+                    captionUrl.toString(),
                     {
                         method:
                             "GET",
                         headers: {
                             "Accept":
-                                "text/xml,application/xml"
+                                "application/json,text/xml,application/xml"
                         }
                     }
                 );

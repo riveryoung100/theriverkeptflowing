@@ -106,11 +106,32 @@ test(
 
                             assert.equal(
                                 url,
-                                "https://www.youtube.com/api/timedtext?v=dkBgPbiFTX0&lang=en"
+                                "https://www.youtube.com/api/timedtext?v=dkBgPbiFTX0&lang=en&fmt=json3"
                             );
 
                             return new Response(
-                                '<transcript><text start="0" dur="2">God&apos;s grace is sufficient.</text><text start="2" dur="2">Keep going &amp; trust Him.</text></transcript>',
+                                JSON.stringify(
+                                    {
+                                        events: [
+                                            {
+                                                segs: [
+                                                    {
+                                                        utf8:
+                                                            "God's grace is sufficient."
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                segs: [
+                                                    {
+                                                        utf8:
+                                                            "Keep going & trust Him."
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ),
                                 {
                                     status:
                                         200
