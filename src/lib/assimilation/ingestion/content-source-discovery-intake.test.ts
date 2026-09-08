@@ -327,6 +327,14 @@ test(
                             "should not execute"
                         );
 
+                    },
+
+                    async retrieve() {
+
+                        throw new Error(
+                            "should not execute"
+                        );
+
                     }
                 },
                 {
@@ -463,6 +471,14 @@ test(
                             "should not execute"
                         );
 
+                    },
+
+                    async retrieve() {
+
+                        throw new Error(
+                            "should not execute"
+                        );
+
                     }
                 },
                 {
@@ -576,6 +592,14 @@ test(
                             "canonical persistence failed"
                         );
 
+                    },
+
+                    async retrieve() {
+
+                        throw new Error(
+                            "not required"
+                        );
+
                     }
                 },
                 {
@@ -632,7 +656,7 @@ test(
 
 
 test(
-    "fails closed when immutable provenance already exists on rerun",
+    "reconciles immutable known sources on rerun without overwriting them",
     async () => {
 
         const root =
@@ -667,35 +691,54 @@ test(
                     provenancePersistence
                 );
 
-            await orchestrator.execute(
-                {
-                    platform:
-                        "youtube",
+            const first =
+                await orchestrator.execute(
+                    {
+                        platform:
+                            "youtube",
 
-                    publisherId:
-                        "river-channel"
-                },
-                {
-                    now:
-                        "2026-09-07T19:00:00.000Z"
-                }
+                        publisherId:
+                            "river-channel"
+                    },
+                    {
+                        now:
+                            "2026-09-07T19:00:00.000Z"
+                    }
+                );
+
+            const second =
+                await orchestrator.execute(
+                    {
+                        platform:
+                            "youtube",
+
+                        publisherId:
+                            "river-channel"
+                    },
+                    {
+                        now:
+                            "2026-09-07T20:00:00.000Z"
+                    }
+                );
+
+            assert.equal(
+                first.ingested.length,
+                2
             );
 
-            await assert.rejects(
-                () =>
-                    orchestrator.execute(
-                        {
-                            platform:
-                                "youtube",
+            assert.equal(
+                second.ingested.length,
+                0
+            );
 
-                            publisherId:
-                                "river-channel"
-                        },
-                        {
-                            now:
-                                "2026-09-07T19:00:00.000Z"
-                        }
-                    )
+            assert.equal(
+                second.provenance.length,
+                0
+            );
+
+            assert.equal(
+                second.reconciled.length,
+                2
             );
 
             const existingCanonical =
@@ -711,6 +754,16 @@ test(
             assert.equal(
                 existingCanonical.sourceId,
                 existingProvenance.sourceId
+            );
+
+            assert.equal(
+                existingCanonical.ingestedAt,
+                "2026-09-07T19:00:00.000Z"
+            );
+
+            assert.equal(
+                existingProvenance.capturedAt,
+                "2026-09-07T19:00:00.000Z"
             );
 
         } finally {
@@ -823,3 +876,245 @@ test(
 
     }
 );
+
+test(
+    "continues past known replayed sources and persists newly discovered sources in the same batch",
+    async () => {
+
+        const root =
+            await mkdtemp(
+                join(
+                    tmpdir(),
+                    "discovery-intake-"
+                )
+            );
+
+        try {
+
+            const canonicalPersistence =
+                createFileSystemCanonicalContentSourcePersistence(
+                    root
+                );
+
+            const provenancePersistence =
+                createFileSystemContentSourceDiscoveryProvenancePersistence(
+                    root
+                );
+
+            const intake =
+                createGovernedPublishedContentSourceIntake(
+                    canonicalPersistence
+                );
+
+            const firstProvider:
+                ContentSourceDiscoveryProvider =
+                {
+                    platform:
+                        "youtube",
+
+                    async discover() {
+
+                        const result =
+                            await createProvider().discover(
+                                {
+                                    platform:
+                                        "youtube",
+
+                                    publisherId:
+                                        "river-channel"
+                                }
+                            );
+
+                        return {
+                            ...result,
+                            sources:
+                                result.sources.slice(
+                                    0,
+                                    1
+                                )
+                        };
+
+                    }
+                };
+
+            const firstOrchestrator =
+                createGovernedContentSourceDiscoveryIntake(
+                    firstProvider,
+                    intake,
+                    provenancePersistence
+                );
+
+            await firstOrchestrator.execute(
+                {
+                    platform:
+                        "youtube",
+
+                    publisherId:
+                        "river-channel"
+                },
+                {
+                    now:
+                        "2026-09-07T19:00:00.000Z"
+                }
+            );
+
+            const replay =
+                await createGovernedContentSourceDiscoveryIntake(
+                    createProvider(),
+                    intake,
+                    provenancePersistence
+                )
+                    .execute(
+                        {
+                            platform:
+                                "youtube",
+
+                            publisherId:
+                                "river-channel"
+                        },
+                        {
+                            now:
+                                "2026-09-07T20:00:00.000Z"
+                        }
+                    );
+
+            assert.equal(
+                replay.reconciled.length,
+                1
+            );
+
+            assert.equal(
+                replay.ingested.length,
+                1
+            );
+
+            assert.equal(
+                replay.ingested[0]?.record.sourceId,
+                "source:youtube:def456"
+            );
+
+            assert.equal(
+                replay.provenance.length,
+                1
+            );
+
+        } finally {
+
+            await rm(
+                root,
+                {
+                    recursive:
+                        true,
+
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);
+
+
+test(
+    "fails closed when immutable provenance exists without its canonical source",
+    async () => {
+
+        const root =
+            await mkdtemp(
+                join(
+                    tmpdir(),
+                    "discovery-intake-"
+                )
+            );
+
+        try {
+
+            const canonicalPersistence =
+                createFileSystemCanonicalContentSourcePersistence(
+                    root
+                );
+
+            const provenancePersistence =
+                createFileSystemContentSourceDiscoveryProvenancePersistence(
+                    root
+                );
+
+            const intake =
+                createGovernedPublishedContentSourceIntake(
+                    canonicalPersistence
+                );
+
+            const seed =
+                createGovernedContentSourceDiscoveryIntake(
+                    createProvider(),
+                    intake,
+                    provenancePersistence
+                );
+
+            await seed.execute(
+                {
+                    platform:
+                        "youtube",
+
+                    publisherId:
+                        "river-channel"
+                },
+                {
+                    now:
+                        "2026-09-07T19:00:00.000Z"
+                }
+            );
+
+            await rm(
+                join(
+                    root,
+                    "canonical-content-sources"
+                ),
+                {
+                    recursive:
+                        true,
+
+                    force:
+                        true
+                }
+            );
+
+            await assert.rejects(
+                () =>
+                    seed.execute(
+                        {
+                            platform:
+                                "youtube",
+
+                            publisherId:
+                                "river-channel"
+                        },
+                        {
+                            now:
+                                "2026-09-07T20:00:00.000Z"
+                        }
+                    ),
+                /no matching canonical/
+            );
+
+        } finally {
+
+            await rm(
+                root,
+                {
+                    recursive:
+                        true,
+
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);
+
+

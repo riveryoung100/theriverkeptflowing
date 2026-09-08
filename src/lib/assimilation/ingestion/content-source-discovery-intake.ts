@@ -16,6 +16,10 @@ import {
 } from "./content-source-discovery-provenance";
 
 import type {
+    CanonicalContentSourceRecord
+} from "./canonical-content-source";
+
+import type {
     PublishedContentSourceIntake,
     PublishedContentSourceIntakeResult
 } from "./published-content-source-intake";
@@ -36,6 +40,17 @@ export interface PersistedContentSourceDiscoveryProvenance {
 }
 
 
+export interface ReconciledContentSourceDiscoveryReplay {
+
+    readonly canonical:
+        CanonicalContentSourceRecord;
+
+    readonly provenance:
+        ContentSourceDiscoveryProvenanceRecord;
+
+}
+
+
 export interface ContentSourceDiscoveryIntakeResult {
 
     readonly discovery:
@@ -46,6 +61,9 @@ export interface ContentSourceDiscoveryIntakeResult {
 
     readonly ingested:
         readonly PublishedContentSourceIntakeResult[];
+
+    readonly reconciled:
+        readonly ReconciledContentSourceDiscoveryReplay[];
 
 }
 
@@ -58,6 +76,50 @@ export interface ContentSourceDiscoveryIntake {
         options?:
             NormalizePublishedContentSourceOptions
     ): Promise<ContentSourceDiscoveryIntakeResult>;
+
+}
+
+
+function stableCanonicalIdentityMatches(
+    existing:
+        CanonicalContentSourceRecord,
+    preview:
+        CanonicalContentSourceRecord
+): boolean {
+
+    return (
+        existing.sourceId ===
+            preview.sourceId &&
+        existing.platform ===
+            preview.platform &&
+        existing.canonicalUrl ===
+            preview.canonicalUrl &&
+        existing.externalPlatformId ===
+            preview.externalPlatformId
+    );
+
+}
+
+
+function stableProvenanceIdentityMatches(
+    existing:
+        ContentSourceDiscoveryProvenanceRecord,
+    expected:
+        ContentSourceDiscoveryProvenanceRecord
+): boolean {
+
+    return (
+        existing.provenanceId ===
+            expected.provenanceId &&
+        existing.sourceId ===
+            expected.sourceId &&
+        existing.platform ===
+            expected.platform &&
+        existing.providerRecordId ===
+            expected.providerRecordId &&
+        existing.originalSourcePreserved ===
+            true
+    );
 
 }
 
@@ -89,7 +151,8 @@ implements ContentSourceDiscoveryIntake {
 
         if (
             !intake ||
-            typeof intake.ingest !== "function"
+            typeof intake.ingest !== "function" ||
+            typeof intake.retrieve !== "function"
         ) {
 
             throw new TypeError(
@@ -126,11 +189,6 @@ implements ContentSourceDiscoveryIntake {
                 query
             );
 
-        /*
-         * Pre-normalize the complete batch before any persistence.
-         * This establishes deterministic River source identities and
-         * ensures malformed source input cannot create partial durable state.
-         */
         const prepared =
             discovery.sources.map(
                 (discovered) => {
@@ -192,16 +250,122 @@ implements ContentSourceDiscoveryIntake {
         const ingested:
             PublishedContentSourceIntakeResult[] = [];
 
+        const reconciled:
+            ReconciledContentSourceDiscoveryReplay[] = [];
+
         for (
             const item of
             prepared
         ) {
 
-            /*
-             * Preserve the provider observation before canonical persistence.
-             * If canonical persistence subsequently fails, the immutable
-             * discovery evidence remains available for diagnosis/recovery.
-             */
+            let existingProvenance:
+                ContentSourceDiscoveryProvenanceRecord | undefined;
+
+            try {
+
+                existingProvenance =
+                    await this.provenancePersistence.retrieve(
+                        item.provenanceRecord.provenanceId
+                    );
+
+            } catch {
+
+                existingProvenance =
+                    undefined;
+
+            }
+
+            if (
+                existingProvenance !==
+                undefined
+            ) {
+
+                if (
+                    !stableProvenanceIdentityMatches(
+                        existingProvenance,
+                        item.provenanceRecord
+                    )
+                ) {
+
+                    throw new Error(
+                        "Existing immutable discovery provenance conflicts with the current discovery identity."
+                    );
+
+                }
+
+                let existingCanonical:
+                    CanonicalContentSourceRecord;
+
+                try {
+
+                    existingCanonical =
+                        await this.intake.retrieve(
+                            item.canonicalPreview.sourceId
+                        );
+
+                } catch {
+
+                    throw new Error(
+                        "Existing discovery provenance has no matching canonical River source."
+                    );
+
+                }
+
+                if (
+                    !stableCanonicalIdentityMatches(
+                        existingCanonical,
+                        item.canonicalPreview
+                    )
+                ) {
+
+                    throw new Error(
+                        "Existing canonical River source conflicts with the current discovery identity."
+                    );
+
+                }
+
+                reconciled.push(
+                    {
+                        canonical:
+                            existingCanonical,
+
+                        provenance:
+                            existingProvenance
+                    }
+                );
+
+                continue;
+
+            }
+
+            let existingCanonical:
+                CanonicalContentSourceRecord | undefined;
+
+            try {
+
+                existingCanonical =
+                    await this.intake.retrieve(
+                        item.canonicalPreview.sourceId
+                    );
+
+            } catch {
+
+                existingCanonical =
+                    undefined;
+
+            }
+
+            if (
+                existingCanonical !==
+                undefined
+            ) {
+
+                throw new Error(
+                    "Existing canonical River source has no matching immutable discovery provenance."
+                );
+
+            }
+
             const provenanceStoredPath =
                 await this.provenancePersistence.persist(
                     item.provenanceRecord
@@ -243,7 +407,8 @@ implements ContentSourceDiscoveryIntake {
         return {
             discovery,
             provenance,
-            ingested
+            ingested,
+            reconciled
         };
 
     }

@@ -33,6 +33,11 @@ export interface PublishedContentSourceIntake {
             NormalizePublishedContentSourceOptions
     ): Promise<PublishedContentSourceIntakeResult>;
 
+    retrieve(
+        sourceId:
+            string
+    ): Promise<CanonicalContentSourceRecord>;
+
 }
 
 
@@ -81,6 +86,18 @@ implements PublishedContentSourceIntake {
             record,
             storedPath
         };
+
+    }
+
+
+    public async retrieve(
+        sourceId:
+            string
+    ): Promise<CanonicalContentSourceRecord> {
+
+        return this.persistence.retrieve(
+            sourceId
+        );
 
     }
 
