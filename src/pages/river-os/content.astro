@@ -312,7 +312,7 @@ const platformOptions =
 
             .catalog-tools {
                 display: grid;
-                grid-template-columns: minmax(0, 1.6fr) minmax(10rem, 0.7fr) minmax(10rem, 0.7fr);
+                grid-template-columns: minmax(0, 1.6fr) repeat(3, minmax(10rem, 0.7fr));
                 gap: 0.85rem;
                 padding: 1.15rem 1.5rem;
                 border-bottom: 1px solid var(--river-line);
@@ -757,6 +757,15 @@ const platformOptions =
                             <option value="pending">Pending</option>
                         </select>
                     </div>
+
+                    <div class="catalog-control">
+                        <label for="river-sort-filter">Sort</label>
+                        <select id="river-sort-filter" data-sort-filter>
+                            <option value="newest">Newest first</option>
+                            <option value="oldest">Oldest first</option>
+                            <option value="title">Title A–Z</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="catalog-result-status" aria-live="polite">
@@ -796,6 +805,9 @@ const platformOptions =
                                                 class="source"
                                                 data-source-row
                                                 data-search={`${entry.title} ${entry.sourceId}`.toLowerCase()}
+                                                data-title={entry.title.toLowerCase()}
+                                                data-published={entry.publishedAt}
+                                                data-source-id={entry.sourceId}
                                                 data-platform={entry.platform}
                                                 data-transcript={entry.transcriptState}
                                             >
@@ -886,9 +898,42 @@ const platformOptions =
         const searchInput = workspaceFilter.querySelector("[data-source-search]");
         const platformFilter = workspaceFilter.querySelector("[data-platform-filter]");
         const transcriptFilter = workspaceFilter.querySelector("[data-transcript-filter]");
+        const sortFilter = workspaceFilter.querySelector("[data-sort-filter]");
+        const sourceList = document.querySelector(".source-list");
         const sourceRows = Array.from(document.querySelectorAll("[data-source-row]"));
         const visibleCount = document.querySelector("[data-visible-count]");
         const emptyState = document.querySelector("[data-filter-empty]");
+
+        const applySorting = () => {
+            const sort = sortFilter instanceof HTMLSelectElement ? sortFilter.value : "newest";
+            const orderedRows = [...sourceRows].sort((left, right) => {
+                const leftTitle = left.getAttribute("data-title") ?? "";
+                const rightTitle = right.getAttribute("data-title") ?? "";
+                const leftPublished = left.getAttribute("data-published") ?? "";
+                const rightPublished = right.getAttribute("data-published") ?? "";
+                const leftSourceId = left.getAttribute("data-source-id") ?? "";
+                const rightSourceId = right.getAttribute("data-source-id") ?? "";
+
+                if (sort === "title") {
+                    const titleOrder = leftTitle.localeCompare(rightTitle);
+                    return titleOrder !== 0 ? titleOrder : leftSourceId.localeCompare(rightSourceId);
+                }
+
+                const publishedOrder = leftPublished.localeCompare(rightPublished);
+
+                if (publishedOrder !== 0) {
+                    return sort === "oldest" ? publishedOrder : -publishedOrder;
+                }
+
+                return leftSourceId.localeCompare(rightSourceId);
+            });
+
+            if (sourceList instanceof HTMLOListElement) {
+                for (const row of orderedRows) {
+                    sourceList.append(row);
+                }
+            }
+        };
 
         const applyFilters = () => {
             const search = searchInput instanceof HTMLInputElement ? searchInput.value.trim().toLowerCase() : "";
@@ -918,11 +963,14 @@ const platformOptions =
             if (emptyState instanceof HTMLElement) {
                 emptyState.hidden = visible !== 0;
             }
+
+            applySorting();
         };
 
         searchInput?.addEventListener("input", applyFilters);
         platformFilter?.addEventListener("change", applyFilters);
         transcriptFilter?.addEventListener("change", applyFilters);
+        sortFilter?.addEventListener("change", applyFilters);
     }
 </script>
 </RiverOsLayout>
