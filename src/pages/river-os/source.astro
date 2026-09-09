@@ -18,6 +18,10 @@ import {
 import {
     createRiverContentEngineWorkspace
 } from "../../lib/river-os/content-engine-workspace";
+import {
+    buildRiverContentTranscriptActionPath,
+    RIVER_CONTENT_TRANSCRIPT_ACTION_STATUS
+} from "../../lib/river-os/content-engine-actions";
 
 export const prerender =
     false;
@@ -42,6 +46,12 @@ const sourceId =
         )
         ?.trim() ??
     "";
+
+const transcriptActionStatus =
+    Astro.url.searchParams
+        .get(
+            "transcriptAction"
+        );
 
 let entry:
     RiverContentCatalogEntry | undefined;
@@ -578,6 +588,60 @@ else {
                     var(--river-forest);
             }
 
+            .engine-action {
+                margin-top:
+                    1rem;
+            }
+
+            .engine-action button {
+                width:
+                    100%;
+                border:
+                    1px solid var(--river-forest);
+                border-radius:
+                    999px;
+                padding:
+                    0.75rem 1rem;
+                background:
+                    var(--river-forest);
+                color:
+                    var(--river-paper);
+                font:
+                    inherit;
+                font-size:
+                    0.8rem;
+                font-weight:
+                    700;
+                letter-spacing:
+                    0.04em;
+                cursor:
+                    pointer;
+            }
+
+            .engine-action button:hover {
+                opacity:
+                    0.92;
+            }
+
+            .engine-gate {
+                margin-top:
+                    1rem;
+                border:
+                    1px solid rgba(181, 138, 74, 0.35);
+                border-radius:
+                    12px;
+                padding:
+                    0.9rem 1rem;
+                background:
+                    rgba(181, 138, 74, 0.08);
+                color:
+                    var(--river-text-soft);
+                font-size:
+                    0.82rem;
+                line-height:
+                    1.55;
+            }
+
             .engine-note {
                 margin-top:
                     1.5rem;
@@ -1024,13 +1088,49 @@ else {
                                                 )
                                         }
 
+                                        {
+                                            entry.transcriptState ===
+                                            "pending"
+                                                ? (
+                                                    <form
+                                                        class="engine-action"
+                                                        method="post"
+                                                        action={buildRiverContentTranscriptActionPath()}
+                                                    >
+                                                        <input
+                                                            type="hidden"
+                                                            name="sourceId"
+                                                            value={entry.sourceId}
+                                                        />
+
+                                                        <button type="submit">
+                                                            Prepare transcript acquisition
+                                                        </button>
+                                                    </form>
+                                                )
+                                                : null
+                                        }
+
+                                        {
+                                            transcriptActionStatus ===
+                                            RIVER_CONTENT_TRANSCRIPT_ACTION_STATUS
+                                                ? (
+                                                    <p class="engine-gate">
+                                                        Transcript acquisition remains gated.
+                                                        This control made no external request,
+                                                        consumed no credential, and changed no data.
+                                                        A separately authorized operation is still required.
+                                                    </p>
+                                                )
+                                                : null
+                                        }
+
                                         <p class="engine-note">
-                                            Workflow controls will be connected
-                                            only through separately governed
-                                            operations. Nothing on this panel
-                                            currently acquires transcripts,
-                                            writes data, publishes content, or
-                                            contacts an external service.
+                                            Workflow controls are connected only
+                                            through separately governed operations.
+                                            This panel does not automatically acquire
+                                            transcripts, write data, publish content,
+                                            or contact an external service.
                                         </p>
                                     </div>
                                 </aside>
