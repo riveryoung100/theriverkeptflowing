@@ -1,0 +1,342 @@
+---
+interface Props {
+    title: string;
+    workspaceVariant?: "dashboard" | "detail";
+    backHref?: string;
+    backLabel?: string;
+}
+
+const {
+    title,
+    workspaceVariant = "dashboard",
+    backHref,
+    backLabel = "Back"
+} = Astro.props;
+
+const hasBackAction =
+    backHref !== undefined;
+---
+
+<!doctype html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8" />
+
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1"
+        />
+
+        <meta
+            name="robots"
+            content="noindex,nofollow,noarchive"
+        />
+
+        <title>{title}</title>
+
+        <style is:global>
+
+            :root {
+                --river-ink:
+                    #17211d;
+                --river-ink-soft:
+                    #314039;
+                --river-forest:
+                    #29483a;
+                --river-forest-deep:
+                    #1f382e;
+                --river-water:
+                    #607f83;
+                --river-clay:
+                    #a86f50;
+                --river-gold:
+                    #b58a4a;
+                --river-paper:
+                    #f7f4ed;
+                --river-paper-warm:
+                    #f0ebe0;
+                --river-white:
+                    #fffdf8;
+                --river-line:
+                    rgba(23, 33, 29, 0.13);
+                --river-text-soft:
+                    #53605a;
+                --river-text-muted:
+                    #737d77;
+                --river-serif:
+                    "Iowan Old Style",
+                    "Palatino Linotype",
+                    "Book Antiqua",
+                    Palatino,
+                    Georgia,
+                    "Times New Roman",
+                    serif;
+                --river-sans:
+                    Inter,
+                    ui-sans-serif,
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    "Segoe UI",
+                    Helvetica,
+                    Arial,
+                    sans-serif;
+            }
+
+            * {
+                box-sizing:
+                    border-box;
+            }
+
+            html {
+                background:
+                    var(--river-paper);
+                color:
+                    var(--river-ink);
+                font-family:
+                    var(--river-sans);
+            }
+
+            body {
+                min-height:
+                    100vh;
+                margin:
+                    0;
+                color:
+                    var(--river-ink);
+                font-family:
+                    var(--river-sans);
+                line-height:
+                    1.6;
+            }
+
+            body.river-os-dashboard {
+                background:
+                    radial-gradient(
+                        circle at 10% 0%,
+                        rgba(96, 127, 131, 0.12),
+                        transparent 30rem
+                    ),
+                    radial-gradient(
+                        circle at 92% 12%,
+                        rgba(181, 138, 74, 0.09),
+                        transparent 34rem
+                    ),
+                    var(--river-paper);
+            }
+
+            body.river-os-detail {
+                background:
+                    linear-gradient(
+                        180deg,
+                        var(--river-paper) 0%,
+                        var(--river-paper-warm) 100%
+                    );
+            }
+
+            a {
+                color:
+                    inherit;
+            }
+
+            .river-os-workspace {
+                width:
+                    min(
+                        calc(100% - 3rem),
+                        var(--river-os-workspace-max)
+                    );
+                margin-inline:
+                    auto;
+                padding:
+                    2rem 0 5rem;
+            }
+
+            body.river-os-dashboard {
+                --river-os-workspace-max:
+                    1440px;
+            }
+
+            body.river-os-detail {
+                --river-os-workspace-max:
+                    1240px;
+            }
+
+            .river-os-topbar {
+                display:
+                    flex;
+                align-items:
+                    center;
+                justify-content:
+                    space-between;
+                gap:
+                    1.5rem;
+                padding:
+                    0 0 1.5rem;
+                border-bottom:
+                    1px solid var(--river-line);
+            }
+
+            .river-os-identity {
+                display:
+                    grid;
+                gap:
+                    0.15rem;
+            }
+
+            .river-os-identity strong {
+                font-family:
+                    var(--river-serif);
+                font-size:
+                    1.35rem;
+                font-weight:
+                    400;
+            }
+
+            .river-os-identity span {
+                color:
+                    var(--river-text-muted);
+                font-size:
+                    0.75rem;
+                font-weight:
+                    700;
+                letter-spacing:
+                    0.14em;
+                text-transform:
+                    uppercase;
+            }
+
+            .river-os-top-actions {
+                display:
+                    flex;
+                align-items:
+                    center;
+                gap:
+                    0.75rem;
+            }
+
+            .river-os-back,
+            .river-os-signout button {
+                border:
+                    1px solid var(--river-line);
+                border-radius:
+                    999px;
+                background:
+                    rgba(255, 253, 248, 0.7);
+                color:
+                    var(--river-ink);
+                font:
+                    inherit;
+                font-size:
+                    0.85rem;
+                font-weight:
+                    700;
+                text-decoration:
+                    none;
+                padding:
+                    0.7rem 1rem;
+                cursor:
+                    pointer;
+            }
+
+            @media (
+                max-width: 620px
+            ) {
+
+                .river-os-workspace {
+                    width:
+                        min(
+                            calc(100% - 2rem),
+                            var(--river-os-workspace-max)
+                        );
+                }
+
+                .river-os-topbar {
+                    align-items:
+                        flex-start;
+                }
+
+                body.river-os-detail
+                    .river-os-topbar {
+                    padding:
+                        1rem 0;
+                }
+
+                body.river-os-detail
+                    .river-os-top-actions {
+                    align-items:
+                        flex-end;
+                    flex-direction:
+                        column;
+                }
+
+            }
+
+        </style>
+
+    </head>
+
+    <body
+        class={
+            workspaceVariant ===
+            "detail"
+                ? "river-os-detail"
+                : "river-os-dashboard"
+        }
+    >
+
+        <main class="river-os-workspace">
+
+            <header class="river-os-topbar">
+
+                <div class="river-os-identity">
+
+                    <span>
+                        Private operating system
+                    </span>
+
+                    <strong>
+                        The River Kept Flowing
+                    </strong>
+
+                </div>
+
+                <div class="river-os-top-actions">
+
+                    {
+                        hasBackAction
+                            ? (
+                                <a
+                                    class="river-os-back"
+                                    href={backHref}
+                                >
+                                    {backLabel}
+                                </a>
+                            )
+                            : null
+                    }
+
+                    <form
+                        class="river-os-signout"
+                        method="post"
+                        action="/river-os/logout"
+                    >
+
+                        <button type="submit">
+                            Sign out
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </header>
+
+            <slot />
+
+        </main>
+
+    </body>
+
+</html>

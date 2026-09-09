@@ -1,4 +1,6 @@
 ---
+import RiverOsLayout from "../../layouts/RiverOsLayout.astro";
+
 import {
     env
 } from "cloudflare:workers";
@@ -141,200 +143,27 @@ else {
 
 }
 ---
-<!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
 
-        <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1"
-        />
-
-        <meta
-            name="robots"
-            content="noindex,nofollow,noarchive"
-        />
-
-        <title>
-            {
-                entry === undefined
-                    ? "Source Detail | River OS"
-                    : `${entry.title} | River OS`
-            }
-        </title>
-
-        <style>
-            :root {
-                --river-ink: #17211d;
-                --river-ink-soft: #314039;
-                --river-forest: #29483a;
-                --river-forest-deep: #1f382e;
-                --river-water: #607f83;
-                --river-clay: #a86f50;
-                --river-gold: #b58a4a;
-                --river-paper: #f7f4ed;
-                --river-paper-warm: #f0ebe0;
-                --river-white: #fffdf8;
-                --river-line: rgba(23, 33, 29, 0.13);
-                --river-text-soft: #53605a;
-                --river-text-muted: #737d77;
-                --river-serif:
-                    "Iowan Old Style",
-                    "Palatino Linotype",
-                    "Book Antiqua",
-                    Palatino,
-                    Georgia,
-                    "Times New Roman",
-                    serif;
-                --river-sans:
-                    Inter,
-                    ui-sans-serif,
-                    -apple-system,
-                    BlinkMacSystemFont,
-                    "Segoe UI",
-                    Helvetica,
-                    Arial,
-                    sans-serif;
-            }
-
-            * {
-                box-sizing: border-box;
-            }
-
-            html {
-                background:
-                    var(--river-paper);
-                color:
-                    var(--river-ink);
-                font-family:
-                    var(--river-sans);
-            }
-
-            body {
-                margin:
-                    0;
-                min-height:
-                    100vh;
-                background:
-                    linear-gradient(
-                        180deg,
-                        var(--river-paper) 0%,
-                        var(--river-paper-warm) 100%
-                    );
-            }
-
-            a {
-                color:
-                    inherit;
-            }
-
-            .workspace {
-                width:
-                    min(
-                        calc(100% - 3rem),
-                        1240px
-                    );
-                margin:
-                    0 auto;
-                padding-bottom:
-                    5rem;
-            }
-
-            .topbar {
-                min-height:
-                    86px;
-                display:
-                    flex;
-                align-items:
-                    center;
-                justify-content:
-                    space-between;
-                gap:
-                    1rem;
-                border-bottom:
-                    1px solid var(--river-line);
-            }
-
-            .identity {
-                display:
-                    flex;
-                flex-direction:
-                    column;
-                gap:
-                    0.15rem;
-            }
-
-            .identity span,
-            .eyebrow,
-            .field-label {
-                color:
-                    var(--river-text-muted);
-                font-size:
-                    0.72rem;
-                font-weight:
-                    700;
-                letter-spacing:
-                    0.12em;
-                text-transform:
-                    uppercase;
-            }
-
-            .identity strong {
-                font-family:
-                    var(--river-serif);
-                font-size:
-                    1.1rem;
-                font-weight:
-                    400;
-            }
-
-            .top-actions {
-                display:
-                    flex;
-                align-items:
-                    center;
-                gap:
-                    0.75rem;
-            }
-
-            .back,
-            .signout button,
-            .published-link {
-                border:
-                    1px solid var(--river-line);
-                border-radius:
-                    999px;
-                background:
-                    transparent;
-                color:
-                    var(--river-ink);
-                font:
-                    inherit;
-                font-size:
-                    0.85rem;
-                text-decoration:
-                    none;
-                padding:
-                    0.7rem 1rem;
-                cursor:
-                    pointer;
-            }
-
-            .published-link {
-                display:
-                    inline-flex;
-                align-items:
-                    center;
-                border-color:
-                    var(--river-forest);
-                background:
-                    var(--river-forest);
-                color:
-                    var(--river-white);
-            }
-
-            .hero {
+<style>
+.published-link {
+    border:
+        1px solid var(--river-line);
+    border-radius:
+        999px;
+    color:
+        var(--river-ink);
+    font:
+        inherit;
+    font-size:
+        0.85rem;
+    text-decoration:
+        none;
+    padding:
+        0.7rem 1rem;
+    cursor:
+        pointer;
+}
+.hero {
                 padding:
                     4.75rem 0 3rem;
                 border-bottom:
@@ -804,72 +633,21 @@ else {
             @media (
                 max-width: 620px
             ) {
-
-                .workspace {
-                    width:
-                        min(
-                            calc(100% - 2rem),
-                            1240px
-                        );
-                }
-
-                .topbar {
-                    align-items:
-                        flex-start;
-                    padding:
-                        1rem 0;
-                }
-
-                .top-actions {
-                    align-items:
-                        flex-end;
-                    flex-direction:
-                        column;
-                }
-
-                .hero {
+.hero {
                     padding-top:
                         3rem;
                 }
 
             }
-        </style>
-    </head>
+</style>
 
-    <body>
-        <main class="workspace">
-            <header class="topbar">
-                <div class="identity">
-                    <span>
-                        Private operating system
-                    </span>
-
-                    <strong>
-                        The River Kept Flowing
-                    </strong>
-                </div>
-
-                <div class="top-actions">
-                    <a
-                        class="back"
-                        href="/river-os"
-                    >
-                        Back to content
-                    </a>
-
-                    <form
-                        class="signout"
-                        method="post"
-                        action="/river-os/logout"
-                    >
-                        <button type="submit">
-                            Sign out
-                        </button>
-                    </form>
-                </div>
-            </header>
-
-            {
+<RiverOsLayout
+    title={entry === undefined ? "Source Detail | River OS" : `${entry.title} | River OS`}
+    workspaceVariant="detail"
+    backHref="/river-os"
+    backLabel="Back to content"
+>
+{
                 entry === undefined
                     ? (
                         <section class="error">
@@ -1274,6 +1052,4 @@ else {
                         </>
                     )
             }
-        </main>
-    </body>
-</html>
+</RiverOsLayout>
