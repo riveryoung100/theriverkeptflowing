@@ -68,6 +68,13 @@ let contentEngine:
 let repurposePlan:
     ReturnType<typeof createRiverRepurposePlan> | undefined;
 
+let engineReadyCount =
+    0;
+let repurposeReadyCount =
+    0;
+let readinessNextStep =
+    "";
+
 if (
     sourceId.length ===
     0
@@ -127,6 +134,29 @@ else {
                 createRiverRepurposePlan(
                     entry
                 );
+
+            engineReadyCount =
+                contentEngine.stages
+                    .filter(
+                        (stage) =>
+                            stage.state ===
+                            "ready"
+                    )
+                    .length;
+
+            repurposeReadyCount =
+                repurposePlan.targets
+                    .filter(
+                        (target) =>
+                            target.state ===
+                            "ready"
+                    )
+                    .length;
+
+            readinessNextStep =
+                contentEngine.transcriptAvailable
+                    ? "Transcript evidence is available. Continue with governed transformation and repurpose planning."
+                    : "Transcript evidence is pending. Prepare transcript acquisition through the governed authorization flow.";
 
         }
 
@@ -380,6 +410,55 @@ else {
                 font-weight:
                     400;
             }
+
+            .readiness-summary {
+                margin-bottom: 1.5rem;
+                padding-bottom: 1.5rem;
+                border-bottom: 1px solid var(--river-line);
+            }
+
+            .readiness-summary h2 {
+                margin: 0.4rem 0 0;
+            }
+
+            .readiness-grid {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 0.75rem;
+                margin-top: 1rem;
+            }
+
+            .readiness-item {
+                border: 1px solid var(--river-line);
+                border-radius: 0.75rem;
+                padding: 0.8rem 0.9rem;
+                min-width: 0;
+                background: rgba(255, 253, 248, 0.54);
+            }
+
+            .readiness-label {
+                display: block;
+                margin-bottom: 0.3rem;
+                color: var(--river-muted);
+                font-size: 0.72rem;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+            }
+
+            .readiness-value {
+                display: block;
+                color: var(--river-ink);
+                font-size: 0.9rem;
+                line-height: 1.45;
+            }
+
+            .readiness-next {
+                margin: 1rem 0 0;
+                color: var(--river-muted);
+                font-size: 0.9rem;
+                line-height: 1.6;
+            }
+
 
             .engine-workflow {
                 display:
@@ -643,6 +722,12 @@ else {
             @media (
                 max-width: 820px
             ) {
+
+                .readiness-grid {
+                    grid-template-columns:
+                        1fr;
+                }
+
 
                 .source-overview {
                     grid-template-columns:
@@ -947,6 +1032,48 @@ else {
                                 </article>
 
                                 <aside class="panel">
+                                    <section class="readiness-summary" aria-label="Record readiness">
+                                        <p class="eyebrow">
+                                            Record readiness
+                                        </p>
+
+                                        <h2>
+                                            Operational readiness
+                                        </h2>
+
+                                        <div class="readiness-grid">
+                                            <div class="readiness-item">
+                                                <span class="readiness-label">Transcript evidence</span>
+                                                <span class="readiness-value">
+                                                    {
+                                                        contentEngine?.transcriptAvailable
+                                                            ? "Available"
+                                                            : "Pending"
+                                                    }
+                                                </span>
+                                            </div>
+
+                                            <div class="readiness-item">
+                                                <span class="readiness-label">Content engine</span>
+                                                <span class="readiness-value">
+                                                    {`${engineReadyCount} / ${contentEngine?.stages.length ?? 0} stages ready`}
+                                                </span>
+                                            </div>
+
+                                            <div class="readiness-item">
+                                                <span class="readiness-label">Repurpose plan</span>
+                                                <span class="readiness-value">
+                                                    {`${repurposeReadyCount} / ${repurposePlan?.targets.length ?? 0} targets ready`}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <p class="readiness-next">
+                                            <strong>Next governed step:</strong>{" "}
+                                            {readinessNextStep}
+                                        </p>
+                                    </section>
+
                                     <p class="eyebrow">
                                         Published source
                                     </p>
