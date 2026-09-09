@@ -19,6 +19,9 @@ import {
     createRiverContentEngineWorkspace
 } from "../../lib/river-os/content-engine-workspace";
 import {
+    createRiverRepurposePlan
+} from "../../lib/river-os/content-repurpose-planner";
+import {
     buildRiverContentTranscriptActionPath,
     RIVER_CONTENT_TRANSCRIPT_ACTION_STATUS
 } from "../../lib/river-os/content-engine-actions";
@@ -60,6 +63,8 @@ let catalogError:
     string | undefined;
 let contentEngine:
     ReturnType<typeof createRiverContentEngineWorkspace> | undefined;
+let repurposePlan:
+    ReturnType<typeof createRiverRepurposePlan> | undefined;
 
 if (
     sourceId.length ===
@@ -113,6 +118,11 @@ else {
 
             contentEngine =
                 createRiverContentEngineWorkspace(
+                    entry
+                );
+
+            repurposePlan =
+                createRiverRepurposePlan(
                     entry
                 );
 
@@ -586,6 +596,88 @@ else {
                     rgba(41, 72, 58, 0.3);
                 color:
                     var(--river-forest);
+            }
+
+            .repurpose-plan {
+                display:
+                    grid;
+                gap:
+                    0.75rem;
+                margin-top:
+                    1.5rem;
+            }
+
+            .repurpose-target {
+                border:
+                    1px solid var(--river-line);
+                border-radius:
+                    14px;
+                padding:
+                    1rem;
+                background:
+                    rgba(255, 255, 255, 0.42);
+            }
+
+            .repurpose-target.ready {
+                border-color:
+                    rgba(41, 72, 58, 0.28);
+            }
+
+            .repurpose-target-head {
+                display:
+                    flex;
+                align-items:
+                    flex-start;
+                justify-content:
+                    space-between;
+                gap:
+                    1rem;
+            }
+
+            .repurpose-target h3 {
+                margin:
+                    0;
+                font-family:
+                    var(--river-serif);
+                font-size:
+                    1rem;
+            }
+
+            .repurpose-target-state {
+                flex:
+                    0 0 auto;
+                font-size:
+                    0.72rem;
+                font-weight:
+                    700;
+                letter-spacing:
+                    0.05em;
+                text-transform:
+                    uppercase;
+                color:
+                    var(--river-text-soft);
+            }
+
+            .repurpose-target p {
+                margin:
+                    0.65rem 0 0;
+                color:
+                    var(--river-text-soft);
+                font-size:
+                    0.82rem;
+                line-height:
+                    1.55;
+            }
+
+            .repurpose-target-meta {
+                margin-top:
+                    0.7rem;
+                font-size:
+                    0.74rem;
+                color:
+                    var(--river-text-soft);
+                overflow-wrap:
+                    anywhere;
             }
 
             .engine-action {
@@ -1080,6 +1172,50 @@ else {
                                                                         <p>
                                                                             {stage.description}
                                                                         </p>
+                                                                    </section>
+                                                                )
+                                                            )
+                                                        }
+                                                    </div>
+                                                )
+                                        }
+
+                                        {
+                                            repurposePlan === undefined
+                                                ? null
+                                                : (
+                                                    <div class="repurpose-plan">
+                                                        {
+                                                            repurposePlan.targets.map(
+                                                                (target) => (
+                                                                    <section
+                                                                        class:list={[
+                                                                            "repurpose-target",
+                                                                            target.state
+                                                                        ]}
+                                                                    >
+                                                                        <div class="repurpose-target-head">
+                                                                            <h3>
+                                                                                {target.label}
+                                                                            </h3>
+
+                                                                            <span class="repurpose-target-state">
+                                                                                {target.stateLabel}
+                                                                            </span>
+                                                                        </div>
+
+                                                                        <p>
+                                                                            {target.description}
+                                                                        </p>
+
+                                                                        <div class="repurpose-target-meta">
+                                                                            {
+                                                                                target.kind ===
+                                                                                "site-collection"
+                                                                                    ? `${target.destination} / ${target.requiredFields.join(", ")}`
+                                                                                    : `${target.destination} / planning only`
+                                                                            }
+                                                                        </div>
                                                                     </section>
                                                                 )
                                                             )
