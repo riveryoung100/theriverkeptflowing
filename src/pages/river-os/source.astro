@@ -236,6 +236,39 @@ else {
                     var(--river-forest);
             }
 
+            .source-overview {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 0.75rem;
+                max-width: 900px;
+                margin-top: 1.25rem;
+            }
+
+            .source-overview-item {
+                border: 1px solid var(--river-line);
+                border-radius: 0.75rem;
+                background: rgba(255, 253, 248, 0.54);
+                padding: 0.85rem 1rem;
+                min-width: 0;
+            }
+
+            .source-overview-label {
+                display: block;
+                margin-bottom: 0.3rem;
+                color: var(--river-muted);
+                font-size: 0.72rem;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+            }
+
+            .source-overview-value {
+                display: block;
+                overflow-wrap: anywhere;
+                color: var(--river-ink);
+                font-size: 0.9rem;
+                line-height: 1.45;
+            }
+
             .grid {
                 display:
                     grid;
@@ -611,6 +644,11 @@ else {
                 max-width: 820px
             ) {
 
+                .source-overview {
+                    grid-template-columns:
+                        1fr;
+                }
+
                 .grid {
                     grid-template-columns:
                         1fr;
@@ -706,6 +744,29 @@ else {
                                             : "Transcript pending"
                                     }
                                 </span>
+
+                                <div class="source-overview" aria-label="Source overview">
+                                    <div class="source-overview-item">
+                                        <span class="source-overview-label">Platform</span>
+                                        <span class="source-overview-value">
+                                            {formatRiverContentPlatform(entry.platform)}
+                                        </span>
+                                    </div>
+
+                                    <div class="source-overview-item">
+                                        <span class="source-overview-label">Published</span>
+                                        <span class="source-overview-value">
+                                            {formatRiverContentDate(entry.publishedAt)}
+                                        </span>
+                                    </div>
+
+                                    <div class="source-overview-item">
+                                        <span class="source-overview-label">External ID</span>
+                                        <span class="source-overview-value">
+                                            {entry.externalPlatformId}
+                                        </span>
+                                    </div>
+                                </div>
                             </section>
 
                             <section class="grid">
