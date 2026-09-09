@@ -929,14 +929,102 @@ implements ContentTranscriptAcquisitionProvider {
         const captionBody =
             await captionResponse.text();
 
-        const text =
-            parseTimedText(
-                captionBody,
-                captionResponse.headers.get(
-                    "content-type"
-                ) ??
-                    undefined
-            );
+        let text:
+            string;
+
+        try {
+
+            text =
+                parseTimedText(
+                    captionBody,
+                    captionResponse.headers.get(
+                        "content-type"
+                    ) ??
+                        undefined
+                );
+
+        } catch (
+            error
+        ) {
+
+            if (
+                !(
+                    error instanceof
+                        Error
+                ) ||
+                !error.message.startsWith(
+                    "YouTube transcript response contained no transcript text ("
+                )
+            ) {
+
+                throw error;
+
+            }
+
+            let fallbackResponse:
+                Response;
+
+            try {
+
+                fallbackResponse =
+                    await this.fetcher(
+                        requireHttpsEndpoint(
+                            requireNormalized(
+                                track.baseUrl ?? "",
+                                "YouTube transcript caption endpoint"
+                            )
+                        ),
+                        {
+                            method:
+                                "GET",
+                            headers: {
+                                "Accept":
+                                    "text/xml,application/xml,application/json"
+                            }
+                        }
+                    );
+
+            } catch (
+                error
+            ) {
+
+                throw new Error(
+                    "YouTube transcript caption fallback transport failed.",
+                    {
+                        cause:
+                            error
+                    }
+                );
+
+            }
+
+            if (
+                !fallbackResponse.ok
+            ) {
+
+                throw new Error(
+                    `YouTube transcript caption fallback request failed with HTTP ${fallbackResponse.status}.`,
+                    {
+                        cause:
+                            error
+                    }
+                );
+
+            }
+
+            const fallbackBody =
+                await fallbackResponse.text();
+
+            text =
+                parseTimedText(
+                    fallbackBody,
+                    fallbackResponse.headers.get(
+                        "content-type"
+                    ) ??
+                        undefined
+                );
+
+        }
 
         return {
             sourceId:

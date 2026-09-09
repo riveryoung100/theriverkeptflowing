@@ -294,6 +294,116 @@ test(
 
 
 test(
+    "CIF-023 retries the original caption URL once when JSON3 is empty",
+    async () => {
+
+        const requests:
+            string[] =
+            [];
+
+        const provider =
+            createYouTubeTranscriptProvider(
+                {
+                    fetcher:
+                        async (
+                            input
+                        ) => {
+
+                            const url =
+                                input.toString();
+
+                            requests.push(
+                                url
+                            );
+
+                            if (
+                                requests.length ===
+                                1
+                            ) {
+
+                                return new Response(
+                                    '<html>"captionTracks":[{"baseUrl":"https://www.youtube.com/api/timedtext?v=dkBgPbiFTX0&lang=en","languageCode":"en"}]</html>',
+                                    {
+                                        status:
+                                            200
+                                    }
+                                );
+
+                            }
+
+                            if (
+                                requests.length ===
+                                2
+                            ) {
+
+                                assert.equal(
+                                    url,
+                                    "https://www.youtube.com/api/timedtext?v=dkBgPbiFTX0&lang=en&fmt=json3"
+                                );
+
+                                return new Response(
+                                    "",
+                                    {
+                                        status:
+                                            200,
+                                        headers: {
+                                            "Content-Type":
+                                                "text/html; charset=utf-8"
+                                        }
+                                    }
+                                );
+
+                            }
+
+                            assert.equal(
+                                requests.length,
+                                3
+                            );
+
+                            assert.equal(
+                                url,
+                                "https://www.youtube.com/api/timedtext?v=dkBgPbiFTX0&lang=en"
+                            );
+
+                            return new Response(
+                                "<transcript><text>Fallback transcript.</text></transcript>",
+                                {
+                                    status:
+                                        200,
+                                    headers: {
+                                        "Content-Type":
+                                            "text/xml; charset=utf-8"
+                                    }
+                                }
+                            );
+
+                        }
+                }
+            );
+
+        const result =
+            await provider.acquire(
+                {
+                    source:
+                        createSource()
+                }
+            );
+
+        assert.equal(
+            requests.length,
+            3
+        );
+
+        assert.equal(
+            result.transcript.text,
+            "Fallback transcript."
+        );
+
+    }
+);
+
+
+test(
     "CIF-022 reports safe response metadata when caption text cannot be parsed",
     async () => {
 
