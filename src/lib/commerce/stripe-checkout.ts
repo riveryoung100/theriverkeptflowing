@@ -1,6 +1,7 @@
-﻿import Stripe from "stripe";
+import Stripe from "stripe";
 
 import {
+    getRiverCommerceProduct,
     RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT,
 } from "./product-catalog";
 
@@ -24,6 +25,12 @@ export interface RiverCheckoutProduct {
 
     unitAmountUsdCents:
         number;
+
+    successPath:
+        string;
+
+    cancelPath:
+        string;
 }
 
 
@@ -157,9 +164,11 @@ function requireDeliveryEmail(
 }
 
 
-export async function createRiverLifeOperatingSystemCheckout(
+export async function createRiverProductCheckout(
     stripe:
         StripeCheckoutSessionCreator,
+    product:
+        RiverCheckoutProduct,
     request:
         RiverCheckoutRequest
 ): Promise<RiverCheckoutSession> {
@@ -179,9 +188,6 @@ export async function createRiverLifeOperatingSystemCheckout(
         requireCheckoutOrigin(
             request.origin
         );
-
-    const product =
-        riverLifeOperatingSystemCheckoutProduct;
 
     const session =
         await stripe.checkout.sessions.create({
@@ -247,10 +253,10 @@ export async function createRiverLifeOperatingSystemCheckout(
             },
 
             success_url:
-                `${origin}/shop?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
+                `${origin}${product.successPath}`,
 
             cancel_url:
-                `${origin}/shop?checkout=cancelled`
+                `${origin}${product.cancelPath}`
         });
 
     if (
@@ -285,4 +291,47 @@ export async function createRiverLifeOperatingSystemCheckout(
         checkoutUrl:
             session.url
     };
+}
+export async function createRegisteredRiverProductCheckout(
+    stripe:
+        StripeCheckoutSessionCreator,
+    productId:
+        string,
+    productVersion:
+        string,
+    request:
+        RiverCheckoutRequest
+): Promise<RiverCheckoutSession> {
+
+    const product =
+        getRiverCommerceProduct(
+            productId,
+            productVersion
+        );
+
+    if (!product) {
+        throw new Error(
+            "Unknown or unavailable River commerce product."
+        );
+    }
+
+    return createRiverProductCheckout(
+        stripe,
+        product,
+        request
+    );
+}
+
+export async function createRiverLifeOperatingSystemCheckout(
+    stripe:
+        StripeCheckoutSessionCreator,
+    request:
+        RiverCheckoutRequest
+): Promise<RiverCheckoutSession> {
+
+    return createRiverProductCheckout(
+        stripe,
+        riverLifeOperatingSystemCheckoutProduct,
+        request
+    );
 }

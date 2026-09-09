@@ -4,7 +4,9 @@ import test from "node:test";
 import type Stripe from "stripe";
 
 import {
+    createRegisteredRiverProductCheckout,
     createRiverLifeOperatingSystemCheckout,
+    createRiverProductCheckout,
     riverLifeOperatingSystemCheckoutProduct
 } from "./stripe-checkout";
 
@@ -394,5 +396,201 @@ test(
             ),
             /checkout URL/
         );
+    }
+);
+test(
+    "creates checkout from an explicit server-resolved product contract",
+    async () => {
+
+        const double =
+            createStripeDouble();
+
+        await createRiverProductCheckout(
+            double.stripe,
+            {
+                productId:
+                    "example-product",
+
+                productVersion:
+                    "v1",
+
+                productName:
+                    "Example Product",
+
+                unitAmountUsdCents:
+                    3900,
+
+                successPath:
+                    "/shop/example?checkout=success&session_id={CHECKOUT_SESSION_ID}",
+
+                cancelPath:
+                    "/shop/example?checkout=cancelled"
+            },
+            {
+                customerReference:
+                    "river-customer-example",
+
+                deliveryEmail:
+                    "example@example.com",
+
+                origin:
+                    "https://theriverkeptflowing.com"
+            }
+        );
+
+        const params =
+            double.getCaptured();
+
+        assert.ok(
+            params
+        );
+
+        assert.equal(
+            params.line_items?.[0]
+                ?.price_data?.unit_amount,
+            3900
+        );
+
+        assert.equal(
+            params.line_items?.[0]
+                ?.price_data?.product_data?.name,
+            "Example Product"
+        );
+
+        assert.equal(
+            params.metadata?.river_product_id,
+            "example-product"
+        );
+
+        assert.equal(
+            params.metadata?.river_product_version,
+            "v1"
+        );
+
+        assert.equal(
+            params.success_url,
+            "https://theriverkeptflowing.com/shop/example?checkout=success&session_id={CHECKOUT_SESSION_ID}"
+        );
+
+        assert.equal(
+            params.cancel_url,
+            "https://theriverkeptflowing.com/shop/example?checkout=cancelled"
+        );
+    }
+);
+test(
+    "resolves an exact registered product identity before creating checkout",
+    async () => {
+
+        const double =
+            createStripeDouble();
+
+        await createRegisteredRiverProductCheckout(
+            double.stripe,
+            "river-life-operating-system",
+            "v1",
+            {
+                customerReference:
+                    "river-customer-registered",
+
+                deliveryEmail:
+                    "registered@example.com",
+
+                origin:
+                    "https://theriverkeptflowing.com"
+            }
+        );
+
+        const params =
+            double.getCaptured();
+
+        assert.ok(
+            params
+        );
+
+        assert.equal(
+            params.metadata?.river_product_id,
+            "river-life-operating-system"
+        );
+
+        assert.equal(
+            params.metadata?.river_product_version,
+            "v1"
+        );
+
+        assert.equal(
+            params.line_items?.[0]
+                ?.price_data?.unit_amount,
+            riverLifeOperatingSystemCheckoutProduct
+                .unitAmountUsdCents
+        );
+    }
+);
+
+test(
+    "fails closed for unknown product identity or version before Stripe invocation",
+    async () => {
+
+        for (
+            const [
+                productId,
+                productVersion
+            ]
+            of [
+                [
+                    "unknown-product",
+                    "v1"
+                ],
+                [
+                    "river-life-operating-system",
+                    "v2"
+                ]
+            ]
+        ) {
+
+            let invoked =
+                false;
+
+            const stripe =
+                {
+                    checkout: {
+                        sessions: {
+                            async create() {
+
+                                invoked =
+                                    true;
+
+                                throw new Error(
+                                    "Provider should not be invoked."
+                                );
+                            }
+                        }
+                    }
+                };
+
+            await assert.rejects(
+                createRegisteredRiverProductCheckout(
+                    stripe,
+                    productId,
+                    productVersion,
+                    {
+                        customerReference:
+                            "river-customer-unknown",
+
+                        deliveryEmail:
+                            "unknown@example.com",
+
+                        origin:
+                            "https://theriverkeptflowing.com"
+                    }
+                ),
+                /Unknown or unavailable River commerce product/
+            );
+
+            assert.equal(
+                invoked,
+                false
+            );
+        }
     }
 );

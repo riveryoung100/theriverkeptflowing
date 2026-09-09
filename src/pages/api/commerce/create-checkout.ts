@@ -9,8 +9,12 @@ import {
 import Stripe from "stripe";
 
 import {
-    createRiverLifeOperatingSystemCheckout
+    createRegisteredRiverProductCheckout
 } from "../../../lib/commerce/stripe-checkout";
+
+import {
+    RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT
+} from "../../../lib/commerce/product-catalog";
 
 
 export const prerender =
@@ -90,6 +94,30 @@ function readString(
 }
 
 
+function readOptionalString(
+    body:
+        Record<string, unknown>,
+    key:
+        string,
+    fallback:
+        string
+): string {
+
+    if (
+        !Object.prototype.hasOwnProperty.call(
+            body,
+            key
+        )
+    ) {
+        return fallback;
+    }
+
+    return readString(
+        body,
+        key
+    );
+}
+
 export const POST:
 APIRoute =
 async ({
@@ -166,8 +194,18 @@ async ({
             );
 
         const checkout =
-            await createRiverLifeOperatingSystemCheckout(
+            await createRegisteredRiverProductCheckout(
                 stripe,
+                readOptionalString(
+                    body,
+                    "productId",
+                    RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT.productId
+                ),
+                readOptionalString(
+                    body,
+                    "productVersion",
+                    RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT.productVersion
+                ),
                 {
                     customerReference:
                         readString(
