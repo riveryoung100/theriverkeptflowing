@@ -1,6 +1,10 @@
-﻿import type {
+import type {
     VerifiedPaymentEvent
 } from "./payment-event";
+
+import {
+    RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT,
+} from "./product-catalog";
 
 import {
     D1FulfillmentPersistence
@@ -187,13 +191,13 @@ export async function processStripeWebhookPaymentAtRuntime(
             ),
             {
                 productId:
-                    "river-life-operating-system",
+                    RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT.productId,
 
                 productVersion:
-                    "v1",
+                    RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT.productVersion,
 
                 releaseId:
-                    "product-001e-07-runtime-approved-001",
+                    RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT.approvedReleaseId,
 
                 keyPrefix:
                     "releases"
@@ -229,10 +233,10 @@ export async function processStripeWebhookPaymentAtRuntime(
 
                 message: {
                     subject:
-                        "Your River Life Operating System",
+                        RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT.deliverySubject,
 
                     text:
-                        "Thank you for your purchase. Your River Life Operating System is attached."
+                        RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT.deliveryText
                 }
             },
             {

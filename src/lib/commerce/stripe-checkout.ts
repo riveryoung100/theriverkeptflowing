@@ -1,11 +1,15 @@
-import Stripe from "stripe";
+﻿import Stripe from "stripe";
+
+import {
+    RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT,
+} from "./product-catalog";
 
 
 export const RIVER_LIFE_OPERATING_SYSTEM_PRODUCT_ID =
-    "river-life-operating-system";
+    RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT.productId;
 
 export const RIVER_LIFE_OPERATING_SYSTEM_PRODUCT_VERSION =
-    "v1";
+    RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT.productVersion;
 
 
 export interface RiverCheckoutProduct {
@@ -63,20 +67,8 @@ export interface StripeCheckoutSessionCreator {
 
 
 export const riverLifeOperatingSystemCheckoutProduct:
-RiverCheckoutProduct =
-{
-    productId:
-        RIVER_LIFE_OPERATING_SYSTEM_PRODUCT_ID,
-
-    productVersion:
-        RIVER_LIFE_OPERATING_SYSTEM_PRODUCT_VERSION,
-
-    productName:
-        "River Life Operating System",
-
-    unitAmountUsdCents:
-        2900
-};
+    RiverCheckoutProduct =
+    RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT;
 
 
 function requireNormalizedValue(

@@ -1,4 +1,4 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
 import test from "node:test";
 
 import type {
@@ -194,7 +194,7 @@ test(
 
         assert.match(
             source,
-            /product-001e-07-runtime-approved-001/
+            /RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT\.approvedReleaseId/
         );
 
     }
