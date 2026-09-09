@@ -191,11 +191,104 @@ test(
             source,
             /handoffVerifiedPaidOrderAtRuntime/
         );
+        assert.match(
+            source,
+            /getRiverCommerceProduct/
+        );
 
         assert.match(
             source,
-            /RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT\.approvedReleaseId/
+            /product\.approvedReleaseId/
         );
 
+        assert.match(
+            source,
+            /product\.deliverySubject/
+        );
+
+        assert.match(
+            source,
+            /product\.deliveryText/
+        );
+
+        assert.doesNotMatch(
+            source,
+            /RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT/
+        );
+
+    }
+);
+test(
+    "unknown paid product identity fails closed before runtime infrastructure is required",
+    async () => {
+
+        const paymentEvent:
+            VerifiedPaymentEvent =
+            {
+                ...createPaidPaymentEvent(),
+
+                productId:
+                    "unknown-product",
+
+                productVersion:
+                    "v1"
+            };
+
+        await assert.rejects(
+            () =>
+                processStripeWebhookPaymentAtRuntime({
+                    paymentEvent,
+                    environment: {
+                        RIVER_COMMERCE_DB:
+                            undefined,
+
+                        RIVER_PRODUCT_RELEASES:
+                            undefined,
+
+                        RESEND_API_KEY:
+                            undefined,
+
+                        RIVER_DELIVERY_FROM:
+                            undefined
+                    }
+                }),
+            /Unknown or unavailable River commerce product for paid fulfillment/
+        );
+    }
+);
+
+test(
+    "unknown paid product version fails closed before runtime infrastructure is required",
+    async () => {
+
+        const paymentEvent:
+            VerifiedPaymentEvent =
+            {
+                ...createPaidPaymentEvent(),
+
+                productVersion:
+                    "v2"
+            };
+
+        await assert.rejects(
+            () =>
+                processStripeWebhookPaymentAtRuntime({
+                    paymentEvent,
+                    environment: {
+                        RIVER_COMMERCE_DB:
+                            undefined,
+
+                        RIVER_PRODUCT_RELEASES:
+                            undefined,
+
+                        RESEND_API_KEY:
+                            undefined,
+
+                        RIVER_DELIVERY_FROM:
+                            undefined
+                    }
+                }),
+            /Unknown or unavailable River commerce product for paid fulfillment/
+        );
     }
 );

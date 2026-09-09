@@ -3,7 +3,7 @@ import type {
 } from "./payment-event";
 
 import {
-    RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT,
+    getRiverCommerceProduct,
 } from "./product-catalog";
 
 import {
@@ -175,6 +175,17 @@ export async function processStripeWebhookPaymentAtRuntime(
 
     }
 
+    const product =
+        getRiverCommerceProduct(
+            input.paymentEvent.productId,
+            input.paymentEvent.productVersion
+        );
+
+    if (!product) {
+        throw new Error(
+            "Unknown or unavailable River commerce product for paid fulfillment."
+        );
+    }
     const persistence =
         new D1FulfillmentPersistence(
             requireCommerceDatabase(
@@ -191,13 +202,13 @@ export async function processStripeWebhookPaymentAtRuntime(
             ),
             {
                 productId:
-                    RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT.productId,
+                    product.productId,
 
                 productVersion:
-                    RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT.productVersion,
+                    product.productVersion,
 
                 releaseId:
-                    RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT.approvedReleaseId,
+                    product.approvedReleaseId,
 
                 keyPrefix:
                     "releases"
@@ -233,10 +244,10 @@ export async function processStripeWebhookPaymentAtRuntime(
 
                 message: {
                     subject:
-                        RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT.deliverySubject,
+                        product.deliverySubject,
 
                     text:
-                        RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT.deliveryText
+                        product.deliveryText
                 }
             },
             {
