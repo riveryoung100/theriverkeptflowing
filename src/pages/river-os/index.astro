@@ -1,4 +1,22 @@
 ---
+import {
+    env
+} from "cloudflare:workers";
+
+import {
+    createD1RiverContentCatalogPersistence
+} from "../../lib/river-os/d1-content-catalog";
+
+import type {
+    RiverContentCatalogEntry
+} from "../../lib/river-os/content-catalog";
+
+import {
+    formatRiverContentDate,
+    formatRiverContentPlatform,
+    summarizeRiverContentWorkspace
+} from "../../lib/river-os/content-workspace";
+
 export const prerender =
     false;
 
@@ -6,54 +24,213 @@ Astro.response.headers.set(
     "cache-control",
     "no-store"
 );
+
+const runtimeEnvironment =
+    env as unknown as
+        Record<string, unknown>;
+
+const database =
+    runtimeEnvironment
+        .RIVER_CONTENT_DB;
+
+let entries:
+    readonly RiverContentCatalogEntry[] =
+        [];
+
+let catalogConnected =
+    false;
+
+let catalogError:
+    string | undefined;
+
+if (
+    database !== undefined
+) {
+
+    try {
+
+        const catalog =
+            createD1RiverContentCatalogPersistence(
+                database as D1Database
+            );
+
+        entries =
+            await catalog.list(
+                100
+            );
+
+        catalogConnected =
+            true;
+
+    }
+    catch {
+
+        catalogError =
+            "The content catalog could not be read.";
+
+    }
+
+}
+
+const summary =
+    summarizeRiverContentWorkspace(
+        entries
+    );
 ---
 <!doctype html>
 <html lang="en">
     <head>
         <meta charset="utf-8" />
+
         <meta
             name="viewport"
-            content="width=device-width"
+            content="width=device-width, initial-scale=1"
         />
+
         <meta
             name="robots"
             content="noindex,nofollow,noarchive"
         />
-        <title>River OS</title>
+
+        <title>
+            Content Workspace · River OS
+        </title>
+
         <style>
             :root {
-                font-family:
-                    system-ui,
-                    sans-serif;
-                color:
+                --river-ink:
                     #17211d;
-                background:
+                --river-ink-soft:
+                    #314039;
+                --river-forest:
+                    #29483a;
+                --river-forest-deep:
+                    #1f382e;
+                --river-water:
+                    #607f83;
+                --river-clay:
+                    #a86f50;
+                --river-gold:
+                    #b58a4a;
+                --river-paper:
                     #f7f4ed;
+                --river-paper-warm:
+                    #f0ebe0;
+                --river-white:
+                    #fffdf8;
+                --river-line:
+                    rgba(23, 33, 29, 0.13);
+                --river-text-soft:
+                    #53605a;
+                --river-text-muted:
+                    #737d77;
+                --river-serif:
+                    "Iowan Old Style",
+                    "Palatino Linotype",
+                    "Book Antiqua",
+                    Palatino,
+                    Georgia,
+                    "Times New Roman",
+                    serif;
+                --river-sans:
+                    Inter,
+                    ui-sans-serif,
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    "Segoe UI",
+                    Helvetica,
+                    Arial,
+                    sans-serif;
+            }
+
+            * {
+                box-sizing:
+                    border-box;
+            }
+
+            html {
+                background:
+                    var(--river-paper);
             }
 
             body {
-                margin:
-                    0;
                 min-height:
                     100vh;
-            }
-
-            main {
-                width:
-                    min(1120px, calc(100% - 48px));
                 margin:
-                    0 auto;
-                padding:
-                    64px 0;
-            }
-
-            .eyebrow {
-                margin:
-                    0 0 10px;
+                    0;
                 color:
-                    #607f83;
+                    var(--river-ink);
+                font-family:
+                    var(--river-sans);
+                line-height:
+                    1.6;
+                background:
+                    radial-gradient(
+                        circle at 10% 0%,
+                        rgba(96, 127, 131, 0.12),
+                        transparent 30rem
+                    ),
+                    radial-gradient(
+                        circle at 92% 12%,
+                        rgba(181, 138, 74, 0.09),
+                        transparent 34rem
+                    ),
+                    var(--river-paper);
+            }
+
+            a {
+                color:
+                    inherit;
+            }
+
+            .workspace {
+                width:
+                    min(
+                        calc(100% - 3rem),
+                        1440px
+                    );
+                margin-inline:
+                    auto;
+                padding:
+                    2rem 0 5rem;
+            }
+
+            .topbar {
+                display:
+                    flex;
+                align-items:
+                    center;
+                justify-content:
+                    space-between;
+                gap:
+                    1.5rem;
+                padding:
+                    0 0 1.5rem;
+                border-bottom:
+                    1px solid var(--river-line);
+            }
+
+            .identity {
+                display:
+                    grid;
+                gap:
+                    0.15rem;
+            }
+
+            .identity strong {
+                font-family:
+                    var(--river-serif);
                 font-size:
-                    0.78rem;
+                    1.35rem;
+                font-weight:
+                    400;
+            }
+
+            .identity span {
+                color:
+                    var(--river-text-muted);
+                font-size:
+                    0.75rem;
                 font-weight:
                     700;
                 letter-spacing:
@@ -62,91 +239,707 @@ Astro.response.headers.set(
                     uppercase;
             }
 
-            h1 {
-                margin:
-                    0;
-                font-family:
-                    Georgia,
-                    serif;
-                font-size:
-                    clamp(2.4rem, 7vw, 5rem);
-                font-weight:
-                    500;
-            }
-
-            .intro {
-                max-width:
-                    640px;
-                margin:
-                    18px 0 40px;
-                line-height:
-                    1.7;
-            }
-
-            .panel {
+            .signout button {
                 padding:
-                    28px;
+                    0.65rem 0.95rem;
                 border:
-                    1px solid rgba(23, 33, 29, 0.15);
+                    1px solid var(--river-line);
                 border-radius:
-                    16px;
-                background:
-                    white;
-            }
-
-            form {
-                margin-top:
-                    32px;
-            }
-
-            button {
-                padding:
-                    10px 14px;
-                border:
-                    1px solid #29483a;
-                border-radius:
-                    8px;
+                    999px;
+                color:
+                    var(--river-ink);
                 font:
                     inherit;
+                font-size:
+                    0.82rem;
+                font-weight:
+                    700;
                 background:
-                    transparent;
+                    rgba(255, 253, 248, 0.7);
                 cursor:
                     pointer;
             }
+
+            .hero {
+                display:
+                    grid;
+                grid-template-columns:
+                    minmax(0, 1.5fr)
+                    minmax(18rem, 0.5fr);
+                gap:
+                    3rem;
+                align-items:
+                    end;
+                padding:
+                    4.5rem 0 3rem;
+            }
+
+            .eyebrow {
+                margin:
+                    0 0 1rem;
+                color:
+                    var(--river-clay);
+                font-size:
+                    0.75rem;
+                font-weight:
+                    700;
+                letter-spacing:
+                    0.16em;
+                text-transform:
+                    uppercase;
+            }
+
+            h1 {
+                max-width:
+                    12ch;
+                margin:
+                    0;
+                font-family:
+                    var(--river-serif);
+                font-size:
+                    clamp(
+                        3rem,
+                        7vw,
+                        6.2rem
+                    );
+                font-weight:
+                    400;
+                line-height:
+                    0.98;
+                letter-spacing:
+                    -0.045em;
+            }
+
+            .hero-copy {
+                margin:
+                    1.5rem 0 0;
+                max-width:
+                    62ch;
+                color:
+                    var(--river-text-soft);
+                font-size:
+                    1.05rem;
+            }
+
+            .connection {
+                padding:
+                    1.35rem;
+                border:
+                    1px solid var(--river-line);
+                border-radius:
+                    1rem;
+                background:
+                    rgba(255, 253, 248, 0.72);
+            }
+
+            .connection-label {
+                margin:
+                    0 0 0.45rem;
+                color:
+                    var(--river-text-muted);
+                font-size:
+                    0.72rem;
+                font-weight:
+                    700;
+                letter-spacing:
+                    0.14em;
+                text-transform:
+                    uppercase;
+            }
+
+            .connection strong {
+                display:
+                    block;
+                font-family:
+                    var(--river-serif);
+                font-size:
+                    1.35rem;
+                font-weight:
+                    400;
+            }
+
+            .connection p {
+                margin:
+                    0.55rem 0 0;
+                color:
+                    var(--river-text-soft);
+                font-size:
+                    0.86rem;
+            }
+
+            .summary {
+                display:
+                    grid;
+                grid-template-columns:
+                    repeat(4, minmax(0, 1fr));
+                gap:
+                    1rem;
+                margin-bottom:
+                    3rem;
+            }
+
+            .metric {
+                min-height:
+                    8.5rem;
+                padding:
+                    1.35rem;
+                border:
+                    1px solid var(--river-line);
+                border-radius:
+                    1rem;
+                background:
+                    rgba(255, 253, 248, 0.74);
+            }
+
+            .metric span {
+                display:
+                    block;
+                color:
+                    var(--river-text-muted);
+                font-size:
+                    0.72rem;
+                font-weight:
+                    700;
+                letter-spacing:
+                    0.12em;
+                text-transform:
+                    uppercase;
+            }
+
+            .metric strong {
+                display:
+                    block;
+                margin-top:
+                    1rem;
+                font-family:
+                    var(--river-serif);
+                font-size:
+                    2.35rem;
+                font-weight:
+                    400;
+                line-height:
+                    1;
+            }
+
+            .catalog {
+                overflow:
+                    hidden;
+                border:
+                    1px solid var(--river-line);
+                border-radius:
+                    1.35rem;
+                background:
+                    rgba(255, 253, 248, 0.86);
+                box-shadow:
+                    0 24px 70px
+                    rgba(23, 33, 29, 0.08);
+            }
+
+            .catalog-header {
+                display:
+                    flex;
+                align-items:
+                    end;
+                justify-content:
+                    space-between;
+                gap:
+                    1.5rem;
+                padding:
+                    1.5rem 1.5rem 1.25rem;
+                border-bottom:
+                    1px solid var(--river-line);
+            }
+
+            .catalog-header h2 {
+                margin:
+                    0;
+                font-family:
+                    var(--river-serif);
+                font-size:
+                    clamp(
+                        1.8rem,
+                        3vw,
+                        2.7rem
+                    );
+                font-weight:
+                    400;
+                letter-spacing:
+                    -0.03em;
+            }
+
+            .catalog-header p {
+                margin:
+                    0.35rem 0 0;
+                color:
+                    var(--river-text-soft);
+                font-size:
+                    0.9rem;
+            }
+
+            .source-list {
+                margin:
+                    0;
+                padding:
+                    0;
+                list-style:
+                    none;
+            }
+
+            .source {
+                display:
+                    grid;
+                grid-template-columns:
+                    minmax(0, 2fr)
+                    minmax(8rem, 0.55fr)
+                    minmax(9rem, 0.65fr)
+                    minmax(9rem, 0.7fr);
+                gap:
+                    1.25rem;
+                align-items:
+                    center;
+                padding:
+                    1.35rem 1.5rem;
+                border-bottom:
+                    1px solid var(--river-line);
+            }
+
+            .source:last-child {
+                border-bottom:
+                    0;
+            }
+
+            .source-title {
+                min-width:
+                    0;
+            }
+
+            .source-title a {
+                display:
+                    inline-block;
+                max-width:
+                    100%;
+                overflow:
+                    hidden;
+                color:
+                    var(--river-ink);
+                font-family:
+                    var(--river-serif);
+                font-size:
+                    1.18rem;
+                line-height:
+                    1.25;
+                text-decoration:
+                    none;
+                text-overflow:
+                    ellipsis;
+                white-space:
+                    nowrap;
+            }
+
+            .source-title p {
+                margin:
+                    0.45rem 0 0;
+                overflow:
+                    hidden;
+                color:
+                    var(--river-text-muted);
+                font-size:
+                    0.75rem;
+                text-overflow:
+                    ellipsis;
+                white-space:
+                    nowrap;
+            }
+
+            .field-label {
+                display:
+                    block;
+                margin-bottom:
+                    0.3rem;
+                color:
+                    var(--river-text-muted);
+                font-size:
+                    0.65rem;
+                font-weight:
+                    700;
+                letter-spacing:
+                    0.12em;
+                text-transform:
+                    uppercase;
+            }
+
+            .field-value {
+                font-size:
+                    0.86rem;
+            }
+
+            .state {
+                display:
+                    inline-flex;
+                align-items:
+                    center;
+                gap:
+                    0.4rem;
+                padding:
+                    0.35rem 0.62rem;
+                border-radius:
+                    999px;
+                font-size:
+                    0.74rem;
+                font-weight:
+                    700;
+                background:
+                    var(--river-paper-warm);
+            }
+
+            .state::before {
+                width:
+                    0.45rem;
+                height:
+                    0.45rem;
+                border-radius:
+                    50%;
+                content:
+                    "";
+                background:
+                    var(--river-gold);
+            }
+
+            .state.available::before {
+                background:
+                    var(--river-forest);
+            }
+
+            .empty {
+                padding:
+                    4rem 1.5rem;
+                text-align:
+                    center;
+            }
+
+            .empty strong {
+                display:
+                    block;
+                font-family:
+                    var(--river-serif);
+                font-size:
+                    1.75rem;
+                font-weight:
+                    400;
+            }
+
+            .empty p {
+                max-width:
+                    54ch;
+                margin:
+                    0.75rem auto 0;
+                color:
+                    var(--river-text-soft);
+            }
+
+            @media (
+                max-width: 950px
+            ) {
+
+                .hero {
+                    grid-template-columns:
+                        1fr;
+                }
+
+                .summary {
+                    grid-template-columns:
+                        repeat(2, 1fr);
+                }
+
+                .source {
+                    grid-template-columns:
+                        1fr 1fr;
+                }
+
+                .source-title {
+                    grid-column:
+                        1 / -1;
+                }
+
+            }
+
+            @media (
+                max-width: 620px
+            ) {
+
+                .workspace {
+                    width:
+                        min(
+                            calc(100% - 2rem),
+                            1440px
+                        );
+                }
+
+                .topbar {
+                    align-items:
+                        flex-start;
+                }
+
+                .hero {
+                    padding-top:
+                        3rem;
+                }
+
+                .summary {
+                    grid-template-columns:
+                        1fr;
+                }
+
+                .source {
+                    grid-template-columns:
+                        1fr;
+                }
+
+            }
         </style>
     </head>
+
     <body>
-        <main>
-            <p class="eyebrow">
-                Private workspace
-            </p>
+        <main class="workspace">
+            <header class="topbar">
+                <div class="identity">
+                    <span>
+                        Private operating system
+                    </span>
 
-            <h1>River OS</h1>
+                    <strong>
+                        The River Kept Flowing
+                    </strong>
+                </div>
 
-            <p class="intro">
-                The private operating layer for the content system,
-                automation engine, CRM, sales operations, and analytics.
-            </p>
+                <form
+                    class="signout"
+                    method="post"
+                    action="/river-os/logout"
+                >
+                    <button type="submit">
+                        Sign out
+                    </button>
+                </form>
+            </header>
 
-            <section class="panel">
-                <strong>
-                    Access foundation active.
-                </strong>
+            <section class="hero">
+                <div>
+                    <p class="eyebrow">
+                        River OS · Content
+                    </p>
 
-                <p>
-                    The next site slice will connect the protected workspace
-                    to the River OS content catalog.
-                </p>
+                    <h1>
+                        Content Workspace
+                    </h1>
+
+                    <p class="hero-copy">
+                        Canonical published sources, transcript readiness,
+                        ingestion state, and the operational foundation for
+                        the content engine.
+                    </p>
+                </div>
+
+                <aside class="connection">
+                    <p class="connection-label">
+                        Catalog connection
+                    </p>
+
+                    {
+                        catalogConnected
+                            ? (
+                                <>
+                                    <strong>
+                                        Connected
+                                    </strong>
+
+                                    <p>
+                                        Reading the dedicated River content catalog.
+                                    </p>
+                                </>
+                            )
+                            : (
+                                <>
+                                    <strong>
+                                        Not connected
+                                    </strong>
+
+                                    <p>
+                                        {
+                                            catalogError ??
+                                            "A dedicated RIVER_CONTENT_DB binding has not been provisioned yet."
+                                        }
+                                    </p>
+                                </>
+                            )
+                    }
+                </aside>
             </section>
 
-            <form
-                method="post"
-                action="/river-os/logout"
+            <section
+                class="summary"
+                aria-label="Content catalog summary"
             >
-                <button type="submit">
-                    Sign out
-                </button>
-            </form>
+                <article class="metric">
+                    <span>
+                        Canonical sources
+                    </span>
+
+                    <strong>
+                        {summary.totalSources}
+                    </strong>
+                </article>
+
+                <article class="metric">
+                    <span>
+                        Transcript pending
+                    </span>
+
+                    <strong>
+                        {summary.transcriptPending}
+                    </strong>
+                </article>
+
+                <article class="metric">
+                    <span>
+                        Transcript available
+                    </span>
+
+                    <strong>
+                        {summary.transcriptAvailable}
+                    </strong>
+                </article>
+
+                <article class="metric">
+                    <span>
+                        Platforms
+                    </span>
+
+                    <strong>
+                        {summary.platforms}
+                    </strong>
+                </article>
+            </section>
+
+            <section class="catalog">
+                <header class="catalog-header">
+                    <div>
+                        <p class="eyebrow">
+                            Source registry
+                        </p>
+
+                        <h2>
+                            Published content
+                        </h2>
+
+                        <p>
+                            Newest canonical sources first.
+                        </p>
+                    </div>
+                </header>
+
+                {
+                    entries.length === 0
+                        ? (
+                            <div class="empty">
+                                <strong>
+                                    {
+                                        catalogConnected
+                                            ? "No catalog entries yet."
+                                            : "Catalog awaiting connection."
+                                    }
+                                </strong>
+
+                                <p>
+                                    {
+                                        catalogConnected
+                                            ? "Canonical sources will appear here as the River OS read model is populated."
+                                            : "The workspace is built and protected. Provisioning the dedicated content database is the remaining runtime connection step."
+                                    }
+                                </p>
+                            </div>
+                        )
+                        : (
+                            <ol class="source-list">
+                                {
+                                    entries.map(
+                                        (
+                                            entry
+                                        ) => (
+                                            <li class="source">
+                                                <div class="source-title">
+                                                    <a
+                                                        href={entry.canonicalUrl}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                    >
+                                                        {entry.title}
+                                                    </a>
+
+                                                    <p>
+                                                        {entry.sourceId}
+                                                    </p>
+                                                </div>
+
+                                                <div>
+                                                    <span class="field-label">
+                                                        Platform
+                                                    </span>
+
+                                                    <span class="field-value">
+                                                        {
+                                                            formatRiverContentPlatform(
+                                                                entry.platform
+                                                            )
+                                                        }
+                                                    </span>
+                                                </div>
+
+                                                <div>
+                                                    <span class="field-label">
+                                                        Transcript
+                                                    </span>
+
+                                                    <span
+                                                        class:list={[
+                                                            "state",
+                                                            {
+                                                                available:
+                                                                    entry.transcriptState ===
+                                                                    "available"
+                                                            }
+                                                        ]}
+                                                    >
+                                                        {
+                                                            entry.transcriptState ===
+                                                            "available"
+                                                                ? "Available"
+                                                                : "Pending"
+                                                        }
+                                                    </span>
+                                                </div>
+
+                                                <div>
+                                                    <span class="field-label">
+                                                        Published
+                                                    </span>
+
+                                                    <span class="field-value">
+                                                        {
+                                                            formatRiverContentDate(
+                                                                entry.publishedAt
+                                                            )
+                                                        }
+                                                    </span>
+                                                </div>
+                                            </li>
+                                        )
+                                    )
+                                }
+                            </ol>
+                        )
+                }
+            </section>
         </main>
     </body>
 </html>
