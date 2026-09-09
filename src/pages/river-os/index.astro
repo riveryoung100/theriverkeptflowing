@@ -1,746 +1,346 @@
 ---
-import {
-    env
-} from "cloudflare:workers";
-
-import {
-    createD1RiverContentCatalogPersistence
-} from "../../lib/river-os/d1-content-catalog";
-
-import type {
-    RiverContentCatalogEntry
-} from "../../lib/river-os/content-catalog";
-
-import {
-    buildRiverContentSourceDetailPath,
-    formatRiverContentDate,
-    formatRiverContentPlatform,
-    summarizeRiverContentWorkspace
-} from "../../lib/river-os/content-workspace";
-
 import RiverOsLayout from "../../layouts/RiverOsLayout.astro";
 
 export const prerender =
     false;
-
-Astro.response.headers.set(
-    "cache-control",
-    "no-store"
-);
-
-const runtimeEnvironment =
-    env as unknown as
-        Record<string, unknown>;
-
-const database =
-    runtimeEnvironment
-        .RIVER_CONTENT_DB;
-
-let entries:
-    readonly RiverContentCatalogEntry[] =
-        [];
-
-let catalogConnected =
-    false;
-
-let catalogError:
-    string | undefined;
-
-if (
-    database !== undefined
-) {
-
-    try {
-
-        const catalog =
-            createD1RiverContentCatalogPersistence(
-                database as D1Database
-            );
-
-        entries =
-            await catalog.list(
-                100
-            );
-
-        catalogConnected =
-            true;
-
-    }
-    catch {
-
-        catalogError =
-            "The content catalog could not be read.";
-
-    }
-
-}
-
-const summary =
-    summarizeRiverContentWorkspace(
-        entries
-    );
 ---
 
 <style>
-.hero {
-                display:
-                    grid;
-                grid-template-columns:
-                    minmax(0, 1.5fr)
-                    minmax(18rem, 0.5fr);
-                gap:
-                    3rem;
-                align-items:
-                    end;
-                padding:
-                    4.5rem 0 3rem;
-            }
+    .hub-hero {
+        display:
+            grid;
+        gap:
+            1rem;
+        max-width:
+            760px;
+        padding:
+            5rem 0 3rem;
+    }
 
-            .eyebrow {
-                margin:
-                    0 0 1rem;
-                color:
-                    var(--river-clay);
-                font-size:
-                    0.75rem;
-                font-weight:
-                    700;
-                letter-spacing:
-                    0.16em;
-                text-transform:
-                    uppercase;
-            }
+    .eyebrow {
+        margin:
+            0;
+        color:
+            var(--river-water);
+        font-size:
+            0.76rem;
+        font-weight:
+            800;
+        letter-spacing:
+            0.16em;
+        text-transform:
+            uppercase;
+    }
 
-            h1 {
-                max-width:
-                    12ch;
-                margin:
-                    0;
-                font-family:
-                    var(--river-serif);
-                font-size:
-                    clamp(
-                        3rem,
-                        7vw,
-                        6.2rem
-                    );
-                font-weight:
-                    400;
-                line-height:
-                    0.98;
-                letter-spacing:
-                    -0.045em;
-            }
+    h1 {
+        margin:
+            0;
+        font-family:
+            var(--river-serif);
+        font-size:
+            clamp(2.8rem, 6vw, 5.6rem);
+        font-weight:
+            400;
+        line-height:
+            0.96;
+        letter-spacing:
+            -0.045em;
+    }
 
-            .hero-copy {
-                margin:
-                    1.5rem 0 0;
-                max-width:
-                    62ch;
-                color:
-                    var(--river-text-soft);
-                font-size:
-                    1.05rem;
-            }
+    .hub-copy {
+        max-width:
+            650px;
+        margin:
+            0;
+        color:
+            var(--river-text-soft);
+        font-size:
+            1.05rem;
+    }
 
-            .connection {
-                padding:
-                    1.35rem;
-                border:
-                    1px solid var(--river-line);
-                border-radius:
-                    1rem;
-                background:
-                    rgba(255, 253, 248, 0.72);
-            }
+    .workspace-grid {
+        display:
+            grid;
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+        gap:
+            1rem;
+    }
 
-            .connection-label {
-                margin:
-                    0 0 0.45rem;
-                color:
-                    var(--river-text-muted);
-                font-size:
-                    0.72rem;
-                font-weight:
-                    700;
-                letter-spacing:
-                    0.14em;
-                text-transform:
-                    uppercase;
-            }
+    .workspace-card {
+        display:
+            grid;
+        gap:
+            1.25rem;
+        min-height:
+            230px;
+        padding:
+            1.6rem;
+        border:
+            1px solid var(--river-line);
+        border-radius:
+            20px;
+        background:
+            rgba(255, 253, 248, 0.72);
+    }
 
-            .connection strong {
-                display:
-                    block;
-                font-family:
-                    var(--river-serif);
-                font-size:
-                    1.35rem;
-                font-weight:
-                    400;
-            }
+    .workspace-card.available {
+        background:
+            var(--river-white);
+    }
 
-            .connection p {
-                margin:
-                    0.55rem 0 0;
-                color:
-                    var(--river-text-soft);
-                font-size:
-                    0.86rem;
-            }
+    .workspace-card-head {
+        display:
+            flex;
+        align-items:
+            flex-start;
+        justify-content:
+            space-between;
+        gap:
+            1rem;
+    }
 
-            .summary {
-                display:
-                    grid;
-                grid-template-columns:
-                    repeat(4, minmax(0, 1fr));
-                gap:
-                    1rem;
-                margin-bottom:
-                    3rem;
-            }
+    .workspace-card h2 {
+        margin:
+            0;
+        font-family:
+            var(--river-serif);
+        font-size:
+            1.65rem;
+        font-weight:
+            400;
+    }
 
-            .metric {
-                min-height:
-                    8.5rem;
-                padding:
-                    1.35rem;
-                border:
-                    1px solid var(--river-line);
-                border-radius:
-                    1rem;
-                background:
-                    rgba(255, 253, 248, 0.74);
-            }
+    .status {
+        flex:
+            none;
+        border:
+            1px solid var(--river-line);
+        border-radius:
+            999px;
+        color:
+            var(--river-text-muted);
+        font-size:
+            0.7rem;
+        font-weight:
+            800;
+        letter-spacing:
+            0.1em;
+        text-transform:
+            uppercase;
+        padding:
+            0.4rem 0.65rem;
+    }
 
-            .metric span {
-                display:
-                    block;
-                color:
-                    var(--river-text-muted);
-                font-size:
-                    0.72rem;
-                font-weight:
-                    700;
-                letter-spacing:
-                    0.12em;
-                text-transform:
-                    uppercase;
-            }
+    .status.ready {
+        border-color:
+            rgba(41, 72, 58, 0.24);
+        color:
+            var(--river-forest);
+    }
 
-            .metric strong {
-                display:
-                    block;
-                margin-top:
-                    1rem;
-                font-family:
-                    var(--river-serif);
-                font-size:
-                    2.35rem;
-                font-weight:
-                    400;
-                line-height:
-                    1;
-            }
+    .workspace-card p {
+        margin:
+            0;
+        color:
+            var(--river-text-soft);
+    }
 
-            .catalog {
-                overflow:
-                    hidden;
-                border:
-                    1px solid var(--river-line);
-                border-radius:
-                    1.35rem;
-                background:
-                    rgba(255, 253, 248, 0.86);
-                box-shadow:
-                    0 24px 70px
-                    rgba(23, 33, 29, 0.08);
-            }
+    .workspace-link {
+        align-self:
+            end;
+        width:
+            fit-content;
+        color:
+            var(--river-forest-deep);
+        font-size:
+            0.88rem;
+        font-weight:
+            800;
+        text-decoration:
+            none;
+    }
 
-            .catalog-header {
-                display:
-                    flex;
-                align-items:
-                    end;
-                justify-content:
-                    space-between;
-                gap:
-                    1.5rem;
-                padding:
-                    1.5rem 1.5rem 1.25rem;
-                border-bottom:
-                    1px solid var(--river-line);
-            }
+    .planned-note {
+        align-self:
+            end;
+        color:
+            var(--river-text-muted);
+        font-size:
+            0.82rem;
+        font-weight:
+            700;
+    }
 
-            .catalog-header h2 {
-                margin:
-                    0;
-                font-family:
-                    var(--river-serif);
-                font-size:
-                    clamp(
-                        1.8rem,
-                        3vw,
-                        2.7rem
-                    );
-                font-weight:
-                    400;
-                letter-spacing:
-                    -0.03em;
-            }
+    .foundation {
+        margin-top:
+            1rem;
+        padding:
+            1.4rem 1.6rem;
+        border:
+            1px solid var(--river-line);
+        border-radius:
+            18px;
+    }
 
-            .catalog-header p {
-                margin:
-                    0.35rem 0 0;
-                color:
-                    var(--river-text-soft);
-                font-size:
-                    0.9rem;
-            }
+    .foundation strong {
+        display:
+            block;
+        margin-bottom:
+            0.35rem;
+        font-family:
+            var(--river-serif);
+        font-size:
+            1.2rem;
+        font-weight:
+            400;
+    }
 
-            .source-list {
-                margin:
-                    0;
-                padding:
-                    0;
-                list-style:
-                    none;
-            }
+    .foundation p {
+        margin:
+            0;
+        color:
+            var(--river-text-soft);
+        font-size:
+            0.9rem;
+    }
 
-            .source {
-                display:
-                    grid;
-                grid-template-columns:
-                    minmax(0, 2fr)
-                    minmax(8rem, 0.55fr)
-                    minmax(9rem, 0.65fr)
-                    minmax(9rem, 0.7fr);
-                gap:
-                    1.25rem;
-                align-items:
-                    center;
-                padding:
-                    1.35rem 1.5rem;
-                border-bottom:
-                    1px solid var(--river-line);
-            }
+    @media (
+        max-width: 760px
+    ) {
+        .workspace-grid {
+            grid-template-columns:
+                1fr;
+        }
 
-            .source:last-child {
-                border-bottom:
-                    0;
-            }
-
-            .source-title {
-                min-width:
-                    0;
-            }
-
-            .source-title a {
-                display:
-                    inline-block;
-                max-width:
-                    100%;
-                overflow:
-                    hidden;
-                color:
-                    var(--river-ink);
-                font-family:
-                    var(--river-serif);
-                font-size:
-                    1.18rem;
-                line-height:
-                    1.25;
-                text-decoration:
-                    none;
-                text-overflow:
-                    ellipsis;
-                white-space:
-                    nowrap;
-            }
-
-            .source-title p {
-                margin:
-                    0.45rem 0 0;
-                overflow:
-                    hidden;
-                color:
-                    var(--river-text-muted);
-                font-size:
-                    0.75rem;
-                text-overflow:
-                    ellipsis;
-                white-space:
-                    nowrap;
-            }
-
-            .field-label {
-                display:
-                    block;
-                margin-bottom:
-                    0.3rem;
-                color:
-                    var(--river-text-muted);
-                font-size:
-                    0.65rem;
-                font-weight:
-                    700;
-                letter-spacing:
-                    0.12em;
-                text-transform:
-                    uppercase;
-            }
-
-            .field-value {
-                font-size:
-                    0.86rem;
-            }
-
-            .state {
-                display:
-                    inline-flex;
-                align-items:
-                    center;
-                gap:
-                    0.4rem;
-                padding:
-                    0.35rem 0.62rem;
-                border-radius:
-                    999px;
-                font-size:
-                    0.74rem;
-                font-weight:
-                    700;
-                background:
-                    var(--river-paper-warm);
-            }
-
-            .state::before {
-                width:
-                    0.45rem;
-                height:
-                    0.45rem;
-                border-radius:
-                    50%;
-                content:
-                    "";
-                background:
-                    var(--river-gold);
-            }
-
-            .state.available::before {
-                background:
-                    var(--river-forest);
-            }
-
-            .empty {
-                padding:
-                    4rem 1.5rem;
-                text-align:
-                    center;
-            }
-
-            .empty strong {
-                display:
-                    block;
-                font-family:
-                    var(--river-serif);
-                font-size:
-                    1.75rem;
-                font-weight:
-                    400;
-            }
-
-            .empty p {
-                max-width:
-                    54ch;
-                margin:
-                    0.75rem auto 0;
-                color:
-                    var(--river-text-soft);
-            }
-
-            @media (
-                max-width: 950px
-            ) {
-
-                .hero {
-                    grid-template-columns:
-                        1fr;
-                }
-
-                .summary {
-                    grid-template-columns:
-                        repeat(2, 1fr);
-                }
-
-                .source {
-                    grid-template-columns:
-                        1fr 1fr;
-                }
-
-                .source-title {
-                    grid-column:
-                        1 / -1;
-                }
-
-            }
-
-            @media (
-                max-width: 620px
-            ) {
-
-                .workspace {
-                    width:
-                        min(
-                            calc(100% - 2rem),
-                            1440px
-                        );
-                }
-
-                .topbar {
-                    align-items:
-                        flex-start;
-                }
-
-                .hero {
-                    padding-top:
-                        3rem;
-                }
-
-                .summary {
-                    grid-template-columns:
-                        1fr;
-                }
-
-                .source {
-                    grid-template-columns:
-                        1fr;
-                }
-
-            }
+        .hub-hero {
+            padding-top:
+                3.5rem;
+        }
+    }
 </style>
 
 <RiverOsLayout
-    title="Content Workspace · River OS"
+    title="River OS | The River Kept Flowing"
     workspaceVariant="dashboard"
+    activeSection="overview"
 >
-<section class="hero">
-                <div>
-                    <p class="eyebrow">
-                        River OS · Content
-                    </p>
+    <section class="hub-hero">
+        <p class="eyebrow">
+            River OS
+        </p>
 
-                    <h1>
-                        Content Workspace
-                    </h1>
+        <h1>
+            Operating workspace
+        </h1>
 
-                    <p class="hero-copy">
-                        Canonical published sources, transcript readiness,
-                        ingestion state, and the operational foundation for
-                        the content engine.
-                    </p>
-                </div>
+        <p class="hub-copy">
+            One private system for the work behind The River Kept Flowing.
+            Content is the first operational workspace; the remaining
+            domains will connect here as their governed foundations are built.
+        </p>
+    </section>
 
-                <aside class="connection">
-                    <p class="connection-label">
-                        Catalog connection
-                    </p>
+    <section
+        class="workspace-grid"
+        aria-label="River OS workspaces"
+    >
+        <article class="workspace-card available">
+            <div class="workspace-card-head">
+                <h2>
+                    Content
+                </h2>
 
-                    {
-                        catalogConnected
-                            ? (
-                                <>
-                                    <strong>
-                                        Connected
-                                    </strong>
+                <span class="status ready">
+                    Available
+                </span>
+            </div>
 
-                                    <p>
-                                        Reading the dedicated River content catalog.
-                                    </p>
-                                </>
-                            )
-                            : (
-                                <>
-                                    <strong>
-                                        Not connected
-                                    </strong>
+            <p>
+                Canonical sources, transcript readiness, ingestion state,
+                content-engine planning, and repurposing workflows.
+            </p>
 
-                                    <p>
-                                        {
-                                            catalogError ??
-                                            "A dedicated RIVER_CONTENT_DB binding has not been provisioned yet."
-                                        }
-                                    </p>
-                                </>
-                            )
-                    }
-                </aside>
-            </section>
-
-            <section
-                class="summary"
-                aria-label="Content catalog summary"
+            <a
+                class="workspace-link"
+                href="/river-os/content"
             >
-                <article class="metric">
-                    <span>
-                        Canonical sources
-                    </span>
+                Open Content Workspace →
+            </a>
+        </article>
 
-                    <strong>
-                        {summary.totalSources}
-                    </strong>
-                </article>
+        <article class="workspace-card">
+            <div class="workspace-card-head">
+                <h2>
+                    CRM
+                </h2>
 
-                <article class="metric">
-                    <span>
-                        Transcript pending
-                    </span>
+                <span class="status">
+                    Planned
+                </span>
+            </div>
 
-                    <strong>
-                        {summary.transcriptPending}
-                    </strong>
-                </article>
+            <p>
+                Leads, relationships, pipelines, follow-up, appointments,
+                routing, and future sales-team workflows.
+            </p>
 
-                <article class="metric">
-                    <span>
-                        Transcript available
-                    </span>
+            <span class="planned-note">
+                Not connected yet
+            </span>
+        </article>
 
-                    <strong>
-                        {summary.transcriptAvailable}
-                    </strong>
-                </article>
+        <article class="workspace-card">
+            <div class="workspace-card-head">
+                <h2>
+                    Operations
+                </h2>
 
-                <article class="metric">
-                    <span>
-                        Platforms
-                    </span>
+                <span class="status">
+                    Planned
+                </span>
+            </div>
 
-                    <strong>
-                        {summary.platforms}
-                    </strong>
-                </article>
-            </section>
+            <p>
+                Team workflows, permissions, fulfillment, quality control,
+                and the operating layer behind delivery.
+            </p>
 
-            <section class="catalog">
-                <header class="catalog-header">
-                    <div>
-                        <p class="eyebrow">
-                            Source registry
-                        </p>
+            <span class="planned-note">
+                Not connected yet
+            </span>
+        </article>
 
-                        <h2>
-                            Published content
-                        </h2>
+        <article class="workspace-card">
+            <div class="workspace-card-head">
+                <h2>
+                    Analytics
+                </h2>
 
-                        <p>
-                            Newest canonical sources first.
-                        </p>
-                    </div>
-                </header>
+                <span class="status">
+                    Planned
+                </span>
+            </div>
 
-                {
-                    entries.length === 0
-                        ? (
-                            <div class="empty">
-                                <strong>
-                                    {
-                                        catalogConnected
-                                            ? "No catalog entries yet."
-                                            : "Catalog awaiting connection."
-                                    }
-                                </strong>
+            <p>
+                Cross-system reporting for content, leads, revenue,
+                conversion, operations, and long-term decision support.
+            </p>
 
-                                <p>
-                                    {
-                                        catalogConnected
-                                            ? "Canonical sources will appear here as the River OS read model is populated."
-                                            : "The workspace is built and protected. Provisioning the dedicated content database is the remaining runtime connection step."
-                                    }
-                                </p>
-                            </div>
-                        )
-                        : (
-                            <ol class="source-list">
-                                {
-                                    entries.map(
-                                        (
-                                            entry
-                                        ) => (
-                                            <li class="source">
-                                                <div class="source-title">
-                                                    <a
-                                                            href={
-                                                                buildRiverContentSourceDetailPath(
-                                                                    entry.sourceId
-                                                                )
-                                                            }
-                                                        >
-                                                            {entry.title}
-                                                        </a>
+            <span class="planned-note">
+                Not connected yet
+            </span>
+        </article>
+    </section>
 
-                                                    <p>
-                                                        {entry.sourceId}
-                                                    </p>
-                                                </div>
+    <aside class="foundation">
+        <strong>
+            Built to expand without pretending unfinished systems are live.
+        </strong>
 
-                                                <div>
-                                                    <span class="field-label">
-                                                        Platform
-                                                    </span>
-
-                                                    <span class="field-value">
-                                                        {
-                                                            formatRiverContentPlatform(
-                                                                entry.platform
-                                                            )
-                                                        }
-                                                    </span>
-                                                </div>
-
-                                                <div>
-                                                    <span class="field-label">
-                                                        Transcript
-                                                    </span>
-
-                                                    <span
-                                                        class:list={[
-                                                            "state",
-                                                            {
-                                                                available:
-                                                                    entry.transcriptState ===
-                                                                    "available"
-                                                            }
-                                                        ]}
-                                                    >
-                                                        {
-                                                            entry.transcriptState ===
-                                                            "available"
-                                                                ? "Available"
-                                                                : "Pending"
-                                                        }
-                                                    </span>
-                                                </div>
-
-                                                <div>
-                                                    <span class="field-label">
-                                                        Published
-                                                    </span>
-
-                                                    <span class="field-value">
-                                                        {
-                                                            formatRiverContentDate(
-                                                                entry.publishedAt
-                                                            )
-                                                        }
-                                                    </span>
-                                                </div>
-                                            </li>
-                                        )
-                                    )
-                                }
-                            </ol>
-                        )
-                }
-            </section>
+        <p>
+            Only operational River OS workspaces receive navigation routes.
+            Planned domains remain visible here until their real foundations exist.
+        </p>
+    </aside>
 </RiverOsLayout>

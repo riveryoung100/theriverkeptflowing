@@ -4,13 +4,15 @@ interface Props {
     workspaceVariant?: "dashboard" | "detail";
     backHref?: string;
     backLabel?: string;
+    activeSection?: "overview" | "content";
 }
 
 const {
     title,
     workspaceVariant = "dashboard",
     backHref,
-    backLabel = "Back"
+    backLabel = "Back",
+    activeSection = "overview"
 } = Astro.props;
 
 const hasBackAction =
@@ -215,6 +217,42 @@ const hasBackAction =
                 gap:
                     0.75rem;
             }
+            .river-os-primary-nav {
+                display:
+                    flex;
+                align-items:
+                    center;
+                gap:
+                    0.45rem;
+                margin:
+                    1rem 0 0;
+            }
+
+            .river-os-primary-nav a {
+                border:
+                    1px solid transparent;
+                border-radius:
+                    999px;
+                color:
+                    var(--river-text-soft);
+                font-size:
+                    0.82rem;
+                font-weight:
+                    700;
+                text-decoration:
+                    none;
+                padding:
+                    0.55rem 0.85rem;
+            }
+
+            .river-os-primary-nav a[aria-current="page"] {
+                border-color:
+                    var(--river-line);
+                background:
+                    var(--river-white);
+                color:
+                    var(--river-ink);
+            }
 
             .river-os-back,
             .river-os-signout button {
@@ -333,6 +371,32 @@ const hasBackAction =
 
             </header>
 
+            <nav
+                class="river-os-primary-nav"
+                aria-label="River OS"
+            >
+                <a
+                    href="/river-os"
+                    aria-current={
+                        activeSection === "overview"
+                            ? "page"
+                            : undefined
+                    }
+                >
+                    Overview
+                </a>
+
+                <a
+                    href="/river-os/content"
+                    aria-current={
+                        activeSection === "content"
+                            ? "page"
+                            : undefined
+                    }
+                >
+                    Content
+                </a>
+            </nav>
             <slot />
 
         </main>
