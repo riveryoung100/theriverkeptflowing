@@ -15,6 +15,9 @@ import {
     formatRiverContentDate,
     formatRiverContentPlatform
 } from "../../lib/river-os/content-workspace";
+import {
+    createRiverContentEngineWorkspace
+} from "../../lib/river-os/content-engine-workspace";
 
 export const prerender =
     false;
@@ -45,6 +48,8 @@ let entry:
 
 let catalogError:
     string | undefined;
+let contentEngine:
+    ReturnType<typeof createRiverContentEngineWorkspace> | undefined;
 
 if (
     sourceId.length ===
@@ -92,6 +97,14 @@ else {
 
             catalogError =
                 "The requested source is not present in the River content catalog.";
+
+        }
+        else {
+
+            contentEngine =
+                createRiverContentEngineWorkspace(
+                    entry
+                );
 
         }
 
@@ -486,6 +499,100 @@ else {
                     400;
             }
 
+            .engine-workflow {
+                display:
+                    grid;
+                gap:
+                    0.75rem;
+                margin-top:
+                    1.5rem;
+            }
+
+            .engine-stage {
+                border:
+                    1px solid var(--river-line);
+                border-radius:
+                    14px;
+                padding:
+                    1rem;
+                background:
+                    rgba(247, 244, 237, 0.6);
+            }
+
+            .engine-stage-head {
+                display:
+                    flex;
+                align-items:
+                    center;
+                justify-content:
+                    space-between;
+                gap:
+                    1rem;
+            }
+
+            .engine-stage h3 {
+                margin:
+                    0;
+                font-family:
+                    var(--river-serif);
+                font-size:
+                    1.1rem;
+                font-weight:
+                    400;
+            }
+
+            .engine-stage p {
+                margin:
+                    0.65rem 0 0;
+                color:
+                    var(--river-text-soft);
+                line-height:
+                    1.55;
+            }
+
+            .engine-stage-state {
+                flex:
+                    0 0 auto;
+                border:
+                    1px solid rgba(168, 111, 80, 0.3);
+                border-radius:
+                    999px;
+                padding:
+                    0.3rem 0.55rem;
+                color:
+                    var(--river-clay);
+                font-size:
+                    0.7rem;
+                font-weight:
+                    700;
+                letter-spacing:
+                    0.05em;
+                text-transform:
+                    uppercase;
+            }
+
+            .engine-stage.ready .engine-stage-state {
+                border-color:
+                    rgba(41, 72, 58, 0.3);
+                color:
+                    var(--river-forest);
+            }
+
+            .engine-note {
+                margin-top:
+                    1.5rem;
+                padding-top:
+                    1.5rem;
+                border-top:
+                    1px solid var(--river-line);
+                color:
+                    var(--river-text-soft);
+                font-size:
+                    0.85rem;
+                line-height:
+                    1.6;
+            }
+
             .error {
                 margin-top:
                     3rem;
@@ -873,15 +980,57 @@ else {
                                         </p>
 
                                         <strong>
-                                            Operational actions coming next
+                                            Operational workflow
                                         </strong>
 
                                         <p class="actions-copy">
-                                            Transcript acquisition,
-                                            transformation, repurposing, and
-                                            publishing actions will attach here
-                                            without changing the canonical
-                                            source record.
+                                            This workspace shows what is ready
+                                            for this source without executing
+                                            external or destructive actions.
+                                        </p>
+
+                                        {
+                                            contentEngine === undefined
+                                                ? null
+                                                : (
+                                                    <div class="engine-workflow">
+                                                        {
+                                                            contentEngine.stages.map(
+                                                                (stage) => (
+                                                                    <section
+                                                                        class:list={[
+                                                                            "engine-stage",
+                                                                            stage.state
+                                                                        ]}
+                                                                    >
+                                                                        <div class="engine-stage-head">
+                                                                            <h3>
+                                                                                {stage.label}
+                                                                            </h3>
+
+                                                                            <span class="engine-stage-state">
+                                                                                {stage.stateLabel}
+                                                                            </span>
+                                                                        </div>
+
+                                                                        <p>
+                                                                            {stage.description}
+                                                                        </p>
+                                                                    </section>
+                                                                )
+                                                            )
+                                                        }
+                                                    </div>
+                                                )
+                                        }
+
+                                        <p class="engine-note">
+                                            Workflow controls will be connected
+                                            only through separately governed
+                                            operations. Nothing on this panel
+                                            currently acquires transcripts,
+                                            writes data, publishes content, or
+                                            contacts an external service.
                                         </p>
                                     </div>
                                 </aside>
