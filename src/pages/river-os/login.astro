@@ -1,0 +1,256 @@
+---
+import {
+    env
+} from "cloudflare:workers";
+
+import {
+    readRiverOsAccessKey,
+    riverOsAccessKeysMatch,
+    RIVER_OS_SESSION_KEY,
+    RIVER_OS_SESSION_TTL_SECONDS
+} from "../../lib/river-os/access";
+
+export const prerender =
+    false;
+
+let errorMessage:
+    string | undefined;
+
+Astro.response.headers.set(
+    "cache-control",
+    "no-store"
+);
+
+if (
+    Astro.request.method ===
+    "POST"
+) {
+
+    const session =
+        Astro.session;
+
+    if (session === undefined) {
+
+        errorMessage =
+            "River OS session support is unavailable.";
+
+    }
+    else {
+
+        try {
+
+            const body =
+                await Astro.request
+                    .formData();
+
+            const submitted =
+                body.get(
+                    "accessKey"
+                );
+
+            const configured =
+                readRiverOsAccessKey(
+                    env as unknown as
+                        Record<string, unknown>
+                );
+
+            const valid =
+                typeof submitted ===
+                    "string" &&
+                await riverOsAccessKeysMatch(
+                    submitted,
+                    configured
+                );
+
+            if (valid) {
+
+                await session.regenerate();
+
+                session.set(
+                    RIVER_OS_SESSION_KEY,
+                    true,
+                    {
+                        ttl:
+                            RIVER_OS_SESSION_TTL_SECONDS
+                    }
+                );
+
+                return Astro.redirect(
+                    "/river-os",
+                    303
+                );
+
+            }
+
+            errorMessage =
+                "Access denied.";
+
+        }
+        catch {
+
+            errorMessage =
+                "River OS access is not configured.";
+
+        }
+
+    }
+
+}
+---
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width"
+        />
+        <meta
+            name="robots"
+            content="noindex,nofollow,noarchive"
+        />
+        <title>River OS Access</title>
+        <style>
+            :root {
+                font-family:
+                    system-ui,
+                    sans-serif;
+                color:
+                    #17211d;
+                background:
+                    #f7f4ed;
+            }
+
+            body {
+                margin:
+                    0;
+                min-height:
+                    100vh;
+                display:
+                    grid;
+                place-items:
+                    center;
+                padding:
+                    24px;
+            }
+
+            main {
+                width:
+                    min(100%, 420px);
+            }
+
+            h1 {
+                margin:
+                    0 0 8px;
+                font-family:
+                    Georgia,
+                    serif;
+                font-weight:
+                    500;
+            }
+
+            p {
+                line-height:
+                    1.6;
+            }
+
+            form {
+                display:
+                    grid;
+                gap:
+                    14px;
+                margin-top:
+                    28px;
+            }
+
+            label {
+                font-weight:
+                    600;
+            }
+
+            input {
+                width:
+                    100%;
+                box-sizing:
+                    border-box;
+                padding:
+                    12px 14px;
+                border:
+                    1px solid #607f83;
+                border-radius:
+                    8px;
+                font:
+                    inherit;
+                background:
+                    white;
+            }
+
+            button {
+                padding:
+                    12px 16px;
+                border:
+                    0;
+                border-radius:
+                    8px;
+                font:
+                    inherit;
+                font-weight:
+                    700;
+                color:
+                    #f7f4ed;
+                background:
+                    #29483a;
+                cursor:
+                    pointer;
+            }
+
+            .error {
+                padding:
+                    12px;
+                border-radius:
+                    8px;
+                background:
+                    #fff;
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            <h1>River OS</h1>
+            <p>
+                Private operating workspace.
+            </p>
+
+            {
+                errorMessage &&
+                (
+                    <p
+                        class="error"
+                        role="alert"
+                    >
+                        {errorMessage}
+                    </p>
+                )
+            }
+
+            <form method="post">
+                <label for="accessKey">
+                    Access key
+                </label>
+
+                <input
+                    id="accessKey"
+                    name="accessKey"
+                    type="password"
+                    autocomplete="current-password"
+                    required
+                    autofocus
+                />
+
+                <button type="submit">
+                    Enter River OS
+                </button>
+            </form>
+        </main>
+    </body>
+</html>
