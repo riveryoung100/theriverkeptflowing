@@ -11,7 +11,8 @@
 			"binding": "RIVER_COMMERCE_DB",
 			"database_name": "river-commerce",
 			"database_id": "b5ddbe8e-5e9e-47a8-bbe2-10778fa62aba",
-			"migrations_dir": "../../migrations"
+			"migrations_dir": "../../migrations",
+                  "migrations_pattern": "../../migrations/*.sql"
 		}
 	],
 	"r2_buckets": [
