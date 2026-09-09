@@ -12,6 +12,7 @@ import type {
 } from "../../lib/river-os/content-catalog";
 
 import {
+    buildRiverContentSourceDetailPath,
     formatRiverContentDate,
     formatRiverContentPlatform,
     summarizeRiverContentWorkspace
@@ -869,12 +870,14 @@ const summary =
                                             <li class="source">
                                                 <div class="source-title">
                                                     <a
-                                                        href={entry.canonicalUrl}
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                    >
-                                                        {entry.title}
-                                                    </a>
+                                                            href={
+                                                                buildRiverContentSourceDetailPath(
+                                                                    entry.sourceId
+                                                                )
+                                                            }
+                                                        >
+                                                            {entry.title}
+                                                        </a>
 
                                                     <p>
                                                         {entry.sourceId}

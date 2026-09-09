@@ -1,0 +1,894 @@
+---
+import {
+    env
+} from "cloudflare:workers";
+
+import {
+    createD1RiverContentCatalogPersistence
+} from "../../lib/river-os/d1-content-catalog";
+
+import type {
+    RiverContentCatalogEntry
+} from "../../lib/river-os/content-catalog";
+
+import {
+    formatRiverContentDate,
+    formatRiverContentPlatform
+} from "../../lib/river-os/content-workspace";
+
+export const prerender =
+    false;
+
+Astro.response.headers.set(
+    "cache-control",
+    "no-store"
+);
+
+const runtimeEnvironment =
+    env as unknown as
+        Record<string, unknown>;
+
+const database =
+    runtimeEnvironment
+        .RIVER_CONTENT_DB;
+
+const sourceId =
+    Astro.url.searchParams
+        .get(
+            "sourceId"
+        )
+        ?.trim() ??
+    "";
+
+let entry:
+    RiverContentCatalogEntry | undefined;
+
+let catalogError:
+    string | undefined;
+
+if (
+    sourceId.length ===
+    0
+) {
+
+    Astro.response.status =
+        400;
+
+    catalogError =
+        "No source identity was provided.";
+
+}
+else if (
+    database === undefined
+) {
+
+    Astro.response.status =
+        503;
+
+    catalogError =
+        "The dedicated River content catalog is not connected.";
+
+}
+else {
+
+    try {
+
+        const catalog =
+            createD1RiverContentCatalogPersistence(
+                database as D1Database
+            );
+
+        entry =
+            await catalog.get(
+                sourceId
+            );
+
+        if (
+            entry === undefined
+        ) {
+
+            Astro.response.status =
+                404;
+
+            catalogError =
+                "The requested source is not present in the River content catalog.";
+
+        }
+
+    }
+    catch {
+
+        Astro.response.status =
+            503;
+
+        catalogError =
+            "The content catalog could not be read.";
+
+    }
+
+}
+---
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1"
+        />
+
+        <meta
+            name="robots"
+            content="noindex,nofollow,noarchive"
+        />
+
+        <title>
+            {
+                entry === undefined
+                    ? "Source Detail | River OS"
+                    : `${entry.title} | River OS`
+            }
+        </title>
+
+        <style>
+            :root {
+                --river-ink: #17211d;
+                --river-ink-soft: #314039;
+                --river-forest: #29483a;
+                --river-forest-deep: #1f382e;
+                --river-water: #607f83;
+                --river-clay: #a86f50;
+                --river-gold: #b58a4a;
+                --river-paper: #f7f4ed;
+                --river-paper-warm: #f0ebe0;
+                --river-white: #fffdf8;
+                --river-line: rgba(23, 33, 29, 0.13);
+                --river-text-soft: #53605a;
+                --river-text-muted: #737d77;
+                --river-serif:
+                    "Iowan Old Style",
+                    "Palatino Linotype",
+                    "Book Antiqua",
+                    Palatino,
+                    Georgia,
+                    "Times New Roman",
+                    serif;
+                --river-sans:
+                    Inter,
+                    ui-sans-serif,
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    "Segoe UI",
+                    Helvetica,
+                    Arial,
+                    sans-serif;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            html {
+                background:
+                    var(--river-paper);
+                color:
+                    var(--river-ink);
+                font-family:
+                    var(--river-sans);
+            }
+
+            body {
+                margin:
+                    0;
+                min-height:
+                    100vh;
+                background:
+                    linear-gradient(
+                        180deg,
+                        var(--river-paper) 0%,
+                        var(--river-paper-warm) 100%
+                    );
+            }
+
+            a {
+                color:
+                    inherit;
+            }
+
+            .workspace {
+                width:
+                    min(
+                        calc(100% - 3rem),
+                        1240px
+                    );
+                margin:
+                    0 auto;
+                padding-bottom:
+                    5rem;
+            }
+
+            .topbar {
+                min-height:
+                    86px;
+                display:
+                    flex;
+                align-items:
+                    center;
+                justify-content:
+                    space-between;
+                gap:
+                    1rem;
+                border-bottom:
+                    1px solid var(--river-line);
+            }
+
+            .identity {
+                display:
+                    flex;
+                flex-direction:
+                    column;
+                gap:
+                    0.15rem;
+            }
+
+            .identity span,
+            .eyebrow,
+            .field-label {
+                color:
+                    var(--river-text-muted);
+                font-size:
+                    0.72rem;
+                font-weight:
+                    700;
+                letter-spacing:
+                    0.12em;
+                text-transform:
+                    uppercase;
+            }
+
+            .identity strong {
+                font-family:
+                    var(--river-serif);
+                font-size:
+                    1.1rem;
+                font-weight:
+                    400;
+            }
+
+            .top-actions {
+                display:
+                    flex;
+                align-items:
+                    center;
+                gap:
+                    0.75rem;
+            }
+
+            .back,
+            .signout button,
+            .published-link {
+                border:
+                    1px solid var(--river-line);
+                border-radius:
+                    999px;
+                background:
+                    transparent;
+                color:
+                    var(--river-ink);
+                font:
+                    inherit;
+                font-size:
+                    0.85rem;
+                text-decoration:
+                    none;
+                padding:
+                    0.7rem 1rem;
+                cursor:
+                    pointer;
+            }
+
+            .published-link {
+                display:
+                    inline-flex;
+                align-items:
+                    center;
+                border-color:
+                    var(--river-forest);
+                background:
+                    var(--river-forest);
+                color:
+                    var(--river-white);
+            }
+
+            .hero {
+                padding:
+                    4.75rem 0 3rem;
+                border-bottom:
+                    1px solid var(--river-line);
+            }
+
+            .hero h1 {
+                max-width:
+                    900px;
+                margin:
+                    0.75rem 0 0;
+                font-family:
+                    var(--river-serif);
+                font-size:
+                    clamp(
+                        2.5rem,
+                        6vw,
+                        5.5rem
+                    );
+                font-weight:
+                    400;
+                line-height:
+                    0.98;
+                letter-spacing:
+                    -0.045em;
+            }
+
+            .hero-copy {
+                max-width:
+                    720px;
+                margin:
+                    1.5rem 0 0;
+                color:
+                    var(--river-text-soft);
+                font-size:
+                    1.05rem;
+                line-height:
+                    1.7;
+            }
+
+            .state {
+                display:
+                    inline-flex;
+                width:
+                    fit-content;
+                margin-top:
+                    1.25rem;
+                border:
+                    1px solid rgba(168, 111, 80, 0.35);
+                border-radius:
+                    999px;
+                background:
+                    rgba(168, 111, 80, 0.08);
+                color:
+                    var(--river-clay);
+                padding:
+                    0.45rem 0.7rem;
+                font-size:
+                    0.78rem;
+                font-weight:
+                    700;
+            }
+
+            .state.available {
+                border-color:
+                    rgba(41, 72, 58, 0.3);
+                background:
+                    rgba(41, 72, 58, 0.08);
+                color:
+                    var(--river-forest);
+            }
+
+            .grid {
+                display:
+                    grid;
+                grid-template-columns:
+                    minmax(0, 1.5fr)
+                    minmax(280px, 0.75fr);
+                gap:
+                    1.5rem;
+                padding-top:
+                    2rem;
+            }
+
+            .panel {
+                border:
+                    1px solid var(--river-line);
+                border-radius:
+                    18px;
+                background:
+                    rgba(255, 253, 248, 0.72);
+                padding:
+                    1.5rem;
+            }
+
+            .panel h2 {
+                margin:
+                    0.35rem 0 1.5rem;
+                font-family:
+                    var(--river-serif);
+                font-size:
+                    1.8rem;
+                font-weight:
+                    400;
+            }
+
+            .fields {
+                display:
+                    grid;
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+                gap:
+                    0;
+                border-top:
+                    1px solid var(--river-line);
+            }
+
+            .field {
+                min-width:
+                    0;
+                padding:
+                    1rem 1rem 1rem 0;
+                border-bottom:
+                    1px solid var(--river-line);
+            }
+
+            .field:nth-child(even) {
+                padding-left:
+                    1rem;
+                border-left:
+                    1px solid var(--river-line);
+            }
+
+            .field-value {
+                display:
+                    block;
+                margin-top:
+                    0.4rem;
+                overflow-wrap:
+                    anywhere;
+                line-height:
+                    1.45;
+            }
+
+            .description {
+                margin:
+                    0 0 1.5rem;
+                color:
+                    var(--river-text-soft);
+                line-height:
+                    1.7;
+            }
+
+            .actions-copy {
+                margin:
+                    0;
+                color:
+                    var(--river-text-soft);
+                line-height:
+                    1.65;
+            }
+
+            .preserved {
+                margin-top:
+                    1.5rem;
+                padding-top:
+                    1.5rem;
+                border-top:
+                    1px solid var(--river-line);
+            }
+
+            .preserved strong {
+                display:
+                    block;
+                margin-bottom:
+                    0.45rem;
+                font-family:
+                    var(--river-serif);
+                font-size:
+                    1.25rem;
+                font-weight:
+                    400;
+            }
+
+            .error {
+                margin-top:
+                    3rem;
+                border:
+                    1px solid var(--river-line);
+                border-radius:
+                    18px;
+                background:
+                    var(--river-white);
+                padding:
+                    2rem;
+            }
+
+            .error h1 {
+                margin:
+                    0 0 0.75rem;
+                font-family:
+                    var(--river-serif);
+                font-weight:
+                    400;
+            }
+
+            .error p {
+                margin:
+                    0;
+                color:
+                    var(--river-text-soft);
+            }
+
+            @media (
+                max-width: 820px
+            ) {
+
+                .grid {
+                    grid-template-columns:
+                        1fr;
+                }
+
+                .fields {
+                    grid-template-columns:
+                        1fr;
+                }
+
+                .field:nth-child(even) {
+                    padding-left:
+                        0;
+                    border-left:
+                        0;
+                }
+
+            }
+
+            @media (
+                max-width: 620px
+            ) {
+
+                .workspace {
+                    width:
+                        min(
+                            calc(100% - 2rem),
+                            1240px
+                        );
+                }
+
+                .topbar {
+                    align-items:
+                        flex-start;
+                    padding:
+                        1rem 0;
+                }
+
+                .top-actions {
+                    align-items:
+                        flex-end;
+                    flex-direction:
+                        column;
+                }
+
+                .hero {
+                    padding-top:
+                        3rem;
+                }
+
+            }
+        </style>
+    </head>
+
+    <body>
+        <main class="workspace">
+            <header class="topbar">
+                <div class="identity">
+                    <span>
+                        Private operating system
+                    </span>
+
+                    <strong>
+                        The River Kept Flowing
+                    </strong>
+                </div>
+
+                <div class="top-actions">
+                    <a
+                        class="back"
+                        href="/river-os"
+                    >
+                        Back to content
+                    </a>
+
+                    <form
+                        class="signout"
+                        method="post"
+                        action="/river-os/logout"
+                    >
+                        <button type="submit">
+                            Sign out
+                        </button>
+                    </form>
+                </div>
+            </header>
+
+            {
+                entry === undefined
+                    ? (
+                        <section class="error">
+                            <p class="eyebrow">
+                                River OS / Source
+                            </p>
+
+                            <h1>
+                                Source unavailable
+                            </h1>
+
+                            <p>
+                                {
+                                    catalogError ??
+                                    "The requested source could not be loaded."
+                                }
+                            </p>
+                        </section>
+                    )
+                    : (
+                        <>
+                            <section class="hero">
+                                <p class="eyebrow">
+                                    River OS / Canonical source
+                                </p>
+
+                                <h1>
+                                    {entry.title}
+                                </h1>
+
+                                {
+                                    entry.description === undefined
+                                        ? null
+                                        : (
+                                            <p class="hero-copy">
+                                                {entry.description}
+                                            </p>
+                                        )
+                                }
+
+                                <span
+                                    class:list={[
+                                        "state",
+                                        {
+                                            available:
+                                                entry.transcriptState ===
+                                                "available"
+                                        }
+                                    ]}
+                                >
+                                    {
+                                        entry.transcriptState ===
+                                        "available"
+                                            ? "Transcript available"
+                                            : "Transcript pending"
+                                    }
+                                </span>
+                            </section>
+
+                            <section class="grid">
+                                <article class="panel">
+                                    <p class="eyebrow">
+                                        Source record
+                                    </p>
+
+                                    <h2>
+                                        Canonical metadata
+                                    </h2>
+
+                                    <div class="fields">
+                                        <div class="field">
+                                            <span class="field-label">
+                                                Source ID
+                                            </span>
+
+                                            <span class="field-value">
+                                                {entry.sourceId}
+                                            </span>
+                                        </div>
+
+                                        <div class="field">
+                                            <span class="field-label">
+                                                Platform
+                                            </span>
+
+                                            <span class="field-value">
+                                                {
+                                                    formatRiverContentPlatform(
+                                                        entry.platform
+                                                    )
+                                                }
+                                            </span>
+                                        </div>
+
+                                        <div class="field">
+                                            <span class="field-label">
+                                                External ID
+                                            </span>
+
+                                            <span class="field-value">
+                                                {entry.externalPlatformId}
+                                            </span>
+                                        </div>
+
+                                        <div class="field">
+                                            <span class="field-label">
+                                                Published
+                                            </span>
+
+                                            <span class="field-value">
+                                                {
+                                                    formatRiverContentDate(
+                                                        entry.publishedAt
+                                                    )
+                                                }
+                                            </span>
+                                        </div>
+
+                                        <div class="field">
+                                            <span class="field-label">
+                                                Source status
+                                            </span>
+
+                                            <span class="field-value">
+                                                {entry.sourceStatus}
+                                            </span>
+                                        </div>
+
+                                        <div class="field">
+                                            <span class="field-label">
+                                                Transcript state
+                                            </span>
+
+                                            <span class="field-value">
+                                                {entry.transcriptState}
+                                            </span>
+                                        </div>
+
+                                        <div class="field">
+                                            <span class="field-label">
+                                                Transcript ID
+                                            </span>
+
+                                            <span class="field-value">
+                                                {
+                                                    entry.transcriptId ??
+                                                    "Not available"
+                                                }
+                                            </span>
+                                        </div>
+
+                                        <div class="field">
+                                            <span class="field-label">
+                                                Transcript persisted
+                                            </span>
+
+                                            <span class="field-value">
+                                                {
+                                                    entry.transcriptPersistedAt ===
+                                                    undefined
+                                                        ? "Not available"
+                                                        : formatRiverContentDate(
+                                                            entry.transcriptPersistedAt
+                                                        )
+                                                }
+                                            </span>
+                                        </div>
+
+                                        <div class="field">
+                                            <span class="field-label">
+                                                Transcript provider
+                                            </span>
+
+                                            <span class="field-value">
+                                                {
+                                                    entry.transcriptProvider ??
+                                                    "Not available"
+                                                }
+                                            </span>
+                                        </div>
+
+                                        <div class="field">
+                                            <span class="field-label">
+                                                Transcript language
+                                            </span>
+
+                                            <span class="field-value">
+                                                {
+                                                    entry.transcriptLanguage ??
+                                                    "Not available"
+                                                }
+                                            </span>
+                                        </div>
+
+                                        <div class="field">
+                                            <span class="field-label">
+                                                Ingested
+                                            </span>
+
+                                            <span class="field-value">
+                                                {
+                                                    formatRiverContentDate(
+                                                        entry.ingestedAt
+                                                    )
+                                                }
+                                            </span>
+                                        </div>
+
+                                        <div class="field">
+                                            <span class="field-label">
+                                                Last catalog update
+                                            </span>
+
+                                            <span class="field-value">
+                                                {
+                                                    formatRiverContentDate(
+                                                        entry.updatedAt
+                                                    )
+                                                }
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="preserved">
+                                        <strong>
+                                            Original source preserved
+                                        </strong>
+
+                                        <p class="actions-copy">
+                                            This operational record mirrors the
+                                            published source without redefining
+                                            the canonical assimilation record.
+                                        </p>
+                                    </div>
+                                </article>
+
+                                <aside class="panel">
+                                    <p class="eyebrow">
+                                        Published source
+                                    </p>
+
+                                    <h2>
+                                        Original platform
+                                    </h2>
+
+                                    <p class="description">
+                                        Open the canonical published source in
+                                        a separate tab without leaving the River
+                                        OS record.
+                                    </p>
+
+                                    <a
+                                        class="published-link"
+                                        href={entry.canonicalUrl}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    >
+                                        Open published source
+                                    </a>
+
+                                    <div class="preserved">
+                                        <p class="eyebrow">
+                                            Content engine
+                                        </p>
+
+                                        <strong>
+                                            Operational actions coming next
+                                        </strong>
+
+                                        <p class="actions-copy">
+                                            Transcript acquisition,
+                                            transformation, repurposing, and
+                                            publishing actions will attach here
+                                            without changing the canonical
+                                            source record.
+                                        </p>
+                                    </div>
+                                </aside>
+                            </section>
+                        </>
+                    )
+            }
+        </main>
+    </body>
+</html>

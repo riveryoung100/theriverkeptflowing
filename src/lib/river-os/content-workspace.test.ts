@@ -9,6 +9,7 @@ import type {
 } from "./content-catalog";
 
 import {
+    buildRiverContentSourceDetailPath,
     formatRiverContentDate,
     formatRiverContentPlatform,
     summarizeRiverContentWorkspace
@@ -164,5 +165,34 @@ describe(
             }
         );
 
+
+        it(
+            "builds a private detail path without changing source identity",
+            () => {
+
+                assert.equal(
+                    buildRiverContentSourceDetailPath(
+                        "source:youtube:one"
+                    ),
+                    "/river-os/source?sourceId=source%3Ayoutube%3Aone"
+                );
+
+            }
+        );
+
+        it(
+            "rejects invalid source identities for detail navigation",
+            () => {
+
+                assert.throws(
+                    () =>
+                        buildRiverContentSourceDetailPath(
+                            " youtube:one "
+                        ),
+                    /valid source identity/
+                );
+
+            }
+        );
     }
 );

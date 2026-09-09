@@ -144,3 +144,31 @@ export function formatRiverContentPlatform(
     );
 
 }
+export function buildRiverContentSourceDetailPath(
+    sourceId:
+        string
+): string {
+
+    if (
+        sourceId.trim() !== sourceId ||
+        !sourceId.startsWith(
+            "source:"
+        ) ||
+        sourceId.length <=
+            "source:".length
+    ) {
+
+        throw new TypeError(
+            "River content source detail path requires a valid source identity."
+        );
+
+    }
+
+    return (
+        "/river-os/source?sourceId=" +
+        encodeURIComponent(
+            sourceId
+        )
+    );
+
+}
