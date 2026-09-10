@@ -4,6 +4,7 @@ import test from "node:test";
 import {
     createRiverCommerceProduct,
     getRiverCommerceProduct,
+    KNOW_YOUR_NUMBER_COMMERCE_PRODUCT,
     RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT,
 } from "./product-catalog";
 
@@ -245,6 +246,67 @@ test(
                         39.5,
                 }),
             /positive whole-cent/,
+        );
+    },
+);
+
+test(
+    "PRODUCT-002L registers Know Your Number v1 with its approved release",
+    () => {
+        assert.deepEqual(
+            KNOW_YOUR_NUMBER_COMMERCE_PRODUCT,
+            {
+                productId:
+                    "know-your-number",
+
+                productVersion:
+                    "v1",
+
+                productName:
+                    "Know Your Number",
+
+                unitAmountUsdCents:
+                    4900,
+
+                checkoutPath:
+                    "/api/commerce/create-checkout",
+
+                successPath:
+                    "/shop?checkout=success&session_id={CHECKOUT_SESSION_ID}",
+
+                cancelPath:
+                    "/shop?checkout=cancelled",
+
+                approvedReleaseId:
+                    "know-your-number-v1-approved-001",
+
+                deliverySubject:
+                    "Your Know Your Number Money Plan",
+
+                deliveryText:
+                    "Thank you for your purchase. Your Know Your Number Money & Future Planning System is attached.",
+            },
+        );
+    },
+);
+
+test(
+    "PRODUCT-002L resolves only the exact Know Your Number v1 identity",
+    () => {
+        assert.equal(
+            getRiverCommerceProduct(
+                "know-your-number",
+                "v1",
+            ),
+            KNOW_YOUR_NUMBER_COMMERCE_PRODUCT,
+        );
+
+        assert.equal(
+            getRiverCommerceProduct(
+                "know-your-number",
+                "v2",
+            ),
+            undefined,
         );
     },
 );
