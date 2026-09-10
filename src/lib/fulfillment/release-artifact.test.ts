@@ -20,6 +20,10 @@ import {
 import test from "node:test";
 
 import {
+    PDFDocument
+} from "pdf-lib";
+
+import {
     buildProductReleaseArtifact
 } from "./release-artifact";
 
@@ -208,6 +212,16 @@ test(
                 "approved"
             );
 
+            const pdfDocument =
+                await PDFDocument.load(
+                    artifact
+                );
+
+            assert.equal(
+                pdfDocument.getTitle(),
+                "The River Life Operating System"
+            );
+
             const manifest =
                 JSON.parse(
                     await readFile(
@@ -239,6 +253,94 @@ test(
     }
 );
 
+
+test(
+    "supports a product-specific PDF title without changing the PRODUCT-001 default",
+    async () => {
+
+        const fixture =
+            await createFixture();
+
+        try {
+
+            const result =
+                await buildProductReleaseArtifact({
+                    productId:
+                        "know-your-number",
+
+                    productVersion:
+                        "v1",
+
+                    releaseId:
+                        "know-your-number-release-001",
+
+                    sourceManuscriptPath:
+                        fixture.source,
+
+                    outputDirectory:
+                        fixture.output,
+
+                    artifactFilename:
+                        "know-your-number-v1.pdf",
+
+                    documentTitle:
+                        "Know Your Number",
+
+                    releaseStatus:
+                        "draft",
+
+                    createdAt:
+                        "2026-09-09T00:00:00.000Z"
+                });
+
+            const artifact =
+                await readFile(
+                    result.artifactPath
+                );
+
+            const pdfDocument =
+                await PDFDocument.load(
+                    artifact
+                );
+
+            assert.equal(
+                pdfDocument.getTitle(),
+                "Know Your Number"
+            );
+
+            assert.equal(
+                result.release.productId,
+                "know-your-number"
+            );
+
+            assert.equal(
+                result.release.productVersion,
+                "v1"
+            );
+
+            assert.equal(
+                result.release.artifactFilename,
+                "know-your-number-v1.pdf"
+            );
+
+        }
+        finally {
+
+            await rm(
+                fixture.root,
+                {
+                    recursive:
+                        true,
+
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);
 
 test(
     "rejects approved generation without an expected authoritative source hash",

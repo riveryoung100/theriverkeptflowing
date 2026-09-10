@@ -49,6 +49,9 @@ export interface ProductReleaseArtifactInput {
     artifactFilename:
         string;
 
+    documentTitle?:
+        string;
+
     releaseStatus:
         ProductReleaseStatus;
 
@@ -358,6 +361,8 @@ function assertPrivateOutputPath(
 
 async function createPdfBytes(
     markdown:
+        string,
+    documentTitle:
         string
 ): Promise<Uint8Array> {
 
@@ -375,7 +380,7 @@ async function createPdfBytes(
         );
 
     document.setTitle(
-        "The River Life Operating System"
+        documentTitle
     );
 
     document.setAuthor(
@@ -567,6 +572,15 @@ export async function buildProductReleaseArtifact(
         input.artifactFilename
     );
 
+    const documentTitle =
+        input.documentTitle ??
+        "The River Life Operating System";
+
+    assertNonEmpty(
+        "documentTitle",
+        documentTitle
+    );
+
     if (
         extname(
             input.artifactFilename
@@ -665,7 +679,8 @@ export async function buildProductReleaseArtifact(
 
     const pdfBytes =
         await createPdfBytes(
-            sourceMarkdown
+            sourceMarkdown,
+            documentTitle
         );
 
     const artifactSha256 =
