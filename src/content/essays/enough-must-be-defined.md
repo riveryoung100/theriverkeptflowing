@@ -66,6 +66,8 @@ That is what makes the question difficult.
 
 Enough is not merely a financial number.
 
+For the financial part of that question, [Know Your Number](/shop/know-your-number/) helps turn household priorities into a monthly number using Live, Enjoy, Protect, and Build.
+
 It is also a boundary around what we are willing to sacrifice in order to obtain more.
 
 How much money is really enough?
