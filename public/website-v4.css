@@ -2217,39 +2217,48 @@ button {
 @media (prefers-reduced-motion: reduce) {
   .home-v4 .home-orientation__primary, .home-v4 .home-orientation__alternatives a, .library-page a, .reading-page-shell a, .series-navigation__link, .river-search-result__link { transition: none !important; transform: none !important; }
 }
-
-/* SITE-UX-009 - MOBILE NAVIGATION + SEARCH BAR */
+/* SITE-UX-022 - STICKY MOBILE SEARCH BESIDE HAMBURGER */
 @media (max-width: 980px) {
-    .river-mobile-search {
+    .river-header__actions {
         display: flex;
-        width: 100%;
-        min-height: 52px;
-        margin: 0 0 1rem;
-        padding: 0.85rem 1rem;
         align-items: center;
-        gap: 0.75rem;
-        border: 1px solid rgba(24, 56, 47, 0.2);
+        gap: 0.55rem;
+        margin-left: auto;
+    }
+
+    .river-header__actions > .river-header__utility,
+    .river-header__actions > .river-header__cta {
+        display: none;
+    }
+
+    .river-header__actions > .river-search {
+        display: block;
+        min-width: 0;
+    }
+
+    .river-search__trigger {
+        display: inline-flex;
+        min-height: 44px;
+        padding: 0.65rem 0.8rem;
+        align-items: center;
+        gap: 0.45rem;
         border-radius: 999px;
-        background: rgba(255, 253, 247, 0.96);
-        color: inherit;
-        font: inherit;
-        text-align: left;
-        cursor: pointer;
+        white-space: nowrap;
     }
 
-    .river-mobile-search__icon {
-        width: 1.2rem;
-        height: 1.2rem;
+    .river-search__shortcut {
+        display: none;
+    }
+
+    .river-search__icon {
+        width: 1.1rem;
+        height: 1.1rem;
         flex: 0 0 auto;
-        fill: none;
-        stroke: currentColor;
-        stroke-width: 1.8;
-        stroke-linecap: round;
     }
 
-    .river-mobile-search:focus-visible {
-        outline: 3px solid currentColor;
-        outline-offset: 3px;
+    .river-menu-toggle {
+        display: inline-flex;
+        flex: 0 0 auto;
     }
 
     .river-search__dialog {
@@ -2273,5 +2282,15 @@ button {
     .river-search__input {
         min-height: 52px;
         font-size: 16px;
+    }
+}
+
+@media (max-width: 430px) {
+    .river-search__trigger {
+        padding-inline: 0.7rem;
+    }
+
+    .river-search__trigger-label {
+        font-size: 0.9rem;
     }
 }
