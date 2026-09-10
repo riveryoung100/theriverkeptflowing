@@ -5,6 +5,7 @@ import {
     CLOSED_PRODUCT_PURCHASE_CTA_PUBLICATION_STATE,
     PRODUCT_001F_04_CHECKOUT_PUBLICATION_STATE,
     RIVER_LIFE_OPERATING_SYSTEM_CHECKOUT_ENDPOINT,
+    buildPublicProductPurchaseCta,
     buildPublicPurchaseCta,
 } from "./product-purchase-cta";
 
@@ -49,6 +50,12 @@ test(
 
                 checkoutEndpoint:
                     "/api/commerce/create-checkout",
+
+                productId:
+                    "river-life-operating-system",
+
+                productVersion:
+                    "v1",
             }
         );
     }
@@ -97,7 +104,106 @@ test(
 
                 checkoutEndpoint:
                     "/api/commerce/create-checkout",
+
+                productId:
+                    "river-life-operating-system",
+
+                productVersion:
+                    "v1",
             }
+        );
+    }
+);
+test(
+    "PRODUCT-002M builds a governed CTA for an explicit registered product identity",
+    () => {
+        assert.deepEqual(
+            buildPublicProductPurchaseCta(
+                {
+                    checkoutPublicationAuthorized:
+                        true,
+                },
+                {
+                    productId:
+                        "know-your-number",
+
+                    productVersion:
+                        "v1",
+
+                    productName:
+                        "Know Your Number",
+
+                    checkoutEndpoint:
+                        "/api/commerce/create-checkout",
+                }
+            ),
+            {
+                label:
+                    "Purchase Know Your Number",
+
+                checkoutEndpoint:
+                    "/api/commerce/create-checkout",
+
+                productId:
+                    "know-your-number",
+
+                productVersion:
+                    "v1",
+            }
+        );
+    }
+);
+
+test(
+    "PRODUCT-002M keeps explicit product identity unavailable while checkout publication is closed",
+    () => {
+        assert.equal(
+            buildPublicProductPurchaseCta(
+                CLOSED_PRODUCT_PURCHASE_CTA_PUBLICATION_STATE,
+                {
+                    productId:
+                        "know-your-number",
+
+                    productVersion:
+                        "v1",
+
+                    productName:
+                        "Know Your Number",
+
+                    checkoutEndpoint:
+                        "/api/commerce/create-checkout",
+                }
+            ),
+            null
+        );
+    }
+);
+
+test(
+    "PRODUCT-002M rejects malformed explicit CTA product metadata when publication is authorized",
+    () => {
+        assert.throws(
+            () =>
+                buildPublicProductPurchaseCta(
+                    {
+                        checkoutPublicationAuthorized:
+                            true,
+                    },
+                    {
+                        productId:
+                            " know-your-number ",
+
+                        productVersion:
+                            "v1",
+
+                        productName:
+                            "Know Your Number",
+
+                        checkoutEndpoint:
+                            "/api/commerce/create-checkout",
+                    }
+                ),
+            /Product id must be a non-empty normalized string/
         );
     }
 );

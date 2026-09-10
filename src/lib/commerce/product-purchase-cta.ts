@@ -5,6 +5,8 @@ export interface PurchaseCtaPublicationState {
 export interface PublicPurchaseCta {
     label: string;
     checkoutEndpoint: string;
+    productId: string;
+    productVersion: string;
 }
 
 export const RIVER_LIFE_OPERATING_SYSTEM_CHECKOUT_ENDPOINT =
@@ -22,9 +24,34 @@ export const PRODUCT_001F_04_CHECKOUT_PUBLICATION_STATE:
         checkoutPublicationAuthorized: true,
     });
 
-export function buildPublicPurchaseCta(
+export interface PublicPurchaseCtaProduct {
+    productId: string;
+    productVersion: string;
+    productName: string;
+    checkoutEndpoint: string;
+}
+
+function requireNormalizedPurchaseCtaValue(
+    value: string,
+    label: string
+): string {
+    if (
+        value.length === 0 ||
+        value.trim() !== value
+    ) {
+        throw new Error(
+            `${label} must be a non-empty normalized string.`
+        );
+    }
+
+    return value;
+}
+
+export function buildPublicProductPurchaseCta(
     publicationState:
-        PurchaseCtaPublicationState
+        PurchaseCtaPublicationState,
+    product:
+        PublicPurchaseCtaProduct
 ): PublicPurchaseCta | null {
 
     if (
@@ -34,11 +61,54 @@ export function buildPublicPurchaseCta(
         return null;
     }
 
+    const productName =
+        requireNormalizedPurchaseCtaValue(
+            product.productName,
+            "Product name"
+        );
+
     return {
         label:
-            "Purchase the River Life Operating System",
+            `Purchase ${productName}`,
 
         checkoutEndpoint:
-            RIVER_LIFE_OPERATING_SYSTEM_CHECKOUT_ENDPOINT,
+            requireNormalizedPurchaseCtaValue(
+                product.checkoutEndpoint,
+                "Checkout endpoint"
+            ),
+
+        productId:
+            requireNormalizedPurchaseCtaValue(
+                product.productId,
+                "Product id"
+            ),
+
+        productVersion:
+            requireNormalizedPurchaseCtaValue(
+                product.productVersion,
+                "Product version"
+            ),
     };
+}
+
+export function buildPublicPurchaseCta(
+    publicationState:
+        PurchaseCtaPublicationState
+): PublicPurchaseCta | null {
+    return buildPublicProductPurchaseCta(
+        publicationState,
+        {
+            productId:
+                "river-life-operating-system",
+
+            productVersion:
+                "v1",
+
+            productName:
+                "the River Life Operating System",
+
+            checkoutEndpoint:
+                RIVER_LIFE_OPERATING_SYSTEM_CHECKOUT_ENDPOINT,
+        }
+    );
 }
