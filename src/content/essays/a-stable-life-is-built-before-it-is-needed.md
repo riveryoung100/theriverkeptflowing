@@ -136,6 +136,8 @@ Knowing where the money goes.
 
 Preparing for predictable annual expenses before they arrive.
 
+If you want a practical way to turn those priorities into a monthly household number, [Know Your Number](/shop/know-your-number/) walks through that process using Live, Enjoy, Protect, and Build.
+
 Stability often looks boring while it is being built.
 
 ## Relationships need reserves too
