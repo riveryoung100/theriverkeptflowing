@@ -92,6 +92,8 @@ Cash reserves are not doing nothing.
 
 They are creating options.
 
+If you want a practical way to decide how much monthly room your household can realistically create, [Know Your Number](/shop/know-your-number/) works through that question using Live, Enjoy, Protect, and Build.
+
 ## Energy needs margin too
 
 We usually think about schedules when we think about capacity.
