@@ -40,6 +40,13 @@ const canonical = new URL(
     description={essay.data.description}
     author={essay.data.author}
     canonical={canonical}
+    articleTitle={essay.data.title}
+    articleDescription={essay.data.description}
+    published={essay.data.published.toISOString()}
+    modified={(essay.data.updated ?? essay.data.published).toISOString()}
+    articleSection={essay.data.category ?? "Essays From the River"}
+    breadcrumbParentName="Essays"
+    breadcrumbParentUrl="/library/essays/"
     bodyClass="reading-page essay-reading-page"
 >
 
