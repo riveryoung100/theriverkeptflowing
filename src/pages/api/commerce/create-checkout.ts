@@ -9,7 +9,8 @@ import {
 import Stripe from "stripe";
 
 import {
-    requireStripeSandboxSecretKey
+    requireStripeCheckoutMode,
+    requireStripeCheckoutSecretKey
 } from "../../../lib/commerce/stripe-sandbox-secret-key";
 
 import {
@@ -56,9 +57,16 @@ function getStripeSecretKey(): string {
         env as unknown as
             Record<string, unknown>;
 
-    return requireStripeSandboxSecretKey(
+    const checkoutMode =
+        requireStripeCheckoutMode(
+            runtimeEnvironment
+                .STRIPE_CHECKOUT_MODE
+        );
+
+    return requireStripeCheckoutSecretKey(
         runtimeEnvironment
-            .STRIPE_SECRET_KEY
+            .STRIPE_SECRET_KEY,
+        checkoutMode
     );
 }
 

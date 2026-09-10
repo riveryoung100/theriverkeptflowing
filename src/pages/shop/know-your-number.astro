@@ -13,7 +13,7 @@ import {
 } from "../../lib/commerce/product-price-availability-presentation";
 
 import {
-    PRODUCT_002O_KNOW_YOUR_NUMBER_SANDBOX_CHECKOUT_PUBLICATION_STATE,
+    KNOW_YOUR_NUMBER_CHECKOUT_PUBLICATION_STATE,
     buildPublicProductPurchaseCta,
 } from "../../lib/commerce/product-purchase-cta";
 
@@ -37,7 +37,7 @@ const publicOffer =
 
 const purchaseCta =
     buildPublicProductPurchaseCta(
-        PRODUCT_002O_KNOW_YOUR_NUMBER_SANDBOX_CHECKOUT_PUBLICATION_STATE,
+        KNOW_YOUR_NUMBER_CHECKOUT_PUBLICATION_STATE,
         {
             productId:
                 product.productId,
@@ -291,7 +291,7 @@ const customerLaunchReturnNotice =
                         ) : (
                             <p class="know-your-number-page__launch-note">
                                 Secure checkout is being kept closed until the
-                                governed sandbox launch step is explicitly opened.
+                                governed checkout launch step is explicitly opened.
                             </p>
                         )
                     }

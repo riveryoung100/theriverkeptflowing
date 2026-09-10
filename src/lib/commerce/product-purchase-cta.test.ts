@@ -4,7 +4,7 @@ import test from "node:test";
 import {
     CLOSED_PRODUCT_PURCHASE_CTA_PUBLICATION_STATE,
     PRODUCT_001F_04_CHECKOUT_PUBLICATION_STATE,
-    PRODUCT_002O_KNOW_YOUR_NUMBER_SANDBOX_CHECKOUT_PUBLICATION_STATE,
+    KNOW_YOUR_NUMBER_CHECKOUT_PUBLICATION_STATE,
     RIVER_LIFE_OPERATING_SYSTEM_CHECKOUT_ENDPOINT,
     buildPublicProductPurchaseCta,
     buildPublicPurchaseCta,
@@ -209,10 +209,10 @@ test(
     }
 );
 test(
-    "PRODUCT-002O authorizes Know Your Number sandbox checkout publication without adding live or public-launch authority",
+    "PRODUCT-002BU keeps Know Your Number checkout publication independent from Stripe test or live runtime mode",
     () => {
         assert.deepEqual(
-            PRODUCT_002O_KNOW_YOUR_NUMBER_SANDBOX_CHECKOUT_PUBLICATION_STATE,
+            KNOW_YOUR_NUMBER_CHECKOUT_PUBLICATION_STATE,
             {
                 checkoutPublicationAuthorized: true,
             }
@@ -220,7 +220,7 @@ test(
 
         assert.deepEqual(
             Object.keys(
-                PRODUCT_002O_KNOW_YOUR_NUMBER_SANDBOX_CHECKOUT_PUBLICATION_STATE
+                KNOW_YOUR_NUMBER_CHECKOUT_PUBLICATION_STATE
             ),
             [
                 "checkoutPublicationAuthorized",
@@ -229,7 +229,7 @@ test(
 
         assert.deepEqual(
             buildPublicProductPurchaseCta(
-                PRODUCT_002O_KNOW_YOUR_NUMBER_SANDBOX_CHECKOUT_PUBLICATION_STATE,
+                KNOW_YOUR_NUMBER_CHECKOUT_PUBLICATION_STATE,
                 {
                     productId:
                         "know-your-number",

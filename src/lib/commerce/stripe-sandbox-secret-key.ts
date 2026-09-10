@@ -1,6 +1,32 @@
-export function requireStripeSandboxSecretKey(
+export type StripeCheckoutMode =
+    "test" |
+    "live";
+
+
+export function requireStripeCheckoutMode(
     value:
         unknown
+): StripeCheckoutMode {
+
+    if (
+        value !== "test" &&
+        value !== "live"
+    ) {
+
+        throw new Error(
+            "Stripe checkout mode must be explicitly configured as test or live."
+        );
+    }
+
+    return value;
+}
+
+
+export function requireStripeCheckoutSecretKey(
+    value:
+        unknown,
+    mode:
+        StripeCheckoutMode
 ): string {
 
     if (
@@ -10,22 +36,39 @@ export function requireStripeSandboxSecretKey(
     ) {
 
         throw new Error(
-            "Stripe sandbox secret key is not configured."
+            "Stripe checkout secret key is not configured."
         );
     }
 
+    const requiredPrefix =
+        mode === "live"
+            ? "sk_live_"
+            : "sk_test_";
+
     if (
         !value.startsWith(
-            "sk_test_"
+            requiredPrefix
         ) ||
         value.length ===
-            "sk_test_".length
+            requiredPrefix.length
     ) {
 
         throw new Error(
-            "Stripe sandbox checkout requires a test-mode secret key."
+            `Stripe ${mode} checkout requires a ${mode}-mode secret key.`
         );
     }
 
     return value;
+}
+
+
+export function requireStripeSandboxSecretKey(
+    value:
+        unknown
+): string {
+
+    return requireStripeCheckoutSecretKey(
+        value,
+        "test"
+    );
 }

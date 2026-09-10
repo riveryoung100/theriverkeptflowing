@@ -59,14 +59,14 @@ test(
 );
 
 test(
-    "PRODUCT-002O publishes governed sandbox checkout while preserving exact product identity",
+    "PRODUCT-002BU publishes governed checkout while preserving exact product identity",
     async () => {
         const source =
             await readPageSource();
 
         assert.match(
             source,
-            /PRODUCT_002O_KNOW_YOUR_NUMBER_SANDBOX_CHECKOUT_PUBLICATION_STATE/
+            /KNOW_YOUR_NUMBER_CHECKOUT_PUBLICATION_STATE/
         );
 
         assert.match(
