@@ -9,6 +9,10 @@ import {
 import Stripe from "stripe";
 
 import {
+    requireStripeSandboxSecretKey
+} from "../../../lib/commerce/stripe-sandbox-secret-key";
+
+import {
     createRegisteredRiverProductCheckout
 } from "../../../lib/commerce/stripe-checkout";
 
@@ -52,22 +56,10 @@ function getStripeSecretKey(): string {
         env as unknown as
             Record<string, unknown>;
 
-    const value =
+    return requireStripeSandboxSecretKey(
         runtimeEnvironment
-            .STRIPE_SECRET_KEY;
-
-    if (
-        typeof value !== "string" ||
-        value.length === 0 ||
-        value.trim() !== value
-    ) {
-
-        throw new Error(
-            "STRIPE_SECRET_KEY is not configured."
-        );
-    }
-
-    return value;
+            .STRIPE_SECRET_KEY
+    );
 }
 
 
