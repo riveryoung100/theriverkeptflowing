@@ -1,0 +1,469 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+
+import {
+    KNOW_YOUR_NUMBER_COMMERCE_PRODUCT,
+} from "../../lib/commerce/product-catalog";
+
+import {
+    PRODUCT_002N_KNOW_YOUR_NUMBER_PRICE_AVAILABILITY_PUBLICATION_STATE,
+    buildPublicPriceAvailabilityPresentation,
+} from "../../lib/commerce/product-price-availability-presentation";
+
+import {
+    CLOSED_PRODUCT_PURCHASE_CTA_PUBLICATION_STATE,
+    buildPublicProductPurchaseCta,
+} from "../../lib/commerce/product-purchase-cta";
+
+const product =
+    KNOW_YOUR_NUMBER_COMMERCE_PRODUCT;
+
+const workingPriceUsd =
+    product.unitAmountUsdCents / 100;
+
+const publicOffer =
+    buildPublicPriceAvailabilityPresentation({
+        publicationState:
+            PRODUCT_002N_KNOW_YOUR_NUMBER_PRICE_AVAILABILITY_PUBLICATION_STATE,
+        workingPriceUsd,
+        digitallyDeliverable: true,
+    });
+
+const purchaseCta =
+    buildPublicProductPurchaseCta(
+        CLOSED_PRODUCT_PURCHASE_CTA_PUBLICATION_STATE,
+        {
+            productId:
+                product.productId,
+            productVersion:
+                product.productVersion,
+            productName:
+                product.productName,
+            checkoutEndpoint:
+                product.checkoutPath,
+        }
+    );
+---
+
+<MainLayout
+    title="Know Your Number | The River Kept Flowing"
+    description="Find the amount your household can realistically use each month to protect your family and build your future without sacrificing the life you are living today."
+>
+    <main
+        data-pagefind-body
+        class="library-page know-your-number-page"
+    >
+        <section class="library-hero">
+            <div class="library-shell">
+                <p class="section-label">
+                    Money & Future Planning
+                </p>
+
+                <h1>
+                    Know Your Number
+                </h1>
+
+                <p class="know-your-number-page__lead">
+                    Find the amount your household can realistically use each month
+                    to protect your family and build your future without sacrificing
+                    the life you are living today.
+                </p>
+
+                <div class="know-your-number-page__offer">
+                    <strong>{publicOffer.priceLabel}</strong>
+                    <span>{publicOffer.availabilityLabel}</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="library-section">
+            <div class="library-shell">
+                <div class="library-section__heading">
+                    <div>
+                        <p class="section-label">
+                            Start with capacity
+                        </p>
+
+                        <h2>
+                            Stop forcing your life to fit a financial product.
+                        </h2>
+                    </div>
+
+                    <p>
+                        Know Your Number helps you determine what your household can
+                        actually support first. Then you can make protection,
+                        saving, debt, and long-term decisions from a number grounded
+                        in your real life.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="library-section">
+            <div class="library-shell">
+                <div class="library-section__heading">
+                    <div>
+                        <p class="section-label">
+                            The Four Buckets
+                        </p>
+
+                        <h2>
+                            Live. Enjoy. Protect. Build.
+                        </h2>
+                    </div>
+
+                    <p>
+                        The system walks you from income and monthly obligations to
+                        true margin, then helps you see how that margin can serve the
+                        life you are responsible for today and the future you want
+                        to build.
+                    </p>
+                </div>
+
+                <div class="know-your-number-page__grid">
+                    <article>
+                        <span>01</span>
+                        <h3>Live</h3>
+                        <p>
+                            Account honestly for the life your household already
+                            needs to support.
+                        </p>
+                    </article>
+
+                    <article>
+                        <span>02</span>
+                        <h3>Enjoy</h3>
+                        <p>
+                            Make room for fun, hobbies, freedom, and the life you
+                            are actually trying to live.
+                        </p>
+                    </article>
+
+                    <article>
+                        <span>03</span>
+                        <h3>Protect</h3>
+                        <p>
+                            Examine reserves and family protection needs without
+                            manufacturing room for a predetermined product.
+                        </p>
+                    </article>
+
+                    <article>
+                        <span>04</span>
+                        <h3>Build</h3>
+                        <p>
+                            Direct sustainable capacity toward the future with a
+                            clearer understanding of priorities and time.
+                        </p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="library-section">
+            <div class="library-shell">
+                <div class="library-section__heading">
+                    <div>
+                        <p class="section-label">
+                            What you work through
+                        </p>
+
+                        <h2>
+                            One connected view of your household.
+                        </h2>
+                    </div>
+
+                    <p>
+                        Instead of answering financial questions one at a time, the
+                        system puts them in an order that makes the next decision
+                        easier to understand.
+                    </p>
+                </div>
+
+                <div class="know-your-number-page__steps">
+                    <p>Monthly household income</p>
+                    <p>Core living expenses</p>
+                    <p>Fun and lifestyle spending</p>
+                    <p>Debt and financial obligations</p>
+                    <p>True monthly margin</p>
+                    <p>Emergency reserve target</p>
+                    <p>Debt pressure</p>
+                    <p>Optional educational family protection estimate</p>
+                    <p>Future priorities and the time advantage</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="library-section">
+            <div class="library-shell">
+                <div class="know-your-number-page__privacy">
+                    <p class="section-label">
+                        Private by design
+                    </p>
+
+                    <h2>
+                        Your completed financial information stays with you.
+                    </h2>
+
+                    <p>
+                        The River Kept Flowing does not need your passwords, Social
+                        Security number, bank or card numbers, policy numbers,
+                        account numbers, access codes, or the exact locations of
+                        valuables and important documents for you to use this system.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="library-section">
+            <div class="library-shell">
+                <div class="know-your-number-page__purchase">
+                    <p class="section-label">
+                        Know Your Number V1
+                    </p>
+
+                    <h2>
+                        A practical system for finding the number your life can
+                        actually support.
+                    </h2>
+
+                    <div class="know-your-number-page__offer">
+                        <strong>{publicOffer.priceLabel}</strong>
+                        <span>{publicOffer.availabilityLabel}</span>
+                    </div>
+
+                    {
+                        purchaseCta ? (
+                            <form
+                                id="know-your-number-purchase"
+                                data-checkout-endpoint={purchaseCta.checkoutEndpoint}
+                                data-product-id={purchaseCta.productId}
+                                data-product-version={purchaseCta.productVersion}
+                            >
+                                <label for="know-your-number-delivery-email">
+                                    Delivery email
+                                </label>
+
+                                <input
+                                    id="know-your-number-delivery-email"
+                                    name="deliveryEmail"
+                                    type="email"
+                                    autocomplete="email"
+                                    required
+                                />
+
+                                <button type="submit">
+                                    {purchaseCta.label}
+                                </button>
+
+                                <p
+                                    id="know-your-number-purchase-status"
+                                    role="status"
+                                    aria-live="polite"
+                                ></p>
+                            </form>
+                        ) : (
+                            <p class="know-your-number-page__launch-note">
+                                Secure checkout is being kept closed until the
+                                governed sandbox launch step is explicitly opened.
+                            </p>
+                        )
+                    }
+
+                    <p class="know-your-number-page__boundary">
+                        Educational planning tool only. Know Your Number does not
+                        provide individualized financial, tax, legal, investment, or
+                        insurance advice and does not promise a particular outcome.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script is:inline>
+        const purchaseForm =
+            document.querySelector("#know-your-number-purchase");
+
+        if (purchaseForm instanceof HTMLFormElement) {
+            purchaseForm.addEventListener(
+                "submit",
+                async (event) => {
+                    event.preventDefault();
+
+                    const status =
+                        document.querySelector(
+                            "#know-your-number-purchase-status"
+                        );
+
+                    const submitButton =
+                        purchaseForm.querySelector(
+                            'button[type="submit"]'
+                        );
+
+                    const deliveryEmailInput =
+                        purchaseForm.querySelector(
+                            'input[name="deliveryEmail"]'
+                        );
+
+                    const checkoutEndpoint =
+                        purchaseForm.dataset.checkoutEndpoint;
+
+                    const productId =
+                        purchaseForm.dataset.productId;
+
+                    const productVersion =
+                        purchaseForm.dataset.productVersion;
+
+                    if (
+                        !(status instanceof HTMLElement) ||
+                        !(submitButton instanceof HTMLButtonElement) ||
+                        !(deliveryEmailInput instanceof HTMLInputElement) ||
+                        !checkoutEndpoint ||
+                        !productId ||
+                        !productVersion
+                    ) {
+                        return;
+                    }
+
+                    const deliveryEmail =
+                        deliveryEmailInput.value.trim();
+
+                    if (!deliveryEmail) {
+                        status.textContent =
+                            "Enter the email address where you want the product delivered.";
+                        return;
+                    }
+
+                    submitButton.disabled = true;
+                    status.textContent =
+                        "Preparing secure checkout...";
+
+                    try {
+                        const customerReference =
+                            crypto.randomUUID();
+
+                        const response =
+                            await fetch(
+                                checkoutEndpoint,
+                                {
+                                    method: "POST",
+                                    headers: {
+                                        "content-type":
+                                            "application/json",
+                                    },
+                                    body: JSON.stringify({
+                                        productId,
+                                        productVersion,
+                                        customerReference,
+                                        deliveryEmail,
+                                    }),
+                                }
+                            );
+
+                        const result =
+                            await response.json();
+
+                        if (
+                            !response.ok ||
+                            result.created !== true ||
+                            typeof result.checkoutUrl !== "string" ||
+                            result.checkoutUrl.length === 0
+                        ) {
+                            throw new Error(
+                                "Checkout creation failed."
+                            );
+                        }
+
+                        window.location.assign(
+                            result.checkoutUrl
+                        );
+                    }
+                    catch {
+                        submitButton.disabled = false;
+                        status.textContent =
+                            "Secure checkout could not be prepared. Please try again.";
+                    }
+                }
+            );
+        }
+    </script>
+
+    <style>
+        .know-your-number-page__lead {
+            max-width: 52rem;
+            font-size: clamp(1.1rem, 2vw, 1.35rem);
+        }
+
+        .know-your-number-page__offer {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 0.75rem 1.25rem;
+            margin-top: 1.5rem;
+        }
+
+        .know-your-number-page__offer strong {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            line-height: 1;
+        }
+
+        .know-your-number-page__grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .know-your-number-page__grid article,
+        .know-your-number-page__privacy,
+        .know-your-number-page__purchase {
+            padding: clamp(1.5rem, 4vw, 2.5rem);
+            border: 1px solid currentColor;
+            border-radius: 1.5rem;
+        }
+
+        .know-your-number-page__grid span {
+            font-size: 0.8rem;
+            letter-spacing: 0.14em;
+        }
+
+        .know-your-number-page__steps {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+
+        .know-your-number-page__steps p {
+            margin: 0;
+            padding: 1rem;
+            border-top: 1px solid currentColor;
+        }
+
+        #know-your-number-purchase {
+            display: grid;
+            gap: 0.75rem;
+            max-width: 34rem;
+            margin-top: 2rem;
+        }
+
+        #know-your-number-purchase input,
+        #know-your-number-purchase button {
+            width: 100%;
+            min-height: 3.25rem;
+        }
+
+        .know-your-number-page__launch-note,
+        .know-your-number-page__boundary {
+            max-width: 48rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 760px) {
+            .know-your-number-page__grid,
+            .know-your-number-page__steps {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</MainLayout>

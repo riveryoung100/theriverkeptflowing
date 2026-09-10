@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
     PRODUCT_001F_03_PRICE_AVAILABILITY_PUBLICATION_STATE,
+    PRODUCT_002N_KNOW_YOUR_NUMBER_PRICE_AVAILABILITY_PUBLICATION_STATE,
     buildPublicPriceAvailabilityPresentation,
     hasPublicPriceAvailabilityPresentation,
 } from "./product-price-availability-presentation";
@@ -143,3 +144,35 @@ test("PRODUCT-001F-03 rejects invalid working-price evidence instead of formatti
         /positive whole-dollar amount/,
     );
 });
+test(
+    "PRODUCT-002N authorizes Know Your Number price and digital availability presentation without checkout authority",
+    () => {
+        assert.deepEqual(
+            PRODUCT_002N_KNOW_YOUR_NUMBER_PRICE_AVAILABILITY_PUBLICATION_STATE,
+            {
+                pricePublicationAuthorized: true,
+                availabilityPublicationAuthorized: true,
+            }
+        );
+
+        assert.deepEqual(
+            buildPublicPriceAvailabilityPresentation({
+                publicationState:
+                    PRODUCT_002N_KNOW_YOUR_NUMBER_PRICE_AVAILABILITY_PUBLICATION_STATE,
+                workingPriceUsd: 49,
+                digitallyDeliverable: true,
+            }),
+            {
+                priceLabel: "$49",
+                availabilityLabel:
+                    "Available for digital delivery",
+            }
+        );
+
+        assert.equal(
+            "checkoutPublicationAuthorized" in
+                PRODUCT_002N_KNOW_YOUR_NUMBER_PRICE_AVAILABILITY_PUBLICATION_STATE,
+            false
+        );
+    }
+);

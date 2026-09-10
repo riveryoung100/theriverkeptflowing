@@ -8,6 +8,11 @@ export const PRODUCT_001F_03_PRICE_AVAILABILITY_PUBLICATION_STATE:
         pricePublicationAuthorized: true,
         availabilityPublicationAuthorized: true,
     });
+export const PRODUCT_002N_KNOW_YOUR_NUMBER_PRICE_AVAILABILITY_PUBLICATION_STATE:
+    Readonly<PriceAvailabilityPublicationState> = Object.freeze({
+        pricePublicationAuthorized: true,
+        availabilityPublicationAuthorized: true,
+    });
 
 export interface PublicPriceAvailabilityInput {
     publicationState: PriceAvailabilityPublicationState;
