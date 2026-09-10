@@ -61,7 +61,7 @@ If your income varies, use a conservative monthly number instead of assuming eve
 
 Then begin accounting for the jobs your money needs to perform.
 
-A useful framework is:
+A useful framework is the same one used when deciding [how to divide your monthly income](/library/essays/how-to-divide-your-monthly-income/):
 
 **Live. Enjoy. Protect. Build.**
 
@@ -114,6 +114,8 @@ That is a more honest number.
 A household can appear to have plenty of money left after bills while still being financially fragile.
 
 That happens when every extra dollar is treated as spendable and nothing is being reserved for interruption.
+
+Protection can include several forms of financial resilience. If emergency savings is the part you are building first, [how much emergency fund you should have](/library/essays/how-much-emergency-fund-should-you-have/) explains how to choose a realistic target.
 
 Protection can include:
 

@@ -23,7 +23,7 @@ You will often hear advice such as three months of expenses, six months of expen
 
 A useful emergency fund should be large enough to absorb real problems without being so unrealistic that you never begin building it.
 
-The goal is not to copy someone else's number. The goal is to understand the risks your household carries, what it costs to keep life functioning, and how much margin you can realistically create each month.
+The goal is not to copy someone else's number. The goal is to understand the risks your household carries, what it costs to keep life functioning, and how much margin you can realistically create each month. If you need a framework for assigning that monthly income across competing priorities, [how to divide your monthly income](/library/essays/how-to-divide-your-monthly-income/) shows how Live, Enjoy, Protect, and Build fit together.
 
 ## Start With Essential Monthly Expenses
 

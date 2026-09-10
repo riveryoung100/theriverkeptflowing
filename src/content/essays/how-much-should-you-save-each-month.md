@@ -41,7 +41,7 @@ That number matters because a plan you can repeat is usually more valuable than 
 
 Saving money is important.
 
-Preparing for emergencies is important.
+Preparing for emergencies is important. If you are working out the size of that reserve, [how much emergency fund you should have](/library/essays/how-much-emergency-fund-should-you-have/) gives you a practical way to calculate it.
 
 Building for the future is important.
 
@@ -67,7 +67,7 @@ If income changes from month to month, use a conservative working number rather 
 
 Then look at where that money needs to go.
 
-A simple way to do that is to separate your household into four buckets:
+A simple way to do that is to separate your household into four buckets. If you want to see that framework applied to your full paycheck, [how to divide your monthly income](/library/essays/how-to-divide-your-monthly-income/) walks through the process:
 
 **Live. Enjoy. Protect. Build.**
 
