@@ -20,11 +20,11 @@ One may have childcare, medical costs, debt, or unpredictable income. Another ma
 
 So I think a better question is:
 
-**How much can your household realistically save every month without constantly breaking the plan?**
+How much can your household realistically save every month without constantly breaking the plan?
 
 I use four simple buckets:
 
-**Live. Enjoy. Protect. Build.**
+Live. Enjoy. Protect. Build.
 
 The goal is not to force your life into somebody else's percentage.
 
