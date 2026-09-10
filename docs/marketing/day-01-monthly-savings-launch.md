@@ -32,7 +32,7 @@ The goal is to understand what your life actually costs, protect what matters, a
 
 I wrote out the full framework here:
 
-https://theriverkeptflowing.com/library/essays/how-much-should-you-save-each-month/
+https://theriverkeptflowing.com/library/essays/how-much-should-you-save-each-month/?utm_source=linkedin&utm_medium=organic_social&utm_campaign=money_cluster_launch&utm_content=day1_monthly_savings
 
 #FinancialPlanning #SavingMoney #PersonalFinance #Stewardship
 
@@ -54,7 +54,7 @@ Instead of asking what percentage everybody should save, ask what your household
 
 I wrote the full thought out here:
 
-https://theriverkeptflowing.com/library/essays/how-much-should-you-save-each-month/
+https://theriverkeptflowing.com/library/essays/how-much-should-you-save-each-month/?utm_source=facebook&utm_medium=organic_social&utm_campaign=money_cluster_launch&utm_content=day1_monthly_savings
 
 ## YouTube Community
 
@@ -70,7 +70,7 @@ Figure out what your real life costs first. Then decide what can consistently go
 
 Full breakdown:
 
-https://theriverkeptflowing.com/library/essays/how-much-should-you-save-each-month/
+https://theriverkeptflowing.com/library/essays/how-much-should-you-save-each-month/?utm_source=youtube&utm_medium=organic_social&utm_campaign=money_cluster_launch&utm_content=day1_monthly_savings
 
 ## Instagram
 
