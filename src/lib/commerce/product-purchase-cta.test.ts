@@ -4,6 +4,7 @@ import test from "node:test";
 import {
     CLOSED_PRODUCT_PURCHASE_CTA_PUBLICATION_STATE,
     PRODUCT_001F_04_CHECKOUT_PUBLICATION_STATE,
+    PRODUCT_002O_KNOW_YOUR_NUMBER_SANDBOX_CHECKOUT_PUBLICATION_STATE,
     RIVER_LIFE_OPERATING_SYSTEM_CHECKOUT_ENDPOINT,
     buildPublicProductPurchaseCta,
     buildPublicPurchaseCta,
@@ -204,6 +205,58 @@ test(
                     }
                 ),
             /Product id must be a non-empty normalized string/
+        );
+    }
+);
+test(
+    "PRODUCT-002O authorizes Know Your Number sandbox checkout publication without adding live or public-launch authority",
+    () => {
+        assert.deepEqual(
+            PRODUCT_002O_KNOW_YOUR_NUMBER_SANDBOX_CHECKOUT_PUBLICATION_STATE,
+            {
+                checkoutPublicationAuthorized: true,
+            }
+        );
+
+        assert.deepEqual(
+            Object.keys(
+                PRODUCT_002O_KNOW_YOUR_NUMBER_SANDBOX_CHECKOUT_PUBLICATION_STATE
+            ),
+            [
+                "checkoutPublicationAuthorized",
+            ]
+        );
+
+        assert.deepEqual(
+            buildPublicProductPurchaseCta(
+                PRODUCT_002O_KNOW_YOUR_NUMBER_SANDBOX_CHECKOUT_PUBLICATION_STATE,
+                {
+                    productId:
+                        "know-your-number",
+
+                    productVersion:
+                        "v1",
+
+                    productName:
+                        "Know Your Number",
+
+                    checkoutEndpoint:
+                        "/api/commerce/create-checkout",
+                }
+            ),
+            {
+                label:
+                    "Purchase Know Your Number",
+
+                checkoutEndpoint:
+                    "/api/commerce/create-checkout",
+
+                productId:
+                    "know-your-number",
+
+                productVersion:
+                    "v1",
+            }
         );
     }
 );

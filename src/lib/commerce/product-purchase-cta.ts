@@ -24,6 +24,12 @@ export const PRODUCT_001F_04_CHECKOUT_PUBLICATION_STATE:
         checkoutPublicationAuthorized: true,
     });
 
+export const PRODUCT_002O_KNOW_YOUR_NUMBER_SANDBOX_CHECKOUT_PUBLICATION_STATE:
+    Readonly<PurchaseCtaPublicationState> =
+    Object.freeze({
+        checkoutPublicationAuthorized: true,
+    });
+
 export interface PublicPurchaseCtaProduct {
     productId: string;
     productVersion: string;

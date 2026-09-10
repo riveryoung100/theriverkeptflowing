@@ -59,14 +59,14 @@ test(
 );
 
 test(
-    "PRODUCT-002N keeps checkout publication closed while preserving exact future checkout identity",
+    "PRODUCT-002O publishes governed sandbox checkout while preserving exact product identity",
     async () => {
         const source =
             await readPageSource();
 
         assert.match(
             source,
-            /CLOSED_PRODUCT_PURCHASE_CTA_PUBLICATION_STATE/
+            /PRODUCT_002O_KNOW_YOUR_NUMBER_SANDBOX_CHECKOUT_PUBLICATION_STATE/
         );
 
         assert.match(
@@ -87,6 +87,11 @@ test(
         assert.doesNotMatch(
             source,
             /PRODUCT_001F_04_CHECKOUT_PUBLICATION_STATE/
+        );
+
+        assert.doesNotMatch(
+            source,
+            /CLOSED_PRODUCT_PURCHASE_CTA_PUBLICATION_STATE/
         );
     }
 );
