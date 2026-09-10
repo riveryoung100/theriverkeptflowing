@@ -79,6 +79,7 @@ const customerLaunchReturnNotice =
                 </section>
             )
         }
+
         <section class="library-hero">
             <div class="library-shell">
                 <p class="section-label">
@@ -95,10 +96,31 @@ const customerLaunchReturnNotice =
                     the life you are living today.
                 </p>
 
+                <p class="know-your-number-page__sublead">
+                    Before you decide how much to save, invest, pay toward debt, or
+                    spend on protection, first figure out what your life can
+                    sustainably support.
+                </p>
+
                 <div class="know-your-number-page__offer">
                     <strong>{publicOffer.priceLabel}</strong>
                     <span>{publicOffer.availabilityLabel}</span>
                 </div>
+
+                {
+                    purchaseCta && (
+                        <a
+                            class="know-your-number-page__hero-cta"
+                            href="#purchase"
+                        >
+                            Get Know Your Number — {publicOffer.priceLabel}
+                        </a>
+                    )
+                }
+
+                <p class="know-your-number-page__microcopy">
+                    One-time purchase. Digital delivery after successful payment.
+                </p>
             </div>
         </section>
 
@@ -116,10 +138,18 @@ const customerLaunchReturnNotice =
                     </div>
 
                     <p>
-                        Know Your Number helps you determine what your household can
-                        actually support first. Then you can make protection,
-                        saving, debt, and long-term decisions from a number grounded
-                        in your real life.
+                        Most financial decisions start with a product, a percentage,
+                        or a rule of thumb. Know Your Number starts somewhere more
+                        useful: your actual household.
+                    </p>
+                </div>
+
+                <div class="know-your-number-page__callout">
+                    <p>
+                        The goal is not to squeeze every possible dollar out of your
+                        month. The goal is to find a number you can actually sustain
+                        while still living, enjoying your life, protecting what
+                        matters, and building toward the future.
                     </p>
                 </div>
             </div>
@@ -139,10 +169,9 @@ const customerLaunchReturnNotice =
                     </div>
 
                     <p>
-                        The system walks you from income and monthly obligations to
-                        true margin, then helps you see how that margin can serve the
-                        life you are responsible for today and the future you want
-                        to build.
+                        Work from income and monthly obligations toward true margin,
+                        then decide what that margin can responsibly do for your
+                        household today and over time.
                     </p>
                 </div>
 
@@ -151,8 +180,9 @@ const customerLaunchReturnNotice =
                         <span>01</span>
                         <h3>Live</h3>
                         <p>
-                            Account honestly for the life your household already
-                            needs to support.
+                            Account honestly for the housing, food, transportation,
+                            bills, and responsibilities your household already
+                            carries.
                         </p>
                     </article>
 
@@ -160,8 +190,9 @@ const customerLaunchReturnNotice =
                         <span>02</span>
                         <h3>Enjoy</h3>
                         <p>
-                            Make room for fun, hobbies, freedom, and the life you
-                            are actually trying to live.
+                            Make room for fun, hobbies, family experiences, and the
+                            parts of life you do not want every financial plan to
+                            erase.
                         </p>
                     </article>
 
@@ -169,8 +200,8 @@ const customerLaunchReturnNotice =
                         <span>03</span>
                         <h3>Protect</h3>
                         <p>
-                            Examine reserves and family protection needs without
-                            manufacturing room for a predetermined product.
+                            Consider emergency reserves and family protection needs
+                            without manufacturing room for a predetermined product.
                         </p>
                     </article>
 
@@ -178,8 +209,9 @@ const customerLaunchReturnNotice =
                         <span>04</span>
                         <h3>Build</h3>
                         <p>
-                            Direct sustainable capacity toward the future with a
-                            clearer understanding of priorities and time.
+                            Direct sustainable capacity toward debt reduction,
+                            future priorities, and long-term goals with greater
+                            clarity.
                         </p>
                     </article>
                 </div>
@@ -191,18 +223,19 @@ const customerLaunchReturnNotice =
                 <div class="library-section__heading">
                     <div>
                         <p class="section-label">
-                            What you work through
+                            What you get
                         </p>
 
                         <h2>
-                            One connected view of your household.
+                            A practical process you can work through at your own pace.
                         </h2>
                     </div>
 
                     <p>
-                        Instead of answering financial questions one at a time, the
-                        system puts them in an order that makes the next decision
-                        easier to understand.
+                        Instead of treating financial questions as separate problems,
+                        Know Your Number puts them into one connected sequence so you
+                        can see the relationship between your present life and your
+                        future priorities.
                     </p>
                 </div>
 
@@ -215,7 +248,31 @@ const customerLaunchReturnNotice =
                     <p>Emergency reserve target</p>
                     <p>Debt pressure</p>
                     <p>Optional educational family protection estimate</p>
-                    <p>Future priorities and the time advantage</p>
+                    <p>Future priorities and the advantage of time</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="library-section">
+            <div class="library-shell">
+                <div class="library-section__heading">
+                    <div>
+                        <p class="section-label">
+                            Who this is for
+                        </p>
+
+                        <h2>
+                            For households that want clarity before another financial decision.
+                        </h2>
+                    </div>
+
+                    <p>
+                        This system is especially useful if you earn money but still
+                        feel unsure what you can responsibly commit each month, if
+                        competing priorities keep pulling your money in different
+                        directions, or if you simply want a clearer framework before
+                        making bigger financial choices.
+                    </p>
                 </div>
             </div>
         </section>
@@ -237,11 +294,20 @@ const customerLaunchReturnNotice =
                         account numbers, access codes, or the exact locations of
                         valuables and important documents for you to use this system.
                     </p>
+
+                    <p>
+                        You work through your household numbers privately. The
+                        system is designed to help you organize the information, not
+                        hand your completed financial picture to us.
+                    </p>
                 </div>
             </div>
         </section>
 
-        <section class="library-section">
+        <section
+            id="purchase"
+            class="library-section"
+        >
             <div class="library-shell">
                 <div class="know-your-number-page__purchase">
                     <p class="section-label">
@@ -249,9 +315,14 @@ const customerLaunchReturnNotice =
                     </p>
 
                     <h2>
-                        A practical system for finding the number your life can
-                        actually support.
+                        Find the number your life can actually support.
                     </h2>
+
+                    <p class="know-your-number-page__purchase-copy">
+                        Get the complete Four Buckets planning system and work
+                        through your household from real monthly life to sustainable
+                        future capacity.
+                    </p>
 
                     <div class="know-your-number-page__offer">
                         <strong>{publicOffer.priceLabel}</strong>
@@ -275,12 +346,19 @@ const customerLaunchReturnNotice =
                                     name="deliveryEmail"
                                     type="email"
                                     autocomplete="email"
+                                    placeholder="you@example.com"
                                     required
                                 />
 
                                 <button type="submit">
                                     {purchaseCta.label}
                                 </button>
+
+                                <p class="know-your-number-page__checkout-note">
+                                    Secure checkout powered by Stripe. Your digital
+                                    product is delivered to the email you enter above
+                                    after successful payment.
+                                </p>
 
                                 <p
                                     id="know-your-number-purchase-status"
@@ -417,7 +495,13 @@ const customerLaunchReturnNotice =
     <style>
         .know-your-number-page__lead {
             max-width: 52rem;
-            font-size: clamp(1.1rem, 2vw, 1.35rem);
+            font-size: clamp(1.15rem, 2vw, 1.4rem);
+        }
+
+        .know-your-number-page__sublead,
+        .know-your-number-page__purchase-copy {
+            max-width: 48rem;
+            margin-top: 1rem;
         }
 
         .know-your-number-page__offer {
@@ -431,6 +515,37 @@ const customerLaunchReturnNotice =
         .know-your-number-page__offer strong {
             font-size: clamp(2rem, 5vw, 3.5rem);
             line-height: 1;
+        }
+
+        .know-your-number-page__hero-cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 3.25rem;
+            margin-top: 1.5rem;
+            padding: 0.85rem 1.25rem;
+            border: 1px solid currentColor;
+            border-radius: 999px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .know-your-number-page__microcopy,
+        .know-your-number-page__checkout-note {
+            max-width: 42rem;
+            margin-top: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .know-your-number-page__callout {
+            max-width: 56rem;
+            margin-top: 2rem;
+            padding: clamp(1.25rem, 3vw, 2rem);
+            border-left: 3px solid currentColor;
+        }
+
+        .know-your-number-page__callout p {
+            margin: 0;
         }
 
         .know-your-number-page__grid {
@@ -477,6 +592,20 @@ const customerLaunchReturnNotice =
         #know-your-number-purchase button {
             width: 100%;
             min-height: 3.25rem;
+        }
+
+        #know-your-number-purchase input {
+            padding: 0.75rem 1rem;
+        }
+
+        #know-your-number-purchase button {
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        #know-your-number-purchase button:disabled {
+            cursor: wait;
+            opacity: 0.65;
         }
 
         .know-your-number-page__launch-note,
