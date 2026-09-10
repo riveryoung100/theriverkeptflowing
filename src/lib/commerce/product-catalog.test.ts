@@ -272,10 +272,10 @@ test(
                     "/api/commerce/create-checkout",
 
                 successPath:
-                    "/shop?checkout=success&session_id={CHECKOUT_SESSION_ID}",
+                    "/shop/know-your-number?checkout=success&session_id={CHECKOUT_SESSION_ID}",
 
                 cancelPath:
-                    "/shop?checkout=cancelled",
+                    "/shop/know-your-number?checkout=cancelled",
 
                 approvedReleaseId:
                     "know-your-number-v1-approved-001",
