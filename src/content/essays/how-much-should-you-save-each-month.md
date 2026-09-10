@@ -197,7 +197,7 @@ Then that is useful information too.
 
 You do not need to manufacture a savings number that your household cannot currently support.
 
-If very little remains after essential expenses, the first goal may simply be creating margin.
+If very little remains after essential expenses, the first goal may simply be creating margin. If you are trying to understand that number more clearly, [how much money you have left after bills](/library/essays/how-much-money-should-you-have-left-after-bills/) is a useful place to start.
 
 That might mean reviewing recurring expenses, reducing a payment, increasing income, paying off an obligation, or gradually building a small reserve.
 

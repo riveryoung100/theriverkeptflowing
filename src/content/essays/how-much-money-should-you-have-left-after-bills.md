@@ -176,7 +176,7 @@ It is information.
 
 ## What If You Have Almost Nothing Left After Bills?
 
-If very little remains each month, the first objective may be creating margin rather than trying to hit someone else's savings percentage.
+If very little remains each month, the first objective may be creating margin rather than trying to hit someone else's savings percentage. From there, [how much you should save each month](/library/essays/how-much-should-you-save-each-month/) becomes a much more useful question.
 
 Look at the system before judging yourself.
 
