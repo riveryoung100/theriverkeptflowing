@@ -1,77 +1,181 @@
 ---
 import MainLayout from "../../layouts/MainLayout.astro";
 import ServiceGrid from "../../components/services/ServiceGrid.astro";
+import BookingButton from "../../components/services/BookingButton.astro";
 
 const services = [
-
-{
-title:"Coaching and Mentorship",
-description:
-"Personal guidance focused on growth, discipline, stewardship, and intentional living.",
-action:"Learn more",
-href:"/contribute/#services",
-type:"Coaching"
-},
-
-{
-title:"Digital Foundations",
-description:
-"Website development, digital systems, and online foundations for people building something meaningful.",
-action:"Work together",
-href:"/contribute/#services",
-type:"Digital"
-},
-
-{
-title:"Education and Consulting",
-description:
-"Practical knowledge built from experience in sales, insurance, business, and personal development.",
-action:"Explore",
-href:"/contribute/#services",
-type:"Consulting"
-}
-
+    {
+        title: "Coaching and Mentorship",
+        description:
+            "One-on-one guidance for people working through growth, discipline, stewardship, direction, and the practical decisions that shape a meaningful life.",
+        action: "See how it works",
+        href: "#coaching",
+        type: "Coaching"
+    },
+    {
+        title: "Digital Foundations",
+        description:
+            "Practical help building websites, digital systems, content foundations, and the infrastructure needed to turn an idea into something people can actually use.",
+        action: "Explore digital work",
+        href: "#digital",
+        type: "Digital"
+    },
+    {
+        title: "Education and Consulting",
+        description:
+            "Experience-based guidance across sales, insurance education, business, systems, communication, and personal development.",
+        action: "Explore consulting",
+        href: "#consulting",
+        type: "Consulting"
+    }
 ];
 ---
 
 <MainLayout
-title="Services | The River Kept Flowing"
-description="Services and guidance offered through The River Kept Flowing."
+    title="Services | The River Kept Flowing"
+    description="Practical coaching, consulting, digital foundations, and experience-based guidance through The River Kept Flowing."
 >
+    <main data-pagefind-body class="library-page">
+        <section class="library-hero">
+            <div class="library-shell">
+                <p class="section-label">Services</p>
 
-<main data-pagefind-body class="library-page">
+                <h1>Helping people build what matters.</h1>
 
-<section class="library-hero">
+                <p>
+                    The River is not only a place to read and learn. It is also a place
+                    where experience, lessons, and working systems can become practical
+                    help for people building a life, business, project, or next chapter.
+                </p>
+            </div>
+        </section>
 
-<div class="library-shell">
+        <section class="library-section">
+            <div class="library-shell">
+                <p class="section-label">Ways to work together</p>
 
-<p class="section-label">
-Services
-</p>
+                <h2>Practical help, built around the work in front of you.</h2>
 
-<h1>
-Helping people build what matters.
-</h1>
+                <p>
+                    These services are intentionally broad enough to meet real situations
+                    without forcing every person into the same process.
+                </p>
 
-<p>
-Experience, lessons, and systems transformed into practical help.
-</p>
+                <ServiceGrid items={services} headingLevel={3} />
+            </div>
+        </section>
 
-</div>
+        <section class="library-section" id="coaching">
+            <div class="library-shell">
+                <p class="section-label">Coaching</p>
 
-</section>
+                <h2>Coaching and Mentorship</h2>
 
+                <p>
+                    For people who want a thoughtful outside perspective while working
+                    through growth, responsibility, habits, priorities, family leadership,
+                    stewardship, or a major transition.
+                </p>
 
-<section class="library-section">
+                <p>
+                    The goal is not to hand you somebody else's blueprint. It is to help
+                    you think clearly, identify what matters, and turn conviction into
+                    practical action.
+                </p>
+            </div>
+        </section>
 
-<div class="library-shell">
+        <section class="library-section" id="digital">
+            <div class="library-shell">
+                <p class="section-label">Digital</p>
 
-<ServiceGrid items={services} headingLevel={2} />
+                <h2>Digital Foundations</h2>
 
-</div>
+                <p>
+                    For people building something meaningful who need the digital side to
+                    become clearer and more useful.
+                </p>
 
-</section>
+                <p>
+                    Work can include websites, content architecture, simple digital
+                    systems, lead pathways, information organization, automation planning,
+                    and the foundations that help an idea become an operating platform.
+                </p>
+            </div>
+        </section>
 
-</main>
+        <section class="library-section" id="consulting">
+            <div class="library-shell">
+                <p class="section-label">Consulting</p>
 
+                <h2>Education and Consulting</h2>
+
+                <p>
+                    Practical guidance shaped by years of experience in sales, insurance,
+                    business development, communication, systems, and personal growth.
+                </p>
+
+                <p>
+                    This is best suited for situations where experience and structured
+                    thinking can help simplify a problem, expose the next decision, or
+                    build a better process.
+                </p>
+            </div>
+        </section>
+
+        <section class="library-section">
+            <div class="library-shell">
+                <p class="section-label">The process</p>
+
+                <h2>Start with the problem, not a package.</h2>
+
+                <div class="service-grid">
+                    <article class="service-card">
+                        <p class="content-type">01</p>
+                        <h3>Understand</h3>
+                        <p>
+                            Start with what you are actually trying to build, fix, learn,
+                            or move through.
+                        </p>
+                    </article>
+
+                    <article class="service-card">
+                        <p class="content-type">02</p>
+                        <h3>Clarify</h3>
+                        <p>
+                            Separate what matters from what is creating noise, friction,
+                            or unnecessary complexity.
+                        </p>
+                    </article>
+
+                    <article class="service-card">
+                        <p class="content-type">03</p>
+                        <h3>Build</h3>
+                        <p>
+                            Turn the conversation into practical next steps, systems,
+                            decisions, or work that can actually be used.
+                        </p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="library-section">
+            <div class="library-shell">
+                <p class="section-label">Start a conversation</p>
+
+                <h2>If the work fits, we can build from there.</h2>
+
+                <p>
+                    You do not need to know which category your situation belongs in.
+                    Start with what you are working on and what you need help solving.
+                </p>
+
+                <BookingButton
+                    label="Start the conversation"
+                    href="/partner/"
+                />
+            </div>
+        </section>
+    </main>
 </MainLayout>
