@@ -3,9 +3,14 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const shopPath = new URL("../../pages/shop/index.astro", import.meta.url);
+const checkoutApiPath = new URL("../../pages/api/commerce/create-checkout.ts", import.meta.url);
 
 async function readShopSource(): Promise<string> {
     return readFile(shopPath, "utf8");
+}
+
+async function readCheckoutApiSource(): Promise<string> {
+    return readFile(checkoutApiPath, "utf8");
 }
 
 test("PRODUCT-001F-02 presents the actual River Life Operating System", async () => {
@@ -73,4 +78,44 @@ test("PRODUCT-001F-02 preserves the River-owned MainLayout presentation surface"
     assert.match(source, /<MainLayout/);
     assert.match(source, /class="library-page"/);
     assert.match(source, /class="library-shell"/);
+});
+
+test("River Life purchase CTA requires the canonical public commerce authorization gate", async () => {
+    const source = await readShopSource();
+
+    assert.match(
+        source,
+        /isPublicCommerceAuthorized\(product\.publicationState\)/,
+    );
+
+    assert.match(
+        source,
+        /\?\s*buildPublicPurchaseCta\([\s\S]*PRODUCT_001F_04_CHECKOUT_PUBLICATION_STATE[\s\S]*\)\s*:\s*null/,
+    );
+});
+
+test("server checkout route fails closed for River Life until canonical launch authorization", async () => {
+    const source = await readCheckoutApiSource();
+
+    assert.match(
+        source,
+        /requestedProductId ===[\s\S]*RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT\.productId/,
+    );
+
+    assert.match(
+        source,
+        /requestedProductVersion ===[\s\S]*RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT\.productVersion/,
+    );
+
+    assert.match(
+        source,
+        /!isPublicCommerceAuthorized\([\s\S]*RIVER_LIFE_OPERATING_SYSTEM_PRESENTATION\.publicationState[\s\S]*\)/,
+    );
+
+    assert.match(
+        source,
+        /Product purchasing is not currently available\./,
+    );
+
+    assert.match(source, /403/);
 });

@@ -21,6 +21,11 @@ import {
     RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT
 } from "../../../lib/commerce/product-catalog";
 
+import {
+    RIVER_LIFE_OPERATING_SYSTEM_PRESENTATION,
+    isPublicCommerceAuthorized
+} from "../../../lib/commerce/product-presentation";
+
 
 export const prerender =
     false;
@@ -186,6 +191,41 @@ async ({
         );
     }
 
+    const requestedProductId =
+        readOptionalString(
+            body,
+            "productId",
+            RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT.productId
+        );
+
+    const requestedProductVersion =
+        readOptionalString(
+            body,
+            "productVersion",
+            RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT.productVersion
+        );
+
+    if (
+        requestedProductId ===
+            RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT.productId &&
+        requestedProductVersion ===
+            RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT.productVersion &&
+        !isPublicCommerceAuthorized(
+            RIVER_LIFE_OPERATING_SYSTEM_PRESENTATION.publicationState
+        )
+    ) {
+        return jsonResponse(
+            {
+                created:
+                    false,
+
+                error:
+                    "Product purchasing is not currently available."
+            },
+            403
+        );
+    }
+
     try {
 
         const stripe =
@@ -196,16 +236,8 @@ async ({
         const checkout =
             await createRegisteredRiverProductCheckout(
                 stripe,
-                readOptionalString(
-                    body,
-                    "productId",
-                    RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT.productId
-                ),
-                readOptionalString(
-                    body,
-                    "productVersion",
-                    RIVER_LIFE_OPERATING_SYSTEM_COMMERCE_PRODUCT.productVersion
-                ),
+                requestedProductId,
+                requestedProductVersion,
                 {
                     customerReference:
                         readString(

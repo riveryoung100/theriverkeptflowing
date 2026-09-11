@@ -22006,10 +22006,8 @@ video {
     }
 
 }
-/* MOBILE-UX-006: HEADWATERS FEATURED CARD CONTRAST */
-@media (max-width: 680px) {
-    .home-v4 .paths-section .path-card.path-card-featured p {
-        color: #34463d;
-        opacity: 1;
-    }
+/* HOME-UX: HEADWATERS FEATURED CARD CONTRAST */
+.home-v4 .paths-section .path-card.path-card-featured p {
+    color: #34463d;
+    opacity: 1;
 }

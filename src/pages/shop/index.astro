@@ -4,6 +4,7 @@ import MainLayout from "../../layouts/MainLayout.astro";
 import {
     RIVER_LIFE_OPERATING_SYSTEM_PRESENTATION,
     RIVER_LIFE_OPERATING_SYSTEM_WORKING_PRICE_USD,
+    isPublicCommerceAuthorized,
 } from "../../lib/commerce/product-presentation";
 
 import {
@@ -33,9 +34,11 @@ const hasPublicOffer =
     hasPublicPriceAvailabilityPresentation(publicOffer);
 
 const purchaseCta =
-    buildPublicPurchaseCta(
-        PRODUCT_001F_04_CHECKOUT_PUBLICATION_STATE
-    );
+    isPublicCommerceAuthorized(product.publicationState)
+        ? buildPublicPurchaseCta(
+            PRODUCT_001F_04_CHECKOUT_PUBLICATION_STATE
+        )
+        : null;
 
 const customerLaunchReturnNotice =
     buildCustomerLaunchReturnNotice(
