@@ -4,7 +4,7 @@ interface Props {
     workspaceVariant?: "dashboard" | "detail";
     backHref?: string;
     backLabel?: string;
-    activeSection?: "overview" | "content";
+    activeSection?: "overview" | "content" | "crm";
 }
 
 const {
@@ -395,6 +395,17 @@ const hasBackAction =
                     }
                 >
                     Content
+                </a>
+
+                <a
+                    href="/river-os/crm"
+                    aria-current={
+                        activeSection === "crm"
+                            ? "page"
+                            : undefined
+                    }
+                >
+                    CRM
                 </a>
             </nav>
             <slot />
