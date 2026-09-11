@@ -31,20 +31,34 @@ const database =
         .RIVER_CRM_DB as
             D1Database | undefined;
 
-const relationships =
-    database === undefined
-        ? []
-        : await createD1RiverCrmPersistence(
-            database
-        ).list();
+const databaseConnected =
+    database !== undefined;
+
+let databaseReadable =
+    false;
+
+let relationships =
+    [];
+
+if (database !== undefined) {
+    try {
+        relationships =
+            [...await createD1RiverCrmPersistence(
+                database
+            ).list()];
+
+        databaseReadable =
+            true;
+    } catch {
+        relationships =
+            [];
+    }
+}
 
 const summary =
     summarizeRiverCrmWorkspace(
         relationships
     );
-
-const databaseConnected =
-    database !== undefined;
 ---
 
 <style>
@@ -307,9 +321,11 @@ const databaseConnected =
 
         <span class="connection-state">
             {
-                databaseConnected
-                    ? "CRM database connected"
-                    : "CRM foundation ready · database not provisioned"
+                databaseReadable
+                    ? "CRM database connected · schema ready"
+                    : databaseConnected
+                        ? "CRM database connected · schema/read unavailable"
+                        : "CRM foundation ready · database not provisioned"
             }
         </span>
     </section>
@@ -452,8 +468,13 @@ const databaseConnected =
 
         <p>
             The private domain contract and workspace are ready.
-            A dedicated RIVER_CRM_DB has not been provisioned yet,
-            so no CRM relationship data is currently written or read.
+            {
+                databaseReadable
+                    ? "CRM persistence is connected and readable."
+                    : databaseConnected
+                        ? "RIVER_CRM_DB is connected, but its CRM schema is not readable yet."
+                        : "A dedicated RIVER_CRM_DB has not been provisioned yet, so no CRM relationship data is currently written or read."
+            }
         </p>
     </aside>
 </RiverOsLayout>
