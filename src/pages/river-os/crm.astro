@@ -9,6 +9,10 @@ import {
     summarizeRiverCrmWorkspace
 } from "../../lib/river-os/crm-workspace";
 
+import {
+    createD1RiverCrmPersistence
+} from "../../lib/river-os/d1-crm";
+
 
 export const prerender =
     false;
@@ -24,10 +28,15 @@ const runtimeEnvironment =
 
 const database =
     runtimeEnvironment
-        .RIVER_CRM_DB;
+        .RIVER_CRM_DB as
+            D1Database | undefined;
 
 const relationships =
-    [];
+    database === undefined
+        ? []
+        : await createD1RiverCrmPersistence(
+            database
+        ).list();
 
 const summary =
     summarizeRiverCrmWorkspace(
