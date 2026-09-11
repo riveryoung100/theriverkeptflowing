@@ -421,3 +421,22 @@ string {
     return "/river-os/crm";
 
 }
+
+export interface RiverCrmPersistence {
+
+    upsert(
+        relationship:
+            RiverCrmRelationship
+    ): Promise<void>;
+
+    get(
+        relationshipId:
+            string
+    ): Promise<RiverCrmRelationship | undefined>;
+
+    list(
+        limit?:
+            number
+    ): Promise<readonly RiverCrmRelationship[]>;
+
+}
