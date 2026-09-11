@@ -1,6 +1,8 @@
 ---
 title: "How Much Emergency Fund Should You Have? Build a Number Your Household Can Actually Use"
+seoTitle: "How Much Emergency Fund Should You Have?"
 description: "How much emergency fund should you have? Learn how to choose a realistic emergency savings target based on your essential expenses, household risks, income stability, and monthly margin."
+seoDescription: "How much emergency fund should you have? Calculate a realistic target using essential monthly expenses, household risks, and income stability."
 published: 2026-09-10
 author: "River Young"
 draft: false

@@ -36,8 +36,8 @@ const canonical = new URL(
 ---
 
 <ReadingLayout
-    title={`${essay.data.title} | The River Kept Flowing`}
-    description={essay.data.description}
+    title={essay.data.seoTitle ?? `${essay.data.title} | The River Kept Flowing`}
+    description={essay.data.seoDescription ?? essay.data.description}
     author={essay.data.author}
     canonical={canonical}
     articleTitle={essay.data.title}

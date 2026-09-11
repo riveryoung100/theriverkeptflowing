@@ -1,6 +1,8 @@
 ---
 title: "How to Divide Your Monthly Income: A Simple Four-Bucket System"
+seoTitle: "How to Divide Your Monthly Income"
 description: "Learn how to divide your monthly income using four practical buckets: Live, Enjoy, Protect, and Build. Create a household money plan that fits your real life instead of forcing every dollar into a rigid percentage."
+seoDescription: "Learn how to divide monthly income into four practical buckets—Live, Enjoy, Protect, and Build—to create a money plan that fits real life."
 published: 2026-09-10
 author: "River Young"
 draft: false

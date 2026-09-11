@@ -5,6 +5,8 @@ import { z } from "astro/zod";
 const sharedSchema = z.object({
     title: z.string(),
     description: z.string(),
+    seoTitle: z.string().optional(),
+    seoDescription: z.string().optional(),
     published: z.coerce.date(),
     updated: z.coerce.date().optional(),
     author: z.string().default("River Young"),

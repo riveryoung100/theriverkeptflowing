@@ -1,6 +1,8 @@
 ---
 title: "How Much Should You Save Each Month? Start With What Your Life Can Actually Support"
+seoTitle: "How Much Should You Save Each Month?"
 description: "How much should you save each month? Instead of forcing your life into one percentage, learn how to find a realistic monthly number by separating what you need to live, enjoy, protect, and build."
+seoDescription: "How much should you save each month? Find a realistic amount by balancing what your household needs to live, enjoy, protect, and build."
 published: 2026-09-10
 author: "River Young"
 draft: false

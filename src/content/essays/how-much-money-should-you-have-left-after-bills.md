@@ -1,6 +1,8 @@
 ---
 title: "How Much Money Should You Have Left After Bills? Find Your Real Monthly Margin"
+seoTitle: "How Much Money Should You Have Left After Bills?"
 description: "How much money should you have left after bills? Learn how to calculate your real monthly margin after living costs, enjoyment, protection, irregular expenses, and future goals."
+seoDescription: "How much money should you have left after bills? Calculate your real monthly margin after living costs, irregular expenses, protection, and goals."
 published: 2026-09-10
 author: "River Young"
 draft: false
