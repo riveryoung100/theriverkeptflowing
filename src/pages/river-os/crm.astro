@@ -4,9 +4,15 @@ import {
 } from "cloudflare:workers";
 
 import RiverOsLayout from "../../layouts/RiverOsLayout.astro";
+import CrmCreateRelationshipForm from "../../components/river-os/CrmCreateRelationshipForm.astro";
+import CrmRelationshipList from "../../components/river-os/CrmRelationshipList.astro";
 
 import {
     summarizeRiverCrmWorkspace
+} from "../../lib/river-os/crm-workspace";
+
+import type {
+    RiverCrmRelationship
 } from "../../lib/river-os/crm-workspace";
 
 import {
@@ -37,8 +43,9 @@ const databaseConnected =
 let databaseReadable =
     false;
 
-let relationships =
-    [];
+let relationships:
+    RiverCrmRelationship[] =
+        [];
 
 if (database !== undefined) {
     try {
@@ -395,6 +402,10 @@ const summary =
         </article>
     </section>
 
+    <CrmCreateRelationshipForm />
+
+    <CrmRelationshipList relationships={relationships} />
+
     <section
         class="workspace-grid"
         aria-label="CRM operating areas"
@@ -411,7 +422,7 @@ const summary =
             </p>
 
             <span class="panel-note">
-                Durable records will activate with RIVER_CRM_DB.
+                Records are stored in the connected River CRM database.
             </span>
         </article>
 
@@ -463,11 +474,11 @@ const summary =
 
     <aside class="foundation-note">
         <strong>
-            The CRM workspace exists without pretending persistence is live.
+            The CRM workspace is connected to governed persistence.
         </strong>
 
         <p>
-            The private domain contract and workspace are ready.
+            The private domain contract, workspace, and manual record controls are ready.
             {
                 databaseReadable
                     ? "CRM persistence is connected and readable."

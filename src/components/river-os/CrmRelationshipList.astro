@@ -1,0 +1,487 @@
+---
+import type {
+    RiverCrmRelationship
+} from "../../lib/river-os/crm-workspace";
+
+
+interface Props {
+    relationships:
+        readonly RiverCrmRelationship[];
+}
+
+
+const {
+    relationships
+} =
+    Astro.props;
+---
+
+<section
+    class="crm-relationships"
+    aria-labelledby="crm-relationships-heading"
+>
+    <div class="crm-relationships-heading">
+        <div>
+            <p class="crm-list-eyebrow">
+                Private records
+            </p>
+
+            <h2 id="crm-relationships-heading">
+                Relationships
+            </h2>
+        </div>
+
+        <span class="crm-record-count">
+            {relationships.length}
+            {
+                relationships.length === 1
+                    ? " record"
+                    : " records"
+            }
+        </span>
+    </div>
+
+    {
+        relationships.length === 0
+            ? (
+                <p class="crm-empty-state">
+                    No CRM relationships have been created yet.
+                </p>
+            )
+            : (
+                <div class="crm-record-list">
+                    {
+                        relationships.map(
+                            relationship => (
+                                <article class="crm-record">
+                                    <div class="crm-record-summary">
+                                        <div>
+                                            <strong>
+                                                {relationship.displayName}
+                                            </strong>
+
+                                            <span>
+                                                {relationship.kind}
+                                                {" · "}
+                                                {relationship.stage}
+                                            </span>
+                                        </div>
+
+                                        <span class="crm-record-source">
+                                            {relationship.source}
+                                        </span>
+                                    </div>
+
+                                    <form
+                                        class="crm-record-form"
+                                        method="post"
+                                        action="/river-os/actions/crm-update"
+                                    >
+                                        <input
+                                            type="hidden"
+                                            name="relationshipId"
+                                            value={relationship.relationshipId}
+                                        />
+
+                                        <label class="crm-field-wide">
+                                            <span>Name</span>
+                                            <input
+                                                name="displayName"
+                                                type="text"
+                                                value={relationship.displayName}
+                                                required
+                                            />
+                                        </label>
+
+                                        <label>
+                                            <span>Relationship</span>
+                                            <select
+                                                name="kind"
+                                                required
+                                            >
+                                                <option
+                                                    value="lead"
+                                                    selected={relationship.kind === "lead"}
+                                                >
+                                                    Lead
+                                                </option>
+
+                                                <option
+                                                    value="client"
+                                                    selected={relationship.kind === "client"}
+                                                >
+                                                    Client
+                                                </option>
+
+                                                <option
+                                                    value="recruit"
+                                                    selected={relationship.kind === "recruit"}
+                                                >
+                                                    Recruit
+                                                </option>
+
+                                                <option
+                                                    value="partner"
+                                                    selected={relationship.kind === "partner"}
+                                                >
+                                                    Partner
+                                                </option>
+                                            </select>
+                                        </label>
+
+                                        <label>
+                                            <span>Stage</span>
+                                            <select
+                                                name="stage"
+                                                required
+                                            >
+                                                <option
+                                                    value="new"
+                                                    selected={relationship.stage === "new"}
+                                                >
+                                                    New
+                                                </option>
+
+                                                <option
+                                                    value="contacted"
+                                                    selected={relationship.stage === "contacted"}
+                                                >
+                                                    Contacted
+                                                </option>
+
+                                                <option
+                                                    value="qualified"
+                                                    selected={relationship.stage === "qualified"}
+                                                >
+                                                    Qualified
+                                                </option>
+
+                                                <option
+                                                    value="appointment-set"
+                                                    selected={relationship.stage === "appointment-set"}
+                                                >
+                                                    Appointment set
+                                                </option>
+
+                                                <option
+                                                    value="proposal"
+                                                    selected={relationship.stage === "proposal"}
+                                                >
+                                                    Proposal
+                                                </option>
+
+                                                <option
+                                                    value="won"
+                                                    selected={relationship.stage === "won"}
+                                                >
+                                                    Won
+                                                </option>
+
+                                                <option
+                                                    value="lost"
+                                                    selected={relationship.stage === "lost"}
+                                                >
+                                                    Lost
+                                                </option>
+
+                                                <option
+                                                    value="nurture"
+                                                    selected={relationship.stage === "nurture"}
+                                                >
+                                                    Nurture
+                                                </option>
+                                            </select>
+                                        </label>
+
+                                        <label>
+                                            <span>Source</span>
+                                            <input
+                                                name="source"
+                                                type="text"
+                                                value={relationship.source}
+                                                required
+                                            />
+                                        </label>
+
+                                        <label>
+                                            <span>Email</span>
+                                            <input
+                                                name="email"
+                                                type="email"
+                                                value={relationship.email ?? ""}
+                                            />
+                                        </label>
+
+                                        <label>
+                                            <span>Phone</span>
+                                            <input
+                                                name="phone"
+                                                type="tel"
+                                                value={relationship.phone ?? ""}
+                                            />
+                                        </label>
+
+                                        <label>
+                                            <span>Owner</span>
+                                            <input
+                                                name="owner"
+                                                type="text"
+                                                value={relationship.owner ?? ""}
+                                            />
+                                        </label>
+
+                                        <div class="crm-record-footer">
+                                            <span>
+                                                Updated
+                                                {" "}
+                                                {
+                                                    new Date(
+                                                        relationship.updatedAt
+                                                    ).toLocaleString(
+                                                        "en-US"
+                                                    )
+                                                }
+                                            </span>
+
+                                            <button type="submit">
+                                                Save changes
+                                            </button>
+                                        </div>
+                                    </form>
+                                </article>
+                            )
+                        )
+                    }
+                </div>
+            )
+    }
+</section>
+
+<style>
+    .crm-relationships {
+        display:
+            grid;
+        gap:
+            1rem;
+        margin-top:
+            1rem;
+        border:
+            1px solid var(--river-line);
+        border-radius:
+            20px;
+        background:
+            rgba(
+                255,
+                253,
+                248,
+                0.82
+            );
+        padding:
+            1.5rem;
+    }
+
+    .crm-relationships-heading,
+    .crm-record-summary,
+    .crm-record-footer {
+        display:
+            flex;
+        align-items:
+            center;
+        justify-content:
+            space-between;
+        gap:
+            1rem;
+    }
+
+    .crm-relationships-heading h2,
+    .crm-relationships-heading p {
+        margin:
+            0;
+    }
+
+    .crm-relationships-heading h2 {
+        margin-top:
+            0.35rem;
+        font-family:
+            var(--river-serif);
+        font-size:
+            1.8rem;
+        font-weight:
+            400;
+    }
+
+    .crm-list-eyebrow {
+        color:
+            var(--river-water);
+        font-size:
+            0.72rem;
+        font-weight:
+            800;
+        letter-spacing:
+            0.12em;
+        text-transform:
+            uppercase;
+    }
+
+    .crm-record-count,
+    .crm-record-source {
+        color:
+            var(--river-text-muted);
+        font-size:
+            0.78rem;
+        font-weight:
+            800;
+    }
+
+    .crm-empty-state {
+        margin:
+            0;
+        color:
+            var(--river-text-soft);
+    }
+
+    .crm-record-list {
+        display:
+            grid;
+        gap:
+            1rem;
+    }
+
+    .crm-record {
+        display:
+            grid;
+        gap:
+            1rem;
+        border-top:
+            1px solid var(--river-line);
+        padding-top:
+            1rem;
+    }
+
+    .crm-record-summary strong,
+    .crm-record-summary span {
+        display:
+            block;
+    }
+
+    .crm-record-summary strong {
+        font-family:
+            var(--river-serif);
+        font-size:
+            1.25rem;
+        font-weight:
+            400;
+    }
+
+    .crm-record-summary div > span {
+        margin-top:
+            0.2rem;
+        color:
+            var(--river-text-soft);
+        font-size:
+            0.82rem;
+    }
+
+    .crm-record-form {
+        display:
+            grid;
+        grid-template-columns:
+            repeat(
+                3,
+                minmax(0, 1fr)
+            );
+        gap:
+            0.85rem;
+    }
+
+    .crm-record-form label {
+        display:
+            grid;
+        gap:
+            0.35rem;
+        color:
+            var(--river-text-soft);
+        font-size:
+            0.78rem;
+        font-weight:
+            700;
+    }
+
+    .crm-field-wide,
+    .crm-record-footer {
+        grid-column:
+            1 / -1;
+    }
+
+    .crm-record-form input,
+    .crm-record-form select {
+        width:
+            100%;
+        box-sizing:
+            border-box;
+        border:
+            1px solid var(--river-line);
+        border-radius:
+            10px;
+        background:
+            var(--river-white);
+        color:
+            var(--river-text);
+        font:
+            inherit;
+        padding:
+            0.7rem 0.8rem;
+    }
+
+    .crm-record-footer {
+        color:
+            var(--river-text-muted);
+        font-size:
+            0.76rem;
+        font-weight:
+            700;
+    }
+
+    .crm-record-footer button {
+        border:
+            0;
+        border-radius:
+            999px;
+        background:
+            var(--river-water);
+        color:
+            var(--river-white);
+        cursor:
+            pointer;
+        font:
+            inherit;
+        font-weight:
+            800;
+        padding:
+            0.7rem 0.95rem;
+    }
+
+    @media (
+        max-width: 760px
+    ) {
+        .crm-record-form {
+            grid-template-columns:
+                1fr;
+        }
+
+        .crm-field-wide,
+        .crm-record-footer {
+            grid-column:
+                auto;
+        }
+
+        .crm-relationships-heading,
+        .crm-record-summary,
+        .crm-record-footer {
+            align-items:
+                flex-start;
+            flex-direction:
+                column;
+        }
+    }
+</style>

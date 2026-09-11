@@ -1,0 +1,253 @@
+<section class="crm-create-panel" aria-labelledby="crm-create-heading">
+    <div class="crm-create-copy">
+        <p class="crm-create-eyebrow">
+            Private entry
+        </p>
+
+        <h2 id="crm-create-heading">
+            Add relationship
+        </h2>
+
+        <p>
+            Create a governed CRM relationship manually. Nothing is messaged,
+            scheduled, or contacted automatically.
+        </p>
+    </div>
+
+    <form
+        class="crm-create-form"
+        method="post"
+        action="/river-os/actions/crm-create"
+    >
+        <label>
+            <span>Name</span>
+            <input
+                name="displayName"
+                type="text"
+                autocomplete="name"
+                required
+            />
+        </label>
+
+        <div class="crm-form-grid">
+            <label>
+                <span>Relationship</span>
+                <select name="kind" required>
+                    <option value="lead">Lead</option>
+                    <option value="client">Client</option>
+                    <option value="recruit">Recruit</option>
+                    <option value="partner">Partner</option>
+                </select>
+            </label>
+
+            <label>
+                <span>Stage</span>
+                <select name="stage" required>
+                    <option value="new">New</option>
+                    <option value="contacted">Contacted</option>
+                    <option value="qualified">Qualified</option>
+                    <option value="appointment-set">Appointment set</option>
+                    <option value="proposal">Proposal</option>
+                    <option value="won">Won</option>
+                    <option value="lost">Lost</option>
+                    <option value="nurture">Nurture</option>
+                </select>
+            </label>
+        </div>
+
+        <label>
+            <span>Source</span>
+            <input
+                name="source"
+                type="text"
+                value="manual"
+                required
+            />
+        </label>
+
+        <div class="crm-form-grid">
+            <label>
+                <span>Email</span>
+                <input
+                    name="email"
+                    type="email"
+                    autocomplete="email"
+                />
+            </label>
+
+            <label>
+                <span>Phone</span>
+                <input
+                    name="phone"
+                    type="tel"
+                    autocomplete="tel"
+                />
+            </label>
+        </div>
+
+        <label>
+            <span>Owner</span>
+            <input
+                name="owner"
+                type="text"
+                autocomplete="off"
+            />
+        </label>
+
+        <button type="submit">
+            Save relationship
+        </button>
+    </form>
+</section>
+
+<style>
+    .crm-create-panel {
+        display:
+            grid;
+        grid-template-columns:
+            minmax(0, 0.8fr)
+            minmax(0, 1.2fr);
+        gap:
+            2rem;
+        margin-top:
+            1rem;
+        border:
+            1px solid var(--river-line);
+        border-radius:
+            20px;
+        background:
+            rgba(
+                255,
+                253,
+                248,
+                0.82
+            );
+        padding:
+            1.5rem;
+    }
+
+    .crm-create-copy {
+        display:
+            grid;
+        align-content:
+            start;
+        gap:
+            0.65rem;
+    }
+
+    .crm-create-copy h2,
+    .crm-create-copy p {
+        margin:
+            0;
+    }
+
+    .crm-create-copy h2 {
+        font-family:
+            var(--river-serif);
+        font-size:
+            1.8rem;
+        font-weight:
+            400;
+    }
+
+    .crm-create-copy > p:last-child {
+        color:
+            var(--river-text-soft);
+    }
+
+    .crm-create-eyebrow {
+        color:
+            var(--river-water);
+        font-size:
+            0.72rem;
+        font-weight:
+            800;
+        letter-spacing:
+            0.12em;
+        text-transform:
+            uppercase;
+    }
+
+    .crm-create-form {
+        display:
+            grid;
+        gap:
+            1rem;
+    }
+
+    .crm-create-form label {
+        display:
+            grid;
+        gap:
+            0.4rem;
+        color:
+            var(--river-text-soft);
+        font-size:
+            0.82rem;
+        font-weight:
+            700;
+    }
+
+    .crm-create-form input,
+    .crm-create-form select {
+        width:
+            100%;
+        box-sizing:
+            border-box;
+        border:
+            1px solid var(--river-line);
+        border-radius:
+            10px;
+        background:
+            var(--river-white);
+        color:
+            var(--river-text);
+        font:
+            inherit;
+        padding:
+            0.75rem 0.85rem;
+    }
+
+    .crm-form-grid {
+        display:
+            grid;
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+        gap:
+            1rem;
+    }
+
+    .crm-create-form button {
+        width:
+            fit-content;
+        border:
+            0;
+        border-radius:
+            999px;
+        background:
+            var(--river-water);
+        color:
+            var(--river-white);
+        cursor:
+            pointer;
+        font:
+            inherit;
+        font-weight:
+            800;
+        padding:
+            0.75rem 1rem;
+    }
+
+    @media (
+        max-width: 760px
+    ) {
+        .crm-create-panel,
+        .crm-form-grid {
+            grid-template-columns:
+                1fr;
+        }
+    }
+</style>
