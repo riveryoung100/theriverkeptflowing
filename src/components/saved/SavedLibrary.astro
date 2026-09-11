@@ -533,10 +533,8 @@ function clamp(
             value
         );
 
-        wrapper.append(
-            label,
-            track
-        );
+        wrapper.appendChild(label);
+        wrapper.appendChild(track);
 
 
         return wrapper;
@@ -614,10 +612,8 @@ function clamp(
             )}`;
 
 
-        meta.append(
-            type,
-            savedDate
-        );
+        meta.appendChild(type);
+        meta.appendChild(savedDate);
 
 
         const heading =
@@ -770,21 +766,15 @@ function clamp(
         );
 
 
-        actions.append(
-            resumeLink,
-            removeButton
-        );
+        actions.appendChild(resumeLink);
+        actions.appendChild(removeButton);
 
 
-        article.append(
-            meta,
-            heading,
-            statusRow,
-            createProgress(
-                reading
-            ),
-            actions
-        );
+        article.appendChild(meta);
+        article.appendChild(heading);
+        article.appendChild(statusRow);
+        article.appendChild(createProgress(reading));
+        article.appendChild(actions);
 
 
         return article;
@@ -1045,9 +1035,9 @@ function clamp(
             );
 
         const sortSelect =
-            element.querySelector<HTMLSelectElement>(
+            element.querySelector(
                 "[data-saved-library-sort]"
-            );
+            ) as unknown as HTMLSelectElement | null;
 
         const summary =
             element.querySelector<HTMLElement>(

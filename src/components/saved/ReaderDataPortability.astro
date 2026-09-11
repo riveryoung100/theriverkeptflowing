@@ -725,8 +725,8 @@ function announce(
         announce(
             state,
             result.failed > 0
-                ? `Imported  records, skipped , and could not write .`
-                : `Imported  newer records and skipped .`
+                ? `Imported ${result.imported} records, skipped ${result.skipped}, and could not write ${result.failed}.`
+                : `Imported ${result.imported} newer records and skipped ${result.skipped}.`
         );
 
     }
