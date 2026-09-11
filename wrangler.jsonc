@@ -13,6 +13,13 @@
 			"database_id": "b5ddbe8e-5e9e-47a8-bbe2-10778fa62aba",
 			"migrations_dir": "../../migrations",
                   "migrations_pattern": "../../migrations/*.sql"
+		},
+		{
+                  "binding": "RIVER_CRM_DB",
+                  "database_name": "river-crm",
+                  "database_id": "dae67052-ec0f-434b-9322-80b16f632b84",
+                  "migrations_dir": "migrations/river-crm",
+                  "migrations_pattern": "migrations/river-crm/*.sql"
 		}
 	],
 	"r2_buckets": [
