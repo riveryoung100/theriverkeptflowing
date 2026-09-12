@@ -110,34 +110,41 @@ export function createSemanticKnowledgeExecution(
 
     }
 
+    async function executeFromProductionRecords(
+        assetId: AssetId,
+        assimilation:
+            Pick<
+                ProductionSourceAssimilationService,
+                "retrieveGeneratedRecords"
+            >
+    ): Promise<KnowledgeEngineResult> {
+
+        const records =
+            await assimilation.retrieveGeneratedRecords(
+                assetId
+            );
+
+        return execute({
+            asset:
+                records.asset,
+            derivedObject:
+                records.derivedObject,
+            interpretation: {
+                segment:
+                    records.segment,
+                classification:
+                    records.classification
+            }
+        });
+
+    }
+
+
     return {
 
         execute,
 
-        async executeFromProductionRecords(
-            assetId,
-            assimilation
-        ): Promise<KnowledgeEngineResult> {
-
-            const records =
-                await assimilation.retrieveGeneratedRecords(
-                    assetId
-                );
-
-            return execute({
-                asset:
-                    records.asset,
-                derivedObject:
-                    records.derivedObject,
-                interpretation: {
-                    segment:
-                        records.segment,
-                    classification:
-                        records.classification
-                }
-            });
-
-        },
+        executeFromProductionRecords,
 
         async executeAndPersistFromProductionRecords(
             assetId,
@@ -147,7 +154,7 @@ export function createSemanticKnowledgeExecution(
         ): Promise<KnowledgeEngineResult> {
 
             const result =
-                await this.executeFromProductionRecords(
+                await executeFromProductionRecords(
                     assetId,
                     assimilation
                 );

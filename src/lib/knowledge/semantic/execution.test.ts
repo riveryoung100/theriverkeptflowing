@@ -792,3 +792,60 @@ test(
 
     }
 );
+
+test(
+    "persists successfully when the production persistence method is detached",
+    async () => {
+
+        const provider = {
+            async interpret() {
+                return candidates;
+            }
+        };
+
+        const execution =
+            createSemanticKnowledgeExecution(
+                provider
+            );
+
+        const detached =
+            execution.executeAndPersistFromProductionRecords;
+
+        const persistenceKeys:
+            string[] = [];
+
+        const result =
+            await detached(
+                sampleTextAsset.id,
+                "detached-semantic-knowledge",
+                {
+                    async retrieveGeneratedRecords() {
+                        return createProductionRecords();
+                    }
+                },
+                {
+                    async persist(
+                        key
+                    ) {
+                        persistenceKeys.push(
+                            key
+                        );
+                    }
+                }
+            );
+
+        assert.equal(
+            result.graph.nodes.length >
+                0,
+            true
+        );
+
+        assert.deepEqual(
+            persistenceKeys,
+            [
+                "detached-semantic-knowledge"
+            ]
+        );
+
+    }
+);

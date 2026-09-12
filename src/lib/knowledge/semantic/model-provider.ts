@@ -127,6 +127,41 @@ function requireRecord(
 }
 
 
+function requireExactKeys(
+    record: Record<string, unknown>,
+    allowedKeys: readonly string[],
+    path: string
+): void {
+
+    const allowed =
+        new Set(
+            allowedKeys
+        );
+
+    for (
+        const key of
+        Object.keys(
+            record
+        )
+    ) {
+
+        if (
+            !allowed.has(
+                key
+            )
+        ) {
+
+            throw new TypeError(
+                `Semantic model output ${path} contains unexpected field: ${key}.`
+            );
+
+        }
+
+    }
+
+}
+
+
 function requireArray(
     value: unknown,
     path: string
@@ -479,6 +514,16 @@ export function parseSemanticCandidateSet(
             parsed,
             "root"
         );
+
+    requireExactKeys(
+        record,
+        [
+            "nodes",
+            "relations",
+            "claims"
+        ],
+        "root"
+    );
 
     return {
         nodes:

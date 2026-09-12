@@ -295,3 +295,27 @@ test(
 
     }
 );
+
+test(
+    "rejects unexpected top-level semantic model fields",
+    () => {
+
+        assert.throws(
+            () =>
+                parseSemanticCandidateSet(
+                    JSON.stringify({
+                        nodes:
+                            [],
+                        relations:
+                            [],
+                        claims:
+                            [],
+                        action:
+                            "publish"
+                    })
+                ),
+            /unexpected field: action/
+        );
+
+    }
+);
