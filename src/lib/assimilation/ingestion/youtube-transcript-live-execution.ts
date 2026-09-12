@@ -1,7 +1,11 @@
-﻿import {
+import {
     createGovernedContentTranscriptIntake,
     type ContentTranscriptIntakeResult
 } from "./content-transcript-intake";
+
+import type {
+    ContentTranscriptAcquisitionProvider
+} from "./content-transcript-acquisition-provider";
 
 import {
     createYouTubeTranscriptProvider
@@ -39,6 +43,9 @@ export interface YouTubeTranscriptLiveExecutionOptions {
 
     readonly fetcher?:
         typeof fetch;
+
+    readonly provider?:
+        ContentTranscriptAcquisitionProvider;
 
 }
 
@@ -208,6 +215,7 @@ export async function executeYouTubeTranscriptLiveAcquisition(
     }
 
     const provider =
+        options.provider ??
         createYouTubeTranscriptProvider(
             {
                 now:

@@ -16,6 +16,10 @@ import {
     createFileSystemCanonicalContentSourcePersistence
 } from "../persistence/canonical-content-source-filesystem";
 
+import type {
+    ContentTranscriptAcquisitionProvider
+} from "./content-transcript-acquisition-provider";
+
 import {
     YOUTUBE_TRANSCRIPT_LIVE_EXECUTION_AUTHORIZATION,
     executeYouTubeTranscriptLiveAcquisition
@@ -273,6 +277,219 @@ test(
 
         assert.equal(
             calls,
+            0
+        );
+
+    }
+);
+
+test(
+    "CIF-020 accepts an explicitly injected governed transcript provider after authorization",
+    async () => {
+
+        const root =
+            await mkdtemp(
+                join(
+                    tmpdir(),
+                    "river-cif020-provider-"
+                )
+            );
+
+        try {
+
+            const canonicalPersistence =
+                createFileSystemCanonicalContentSourcePersistence(
+                    root
+                );
+
+            await canonicalPersistence.persist(
+                {
+                    sourceId:
+                        "source:youtube:dkBgPbiFTX0",
+
+                    platform:
+                        "youtube",
+
+                    canonicalUrl:
+                        "https://www.youtube.com/watch?v=dkBgPbiFTX0",
+
+                    externalPlatformId:
+                        "dkBgPbiFTX0",
+
+                    title:
+                        "Gods Grace is Sufficient (Word of Perseverance)",
+
+                    description:
+                        "If you want to keep going, just watch the video.",
+
+                    publishedAt:
+                        "2025-06-26T16:27:59.000Z",
+
+                    sourceStatus:
+                        "transcript-pending",
+
+                    tags: [],
+
+                    ingestedAt:
+                        "2026-09-08T18:16:28.680Z",
+
+                    updatedAt:
+                        "2026-09-08T18:16:28.680Z",
+
+                    originalSourcePreserved:
+                        true
+                }
+            );
+
+            let providerCalls =
+                0;
+
+            const provider:
+                ContentTranscriptAcquisitionProvider =
+                {
+                    platform:
+                        "youtube",
+
+                    acquire:
+                        async (
+                            request
+                        ) => {
+
+                            providerCalls +=
+                                1;
+
+                            return {
+                                sourceId:
+                                    request.source.sourceId,
+
+                                platform:
+                                    "youtube",
+
+                                transcript: {
+                                    text:
+                                        "Injected governed transcript.",
+
+                                    provenance: {
+                                        type:
+                                            "platform",
+
+                                        provider:
+                                            "injected-test-provider",
+
+                                        language:
+                                            "en",
+
+                                        capturedAt:
+                                            "2026-09-08T18:40:00.000Z"
+                                    }
+                                }
+                            };
+
+                        }
+                };
+
+            const result =
+                await executeYouTubeTranscriptLiveAcquisition(
+                    {
+                        persistenceRoot:
+                            root,
+
+                        sourceId:
+                            "source:youtube:dkBgPbiFTX0",
+
+                        authorization:
+                            YOUTUBE_TRANSCRIPT_LIVE_EXECUTION_AUTHORIZATION,
+
+                        now:
+                            "2026-09-08T18:40:00.000Z",
+
+                        provider
+                    }
+                );
+
+            assert.equal(
+                providerCalls,
+                1
+            );
+
+            assert.equal(
+                result.intake.record.transcript.text,
+                "Injected governed transcript."
+            );
+
+            assert.equal(
+                result.intake.record.transcript.provenance.provider,
+                "injected-test-provider"
+            );
+
+        } finally {
+
+            await rm(
+                root,
+                {
+                    recursive:
+                        true,
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);
+
+
+test(
+    "CIF-020 rejects missing authorization before an injected transcript provider can execute",
+    async () => {
+
+        let providerCalls =
+            0;
+
+        const provider:
+            ContentTranscriptAcquisitionProvider =
+            {
+                platform:
+                    "youtube",
+
+                acquire:
+                    async () => {
+
+                        providerCalls +=
+                            1;
+
+                        throw new Error(
+                            "must not execute"
+                        );
+
+                    }
+            };
+
+        await assert.rejects(
+            () =>
+                executeYouTubeTranscriptLiveAcquisition(
+                    {
+                        persistenceRoot:
+                            ".river-content",
+
+                        sourceId:
+                            "source:youtube:dkBgPbiFTX0",
+
+                        authorization:
+                            "NOT_AUTHORIZED",
+
+                        now:
+                            "2026-09-08T18:40:00.000Z",
+
+                        provider
+                    }
+                ),
+            /Explicit live YouTube transcript acquisition authorization is required/
+        );
+
+        assert.equal(
+            providerCalls,
             0
         );
 
