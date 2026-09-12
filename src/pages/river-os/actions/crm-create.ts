@@ -82,8 +82,7 @@ async ({
             await request.formData();
 
         relationship =
-            buildRiverCrmRelationshipFromForm,
-    isSameOriginRiverCrmWriteRequest(
+            buildRiverCrmRelationshipFromForm(
                 formData,
                 {
                     relationshipId:
