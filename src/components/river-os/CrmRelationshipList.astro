@@ -238,7 +238,13 @@ const {
                                                     new Date(
                                                         relationship.updatedAt
                                                     ).toLocaleString(
-                                                        "en-US"
+                                                        "en-US",
+                                                        {
+                                                            timeZone:
+                                                                "America/Chicago",
+                                                            timeZoneName:
+                                                                "short"
+                                                        }
                                                     )
                                                 }
                                             </span>
