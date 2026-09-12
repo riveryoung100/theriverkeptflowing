@@ -1,4 +1,4 @@
-﻿import type {
+import type {
     YouTubeTranscriptLiveExecutionResult
 } from "./youtube-transcript-live-execution";
 
@@ -6,6 +6,10 @@ import {
     YOUTUBE_TRANSCRIPT_LIVE_EXECUTION_AUTHORIZATION,
     executeYouTubeTranscriptLiveAcquisition
 } from "./youtube-transcript-live-execution";
+
+import {
+    runTranscriptAssimilationCli
+} from "../production/transcript-cli";
 
 
 export const YOUTUBE_TRANSCRIPT_LIVE_CLI_AUTHORIZATION_FLAG =
@@ -223,57 +227,83 @@ export function parseYouTubeTranscriptLiveCliArguments(
 }
 
 
+export type YouTubeTranscriptLiveCliResult =
+    YouTubeTranscriptLiveExecutionResult &
+    {
+        readonly assimilation:
+            Awaited<
+                ReturnType<
+                    typeof runTranscriptAssimilationCli
+                >
+            >;
+    };
+
+
 export async function runYouTubeTranscriptLiveCli(
     options:
         RunYouTubeTranscriptLiveCliOptions
-): Promise<YouTubeTranscriptLiveExecutionResult> {
+): Promise<YouTubeTranscriptLiveCliResult> {
 
     const parsed =
         parseYouTubeTranscriptLiveCliArguments(
             options.arguments
         );
 
-    return executeYouTubeTranscriptLiveAcquisition(
-        {
-            persistenceRoot:
-                parsed.persistenceRoot,
+    const acquisition =
+        await executeYouTubeTranscriptLiveAcquisition(
+            {
+                persistenceRoot:
+                    parsed.persistenceRoot,
 
-            sourceId:
-                parsed.sourceId,
+                sourceId:
+                    parsed.sourceId,
 
-            authorization:
-                YOUTUBE_TRANSCRIPT_LIVE_EXECUTION_AUTHORIZATION,
+                authorization:
+                    YOUTUBE_TRANSCRIPT_LIVE_EXECUTION_AUTHORIZATION,
 
-            now:
-                (
-                    options.now ??
+                now:
                     (
-                        () =>
-                            new Date()
-                                .toISOString()
-                    )
-                )(),
+                        options.now ??
+                        (
+                            () =>
+                                new Date()
+                                    .toISOString()
+                        )
+                    )(),
 
-            ...(
-                parsed.preferredLanguage ===
-                    undefined
-                    ? {}
-                    : {
-                        preferredLanguage:
-                            parsed.preferredLanguage
-                    }
-            ),
+                ...(
+                    parsed.preferredLanguage ===
+                        undefined
+                        ? {}
+                        : {
+                            preferredLanguage:
+                                parsed.preferredLanguage
+                        }
+                ),
 
-            ...(
-                options.fetcher ===
-                    undefined
-                    ? {}
-                    : {
-                        fetcher:
-                            options.fetcher
-                    }
-            )
-        }
-    );
+                ...(
+                    options.fetcher ===
+                        undefined
+                        ? {}
+                        : {
+                            fetcher:
+                                options.fetcher
+                        }
+                )
+            }
+        );
+
+    const assimilation =
+        await runTranscriptAssimilationCli(
+            [
+                parsed.persistenceRoot,
+                parsed.sourceId
+            ]
+        );
+
+    return {
+        ...acquisition,
+        assimilation
+    };
 
 }

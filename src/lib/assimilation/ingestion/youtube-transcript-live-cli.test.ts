@@ -1,6 +1,8 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
 import {
+    access,
     mkdtemp,
+    readFile,
     rm
 } from "node:fs/promises";
 import {
@@ -237,6 +239,68 @@ test(
             assert.equal(
                 result.intake.record.transcript.provenance.provider,
                 "youtube"
+            );
+
+            assert.equal(
+                result.assimilation.status,
+                "completed"
+            );
+
+            assert.equal(
+                result.assimilation.failedStage,
+                null
+            );
+
+            assert.equal(
+                result.assimilation.asset.assetType,
+                "transcript"
+            );
+
+            assert.equal(
+                result.assimilation.asset.rightsStatus,
+                "unknown"
+            );
+
+            assert.equal(
+                result.assimilation.asset.usagePermission.mayPublish,
+                false
+            );
+
+            const generatedRecordPath =
+                join(
+                    root,
+                    "generated-records",
+                    `${encodeURIComponent(result.assimilation.asset.id)}.json`
+                );
+
+            await access(
+                generatedRecordPath
+            );
+
+            const generated =
+                JSON.parse(
+                    await readFile(
+                        generatedRecordPath,
+                        "utf8"
+                    )
+                ) as {
+                    asset:
+                        {
+                            id:
+                                string;
+                            assetType:
+                                string;
+                        };
+                };
+
+            assert.equal(
+                generated.asset.id,
+                result.assimilation.asset.id
+            );
+
+            assert.equal(
+                generated.asset.assetType,
+                "transcript"
             );
 
         } finally {
