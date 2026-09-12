@@ -591,6 +591,55 @@ export function parseSemanticCandidateSet(
 }
 
 
+const MAX_SEMANTIC_CONTEXT_TEXT_CHARACTERS =
+    8_000;
+
+const MAX_SEMANTIC_CONTEXT_ARRAY_ITEMS =
+    32;
+
+const MAX_SEMANTIC_CONTEXT_ARRAY_ITEM_CHARACTERS =
+    512;
+
+
+function boundOptionalContextText(
+    value: string | undefined
+): string | undefined {
+
+    if (
+        value ===
+        undefined
+    ) {
+        return undefined;
+    }
+
+    return value.slice(
+        0,
+        MAX_SEMANTIC_CONTEXT_TEXT_CHARACTERS
+    );
+
+}
+
+
+function boundContextStringArray(
+    values: readonly string[]
+): readonly string[] {
+
+    return values
+        .slice(
+            0,
+            MAX_SEMANTIC_CONTEXT_ARRAY_ITEMS
+        )
+        .map(
+            (value) =>
+                value.slice(
+                    0,
+                    MAX_SEMANTIC_CONTEXT_ARRAY_ITEM_CHARACTERS
+                )
+        );
+
+}
+
+
 function createSystemInstruction():
 string {
 
@@ -629,11 +678,17 @@ function createUserInstruction(
             segmentType:
                 request.segment.segmentType,
             sourceText:
-                request.segment.sourceText,
+                boundOptionalContextText(
+                    request.segment.sourceText
+                ),
             normalizedText:
-                request.segment.normalizedText,
+                boundOptionalContextText(
+                    request.segment.normalizedText
+                ),
             topicKeys:
-                request.segment.topicKeys,
+                boundContextStringArray(
+                    request.segment.topicKeys
+                ),
             confidence:
                 request.segment.confidence
         },
@@ -641,19 +696,35 @@ function createUserInstruction(
             id:
                 request.classification.id,
             domainKeys:
-                request.classification.domainKeys,
+                boundContextStringArray(
+                    request.classification.domainKeys
+                ),
             topicKeys:
-                request.classification.topicKeys,
+                boundContextStringArray(
+                    request.classification.topicKeys
+                ),
             audienceKeys:
-                request.classification.audienceKeys,
+                boundContextStringArray(
+                    request.classification.audienceKeys
+                ),
             contentFunctions:
-                request.classification.contentFunctions,
+                request.classification.contentFunctions.slice(
+                    0,
+                    MAX_SEMANTIC_CONTEXT_ARRAY_ITEMS
+                ),
             businessRelevance:
-                request.classification.businessRelevance,
+                request.classification.businessRelevance.slice(
+                    0,
+                    MAX_SEMANTIC_CONTEXT_ARRAY_ITEMS
+                ),
             learningOutcomes:
-                request.classification.learningOutcomes,
+                boundContextStringArray(
+                    request.classification.learningOutcomes
+                ),
             questionsAnswered:
-                request.classification.questionsAnswered,
+                boundContextStringArray(
+                    request.classification.questionsAnswered
+                ),
             confidence:
                 request.classification.confidence
         }

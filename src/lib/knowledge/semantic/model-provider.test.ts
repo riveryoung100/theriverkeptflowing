@@ -398,3 +398,156 @@ test(
 
     }
 );
+
+
+test(
+    "bounds oversized semantic source context before transport",
+    async () => {
+
+        let captured:
+            SemanticModelTransportRequest | undefined;
+
+        const provider =
+            createSemanticModelProvider({
+                transport:
+                    async (
+                        request
+                    ) => {
+
+                        captured =
+                            request;
+
+                        return {
+                            content:
+                                validResponse
+                        };
+
+                    }
+            });
+
+        const longSourcePrefix =
+            "SOURCE-BEGIN-";
+
+        const longNormalizedPrefix =
+            "NORMALIZED-BEGIN-";
+
+        const longArrayItemPrefix =
+            "ARRAY-ITEM-BEGIN-";
+
+        const oversizedSource =
+            longSourcePrefix +
+            "s".repeat(
+                20_000
+            ) +
+            "-SOURCE-END";
+
+        const oversizedNormalized =
+            longNormalizedPrefix +
+            "n".repeat(
+                20_000
+            ) +
+            "-NORMALIZED-END";
+
+        const oversizedArrayItem =
+            longArrayItemPrefix +
+            "x".repeat(
+                2_000
+            ) +
+            "-ARRAY-ITEM-END";
+
+        const oversizedArray =
+            [
+                oversizedArrayItem,
+                ...Array.from(
+                    {
+                        length:
+                            40
+                    },
+                    (
+                        _,
+                        index
+                    ) =>
+                        `ARRAY-LATE-${index}`
+                )
+            ];
+
+        await provider.interpret({
+            segment: {
+                ...sampleTextSegment,
+                sourceText:
+                    oversizedSource,
+                normalizedText:
+                    oversizedNormalized,
+                topicKeys:
+                    oversizedArray
+            },
+            classification: {
+                ...sampleTextClassification,
+                domainKeys:
+                    oversizedArray,
+                topicKeys:
+                    oversizedArray,
+                audienceKeys:
+                    oversizedArray,
+                learningOutcomes:
+                    oversizedArray,
+                questionsAnswered:
+                    oversizedArray
+            }
+        });
+
+        assert.ok(
+            captured
+        );
+
+        assert.equal(
+            captured.user.includes(
+                longSourcePrefix
+            ),
+            true
+        );
+
+        assert.equal(
+            captured.user.includes(
+                longNormalizedPrefix
+            ),
+            true
+        );
+
+        assert.equal(
+            captured.user.includes(
+                longArrayItemPrefix
+            ),
+            true
+        );
+
+        assert.equal(
+            captured.user.includes(
+                "-SOURCE-END"
+            ),
+            false
+        );
+
+        assert.equal(
+            captured.user.includes(
+                "-NORMALIZED-END"
+            ),
+            false
+        );
+
+        assert.equal(
+            captured.user.includes(
+                "-ARRAY-ITEM-END"
+            ),
+            false
+        );
+
+        assert.equal(
+            captured.user.includes(
+                "ARRAY-LATE-39"
+            ),
+            false
+        );
+
+    }
+);
