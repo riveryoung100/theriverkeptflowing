@@ -1,4 +1,12 @@
 import {
+    createAuthorizedLiveSemanticKnowledgeExecution
+} from "../knowledge/semantic/live-execution";
+
+import type {
+    SemanticLiveExecutionOptions
+} from "../knowledge/semantic/live-execution";
+
+import {
     createProductionWorkflowEngine
 } from "./productionEngine";
 
@@ -73,6 +81,36 @@ export function createProductionWorkflowExecution(
         rawSourceRootDirectory,
         knowledgeGraphRootDirectory,
         knowledgeBuildExecution
+    );
+
+}
+
+export interface AuthorizedLiveSemanticProductionWorkflowExecutionOptions
+extends SemanticLiveExecutionOptions {
+
+    readonly rawSourceRootDirectory:
+        string;
+
+    readonly knowledgeGraphRootDirectory:
+        string;
+
+}
+
+
+export async function createAuthorizedLiveSemanticProductionWorkflowExecution(
+    options:
+        AuthorizedLiveSemanticProductionWorkflowExecutionOptions
+): Promise<ProductionWorkflowExecutionService> {
+
+    const semanticExecution =
+        await createAuthorizedLiveSemanticKnowledgeExecution(
+            options
+        );
+
+    return createProductionWorkflowExecution(
+        options.rawSourceRootDirectory,
+        options.knowledgeGraphRootDirectory,
+        semanticExecution
     );
 
 }

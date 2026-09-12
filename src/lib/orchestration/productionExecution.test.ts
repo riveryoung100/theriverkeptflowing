@@ -34,6 +34,11 @@ import {
 } from "./identifiers";
 
 import {
+    SEMANTIC_LIVE_EXECUTION_AUTHORIZATION
+} from "../knowledge/semantic/live-execution";
+
+import {
+    createAuthorizedLiveSemanticProductionWorkflowExecution,
     createProductionWorkflowExecution
 } from "./productionExecution";
 
@@ -711,6 +716,125 @@ test(
             );
 
         }
+
+    }
+);
+
+test(
+    "authorized semantic production composition fails before credential consumption without explicit authorization",
+    async () => {
+
+        let credentialReads =
+            0;
+
+        let networkCalls =
+            0;
+
+        await assert.rejects(
+            () =>
+                createAuthorizedLiveSemanticProductionWorkflowExecution({
+                    rawSourceRootDirectory:
+                        "unused-raw-root",
+                    knowledgeGraphRootDirectory:
+                        "unused-knowledge-root",
+                    endpoint:
+                        "https://model.example.test/v1/chat/completions",
+                    model:
+                        "semantic-model",
+                    authorization:
+                        "not-authorized",
+                    readCredential:
+                        async () => {
+
+                            credentialReads +=
+                                1;
+
+                            return "credential";
+
+                        },
+                    fetchImplementation:
+                        async () => {
+
+                            networkCalls +=
+                                1;
+
+                            return new Response();
+
+                        }
+                }),
+            /Explicit live semantic model invocation authorization is required/
+        );
+
+        assert.equal(
+            credentialReads,
+            0
+        );
+
+        assert.equal(
+            networkCalls,
+            0
+        );
+
+    }
+);
+
+
+test(
+    "creates opt-in authorized semantic production composition without network execution",
+    async () => {
+
+        let credentialReads =
+            0;
+
+        let networkCalls =
+            0;
+
+        const service =
+            await createAuthorizedLiveSemanticProductionWorkflowExecution({
+                rawSourceRootDirectory:
+                    "unused-raw-root",
+                knowledgeGraphRootDirectory:
+                    "unused-knowledge-root",
+                endpoint:
+                    "https://model.example.test/v1/chat/completions",
+                model:
+                    "semantic-model",
+                authorization:
+                    SEMANTIC_LIVE_EXECUTION_AUTHORIZATION,
+                readCredential:
+                    async () => {
+
+                        credentialReads +=
+                            1;
+
+                        return "explicit-semantic-credential";
+
+                    },
+                fetchImplementation:
+                    async () => {
+
+                        networkCalls +=
+                            1;
+
+                        return new Response();
+
+                    }
+            });
+
+        assert.equal(
+            credentialReads,
+            1
+        );
+
+        assert.equal(
+            networkCalls,
+            0
+        );
+
+        assert.equal(
+            typeof service.execute,
+            "function"
+        );
 
     }
 );
