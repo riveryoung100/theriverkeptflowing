@@ -19,6 +19,18 @@ import {
 } from "../../knowledge/persistence";
 
 import type {
+    KnowledgeGraphPersistence
+} from "../../knowledge/persistence";
+
+import type {
+    KnowledgeEngineResult
+} from "../../knowledge/types";
+
+import type {
+    ProductionSourceAssimilationService
+} from "../../assimilation/production/types";
+
+import type {
     WorkflowStepInput,
     WorkflowStepType
 } from "../types";
@@ -35,6 +47,28 @@ export const productionKnowledgeSourceAssetIdInputKey =
 
 export const productionKnowledgePersistenceKeyInputKey =
     "persistenceKey";
+
+
+export interface ProductionKnowledgeBuildExecution {
+
+    executeAndPersistFromProductionRecords(
+        assetId:
+            AssetId,
+        persistenceKey:
+            string,
+        assimilation:
+            Pick<
+                ProductionSourceAssimilationService,
+                "retrieveGeneratedRecords"
+            >,
+        persistence:
+            Pick<
+                KnowledgeGraphPersistence,
+                "persist"
+            >
+    ): Promise<KnowledgeEngineResult>;
+
+}
 
 
 function getStepInput(
@@ -147,7 +181,9 @@ implements WorkflowStepHandler {
         private readonly rawSourceRootDirectory:
             string,
         private readonly knowledgeGraphRootDirectory:
-            string
+            string,
+        private readonly execution?:
+            ProductionKnowledgeBuildExecution
     ) {}
 
 
@@ -174,6 +210,7 @@ implements WorkflowStepHandler {
                 );
 
             const execution =
+                this.execution ??
                 createAssimilationKnowledgeExecution(
                     createKnowledgeEngine()
                 );
@@ -244,12 +281,15 @@ implements WorkflowStepHandler {
 
 export function createProductionKnowledgeBuildWorkflowStepHandler(
     rawSourceRootDirectory: string,
-    knowledgeGraphRootDirectory: string
+    knowledgeGraphRootDirectory: string,
+    execution?:
+        ProductionKnowledgeBuildExecution
 ): WorkflowStepHandler {
 
     return new ProductionKnowledgeBuildWorkflowStepHandler(
         rawSourceRootDirectory,
-        knowledgeGraphRootDirectory
+        knowledgeGraphRootDirectory,
+        execution
     );
 
 }

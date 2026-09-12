@@ -515,3 +515,202 @@ test(
         }
     }
 );
+
+
+test(
+    "threads an explicit knowledge-build execution strategy through production composition",
+    async () => {
+
+        const rawRoot =
+            await mkdtemp(
+                path.join(
+                    os.tmpdir(),
+                    "river-production-semantic-strategy-raw-"
+                )
+            );
+
+        const knowledgeRoot =
+            await mkdtemp(
+                path.join(
+                    os.tmpdir(),
+                    "river-production-semantic-strategy-knowledge-"
+                )
+            );
+
+        try {
+
+            let executionCalls =
+                0;
+
+            let capturedAssetId:
+                string | undefined;
+
+            let capturedPersistenceKey:
+                string | undefined;
+
+            const strategy = {
+
+                async executeAndPersistFromProductionRecords(
+                    assetId: string,
+                    persistenceKey: string
+                ) {
+
+                    executionCalls +=
+                        1;
+
+                    capturedAssetId =
+                        assetId;
+
+                    capturedPersistenceKey =
+                        persistenceKey;
+
+                    return {
+                        graph: {
+                            nodes:
+                                [],
+                            relations:
+                                [],
+                            claims:
+                                [],
+                            revisions:
+                                []
+                        },
+                        createdNodeIds:
+                            [],
+                        createdRelationIds:
+                            [],
+                        createdClaimIds:
+                            [],
+                        warnings: [
+                            "production strategy injected"
+                        ]
+                    };
+
+                }
+
+            };
+
+            const buildStepId =
+                createWorkflowStepId();
+
+            const request:
+            WorkflowRunRequest = {
+
+                workflow: {
+                    id:
+                        createWorkflowId(),
+                    name:
+                        "Explicit production knowledge strategy",
+                    description:
+                        "Verifies production composition threads an explicit knowledge-build strategy.",
+                    status:
+                        "ready",
+                    createdAt:
+                        "2026-09-12T00:00:00.000Z",
+                    version:
+                        1,
+                    schemaVersion:
+                        ORCHESTRATION_SCHEMA_VERSION,
+                    steps: [
+                        {
+                            id:
+                                buildStepId,
+                            name:
+                                "Build Knowledge",
+                            type:
+                                "knowledge-build",
+                            dependsOn:
+                                [],
+                            inputs: [
+                                {
+                                    key:
+                                        "sourceAssetId",
+                                    value:
+                                        "asset:11111111-1111-4111-8111-111111111111"
+                                },
+                                {
+                                    key:
+                                        productionKnowledgePersistenceKeyInputKey,
+                                    value:
+                                        "explicit-production-strategy"
+                                }
+                            ],
+                            failurePolicy:
+                                "stop",
+                            requiresReview:
+                                false
+                        }
+                    ]
+                },
+
+                requestedAt:
+                    "2026-09-12T00:00:00.000Z",
+
+                context:
+                    {}
+
+            };
+
+            const result =
+                await createProductionWorkflowExecution(
+                    rawRoot,
+                    knowledgeRoot,
+                    strategy
+                ).execute(
+                    request
+                );
+
+            assert.equal(
+                executionCalls,
+                1
+            );
+
+            assert.equal(
+                capturedAssetId,
+                "asset:11111111-1111-4111-8111-111111111111"
+            );
+
+            assert.equal(
+                capturedPersistenceKey,
+                "explicit-production-strategy"
+            );
+
+            assert.equal(
+                result.run.status,
+                "completed"
+            );
+
+            assert.deepEqual(
+                result.run.warnings,
+                [
+                    "production strategy injected"
+                ]
+            );
+
+        }
+        finally {
+
+            await rm(
+                rawRoot,
+                {
+                    recursive:
+                        true,
+                    force:
+                        true
+                }
+            );
+
+            await rm(
+                knowledgeRoot,
+                {
+                    recursive:
+                        true,
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);

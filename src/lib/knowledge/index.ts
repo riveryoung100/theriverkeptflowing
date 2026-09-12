@@ -9,3 +9,4 @@ export * from "./productionKnowledgeReasoningExecution";
 export * from "./productionKnowledgeInsightExecution";
 export * from "./insight";
 export * from "./persistence";
+export * from "./semantic";

@@ -3,6 +3,10 @@ import {
 } from "./productionEngine";
 
 import type {
+    ProductionKnowledgeBuildExecution
+} from "./handlers/productionKnowledgeBuild";
+
+import type {
     WorkflowEngineResult,
     WorkflowRunRequest
 } from "./types";
@@ -29,13 +33,16 @@ implements ProductionWorkflowExecutionService {
 
     public constructor(
         rawSourceRootDirectory: string,
-        knowledgeGraphRootDirectory: string
+        knowledgeGraphRootDirectory: string,
+        knowledgeBuildExecution?:
+            ProductionKnowledgeBuildExecution
     ) {
 
         this.engine =
             createProductionWorkflowEngine(
                 rawSourceRootDirectory,
-                knowledgeGraphRootDirectory
+                knowledgeGraphRootDirectory,
+                knowledgeBuildExecution
             );
 
     }
@@ -57,12 +64,15 @@ implements ProductionWorkflowExecutionService {
 
 export function createProductionWorkflowExecution(
     rawSourceRootDirectory: string,
-    knowledgeGraphRootDirectory: string
+    knowledgeGraphRootDirectory: string,
+    knowledgeBuildExecution?:
+        ProductionKnowledgeBuildExecution
 ): ProductionWorkflowExecutionService {
 
     return new ProductionWorkflowExecution(
         rawSourceRootDirectory,
-        knowledgeGraphRootDirectory
+        knowledgeGraphRootDirectory,
+        knowledgeBuildExecution
     );
 
 }

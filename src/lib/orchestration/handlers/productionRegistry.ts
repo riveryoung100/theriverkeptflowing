@@ -10,6 +10,10 @@ import {
     createProductionKnowledgeBuildWorkflowStepHandler
 } from "./productionKnowledgeBuild";
 
+import type {
+    ProductionKnowledgeBuildExecution
+} from "./productionKnowledgeBuild";
+
 import {
     createProductionKnowledgeQueryWorkflowStepHandler
 } from "./productionKnowledgeQuery";
@@ -29,7 +33,9 @@ import {
 
 export function createProductionWorkflowStepHandlerRegistry(
     rawSourceRootDirectory: string,
-    knowledgeGraphRootDirectory: string
+    knowledgeGraphRootDirectory: string,
+    knowledgeBuildExecution?:
+        ProductionKnowledgeBuildExecution
 ): WorkflowStepHandlerRegistry {
 
     const registry =
@@ -44,7 +50,8 @@ export function createProductionWorkflowStepHandlerRegistry(
     registry.register(
         createProductionKnowledgeBuildWorkflowStepHandler(
             rawSourceRootDirectory,
-            knowledgeGraphRootDirectory
+            knowledgeGraphRootDirectory,
+            knowledgeBuildExecution
         )
     );
 

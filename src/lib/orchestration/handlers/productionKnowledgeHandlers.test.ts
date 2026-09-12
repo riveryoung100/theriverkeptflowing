@@ -78,3 +78,233 @@ test("production query and reasoning handlers reject invalid request objects bef
         await rm(knowledgeRoot, { recursive: true, force: true });
     }
 });
+
+
+test(
+    "production knowledge-build uses an explicitly injected knowledge-build execution strategy",
+    async () => {
+
+        const rawRoot =
+            await mkdtemp(
+                path.join(
+                    os.tmpdir(),
+                    "river-k007-raw-"
+                )
+            );
+
+        const knowledgeRoot =
+            await mkdtemp(
+                path.join(
+                    os.tmpdir(),
+                    "river-k007-knowledge-"
+                )
+            );
+
+        try {
+
+            let executionCalls =
+                0;
+
+            let capturedAssetId:
+                string | undefined;
+
+            let capturedPersistenceKey:
+                string | undefined;
+
+            const expectedResult = {
+                graph: {
+                    nodes:
+                        [],
+                    relations:
+                        [],
+                    claims:
+                        [],
+                    revisions:
+                        []
+                },
+                createdNodeIds:
+                    [],
+                createdRelationIds:
+                    [],
+                createdClaimIds:
+                    [],
+                warnings: [
+                    "explicit execution strategy"
+                ]
+            };
+
+            const execution = {
+
+                async executeAndPersistFromProductionRecords(
+                    assetId: string,
+                    persistenceKey: string
+                ) {
+
+                    executionCalls +=
+                        1;
+
+                    capturedAssetId =
+                        assetId;
+
+                    capturedPersistenceKey =
+                        persistenceKey;
+
+                    return expectedResult;
+
+                }
+
+            };
+
+            const handler =
+                createProductionKnowledgeBuildWorkflowStepHandler(
+                    rawRoot,
+                    knowledgeRoot,
+                    execution
+                );
+
+            const result =
+                await handler.execute(
+                    createContext(
+                        "knowledge-build",
+                        [
+                            {
+                                key:
+                                    "sourceAssetId",
+                                value:
+                                    "asset:11111111-1111-4111-8111-111111111111"
+                            },
+                            {
+                                key:
+                                    "persistenceKey",
+                                value:
+                                    "explicit-strategy"
+                            }
+                        ]
+                    )
+                );
+
+            assert.equal(
+                executionCalls,
+                1
+            );
+
+            assert.equal(
+                capturedAssetId,
+                "asset:11111111-1111-4111-8111-111111111111"
+            );
+
+            assert.equal(
+                capturedPersistenceKey,
+                "explicit-strategy"
+            );
+
+            assert.equal(
+                result.status,
+                "completed"
+            );
+
+            assert.deepEqual(
+                result.warnings,
+                [
+                    "explicit execution strategy"
+                ]
+            );
+
+            assert.equal(
+                result.outputs.find(
+                    (output) =>
+                        output.key ===
+                        "knowledgeResult"
+                )?.value,
+                expectedResult
+            );
+
+        }
+        finally {
+
+            await rm(
+                rawRoot,
+                {
+                    recursive:
+                        true,
+                    force:
+                        true
+                }
+            );
+
+            await rm(
+                knowledgeRoot,
+                {
+                    recursive:
+                        true,
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);
+
+
+test(
+    "production knowledge-build preserves the existing default execution strategy when none is injected",
+    async () => {
+
+        const rawRoot =
+            await mkdtemp(
+                path.join(
+                    os.tmpdir(),
+                    "river-k007-raw-"
+                )
+            );
+
+        const knowledgeRoot =
+            await mkdtemp(
+                path.join(
+                    os.tmpdir(),
+                    "river-k007-knowledge-"
+                )
+            );
+
+        try {
+
+            const handler =
+                createProductionKnowledgeBuildWorkflowStepHandler(
+                    rawRoot,
+                    knowledgeRoot
+                );
+
+            assert.equal(
+                handler.type,
+                "knowledge-build"
+            );
+
+        }
+        finally {
+
+            await rm(
+                rawRoot,
+                {
+                    recursive:
+                        true,
+                    force:
+                        true
+                }
+            );
+
+            await rm(
+                knowledgeRoot,
+                {
+                    recursive:
+                        true,
+                    force:
+                        true
+                }
+            );
+
+        }
+
+    }
+);
