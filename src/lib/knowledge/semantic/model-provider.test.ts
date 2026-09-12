@@ -246,6 +246,41 @@ test(
             true
         );
 
+        assert.equal(
+            captured?.system.includes(
+                "aliases is REQUIRED for every node and MUST always be a JSON array of strings."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Use [] when there are no aliases."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Optional string fields must either contain a non-empty string or be omitted entirely."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "exactly one of objectKey or objectValue"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "All confidence values must be finite JSON numbers between 0 and 1 inclusive."
+            ),
+            true
+        );
+
     }
 );
 

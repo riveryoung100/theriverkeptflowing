@@ -658,8 +658,16 @@ string {
             ...CLAIM_TRUTH_STATUSES
         ].join(", ")}`,
         "Return strict JSON only with exactly these top-level arrays: nodes, relations, claims.",
+        "Every node must contain exactly: key, nodeType, canonicalName, aliases, confidence, plus optional summary and description only when present.",
+        "aliases is REQUIRED for every node and MUST always be a JSON array of strings. Use [] when there are no aliases. Never return aliases as null, a string, or an object.",
+        "Every relation must contain exactly: fromKey, toKey, relationType, confidence, plus optional label only when present.",
+        "Every claim must contain exactly: subjectKey, predicate, truthStatus, confidence, and exactly one of objectKey or objectValue.",
+        "Optional string fields must either contain a non-empty string or be omitted entirely. Never return null for optional fields.",
+        "All confidence values must be finite JSON numbers between 0 and 1 inclusive.",
         "Every relation and node-object claim must reference candidate node keys from nodes.",
-        "Do not wrap JSON in Markdown fences."
+        "Do not add fields not shown in the required JSON shape.",
+        "Do not wrap JSON in Markdown fences.",
+        "Before responding, verify internally that nodes, relations, claims, and every aliases value are JSON arrays and that the response matches the required shape exactly."
     ].join(
         "\n"
     );
