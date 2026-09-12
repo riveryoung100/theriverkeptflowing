@@ -289,6 +289,20 @@ function parseNode(
             path
         );
 
+    requireExactKeys(
+        record,
+        [
+            "key",
+            "nodeType",
+            "canonicalName",
+            "aliases",
+            "summary",
+            "description",
+            "confidence"
+        ],
+        path
+    );
+
     const nodeType =
         requireString(
             record.nodeType,
@@ -361,6 +375,18 @@ function parseRelation(
             path
         );
 
+    requireExactKeys(
+        record,
+        [
+            "fromKey",
+            "toKey",
+            "relationType",
+            "label",
+            "confidence"
+        ],
+        path
+    );
+
     const relationType =
         requireString(
             record.relationType,
@@ -422,6 +448,19 @@ function parseClaim(
             value,
             path
         );
+
+    requireExactKeys(
+        record,
+        [
+            "subjectKey",
+            "predicate",
+            "objectKey",
+            "objectValue",
+            "truthStatus",
+            "confidence"
+        ],
+        path
+    );
 
     const truthStatus =
         requireString(

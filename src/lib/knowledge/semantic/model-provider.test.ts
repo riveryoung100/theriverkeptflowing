@@ -319,3 +319,82 @@ test(
 
     }
 );
+
+
+test(
+    "rejects unexpected semantic candidate record fields",
+    () => {
+
+        const cases = [
+            {
+                mutate:
+                    (
+                        parsed:
+                            ReturnType<typeof JSON.parse>
+                    ) => {
+
+                        parsed.nodes[0].action =
+                            "publish";
+
+                    },
+                expected:
+                    /nodes\[0\] contains unexpected field: action/
+            },
+            {
+                mutate:
+                    (
+                        parsed:
+                            ReturnType<typeof JSON.parse>
+                    ) => {
+
+                        parsed.relations[0].tool =
+                            "send-email";
+
+                    },
+                expected:
+                    /relations\[0\] contains unexpected field: tool/
+            },
+            {
+                mutate:
+                    (
+                        parsed:
+                            ReturnType<typeof JSON.parse>
+                    ) => {
+
+                        parsed.claims[0].authority =
+                            "execute";
+
+                    },
+                expected:
+                    /claims\[0\] contains unexpected field: authority/
+            }
+        ];
+
+        for (
+            const item of
+            cases
+        ) {
+
+            const parsed =
+                JSON.parse(
+                    validResponse
+                );
+
+            item.mutate(
+                parsed
+            );
+
+            assert.throws(
+                () =>
+                    parseSemanticCandidateSet(
+                        JSON.stringify(
+                            parsed
+                        )
+                    ),
+                item.expected
+            );
+
+        }
+
+    }
+);
