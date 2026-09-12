@@ -24,7 +24,8 @@
     "product:release:know-your-number": "tsx scripts/build-know-your-number-release.ts",
     "content:youtube:discover": "tsx scripts/run-youtube-content-source-live-discovery.ts",
     "content:youtube:transcript": "tsx scripts/run-youtube-transcript-live-acquisition.ts",
-    "knowledge:semantic:live": "tsx scripts/run-semantic-knowledge-live.ts"
+    "knowledge:semantic:live": "tsx scripts/run-semantic-knowledge-live.ts",
+    "assimilation:local": "tsx scripts/run-assimilation-local-file.ts"
   },
   "dependencies": {
     "@astrojs/cloudflare": "14.2.0",
