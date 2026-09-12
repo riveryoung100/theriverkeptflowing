@@ -110,6 +110,18 @@ test(
                 },
                 {
                     endpoint:
+                        "not-an-absolute-url",
+                    model:
+                        "semantic-model"
+                },
+                {
+                    endpoint:
+                        "http://model.example.test/v1/chat/completions",
+                    model:
+                        "semantic-model"
+                },
+                {
+                    endpoint:
                         "https://model.example.test/v1/chat/completions",
                     model:
                         ""
@@ -139,7 +151,7 @@ test(
 
                             }
                     }),
-                /is required/
+                /is required|absolute HTTP or HTTPS URL|must use HTTPS/
             );
 
             assert.equal(

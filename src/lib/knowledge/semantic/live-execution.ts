@@ -11,7 +11,8 @@ import {
 } from "./model-provider";
 
 import {
-    createSemanticOpenAICompatibleTransport
+    createSemanticOpenAICompatibleTransport,
+    validateSemanticOpenAICompatibleTransportPublicConfiguration
 } from "./openai-compatible-transport";
 
 
@@ -39,43 +40,24 @@ export interface SemanticLiveExecutionOptions {
 }
 
 
-function requireNonEmpty(
-    value: string,
-    name: string
-): string {
-
-    const normalized =
-        value.trim();
-
-    if (
-        normalized.length ===
-        0
-    ) {
-        throw new TypeError(
-            `${name} is required.`
-        );
-    }
-
-    return normalized;
-
-}
-
 
 export async function createAuthorizedLiveSemanticKnowledgeExecution(
     options: SemanticLiveExecutionOptions
 ): Promise<SemanticKnowledgeExecution> {
 
+    const publicConfiguration =
+        validateSemanticOpenAICompatibleTransportPublicConfiguration({
+            endpoint:
+                options.endpoint,
+            model:
+                options.model
+        });
+
     const endpoint =
-        requireNonEmpty(
-            options.endpoint,
-            "Semantic model endpoint"
-        );
+        publicConfiguration.endpoint;
 
     const model =
-        requireNonEmpty(
-            options.model,
-            "Semantic model name"
-        );
+        publicConfiguration.model;
 
     if (
         options.authorization !==

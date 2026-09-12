@@ -5,13 +5,19 @@ import type {
 } from "./model-provider";
 
 
-export interface SemanticOpenAICompatibleTransportConfiguration {
+export interface SemanticOpenAICompatibleTransportPublicConfiguration {
 
     readonly endpoint:
         string;
 
     readonly model:
         string;
+
+}
+
+
+export interface SemanticOpenAICompatibleTransportConfiguration
+extends SemanticOpenAICompatibleTransportPublicConfiguration {
 
     readonly credential:
         string;
@@ -121,21 +127,41 @@ function validateEndpoint(
 }
 
 
+export function validateSemanticOpenAICompatibleTransportPublicConfiguration(
+    configuration:
+        SemanticOpenAICompatibleTransportPublicConfiguration
+): SemanticOpenAICompatibleTransportPublicConfiguration {
+
+    return {
+        endpoint:
+            validateEndpoint(
+                configuration.endpoint
+            ),
+        model:
+            requireNonEmptyString(
+                configuration.model,
+                "Semantic model identifier"
+            )
+    };
+
+}
+
+
 export function createSemanticOpenAICompatibleTransport(
     configuration: SemanticOpenAICompatibleTransportConfiguration,
     fetchImplementation: typeof fetch = fetch
 ): SemanticModelTransport {
 
-    const endpoint =
-        validateEndpoint(
-            configuration.endpoint
+    const publicConfiguration =
+        validateSemanticOpenAICompatibleTransportPublicConfiguration(
+            configuration
         );
 
+    const endpoint =
+        publicConfiguration.endpoint;
+
     const model =
-        requireNonEmptyString(
-            configuration.model,
-            "Semantic model identifier"
-        );
+        publicConfiguration.model;
 
     const credential =
         requireNonEmptyString(
