@@ -3,6 +3,12 @@ import type {
     SemanticInterpretationRequest
 } from "./types";
 
+import {
+    createSemanticClaimIdentity,
+    createSemanticClaimObjectIdentity,
+    createSemanticRelationIdentity
+} from "./identity";
+
 
 export type SemanticCandidateValidationSeverity =
     | "error"
@@ -236,12 +242,10 @@ export function validateSemanticCandidateSet(
                 `relations[${index}]`;
 
             const relationIdentity =
-                [
+                createSemanticRelationIdentity(
                     relation.fromKey,
                     relation.toKey,
                     relation.relationType
-                ].join(
-                    "\u001f"
                 );
 
             if (
@@ -346,18 +350,17 @@ export function validateSemanticCandidateSet(
                 `claims[${index}]`;
 
             const claimObjectIdentity =
-                claim.objectKey !==
-                    undefined
-                    ? `key:${claim.objectKey}`
-                    : `value:${claim.objectValue ?? ""}`;
+                createSemanticClaimObjectIdentity(
+                    claim.objectKey,
+                    claim.objectValue
+                );
 
             const claimIdentity =
-                [
+                createSemanticClaimIdentity(
                     claim.subjectKey,
                     claim.predicate,
-                    claimObjectIdentity
-                ].join(
-                    "\u001f"
+                    claim.objectKey,
+                    claim.objectValue
                 );
 
             if (

@@ -34,6 +34,12 @@ import {
     validateSemanticCandidateSet
 } from "./validation";
 
+import {
+    createSemanticClaimIdentity,
+    createSemanticRelationIdentity,
+    createSemanticScopedIdentity
+} from "./identity";
+
 
 export interface SemanticKnowledgeMappingInput {
 
@@ -99,15 +105,20 @@ function createDeterministicRelationId(
     relationType: string
 ): KnowledgeRelationId {
 
+    const durableIdentity =
+        createSemanticRelationIdentity(
+            fromKey,
+            toKey,
+            relationType
+        );
+
     return (
         `relation:${createDeterministicUuid(
-            [
+            createSemanticScopedIdentity(
                 "semantic-relation",
                 derivativeId,
-                fromKey,
-                toKey,
-                relationType
-            ].join(":")
+                durableIdentity
+            )
         )}`
     ) as KnowledgeRelationId;
 
@@ -118,18 +129,25 @@ function createDeterministicClaimId(
     derivativeId: string,
     subjectKey: string,
     predicate: string,
-    objectIdentity: string
+    objectKey: string | undefined,
+    objectValue: string | undefined
 ): KnowledgeClaimId {
+
+    const durableIdentity =
+        createSemanticClaimIdentity(
+            subjectKey,
+            predicate,
+            objectKey,
+            objectValue
+        );
 
     return (
         `claim:${createDeterministicUuid(
-            [
+            createSemanticScopedIdentity(
                 "semantic-claim",
                 derivativeId,
-                subjectKey,
-                predicate,
-                objectIdentity
-            ].join(":")
+                durableIdentity
+            )
         )}`
     ) as KnowledgeClaimId;
 
@@ -415,18 +433,14 @@ export function createKnowledgeRequestFromSemanticCandidates(
 
                 }
 
-                const objectIdentity =
-                    candidate.objectKey ??
-                    candidate.objectValue ??
-                    "";
-
                 return {
                     id:
                         createDeterministicClaimId(
                             input.derivedObject.id,
                             candidate.subjectKey,
                             candidate.predicate,
-                            objectIdentity
+                            candidate.objectKey,
+                            candidate.objectValue
                         ),
                     subjectNodeId,
                     predicate:

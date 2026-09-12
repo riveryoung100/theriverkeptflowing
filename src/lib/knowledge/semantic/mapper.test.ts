@@ -493,3 +493,57 @@ test(
 
     }
 );
+
+test(
+    "distinguishes object key and object value in durable claim identifiers",
+    () => {
+
+        const input =
+            createInput();
+
+        const request =
+            createKnowledgeRequestFromSemanticCandidates({
+                ...input,
+                candidates: {
+                    ...input.candidates,
+                    claims: [
+                        {
+                            subjectKey:
+                                "derived-knowledge",
+                            predicate:
+                                "references",
+                            objectKey:
+                                "source-provenance",
+                            truthStatus:
+                                "supported",
+                            confidence:
+                                1
+                        },
+                        {
+                            subjectKey:
+                                "derived-knowledge",
+                            predicate:
+                                "references",
+                            objectValue:
+                                "source-provenance",
+                            truthStatus:
+                                "supported",
+                            confidence:
+                                1
+                        }
+                    ]
+                }
+            });
+
+        assert.equal(
+            request.claims.length,
+            2
+        );
+
+        assert.notEqual(
+            request.claims[0]?.id,
+            request.claims[1]?.id
+        );
+
+    }
+);
