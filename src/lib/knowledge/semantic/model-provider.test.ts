@@ -471,6 +471,34 @@ test(
         );
 
         assert.equal(
+            captured?.system.includes(
+                "Every claim subjectKey MUST exactly match the key of a node emitted in the same nodes array."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Use objectKey only when the claim object is represented by a node emitted in the same nodes array."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "use objectValue instead of objectKey."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "There must be zero dangling references."
+            ),
+            true
+        );
+
+        assert.equal(
             captured?.user.includes(
                 "BEGIN SOURCE EVIDENCE"
             ),
