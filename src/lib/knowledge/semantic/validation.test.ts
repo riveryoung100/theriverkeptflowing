@@ -416,3 +416,372 @@ test(
 
     }
 );
+
+test(
+    "rejects broad all-concept semantic node collapse",
+    () => {
+
+        const valid =
+            createValidCandidates();
+
+        const result =
+            validateSemanticCandidateSet(
+                request,
+                {
+                    nodes:
+                        Array.from(
+                            {
+                                length:
+                                    8
+                            },
+                            (
+                                _,
+                                index
+                            ) => ({
+                                ...valid.nodes[0]!,
+                                key:
+                                    `concept-${index}`,
+                                canonicalName:
+                                    `Concept ${index}`,
+                                nodeType:
+                                    "concept" as const,
+                                confidence:
+                                    0.8
+                            })
+                        ),
+                    relations:
+                        [],
+                    claims:
+                        []
+                }
+            );
+
+        assert.equal(
+            result.valid,
+            false
+        );
+
+        assert.equal(
+            result.issues.some(
+                (item) =>
+                    item.code ===
+                    "semantic.quality.node-type-collapse"
+            ),
+            true
+        );
+
+    }
+);
+
+
+test(
+    "rejects multi-edge relation type collapse",
+    () => {
+
+        const nodes =
+            Array.from(
+                {
+                    length:
+                        7
+                },
+                (
+                    _,
+                    index
+                ) => ({
+                    key:
+                        `relation-node-${index}`,
+                    nodeType:
+                        (
+                            index ===
+                                0
+                                ? "story"
+                                : "concept"
+                        ) as
+                            | "story"
+                            | "concept",
+                    canonicalName:
+                        `Relation Node ${index}`,
+                    aliases:
+                        [],
+                    confidence:
+                        0.8
+                })
+            );
+
+        const result =
+            validateSemanticCandidateSet(
+                request,
+                {
+                    nodes,
+                    relations:
+                        Array.from(
+                            {
+                                length:
+                                    6
+                            },
+                            (
+                                _,
+                                index
+                            ) => ({
+                                fromKey:
+                                    nodes[index]!.key,
+                                toKey:
+                                    nodes[index + 1]!.key,
+                                relationType:
+                                    "related-to" as const,
+                                confidence:
+                                    0.8
+                            })
+                        ),
+                    claims:
+                        []
+                }
+            );
+
+        assert.equal(
+            result.valid,
+            false
+        );
+
+        assert.equal(
+            result.issues.some(
+                (item) =>
+                    item.code ===
+                    "semantic.quality.relation-type-collapse"
+            ),
+            true
+        );
+
+    }
+);
+
+
+test(
+    "rejects substantial claim predicate collapse",
+    () => {
+
+        const nodes =
+            Array.from(
+                {
+                    length:
+                        6
+                },
+                (
+                    _,
+                    index
+                ) => ({
+                    key:
+                        `claim-node-${index}`,
+                    nodeType:
+                        (
+                            index ===
+                                0
+                                ? "story"
+                                : "concept"
+                        ) as
+                            | "story"
+                            | "concept",
+                    canonicalName:
+                        `Claim Node ${index}`,
+                    aliases:
+                        [],
+                    confidence:
+                        0.8
+                })
+            );
+
+        const result =
+            validateSemanticCandidateSet(
+                request,
+                {
+                    nodes,
+                    relations:
+                        [],
+                    claims:
+                        nodes.map(
+                            (
+                                node,
+                                index
+                            ) => ({
+                                subjectKey:
+                                    node.key,
+                                predicate:
+                                    "is-a",
+                                objectValue:
+                                    `Claim value ${index}`,
+                                truthStatus:
+                                    "asserted" as const,
+                                confidence:
+                                    0.8
+                            })
+                        )
+                }
+            );
+
+        assert.equal(
+            result.valid,
+            false
+        );
+
+        assert.equal(
+            result.issues.some(
+                (item) =>
+                    item.code ===
+                    "semantic.quality.claim-predicate-collapse"
+            ),
+            true
+        );
+
+    }
+);
+
+
+test(
+    "rejects mechanically uniform maximum semantic confidence",
+    () => {
+
+        const nodes =
+            Array.from(
+                {
+                    length:
+                        5
+                },
+                (
+                    _,
+                    index
+                ) => ({
+                    key:
+                        `confidence-node-${index}`,
+                    nodeType:
+                        (
+                            index ===
+                                0
+                                ? "story"
+                                : "concept"
+                        ) as
+                            | "story"
+                            | "concept",
+                    canonicalName:
+                        `Confidence Node ${index}`,
+                    aliases:
+                        [],
+                    confidence:
+                        0.8
+                })
+            );
+
+        const result =
+            validateSemanticCandidateSet(
+                request,
+                {
+                    nodes,
+                    relations: [
+                        {
+                            fromKey:
+                                nodes[0]!.key,
+                            toKey:
+                                nodes[1]!.key,
+                            relationType:
+                                "supports",
+                            confidence:
+                                1
+                        },
+                        {
+                            fromKey:
+                                nodes[1]!.key,
+                            toKey:
+                                nodes[2]!.key,
+                            relationType:
+                                "explains",
+                            confidence:
+                                1
+                        },
+                        {
+                            fromKey:
+                                nodes[2]!.key,
+                            toKey:
+                                nodes[3]!.key,
+                            relationType:
+                                "part-of",
+                            confidence:
+                                1
+                        },
+                        {
+                            fromKey:
+                                nodes[3]!.key,
+                            toKey:
+                                nodes[4]!.key,
+                            relationType:
+                                "follows",
+                            confidence:
+                                1
+                        }
+                    ],
+                    claims:
+                        Array.from(
+                            {
+                                length:
+                                    4
+                            },
+                            (
+                                _,
+                                index
+                            ) => ({
+                                subjectKey:
+                                    nodes[index]!.key,
+                                predicate:
+                                    `predicate-${index}`,
+                                objectValue:
+                                    `Value ${index}`,
+                                truthStatus:
+                                    "asserted" as const,
+                                confidence:
+                                    1
+                            })
+                        )
+                }
+            );
+
+        assert.equal(
+            result.valid,
+            false
+        );
+
+        assert.equal(
+            result.issues.some(
+                (item) =>
+                    item.code ===
+                    "semantic.quality.uniform-max-confidence"
+            ),
+            true
+        );
+
+    }
+);
+
+
+test(
+    "keeps small uniform semantic candidate sets valid",
+    () => {
+
+        const valid =
+            createValidCandidates();
+
+        const result =
+            validateSemanticCandidateSet(
+                request,
+                valid
+            );
+
+        assert.equal(
+            result.valid,
+            true
+        );
+
+        assert.deepEqual(
+            result.issues,
+            []
+        );
+
+    }
+);

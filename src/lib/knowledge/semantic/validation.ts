@@ -483,6 +483,118 @@ export function validateSemanticCandidateSet(
         }
     );
 
+    if (
+        candidates.nodes.length >=
+            8 &&
+        candidates.nodes.every(
+            (node) =>
+                node.nodeType ===
+                "concept"
+        )
+    ) {
+
+        issues.push(
+            issue(
+                "semantic.quality.node-type-collapse",
+                "Broad semantic candidate sets must not collapse every node to concept.",
+                "nodes"
+            )
+        );
+
+    }
+
+    if (
+        candidates.relations.length >=
+            6
+    ) {
+
+        const relationTypes =
+            new Set(
+                candidates.relations.map(
+                    (relation) =>
+                        relation.relationType
+                )
+            );
+
+        if (
+            relationTypes.size ===
+                1
+        ) {
+
+            issues.push(
+                issue(
+                    "semantic.quality.relation-type-collapse",
+                    "Multi-edge semantic graphs must not collapse every relation to one relation type.",
+                    "relations"
+                )
+            );
+
+        }
+
+    }
+
+    if (
+        candidates.claims.length >=
+            6
+    ) {
+
+        const claimPredicates =
+            new Set(
+                candidates.claims.map(
+                    (claim) =>
+                        claim.predicate
+                )
+            );
+
+        if (
+            claimPredicates.size ===
+                1
+        ) {
+
+            issues.push(
+                issue(
+                    "semantic.quality.claim-predicate-collapse",
+                    "Substantial semantic claim sets must not collapse every claim to one predicate.",
+                    "claims"
+                )
+            );
+
+        }
+
+    }
+
+    const scoredSemanticEdges =
+        [
+            ...candidates.relations.map(
+                (relation) =>
+                    relation.confidence
+            ),
+            ...candidates.claims.map(
+                (claim) =>
+                    claim.confidence
+            )
+        ];
+
+    if (
+        scoredSemanticEdges.length >=
+            8 &&
+        scoredSemanticEdges.every(
+            (confidence) =>
+                confidence ===
+                1
+        )
+    ) {
+
+        issues.push(
+            issue(
+                "semantic.quality.uniform-max-confidence",
+                "Substantial semantic outputs must not assign maximum confidence to every relation and claim.",
+                "relations,claims"
+            )
+        );
+
+    }
+
     return {
         valid:
             !issues.some(
