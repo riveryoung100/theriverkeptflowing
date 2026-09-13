@@ -605,3 +605,129 @@ test(
 
     }
 );
+
+
+test(
+    "forwards the optional semantic candidate diagnostic hook without changing one-shot authorization",
+    async () => {
+
+        let networkCalls =
+            0;
+
+        let diagnosticCalls =
+            0;
+
+        let observedRawContent =
+            "";
+
+        const execution =
+            await createAuthorizedLiveSemanticKnowledgeExecution({
+                endpoint:
+                    "https://model.example.test/v1/chat/completions",
+                model:
+                    "semantic-model",
+                authorization:
+                    SEMANTIC_LIVE_EXECUTION_AUTHORIZATION,
+                readCredential:
+                    async () =>
+                        "explicit-semantic-credential",
+                fetchImplementation:
+                    async () => {
+
+                        networkCalls +=
+                            1;
+
+                        return new Response(
+                            JSON.stringify({
+                                choices: [
+                                    {
+                                        message: {
+                                            content:
+                                                validCandidateContent
+                                        }
+                                    }
+                                ]
+                            }),
+                            {
+                                status:
+                                    200,
+                                headers: {
+                                    "content-type":
+                                        "application/json"
+                                }
+                            }
+                        );
+
+                    },
+                onCandidates:
+                    (
+                        candidates,
+                        rawContent
+                    ) => {
+
+                        diagnosticCalls +=
+                            1;
+
+                        observedRawContent =
+                            rawContent;
+
+                        assert.equal(
+                            candidates.nodes.length,
+                            1
+                        );
+
+                    }
+            });
+
+        const input = {
+            asset:
+                sampleTextAsset,
+            derivedObject:
+                sampleDerivationResult.results[0]!.derivative,
+            interpretation: {
+                segment:
+                    sampleTextSegment,
+                classification:
+                    sampleTextClassification
+            }
+        };
+
+        await execution.execute(
+            input
+        );
+
+        assert.equal(
+            networkCalls,
+            1
+        );
+
+        assert.equal(
+            diagnosticCalls,
+            1
+        );
+
+        assert.equal(
+            observedRawContent,
+            validCandidateContent
+        );
+
+        await assert.rejects(
+            () =>
+                execution.execute(
+                    input
+                ),
+            /authorization has already been consumed/
+        );
+
+        assert.equal(
+            networkCalls,
+            1
+        );
+
+        assert.equal(
+            diagnosticCalls,
+            1
+        );
+
+    }
+);

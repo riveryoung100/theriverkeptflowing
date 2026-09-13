@@ -44,6 +44,12 @@ export interface SemanticModelProviderOptions {
     readonly transport:
         SemanticModelTransport;
 
+    readonly onCandidates?:
+        (
+            candidates: SemanticCandidateSet,
+            rawContent: string
+        ) => void;
+
 }
 
 
@@ -820,9 +826,17 @@ export function createSemanticModelProvider(
                         )
                 });
 
-            return parseSemanticCandidateSet(
+            const candidates =
+                parseSemanticCandidateSet(
+                    response.content
+                );
+
+            options.onCandidates?.(
+                candidates,
                 response.content
             );
+
+            return candidates;
 
         }
 

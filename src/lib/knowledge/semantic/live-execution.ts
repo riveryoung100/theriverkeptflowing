@@ -10,6 +10,10 @@ import {
     createSemanticModelProvider
 } from "./model-provider";
 
+import type {
+    SemanticCandidateSet
+} from "./types";
+
 import {
     createSemanticOpenAICompatibleTransport,
     validateSemanticOpenAICompatibleTransportPublicConfiguration
@@ -36,6 +40,12 @@ export interface SemanticLiveExecutionOptions {
 
     readonly fetchImplementation?:
         typeof fetch;
+
+    readonly onCandidates?:
+        (
+            candidates: SemanticCandidateSet,
+            rawContent: string
+        ) => void;
 
 }
 
@@ -122,7 +132,16 @@ export async function createAuthorizedLiveSemanticKnowledgeExecution(
 
     const provider =
         createSemanticModelProvider({
-            transport
+            transport,
+            ...(
+                options.onCandidates ===
+                    undefined
+                    ? {}
+                    : {
+                        onCandidates:
+                            options.onCandidates
+                    }
+            )
         });
 
     return createSemanticKnowledgeExecution(

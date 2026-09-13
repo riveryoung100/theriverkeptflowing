@@ -7,6 +7,7 @@ import {
 } from "../../assimilation/fixtures/sampleTextAsset";
 
 import type {
+    SemanticCandidateSet,
     SemanticModelTransportRequest
 } from "./model-provider";
 
@@ -72,6 +73,62 @@ const validResponse =
         ]
     });
 
+
+
+test(
+    "exposes parsed semantic candidates through an explicit diagnostic hook without changing the returned candidate set",
+    async () => {
+
+        let observedCandidates:
+            SemanticCandidateSet |
+            undefined;
+
+        let observedRawContent:
+            string |
+            undefined;
+
+        const provider =
+            createSemanticModelProvider({
+                transport:
+                    async () => ({
+                        content:
+                            validResponse
+                    }),
+                onCandidates:
+                    (
+                        candidates,
+                        rawContent
+                    ) => {
+
+                        observedCandidates =
+                            candidates;
+
+                        observedRawContent =
+                            rawContent;
+
+                    }
+            });
+
+        const result =
+            await provider.interpret({
+                segment:
+                    sampleTextSegment,
+                classification:
+                    sampleTextClassification
+            });
+
+        assert.deepEqual(
+            observedCandidates,
+            result
+        );
+
+        assert.equal(
+            observedRawContent,
+            validResponse
+        );
+
+    }
+);
 
 test(
     "parses strict semantic candidate JSON",
