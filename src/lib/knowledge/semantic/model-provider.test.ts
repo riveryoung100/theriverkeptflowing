@@ -346,7 +346,63 @@ test(
 
         assert.equal(
             captured?.system.includes(
+                "Use is-a only for a genuine taxonomic relationship"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Do not use is-a to mean about, contains, contributes-to, discusses, or participates-in."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Choose nodeType from the source-grounded role of the candidate, not from a default."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Do not type every candidate as concept when more specific approved node types are warranted by the source."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
                 "Represent explicit source-grounded propositions as claims when they assert something meaningful about a candidate subject."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Claim predicates are short source-grounded semantic phrases and are not restricted to relationType vocabulary."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Do not default claim predicates to explains."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Calibrate confidence to evidence strength."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Do not assign the same confidence to every candidate by default."
             ),
             true
         );
