@@ -325,6 +325,48 @@ test(
 
         assert.equal(
             captured?.system.includes(
+                "Prefer the most specific approved relation type supported by the source."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Use related-to only when no more specific approved relation type accurately represents the source-grounded relationship."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Do not create a related-to relation merely because two concepts appear in the same source."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Represent explicit source-grounded propositions as claims when they assert something meaningful about a candidate subject."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Prefer claims that preserve the source's substantive meaning"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Do not invent claims to reach a quota"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
                 "Do not repeat the same idea using multiple near-duplicate nodes, relations, or claims."
             ),
             true
