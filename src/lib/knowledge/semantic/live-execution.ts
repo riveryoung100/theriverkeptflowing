@@ -41,6 +41,11 @@ export interface SemanticLiveExecutionOptions {
     readonly fetchImplementation?:
         typeof fetch;
 
+    readonly onRawContent?:
+        (
+            rawContent: string
+        ) => void;
+
     readonly onCandidates?:
         (
             candidates: SemanticCandidateSet,
@@ -133,6 +138,15 @@ export async function createAuthorizedLiveSemanticKnowledgeExecution(
     const provider =
         createSemanticModelProvider({
             transport,
+            ...(
+                options.onRawContent ===
+                    undefined
+                    ? {}
+                    : {
+                        onRawContent:
+                            options.onRawContent
+                    }
+            ),
             ...(
                 options.onCandidates ===
                     undefined

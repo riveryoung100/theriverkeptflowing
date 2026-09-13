@@ -19,6 +19,9 @@ interface SemanticDiagnosticCapture {
 }
 
 
+let rawContent:
+    string | undefined;
+
 let diagnostic:
     SemanticDiagnosticCapture | undefined;
 
@@ -34,6 +37,15 @@ try {
             readCredential:
                 () =>
                     readSemanticModelCredentialFromStdin(),
+            onRawContent:
+                (
+                    observedRawContent
+                ) => {
+
+                    rawContent =
+                        observedRawContent;
+
+                },
             onCandidates:
                 (
                     candidates,
@@ -52,6 +64,8 @@ try {
         `${JSON.stringify(
             {
                 result,
+                rawContent:
+                    rawContent ?? null,
                 diagnostic:
                     diagnostic ?? null
             },
@@ -66,6 +80,8 @@ catch (error) {
     process.stderr.write(
         `${JSON.stringify(
             {
+                rawContent:
+                    rawContent ?? null,
                 diagnostic:
                     diagnostic ?? null
             },

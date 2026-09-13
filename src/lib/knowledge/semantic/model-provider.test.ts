@@ -131,6 +131,73 @@ test(
 );
 
 test(
+    "exposes raw semantic model content before strict parsing",
+    async () => {
+
+        const malformedContent =
+            JSON.stringify({
+                nodes:
+                    [],
+                relations:
+                    [],
+                claims: [
+                    {
+                        subjectKey:
+                            "node:test",
+                        predicate:
+                            "tests",
+                        objectKey:
+                            "",
+                        truthStatus:
+                            "asserted",
+                        confidence:
+                            0.9
+                    }
+                ]
+            });
+
+        let observedRawContent =
+            "";
+
+        const provider =
+            createSemanticModelProvider({
+                transport:
+                    async () => ({
+                        content:
+                            malformedContent
+                    }),
+                onRawContent:
+                    (
+                        rawContent
+                    ) => {
+
+                        observedRawContent =
+                            rawContent;
+
+                    }
+            });
+
+        await assert.rejects(
+            () =>
+                provider.interpret({
+                    segment:
+                        sampleTextSegment,
+                    classification:
+                        sampleTextClassification
+                }),
+            /objectKey must be a non-empty string/
+        );
+
+        assert.equal(
+            observedRawContent,
+            malformedContent
+        );
+
+    }
+);
+
+
+test(
     "parses strict semantic candidate JSON",
     () => {
 

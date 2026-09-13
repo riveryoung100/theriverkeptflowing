@@ -370,6 +370,78 @@ test(
 
 
 test(
+    "forwards an explicit raw semantic diagnostic callback through the production execution seam",
+    async () => {
+
+        let observedRawDiagnostic:
+            AuthorizedLiveSemanticProductionWorkflowExecutionOptions["onRawContent"];
+
+        const diagnostic =
+            () => {
+                // Intentionally empty. This test verifies orchestration wiring only.
+            };
+
+        await runSemanticKnowledgeLiveCli({
+            arguments: [
+                ".river-content",
+                ".river-knowledge",
+                validAssetId,
+                "river-semantic-raw-diagnostic",
+                "--endpoint",
+                "https://model.example.test/v1/chat/completions",
+                "--model",
+                "semantic-model",
+                SEMANTIC_KNOWLEDGE_LIVE_CLI_AUTHORIZATION_FLAG
+            ],
+            readCredential:
+                async () =>
+                    "explicit-test-credential",
+            now:
+                () =>
+                    "2026-09-13T20:00:00.000Z",
+            onRawContent:
+                diagnostic,
+            createExecution:
+                async (
+                    options
+                ) => {
+
+                    observedRawDiagnostic =
+                        options.onRawContent;
+
+                    return {
+                        execute:
+                            async (
+                                request
+                            ) => ({
+                                run: {
+                                    id:
+                                        request.workflow.id,
+                                    workflowId:
+                                        request.workflow.id,
+                                    requestedAt:
+                                        request.workflow.requestedAt,
+                                    status:
+                                        "succeeded"
+                                },
+                                steps:
+                                    []
+                            })
+                    };
+
+                }
+        });
+
+        assert.equal(
+            observedRawDiagnostic,
+            diagnostic
+        );
+
+    }
+);
+
+
+test(
     "forwards an explicit semantic candidate diagnostic callback through the production execution seam",
     async () => {
 

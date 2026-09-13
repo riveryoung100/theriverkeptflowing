@@ -81,6 +81,9 @@ export interface RunSemanticKnowledgeLiveCliOptions {
                 AuthorizedLiveSemanticProductionWorkflowExecutionOptions
         ) => Promise<ProductionWorkflowExecutionService>;
 
+    readonly onRawContent?:
+        AuthorizedLiveSemanticProductionWorkflowExecutionOptions["onRawContent"];
+
     readonly onCandidates?:
         AuthorizedLiveSemanticProductionWorkflowExecutionOptions["onCandidates"];
 
@@ -388,6 +391,15 @@ export async function runSemanticKnowledgeLiveCli(
                     : {
                         fetchImplementation:
                             options.fetchImplementation
+                    }
+            ),
+            ...(
+                options.onRawContent ===
+                    undefined
+                    ? {}
+                    : {
+                        onRawContent:
+                            options.onRawContent
                     }
             ),
             ...(

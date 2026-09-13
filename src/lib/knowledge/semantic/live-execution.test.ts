@@ -608,6 +608,104 @@ test(
 
 
 test(
+    "forwards the optional pre-parse raw semantic diagnostic hook",
+    async () => {
+
+        let networkCalls =
+            0;
+
+        let rawDiagnosticCalls =
+            0;
+
+        let observedRawContent =
+            "";
+
+        const execution =
+            await createAuthorizedLiveSemanticKnowledgeExecution({
+                endpoint:
+                    "https://model.example.test/v1/chat/completions",
+                model:
+                    "semantic-model",
+                authorization:
+                    SEMANTIC_LIVE_EXECUTION_AUTHORIZATION,
+                readCredential:
+                    async () =>
+                        "explicit-test-credential",
+                fetchImplementation:
+                    async () => {
+
+                        networkCalls +=
+                            1;
+
+                        return new Response(
+                            JSON.stringify({
+                                choices: [
+                                    {
+                                        message: {
+                                            content:
+                                                validCandidateContent
+                                        }
+                                    }
+                                ]
+                            }),
+                            {
+                                status:
+                                    200,
+                                headers: {
+                                    "content-type":
+                                        "application/json"
+                                }
+                            }
+                        );
+
+                    },
+                onRawContent:
+                    (
+                        rawContent
+                    ) => {
+
+                        rawDiagnosticCalls +=
+                            1;
+
+                        observedRawContent =
+                            rawContent;
+
+                    }
+            });
+
+        await execution.execute({
+            asset:
+                sampleTextAsset,
+            derivedObject:
+                sampleDerivationResult.results[0]!.derivative,
+            interpretation: {
+                segment:
+                    sampleTextSegment,
+                classification:
+                    sampleTextClassification
+            }
+        });
+
+        assert.equal(
+            networkCalls,
+            1
+        );
+
+        assert.equal(
+            rawDiagnosticCalls,
+            1
+        );
+
+        assert.equal(
+            observedRawContent,
+            validCandidateContent
+        );
+
+    }
+);
+
+
+test(
     "forwards the optional semantic candidate diagnostic hook without changing one-shot authorization",
     async () => {
 
