@@ -25,6 +25,7 @@
     "content:youtube:discover": "tsx scripts/run-youtube-content-source-live-discovery.ts",
     "content:youtube:transcript": "tsx scripts/run-youtube-transcript-live-acquisition.ts",
     "knowledge:semantic:live": "tsx scripts/run-semantic-knowledge-live.ts",
+    "knowledge:semantic:live:diagnostic": "tsx scripts/run-semantic-knowledge-live-diagnostic.ts",
     "assimilation:local": "tsx scripts/run-assimilation-local-file.ts",
     "assimilation:transcript": "tsx scripts/run-assimilation-transcript.ts"
   },
