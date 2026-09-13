@@ -554,28 +554,35 @@ test(
 
         assert.equal(
             captured?.system.includes(
-                "Calibrate confidence to evidence strength."
+                "CONFIDENCE OUTPUT CONTRACT"
             ),
             true
         );
 
         assert.equal(
             captured?.system.includes(
-                "Use confidence near 1 only for nearly verbatim or unmistakably explicit source meaning."
+                "choose confidence from exactly these four evidence buckets: 1, 0.95, 0.88, or 0.78"
             ),
             true
         );
 
         assert.equal(
             captured?.system.includes(
-                "avoid mechanically assigning 0.9 or 0.95 across most output."
+                "that causal relation must be 0.88 or 0.78, never 1"
             ),
             true
         );
 
         assert.equal(
             captured?.system.includes(
-                "Do not assign the same confidence to every candidate by default."
+                "Do not solve this by arbitrarily lowering one item"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "that item's confidence MUST NOT be 1"
             ),
             true
         );
