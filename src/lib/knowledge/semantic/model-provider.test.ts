@@ -353,6 +353,41 @@ test(
 
         assert.equal(
             captured?.system.includes(
+                "For is-a, the from-node must be the narrower instance or subtype and the to-node must be the broader category."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "For part-of, the from-node must be the component and the to-node must be the containing whole."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Do not use applies-to as a generic replacement"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Relations are optional. Prefer fewer accurate relations over filling the relation limit with weak or distorted edges."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Before emitting each relation, verify both semantic meaning and direction against the source."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
                 "Do not use is-a to mean about, contains, contributes-to, discusses, or participates-in."
             ),
             true
@@ -396,6 +431,20 @@ test(
         assert.equal(
             captured?.system.includes(
                 "Calibrate confidence to evidence strength."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Use confidence near 1 only for nearly verbatim or unmistakably explicit source meaning."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "avoid mechanically assigning 0.9 or 0.95 across most output."
             ),
             true
         );
