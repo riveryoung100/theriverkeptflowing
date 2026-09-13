@@ -215,7 +215,9 @@ export function createSemanticOpenAICompatibleTransport(
                                 }
                             ],
                             temperature:
-                                0
+                                0,
+                            max_tokens:
+                                2048
                         })
                 }
             );
