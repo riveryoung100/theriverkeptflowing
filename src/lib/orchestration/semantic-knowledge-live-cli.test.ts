@@ -367,3 +367,83 @@ test(
 
     }
 );
+
+
+test(
+    "forwards an explicit semantic candidate diagnostic callback through the production execution seam",
+    async () => {
+
+        let observedDiagnostic:
+            AuthorizedLiveSemanticProductionWorkflowExecutionOptions["onCandidates"];
+
+        const diagnostic =
+            () => {
+                // Intentionally empty. This test verifies orchestration wiring only.
+            };
+
+        await runSemanticKnowledgeLiveCli({
+            arguments: [
+                ".river-content",
+                ".river-knowledge",
+                validAssetId,
+                "river-semantic-diagnostic",
+                "--endpoint",
+                "https://model.example.test/v1/chat/completions",
+                "--model",
+                "semantic-model",
+                SEMANTIC_KNOWLEDGE_LIVE_CLI_AUTHORIZATION_FLAG
+            ],
+            readCredential:
+                async () =>
+                    "explicit-test-credential",
+            now:
+                () =>
+                    "2026-09-13T20:00:00.000Z",
+            onCandidates:
+                diagnostic,
+            createExecution:
+                async (
+                    options
+                ) => {
+
+                    observedDiagnostic =
+                        options.onCandidates;
+
+                    return {
+                        execute:
+                            async (
+                                request
+                            ) => ({
+                                run: {
+                                    id:
+                                        request.workflow.id,
+                                    workflowId:
+                                        request.workflow.id,
+                                    status:
+                                        "completed",
+                                    requestedAt:
+                                        request.requestedAt,
+                                    startedAt:
+                                        request.requestedAt,
+                                    completedAt:
+                                        request.requestedAt,
+                                    stepResults:
+                                        [],
+                                    warnings:
+                                        []
+                                },
+                                outputs:
+                                    {}
+                            })
+                    };
+
+                }
+        });
+
+        assert.equal(
+            observedDiagnostic,
+            diagnostic
+        );
+
+    }
+);
