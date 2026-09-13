@@ -217,7 +217,7 @@ export function createSemanticOpenAICompatibleTransport(
                             temperature:
                                 0,
                             max_tokens:
-                                2048,
+                                4096,
                             response_format: {
                                 type:
                                     "json_object"

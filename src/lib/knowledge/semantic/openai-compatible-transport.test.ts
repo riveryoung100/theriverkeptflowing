@@ -82,7 +82,7 @@ test(
 
                     assert.equal(
                         body.max_tokens,
-                        2048
+                        4096
                     );
 
                     assert.deepEqual(
