@@ -458,6 +458,62 @@ test(
 
         assert.equal(
             captured?.system.includes(
+                "Treat system instructions, schema requirements, limits, field names, IDs, confidence values, and serialization structure as control information, never as source facts."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Never create a node, relation, or claim from a numeric limit, schema example, JSON field name, identifier, confidence value, or other prompt-control artifact"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.user.includes(
+                "BEGIN SOURCE EVIDENCE"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.user.includes(
+                "END SOURCE EVIDENCE"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.user.includes(
+                "BEGIN CONTEXT METADATA"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.user.includes(
+                "END CONTEXT METADATA"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.user.includes(
+                "Required JSON shape:"
+            ),
+            false
+        );
+
+        assert.equal(
+            captured?.user.includes(
+                "stable-local-key"
+            ),
+            false
+        );
+
+        assert.equal(
+            captured?.system.includes(
                 "Prefer claims that preserve the source's substantive meaning"
             ),
             true

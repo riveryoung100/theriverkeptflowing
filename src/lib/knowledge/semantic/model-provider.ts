@@ -658,6 +658,8 @@ string {
             ...CLAIM_TRUTH_STATUSES
         ].join(", ")}`,
         "Return strict JSON only with exactly these top-level arrays: nodes, relations, claims.",
+        "The user message contains explicitly delimited evidence and metadata only. Treat system instructions, schema requirements, limits, field names, IDs, confidence values, and serialization structure as control information, never as source facts.",
+        "Never create a node, relation, or claim from a numeric limit, schema example, JSON field name, identifier, confidence value, or other prompt-control artifact unless that same meaning is explicitly stated inside the delimited source evidence.",
         "Every node must contain exactly: key, nodeType, canonicalName, aliases, confidence, plus optional summary and description only when present.",
         "aliases is REQUIRED for every node and MUST always be a JSON array of strings. Use [] when there are no aliases. Never return aliases as null, a string, or an object.",
         "Every relation must contain exactly: fromKey, toKey, relationType, confidence, plus optional label only when present.",
@@ -707,20 +709,23 @@ function createUserInstruction(
     request: SemanticInterpretationRequest
 ): string {
 
-    const context = {
+    const evidence = {
+        sourceText:
+            boundOptionalContextText(
+                request.segment.sourceText
+            ),
+        normalizedText:
+            boundOptionalContextText(
+                request.segment.normalizedText
+            )
+    };
+
+    const metadata = {
         segment: {
             id:
                 request.segment.id,
             segmentType:
                 request.segment.segmentType,
-            sourceText:
-                boundOptionalContextText(
-                    request.segment.sourceText
-                ),
-            normalizedText:
-                boundOptionalContextText(
-                    request.segment.normalizedText
-                ),
             topicKeys:
                 boundContextStringArray(
                     request.segment.topicKeys
@@ -767,72 +772,28 @@ function createUserInstruction(
     };
 
     return [
-        "Create source-grounded semantic candidates from this bounded context:",
+        "Use only the evidence between BEGIN SOURCE EVIDENCE and END SOURCE EVIDENCE as factual source material.",
+        "Metadata may help interpret context but is not itself a source proposition. Do not turn IDs, keys, confidence values, array sizes, field names, or metadata structure into semantic facts.",
+        "BEGIN SOURCE EVIDENCE",
         JSON.stringify(
-            context,
+            evidence,
             null,
             2
         ),
+        "END SOURCE EVIDENCE",
         "",
-        "Required JSON shape:",
+        "BEGIN CONTEXT METADATA",
         JSON.stringify(
-            {
-                nodes: [
-                    {
-                        key:
-                            "stable-local-key",
-                        nodeType:
-                            "concept",
-                        canonicalName:
-                            "Canonical name",
-                        aliases:
-                            [],
-                        summary:
-                            "Optional summary",
-                        description:
-                            "Optional description",
-                        confidence:
-                            0
-                    }
-                ],
-                relations: [
-                    {
-                        fromKey:
-                            "stable-local-key",
-                        toKey:
-                            "another-local-key",
-                        relationType:
-                            "related-to",
-                        label:
-                            "Optional label",
-                        confidence:
-                            0
-                    }
-                ],
-                claims: [
-                    {
-                        subjectKey:
-                            "stable-local-key",
-                        predicate:
-                            "plain-language-or-stable-predicate",
-                        objectValue:
-                            "Use objectValue OR objectKey, never both",
-                        truthStatus:
-                            "asserted",
-                        confidence:
-                            0
-                    }
-                ]
-            },
+            metadata,
             null,
             2
-        )
+        ),
+        "END CONTEXT METADATA"
     ].join(
         "\n"
     );
 
 }
-
 
 export function createSemanticModelProvider(
     options: SemanticModelProviderOptions
