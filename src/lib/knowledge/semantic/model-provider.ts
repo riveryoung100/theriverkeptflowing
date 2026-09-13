@@ -665,6 +665,10 @@ string {
         "Optional string fields must either contain a non-empty string or be omitted entirely. Never return null for optional fields.",
         "All confidence values must be finite JSON numbers between 0 and 1 inclusive.",
         "Every relation and node-object claim must reference candidate node keys from nodes.",
+        "Every node key must be unique across nodes. Never emit the same node key more than once.",
+        "Every relation identity must be unique across relations. Never emit the same fromKey, relationType, and toKey combination more than once.",
+        "Every claim proposition must be unique across claims. Never emit the same subjectKey, predicate, and objectKey or objectValue combination more than once.",
+        "Before responding, deduplicate nodes, relations, and claims while preserving the strongest source-grounded candidate.",
         "Do not add fields not shown in the required JSON shape.",
         "Do not wrap JSON in Markdown fences.",
         "Before responding, verify internally that nodes, relations, claims, and every aliases value are JSON arrays and that the response matches the required shape exactly."

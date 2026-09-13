@@ -281,6 +281,34 @@ test(
             true
         );
 
+        assert.equal(
+            captured?.system.includes(
+                "Every node key must be unique across nodes."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Never emit the same fromKey, relationType, and toKey combination more than once."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Every claim proposition must be unique across claims."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "deduplicate nodes, relations, and claims"
+            ),
+            true
+        );
+
     }
 );
 
