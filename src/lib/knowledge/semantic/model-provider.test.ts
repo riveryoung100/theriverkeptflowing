@@ -309,6 +309,27 @@ test(
             true
         );
 
+        assert.equal(
+            captured?.system.includes(
+                "Return at most 12 nodes, at most 16 relations, and at most 16 claims."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Prefer fewer high-confidence source-grounded candidates over exhaustive coverage."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Do not repeat the same idea using multiple near-duplicate nodes, relations, or claims."
+            ),
+            true
+        );
+
     }
 );
 

@@ -669,6 +669,9 @@ string {
         "Every relation identity must be unique across relations. Never emit the same fromKey, relationType, and toKey combination more than once.",
         "Every claim proposition must be unique across claims. Never emit the same subjectKey, predicate, and objectKey or objectValue combination more than once.",
         "Before responding, deduplicate nodes, relations, and claims while preserving the strongest source-grounded candidate.",
+        "Return at most 12 nodes, at most 16 relations, and at most 16 claims.",
+        "Prefer fewer high-confidence source-grounded candidates over exhaustive coverage.",
+        "Do not repeat the same idea using multiple near-duplicate nodes, relations, or claims.",
         "Do not add fields not shown in the required JSON shape.",
         "Do not wrap JSON in Markdown fences.",
         "Before responding, verify internally that nodes, relations, claims, and every aliases value are JSON arrays and that the response matches the required shape exactly."
