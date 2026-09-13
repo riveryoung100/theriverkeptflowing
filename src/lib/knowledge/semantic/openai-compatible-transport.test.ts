@@ -65,6 +65,9 @@ test(
                             }[];
                             temperature: number;
                             max_tokens: number;
+                            response_format: {
+                                type: string;
+                            };
                         };
 
                     assert.equal(
@@ -80,6 +83,14 @@ test(
                     assert.equal(
                         body.max_tokens,
                         2048
+                    );
+
+                    assert.deepEqual(
+                        body.response_format,
+                        {
+                            type:
+                                "json_object"
+                        }
                     );
 
                     assert.deepEqual(
