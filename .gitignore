@@ -25,3 +25,6 @@ Thumbs.db
 
 # Private durable content-ingestion records
 .river-content/
+
+# Private durable semantic Knowledge records
+.river-knowledge/
