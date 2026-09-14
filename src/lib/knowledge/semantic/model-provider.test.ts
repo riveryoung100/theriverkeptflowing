@@ -13,6 +13,8 @@ import type {
 
 import {
     createSemanticModelProvider,
+    createSemanticSystemInstruction,
+    createSemanticUserInstruction,
     parseSemanticCandidateClaims,
     parseSemanticCandidateNodes,
     parseSemanticCandidateRelations,
@@ -76,6 +78,83 @@ const validResponse =
         ]
     });
 
+
+
+test(
+    "exposes the authoritative semantic system prompt builder",
+    () => {
+
+        const prompt =
+            createSemanticSystemInstruction();
+
+        assert.equal(
+            prompt.includes(
+                "You are a bounded semantic interpretation provider for River OS."
+            ),
+            true
+        );
+
+        assert.equal(
+            prompt.includes(
+                "NODE TYPE DECISION CONTRACT"
+            ),
+            true
+        );
+
+        assert.equal(
+            prompt.includes(
+                "SOURCE ORDER IS NOT RELATION EVIDENCE"
+            ),
+            true
+        );
+
+    }
+);
+
+
+test(
+    "exposes the authoritative bounded semantic user prompt builder",
+    () => {
+
+        const prompt =
+            createSemanticUserInstruction({
+                segment:
+                    sampleTextSegment,
+                classification:
+                    sampleTextClassification
+            });
+
+        assert.equal(
+            prompt.includes(
+                "BEGIN SOURCE EVIDENCE"
+            ),
+            true
+        );
+
+        assert.equal(
+            prompt.includes(
+                "END SOURCE EVIDENCE"
+            ),
+            true
+        );
+
+        assert.equal(
+            prompt.includes(
+                "BEGIN FINAL SEMANTIC DECISION AUDIT"
+            ),
+            true
+        );
+
+        assert.equal(
+            prompt.includes(
+                sampleTextSegment.normalizedText ??
+                    ""
+            ),
+            true
+        );
+
+    }
+);
 
 
 test(

@@ -752,7 +752,7 @@ function boundContextStringArray(
 }
 
 
-function createSystemInstruction():
+export function createSemanticSystemInstruction():
 string {
 
     return [
@@ -877,7 +877,7 @@ string {
 }
 
 
-function createUserInstruction(
+export function createSemanticUserInstruction(
     request: SemanticInterpretationRequest
 ): string {
 
@@ -988,9 +988,9 @@ export function createSemanticModelProvider(
             const response =
                 await options.transport({
                     system:
-                        createSystemInstruction(),
+                        createSemanticSystemInstruction(),
                     user:
-                        createUserInstruction(
+                        createSemanticUserInstruction(
                             request
                         )
                 });
