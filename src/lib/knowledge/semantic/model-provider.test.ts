@@ -505,6 +505,55 @@ test(
 
         assert.equal(
             captured?.system.includes(
+                "Sparse and disconnected semantic graphs are valid."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Do not connect two nodes merely because both appear in the source, occur near each other, or would make the graph more connected."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Do not create a relation merely to give every node an incoming or outgoing edge."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Do not force a chain, path, loop, or cycle through otherwise separate source-grounded candidates."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "If the bounded source does not support that exact semantic relationship and direction, omit the relation even when omission leaves nodes disconnected."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Narrative succession, thematic association, co-occurrence, or plausible real-world influence is not enough to justify causes."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Do not mechanically create a claim for every relation or a relation for every claim."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
                 "Before emitting each relation, verify both semantic meaning and direction against the source."
             ),
             true
