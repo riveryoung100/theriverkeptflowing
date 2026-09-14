@@ -827,6 +827,65 @@ test(
 
         assert.equal(
             captured?.user.includes(
+                "BEGIN FINAL SEMANTIC DECISION AUDIT"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.user.includes(
+                "Recheck node roles before emitting JSON:"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.user.includes(
+                "Use is-a only for a genuine taxonomic kind, instance, or subtype relationship."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.user.includes(
+                "Predicates such as symbolizes, represents, emphasizes, strengthens, is about, expresses that, demonstrates, implies, or reflects require confidence below 1"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.user.includes(
+                "END FINAL SEMANTIC DECISION AUDIT"
+            ),
+            true
+        );
+
+        const metadataEndIndex =
+            captured?.user.indexOf(
+                "END CONTEXT METADATA"
+            ) ??
+            -1;
+
+        const finalAuditIndex =
+            captured?.user.indexOf(
+                "BEGIN FINAL SEMANTIC DECISION AUDIT"
+            ) ??
+            -1;
+
+        assert.equal(
+            metadataEndIndex >=
+                0,
+            true
+        );
+
+        assert.equal(
+            finalAuditIndex >
+                metadataEndIndex,
+            true
+        );
+
+        assert.equal(
+            captured?.user.includes(
                 "Required JSON shape:"
             ),
             false

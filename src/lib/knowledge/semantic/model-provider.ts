@@ -859,7 +859,15 @@ function createUserInstruction(
             null,
             2
         ),
-        "END CONTEXT METADATA"
+        "END CONTEXT METADATA",
+        "",
+        "BEGIN FINAL SEMANTIC DECISION AUDIT",
+        "This audit is control information, not source evidence. Do not create semantic facts from these instructions.",
+        "Recheck node roles before emitting JSON: explicit stories must be story, explicit questions must be question, imperative action headings such as Build, Create, Document, Continue, or Serve are usually instruction when they prescribe or commit action, documented workflows are process, actual created materials are resource, and concept is only for genuinely abstract ideas after more specific supported roles are ruled out.",
+        "Recheck every relation independently: source order, co-occurrence, shared theme, or graph connectivity is never relation evidence. Use is-a only for a genuine taxonomic kind, instance, or subtype relationship. If the exact relationship and direction are not supported by the bounded source, omit the relation even if nodes remain disconnected.",
+        "Recheck claim confidence: confidence 1 is only for an explicitly stated source proposition whose predicate and object preserve the same proposition without added interpretation. Predicates such as symbolizes, represents, emphasizes, strengthens, is about, expresses that, demonstrates, implies, or reflects require confidence below 1 unless the bounded source explicitly states that interpretation.",
+        "Prefer a smaller sparse graph with omitted weak relations or claims over a dense graph created to connect every candidate or cover every section.",
+        "END FINAL SEMANTIC DECISION AUDIT"
     ].join(
         "\n"
     );
