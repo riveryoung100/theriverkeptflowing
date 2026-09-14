@@ -761,6 +761,261 @@ test(
 
 
 test(
+    "rejects overwhelming relation type dominance without requiring total collapse",
+    () => {
+
+        const nodes =
+            Array.from(
+                {
+                    length:
+                        10
+                },
+                (
+                    _,
+                    index
+                ) => ({
+                    key:
+                        `relation-dominance-node-${index}`,
+                    nodeType:
+                        (
+                            index ===
+                                0
+                                ? "story"
+                                : "concept"
+                        ) as
+                            | "story"
+                            | "concept",
+                    canonicalName:
+                        `Relation Dominance Node ${index}`,
+                    aliases:
+                        [],
+                    confidence:
+                        0.8
+                })
+            );
+
+        const result =
+            validateSemanticCandidateSet(
+                request,
+                {
+                    nodes,
+                    relations:
+                        Array.from(
+                            {
+                                length:
+                                    9
+                            },
+                            (
+                                _,
+                                index
+                            ) => ({
+                                fromKey:
+                                    nodes[index]!.key,
+                                toKey:
+                                    nodes[index + 1]!.key,
+                                relationType:
+                                    (
+                                        index ===
+                                            8
+                                            ? "causes"
+                                            : "is-a"
+                                    ) as
+                                        | "is-a"
+                                        | "causes",
+                                confidence:
+                                    0.8
+                            })
+                        ),
+                    claims:
+                        []
+                }
+            );
+
+        assert.equal(
+            result.valid,
+            false
+        );
+
+        assert.equal(
+            result.issues.some(
+                (item) =>
+                    item.code ===
+                    "semantic.quality.relation-type-dominance"
+            ),
+            true
+        );
+
+    }
+);
+
+
+test(
+    "rejects overwhelming claim predicate dominance without requiring total collapse",
+    () => {
+
+        const nodes =
+            Array.from(
+                {
+                    length:
+                        10
+                },
+                (
+                    _,
+                    index
+                ) => ({
+                    key:
+                        `claim-dominance-node-${index}`,
+                    nodeType:
+                        (
+                            index ===
+                                0
+                                ? "story"
+                                : "concept"
+                        ) as
+                            | "story"
+                            | "concept",
+                    canonicalName:
+                        `Claim Dominance Node ${index}`,
+                    aliases:
+                        [],
+                    confidence:
+                        0.8
+                })
+            );
+
+        const result =
+            validateSemanticCandidateSet(
+                request,
+                {
+                    nodes,
+                    relations:
+                        [],
+                    claims:
+                        nodes.map(
+                            (
+                                node,
+                                index
+                            ) => ({
+                                subjectKey:
+                                    node.key,
+                                predicate:
+                                    index ===
+                                        9
+                                        ? "explains"
+                                        : "represents",
+                                objectValue:
+                                    `Dominance claim ${index}`,
+                                truthStatus:
+                                    "asserted" as const,
+                                confidence:
+                                    0.8
+                            })
+                        )
+                }
+            );
+
+        assert.equal(
+            result.valid,
+            false
+        );
+
+        assert.equal(
+            result.issues.some(
+                (item) =>
+                    item.code ===
+                    "semantic.quality.claim-predicate-dominance"
+            ),
+            true
+        );
+
+    }
+);
+
+
+test(
+    "rejects overwhelming maximum claim confidence without requiring total uniform confidence",
+    () => {
+
+        const nodes =
+            Array.from(
+                {
+                    length:
+                        10
+                },
+                (
+                    _,
+                    index
+                ) => ({
+                    key:
+                        `claim-confidence-node-${index}`,
+                    nodeType:
+                        (
+                            index ===
+                                0
+                                ? "story"
+                                : "concept"
+                        ) as
+                            | "story"
+                            | "concept",
+                    canonicalName:
+                        `Claim Confidence Node ${index}`,
+                    aliases:
+                        [],
+                    confidence:
+                        0.8
+                })
+            );
+
+        const result =
+            validateSemanticCandidateSet(
+                request,
+                {
+                    nodes,
+                    relations:
+                        [],
+                    claims:
+                        nodes.map(
+                            (
+                                node,
+                                index
+                            ) => ({
+                                subjectKey:
+                                    node.key,
+                                predicate:
+                                    `predicate-${index}`,
+                                objectValue:
+                                    `Confidence claim ${index}`,
+                                truthStatus:
+                                    "asserted" as const,
+                                confidence:
+                                    index <
+                                        8
+                                        ? 1
+                                        : 0.88
+                            })
+                        )
+                }
+            );
+
+        assert.equal(
+            result.valid,
+            false
+        );
+
+        assert.equal(
+            result.issues.some(
+                (item) =>
+                    item.code ===
+                    "semantic.quality.claim-max-confidence-dominance"
+            ),
+            true
+        );
+
+    }
+);
+
+
+test(
     "keeps small uniform semantic candidate sets valid",
     () => {
 

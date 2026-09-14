@@ -531,6 +531,54 @@ export function validateSemanticCandidateSet(
 
         }
 
+
+    if (
+        candidates.relations.length >=
+            8
+    ) {
+
+        const relationTypeCounts =
+            new Map<string, number>();
+
+        candidates.relations.forEach(
+            (relation) => {
+
+                relationTypeCounts.set(
+                    relation.relationType,
+                    (
+                        relationTypeCounts.get(
+                            relation.relationType
+                        ) ??
+                        0
+                    ) +
+                        1
+                );
+
+            }
+        );
+
+        const dominantRelationTypeCount =
+            Math.max(
+                ...relationTypeCounts.values()
+            );
+
+        if (
+            dominantRelationTypeCount /
+                candidates.relations.length >=
+                    0.8
+        ) {
+
+            issues.push(
+                issue(
+                    "semantic.quality.relation-type-dominance",
+                    "Substantial semantic relation sets must not be overwhelmingly dominated by one relation type.",
+                    "relations"
+                )
+            );
+
+        }
+
+    }
     }
 
     if (
@@ -561,6 +609,77 @@ export function validateSemanticCandidateSet(
 
         }
 
+
+    if (
+        candidates.claims.length >=
+            8
+    ) {
+
+        const claimPredicateCounts =
+            new Map<string, number>();
+
+        candidates.claims.forEach(
+            (claim) => {
+
+                claimPredicateCounts.set(
+                    claim.predicate,
+                    (
+                        claimPredicateCounts.get(
+                            claim.predicate
+                        ) ??
+                        0
+                    ) +
+                        1
+                );
+
+            }
+        );
+
+        const dominantClaimPredicateCount =
+            Math.max(
+                ...claimPredicateCounts.values()
+            );
+
+        if (
+            dominantClaimPredicateCount /
+                candidates.claims.length >=
+                    0.8
+        ) {
+
+            issues.push(
+                issue(
+                    "semantic.quality.claim-predicate-dominance",
+                    "Substantial semantic claim sets must not be overwhelmingly dominated by one predicate.",
+                    "claims"
+                )
+            );
+
+        }
+
+        const maximumConfidenceClaimCount =
+            candidates.claims.filter(
+                (claim) =>
+                    claim.confidence ===
+                        1
+            ).length;
+
+        if (
+            maximumConfidenceClaimCount /
+                candidates.claims.length >=
+                    0.8
+        ) {
+
+            issues.push(
+                issue(
+                    "semantic.quality.claim-max-confidence-dominance",
+                    "Substantial semantic claim sets must not overwhelmingly assign maximum confidence.",
+                    "claims"
+                )
+            );
+
+        }
+
+    }
     }
 
     const scoredSemanticEdges =
