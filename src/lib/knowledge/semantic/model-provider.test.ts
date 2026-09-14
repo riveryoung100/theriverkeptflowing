@@ -568,7 +568,7 @@ test(
 
         assert.equal(
             captured?.system.includes(
-                "Choose nodeType from the source-grounded role of the candidate, not from a default."
+                "NODE TYPE DECISION CONTRACT"
             ),
             true
         );
@@ -576,6 +576,48 @@ test(
         assert.equal(
             captured?.system.includes(
                 "Do not type every candidate as concept when more specific approved node types are warranted by the source."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "test the approved node types independently in this order: person, organization, place, event, story, question, answer, process, instruction, principle, resource, service, product, topic, concept, other"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Do not choose concept until you have explicitly ruled out every more specific supported role."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "A page or section explicitly presented as a story is story, not concept."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "an emitted node representing those resources is resource, not concept."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "For every node currently typed concept, ask whether the bounded source instead presents it as a story"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Node-type diversity must come from genuine source roles, never from arbitrarily relabeling candidates merely to avoid a validation failure."
             ),
             true
         );
