@@ -526,6 +526,107 @@ function parseClaim(
 }
 
 
+function parseStageArray(
+    content: string,
+    field:
+        "nodes" |
+        "relations" |
+        "claims"
+): readonly unknown[] {
+
+    if (
+        content.trim().length ===
+            0
+    ) {
+
+        throw new TypeError(
+            "Semantic model returned empty candidate content."
+        );
+
+    }
+
+    let parsed:
+        unknown;
+
+    try {
+
+        parsed =
+            JSON.parse(
+                content
+            );
+
+    } catch {
+
+        throw new TypeError(
+            "Semantic model returned malformed JSON."
+        );
+
+    }
+
+    const record =
+        requireRecord(
+            parsed,
+            "root"
+        );
+
+    requireExactKeys(
+        record,
+        [
+            field
+        ],
+        "root"
+    );
+
+    return requireArray(
+        record[field],
+        field
+    );
+
+}
+
+
+export function parseSemanticCandidateNodes(
+    content: string
+): readonly SemanticCandidateNode[] {
+
+    return parseStageArray(
+        content,
+        "nodes"
+    ).map(
+        parseNode
+    );
+
+}
+
+
+export function parseSemanticCandidateRelations(
+    content: string
+): readonly SemanticCandidateRelation[] {
+
+    return parseStageArray(
+        content,
+        "relations"
+    ).map(
+        parseRelation
+    );
+
+}
+
+
+export function parseSemanticCandidateClaims(
+    content: string
+): readonly SemanticCandidateClaim[] {
+
+    return parseStageArray(
+        content,
+        "claims"
+    ).map(
+        parseClaim
+    );
+
+}
+
+
 export function parseSemanticCandidateSet(
     content: string
 ): SemanticCandidateSet {

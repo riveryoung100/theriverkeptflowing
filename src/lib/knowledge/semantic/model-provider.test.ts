@@ -13,6 +13,9 @@ import type {
 
 import {
     createSemanticModelProvider,
+    parseSemanticCandidateClaims,
+    parseSemanticCandidateNodes,
+    parseSemanticCandidateRelations,
     parseSemanticCandidateSet
 } from "./model-provider";
 
@@ -191,6 +194,168 @@ test(
         assert.equal(
             observedRawContent,
             malformedContent
+        );
+
+    }
+);
+
+
+test(
+    "parses strict nodes-only semantic stage JSON",
+    () => {
+
+        const result =
+            parseSemanticCandidateNodes(
+                JSON.stringify({
+                    nodes: [
+                        {
+                            key:
+                                "story-node",
+                            nodeType:
+                                "story",
+                            canonicalName:
+                                "A Story",
+                            aliases:
+                                [],
+                            confidence:
+                                0.95
+                        }
+                    ]
+                })
+            );
+
+        assert.equal(
+            result.length,
+            1
+        );
+
+        assert.equal(
+            result[0]?.nodeType,
+            "story"
+        );
+
+    }
+);
+
+
+test(
+    "parses strict relations-only semantic stage JSON",
+    () => {
+
+        const result =
+            parseSemanticCandidateRelations(
+                JSON.stringify({
+                    relations: [
+                        {
+                            fromKey:
+                                "node-a",
+                            toKey:
+                                "node-b",
+                            relationType:
+                                "supports",
+                            confidence:
+                                0.88
+                        }
+                    ]
+                })
+            );
+
+        assert.equal(
+            result.length,
+            1
+        );
+
+        assert.equal(
+            result[0]?.relationType,
+            "supports"
+        );
+
+    }
+);
+
+
+test(
+    "parses strict claims-only semantic stage JSON",
+    () => {
+
+        const result =
+            parseSemanticCandidateClaims(
+                JSON.stringify({
+                    claims: [
+                        {
+                            subjectKey:
+                                "node-a",
+                            predicate:
+                                "expresses",
+                            objectValue:
+                                "an explicit proposition",
+                            truthStatus:
+                                "asserted",
+                            confidence:
+                                0.95
+                        }
+                    ]
+                })
+            );
+
+        assert.equal(
+            result.length,
+            1
+        );
+
+        assert.equal(
+            result[0]?.predicate,
+            "expresses"
+        );
+
+    }
+);
+
+
+test(
+    "rejects extra top-level fields from a semantic stage parser",
+    () => {
+
+        assert.throws(
+            () =>
+                parseSemanticCandidateNodes(
+                    JSON.stringify({
+                        nodes:
+                            [],
+                        relations:
+                            []
+                    })
+                ),
+            /unexpected field: relations/
+        );
+
+    }
+);
+
+
+test(
+    "stage parsers preserve the same strict candidate field validation",
+    () => {
+
+        assert.throws(
+            () =>
+                parseSemanticCandidateRelations(
+                    JSON.stringify({
+                        relations: [
+                            {
+                                fromKey:
+                                    "node-a",
+                                toKey:
+                                    "node-b",
+                                relationType:
+                                    "invented-relation",
+                                confidence:
+                                    0.8
+                            }
+                        ]
+                    })
+                ),
+            /approved KnowledgeRelationType/
         );
 
     }
