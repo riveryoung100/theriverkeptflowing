@@ -229,6 +229,92 @@ export function validateSemanticCandidateSet(
 
     }
 
+    const imperativeRolePattern =
+        /^(?:build|create|document|continue|serve)\s+\S/i;
+
+    candidates.nodes.forEach(
+        (
+            node,
+            index
+        ) => {
+
+            const path =
+                `nodes[${index}]`;
+
+            const descriptiveText =
+                [
+                    node.summary,
+                    node.description
+                ]
+                    .filter(
+                        (
+                            value
+                        ): value is string =>
+                            typeof value ===
+                                "string"
+                    )
+                    .join(
+                        " "
+                    );
+
+            const explicitlySelfDescribesAsStory =
+                /\b(?:is|as)\s+(?:an?\s+)?story\b/i.test(
+                    descriptiveText
+                );
+
+            if (
+                node.nodeType !==
+                    "story" &&
+                explicitlySelfDescribesAsStory
+            ) {
+
+                issues.push(
+                    issue(
+                        "semantic.quality.node-role-story-contradiction",
+                        "A candidate node that explicitly describes itself as a story must use the story node type.",
+                        `${path}.nodeType`
+                    )
+                );
+
+            }
+
+            if (
+                node.nodeType ===
+                    "concept"
+            ) {
+
+                const roleLabels =
+                    [
+                        node.canonicalName,
+                        ...node.aliases
+                    ];
+
+                const hasImperativeRoleLabel =
+                    roleLabels.some(
+                        (label) =>
+                            imperativeRolePattern.test(
+                                label.trim()
+                            )
+                    );
+
+                if (hasImperativeRoleLabel) {
+
+                    issues.push(
+                        issue(
+                            "semantic.quality.node-role-imperative-concept",
+                            "A concept candidate must not retain an imperative action label that indicates an instruction-like semantic role.",
+                            `${path}.nodeType`
+                        )
+                    );
+
+                }
+
+            }
+
+        }
+    );
+
+
     const knownRelationIdentities =
         new Set<string>();
 

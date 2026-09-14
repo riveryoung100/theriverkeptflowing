@@ -475,6 +475,156 @@ test(
 
 
 test(
+    "rejects a node that explicitly self-describes as a story while using another node type",
+    () => {
+
+        const valid =
+            createValidCandidates();
+
+        const result =
+            validateSemanticCandidateSet(
+                request,
+                {
+                    ...valid,
+                    nodes: [
+                        {
+                            ...valid.nodes[0]!,
+                            key:
+                                "story-role-contradiction",
+                            nodeType:
+                                "topic",
+                            canonicalName:
+                                "A Journey",
+                            description:
+                                "A Journey is a story about perseverance and change."
+                        },
+                        valid.nodes[1]!
+                    ],
+                    relations:
+                        [],
+                    claims:
+                        []
+                }
+            );
+
+        assert.equal(
+            result.valid,
+            false
+        );
+
+        assert.equal(
+            result.issues.some(
+                (item) =>
+                    item.code ===
+                    "semantic.quality.node-role-story-contradiction"
+            ),
+            true
+        );
+
+    }
+);
+
+
+test(
+    "rejects imperative action labels that are emitted as generic concepts",
+    () => {
+
+        const valid =
+            createValidCandidates();
+
+        const result =
+            validateSemanticCandidateSet(
+                request,
+                {
+                    ...valid,
+                    nodes: [
+                        {
+                            ...valid.nodes[0]!,
+                            key:
+                                "instruction-role-contradiction",
+                            nodeType:
+                                "concept",
+                            canonicalName:
+                                "Build Durable Systems",
+                            aliases:
+                                [
+                                    "Create Useful Tools"
+                                ]
+                        },
+                        valid.nodes[1]!
+                    ],
+                    relations:
+                        [],
+                    claims:
+                        []
+                }
+            );
+
+        assert.equal(
+            result.valid,
+            false
+        );
+
+        assert.equal(
+            result.issues.some(
+                (item) =>
+                    item.code ===
+                    "semantic.quality.node-role-imperative-concept"
+            ),
+            true
+        );
+
+    }
+);
+
+
+test(
+    "keeps non-imperative abstract concepts valid under node role consistency checks",
+    () => {
+
+        const valid =
+            createValidCandidates();
+
+        const result =
+            validateSemanticCandidateSet(
+                request,
+                {
+                    ...valid,
+                    nodes: [
+                        {
+                            ...valid.nodes[0]!,
+                            key:
+                                "abstract-concept",
+                            nodeType:
+                                "concept",
+                            canonicalName:
+                                "Purpose",
+                            aliases:
+                                [
+                                    "Meaning"
+                                ],
+                            description:
+                                "An abstract idea concerning what gives direction to life."
+                        },
+                        valid.nodes[1]!
+                    ],
+                    relations:
+                        [],
+                    claims:
+                        []
+                }
+            );
+
+        assert.equal(
+            result.valid,
+            true
+        );
+
+    }
+);
+
+
+test(
     "rejects multi-edge relation type collapse",
     () => {
 
