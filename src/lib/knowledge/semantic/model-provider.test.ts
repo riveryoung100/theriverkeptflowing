@@ -582,6 +582,83 @@ test(
 
         assert.equal(
             captured?.system.includes(
+                "SOURCE ORDER IS NOT RELATION EVIDENCE."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Never turn document order into a semantic path."
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "audit the whole graph for accidental serialization"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "Imperative source headings and candidate names that direct an action are usually instruction"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "preserve the role-bearing unit"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "explicitly described by the bounded source as a story must be story"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "For CLAIMS, confidence 1 requires the claim predicate plus object"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "If the predicate introduces interpretation such as symbolizes, represents, emphasizes, strengthens, is about, expresses that"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "A verbatim or near-verbatim objectValue does not justify confidence 1"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "MAX-CONFIDENCE CLAIM AUDIT"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
+                "every claim is confidence 1 is a strong warning"
+            ),
+            true
+        );
+
+        assert.equal(
+            captured?.system.includes(
                 "test the approved node types independently in this order: person, organization, place, event, story, question, answer, process, instruction, principle, resource, service, product, topic, concept, other"
             ),
             true
