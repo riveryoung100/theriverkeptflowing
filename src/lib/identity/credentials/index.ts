@@ -16,3 +16,10 @@ export {
   normalizeCredentialEmail,
   validatePasswordCredential,
 } from "./validation";
+
+export type {
+  PasswordCredentialRepository,
+  PasswordCredentialRepositoryError,
+  PasswordCredentialRepositoryErrorKind,
+  PasswordCredentialRepositoryResult,
+} from "./repository";
