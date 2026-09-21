@@ -1,0 +1,684 @@
+{
+    "id":  "SESH-001",
+    "title":  "Sesh Domain Architecture Foundation",
+    "status":  "proposed",
+    "version":  "1.0.0",
+    "createdDate":  "2026-09-21",
+    "purpose":  [
+                    "Establish Sesh as a bounded product and creative-technology domain within the existing River repository.",
+                    "Define the canonical ownership boundaries between reusable River infrastructure and genuinely music-specific Sesh concepts.",
+                    "Prevent duplicate implementations of commerce, fulfillment, orchestration, persistence, governance, identity infrastructure, knowledge infrastructure, and deployment infrastructure.",
+                    "Create the architectural foundation required before implementation of Sesh Studio, Rhythm, Keys, Control, Pulse, Sounds, Launch, education systems, creator marketplace systems, or Sesh hardware."
+                ],
+    "architecturePrinciples":  [
+                                   "Sesh is a first-class bounded domain, not an isolated second platform.",
+                                   "Shared infrastructure remains shared; music-specific business meaning belongs to Sesh.",
+                                   "A Sesh concept must not duplicate an existing River primitive merely because Sesh uses it.",
+                                   "A generic primitive should not be polluted with music-specific behavior solely to avoid creating an appropriate Sesh aggregate.",
+                                   "Canonical identifiers must be explicit and domain-owned.",
+                                   "Public presentation, commercial authority, payment authority, fulfillment authority, rights authority, publishing authority, distribution authority, and artist-management authority remain separate capabilities.",
+                                   "Architecture should preserve future web, desktop, mobile, hardware, AI-assisted, marketplace, education, publishing, distribution, and acquisition optionality.",
+                                   "Sesh must be usable as an independent commercial product family while remaining interoperable with River-owned infrastructure.",
+                                   "No architecture decision in this specification authorizes public launch, external communication, payments, legal agreements, rights acquisition, revenue participation, artist representation, publishing, distribution, or deployment."
+                               ],
+    "boundedContext":  {
+                           "canonicalName":  "Sesh",
+                           "proposedCodeRoot":  "src/lib/sesh",
+                           "responsibility":  [
+                                                  "Music creation domain models.",
+                                                  "Creator-facing music project models.",
+                                                  "Audio and musical asset semantics.",
+                                                  "Musical timing and rhythm semantics.",
+                                                  "Musical event and performance-input semantics.",
+                                                  "Sesh learning and progression semantics.",
+                                                  "Music collaboration semantics.",
+                                                  "Creator marketplace semantics specific to sounds and music assets.",
+                                                  "Music rights and economic-participation semantics.",
+                                                  "Artist-development and launch-program semantics.",
+                                                  "Music release and distribution semantics.",
+                                                  "Sesh device and hardware semantics.",
+                                                  "Cross-product Sesh creator/project state."
+                                              ],
+                           "explicitlyNotOwned":  [
+                                                      "Generic payment processing.",
+                                                      "Generic checkout.",
+                                                      "Generic commerce-order persistence.",
+                                                      "Generic fulfillment orchestration.",
+                                                      "Generic application orchestration.",
+                                                      "Generic authorization governance.",
+                                                      "Generic deployment infrastructure.",
+                                                      "Generic knowledge graph infrastructure.",
+                                                      "Generic assimilation infrastructure.",
+                                                      "Generic CRM persistence.",
+                                                      "Generic content publication infrastructure.",
+                                                      "Generic email delivery.",
+                                                      "Generic Cloudflare infrastructure."
+                                                  ]
+                       },
+    "sharedRiverInfrastructure":  {
+                                      "commerce":  {
+                                                       "ownership":  "shared-river",
+                                                       "reuse":  [
+                                                                     "Existing commerce product catalog patterns.",
+                                                                     "Existing checkout boundary.",
+                                                                     "Existing Stripe integration.",
+                                                                     "Existing order persistence.",
+                                                                     "Existing payment-event processing."
+                                                                 ],
+                                                       "seshResponsibility":  [
+                                                                                  "Define Sesh product identities and Sesh-specific commercial metadata.",
+                                                                                  "Map eligible Sesh products into shared commerce through an explicit adapter or registration boundary."
+                                                                              ]
+                                                   },
+                                      "fulfillment":  {
+                                                          "ownership":  "shared-river",
+                                                          "reuse":  [
+                                                                        "Existing entitlement concepts.",
+                                                                        "Existing fulfillment request lifecycle.",
+                                                                        "Existing fulfillment persistence.",
+                                                                        "Existing release-artifact and delivery patterns where applicable."
+                                                                    ],
+                                                          "seshResponsibility":  [
+                                                                                     "Define the meaning of Sesh entitlements.",
+                                                                                     "Define Sesh-specific fulfillment outputs such as membership access, software access, sound-pack access, creator features, and future device entitlements."
+                                                                                 ]
+                                                      },
+                                      "orchestration":  {
+                                                            "ownership":  "shared-river",
+                                                            "reuse":  [
+                                                                          "Existing orchestration engine.",
+                                                                          "Existing production handler registry.",
+                                                                          "Existing execution lifecycle patterns.",
+                                                                          "Existing governed execution boundaries."
+                                                                      ],
+                                                            "seshResponsibility":  [
+                                                                                       "Provide Sesh operation handlers rather than building a second orchestration engine.",
+                                                                                       "Register Sesh workflows through explicit Sesh-to-orchestration integration."
+                                                                                   ]
+                                                        },
+                                      "persistencePatterns":  {
+                                                                  "ownership":  "shared-pattern",
+                                                                  "reuse":  [
+                                                                                "Existing repository persistence conventions.",
+                                                                                "Existing filesystem persistence safety patterns.",
+                                                                                "Existing D1 persistence conventions.",
+                                                                                "Existing validation-before-persistence patterns.",
+                                                                                "Existing deterministic identity and retrieval patterns."
+                                                                            ],
+                                                                  "rule":  "SESH-001 does not yet select D1, R2, filesystem, Durable Objects, or another storage technology for every Sesh aggregate. Storage follows domain requirements after canonical models exist."
+                                                              },
+                                      "riverOS":  {
+                                                      "ownership":  "shared-river",
+                                                      "reuse":  [
+                                                                    "River OS may become the private operator/control surface for Sesh business operations.",
+                                                                    "Existing CRM can represent external people and relationships where its model is semantically sufficient.",
+                                                                    "Existing analytics, workflow, and operator tooling should be extended instead of duplicated when appropriate."
+                                                                ],
+                                                      "rule":  "Sesh creator-facing product identity is distinct from River OS operator identity."
+                                                  },
+                                      "knowledgeAndAssimilation":  {
+                                                                       "ownership":  "shared-river",
+                                                                       "reuse":  [
+                                                                                     "Research assimilation.",
+                                                                                     "Source provenance.",
+                                                                                     "Knowledge graph.",
+                                                                                     "Reasoning.",
+                                                                                     "Insight generation."
+                                                                                 ],
+                                                                       "potentialSeshUses":  [
+                                                                                                 "Music education research.",
+                                                                                                 "Artist and producer research.",
+                                                                                                 "Music-industry intelligence.",
+                                                                                                 "Product research.",
+                                                                                                 "Creator-support knowledge.",
+                                                                                                 "Marketing research.",
+                                                                                                 "Audio/music-domain knowledge."
+                                                                                             ]
+                                                                   },
+                                      "developmentAgent":  {
+                                                               "ownership":  "shared-river",
+                                                               "reuse":  [
+                                                                             "Architecture discovery.",
+                                                                             "Planning.",
+                                                                             "Proposal generation.",
+                                                                             "Controlled implementation.",
+                                                                             "Validation.",
+                                                                             "Governed execution.",
+                                                                             "Repository safety boundaries."
+                                                                         ]
+                                                           }
+                                  },
+    "canonicalSeshPrimitives":  [
+                                    {
+                                        "name":  "SeshCreatorProfile",
+                                        "identifier":  "SeshCreatorId",
+                                        "status":  "required-foundation",
+                                        "description":  "Sesh-specific creator profile representing participation in the Sesh ecosystem.",
+                                        "doesNotReplace":  [
+                                                               "Generic application authentication identity.",
+                                                               "CRM Person.",
+                                                               "Legal identity."
+                                                           ],
+                                        "notes":  [
+                                                      "Authentication identity and creator profile must remain separable.",
+                                                      "One authenticated account may eventually participate in one or more creator roles.",
+                                                      "Public creator identity may differ from legal identity."
+                                                  ]
+                                    },
+                                    {
+                                        "name":  "SeshMusicProject",
+                                        "identifier":  "SeshMusicProjectId",
+                                        "status":  "required-foundation",
+                                        "description":  "Canonical musical creation project container.",
+                                        "owns":  [
+                                                     "Project metadata.",
+                                                     "Project musical state.",
+                                                     "References to project audio assets.",
+                                                     "References to collaborators.",
+                                                     "References to timing structures.",
+                                                     "References to arrangements and sessions."
+                                                 ],
+                                        "rule":  "Do not reuse generic River Development Agent project semantics for a creator music project."
+                                    },
+                                    {
+                                        "name":  "SeshAudioAsset",
+                                        "identifier":  "SeshAudioAssetId",
+                                        "status":  "required-foundation",
+                                        "description":  "Canonical metadata identity for audio-bearing assets.",
+                                        "possibleKinds":  [
+                                                              "recording",
+                                                              "track",
+                                                              "stem",
+                                                              "sample",
+                                                              "loop",
+                                                              "one-shot",
+                                                              "render",
+                                                              "mix",
+                                                              "master",
+                                                              "reference"
+                                                          ],
+                                        "rule":  "Binary object storage is infrastructure; SeshAudioAsset is domain metadata and identity."
+                                    },
+                                    {
+                                        "name":  "SeshSession",
+                                        "identifier":  "SeshSessionId",
+                                        "status":  "required-foundation",
+                                        "description":  "A bounded period or stateful creative session within a music project."
+                                    },
+                                    {
+                                        "name":  "SeshTrack",
+                                        "identifier":  "SeshTrackId",
+                                        "status":  "required-foundation",
+                                        "description":  "A logical track in a Sesh music project.",
+                                        "note":  "The discovery word-match for track/stem was noisy and does not establish an existing reusable music-track primitive."
+                                    },
+                                    {
+                                        "name":  "SeshTempoMap",
+                                        "identifier":  "SeshTempoMapId",
+                                        "status":  "required-foundation",
+                                        "description":  "Canonical representation of tempo and temporal musical structure."
+                                    },
+                                    {
+                                        "name":  "SeshBeatGrid",
+                                        "identifier":  "SeshBeatGridId",
+                                        "status":  "required-foundation",
+                                        "description":  "Beat/subdivision structure against which rhythmic events and cues may be synchronized."
+                                    },
+                                    {
+                                        "name":  "SeshMusicalEvent",
+                                        "identifier":  "SeshMusicalEventId",
+                                        "status":  "required-foundation",
+                                        "description":  "Time-addressed musical event abstraction.",
+                                        "potentialKinds":  [
+                                                               "note",
+                                                               "trigger",
+                                                               "hit",
+                                                               "control-change",
+                                                               "transport",
+                                                               "automation",
+                                                               "gesture"
+                                                           ]
+                                    },
+                                    {
+                                        "name":  "SeshInputEvent",
+                                        "identifier":  "SeshInputEventId",
+                                        "status":  "required-foundation",
+                                        "description":  "Normalized creator-input event independent of input device.",
+                                        "potentialSources":  [
+                                                                 "computer-keyboard",
+                                                                 "pointer",
+                                                                 "touch",
+                                                                 "game-controller",
+                                                                 "MIDI",
+                                                                 "future-Sesh-hardware"
+                                                             ]
+                                    },
+                                    {
+                                        "name":  "SeshCue",
+                                        "identifier":  "SeshCueId",
+                                        "status":  "required-foundation",
+                                        "description":  "Time-addressed feedback instruction synchronized with musical state.",
+                                        "potentialChannels":  [
+                                                                  "visual",
+                                                                  "haptic",
+                                                                  "audio",
+                                                                  "lighting"
+                                                              ],
+                                        "supports":  [
+                                                         "Sesh Pulse",
+                                                         "Rhythm learning",
+                                                         "Performance guidance",
+                                                         "Accessibility",
+                                                         "Future hardware"
+                                                     ]
+                                    },
+                                    {
+                                        "name":  "SeshLearningProgress",
+                                        "identifier":  "SeshLearningProgressId",
+                                        "status":  "future-domain-foundation",
+                                        "description":  "Creator progress across Sesh learning experiences."
+                                    },
+                                    {
+                                        "name":  "SeshCollaboration",
+                                        "identifier":  "SeshCollaborationId",
+                                        "status":  "future-domain-foundation",
+                                        "description":  "Canonical relationship between creators and a Sesh music project.",
+                                        "rule":  "Do not reuse generic website contribution/collaboration wording as a music collaboration model."
+                                    },
+                                    {
+                                        "name":  "SeshSoundListing",
+                                        "identifier":  "SeshSoundListingId",
+                                        "status":  "future-domain-foundation",
+                                        "description":  "Creator-marketplace listing for eligible music assets."
+                                    },
+                                    {
+                                        "name":  "SeshRightsRecord",
+                                        "identifier":  "SeshRightsRecordId",
+                                        "status":  "future-governed-domain",
+                                        "description":  "Structured representation of declared rights interests associated with eligible Sesh works or assets.",
+                                        "boundary":  "A software record does not establish legal ownership by itself."
+                                    },
+                                    {
+                                        "name":  "SeshEconomicParticipation",
+                                        "identifier":  "SeshEconomicParticipationId",
+                                        "status":  "future-governed-domain",
+                                        "description":  "Structured representation of contractual economic participation such as negotiated revenue shares.",
+                                        "boundary":  "Must not imply ownership, royalty entitlement, management authority, publishing authority, or legal enforceability absent valid agreements."
+                                    },
+                                    {
+                                        "name":  "SeshRelease",
+                                        "identifier":  "SeshReleaseId",
+                                        "status":  "future-domain-foundation",
+                                        "description":  "Music-release aggregate for publishing/distribution workflows."
+                                    },
+                                    {
+                                        "name":  "SeshLaunchEngagement",
+                                        "identifier":  "SeshLaunchEngagementId",
+                                        "status":  "future-governed-domain",
+                                        "description":  "Optional artist-development relationship for creators accepted into Sesh Launch.",
+                                        "boundary":  [
+                                                         "Creator use of Sesh does not automatically create a Sesh Launch engagement.",
+                                                         "Sesh Launch participation does not automatically create management, label, publishing, distribution, ownership, or revenue-share rights.",
+                                                         "Any such authority must arise from explicit separate agreements."
+                                                     ]
+                                    },
+                                    {
+                                        "name":  "SeshDevice",
+                                        "identifier":  "SeshDeviceId",
+                                        "status":  "future-domain-foundation",
+                                        "description":  "Logical representation of Sesh-supported hardware.",
+                                        "potentialKinds":  [
+                                                               "controller",
+                                                               "haptic-device",
+                                                               "lighting-device",
+                                                               "sensor",
+                                                               "future-proprietary-hardware"
+                                                           ]
+                                    }
+                                ],
+    "productFamily":  {
+                          "masterBrand":  "Sesh",
+                          "products":  [
+                                           {
+                                               "name":  "Sesh Studio",
+                                               "purpose":  "Core music creation environment.",
+                                               "initialDependencies":  [
+                                                                           "SeshCreatorProfile",
+                                                                           "SeshMusicProject",
+                                                                           "SeshAudioAsset",
+                                                                           "SeshSession",
+                                                                           "SeshTrack",
+                                                                           "SeshTempoMap",
+                                                                           "SeshBeatGrid",
+                                                                           "SeshMusicalEvent"
+                                                                       ]
+                                           },
+                                           {
+                                               "name":  "Sesh Rhythm",
+                                               "purpose":  "Rhythm-centered learning, performance, and body-to-beat interaction.",
+                                               "initialDependencies":  [
+                                                                           "SeshBeatGrid",
+                                                                           "SeshInputEvent",
+                                                                           "SeshCue",
+                                                                           "SeshLearningProgress"
+                                                                       ]
+                                           },
+                                           {
+                                               "name":  "Sesh Keys",
+                                               "purpose":  "Computer-keyboard-centered musical creation and learning.",
+                                               "initialDependencies":  [
+                                                                           "SeshInputEvent",
+                                                                           "SeshMusicalEvent",
+                                                                           "SeshLearningProgress"
+                                                                       ]
+                                           },
+                                           {
+                                               "name":  "Sesh Control",
+                                               "purpose":  "Game-controller, MIDI, and alternate-input musical interaction.",
+                                               "initialDependencies":  [
+                                                                           "SeshInputEvent",
+                                                                           "SeshMusicalEvent",
+                                                                           "SeshDevice"
+                                                                       ]
+                                           },
+                                           {
+                                               "name":  "Sesh Pulse",
+                                               "purpose":  "Synchronized visual, haptic, audio, lighting, and future-device feedback.",
+                                               "initialDependencies":  [
+                                                                           "SeshBeatGrid",
+                                                                           "SeshCue",
+                                                                           "SeshDevice"
+                                                                       ]
+                                           },
+                                           {
+                                               "name":  "Sesh Sounds",
+                                               "purpose":  "Creator sound library and future marketplace.",
+                                               "initialDependencies":  [
+                                                                           "SeshCreatorProfile",
+                                                                           "SeshAudioAsset",
+                                                                           "SeshSoundListing",
+                                                                           "shared commerce",
+                                                                           "shared fulfillment"
+                                                                       ]
+                                           },
+                                           {
+                                               "name":  "Sesh Launch",
+                                               "purpose":  "Optional creator development, industry support, project support, marketing, publishing/distribution coordination, funding, or negotiated economic participation.",
+                                               "initialDependencies":  [
+                                                                           "SeshCreatorProfile",
+                                                                           "SeshMusicProject",
+                                                                           "SeshCollaboration",
+                                                                           "SeshRightsRecord",
+                                                                           "SeshEconomicParticipation",
+                                                                           "SeshRelease",
+                                                                           "SeshLaunchEngagement"
+                                                                       ],
+                                               "governance":  "Explicit legal and human approval boundaries required before real-world authority or economic participation."
+                                           }
+                                       ]
+                      },
+    "creatorLifecycle":  [
+                             "discover Sesh",
+                             "create account through future shared authentication boundary",
+                             "establish Sesh creator profile",
+                             "create music project",
+                             "create/import musical and audio material",
+                             "interact through keyboard/controller/touch/MIDI/future devices",
+                             "receive synchronized visual/haptic/audio guidance",
+                             "save and continue project",
+                             "learn and progress",
+                             "collaborate",
+                             "optionally obtain premium features or products through shared commerce",
+                             "optionally publish eligible sound assets",
+                             "optionally pursue Sesh Launch consideration",
+                             "optionally enter explicitly negotiated industry/economic relationships"
+                         ],
+    "technicalBoundaries":  {
+                                "audioEngine":  [
+                                                    "Not selected by SESH-001.",
+                                                    "Web Audio, AudioWorklet, WASM, native audio, or another engine must be selected through a later capability investigation.",
+                                                    "Do not assume browser-only architecture."
+                                                ],
+                                "applicationTargets":  [
+                                                           "web",
+                                                           "future desktop",
+                                                           "future mobile",
+                                                           "future hardware integration"
+                                                       ],
+                                "storage":  [
+                                                "Metadata storage technology not globally selected by SESH-001.",
+                                                "Large binary audio should not be embedded directly in ordinary relational records.",
+                                                "Audio-object storage and metadata persistence must remain separable."
+                                            ],
+                                "realtime":  [
+                                                 "Realtime collaboration architecture not selected by SESH-001.",
+                                                 "Low-latency local musical interaction must not depend on remote orchestration."
+                                             ],
+                                "ai":  [
+                                           "AI is an assistive capability, not the canonical Sesh domain itself.",
+                                           "Future AI features may analyze, recommend, generate, transform, teach, classify, mix, arrange, or assist.",
+                                           "Core creator/project/audio/timing state must remain understandable independently of a specific AI provider."
+                                       ]
+                            },
+    "rightsAndIndustryGovernance":  [
+                                        "Creator-uploaded content must preserve declared provenance and ownership assertions.",
+                                        "Sesh must distinguish technical possession of an asset from copyright ownership.",
+                                        "Sesh must distinguish authorship, master ownership, composition ownership, publishing rights, distribution rights, management authority, licenses, and economic participation.",
+                                        "Marketplace listing must not silently grant Sesh ownership.",
+                                        "Sesh Launch must be opt-in and separately governed.",
+                                        "Negotiated project participation must be explicit and project-specific.",
+                                        "No platform-wide default ownership claim should be inferred from ordinary Sesh use.",
+                                        "Future rights/split functionality requires legal review before production contractual use."
+                                    ],
+    "businessOptionality":  [
+                                "Direct subscription software revenue.",
+                                "One-time software or feature purchases.",
+                                "Creator marketplace economics.",
+                                "Sound-pack sales.",
+                                "Education products.",
+                                "Hardware revenue.",
+                                "Optional artist-development services.",
+                                "Optional project funding.",
+                                "Optional negotiated project-specific economic participation.",
+                                "Publishing/distribution services where lawfully established.",
+                                "Enterprise or education licensing.",
+                                "Technology licensing.",
+                                "Strategic partnerships.",
+                                "Independent long-term ownership.",
+                                "Future acquisition of some or all Sesh technology or business."
+                            ],
+    "implementationSequence":  [
+                                   {
+                                       "phase":  1,
+                                       "name":  "Canonical Sesh Core",
+                                       "includes":  [
+                                                        "Sesh identifiers",
+                                                        "SeshCreatorProfile",
+                                                        "SeshMusicProject",
+                                                        "SeshAudioAsset",
+                                                        "SeshSession",
+                                                        "SeshTrack",
+                                                        "SeshTempoMap",
+                                                        "SeshBeatGrid",
+                                                        "SeshMusicalEvent",
+                                                        "SeshInputEvent",
+                                                        "SeshCue",
+                                                        "validation"
+                                                    ]
+                                   },
+                                   {
+                                       "phase":  2,
+                                       "name":  "Durable Project Persistence",
+                                       "includes":  [
+                                                        "Project metadata persistence",
+                                                        "Audio asset metadata persistence",
+                                                        "Binary audio storage architecture",
+                                                        "Safe retrieval",
+                                                        "Versioning strategy"
+                                                    ]
+                                   },
+                                   {
+                                       "phase":  3,
+                                       "name":  "Sesh Studio Execution Kernel",
+                                       "includes":  [
+                                                        "Transport",
+                                                        "Timeline",
+                                                        "Tempo",
+                                                        "Tracks",
+                                                        "Audio playback",
+                                                        "Recording/import foundation",
+                                                        "Musical event scheduling"
+                                                    ]
+                                   },
+                                   {
+                                       "phase":  4,
+                                       "name":  "Unified Input Layer",
+                                       "includes":  [
+                                                        "Computer keyboard",
+                                                        "Pointer/touch",
+                                                        "Game controller",
+                                                        "MIDI",
+                                                        "Normalized SeshInputEvent"
+                                                    ]
+                                   },
+                                   {
+                                       "phase":  5,
+                                       "name":  "Pulse / Cue Engine",
+                                       "includes":  [
+                                                        "Visual synchronization",
+                                                        "Haptic synchronization",
+                                                        "Audio guidance",
+                                                        "Lighting/device abstraction"
+                                                    ]
+                                   },
+                                   {
+                                       "phase":  6,
+                                       "name":  "Learning Layer",
+                                       "includes":  [
+                                                        "Rhythm",
+                                                        "Keys",
+                                                        "Control",
+                                                        "Progress tracking",
+                                                        "Exercises",
+                                                        "Gamified learning"
+                                                    ]
+                                   },
+                                   {
+                                       "phase":  7,
+                                       "name":  "Account / Membership / Commerce Integration",
+                                       "includes":  [
+                                                        "Creator account boundary",
+                                                        "Membership tiers",
+                                                        "Entitlements",
+                                                        "Shared commerce integration",
+                                                        "Shared fulfillment integration"
+                                                    ]
+                                   },
+                                   {
+                                       "phase":  8,
+                                       "name":  "Collaboration / Creator Network",
+                                       "includes":  [
+                                                        "Project collaborators",
+                                                        "Creator profiles",
+                                                        "Sharing",
+                                                        "Permissions",
+                                                        "Project collaboration"
+                                                    ]
+                                   },
+                                   {
+                                       "phase":  9,
+                                       "name":  "Sesh Sounds",
+                                       "includes":  [
+                                                        "Sound library",
+                                                        "Marketplace listings",
+                                                        "Creator uploads",
+                                                        "Licensing metadata",
+                                                        "Commerce integration"
+                                                    ]
+                                   },
+                                   {
+                                       "phase":  10,
+                                       "name":  "Sesh Launch",
+                                       "includes":  [
+                                                        "Application/intake",
+                                                        "Artist development",
+                                                        "Project evaluation",
+                                                        "Marketing support",
+                                                        "Funding workflows",
+                                                        "Rights records",
+                                                        "Explicit economic-participation agreements",
+                                                        "Release/distribution workflows"
+                                                    ]
+                                   },
+                                   {
+                                       "phase":  11,
+                                       "name":  "Hardware",
+                                       "includes":  [
+                                                        "Sesh device protocol",
+                                                        "Controller hardware",
+                                                        "Pulse devices",
+                                                        "Sensors",
+                                                        "Future proprietary devices"
+                                                    ]
+                                   },
+                                   {
+                                       "phase":  12,
+                                       "name":  "Advanced Intelligence",
+                                       "includes":  [
+                                                        "Music analysis",
+                                                        "Creation assistance",
+                                                        "Adaptive education",
+                                                        "Mix/arrangement assistance",
+                                                        "Creator recommendations",
+                                                        "Industry intelligence"
+                                                    ]
+                                   }
+                               ],
+    "firstImplementationTarget":  {
+                                      "id":  "SESH-002",
+                                      "title":  "Canonical Sesh Core Domain Model",
+                                      "reason":  "The repository currently lacks direct canonical primitives for the core Sesh creator/music domain. Establishing these before UI, persistence, marketplace, rights, AI, or audio-engine work prevents architectural duplication and premature coupling.",
+                                      "requiredBefore":  [
+                                                             "Sesh Studio UI",
+                                                             "audio engine integration",
+                                                             "creator marketplace",
+                                                             "membership implementation",
+                                                             "Sesh Launch implementation",
+                                                             "hardware implementation"
+                                                         ]
+                                  },
+    "prohibitedByThisSpecification":  [
+                                          "Deploying Sesh.",
+                                          "Publishing Sesh publicly.",
+                                          "Creating live customer checkout.",
+                                          "Charging customers.",
+                                          "Registering external services.",
+                                          "Sending artist or producer outreach.",
+                                          "Entering contracts.",
+                                          "Acquiring rights.",
+                                          "Accepting creator works under legal terms.",
+                                          "Representing artists.",
+                                          "Creating management relationships.",
+                                          "Creating publishing relationships.",
+                                          "Creating distribution relationships.",
+                                          "Creating ownership claims.",
+                                          "Creating enforceable revenue shares.",
+                                          "Purchasing hardware.",
+                                          "Provisioning paid infrastructure."
+                                      ],
+    "acceptanceCriteria":  [
+                               "Sesh is explicitly represented as its own bounded domain.",
+                               "Shared River infrastructure is distinguished from Sesh-owned business concepts.",
+                               "Core Sesh identifiers and aggregates are named before implementation.",
+                               "Creator identity does not silently replace authentication identity, CRM identity, or legal identity.",
+                               "MusicProject is distinguished from development-agent or generic planning project concepts.",
+                               "Audio metadata is distinguished from binary object storage.",
+                               "Sesh commerce is designed to reuse shared commerce rather than duplicate Stripe/payment infrastructure.",
+                               "Sesh fulfillment is designed to reuse shared fulfillment.",
+                               "Sesh workflows are designed to reuse shared orchestration.",
+                               "Music rights and economic participation are modeled as future governed domains rather than implicit platform rights.",
+                               "Sesh Launch is optional and does not arise automatically from ordinary product usage.",
+                               "Future hardware and AI remain supported without becoming prerequisites for the canonical core.",
+                               "SESH-002 is identified as the next implementation target."
+                           ]
+}
