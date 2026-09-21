@@ -1,0 +1,99 @@
+{
+    "id":  "SESH-022",
+    "title":  "Authenticated Session Principal Resolution Boundary",
+    "status":  "IMPLEMENTED_LOCALLY_PENDING_REVIEW",
+    "objective":  "Resolve canonical authenticated identity from the PrincipalId-backed session only after reloading the canonical AuthenticatedPrincipal, rejecting disabled or missing principals, invalidating stale sessions, preserving infrastructure failures as unavailable, and returning no Sesh product authorization.",
+    "sourceBaseline":  {
+                           "branch":  "cif-001-canonical-content-source-record",
+                           "commit":  "ad0b2de48dfce6103239f2602dd4d8300ad20333",
+                           "predecessor":  "SESH-021"
+                       },
+    "resolver":  {
+                     "interface":  "SessionPrincipalResolver",
+                     "implementation":  "DefaultSessionPrincipalResolver",
+                     "path":  "src/lib/identity/session/principal-resolver.ts",
+                     "dependencies":  [
+                                          "PrincipalSessionStore",
+                                          "PrincipalRepository"
+                                      ],
+                     "success":  "PrincipalId",
+                     "failureCodes":  [
+                                          "unauthenticated",
+                                          "unavailable"
+                                      ]
+                 },
+    "resolutionFlow":  [
+                           "Load the canonical AuthenticatedPrincipalSession.",
+                           "Return unauthenticated when no valid session exists.",
+                           "Resolve AuthenticatedPrincipal using the session PrincipalId.",
+                           "Invalidate the authenticated session when the principal no longer exists.",
+                           "Invalidate the authenticated session when the principal is disabled.",
+                           "Require the resolved principal identity to equal the session PrincipalId.",
+                           "Return PrincipalId only after the canonical principal remains active."
+                       ],
+    "staleSessionPolicy":  {
+                               "missingPrincipal":  "DESTROY_SESSION_AND_RETURN_UNAUTHENTICATED",
+                               "disabledPrincipal":  "DESTROY_SESSION_AND_RETURN_UNAUTHENTICATED",
+                               "identityMismatch":  "DESTROY_SESSION_AND_RETURN_UNAUTHENTICATED",
+                               "destructionFailure":  "RETURN_UNAVAILABLE",
+                               "rule":  "A stale authenticated session must never grant continuing access."
+                           },
+    "operationalFailurePolicy":  {
+                                     "sessionReadFailure":  "RETURN_UNAVAILABLE",
+                                     "principalStorageFailure":  "RETURN_UNAVAILABLE",
+                                     "rule":  "Infrastructure failures remain distinguishable from ordinary unauthenticated state internally."
+                                 },
+    "identityBoundary":  {
+                             "canonicalIdentity":  "PrincipalId",
+                             "sessionId":  "DISTINCT_FROM_PRINCIPAL_ID",
+                             "crmPerson":  "DISTINCT",
+                             "seshCreatorId":  "DISTINCT",
+                             "rule":  "Session principal resolution authenticates a River principal only."
+                         },
+    "seshAuthorization":  {
+                              "principalToCreatorMapping":  "DEFERRED",
+                              "ownership":  "NOT_GRANTED",
+                              "collaboratorAuthorization":  "NOT_GRANTED",
+                              "publishingRights":  "NOT_GRANTED",
+                              "managementRights":  "NOT_GRANTED",
+                              "creatorOwnedApis":  "FORBIDDEN"
+                          },
+    "currentHttpBoundary":  {
+                                "publicLogin":  "DEFERRED",
+                                "registration":  "DEFERRED",
+                                "principalMiddleware":  "DEFERRED",
+                                "liveSessionCreation":  false
+                            },
+    "nextSlice":  {
+                      "id":  "SESH-023",
+                      "title":  "Principal to Sesh Creator Mapping Architecture",
+                      "scope":  [
+                                    "Define the explicit canonical mapping between PrincipalId and SeshCreatorId.",
+                                    "Keep Sesh creator profile distinct from authentication identity.",
+                                    "Define one-to-one or lifecycle constraints explicitly.",
+                                    "Define mapping repository contracts without exposing creator-owned APIs.",
+                                    "Define how authenticated PrincipalId resolves to SeshCreatorId.",
+                                    "Do not infer SeshCreatorId from email, CRM Person, display name, or session identity.",
+                                    "Do not create public Sesh mutation endpoints.",
+                                    "Do not mutate production identity or Sesh data.",
+                                    "Do not deploy."
+                                ]
+                  },
+    "nonGoals":  [
+                     "Creating users",
+                     "Creating credentials",
+                     "Public login endpoint",
+                     "Registration",
+                     "Password reset",
+                     "Email verification",
+                     "Live session creation",
+                     "Replacing River OS authentication",
+                     "PrincipalId to SeshCreatorId mapping implementation",
+                     "Creator ownership authorization",
+                     "Collaborator authorization",
+                     "Public creator-owned Sesh API",
+                     "Database mutation",
+                     "Migration",
+                     "Deployment"
+                 ]
+}

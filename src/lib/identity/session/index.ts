@@ -21,3 +21,14 @@ export {
   isAuthenticatedPrincipalSessionExpired,
   validateAuthenticatedPrincipalSession,
 } from "./validation";
+
+export {
+  DefaultSessionPrincipalResolver,
+} from "./principal-resolver";
+
+export type {
+  DefaultSessionPrincipalResolverDependencies,
+  SessionPrincipalResolutionFailureCode,
+  SessionPrincipalResolutionResult,
+  SessionPrincipalResolver,
+} from "./principal-resolver";
