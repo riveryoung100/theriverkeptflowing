@@ -1,0 +1,207 @@
+{
+    "specification":  {
+                          "id":  "SESH-009",
+                          "title":  "Sesh Runtime Integration Boundary",
+                          "status":  "proposed",
+                          "version":  1,
+                          "purpose":  [
+                                          "Define the first server-runtime integration boundary between the live Cloudflare Sesh persistence resources and application-facing Sesh runtime code.",
+                                          "Preserve the existing provider-neutral Sesh domain and persistence contracts.",
+                                          "Prevent premature public mutation endpoints before creator identity and ownership authorization are explicitly defined."
+                                      ],
+                          "baseline":  {
+                                           "sourceCommit":  "fbfb19259a46dadbbcf6a4da72919f1221f687b4",
+                                           "productionBindings":  {
+                                                                      "d1":  {
+                                                                                 "binding":  "SESH_DB",
+                                                                                 "database":  "sesh-production",
+                                                                                 "databaseId":  "6f93dcd9-41b0-4c2a-a9e9-d6c281b78642"
+                                                                             },
+                                                                      "r2":  {
+                                                                                 "binding":  "SESH_AUDIO",
+                                                                                 "bucket":  "sesh-audio-production"
+                                                                             }
+                                                                  },
+                                           "persistenceComposition":  "src/lib/sesh/persistence/cloudflare/composition.ts",
+                                           "persistenceContracts":  "src/lib/sesh/persistence/repositories.ts"
+                                       },
+                          "discoveredRepositoryConventions":  {
+                                                                  "cloudflareRuntimeAccess":  {
+                                                                                                  "selectedPattern":  "import { env } from \"cloudflare:workers\"",
+                                                                                                  "evidence":  [
+                                                                                                                   "src/pages/api/commerce/create-checkout.ts",
+                                                                                                                   "src/pages/river-os/actions/crm-create.ts",
+                                                                                                                   "src/pages/river-os/actions/crm-update.ts"
+                                                                                                               ],
+                                                                                                  "decision":  "Sesh server runtime integration will use the existing cloudflare:workers env convention rather than introduce a second runtime-binding mechanism."
+                                                                                              },
+                                                                  "dynamicServerRoutes":  {
+                                                                                              "convention":  "export const prerender = false",
+                                                                                              "decision":  "Any future Sesh API or action route requiring D1 or R2 must be server-rendered and must not be prerendered."
+                                                                                          },
+                                                                  "responseCaching":  {
+                                                                                          "convention":  "cache-control: no-store",
+                                                                                          "decision":  "Authenticated or creator-specific Sesh runtime responses must default to no-store unless a later specification explicitly permits caching."
+                                                                                      },
+                                                                  "sameOriginWrites":  {
+                                                                                           "existingExample":  "River CRM write actions use same-origin request validation.",
+                                                                                           "decision":  "Same-origin validation may be reused as CSRF-oriented defense in depth, but it MUST NOT be treated as creator authentication or project ownership authorization."
+                                                                                       }
+                                                              },
+                          "runtimeComposition":  {
+                                                     "selectedDesign":  "Introduce one narrow server-only Sesh runtime composition helper.",
+                                                     "proposedModule":  "src/lib/sesh/runtime/cloudflare.ts",
+                                                     "responsibilities":  [
+                                                                              "Read SESH_DB and SESH_AUDIO from the Cloudflare worker environment.",
+                                                                              "Validate that both bindings are present.",
+                                                                              "Pass the bindings into createSeshCloudflarePersistence.",
+                                                                              "Return the existing projectRepository, audioAssetRepository, and audioObjectStore.",
+                                                                              "Contain provider-specific environment access at the server boundary."
+                                                                          ],
+                                                     "mustNot":  [
+                                                                     "Duplicate D1 or R2 adapter logic.",
+                                                                     "Import Cloudflare runtime globals into provider-neutral Sesh domain modules.",
+                                                                     "Create creator identities.",
+                                                                     "Infer ownership.",
+                                                                     "Perform authorization.",
+                                                                     "Perform migrations.",
+                                                                     "Create or delete Cloudflare resources."
+                                                                 ],
+                                                     "publicExportPolicy":  "The runtime helper may be exported from a Sesh server-only runtime module but MUST NOT be re-exported from browser-safe Sesh entrypoints."
+                                                 },
+                          "identityAndAuthorizationBoundary":  {
+                                                                   "governingPrinciple":  "Authentication identity, Sesh creator profile, and CRM Person are distinct concepts.",
+                                                                   "creatorProfileRule":  "SeshCreatorProfile MUST NOT become the authentication record or duplicate legal/account identity.",
+                                                                   "ownershipRule":  "A caller MUST NOT gain access to a SeshMusicProject merely by knowing a project identifier.",
+                                                                   "currentState":  "The repository discovery did not establish a canonical authenticated creator-to-SeshCreatorId mapping suitable for project authorization.",
+                                                                   "consequence":  "SESH-009 MUST NOT introduce externally reachable creator-owned mutation endpoints.",
+                                                                   "requiredFutureBoundary":  [
+                                                                                                  "Resolve the authenticated account or session identity.",
+                                                                                                  "Resolve that identity to exactly one authorized SeshCreatorId or an explicitly permitted set.",
+                                                                                                  "Load the target SeshMusicProject.",
+                                                                                                  "Verify ownerCreatorId or a future explicit collaborator permission.",
+                                                                                                  "Reject unauthorized access before exposing project metadata or audio objects."
+                                                                                              ],
+                                                                   "forbiddenShortcuts":  [
+                                                                                              "Trusting creatorId supplied by request body.",
+                                                                                              "Trusting ownerCreatorId supplied by request body.",
+                                                                                              "Using same-origin alone as authorization.",
+                                                                                              "Using CRM Person as Sesh creator identity without an explicit mapping specification.",
+                                                                                              "Creating implicit ownership from email address, display name, cookie text, route parameter, or project identifier."
+                                                                                          ]
+                                                               },
+                          "phaseOneRuntimeSurface":  {
+                                                         "scope":  "Server-only composition and verification infrastructure.",
+                                                         "implementationAllowed":  [
+                                                                                       "Cloudflare Sesh runtime composition helper.",
+                                                                                       "Unit tests using fake env bindings.",
+                                                                                       "Runtime binding validation.",
+                                                                                       "Server-only type contracts.",
+                                                                                       "Non-mutating internal verification code that does not expose creator data publicly."
+                                                                                   ],
+                                                         "implementationDeferred":  [
+                                                                                        "Public create-project endpoint.",
+                                                                                        "Public update-project endpoint.",
+                                                                                        "Public delete-project endpoint.",
+                                                                                        "Public project-read endpoint.",
+                                                                                        "Audio upload endpoint.",
+                                                                                        "Audio download endpoint.",
+                                                                                        "Audio deletion endpoint.",
+                                                                                        "Creator profile creation endpoint.",
+                                                                                        "Collaborator invitation or permissions.",
+                                                                                        "Publishing, management, label, royalty, ownership, or rights workflows."
+                                                                                    ]
+                                                     },
+                          "futureApiShape":  {
+                                                 "status":  "reserved-not-authorized-for-implementation",
+                                                 "namespace":  "/api/sesh",
+                                                 "possibleResources":  [
+                                                                           "/api/sesh/projects",
+                                                                           "/api/sesh/projects/[projectId]",
+                                                                           "/api/sesh/projects/[projectId]/audio",
+                                                                           "/api/sesh/audio/[audioAssetId]"
+                                                                       ],
+                                                 "note":  "These paths reserve conceptual organization only. Their methods, payloads, authorization model, and exposure are not approved by this specification."
+                                             },
+                          "audioBoundary":  {
+                                                "metadata":  "D1 through SeshAudioAssetRepository",
+                                                "binary":  "R2 through SeshAudioObjectStore",
+                                                "separationRule":  "Binary audio bytes must remain separate from metadata persistence.",
+                                                "accessRule":  "Possession of an R2 storage reference MUST NOT itself authorize object retrieval.",
+                                                "deliveryRule":  "R2 remains private and application-mediated.",
+                                                "deletionRule":  "Metadata deletion and binary object deletion remain separate explicit operations."
+                                            },
+                          "rightsAndLaunchBoundary":  {
+                                                          "rule":  "Runtime persistence or product usage must never silently establish music ownership, publishing, management, label, royalty, licensing, representation, or revenue-share rights.",
+                                                          "launch":  "Sesh Launch remains downstream and optional.",
+                                                          "futureRightsActions":  "Any action creating or transferring rights requires an explicit separately modeled agreement or rights workflow."
+                                                      },
+                          "errorAndResponsePolicy":  {
+                                                         "bindingUnavailable":  "Server runtime should fail closed with a service-unavailable class response or typed server error.",
+                                                         "malformedInput":  "Future request adapters must validate input before passing it into persistence.",
+                                                         "notFound":  "Not-found behavior must not leak unauthorized resource existence where authorization semantics require concealment.",
+                                                         "storageFailure":  "Persistence/storage failures must not expose provider credentials, raw SQL, internal bucket keys beyond intentionally opaque references, or stack traces to clients."
+                                                     },
+                          "testRequirements":  [
+                                                   "Runtime helper composes the existing D1 project repository, D1 audio metadata repository, and R2 object store.",
+                                                   "Runtime helper rejects missing SESH_DB.",
+                                                   "Runtime helper rejects malformed SESH_DB.",
+                                                   "Runtime helper rejects missing SESH_AUDIO.",
+                                                   "Runtime helper rejects malformed SESH_AUDIO.",
+                                                   "Tests use fakeable narrow contracts and no live Cloudflare resources.",
+                                                   "No provider-specific runtime access leaks into src/lib/sesh/model.ts, validation.ts, identifiers.ts, or other provider-neutral domain modules."
+                                               ],
+                          "implementationSequence":  [
+                                                         {
+                                                             "phase":  1,
+                                                             "name":  "Server runtime composition",
+                                                             "outcome":  "Create and test the narrow Cloudflare env-to-Sesh-persistence composition helper."
+                                                         },
+                                                         {
+                                                             "phase":  2,
+                                                             "name":  "Authenticated creator identity boundary",
+                                                             "outcome":  "Specify the canonical mapping from authenticated account/session identity to SeshCreatorId without duplicating auth or CRM identity."
+                                                         },
+                                                         {
+                                                             "phase":  3,
+                                                             "name":  "Project authorization service",
+                                                             "outcome":  "Enforce owner/collaborator authorization independently of HTTP routes."
+                                                         },
+                                                         {
+                                                             "phase":  4,
+                                                             "name":  "Project API",
+                                                             "outcome":  "Expose authenticated project operations through validated server routes."
+                                                         },
+                                                         {
+                                                             "phase":  5,
+                                                             "name":  "Audio transfer API",
+                                                             "outcome":  "Expose authorized upload/download lifecycle using private application-mediated R2 access."
+                                                         }
+                                                     ],
+                          "acceptanceCriteria":  [
+                                                     "The specification preserves SESH-001 through SESH-008 boundaries.",
+                                                     "Cloudflare runtime access follows the repository\u0027s existing cloudflare:workers env convention.",
+                                                     "The existing createSeshCloudflarePersistence composition remains the only production adapter composition mechanism.",
+                                                     "No public creator-owned mutation API is authorized before authenticated creator ownership mapping exists.",
+                                                     "Same-origin validation is explicitly classified as insufficient for creator authorization.",
+                                                     "Sesh creator identity remains distinct from authentication identity and CRM Person.",
+                                                     "D1 metadata and R2 binary audio remain separated.",
+                                                     "R2 remains private and application-mediated.",
+                                                     "No implicit music-rights semantics are introduced.",
+                                                     "The next implementation slice can be tested entirely without live Cloudflare mutations."
+                                                 ],
+                          "nonGoals":  [
+                                           "Building the Sesh UI.",
+                                           "Creating a DAW or sequencer interface.",
+                                           "Implementing Studio, Rhythm, Keys, Control, Pulse, Sounds, or Launch product UX.",
+                                           "Uploading production audio.",
+                                           "Creating users or creator profiles.",
+                                           "Implementing collaboration.",
+                                           "Implementing billing.",
+                                           "Implementing publishing or management agreements.",
+                                           "Changing the live D1 schema.",
+                                           "Changing Cloudflare bindings.",
+                                           "Deploying application code."
+                                       ]
+                      }
+}
