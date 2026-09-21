@@ -1,0 +1,229 @@
+{
+    "specification":  {
+                          "id":  "SESH-011",
+                          "title":  "Authenticated Principal and Sesh Creator Identity Boundary",
+                          "status":  "proposed",
+                          "version":  1,
+                          "baseline":  {
+                                           "sourceCommit":  "19ab9a2985d7f37b254876c96eefc32ce07878ac",
+                                           "discoveredRiverOsAuthentication":  {
+                                                                                   "sessionKey":  "river-os-authenticated",
+                                                                                   "sessionValue":  "boolean true",
+                                                                                   "authenticationMethod":  "Shared RIVER_OS_ACCESS_KEY",
+                                                                                   "sessionTtlSeconds":  43200,
+                                                                                   "canonicalUserIdentityPresent":  false,
+                                                                                   "canonicalAccountIdentityPresent":  false,
+                                                                                   "canonicalAuthenticatedSubjectPresent":  false
+                                                                               },
+                                           "governingSpecifications":  [
+                                                                           "SESH-001",
+                                                                           "SESH-009",
+                                                                           "SESH-010"
+                                                                       ]
+                                       },
+                          "discoveryConclusion":  {
+                                                      "statement":  "The current River OS access session proves authorization to enter River OS but does not identify a distinct human or account.",
+                                                      "consequence":  "The current river-os-authenticated boolean session MUST NOT be used as Sesh creator identity.",
+                                                      "reason":  [
+                                                                     "A boolean cannot distinguish multiple creators.",
+                                                                     "A shared access key does not establish durable per-person identity.",
+                                                                     "Sesh project ownership requires a stable authenticated subject.",
+                                                                     "SeshCreatorId must remain a domain identity rather than become the authentication credential itself."
+                                                                 ]
+                                                  },
+                          "identityLayers":  {
+                                                 "authenticatedPrincipal":  {
+                                                                                "purpose":  "Represent the durable authenticated application identity.",
+                                                                                "proposedType":  "AuthenticatedPrincipal",
+                                                                                "proposedIdType":  "PrincipalId",
+                                                                                "semantics":  "Stable application-level identity independent of Sesh, CRM, display name, email, or session identifier.",
+                                                                                "mustContain":  [
+                                                                                                    "principalId"
+                                                                                                ],
+                                                                                "mayContain":  [
+                                                                                                   "authenticationMethod",
+                                                                                                   "sessionId",
+                                                                                                   "issuedAt",
+                                                                                                   "expiresAt"
+                                                                                               ],
+                                                                                "mustNotContainAsCanonicalIdentity":  [
+                                                                                                                          "displayName",
+                                                                                                                          "email",
+                                                                                                                          "CRM relationship id",
+                                                                                                                          "SeshCreatorId"
+                                                                                                                      ]
+                                                                            },
+                                                 "seshCreator":  {
+                                                                     "canonicalType":  "SeshCreatorId",
+                                                                     "semantics":  "Music-domain creator identity owned by Sesh.",
+                                                                     "rule":  "SeshCreatorId MUST remain distinct from PrincipalId.",
+                                                                     "mapping":  "An explicit mapping must associate an authenticated PrincipalId with one or more authorized SeshCreatorId values."
+                                                                 },
+                                                 "crmPerson":  {
+                                                                   "rule":  "River CRM relationship/person identity remains independent and MUST NOT automatically become PrincipalId or SeshCreatorId."
+                                                               }
+                                             },
+                          "selectedArchitecture":  {
+                                                       "model":  "Principal-first identity with explicit Sesh creator mapping",
+                                                       "sequence":  [
+                                                                        "Authenticate caller.",
+                                                                        "Resolve durable PrincipalId.",
+                                                                        "Load explicit principal-to-SeshCreator mapping.",
+                                                                        "Resolve authorized SeshCreatorId.",
+                                                                        "Load target SeshMusicProject.",
+                                                                        "Authorize ownerCreatorId or future collaborator permission.",
+                                                                        "Only then perform project or audio operation."
+                                                                    ],
+                                                       "rejectedAlternatives":  [
+                                                                                    "Use river-os-authenticated=true as creator identity.",
+                                                                                    "Use the shared River OS access key as creator identity.",
+                                                                                    "Use email address directly as SeshCreatorId.",
+                                                                                    "Use CRM relationship identity as SeshCreatorId.",
+                                                                                    "Trust creatorId supplied by client request.",
+                                                                                    "Infer creator identity from display name.",
+                                                                                    "Infer ownership from project identifier."
+                                                                                ]
+                                                   },
+                          "principalId":  {
+                                              "requiredProperties":  [
+                                                                         "Stable",
+                                                                         "Opaque",
+                                                                         "Unique",
+                                                                         "Non-secret",
+                                                                         "Not derived from mutable profile information"
+                                                                     ],
+                                              "proposedPrefix":  "principal",
+                                              "example":  "principal:01JXYZ...",
+                                              "generation":  "Generated server-side when an account/principal is created.",
+                                              "forbiddenGenerationInputs":  [
+                                                                                "email address alone",
+                                                                                "display name",
+                                                                                "IP address",
+                                                                                "browser fingerprint",
+                                                                                "shared access key",
+                                                                                "Sesh project id"
+                                                                            ]
+                                          },
+                          "sessionBoundary":  {
+                                                  "currentRiverOsSession":  "May continue to exist for private operator access during migration.",
+                                                  "futureAuthenticatedSession":  "Must carry or resolve a durable PrincipalId rather than only a boolean authorization flag.",
+                                                  "sessionIdRule":  "Session identity is ephemeral and MUST NOT itself become PrincipalId.",
+                                                  "regeneration":  "Successful login should continue regenerating session state to reduce fixation risk.",
+                                                  "logout":  "Logout destroys the session but MUST NOT destroy PrincipalId or creator ownership."
+                                              },
+                          "principalToCreatorMapping":  {
+                                                            "cardinality":  "One PrincipalId may map to one or more SeshCreatorId values in the future.",
+                                                            "phaseOne":  "Support exactly one primary SeshCreatorId per PrincipalId unless a later collaboration specification expands this.",
+                                                            "requiredFields":  [
+                                                                                   "principalId",
+                                                                                   "creatorId",
+                                                                                   "createdAt"
+                                                                               ],
+                                                            "optionalFutureFields":  [
+                                                                                         "role",
+                                                                                         "status",
+                                                                                         "grantedAt",
+                                                                                         "revokedAt"
+                                                                                     ],
+                                                            "ownershipRule":  "Mapping authorizes the principal to act as the creator; it does not itself transfer copyright, publishing, management, royalty, label, or commercial rights."
+                                                        },
+                          "persistenceBoundary":  {
+                                                      "decision":  "Do not add identity tables to SESH_DB yet.",
+                                                      "rationale":  [
+                                                                        "SESH_DB is currently scoped to Sesh project/audio metadata.",
+                                                                        "Authentication identity is shared infrastructure rather than music-domain persistence.",
+                                                                        "A principal registry should be reusable across future River products."
+                                                                    ],
+                                                      "futureSharedInfrastructure":  "A dedicated account/principal persistence boundary must be specified before implementation.",
+                                                      "seshDbRule":  "SESH_DB may later persist explicit Sesh-side mapping records only if the shared principal identity remains external and referenced by opaque PrincipalId."
+                                                  },
+                          "authorizationService":  {
+                                                       "proposedFutureModule":  "src/lib/sesh/authorization",
+                                                       "responsibilities":  [
+                                                                                "Resolve whether a PrincipalId may act as a SeshCreatorId.",
+                                                                                "Authorize access to SeshMusicProject ownership.",
+                                                                                "Support future collaborator permissions.",
+                                                                                "Remain independent of HTTP route structure."
+                                                                            ],
+                                                       "mustNot":  [
+                                                                       "Authenticate passwords.",
+                                                                       "Create sessions.",
+                                                                       "Read shared access keys.",
+                                                                       "Trust request-body ownership claims.",
+                                                                       "Create music rights or publishing rights."
+                                                                   ]
+                                                   },
+                          "migrationStrategy":  {
+                                                    "phase1":  "Specify shared PrincipalId and account/session architecture.",
+                                                    "phase2":  "Implement shared principal resolution without changing Sesh public API.",
+                                                    "phase3":  "Create explicit PrincipalId to SeshCreatorId mapping.",
+                                                    "phase4":  "Implement Sesh project authorization service.",
+                                                    "phase5":  "Only then expose authenticated Sesh project APIs.",
+                                                    "compatibility":  "Existing private River OS boolean access may remain temporarily for operator-only tooling but cannot authorize creator-owned Sesh resources."
+                                                },
+                          "securityRules":  [
+                                                "Authentication and authorization remain separate concerns.",
+                                                "Every creator-owned request must resolve an authenticated PrincipalId.",
+                                                "Every creator-owned request must resolve allowed SeshCreatorId values server-side.",
+                                                "Client-supplied creator identity is never authoritative.",
+                                                "Knowing a project id is never sufficient authorization.",
+                                                "Same-origin is defense in depth only.",
+                                                "Session regeneration must occur after successful authentication.",
+                                                "No secret credential becomes a durable identity identifier.",
+                                                "Authorization failures must not unnecessarily reveal existence of unauthorized resources."
+                                            ],
+                          "rightsBoundary":  [
+                                                 "PrincipalId represents application identity only.",
+                                                 "SeshCreatorId represents music-domain creator identity only.",
+                                                 "Neither identity implies copyright ownership.",
+                                                 "Neither identity implies publishing ownership.",
+                                                 "Neither identity implies management authority.",
+                                                 "Neither identity implies label relationship.",
+                                                 "Neither identity implies royalty entitlement.",
+                                                 "Any such rights require separately modeled agreements."
+                                             ],
+                          "implementationDeferred":  [
+                                                         "User registration.",
+                                                         "Email authentication.",
+                                                         "OAuth.",
+                                                         "Password accounts.",
+                                                         "Magic links.",
+                                                         "Passkeys.",
+                                                         "Multi-factor authentication.",
+                                                         "Principal database schema.",
+                                                         "Principal migration.",
+                                                         "Sesh creator mapping database schema.",
+                                                         "Public Sesh project API.",
+                                                         "Audio upload/download API.",
+                                                         "Collaboration permissions.",
+                                                         "Rights agreements."
+                                                     ],
+                          "nextRequiredSpecification":  {
+                                                            "id":  "SESH-012",
+                                                            "subject":  "Shared Principal Registry and Authentication Architecture",
+                                                            "goal":  "Define the reusable PrincipalId account/session persistence boundary before any creator-owned Sesh API is implemented."
+                                                        },
+                          "acceptanceCriteria":  [
+                                                     "Current River OS boolean session is explicitly classified as access authorization, not identity.",
+                                                     "PrincipalId is separate from session id.",
+                                                     "PrincipalId is separate from SeshCreatorId.",
+                                                     "PrincipalId is separate from CRM relationship/person identity.",
+                                                     "Principal-to-creator mapping is explicit and server-controlled.",
+                                                     "Client-supplied creator ids are non-authoritative.",
+                                                     "SESH_DB does not silently become the global identity database.",
+                                                     "No public Sesh API is authorized by this specification.",
+                                                     "No music-rights semantics are created.",
+                                                     "The next step is a shared principal/account architecture rather than a Sesh-specific authentication shortcut."
+                                                 ],
+                          "nonGoals":  [
+                                           "Changing current River OS login behavior.",
+                                           "Creating production user accounts.",
+                                           "Creating production creator profiles.",
+                                           "Adding D1 identity tables.",
+                                           "Migrating data.",
+                                           "Creating public API endpoints.",
+                                           "Changing Cloudflare bindings.",
+                                           "Deploying application code."
+                                       ]
+                      }
+}
