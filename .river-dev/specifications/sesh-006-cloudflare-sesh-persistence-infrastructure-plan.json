@@ -1,0 +1,326 @@
+{
+    "id":  "SESH-006",
+    "title":  "Cloudflare Sesh Persistence Infrastructure Plan",
+    "status":  "proposed",
+    "version":  "1.0.0",
+    "createdDate":  "2026-09-21",
+    "parent":  {
+                   "id":  "SESH-005",
+                   "title":  "Cloudflare Sesh Persistence Adapter Implementation",
+                   "implementationCommit":  "1842844d2c8f20e9323e564774c2128105c3e5a9"
+               },
+    "objective":  "Define the exact production infrastructure, migration, binding, environment, verification, rollback, and authorization plan required to connect the proven Sesh D1 and R2 adapters to Cloudflare without provisioning or deploying resources yet.",
+    "currentState":  [
+                         "Canonical Sesh domain exists.",
+                         "Provider-neutral persistence contracts exist.",
+                         "In-memory reference adapters exist.",
+                         "Cloudflare D1 project adapter exists.",
+                         "Cloudflare D1 audio metadata adapter exists.",
+                         "Cloudflare R2 audio object-store adapter exists.",
+                         "All current Sesh core, persistence, and Cloudflare adapter tests pass.",
+                         "No production D1 database exists for Sesh.",
+                         "No production R2 bucket exists for Sesh.",
+                         "No Sesh persistence migration has been executed.",
+                         "No Sesh Cloudflare binding has been activated.",
+                         "No Sesh persistence deployment has occurred."
+                     ],
+    "architectureSelection":  {
+                                  "metadataProvider":  "Cloudflare D1",
+                                  "binaryObjectProvider":  "Cloudflare R2",
+                                  "realtimeCoordination":  "deferred"
+                              },
+    "infrastructureNames":  {
+                                "d1":  {
+                                           "logicalName":  "Sesh Production Metadata",
+                                           "proposedResourceName":  "sesh-production",
+                                           "proposedBinding":  "SESH_DB"
+                                       },
+                                "r2":  {
+                                           "logicalName":  "Sesh Production Audio Objects",
+                                           "proposedResourceName":  "sesh-audio-production",
+                                           "proposedBinding":  "SESH_AUDIO"
+                                       },
+                                "rules":  [
+                                              "Names are proposals until live-resource creation is explicitly authorized.",
+                                              "Bindings must be environment configuration, never hardcoded credentials.",
+                                              "Production and future preview/test resources must use distinguishable names.",
+                                              "Resource identifiers returned by Cloudflare must not be invented in source or specifications."
+                                          ]
+                            },
+    "d1Schema":  {
+                     "schemaVersion":  1,
+                     "tables":  [
+                                    {
+                                        "name":  "sesh_projects",
+                                        "columns":  [
+                                                        {
+                                                            "name":  "project_id",
+                                                            "sqlType":  "TEXT",
+                                                            "constraints":  "PRIMARY KEY NOT NULL"
+                                                        },
+                                                        {
+                                                            "name":  "schema_version",
+                                                            "sqlType":  "INTEGER",
+                                                            "constraints":  "NOT NULL"
+                                                        },
+                                                        {
+                                                            "name":  "revision",
+                                                            "sqlType":  "INTEGER",
+                                                            "constraints":  "NULL"
+                                                        },
+                                                        {
+                                                            "name":  "stored_at",
+                                                            "sqlType":  "TEXT",
+                                                            "constraints":  "NOT NULL"
+                                                        },
+                                                        {
+                                                            "name":  "payload_json",
+                                                            "sqlType":  "TEXT",
+                                                            "constraints":  "NOT NULL"
+                                                        }
+                                                    ]
+                                    },
+                                    {
+                                        "name":  "sesh_audio_assets",
+                                        "columns":  [
+                                                        {
+                                                            "name":  "audio_asset_id",
+                                                            "sqlType":  "TEXT",
+                                                            "constraints":  "PRIMARY KEY NOT NULL"
+                                                        },
+                                                        {
+                                                            "name":  "project_id",
+                                                            "sqlType":  "TEXT",
+                                                            "constraints":  "NOT NULL"
+                                                        },
+                                                        {
+                                                            "name":  "schema_version",
+                                                            "sqlType":  "INTEGER",
+                                                            "constraints":  "NOT NULL"
+                                                        },
+                                                        {
+                                                            "name":  "revision",
+                                                            "sqlType":  "INTEGER",
+                                                            "constraints":  "NULL"
+                                                        },
+                                                        {
+                                                            "name":  "stored_at",
+                                                            "sqlType":  "TEXT",
+                                                            "constraints":  "NOT NULL"
+                                                        },
+                                                        {
+                                                            "name":  "payload_json",
+                                                            "sqlType":  "TEXT",
+                                                            "constraints":  "NOT NULL"
+                                                        }
+                                                    ]
+                                    }
+                                ],
+                     "indexes":  [
+                                     {
+                                         "name":  "idx_sesh_audio_assets_project_id",
+                                         "table":  "sesh_audio_assets",
+                                         "columns":  [
+                                                         "project_id"
+                                                     ],
+                                         "unique":  false
+                                     }
+                                 ],
+                     "foreignKeys":  [
+                                         {
+                                             "disposition":  "deferred",
+                                             "reason":  "SESH currently keeps explicit lifecycle behavior and avoids introducing destructive cascading semantics before project/audio deletion policy is separately governed."
+                                         }
+                                     ]
+                 },
+    "migrationPlan":  {
+                          "proposedDirectory":  "migrations/sesh",
+                          "proposedInitialFile":  "migrations/sesh/0001_sesh_persistence.sql",
+                          "requiredStatements":  [
+                                                     "CREATE TABLE IF NOT EXISTS sesh_projects.",
+                                                     "CREATE TABLE IF NOT EXISTS sesh_audio_assets.",
+                                                     "CREATE INDEX IF NOT EXISTS idx_sesh_audio_assets_project_id ON sesh_audio_assets(project_id)."
+                                                 ],
+                          "requirements":  [
+                                               "Migration must be version controlled.",
+                                               "Migration must be readable SQL.",
+                                               "Migration must contain no destructive DROP statement.",
+                                               "Migration must contain no production data mutation beyond schema creation.",
+                                               "Migration file creation does not authorize migration execution.",
+                                               "Migration execution requires fresh explicit authorization.",
+                                               "Migration must be validated locally before any remote execution."
+                                           ]
+                      },
+    "r2Plan":  {
+                   "proposedBucket":  "sesh-audio-production",
+                   "proposedBinding":  "SESH_AUDIO",
+                   "visibility":  "private",
+                   "accessRules":  [
+                                       "Do not expose the production bucket publicly by default.",
+                                       "Application access is mediated through authorized runtime code.",
+                                       "Object keys must follow the SESH-004 infrastructure-key rules.",
+                                       "Deleting metadata must not automatically delete objects.",
+                                       "Deleting objects must be explicit.",
+                                       "No rights, publishing, management, or ownership semantics derive from an R2 object key."
+                                   ]
+               },
+    "bindingPlan":  {
+                        "d1Binding":  "SESH_DB",
+                        "r2Binding":  "SESH_AUDIO",
+                        "requirements":  [
+                                             "Bindings must be wired only at the infrastructure/application composition boundary.",
+                                             "src/lib/sesh/model.ts must remain Cloudflare-independent.",
+                                             "src/lib/sesh/persistence/repositories.ts must remain Cloudflare-independent.",
+                                             "Cloudflare bindings must not be globally accessed inside canonical Sesh domain code.",
+                                             "Runtime composition passes bindings into D1SeshProjectRepository, D1SeshAudioAssetRepository, and R2SeshAudioObjectStore."
+                                         ]
+                    },
+    "environmentStrategy":  {
+                                "production":  {
+                                                   "d1":  "sesh-production",
+                                                   "r2":  "sesh-audio-production"
+                                               },
+                                "futurePreview":  {
+                                                      "d1":  "separate preview/test resource required before use",
+                                                      "r2":  "separate preview/test resource required before use"
+                                                  },
+                                "rules":  [
+                                              "Do not use production resources for automated tests.",
+                                              "Current unit tests continue using fake bindings.",
+                                              "Future integration tests should use isolated local or preview resources.",
+                                              "Production credentials and identifiers must not be committed."
+                                          ]
+                            },
+    "provisioningSequence":  [
+                                 "Verify branch, HEAD, clean worktree, and locked specifications.",
+                                 "Create and review version-controlled D1 migration source.",
+                                 "Create local configuration wiring without production resource IDs.",
+                                 "Run focused Sesh tests.",
+                                 "Run local migration verification where supported.",
+                                 "Stop for explicit authorization before any live Cloudflare resource creation.",
+                                 "Create production D1 database only after authorization.",
+                                 "Record actual Cloudflare D1 resource identifier returned by Cloudflare.",
+                                 "Create production private R2 bucket only after authorization.",
+                                 "Record actual bucket result.",
+                                 "Add environment bindings only after resource identifiers are known.",
+                                 "Execute production D1 migration only after separate explicit authorization.",
+                                 "Verify expected tables and index.",
+                                 "Perform non-destructive smoke checks.",
+                                 "Stop for fresh deployment authorization before any deployment."
+                             ],
+    "verificationGates":  [
+                              {
+                                  "id":  "SESH-006-GATE-1",
+                                  "name":  "Source readiness",
+                                  "requirements":  [
+                                                       "Migration source reviewed.",
+                                                       "Binding composition source reviewed.",
+                                                       "No unrelated repository changes.",
+                                                       "All Sesh tests pass."
+                                                   ]
+                              },
+                              {
+                                  "id":  "SESH-006-GATE-2",
+                                  "name":  "Provisioning authorization",
+                                  "requirements":  [
+                                                       "Fresh explicit authorization immediately before live D1/R2 resource creation.",
+                                                       "No deployment implied by provisioning authorization."
+                                                   ]
+                              },
+                              {
+                                  "id":  "SESH-006-GATE-3",
+                                  "name":  "Migration authorization",
+                                  "requirements":  [
+                                                       "D1 exists.",
+                                                       "Migration reviewed.",
+                                                       "Fresh explicit authorization immediately before remote migration execution."
+                                                   ]
+                              },
+                              {
+                                  "id":  "SESH-006-GATE-4",
+                                  "name":  "Deployment authorization",
+                                  "requirements":  [
+                                                       "Infrastructure verification complete.",
+                                                       "Bindings verified.",
+                                                       "Tests pass.",
+                                                       "Fresh explicit authorization immediately before deployment."
+                                                   ]
+                              }
+                          ],
+    "failureAndRollback":  [
+                               "If D1 creation fails, do not create dependent production assumptions.",
+                               "If R2 creation fails, retain D1 without treating infrastructure setup as complete.",
+                               "If binding configuration fails, do not deploy.",
+                               "If migration verification fails, do not deploy.",
+                               "Do not drop production tables as an automatic rollback.",
+                               "Do not delete the R2 bucket as an automatic rollback.",
+                               "Provider-neutral and in-memory persistence remain intact regardless of Cloudflare infrastructure state.",
+                               "Every live failure must leave a clear record of which resources were and were not created."
+                           ],
+    "observability":  [
+                          "Provisioning output must record actual resource identifiers returned by Cloudflare.",
+                          "Migration output must report success or failure explicitly.",
+                          "Verification must confirm both expected tables.",
+                          "Verification must confirm idx_sesh_audio_assets_project_id.",
+                          "R2 verification must confirm private bucket existence without uploading customer audio.",
+                          "Smoke checks must not create irreversible business data."
+                      ],
+    "security":  [
+                     "No credentials committed to Git.",
+                     "No production bucket made public by default.",
+                     "No public object URLs assumed.",
+                     "No user authorization model is introduced by this infrastructure plan.",
+                     "Application-level authorization remains a separate future concern.",
+                     "No canonical record should contain Cloudflare account secrets."
+                 ],
+    "implementationScope":  {
+                                "phase":  "pre-provisioning source preparation",
+                                "proposedFiles":  [
+                                                      {
+                                                          "path":  "migrations/sesh/0001_sesh_persistence.sql",
+                                                          "responsibility":  "Initial non-destructive D1 schema migration."
+                                                      },
+                                                      {
+                                                          "path":  "src/lib/sesh/persistence/cloudflare/composition.ts",
+                                                          "responsibility":  "Construct Sesh persistence repositories from injected D1/R2 bindings."
+                                                      },
+                                                      {
+                                                          "path":  "src/lib/sesh/persistence/cloudflare/composition.test.ts",
+                                                          "responsibility":  "Verify binding composition without live Cloudflare resources."
+                                                      }
+                                                  ],
+                                "permitted":  [
+                                                  "Create migration source.",
+                                                  "Create composition source.",
+                                                  "Create tests.",
+                                                  "Run local/fake tests.",
+                                                  "Commit and push source after verification."
+                                              ],
+                                "prohibitedWithoutFreshAuthorization":  [
+                                                                            "Create live D1 database.",
+                                                                            "Create live R2 bucket.",
+                                                                            "Execute remote migration.",
+                                                                            "Change live Cloudflare bindings.",
+                                                                            "Deploy."
+                                                                        ]
+                            },
+    "acceptanceCriteria":  [
+                               "D1 production resource name and binding are proposed.",
+                               "R2 production resource name and binding are proposed.",
+                               "Initial relational schema is completely defined.",
+                               "Initial migration path is defined.",
+                               "Cloudflare binding composition boundary is defined.",
+                               "Environment separation rules are defined.",
+                               "Provisioning sequence is explicit.",
+                               "Migration and deployment have separate authorization gates.",
+                               "Rollback behavior is non-destructive.",
+                               "No live resource is created.",
+                               "No migration is executed.",
+                               "No deployment occurs."
+                           ],
+    "nextTargetAfterCompletion":  {
+                                      "id":  "SESH-007",
+                                      "title":  "Sesh Cloudflare Pre-Provisioning Source Preparation",
+                                      "purpose":  "Create and locally verify the D1 migration source and Cloudflare binding-composition layer without creating live resources, executing remote migrations, or deploying."
+                                  }
+}
