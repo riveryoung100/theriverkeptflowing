@@ -27,7 +27,13 @@
 		        "database_id": "6f93dcd9-41b0-4c2a-a9e9-d6c281b78642",
 		        "migrations_dir": "migrations/sesh",
 		        "migrations_pattern": "migrations/sesh/*.sql"
-		}
+		},
+    {
+      "binding": "RIVER_IDENTITY_DB",
+      "database_name": "river-identity",
+      "database_id": "4587d908-1466-4556-b868-1d60321f0970",
+      "migrations_dir": "migrations/identity"
+    }
 	],
 	"r2_buckets": [
 		{
