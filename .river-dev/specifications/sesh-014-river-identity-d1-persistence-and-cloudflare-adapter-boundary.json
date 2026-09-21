@@ -1,0 +1,292 @@
+{
+    "specification":  {
+                          "id":  "SESH-014",
+                          "title":  "River Identity D1 Persistence and Cloudflare Adapter Boundary",
+                          "status":  "proposed",
+                          "version":  1,
+                          "baseline":  {
+                                           "sourceCommit":  "24b99f3445e68191ae44a9da77f2c0df179d8b88",
+                                           "governingSpecifications":  [
+                                                                           "SESH-011",
+                                                                           "SESH-012",
+                                                                           "SESH-013"
+                                                                       ],
+                                           "domainRoot":  "src/lib/identity",
+                                           "providerNeutralRepository":  "src/lib/identity/repository.ts"
+                                       },
+                          "persistenceSelection":  {
+                                                       "provider":  "Cloudflare D1",
+                                                       "databaseName":  "river-identity",
+                                                       "binding":  "RIVER_IDENTITY_DB",
+                                                       "ownership":  "Shared River infrastructure",
+                                                       "provisioningStatus":  "NOT AUTHORIZED",
+                                                       "migrationStatus":  "NOT AUTHORIZED",
+                                                       "deploymentStatus":  "NOT AUTHORIZED"
+                                                   },
+                          "architecturalBoundary":  {
+                                                        "principle":  "Identity persistence is shared infrastructure and remains separate from Sesh, CRM, commerce, and content-domain persistence.",
+                                                        "mustRemainSeparateFrom":  [
+                                                                                       "SESH_DB",
+                                                                                       "RIVER_CRM_DB",
+                                                                                       "RIVER_COMMERCE_DB"
+                                                                                   ],
+                                                        "providerNeutralLayer":  [
+                                                                                     "src/lib/identity/identifiers.ts",
+                                                                                     "src/lib/identity/model.ts",
+                                                                                     "src/lib/identity/validation.ts",
+                                                                                     "src/lib/identity/repository.ts"
+                                                                                 ],
+                                                        "providerSpecificRoot":  "src/lib/identity/cloudflare",
+                                                        "rule":  "Cloudflare-specific D1 contracts and SQL behavior MUST NOT leak into provider-neutral identity modules."
+                                                    },
+                          "phaseOneSchema":  {
+                                                 "principals":  {
+                                                                    "table":  "principals",
+                                                                    "purpose":  "Persist canonical AuthenticatedPrincipal records.",
+                                                                    "columns":  [
+                                                                                    "principal_id TEXT PRIMARY KEY NOT NULL",
+                                                                                    "status TEXT NOT NULL",
+                                                                                    "display_name TEXT NULL",
+                                                                                    "created_at TEXT NOT NULL",
+                                                                                    "updated_at TEXT NOT NULL"
+                                                                                ],
+                                                                    "constraints":  [
+                                                                                        "principal_id must contain a canonical PrincipalId",
+                                                                                        "status must be active or disabled",
+                                                                                        "created_at must remain stable for an existing principal_id",
+                                                                                        "updated_at must not precede created_at"
+                                                                                    ]
+                                                                },
+                                                 "passwordCredentials":  {
+                                                                             "table":  "principal_password_credentials",
+                                                                             "purpose":  "Persist password credential metadata independently from the principal domain record.",
+                                                                             "columns":  [
+                                                                                             "principal_id TEXT PRIMARY KEY NOT NULL",
+                                                                                             "email_normalized TEXT NOT NULL UNIQUE",
+                                                                                             "password_hash TEXT NOT NULL",
+                                                                                             "created_at TEXT NOT NULL",
+                                                                                             "updated_at TEXT NOT NULL"
+                                                                                         ],
+                                                                             "constraints":  [
+                                                                                                 "principal_id references a durable PrincipalId",
+                                                                                                 "email_normalized must be unique",
+                                                                                                 "password_hash must never be returned through principal-domain APIs",
+                                                                                                 "credential timestamps remain distinct from principal profile timestamps"
+                                                                                             ]
+                                                                         },
+                                                 "indexes":  [
+                                                                 "UNIQUE constraint or unique index on principal_password_credentials.email_normalized"
+                                                             ],
+                                                 "foreignKeys":  "Deferred in phase one pending explicit deletion and account lifecycle design."
+                                             },
+                          "migration":  {
+                                            "proposedDirectory":  "migrations/identity",
+                                            "proposedFile":  "migrations/identity/0001_river_identity.sql",
+                                            "requirements":  [
+                                                                 "CREATE TABLE IF NOT EXISTS principals",
+                                                                 "CREATE TABLE IF NOT EXISTS principal_password_credentials",
+                                                                 "Unique email_normalized enforcement",
+                                                                 "No destructive statements",
+                                                                 "No DROP TABLE",
+                                                                 "No production data inserts",
+                                                                 "No implicit seed user"
+                                                             ],
+                                            "execution":  "Remote migration requires separate fresh explicit authorization immediately before execution."
+                                        },
+                          "cloudflareAdapter":  {
+                                                    "proposedRoot":  "src/lib/identity/cloudflare",
+                                                    "proposedFiles":  [
+                                                                          "src/lib/identity/cloudflare/types.ts",
+                                                                          "src/lib/identity/cloudflare/d1-principal-repository.ts",
+                                                                          "src/lib/identity/cloudflare/d1-principal-repository.test.ts",
+                                                                          "src/lib/identity/cloudflare/index.ts"
+                                                                      ],
+                                                    "adapter":  "D1PrincipalRepository",
+                                                    "implements":  "PrincipalRepository",
+                                                    "responsibilities":  [
+                                                                             "Persist canonical AuthenticatedPrincipal records.",
+                                                                             "Load principal records by PrincipalId.",
+                                                                             "Check principal existence.",
+                                                                             "Validate canonical records before writes.",
+                                                                             "Validate persisted records after reads.",
+                                                                             "Translate provider failures into provider-neutral repository errors."
+                                                                         ],
+                                                    "mustNot":  [
+                                                                    "Verify passwords.",
+                                                                    "Store plaintext passwords.",
+                                                                    "Resolve SeshCreatorId mappings.",
+                                                                    "Authorize Sesh projects.",
+                                                                    "Read River OS shared access keys.",
+                                                                    "Create Cloudflare resources.",
+                                                                    "Run migrations."
+                                                                ]
+                                                },
+                          "narrowD1Contract":  {
+                                                   "goal":  "Keep identity Cloudflare adapters fakeable without importing Cloudflare SDK/global types into provider-neutral modules.",
+                                                   "proposedInterfaces":  [
+                                                                              "IdentityD1DatabaseLike",
+                                                                              "IdentityD1PreparedStatementLike"
+                                                                          ],
+                                                   "minimumDatabaseMethods":  [
+                                                                                  "prepare"
+                                                                              ],
+                                                   "minimumStatementMethods":  [
+                                                                                   "bind",
+                                                                                   "first",
+                                                                                   "run"
+                                                                               ],
+                                                   "testRule":  "Automated tests use narrow fake D1 contracts only and must not connect to live Cloudflare."
+                                               },
+                          "principalStorageSemantics":  {
+                                                            "writeValidation":  "validateAuthenticatedPrincipal must run before persistence.",
+                                                            "readValidation":  "Persisted rows must be reconstructed and validated before returning a principal.",
+                                                            "immutableFields":  [
+                                                                                    "principalId",
+                                                                                    "createdAt"
+                                                                                ],
+                                                            "mutableFields":  [
+                                                                                  "status",
+                                                                                  "displayName",
+                                                                                  "updatedAt"
+                                                                              ],
+                                                            "notFound":  "Missing principal returns provider-neutral not-found behavior.",
+                                                            "conflict":  "Identity drift under an existing PrincipalId returns provider-neutral conflict behavior.",
+                                                            "storage":  "D1/provider errors map to provider-neutral storage behavior."
+                                                        },
+                          "credentialBoundary":  {
+                                                     "currentStatus":  "Schema architecture only",
+                                                     "domainImplementation":  "DEFERRED",
+                                                     "hashingImplementation":  "DEFERRED",
+                                                     "passwordVerification":  "DEFERRED",
+                                                     "credentialRepository":  "DEFERRED",
+                                                     "rationale":  "Principal persistence is implemented first so credential handling cannot distort or redefine the canonical identity model."
+                                                 },
+                          "lifecycle":  {
+                                            "createPrincipal":  "Server-controlled only.",
+                                            "updatePrincipal":  "May change status/displayName while preserving PrincipalId and createdAt.",
+                                            "disablePrincipal":  "Supported through status=disabled.",
+                                            "hardDeletePrincipal":  "DEFERRED",
+                                            "credentialDelete":  "DEFERRED",
+                                            "cascadingDeletion":  "DEFERRED",
+                                            "reason":  "Deletion semantics require audit, product ownership, recovery, and legal lifecycle decisions."
+                                        },
+                          "security":  {
+                                           "rules":  [
+                                                         "Principal persistence contains no plaintext credentials.",
+                                                         "Provider errors must not expose SQL internals to clients.",
+                                                         "Principal repository APIs must never return password hashes.",
+                                                         "PrincipalId remains non-secret.",
+                                                         "D1 binding access remains server-only.",
+                                                         "No client controls canonical createdAt for an existing principal.",
+                                                         "No public HTTP endpoint is authorized by this specification."
+                                                     ]
+                                       },
+                          "sourceReadinessSequence":  [
+                                                          {
+                                                              "phase":  1,
+                                                              "name":  "Migration source",
+                                                              "result":  "Create local migration SQL only."
+                                                          },
+                                                          {
+                                                              "phase":  2,
+                                                              "name":  "Cloudflare principal adapter",
+                                                              "result":  "Implement D1PrincipalRepository using fakeable D1 types."
+                                                          },
+                                                          {
+                                                              "phase":  3,
+                                                              "name":  "Adapter tests",
+                                                              "result":  "Test save/get/exists, validation, conflict, not-found, and provider failure mapping."
+                                                          },
+                                                          {
+                                                              "phase":  4,
+                                                              "name":  "Infrastructure specification verification",
+                                                              "result":  "Verify source is ready before any live provisioning authorization."
+                                                          }
+                                                      ],
+                          "liveInfrastructureGates":  [
+                                                          {
+                                                              "gate":  1,
+                                                              "name":  "Source readiness",
+                                                              "authorizationRequired":  false,
+                                                              "actions":  [
+                                                                              "Create migration source",
+                                                                              "Create adapter source",
+                                                                              "Run local tests"
+                                                                          ]
+                                                          },
+                                                          {
+                                                              "gate":  2,
+                                                              "name":  "Identity D1 provisioning",
+                                                              "authorizationRequired":  true,
+                                                              "actions":  [
+                                                                              "Create river-identity D1 database"
+                                                                          ]
+                                                          },
+                                                          {
+                                                              "gate":  3,
+                                                              "name":  "Remote identity migration",
+                                                              "authorizationRequired":  true,
+                                                              "separateFreshAuthorization":  true,
+                                                              "actions":  [
+                                                                              "Execute 0001_river_identity.sql remotely"
+                                                                          ]
+                                                          },
+                                                          {
+                                                              "gate":  4,
+                                                              "name":  "Binding + deployment",
+                                                              "authorizationRequired":  true,
+                                                              "separateFreshAuthorization":  true,
+                                                              "actions":  [
+                                                                              "Add RIVER_IDENTITY_DB production binding",
+                                                                              "Deploy application source"
+                                                                          ]
+                                                          }
+                                                      ],
+                          "nextImplementationSlice":  {
+                                                          "id":  "SESH-015",
+                                                          "subject":  "River Identity Local D1 Migration and Principal Adapter Source",
+                                                          "allowed":  [
+                                                                          "migrations/identity/0001_river_identity.sql",
+                                                                          "src/lib/identity/cloudflare/types.ts",
+                                                                          "src/lib/identity/cloudflare/d1-principal-repository.ts",
+                                                                          "src/lib/identity/cloudflare/d1-principal-repository.test.ts",
+                                                                          "src/lib/identity/cloudflare/index.ts",
+                                                                          "local fake-D1 tests"
+                                                                      ],
+                                                          "forbidden":  [
+                                                                            "Cloudflare resource creation",
+                                                                            "remote migration",
+                                                                            "production binding changes",
+                                                                            "password hashing implementation",
+                                                                            "production credentials",
+                                                                            "public account APIs",
+                                                                            "deployment"
+                                                                        ]
+                                                      },
+                          "acceptanceCriteria":  [
+                                                     "river-identity remains a dedicated shared identity database.",
+                                                     "RIVER_IDENTITY_DB remains conceptual until separately authorized.",
+                                                     "SESH_DB remains isolated from shared authentication persistence.",
+                                                     "PrincipalRepository remains provider-neutral.",
+                                                     "D1PrincipalRepository is the proposed production principal adapter.",
+                                                     "Credential persistence remains separate from the principal domain.",
+                                                     "Password hashing remains deferred.",
+                                                     "No deletion semantics are invented prematurely.",
+                                                     "No public API is authorized.",
+                                                     "Each live Cloudflare gate requires fresh explicit authorization."
+                                                 ],
+                          "nonGoals":  [
+                                           "Provisioning river-identity.",
+                                           "Running remote migration.",
+                                           "Adding production bindings.",
+                                           "Implementing password hashing.",
+                                           "Implementing password authentication.",
+                                           "Creating users.",
+                                           "Creating Sesh creator mappings.",
+                                           "Changing River OS login.",
+                                           "Creating account UI.",
+                                           "Creating Sesh APIs.",
+                                           "Deploying application code."
+                                       ]
+                      }
+}
