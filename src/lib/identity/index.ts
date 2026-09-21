@@ -5,3 +5,5 @@ export * from "./repository";
 export * from "./memory";
 
 export * from "./credentials/index";
+
+export * from "./authentication/index";
