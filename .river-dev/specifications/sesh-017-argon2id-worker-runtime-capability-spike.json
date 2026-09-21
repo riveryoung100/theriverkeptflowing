@@ -1,0 +1,94 @@
+{
+    "id":  "SESH-017",
+    "title":  "Argon2id Worker Runtime Capability Spike",
+    "status":  "CAPABILITY_PROVEN_WITH_IMPLEMENTATION_WORK_REMAINING",
+    "sourceBaseline":  {
+                           "branch":  "cif-001-canonical-content-source-record",
+                           "commit":  "dea171195701149f13589d2242f46feffd112940",
+                           "predecessor":  "SESH-016"
+                       },
+    "candidate":  {
+                      "package":  "@noble/hashes",
+                      "version":  "2.2.0",
+                      "implementation":  "Pure JavaScript Argon2id implementation",
+                      "module":  "@noble/hashes/argon2.js",
+                      "algorithm":  "Argon2id",
+                      "specification":  "RFC 9106"
+                  },
+    "runtimeProof":  {
+                         "nodeVersion":  "24.18.0",
+                         "cloudflareCompatibilityDate":  "2026-07-24",
+                         "nativeNodeCryptoArgon2Used":  false,
+                         "isolatedWranglerDryRun":  "PASS",
+                         "unsupportedNodeCryptoImportFound":  false,
+                         "dryRunBundleBytes":  140315,
+                         "astroCloudflareBuild":  "PASS"
+                     },
+    "correctnessProof":  {
+                             "rfc9106Argon2idVector":  "PASS",
+                             "rfc9106ExpectedTag":  "0d640df58d78766c08c037a34a8b53c9d01ef0452d75b65eb52520e96b01e659",
+                             "independentSaltBehavior":  "PASS",
+                             "passwordSeparation":  "PASS",
+                             "malformedSaltRejection":  "PASS"
+                         },
+    "localBenchmark":  {
+                           "purpose":  "Capability measurement only; not final production tuning.",
+                           "algorithm":  "Argon2id",
+                           "version":  19,
+                           "memoryKiB":  65536,
+                           "passes":  1,
+                           "parallelism":  1,
+                           "outputBytes":  32,
+                           "measuredDurationMs":  828.85,
+                           "machineScope":  "Developer workstation only; MUST NOT be treated as Cloudflare production latency."
+                       },
+    "securityAssessment":  {
+                               "argon2idPrimitive":  "VIABLE",
+                               "productionPasswordHasher":  "NOT_YET_IMPLEMENTED",
+                               "productionParameterEnvelope":  "NOT_YET_LOCKED",
+                               "encodedHashFormat":  "NOT_YET_IMPLEMENTED",
+                               "requiredFormat":  "Self-describing, versioned stored password-hash representation including algorithm and work parameters.",
+                               "salt":  "Production hasher MUST generate an independent cryptographically secure salt per credential.",
+                               "verification":  "Server-side only.",
+                               "plaintextPersistence":  "FORBIDDEN",
+                               "silentFallback":  "FORBIDDEN"
+                           },
+    "importantFinding":  "@noble/hashes proves the Argon2id KDF primitive can compile and execute in this project toolchain without node:crypto Argon2, but the library returns raw derived bytes. River Identity still requires its own narrow versioned encoding/parsing/verification boundary before this becomes a production PasswordHasher.",
+    "regression":  {
+                       "identitySuite":  "PASS",
+                       "seshSuite":  "PASS",
+                       "build":  "PASS"
+                   },
+    "nextSlice":  {
+                      "id":  "SESH-018",
+                      "title":  "Provider-Neutral Password Credential Domain and Argon2id Hasher Contract",
+                      "scope":  [
+                                    "Define PasswordCredential.",
+                                    "Define canonical email normalization.",
+                                    "Define PasswordHasher and verification result contracts.",
+                                    "Define River-owned versioned Argon2id encoded-hash format.",
+                                    "Lock explicit initial Argon2id parameter envelope.",
+                                    "Implement provider-neutral validation and tests.",
+                                    "Implement the local Argon2id hasher adapter behind the contract.",
+                                    "Do not create HTTP endpoints.",
+                                    "Do not create authenticated sessions.",
+                                    "Do not create Sesh creator mappings.",
+                                    "Do not mutate production identity data.",
+                                    "Do not deploy."
+                                ]
+                  },
+    "nonGoals":  [
+                     "Creating a user",
+                     "Creating a credential in D1",
+                     "Registration",
+                     "Login",
+                     "Password reset",
+                     "Email verification",
+                     "Authenticated PrincipalId sessions",
+                     "PrincipalId to SeshCreatorId mapping",
+                     "Public Sesh APIs",
+                     "Database mutation",
+                     "Migration",
+                     "Deployment"
+                 ]
+}
