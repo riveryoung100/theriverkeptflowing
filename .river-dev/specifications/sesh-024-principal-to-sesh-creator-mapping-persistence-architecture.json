@@ -1,0 +1,91 @@
+{
+    "id":  "SESH-024",
+    "title":  "Principal to Sesh Creator Mapping Persistence Architecture",
+    "status":  "IMPLEMENTED_LOCALLY_PENDING_REVIEW",
+    "objective":  "Persist the explicit one-to-one PrincipalId to SeshCreatorId mapping in the shared River identity database while preserving identity ownership, uniqueness, immutability, provider-neutral contracts, and separation from Sesh project persistence and creator authorization.",
+    "sourceBaseline":  {
+                           "branch":  "cif-001-canonical-content-source-record",
+                           "commit":  "b1614a546596487645c141455fb60961ccfd1e82",
+                           "predecessor":  "SESH-023"
+                       },
+    "persistenceSelection":  {
+                                 "provider":  "Cloudflare D1",
+                                 "database":  "river-identity",
+                                 "binding":  "RIVER_IDENTITY_DB",
+                                 "owner":  "SHARED_RIVER_IDENTITY_INFRASTRUCTURE",
+                                 "rejectedLocations":  [
+                                                           "SESH_DB",
+                                                           "RIVER_CRM_DB",
+                                                           "RIVER_COMMERCE_DB"
+                                                       ],
+                                 "rationale":  "PrincipalId to SeshCreatorId is an identity association, not Sesh project metadata, CRM person data, or commerce data."
+                             },
+    "schema":  {
+                   "migration":  "migrations/identity/0002_principal_sesh_creator_mapping.sql",
+                   "table":  "principal_sesh_creator_mappings",
+                   "columns":  [
+                                   "principal_id TEXT PRIMARY KEY NOT NULL",
+                                   "sesh_creator_id TEXT NOT NULL UNIQUE",
+                                   "created_at TEXT NOT NULL"
+                               ],
+                   "uniqueness":  [
+                                      "principal_id PRIMARY KEY",
+                                      "sesh_creator_id UNIQUE"
+                                  ],
+                   "foreignKeys":  "DEFERRED_PENDING_EXPLICIT_CROSS_DOMAIN_LIFECYCLE_POLICY"
+               },
+    "adapter":  {
+                    "class":  "D1PrincipalSeshCreatorMappingRepository",
+                    "path":  "src/lib/identity/cloudflare/d1-principal-sesh-creator-mapping-repository.ts",
+                    "bindingType":  "IdentityD1DatabaseLike",
+                    "contract":  "PrincipalSeshCreatorMappingRepository",
+                    "providerLeakIntoNeutralDomain":  false
+                },
+    "lifecycle":  {
+                      "principalRemap":  "FORBIDDEN_IN_PHASE_ONE",
+                      "creatorReassignment":  "FORBIDDEN_IN_PHASE_ONE",
+                      "createdAt":  "IMMUTABLE",
+                      "deletion":  "DEFERRED",
+                      "cascadeDeletion":  "FORBIDDEN_UNTIL_EXPLICIT_ACCOUNT_LIFECYCLE_ARCHITECTURE"
+                  },
+    "authorizationBoundary":  {
+                                  "mappingMeans":  "PrincipalId is associated with SeshCreatorId.",
+                                  "ownership":  "NOT_GRANTED",
+                                  "collaboratorAccess":  "NOT_GRANTED",
+                                  "publishingRights":  "NOT_GRANTED",
+                                  "managementRights":  "NOT_GRANTED",
+                                  "creatorOwnedApis":  "STILL_FORBIDDEN"
+                              },
+    "liveGates":  {
+                      "sourceReadiness":  "NO_LIVE_AUTH_REQUIRED",
+                      "remoteMigration":  "REQUIRES_FRESH_EXPLICIT_AUTHORIZATION",
+                      "productionDataCreation":  "REQUIRES_SEPARATE_EXPLICIT_ARCHITECTURE_AND_AUTHORIZATION",
+                      "deployment":  "REQUIRES_FRESH_EXPLICIT_AUTHORIZATION"
+                  },
+    "nextSlice":  {
+                      "id":  "SESH-025",
+                      "title":  "Principal to Sesh Creator Mapping Source Readiness and Remote Migration Gate",
+                      "scope":  [
+                                    "Verify migration safety and adapter behavior.",
+                                    "Lock SESH-024 source before any remote identity migration.",
+                                    "Require fresh explicit authorization immediately before applying migration 0002 to river-identity.",
+                                    "Do not create any PrincipalId to SeshCreatorId mapping row during migration.",
+                                    "Do not expose creator-owned Sesh APIs.",
+                                    "Do not deploy."
+                                ]
+                  },
+    "nonGoals":  [
+                     "Applying the remote migration",
+                     "Creating a production mapping row",
+                     "Creating a Principal",
+                     "Creating a Sesh creator profile",
+                     "Public login",
+                     "Registration",
+                     "Creator ownership authorization",
+                     "Collaborator authorization",
+                     "Publishing rights",
+                     "Management rights",
+                     "Public creator-owned Sesh APIs",
+                     "Deployment"
+                 ]
+}
