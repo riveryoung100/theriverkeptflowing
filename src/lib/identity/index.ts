@@ -7,3 +7,5 @@ export * from "./memory";
 export * from "./credentials/index";
 
 export * from "./authentication/index";
+
+export * from "./session/index";

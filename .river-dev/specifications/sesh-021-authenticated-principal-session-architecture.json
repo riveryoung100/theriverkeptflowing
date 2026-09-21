@@ -1,0 +1,101 @@
+{
+    "id":  "SESH-021",
+    "title":  "Authenticated Principal Session Architecture",
+    "status":  "IMPLEMENTED_LOCALLY_PENDING_REVIEW",
+    "objective":  "Define a canonical authenticated PrincipalId session model and a narrow adapter over the existing Astro session infrastructure while preserving session fixation protection, explicit expiry, fail-closed session validation, separation from River OS operator authentication, and separation from Sesh creator authorization.",
+    "sourceBaseline":  {
+                           "branch":  "cif-001-canonical-content-source-record",
+                           "commit":  "88385cfc18f1b65e58ba9256a73d7cf51837475c",
+                           "predecessor":  "SESH-020"
+                       },
+    "infrastructure":  {
+                           "sessionFramework":  "Astro session API",
+                           "cloudflareStorage":  "Generated Astro/Cloudflare SESSION binding",
+                           "rootWranglerSessionBinding":  false,
+                           "generatedWranglerSessionBinding":  true,
+                           "newBindingRequired":  false,
+                           "newDatabaseRequired":  false,
+                           "rule":  "Reuse the existing generated Astro session infrastructure rather than introducing a parallel KV namespace or session database."
+                       },
+    "model":  {
+                  "name":  "AuthenticatedPrincipalSession",
+                  "key":  "river-authenticated-principal",
+                  "version":  1,
+                  "fields":  [
+                                 "version",
+                                 "principalId",
+                                 "authenticatedAt",
+                                 "expiresAt"
+                             ],
+                  "ttlSeconds":  43200,
+                  "canonicalIdentity":  "PrincipalId",
+                  "sessionIdentityRule":  "The transport/session container remains distinct from PrincipalId."
+              },
+    "fixationProtection":  {
+                               "requirement":  "Astro session regeneration MUST occur before storing authenticated PrincipalId after credential authentication.",
+                               "implementation":  "AstroPrincipalSessionStore.createSession calls session.regenerate before session.set."
+                           },
+    "lifecycle":  {
+                      "create":  "Regenerate transport session, validate payload, store canonical PrincipalId session with TTL.",
+                      "read":  "Validate stored payload and expiry before returning identity.",
+                      "malformed":  "Delete malformed authenticated-principal payload and return unauthenticated.",
+                      "expired":  "Delete expired authenticated-principal payload and return unauthenticated.",
+                      "logout":  "Destroy the Astro session."
+                  },
+    "riverOsBoundary":  {
+                            "existingKey":  "river-os-authenticated",
+                            "status":  "UNCHANGED",
+                            "relationship":  "DISTINCT",
+                            "rule":  "River OS operator/shared-key authentication MUST NOT become PrincipalId authentication and the PrincipalId session MUST NOT reuse river-os-authenticated."
+                        },
+    "disabledPrincipal":  {
+                              "model":  "Session payload alone does not prove the principal remains enabled.",
+                              "requirement":  "Any protected identity-resolution boundary must re-resolve AuthenticatedPrincipal and reject disabled principals before granting product access.",
+                              "implementation":  "DEFERRED_TO_SESSION_PRINCIPAL_RESOLUTION_SLICE"
+                          },
+    "seshAuthorization":  {
+                              "principalToCreatorMapping":  "DEFERRED",
+                              "creatorOwnedApis":  "FORBIDDEN",
+                              "rule":  "A valid PrincipalId session proves authentication only. It does not establish SeshCreatorId, project ownership, collaborator authorization, publishing rights, or management rights."
+                          },
+    "publicHttp":  {
+                       "loginEndpoint":  "DEFERRED",
+                       "logoutEndpoint":  "DEFERRED_FOR_PRINCIPAL_AUTH",
+                       "middlewareIntegration":  "DEFERRED",
+                       "sessionCreatedByThisSlice":  false
+                   },
+    "nextSlice":  {
+                      "id":  "SESH-022",
+                      "title":  "Authenticated Session Principal Resolution Boundary",
+                      "scope":  [
+                                    "Define a provider-neutral authenticated-session principal resolver.",
+                                    "Load PrincipalId from the canonical authenticated session.",
+                                    "Resolve AuthenticatedPrincipal through PrincipalRepository.",
+                                    "Reject disabled or missing principals.",
+                                    "Destroy or invalidate stale authenticated-principal sessions when canonical principal state is invalid.",
+                                    "Return canonical PrincipalId only after session and principal validation.",
+                                    "Do not create public login or registration endpoints yet.",
+                                    "Do not create PrincipalId to SeshCreatorId mapping.",
+                                    "Do not expose creator-owned Sesh APIs.",
+                                    "Do not mutate production identity data.",
+                                    "Do not deploy."
+                                ]
+                  },
+    "nonGoals":  [
+                     "Creating a user",
+                     "Creating credentials",
+                     "Public login endpoint",
+                     "Registration",
+                     "Password reset",
+                     "Email verification",
+                     "Replacing River OS operator auth",
+                     "Creating a live authenticated session",
+                     "PrincipalId to SeshCreatorId mapping",
+                     "Creator-owned Sesh APIs",
+                     "Database mutation",
+                     "Migration",
+                     "New KV namespace",
+                     "New session database",
+                     "Deployment"
+                 ]
+}
