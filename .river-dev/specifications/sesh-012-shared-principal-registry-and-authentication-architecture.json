@@ -1,0 +1,300 @@
+{
+    "specification":  {
+                          "id":  "SESH-012",
+                          "title":  "Shared Principal Registry and Authentication Architecture",
+                          "status":  "proposed",
+                          "version":  1,
+                          "baseline":  {
+                                           "sourceCommit":  "1ead6eb38f21c536a6eeadfb0a5487bfb2510a24",
+                                           "governingSpecifications":  [
+                                                                           "SESH-009",
+                                                                           "SESH-011"
+                                                                       ],
+                                           "currentRiverOsAuthentication":  {
+                                                                                "model":  "Shared access-key gate",
+                                                                                "sessionKey":  "river-os-authenticated",
+                                                                                "sessionValue":  "boolean true",
+                                                                                "identityCapability":  "none",
+                                                                                "compatibility":  "May remain temporarily for operator-only River OS access."
+                                                                            }
+                                       },
+                          "architecturalGoal":  "Introduce reusable application-level identity infrastructure that can authenticate distinct principals without coupling identity ownership to Sesh, CRM, or any single product.",
+                          "selectedArchitecture":  {
+                                                       "rootIdentity":  "PrincipalId",
+                                                       "registry":  "Shared Principal Registry",
+                                                       "authentication":  "Authentication credentials resolve to PrincipalId.",
+                                                       "session":  "Authenticated sessions carry or resolve PrincipalId.",
+                                                       "productDomains":  "Products reference PrincipalId through explicit mappings rather than becoming authentication authorities."
+                                                   },
+                          "principalModel":  {
+                                                 "canonicalType":  "AuthenticatedPrincipal",
+                                                 "canonicalIdType":  "PrincipalId",
+                                                 "prefix":  "principal",
+                                                 "requiredFields":  [
+                                                                        "principalId",
+                                                                        "status",
+                                                                        "createdAt",
+                                                                        "updatedAt"
+                                                                    ],
+                                                 "phaseOneStatuses":  [
+                                                                          "active",
+                                                                          "disabled"
+                                                                      ],
+                                                 "optionalProfileFields":  [
+                                                                               "displayName"
+                                                                           ],
+                                                 "forbiddenAsCanonicalIdentity":  [
+                                                                                      "email",
+                                                                                      "phone",
+                                                                                      "displayName",
+                                                                                      "CRM relationship id",
+                                                                                      "SeshCreatorId",
+                                                                                      "session id"
+                                                                                  ],
+                                                 "rule":  "PrincipalId is stable, opaque, server-generated, non-secret, and independent of mutable profile attributes."
+                                             },
+                          "credentialModel":  {
+                                                  "principle":  "Credentials authenticate a principal but are not the principal identity.",
+                                                  "selectedPhaseOneCredential":  "Email + password",
+                                                  "rationale":  [
+                                                                    "Provides conventional distinct-user authentication.",
+                                                                    "Avoids coupling PrincipalId to mutable email.",
+                                                                    "Does not require third-party OAuth infrastructure for initial implementation.",
+                                                                    "Can later coexist with passkeys, magic links, OAuth, or other credential types."
+                                                                ],
+                                                  "passwordStorage":  "Passwords MUST be stored only as secure password hashes using an approved memory-hard password hashing algorithm.",
+                                                  "plaintextRule":  "Plaintext passwords MUST NOT be persisted or logged.",
+                                                  "emailRule":  "Email is a login identifier and contact attribute, not PrincipalId.",
+                                                  "uniqueness":  "Normalized login email must be unique among active password credentials.",
+                                                  "futureCredentialTypes":  [
+                                                                                "passkey",
+                                                                                "magic-link",
+                                                                                "oauth",
+                                                                                "service credential"
+                                                                            ]
+                                              },
+                          "passwordHashingBoundary":  {
+                                                          "requirement":  "Use a memory-hard password hashing algorithm suitable for password storage.",
+                                                          "preferredAlgorithm":  "Argon2id",
+                                                          "fallback":  "If the selected Cloudflare runtime cannot support the preferred implementation safely, implementation must pause and explicitly select a supported alternative before production use.",
+                                                          "prohibited":  [
+                                                                             "SHA-256 alone",
+                                                                             "SHA-1",
+                                                                             "MD5",
+                                                                             "reversible encryption",
+                                                                             "plaintext"
+                                                                         ],
+                                                          "salt":  "Each password hash must use an independently generated cryptographic salt.",
+                                                          "verification":  "Password verification occurs server-side only."
+                                                      },
+                          "registryPersistence":  {
+                                                      "decision":  "Use a dedicated shared Cloudflare D1 database for principal/authentication infrastructure.",
+                                                      "proposedDatabaseName":  "river-identity",
+                                                      "proposedBinding":  "RIVER_IDENTITY_DB",
+                                                      "separation":  [
+                                                                         "Do not place shared principal registry tables in SESH_DB.",
+                                                                         "Do not place shared principal registry tables in RIVER_CRM_DB.",
+                                                                         "Do not place shared principal registry tables in RIVER_COMMERCE_DB."
+                                                                     ],
+                                                      "rationale":  [
+                                                                        "Identity is shared infrastructure.",
+                                                                        "Sesh must remain a product-domain consumer of identity.",
+                                                                        "CRM and commerce may later reference the same PrincipalId without owning authentication."
+                                                                    ],
+                                                      "provisioningStatus":  "NOT AUTHORIZED BY THIS SPECIFICATION"
+                                                  },
+                          "proposedSchema":  {
+                                                 "principals":  {
+                                                                    "table":  "principals",
+                                                                    "columns":  [
+                                                                                    "principal_id TEXT PRIMARY KEY NOT NULL",
+                                                                                    "status TEXT NOT NULL",
+                                                                                    "display_name TEXT NULL",
+                                                                                    "created_at TEXT NOT NULL",
+                                                                                    "updated_at TEXT NOT NULL"
+                                                                                ]
+                                                                },
+                                                 "passwordCredentials":  {
+                                                                             "table":  "principal_password_credentials",
+                                                                             "columns":  [
+                                                                                             "principal_id TEXT PRIMARY KEY NOT NULL",
+                                                                                             "email_normalized TEXT NOT NULL UNIQUE",
+                                                                                             "password_hash TEXT NOT NULL",
+                                                                                             "created_at TEXT NOT NULL",
+                                                                                             "updated_at TEXT NOT NULL"
+                                                                                         ],
+                                                                             "rule":  "The credential references PrincipalId and does not redefine identity."
+                                                                         },
+                                                 "indexes":  [
+                                                                 "Unique index or UNIQUE constraint on email_normalized"
+                                                             ],
+                                                 "foreignKeys":  "Deferred until D1 migration strategy and deletion lifecycle are explicitly specified."
+                                             },
+                          "emailNormalization":  {
+                                                     "purpose":  "Support deterministic login lookup.",
+                                                     "phaseOneRule":  "Trim leading/trailing whitespace and lowercase the full address using locale-independent case conversion.",
+                                                     "warning":  "Do not perform provider-specific transformations such as Gmail dot removal or plus-address stripping.",
+                                                     "displayPreservation":  "Original presentation email may be stored separately later if needed, but normalization is used for credential lookup."
+                                                 },
+                          "sessionArchitecture":  {
+                                                      "sessionIdentity":  "Ephemeral session identifier",
+                                                      "durableIdentity":  "PrincipalId",
+                                                      "authenticatedSessionPayload":  [
+                                                                                          "principalId",
+                                                                                          "authenticationMethod",
+                                                                                          "issuedAt"
+                                                                                      ],
+                                                      "optionalFields":  [
+                                                                             "reauthenticatedAt"
+                                                                         ],
+                                                      "mustNotStore":  [
+                                                                           "plaintext password",
+                                                                           "password hash",
+                                                                           "shared access key"
+                                                                       ],
+                                                      "login":  [
+                                                                    "Verify credentials.",
+                                                                    "Reject disabled principal.",
+                                                                    "Regenerate session.",
+                                                                    "Set authenticated PrincipalId.",
+                                                                    "Apply bounded TTL."
+                                                                ],
+                                                      "logout":  "Destroy authenticated session without deleting PrincipalId or product ownership.",
+                                                      "fixationDefense":  "Regenerate session upon successful login."
+                                                  },
+                          "authorizationBoundary":  {
+                                                        "authenticationQuestion":  "Who is the caller?",
+                                                        "productAuthorizationQuestion":  "What may this PrincipalId do in this product?",
+                                                        "rule":  "Principal registry authenticates principals but does not grant Sesh project ownership by itself.",
+                                                        "seshResolution":  [
+                                                                               "Resolve authenticated PrincipalId.",
+                                                                               "Resolve explicit PrincipalId -\u003e SeshCreatorId mapping.",
+                                                                               "Authorize Sesh project ownership/collaboration.",
+                                                                               "Perform operation."
+                                                                           ]
+                                                    },
+                          "riverOsCompatibility":  {
+                                                       "currentGate":  "Existing shared River OS access-key authentication may remain temporarily.",
+                                                       "restriction":  "river-os-authenticated=true MUST NOT be accepted as a product-user PrincipalId.",
+                                                       "futureOperatorMapping":  "A later migration may optionally map River OS operator access to a real PrincipalId.",
+                                                       "coexistence":  "Shared operator gate and principal authentication may coexist temporarily if their session keys and authorization semantics remain distinct."
+                                                   },
+                          "accountLifecycle":  {
+                                                   "create":  "Principal creation is server-controlled.",
+                                                   "disable":  "Disabled principals cannot authenticate.",
+                                                   "delete":  "Hard deletion is deferred pending audit, ownership, and product-data lifecycle rules.",
+                                                   "emailChange":  "Changing email does not change PrincipalId.",
+                                                   "passwordChange":  "Changing password does not change PrincipalId.",
+                                                   "credentialLoss":  "Credential loss/recovery must never create a new PrincipalId implicitly."
+                                               },
+                          "auditAndSecurity":  {
+                                                   "phaseOneRequirements":  [
+                                                                                "No credential plaintext logging.",
+                                                                                "No password hash returned to clients.",
+                                                                                "No authentication secrets in URLs.",
+                                                                                "Generic invalid-credential responses.",
+                                                                                "No account-existence disclosure where avoidable.",
+                                                                                "Session regeneration after login.",
+                                                                                "Bounded session lifetime.",
+                                                                                "Disabled-principal enforcement.",
+                                                                                "Server-side credential verification."
+                                                                            ],
+                                                   "deferred":  [
+                                                                    "MFA",
+                                                                    "rate limiting architecture",
+                                                                    "credential breach detection",
+                                                                    "account recovery",
+                                                                    "email verification",
+                                                                    "security event audit log",
+                                                                    "device management"
+                                                                ]
+                                               },
+                          "serverModules":  {
+                                                "proposedRoot":  "src/lib/identity",
+                                                "proposedModules":  [
+                                                                        "src/lib/identity/identifiers.ts",
+                                                                        "src/lib/identity/model.ts",
+                                                                        "src/lib/identity/validation.ts",
+                                                                        "src/lib/identity/repository.ts",
+                                                                        "src/lib/identity/authentication.ts"
+                                                                    ],
+                                                "providerSpecificFutureRoot":  "src/lib/identity/cloudflare",
+                                                "rule":  "Provider-neutral identity contracts remain independent of Cloudflare D1 implementation details."
+                                            },
+                          "implementationSequence":  [
+                                                         {
+                                                             "phase":  1,
+                                                             "name":  "Principal domain model",
+                                                             "outcome":  "Implement PrincipalId, principal model, validation, and provider-neutral repository contracts."
+                                                         },
+                                                         {
+                                                             "phase":  2,
+                                                             "name":  "Persistence specification",
+                                                             "outcome":  "Specify dedicated river-identity D1 schema and migration."
+                                                         },
+                                                         {
+                                                             "phase":  3,
+                                                             "name":  "Provisioning authorization",
+                                                             "outcome":  "Provision RIVER_IDENTITY_DB only after explicit authorization."
+                                                         },
+                                                         {
+                                                             "phase":  4,
+                                                             "name":  "Credential authentication",
+                                                             "outcome":  "Implement password credential persistence and server-side verification."
+                                                         },
+                                                         {
+                                                             "phase":  5,
+                                                             "name":  "Authenticated session",
+                                                             "outcome":  "Resolve PrincipalId into application session state."
+                                                         },
+                                                         {
+                                                             "phase":  6,
+                                                             "name":  "Sesh creator mapping",
+                                                             "outcome":  "Implement explicit PrincipalId to SeshCreatorId mapping."
+                                                         }
+                                                     ],
+                          "nextImplementationSlice":  {
+                                                          "id":  "SESH-013",
+                                                          "subject":  "Provider-Neutral Principal Domain Model",
+                                                          "allowed":  [
+                                                                          "PrincipalId",
+                                                                          "principal model",
+                                                                          "principal validation",
+                                                                          "repository contracts",
+                                                                          "in-memory tests"
+                                                                      ],
+                                                          "forbidden":  [
+                                                                            "Live D1 resource creation",
+                                                                            "remote migration",
+                                                                            "production accounts",
+                                                                            "public registration",
+                                                                            "deployment"
+                                                                        ]
+                                                      },
+                          "acceptanceCriteria":  [
+                                                     "PrincipalId is the canonical application identity.",
+                                                     "Email is a credential lookup value, not PrincipalId.",
+                                                     "Credentials and identity are modeled separately.",
+                                                     "Session id and PrincipalId remain distinct.",
+                                                     "A dedicated shared identity database is selected conceptually.",
+                                                     "SESH_DB remains product-domain persistence.",
+                                                     "CRM and commerce databases do not become authentication stores.",
+                                                     "River OS boolean operator access remains separate from principal authentication.",
+                                                     "Authentication does not automatically authorize Sesh resources.",
+                                                     "No live identity infrastructure is created by this specification."
+                                                 ],
+                          "nonGoals":  [
+                                           "Provisioning river-identity.",
+                                           "Creating RIVER_IDENTITY_DB binding.",
+                                           "Creating database migrations.",
+                                           "Creating real users.",
+                                           "Changing River OS login.",
+                                           "Creating registration UI.",
+                                           "Creating login UI.",
+                                           "Creating password reset.",
+                                           "Creating OAuth integrations.",
+                                           "Creating Sesh APIs.",
+                                           "Deploying application code."
+                                       ]
+                      }
+}
