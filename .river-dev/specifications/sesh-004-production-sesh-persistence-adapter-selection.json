@@ -1,0 +1,386 @@
+{
+    "id":  "SESH-004",
+    "title":  "Production Sesh Persistence Adapter Selection",
+    "status":  "proposed",
+    "version":  "1.0.0",
+    "createdDate":  "2026-09-21",
+    "parent":  {
+                   "id":  "SESH-003",
+                   "title":  "Durable Sesh Project Persistence Architecture",
+                   "implementationCommit":  "a071a322c981f84df425c241d48719a368b8785e"
+               },
+    "objective":  "Select the first production-grade metadata and binary-object persistence adapters for Sesh while preserving the provider-neutral contracts established by SESH-003.",
+    "decisionScope":  [
+                          "Select a production metadata persistence adapter.",
+                          "Select a production binary audio-object adapter.",
+                          "Define the adapter boundaries required to preserve SESH-003 repository contracts.",
+                          "Define operational constraints, failure semantics, migration expectations, and rollback expectations.",
+                          "Do not provision infrastructure yet.",
+                          "Do not deploy yet."
+                      ],
+    "establishedConstraints":  [
+                                   "Canonical Sesh domain models remain provider-independent.",
+                                   "SeshProjectRepository remains the project persistence contract.",
+                                   "SeshAudioAssetRepository remains the audio metadata persistence contract.",
+                                   "SeshAudioObjectStore remains the binary-object persistence contract.",
+                                   "Metadata and binary audio remain separate storage concerns.",
+                                   "Production adapters must preserve canonical validation behavior.",
+                                   "Production adapters must preserve not-found, validation, version, conflict, and storage failure distinctions.",
+                                   "Production adapters must not introduce Cloudflare-specific types into canonical Sesh or provider-neutral persistence contracts.",
+                                   "Local low-latency musical execution must not depend on production persistence latency."
+                               ],
+    "evaluatedMetadataAdapters":  [
+                                      {
+                                          "name":  "Cloudflare D1",
+                                          "category":  "relational edge database",
+                                          "disposition":  "selected",
+                                          "strengths":  [
+                                                            "Fits existing Cloudflare deployment architecture.",
+                                                            "Suitable for structured project and audio metadata.",
+                                                            "Supports relational querying and indexing.",
+                                                            "Can store serialized persistence envelopes or normalized metadata tables.",
+                                                            "Keeps metadata separate from binary audio objects.",
+                                                            "Operationally aligned with the existing TRKF infrastructure direction."
+                                                        ],
+                                          "constraints":  [
+                                                              "Adapter must remain behind SeshProjectRepository and SeshAudioAssetRepository.",
+                                                              "D1 bindings must not leak into canonical domain files.",
+                                                              "Schema migrations require explicit version control and review.",
+                                                              "D1 errors must map to Sesh persistence failure semantics rather than being surfaced raw."
+                                                          ]
+                                      },
+                                      {
+                                          "name":  "Production filesystem",
+                                          "category":  "filesystem storage",
+                                          "disposition":  "not-selected",
+                                          "strengths":  [
+                                                            "Simple local development model.",
+                                                            "Useful for test or tooling adapters."
+                                                        ],
+                                          "constraints":  [
+                                                              "Poor fit for distributed production Cloudflare execution.",
+                                                              "Not appropriate as the primary production metadata store."
+                                                          ]
+                                      },
+                                      {
+                                          "name":  "External relational database",
+                                          "category":  "managed relational database",
+                                          "disposition":  "deferred",
+                                          "strengths":  [
+                                                            "Could provide broader SQL features or alternate scaling characteristics."
+                                                        ],
+                                          "constraints":  [
+                                                              "Adds operational and integration complexity before D1 limits are demonstrated.",
+                                                              "Not justified for the first production Sesh persistence implementation."
+                                                          ]
+                                      }
+                                  ],
+    "selectedMetadataAdapter":  {
+                                    "provider":  "Cloudflare D1",
+                                    "purpose":  "Production Sesh structured metadata persistence.",
+                                    "contractsImplemented":  [
+                                                                 "SeshProjectRepository",
+                                                                 "SeshAudioAssetRepository"
+                                                             ],
+                                    "selectionReason":  "D1 matches the existing Cloudflare architecture, fits structured Sesh metadata, and can remain cleanly isolated behind the already-proven repository contracts."
+                                },
+    "evaluatedBinaryObjectAdapters":  [
+                                          {
+                                              "name":  "Cloudflare R2",
+                                              "category":  "object storage",
+                                              "disposition":  "selected",
+                                              "strengths":  [
+                                                                "Designed for large binary objects.",
+                                                                "Fits Cloudflare deployment architecture.",
+                                                                "Natural match for recorded audio, stems, samples, mixes, and rendered files.",
+                                                                "Allows metadata to remain in D1 while object bytes remain in object storage.",
+                                                                "Maps cleanly to opaque SeshStorageReference values."
+                                                            ],
+                                              "constraints":  [
+                                                                  "R2 bindings must remain behind SeshAudioObjectStore.",
+                                                                  "Canonical SeshAudioAsset must not contain R2-specific SDK objects.",
+                                                                  "Object lifecycle and metadata lifecycle must remain separately controlled.",
+                                                                  "Deletion of metadata must not silently delete binary audio.",
+                                                                  "R2 errors must map to Sesh persistence failure semantics."
+                                                              ]
+                                          },
+                                          {
+                                              "name":  "Production filesystem",
+                                              "category":  "filesystem storage",
+                                              "disposition":  "not-selected",
+                                              "strengths":  [
+                                                                "Useful for local development or offline tooling."
+                                                            ],
+                                              "constraints":  [
+                                                                  "Not appropriate as the primary production object store for Cloudflare-hosted Sesh."
+                                                              ]
+                                          },
+                                          {
+                                              "name":  "External object storage",
+                                              "category":  "object storage",
+                                              "disposition":  "deferred",
+                                              "strengths":  [
+                                                                "Could support alternate pricing, geography, or ecosystem requirements later."
+                                                            ],
+                                              "constraints":  [
+                                                                  "Adds provider complexity before R2 limits are demonstrated.",
+                                                                  "Not justified for the first production Sesh object-storage adapter."
+                                                              ]
+                                          }
+                                      ],
+    "selectedBinaryObjectAdapter":  {
+                                        "provider":  "Cloudflare R2",
+                                        "purpose":  "Production Sesh binary audio-object persistence.",
+                                        "contractImplemented":  "SeshAudioObjectStore",
+                                        "selectionReason":  "R2 cleanly matches the binary-object boundary already established in SESH-003 and aligns with the existing Cloudflare infrastructure."
+                                    },
+    "productionArchitecture":  {
+                                   "metadata":  {
+                                                    "provider":  "Cloudflare D1",
+                                                    "stores":  [
+                                                                   "Sesh project durable metadata.",
+                                                                   "Sesh audio-asset metadata.",
+                                                                   "Persistence schema version.",
+                                                                   "Persistence revision metadata.",
+                                                                   "Opaque references to binary audio objects."
+                                                               ],
+                                                    "mustNotStore":  [
+                                                                         "Large binary audio bytes.",
+                                                                         "Decoded PCM buffers.",
+                                                                         "Ephemeral realtime input streams.",
+                                                                         "Browser-specific object references."
+                                                                     ]
+                                                },
+                                   "binaryObjects":  {
+                                                         "provider":  "Cloudflare R2",
+                                                         "stores":  [
+                                                                        "Recorded audio.",
+                                                                        "Imported audio.",
+                                                                        "Stems.",
+                                                                        "Samples.",
+                                                                        "Loops.",
+                                                                        "Rendered mixes.",
+                                                                        "Rendered masters.",
+                                                                        "Other large Sesh audio objects."
+                                                                    ],
+                                                         "mustNotDefine":  [
+                                                                               "Canonical creator identity.",
+                                                                               "Canonical project ownership.",
+                                                                               "Rights ownership.",
+                                                                               "Publishing ownership.",
+                                                                               "Management authority."
+                                                                           ]
+                                                     }
+                               },
+    "adapterBoundaries":  [
+                              {
+                                  "name":  "D1SeshProjectRepository",
+                                  "implements":  "SeshProjectRepository",
+                                  "proposedPath":  "src/lib/sesh/persistence/cloudflare/d1-project-repository.ts"
+                              },
+                              {
+                                  "name":  "D1SeshAudioAssetRepository",
+                                  "implements":  "SeshAudioAssetRepository",
+                                  "proposedPath":  "src/lib/sesh/persistence/cloudflare/d1-audio-asset-repository.ts"
+                              },
+                              {
+                                  "name":  "R2SeshAudioObjectStore",
+                                  "implements":  "SeshAudioObjectStore",
+                                  "proposedPath":  "src/lib/sesh/persistence/cloudflare/r2-audio-object-store.ts"
+                              }
+                          ],
+    "proposedSchema":  {
+                           "strategy":  "Start explicit and relational while preserving canonical serialized payload compatibility.",
+                           "tables":  [
+                                          {
+                                              "name":  "sesh_projects",
+                                              "purpose":  "Durable Sesh project records.",
+                                              "conceptualColumns":  [
+                                                                        "project_id",
+                                                                        "schema_version",
+                                                                        "revision",
+                                                                        "stored_at",
+                                                                        "payload_json"
+                                                                    ]
+                                          },
+                                          {
+                                              "name":  "sesh_audio_assets",
+                                              "purpose":  "Durable Sesh audio metadata records.",
+                                              "conceptualColumns":  [
+                                                                        "audio_asset_id",
+                                                                        "project_id",
+                                                                        "schema_version",
+                                                                        "revision",
+                                                                        "stored_at",
+                                                                        "payload_json"
+                                                                    ]
+                                          }
+                                      ],
+                           "indexes":  [
+                                           "Primary lookup by project_id.",
+                                           "Primary lookup by audio_asset_id.",
+                                           "Audio-asset listing index by project_id."
+                                       ],
+                           "rules":  [
+                                         "payload_json must deserialize through existing SESH-003 validation.",
+                                         "Database columns used for lookup must agree with canonical payload identifiers.",
+                                         "Schema version must remain explicit.",
+                                         "Revision must remain available for future optimistic concurrency.",
+                                         "Migration files must be version-controlled."
+                                     ]
+                       },
+    "r2KeyStrategy":  {
+                          "objective":  "Define stable opaque object keys without encoding legal or business authority.",
+                          "recommendedShape":  "sesh/projects/\u003cproject-local-id\u003e/audio/\u003casset-local-id\u003e/\u003cobject-name\u003e",
+                          "rules":  [
+                                        "Object keys are infrastructure identifiers, not canonical Sesh IDs.",
+                                        "Canonical SeshAudioAssetId remains stored in metadata.",
+                                        "R2 keys must not imply ownership rights.",
+                                        "Object keys should be deterministic where practical.",
+                                        "File names must be sanitized before inclusion in object keys.",
+                                        "Future content-addressed storage remains possible."
+                                    ]
+                      },
+    "operationalRequirements":  [
+                                    "Adapter writes validate canonical payloads before persistence.",
+                                    "Adapter reads validate persisted payloads before returning data.",
+                                    "Database failures map to storage failures.",
+                                    "Missing rows or objects map to not-found results.",
+                                    "Unsupported schema versions map to version failures.",
+                                    "Future optimistic-concurrency mismatches map to conflict failures.",
+                                    "Metadata writes must not require binary-object writes in the same operation unless explicitly orchestrated.",
+                                    "Binary-object writes must not silently create canonical metadata.",
+                                    "Delete operations remain explicit.",
+                                    "No destructive cascading deletion is introduced by default."
+                                ],
+    "migrationAndRollback":  [
+                                 "Initial D1 schema must be introduced through a version-controlled migration.",
+                                 "Migration execution requires explicit authorization separate from code creation.",
+                                 "R2 bucket provisioning requires explicit authorization separate from code creation.",
+                                 "Adapters must be testable against local or mocked bindings before production provisioning.",
+                                 "Rollback must preserve existing SESH-003 in-memory adapters.",
+                                 "Provider-neutral repository interfaces remain the fallback boundary.",
+                                 "No production data migration is authorized by SESH-004."
+                             ],
+    "securityAndPrivacy":  [
+                               "Do not place secrets in canonical Sesh records.",
+                               "Do not place Cloudflare credentials in source code.",
+                               "Bindings are supplied by runtime configuration.",
+                               "Future authorization checks belong above or around repository adapters rather than inside canonical data models.",
+                               "Object access must eventually be mediated rather than exposing unrestricted public buckets by default."
+                           ],
+    "implementationScope":  {
+                                "proposedRoot":  "src/lib/sesh/persistence/cloudflare",
+                                "files":  [
+                                              {
+                                                  "path":  "src/lib/sesh/persistence/cloudflare/types.ts",
+                                                  "responsibility":  "Narrow structural binding types required by Sesh Cloudflare adapters without leaking them into provider-neutral contracts."
+                                              },
+                                              {
+                                                  "path":  "src/lib/sesh/persistence/cloudflare/d1-project-repository.ts",
+                                                  "responsibility":  "D1 implementation of SeshProjectRepository."
+                                              },
+                                              {
+                                                  "path":  "src/lib/sesh/persistence/cloudflare/d1-audio-asset-repository.ts",
+                                                  "responsibility":  "D1 implementation of SeshAudioAssetRepository."
+                                              },
+                                              {
+                                                  "path":  "src/lib/sesh/persistence/cloudflare/r2-audio-object-store.ts",
+                                                  "responsibility":  "R2 implementation of SeshAudioObjectStore."
+                                              },
+                                              {
+                                                  "path":  "src/lib/sesh/persistence/cloudflare/index.ts",
+                                                  "responsibility":  "Cloudflare adapter export surface."
+                                              },
+                                              {
+                                                  "path":  "src/lib/sesh/persistence/cloudflare/d1-project-repository.test.ts",
+                                                  "responsibility":  "Focused D1 project adapter contract tests with fake bindings."
+                                              },
+                                              {
+                                                  "path":  "src/lib/sesh/persistence/cloudflare/d1-audio-asset-repository.test.ts",
+                                                  "responsibility":  "Focused D1 audio metadata adapter contract tests with fake bindings."
+                                              },
+                                              {
+                                                  "path":  "src/lib/sesh/persistence/cloudflare/r2-audio-object-store.test.ts",
+                                                  "responsibility":  "Focused R2 object-store adapter contract tests with fake bindings."
+                                              }
+                                          ]
+                            },
+    "infrastructureArtifactsDeferred":  [
+                                            "Actual D1 database creation.",
+                                            "Actual R2 bucket creation.",
+                                            "Cloudflare binding registration.",
+                                            "Production migrations.",
+                                            "Wrangler deployment.",
+                                            "Cloudflare Pages/Workers deployment.",
+                                            "Live credentials.",
+                                            "Live production data."
+                                        ],
+    "testsRequired":  [
+                          "D1 project adapter satisfies SeshProjectRepository.",
+                          "D1 project adapter validates before write.",
+                          "D1 project adapter validates after read.",
+                          "D1 project adapter maps missing rows to not-found.",
+                          "D1 audio adapter satisfies SeshAudioAssetRepository.",
+                          "D1 audio adapter lists assets by canonical project ID.",
+                          "D1 audio adapter keeps metadata deletion separate from R2 deletion.",
+                          "R2 adapter satisfies SeshAudioObjectStore.",
+                          "R2 adapter copies bytes rather than exposing mutable internal state.",
+                          "R2 adapter maps missing objects to not-found.",
+                          "Provider-specific failures map to storage failures.",
+                          "Canonical identifiers survive D1 round-trips exactly.",
+                          "Canonical storage references remain provider-neutral.",
+                          "No Cloudflare type leaks into src/lib/sesh/model.ts.",
+                          "No Cloudflare type leaks into src/lib/sesh/persistence/repositories.ts.",
+                          "Core and SESH-003 persistence tests continue passing."
+                      ],
+    "explicitlyOutOfScope":  [
+                                 "Creating a D1 database.",
+                                 "Creating an R2 bucket.",
+                                 "Running production migrations.",
+                                 "Editing Cloudflare production bindings.",
+                                 "Deploying Cloudflare code.",
+                                 "Uploading production audio.",
+                                 "Migrating customer data.",
+                                 "Realtime collaboration.",
+                                 "Authentication.",
+                                 "Authorization.",
+                                 "Sesh Studio UI.",
+                                 "Audio playback.",
+                                 "Audio recording.",
+                                 "Marketplace implementation.",
+                                 "Payments.",
+                                 "Rights accounting.",
+                                 "Royalty accounting.",
+                                 "Sesh Launch workflows.",
+                                 "AI integration.",
+                                 "Hardware integration."
+                             ],
+    "governance":  [
+                       "SESH-004 selects architecture only.",
+                       "SESH-004 does not provision infrastructure.",
+                       "SESH-004 does not deploy.",
+                       "SESH-004 does not alter live Cloudflare resources.",
+                       "SESH-004 does not create production data.",
+                       "SESH-004 does not process payments.",
+                       "SESH-004 does not create rights or ownership authority.",
+                       "Infrastructure provisioning requires fresh explicit authorization."
+                   ],
+    "acceptanceCriteria":  [
+                               "Cloudflare D1 is explicitly selected for first production metadata persistence.",
+                               "Cloudflare R2 is explicitly selected for first production binary audio persistence.",
+                               "Provider-neutral SESH-003 contracts remain unchanged.",
+                               "Adapter boundaries are explicitly named.",
+                               "Initial D1 conceptual schema is defined.",
+                               "R2 key strategy is defined.",
+                               "Operational and failure semantics are defined.",
+                               "Migration and rollback expectations are defined.",
+                               "No live infrastructure is provisioned.",
+                               "No deployment occurs."
+                           ],
+    "nextTargetAfterCompletion":  {
+                                      "id":  "SESH-005",
+                                      "title":  "Cloudflare Sesh Persistence Adapter Implementation",
+                                      "purpose":  "Implement and locally test D1 and R2 adapters behind the stable SESH-003 contracts without provisioning or deploying live infrastructure."
+                                  }
+}
