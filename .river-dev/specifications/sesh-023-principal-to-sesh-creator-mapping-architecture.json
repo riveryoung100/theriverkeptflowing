@@ -1,0 +1,105 @@
+{
+    "id":  "SESH-023",
+    "title":  "Principal to Sesh Creator Mapping Architecture",
+    "status":  "IMPLEMENTED_LOCALLY_PENDING_REVIEW",
+    "objective":  "Define an explicit provider-neutral one-to-one mapping boundary between canonical PrincipalId and canonical SeshCreatorId without conflating authentication identity, creator profile, CRM Person, session identity, or product authorization.",
+    "sourceBaseline":  {
+                           "branch":  "cif-001-canonical-content-source-record",
+                           "commit":  "e06848cbacc1001402f39e6977da5b815d2432f5",
+                           "predecessor":  "SESH-022"
+                       },
+    "model":  {
+                  "name":  "PrincipalSeshCreatorMapping",
+                  "fields":  [
+                                 "principalId",
+                                 "seshCreatorId",
+                                 "createdAt"
+                             ],
+                  "principalIdentity":  "PrincipalId",
+                  "creatorIdentity":  "SeshCreatorId",
+                  "immutable":  true
+              },
+    "cardinality":  {
+                        "principalToCreator":  "ONE_TO_ONE",
+                        "creatorToPrincipal":  "ONE_TO_ONE",
+                        "principalRemap":  "FORBIDDEN_IN_PHASE_ONE",
+                        "creatorReassignment":  "FORBIDDEN_IN_PHASE_ONE",
+                        "lifecycleChange":  "REQUIRES_EXPLICIT_FUTURE_ARCHITECTURE"
+                    },
+    "repository":  {
+                       "interface":  "PrincipalSeshCreatorMappingRepository",
+                       "providerNeutral":  true,
+                       "methods":  [
+                                       "saveMapping",
+                                       "getByPrincipalId",
+                                       "getBySeshCreatorId",
+                                       "mappingExistsForPrincipal",
+                                       "mappingExistsForCreator"
+                                   ],
+                       "errorKinds":  [
+                                          "not-found",
+                                          "validation",
+                                          "conflict",
+                                          "storage"
+                                      ]
+                   },
+    "inferenceRules":  {
+                           "email":  "FORBIDDEN",
+                           "displayName":  "FORBIDDEN",
+                           "crmPersonId":  "FORBIDDEN",
+                           "sessionIdentity":  "FORBIDDEN",
+                           "legalIdentity":  "FORBIDDEN",
+                           "rule":  "SeshCreatorId may be resolved only through the explicit canonical mapping."
+                       },
+    "identitySeparation":  {
+                               "principal":  "AUTHENTICATION_IDENTITY",
+                               "seshCreator":  "SESH_PRODUCT_IDENTITY",
+                               "creatorProfile":  "DISTINCT_FROM_MAPPING",
+                               "crmPerson":  "DISTINCT",
+                               "session":  "DISTINCT",
+                               "legalAccountIdentity":  "DISTINCT"
+                           },
+    "authorizationBoundary":  {
+                                  "mappingMeans":  "Authenticated principal is associated with this Sesh creator identity.",
+                                  "ownership":  "NOT_IMPLIED",
+                                  "collaboratorAccess":  "NOT_IMPLIED",
+                                  "publishingRights":  "NOT_IMPLIED",
+                                  "managementRights":  "NOT_IMPLIED",
+                                  "creatorOwnedApis":  "STILL_FORBIDDEN"
+                              },
+    "persistence":  {
+                        "productionAdapter":  "DEFERRED",
+                        "schema":  "DEFERRED",
+                        "databaseSelection":  "DEFERRED",
+                        "productionMutation":  false
+                    },
+    "nextSlice":  {
+                      "id":  "SESH-024",
+                      "title":  "Principal to Sesh Creator Mapping Persistence Architecture",
+                      "scope":  [
+                                    "Select the canonical persistence location for PrincipalId to SeshCreatorId mappings.",
+                                    "Determine whether the mapping belongs in shared river-identity D1 or another explicit shared identity-owned persistence boundary.",
+                                    "Define schema, uniqueness constraints, migration path, and provider adapter contract.",
+                                    "Preserve one-to-one PrincipalId and SeshCreatorId uniqueness.",
+                                    "Do not infer mappings from email, profile, CRM, or session data.",
+                                    "Do not create public creator-owned Sesh endpoints.",
+                                    "Do not mutate production data without a separate live authorization gate.",
+                                    "Do not deploy."
+                                ]
+                  },
+    "nonGoals":  [
+                     "Creating a Principal",
+                     "Creating a Sesh creator profile",
+                     "Creating a production mapping",
+                     "Public login",
+                     "Registration",
+                     "Creator ownership authorization",
+                     "Collaborator authorization",
+                     "Publishing rights",
+                     "Management rights",
+                     "Public creator-owned Sesh APIs",
+                     "Database migration",
+                     "Production data mutation",
+                     "Deployment"
+                 ]
+}
