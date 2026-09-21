@@ -1,0 +1,558 @@
+{
+    "id":  "SESH-002",
+    "title":  "Canonical Sesh Core Domain Model",
+    "status":  "proposed",
+    "version":  "1.0.0",
+    "createdDate":  "2026-09-21",
+    "parent":  {
+                   "id":  "SESH-001",
+                   "title":  "Sesh Domain Architecture Foundation",
+                   "commit":  "309c56b69c323e9a70219023559c0e4d986f371b"
+               },
+    "objective":  "Implement the smallest canonical, provider-independent, storage-independent Sesh domain foundation required for every major Sesh product family.",
+    "rationale":  [
+                      "Sesh Studio, Rhythm, Keys, Control, Pulse, Sounds, Launch, future hardware, and future intelligence all require stable shared music-domain concepts.",
+                      "The domain model must exist before UI, persistence, audio-engine integration, marketplace logic, membership logic, rights workflows, or hardware execution.",
+                      "The first implementation should capture identity, ownership relationships, temporal music structure, input normalization, and synchronized feedback without binding the domain to a particular browser API, database, cloud provider, AI provider, payment system, or audio engine."
+                  ],
+    "architectureRules":  [
+                              "Place canonical implementation under src/lib/sesh.",
+                              "Keep the core domain pure TypeScript.",
+                              "Do not import Astro components into the Sesh domain.",
+                              "Do not import Cloudflare bindings into the Sesh domain.",
+                              "Do not import Stripe into the Sesh domain.",
+                              "Do not import River OS CRM persistence into the Sesh domain.",
+                              "Do not import the River Development Agent into the Sesh domain.",
+                              "Do not bind canonical models to D1, R2, filesystem storage, IndexedDB, localStorage, or another persistence technology.",
+                              "Do not bind canonical models to Web Audio, AudioWorklet, Tone.js, MIDI APIs, Gamepad APIs, or another execution provider.",
+                              "Domain records must be serializable data.",
+                              "Canonical identity creation and validation must be deterministic and independently testable.",
+                              "Domain validation must reject malformed data at the Sesh boundary.",
+                              "Low-latency musical execution belongs to later execution layers, not these canonical records.",
+                              "Core models must support future web, desktop, mobile, hardware, and AI-assisted product surfaces."
+                          ],
+    "implementationScope":  {
+                                "codeRoot":  "src/lib/sesh",
+                                "files":  [
+                                              {
+                                                  "path":  "src/lib/sesh/identifiers.ts",
+                                                  "responsibility":  "Canonical Sesh branded identifier types, creation, and validation."
+                                              },
+                                              {
+                                                  "path":  "src/lib/sesh/model.ts",
+                                                  "responsibility":  "Canonical Sesh core domain record and union types."
+                                              },
+                                              {
+                                                  "path":  "src/lib/sesh/validation.ts",
+                                                  "responsibility":  "Runtime validation for canonical Sesh core records."
+                                              },
+                                              {
+                                                  "path":  "src/lib/sesh/index.ts",
+                                                  "responsibility":  "Stable public export surface for the canonical Sesh core."
+                                              },
+                                              {
+                                                  "path":  "src/lib/sesh/identifiers.test.ts",
+                                                  "responsibility":  "Identifier construction and validation tests."
+                                              },
+                                              {
+                                                  "path":  "src/lib/sesh/validation.test.ts",
+                                                  "responsibility":  "Canonical domain validation tests."
+                                              },
+                                              {
+                                                  "path":  "src/lib/sesh/model.test.ts",
+                                                  "responsibility":  "Type-shape and invariant behavior tests for representative Sesh records."
+                                              }
+                                          ]
+                            },
+    "canonicalIdentifiers":  [
+                                 {
+                                     "name":  "SeshCreatorId",
+                                     "prefix":  "sesh-creator"
+                                 },
+                                 {
+                                     "name":  "SeshMusicProjectId",
+                                     "prefix":  "sesh-project"
+                                 },
+                                 {
+                                     "name":  "SeshAudioAssetId",
+                                     "prefix":  "sesh-audio"
+                                 },
+                                 {
+                                     "name":  "SeshSessionId",
+                                     "prefix":  "sesh-session"
+                                 },
+                                 {
+                                     "name":  "SeshTrackId",
+                                     "prefix":  "sesh-track"
+                                 },
+                                 {
+                                     "name":  "SeshTempoMapId",
+                                     "prefix":  "sesh-tempo-map"
+                                 },
+                                 {
+                                     "name":  "SeshBeatGridId",
+                                     "prefix":  "sesh-beat-grid"
+                                 },
+                                 {
+                                     "name":  "SeshMusicalEventId",
+                                     "prefix":  "sesh-musical-event"
+                                 },
+                                 {
+                                     "name":  "SeshInputEventId",
+                                     "prefix":  "sesh-input-event"
+                                 },
+                                 {
+                                     "name":  "SeshCueId",
+                                     "prefix":  "sesh-cue"
+                                 }
+                             ],
+    "identifierContract":  {
+                               "requirements":  [
+                                                    "Every identifier must be a branded string type.",
+                                                    "Every identifier must have an explicit parser or validator.",
+                                                    "Every identifier must reject empty values.",
+                                                    "Every identifier must reject values with the wrong prefix.",
+                                                    "Identifier helpers must not use randomness internally unless explicitly supplied by a caller.",
+                                                    "Canonical records accept identifiers but do not create hidden identities as side effects."
+                                                ],
+                               "recommendedShape":  "\u003cprefix\u003e:\u003cnon-empty-local-id\u003e"
+                           },
+    "canonicalCoreModels":  [
+                                {
+                                    "name":  "SeshCreatorProfile",
+                                    "requiredFields":  [
+                                                           "id",
+                                                           "displayName",
+                                                           "createdAt"
+                                                       ],
+                                    "optionalFields":  [
+                                                           "handle",
+                                                           "bio"
+                                                       ],
+                                    "invariants":  [
+                                                       "displayName must be non-empty.",
+                                                       "Creator profile is not an authentication account.",
+                                                       "Creator profile is not a legal identity record."
+                                                   ]
+                                },
+                                {
+                                    "name":  "SeshMusicProject",
+                                    "requiredFields":  [
+                                                           "id",
+                                                           "ownerCreatorId",
+                                                           "title",
+                                                           "createdAt",
+                                                           "updatedAt",
+                                                           "trackIds",
+                                                           "sessionIds",
+                                                           "audioAssetIds"
+                                                       ],
+                                    "optionalFields":  [
+                                                           "tempoMapId",
+                                                           "beatGridId",
+                                                           "description"
+                                                       ],
+                                    "invariants":  [
+                                                       "title must be non-empty.",
+                                                       "ownerCreatorId must be a valid SeshCreatorId.",
+                                                       "updatedAt must not precede createdAt.",
+                                                       "referenced identifiers must be valid canonical Sesh identifiers.",
+                                                       "duplicate referenced identifiers must be rejected or normalized deterministically."
+                                                   ]
+                                },
+                                {
+                                    "name":  "SeshAudioAsset",
+                                    "requiredFields":  [
+                                                           "id",
+                                                           "projectId",
+                                                           "kind",
+                                                           "name",
+                                                           "createdAt"
+                                                       ],
+                                    "optionalFields":  [
+                                                           "durationSeconds",
+                                                           "sampleRateHz",
+                                                           "channelCount",
+                                                           "storageReference",
+                                                           "contentType"
+                                                       ],
+                                    "allowedKinds":  [
+                                                         "recording",
+                                                         "track",
+                                                         "stem",
+                                                         "sample",
+                                                         "loop",
+                                                         "one-shot",
+                                                         "render",
+                                                         "mix",
+                                                         "master",
+                                                         "reference"
+                                                     ],
+                                    "invariants":  [
+                                                       "name must be non-empty.",
+                                                       "durationSeconds, when present, must be finite and non-negative.",
+                                                       "sampleRateHz, when present, must be finite and positive.",
+                                                       "channelCount, when present, must be a positive integer.",
+                                                       "storageReference is opaque metadata and must not make the canonical domain dependent on a storage provider."
+                                                   ]
+                                },
+                                {
+                                    "name":  "SeshSession",
+                                    "requiredFields":  [
+                                                           "id",
+                                                           "projectId",
+                                                           "startedAt"
+                                                       ],
+                                    "optionalFields":  [
+                                                           "endedAt",
+                                                           "name"
+                                                       ],
+                                    "invariants":  [
+                                                       "endedAt, when present, must not precede startedAt."
+                                                   ]
+                                },
+                                {
+                                    "name":  "SeshTrack",
+                                    "requiredFields":  [
+                                                           "id",
+                                                           "projectId",
+                                                           "name",
+                                                           "order",
+                                                           "audioAssetIds"
+                                                       ],
+                                    "optionalFields":  [
+                                                           "muted",
+                                                           "solo",
+                                                           "gain"
+                                                       ],
+                                    "invariants":  [
+                                                       "name must be non-empty.",
+                                                       "order must be a non-negative integer.",
+                                                       "gain, when present, must be finite.",
+                                                       "audioAssetIds must contain valid SeshAudioAssetIds."
+                                                   ]
+                                },
+                                {
+                                    "name":  "SeshTempoPoint",
+                                    "requiredFields":  [
+                                                           "beat",
+                                                           "bpm"
+                                                       ],
+                                    "invariants":  [
+                                                       "beat must be finite and non-negative.",
+                                                       "bpm must be finite and greater than zero."
+                                                   ]
+                                },
+                                {
+                                    "name":  "SeshTempoMap",
+                                    "requiredFields":  [
+                                                           "id",
+                                                           "projectId",
+                                                           "points"
+                                                       ],
+                                    "invariants":  [
+                                                       "points must contain at least one tempo point.",
+                                                       "tempo points must be ordered by beat.",
+                                                       "two tempo points may not occupy the same beat."
+                                                   ]
+                                },
+                                {
+                                    "name":  "SeshBeatGrid",
+                                    "requiredFields":  [
+                                                           "id",
+                                                           "projectId",
+                                                           "beatsPerBar",
+                                                           "beatUnit",
+                                                           "subdivisionsPerBeat"
+                                                       ],
+                                    "optionalFields":  [
+                                                           "startBeat"
+                                                       ],
+                                    "invariants":  [
+                                                       "beatsPerBar must be a positive integer.",
+                                                       "beatUnit must be a positive integer.",
+                                                       "subdivisionsPerBeat must be a positive integer.",
+                                                       "startBeat, when present, must be finite."
+                                                   ]
+                                },
+                                {
+                                    "name":  "SeshMusicalEvent",
+                                    "requiredFields":  [
+                                                           "id",
+                                                           "projectId",
+                                                           "kind",
+                                                           "beat"
+                                                       ],
+                                    "optionalFields":  [
+                                                           "durationBeats",
+                                                           "trackId",
+                                                           "note",
+                                                           "velocity",
+                                                           "control",
+                                                           "value",
+                                                           "metadata"
+                                                       ],
+                                    "allowedKinds":  [
+                                                         "note",
+                                                         "trigger",
+                                                         "hit",
+                                                         "control-change",
+                                                         "transport",
+                                                         "automation",
+                                                         "gesture"
+                                                     ],
+                                    "invariants":  [
+                                                       "beat must be finite and non-negative.",
+                                                       "durationBeats, when present, must be finite and non-negative.",
+                                                       "velocity, when present, must be finite.",
+                                                       "The canonical event shape must not require a specific MIDI, Web Audio, or hardware representation."
+                                                   ]
+                                },
+                                {
+                                    "name":  "SeshInputEvent",
+                                    "requiredFields":  [
+                                                           "id",
+                                                           "source",
+                                                           "occurredAt",
+                                                           "kind"
+                                                       ],
+                                    "optionalFields":  [
+                                                           "control",
+                                                           "value",
+                                                           "pressure",
+                                                           "metadata"
+                                                       ],
+                                    "allowedSources":  [
+                                                           "computer-keyboard",
+                                                           "pointer",
+                                                           "touch",
+                                                           "game-controller",
+                                                           "midi",
+                                                           "sesh-device"
+                                                       ],
+                                    "invariants":  [
+                                                       "Input normalization must preserve source without coupling downstream musical logic to source-specific APIs.",
+                                                       "occurredAt must be a valid timestamp."
+                                                   ]
+                                },
+                                {
+                                    "name":  "SeshCue",
+                                    "requiredFields":  [
+                                                           "id",
+                                                           "projectId",
+                                                           "beat",
+                                                           "channels",
+                                                           "kind"
+                                                       ],
+                                    "optionalFields":  [
+                                                           "durationBeats",
+                                                           "intensity",
+                                                           "payload"
+                                                       ],
+                                    "allowedChannels":  [
+                                                            "visual",
+                                                            "haptic",
+                                                            "audio",
+                                                            "lighting"
+                                                        ],
+                                    "invariants":  [
+                                                       "beat must be finite and non-negative.",
+                                                       "channels must contain at least one supported channel.",
+                                                       "durationBeats, when present, must be finite and non-negative.",
+                                                       "intensity, when present, must be finite.",
+                                                       "Cue semantics must remain independent of any concrete display, vibration, speaker, lighting, or hardware API."
+                                                   ]
+                                }
+                            ],
+    "sharedValueTypes":  [
+                             {
+                                 "name":  "SeshTimestamp",
+                                 "representation":  "ISO-8601 UTC string",
+                                 "rule":  "Canonical timestamps must parse successfully and represent an absolute instant."
+                             },
+                             {
+                                 "name":  "SeshStorageReference",
+                                 "representation":  "provider-agnostic serializable metadata",
+                                 "fields":  [
+                                                "provider",
+                                                "key"
+                                            ],
+                                 "optionalFields":  [
+                                                        "bucket",
+                                                        "versionId"
+                                                    ],
+                                 "rule":  "The presence of a storage reference must not imply any one persistence technology."
+                             }
+                         ],
+    "validationContract":  {
+                               "strategy":  "Explicit runtime validators with deterministic error behavior.",
+                               "requirements":  [
+                                                    "Validate unknown input rather than trusting TypeScript types at runtime.",
+                                                    "Do not silently coerce malformed identifiers.",
+                                                    "Do not silently coerce NaN or Infinity into valid musical values.",
+                                                    "Reject empty required strings after trimming.",
+                                                    "Reject invalid enum members.",
+                                                    "Reject impossible temporal ordering.",
+                                                    "Reject duplicate values where uniqueness is a model invariant.",
+                                                    "Return or throw errors with enough field context for future API and persistence layers.",
+                                                    "Validators must not perform network calls.",
+                                                    "Validators must not access persistence.",
+                                                    "Validators must not mutate repository or global state."
+                                                ]
+                           },
+    "publicExportContract":  {
+                                 "file":  "src/lib/sesh/index.ts",
+                                 "exports":  [
+                                                 "canonical identifier types",
+                                                 "identifier helpers",
+                                                 "canonical core model types",
+                                                 "canonical enum/union types",
+                                                 "runtime validation functions"
+                                             ],
+                                 "rule":  "Consumers should be able to import canonical Sesh core concepts from src/lib/sesh without knowing internal file layout."
+                             },
+    "representativeUseCases":  [
+                                   {
+                                       "name":  "Create empty music project state",
+                                       "demonstrates":  [
+                                                            "creator identity",
+                                                            "project identity",
+                                                            "project metadata",
+                                                            "empty track/session/audio references"
+                                                        ]
+                                   },
+                                   {
+                                       "name":  "Represent recorded audio",
+                                       "demonstrates":  [
+                                                            "audio asset metadata",
+                                                            "project ownership",
+                                                            "provider-independent storage reference"
+                                                        ]
+                                   },
+                                   {
+                                       "name":  "Represent tempo and beat grid",
+                                       "demonstrates":  [
+                                                            "tempo map",
+                                                            "beat grid",
+                                                            "musical timing"
+                                                        ]
+                                   },
+                                   {
+                                       "name":  "Normalize keyboard or controller interaction",
+                                       "demonstrates":  [
+                                                            "SeshInputEvent",
+                                                            "source independence"
+                                                        ]
+                                   },
+                                   {
+                                       "name":  "Schedule synchronized visual/haptic feedback",
+                                       "demonstrates":  [
+                                                            "SeshCue",
+                                                            "beat alignment",
+                                                            "multi-channel feedback"
+                                                        ]
+                                   }
+                               ],
+    "testsRequired":  [
+                          "Creates and validates every canonical identifier type.",
+                          "Rejects malformed or wrong-prefix identifiers.",
+                          "Accepts a valid minimal creator profile.",
+                          "Rejects empty creator display names.",
+                          "Accepts a valid minimal music project.",
+                          "Rejects project update timestamps earlier than creation timestamps.",
+                          "Accepts every canonical audio asset kind.",
+                          "Rejects invalid audio metadata ranges.",
+                          "Rejects session end timestamps before session start timestamps.",
+                          "Rejects negative track order.",
+                          "Accepts valid tempo maps.",
+                          "Rejects empty tempo maps.",
+                          "Rejects unordered or duplicate tempo points.",
+                          "Accepts valid beat grids.",
+                          "Rejects invalid meter/subdivision values.",
+                          "Accepts every canonical musical-event kind.",
+                          "Rejects negative event beat positions.",
+                          "Accepts every canonical input source.",
+                          "Rejects unsupported input sources.",
+                          "Accepts multi-channel cues.",
+                          "Rejects cues without channels.",
+                          "Rejects unsupported cue channels.",
+                          "Demonstrates canonical records serialize to JSON-compatible values.",
+                          "Demonstrates the canonical Sesh core has no dependency on Astro, Cloudflare, Stripe, Web Audio, MIDI APIs, Gamepad APIs, filesystem persistence, or River OS."
+                      ],
+    "explicitlyOutOfScope":  [
+                                 "Sesh Studio user interface.",
+                                 "DAW timeline user interface.",
+                                 "Audio playback.",
+                                 "Audio recording.",
+                                 "Audio decoding.",
+                                 "Waveform rendering.",
+                                 "AudioWorklet integration.",
+                                 "Web Audio integration.",
+                                 "MIDI API integration.",
+                                 "Gamepad API integration.",
+                                 "Keyboard event listeners.",
+                                 "Haptic execution.",
+                                 "Visual cue rendering.",
+                                 "Lighting execution.",
+                                 "Realtime collaboration.",
+                                 "Persistence implementation.",
+                                 "D1 tables.",
+                                 "R2 buckets.",
+                                 "Cloudflare resources.",
+                                 "Authentication.",
+                                 "Creator memberships.",
+                                 "Checkout.",
+                                 "Payments.",
+                                 "Sesh Sounds marketplace implementation.",
+                                 "Rights contracts.",
+                                 "Royalty accounting.",
+                                 "Distribution.",
+                                 "Artist management.",
+                                 "Sesh Launch workflows.",
+                                 "AI-generated music.",
+                                 "AI model-provider integration.",
+                                 "Hardware protocol implementation."
+                             ],
+    "safetyAndGovernance":  [
+                                "SESH-002 creates domain code only.",
+                                "SESH-002 does not deploy.",
+                                "SESH-002 does not publish.",
+                                "SESH-002 does not provision infrastructure.",
+                                "SESH-002 does not contact external people.",
+                                "SESH-002 does not create legal or rights authority.",
+                                "SESH-002 does not create payment authority.",
+                                "SESH-002 does not create artist-management authority."
+                            ],
+    "acceptanceCriteria":  [
+                               "src/lib/sesh exists as the canonical Sesh code boundary.",
+                               "Ten canonical Sesh identifier types exist.",
+                               "The core Sesh models required by phase one of SESH-001 exist.",
+                               "Runtime validators exist for canonical Sesh records.",
+                               "Malformed identifiers and malformed musical values are rejected.",
+                               "The models are serializable and provider-independent.",
+                               "No browser audio API is required by the core domain.",
+                               "No persistence technology is required by the core domain.",
+                               "No commerce technology is required by the core domain.",
+                               "No River OS operator model is required by the core domain.",
+                               "A stable src/lib/sesh/index.ts export surface exists.",
+                               "Focused Sesh core tests pass.",
+                               "No unrelated repository files are modified."
+                           ],
+    "implementationOrder":  [
+                                "Create identifier foundation.",
+                                "Create canonical domain model types.",
+                                "Create runtime validation.",
+                                "Create public Sesh export surface.",
+                                "Create identifier tests.",
+                                "Create model/serialization tests.",
+                                "Create validation tests.",
+                                "Run focused Sesh test suite.",
+                                "Review diff and architecture boundaries.",
+                                "Commit only after successful verification."
+                            ],
+    "nextTargetAfterCompletion":  {
+                                      "id":  "SESH-003",
+                                      "title":  "Durable Sesh Project Persistence Architecture",
+                                      "purpose":  "Design and implement durable project/audio metadata persistence after the canonical Sesh domain is stable."
+                                  }
+}
