@@ -1,0 +1,352 @@
+{
+    "id":  "SESH-003",
+    "title":  "Durable Sesh Project Persistence Architecture",
+    "status":  "proposed",
+    "version":  "1.0.0",
+    "createdDate":  "2026-09-21",
+    "parent":  {
+                   "id":  "SESH-002",
+                   "title":  "Canonical Sesh Core Domain Model",
+                   "implementationCommit":  "e930f5eb1b0c33279581be74b66efcb1d2c06be8"
+               },
+    "objective":  "Define the durable persistence architecture for Sesh project metadata and audio-asset metadata while preserving the provider-independent canonical domain established by SESH-002.",
+    "rationale":  [
+                      "The canonical Sesh domain now exists independently of storage technology.",
+                      "Sesh projects must survive process restarts and future application surfaces.",
+                      "Audio metadata and large binary audio require different persistence concerns.",
+                      "The persistence layer must not contaminate canonical Sesh models with D1, R2, filesystem, Cloudflare, or other provider-specific types.",
+                      "The architecture must support future web, desktop, mobile, collaboration, marketplace, and hardware workflows."
+                  ],
+    "architecturePrinciples":  [
+                                   "Canonical Sesh domain types remain storage-independent.",
+                                   "Persistence is introduced through explicit repository interfaces and adapters.",
+                                   "Metadata persistence and binary audio-object storage remain separate concerns.",
+                                   "Persistence adapters validate records before writing and after reading.",
+                                   "Stored records must preserve canonical Sesh identifiers.",
+                                   "Persistence must not create hidden domain identities.",
+                                   "Persistence must not silently repair malformed canonical records.",
+                                   "Serialization must be deterministic enough for debugging, migration, versioning, and replay.",
+                                   "Provider-specific concerns belong behind adapters.",
+                                   "No persistence architecture decision authorizes deployment or infrastructure provisioning."
+                               ],
+    "boundedResponsibilities":  {
+                                    "seshDomain":  [
+                                                       "Canonical creator/project/audio/session/track/timing/event/input/cue models.",
+                                                       "Canonical identifiers.",
+                                                       "Runtime validation."
+                                                   ],
+                                    "persistenceBoundary":  [
+                                                                "Repository contracts.",
+                                                                "Persistence record envelopes.",
+                                                                "Serialization and deserialization.",
+                                                                "Version metadata.",
+                                                                "Optimistic concurrency semantics where required.",
+                                                                "Not-found and conflict behavior.",
+                                                                "Project aggregate retrieval.",
+                                                                "Audio metadata retrieval."
+                                                            ],
+                                    "infrastructureAdapters":  [
+                                                                   "Future D1 adapter.",
+                                                                   "Future filesystem adapter where useful for development or local tooling.",
+                                                                   "Future object-storage adapter for binary audio.",
+                                                                   "Future Durable Object or other coordination adapter only if later collaboration requirements justify it."
+                                                               ]
+                                },
+    "persistenceModel":  {
+                             "projectAggregate":  {
+                                                      "root":  "SeshMusicProject",
+                                                      "includes":  [
+                                                                       "Project metadata.",
+                                                                       "Track metadata.",
+                                                                       "Session metadata.",
+                                                                       "Tempo map.",
+                                                                       "Beat grid."
+                                                                   ],
+                                                      "excludes":  [
+                                                                       "Large binary audio bytes.",
+                                                                       "Live transport state.",
+                                                                       "Ephemeral input events.",
+                                                                       "Ephemeral realtime collaboration presence.",
+                                                                       "Rendered UI state."
+                                                                   ],
+                                                      "rule":  "Project aggregate persistence should allow loading the durable creative state necessary to reopen a Sesh project."
+                                                  },
+                             "audioMetadata":  {
+                                                   "root":  "SeshAudioAsset",
+                                                   "includes":  [
+                                                                    "Canonical audio asset identifier.",
+                                                                    "Owning project identifier.",
+                                                                    "Asset kind.",
+                                                                    "Name.",
+                                                                    "Creation timestamp.",
+                                                                    "Duration metadata.",
+                                                                    "Sample-rate metadata.",
+                                                                    "Channel-count metadata.",
+                                                                    "Content type.",
+                                                                    "Opaque storage reference."
+                                                                ],
+                                                   "excludes":  [
+                                                                    "Binary waveform bytes.",
+                                                                    "Decoded PCM buffers.",
+                                                                    "Browser object URLs.",
+                                                                    "Provider SDK response objects."
+                                                                ]
+                                               },
+                             "binaryAudio":  {
+                                                 "rule":  "Binary audio storage is an infrastructure concern separate from relational/domain metadata.",
+                                                 "requirements":  [
+                                                                      "Addressable through opaque storage references.",
+                                                                      "Must support large objects.",
+                                                                      "Must not require embedding bytes into ordinary metadata records.",
+                                                                      "Provider choice remains deferred until adapter implementation.",
+                                                                      "Canonical domain must not depend on provider-specific bucket/key types."
+                                                                  ]
+                                             }
+                         },
+    "repositoryContracts":  [
+                                {
+                                    "name":  "SeshProjectRepository",
+                                    "purpose":  "Durable project aggregate persistence.",
+                                    "operations":  [
+                                                       "saveProject",
+                                                       "getProject",
+                                                       "deleteProject",
+                                                       "projectExists"
+                                                   ],
+                                    "behavior":  [
+                                                     "getProject returns canonical validated state or an explicit not-found result.",
+                                                     "saveProject validates input before persistence.",
+                                                     "read operations validate deserialized records before returning them.",
+                                                     "delete behavior must be explicit and must not silently delete referenced binary audio unless a later lifecycle policy says so."
+                                                 ]
+                                },
+                                {
+                                    "name":  "SeshAudioAssetRepository",
+                                    "purpose":  "Durable canonical audio metadata persistence.",
+                                    "operations":  [
+                                                       "saveAudioAsset",
+                                                       "getAudioAsset",
+                                                       "listAudioAssetsForProject",
+                                                       "deleteAudioAssetMetadata"
+                                                   ],
+                                    "behavior":  [
+                                                     "Audio metadata deletion is separate from binary-object deletion.",
+                                                     "Returned metadata must validate as canonical SeshAudioAsset.",
+                                                     "Listing must be scoped by canonical SeshMusicProjectId."
+                                                 ]
+                                },
+                                {
+                                    "name":  "SeshAudioObjectStore",
+                                    "purpose":  "Provider-neutral binary audio-object boundary.",
+                                    "operations":  [
+                                                       "putObject",
+                                                       "getObject",
+                                                       "deleteObject",
+                                                       "objectExists"
+                                                   ],
+                                    "behavior":  [
+                                                     "Returns or consumes provider-neutral Sesh storage references at the Sesh integration boundary.",
+                                                     "Does not redefine SeshAudioAsset.",
+                                                     "Does not imply rights ownership or legal ownership."
+                                                 ]
+                                }
+                            ],
+    "persistedEnvelope":  {
+                              "name":  "SeshPersistenceEnvelope",
+                              "requiredFields":  [
+                                                     "schemaVersion",
+                                                     "recordType",
+                                                     "recordId",
+                                                     "storedAt",
+                                                     "payload"
+                                                 ],
+                              "optionalFields":  [
+                                                     "revision"
+                                                 ],
+                              "rules":  [
+                                            "schemaVersion is explicit.",
+                                            "recordType identifies the persisted canonical record family.",
+                                            "recordId must match the canonical record payload identity.",
+                                            "storedAt is persistence metadata and does not replace domain timestamps.",
+                                            "revision may support optimistic concurrency.",
+                                            "payload must deserialize into canonical Sesh data before being returned to callers."
+                                        ]
+                          },
+    "versioningAndMigration":  {
+                                   "initialSchemaVersion":  1,
+                                   "requirements":  [
+                                                        "Persisted records carry an explicit schema version.",
+                                                        "Unknown future schema versions must fail explicitly rather than being silently interpreted.",
+                                                        "Migration logic belongs outside canonical Sesh domain models.",
+                                                        "Migrations must preserve canonical identifiers unless an explicitly governed migration says otherwise.",
+                                                        "A future migration must be testable independently from live infrastructure."
+                                                    ]
+                               },
+    "concurrency":  {
+                        "initialPolicy":  "Optimistic concurrency prepared, but not required for every first adapter.",
+                        "requirements":  [
+                                             "Repository contracts may expose revision metadata.",
+                                             "Conflicting writes must not silently overwrite newer durable state once collaborative or multi-client editing exists.",
+                                             "SESH-003 does not implement realtime collaborative locking.",
+                                             "Local low-latency musical execution must remain independent from remote persistence latency."
+                                         ]
+                    },
+    "failureSemantics":  [
+                             "Not-found is distinguishable from storage failure.",
+                             "Validation failure is distinguishable from storage failure.",
+                             "Version incompatibility is distinguishable from storage failure.",
+                             "Write conflict is distinguishable from generic persistence failure.",
+                             "Binary-object failure is distinguishable from metadata persistence failure.",
+                             "Persistence failures must not be misreported as domain validation failures."
+                         ],
+    "integrityRules":  [
+                           "Every persisted project must validate through validateSeshMusicProject.",
+                           "Every persisted audio asset must validate through validateSeshAudioAsset.",
+                           "Referenced project identifiers must retain their canonical prefixes.",
+                           "Duplicate canonical reference identifiers remain invalid where SESH-002 defines uniqueness.",
+                           "Stored records must not introduce provider-specific fields into canonical payloads.",
+                           "Persistence adapters must not mutate caller-owned canonical objects."
+                       ],
+    "initialImplementationScope":  {
+                                       "proposedRoot":  "src/lib/sesh/persistence",
+                                       "files":  [
+                                                     {
+                                                         "path":  "src/lib/sesh/persistence/model.ts",
+                                                         "responsibility":  "Persistence envelope, revisions, record-type and persistence-result types."
+                                                     },
+                                                     {
+                                                         "path":  "src/lib/sesh/persistence/repositories.ts",
+                                                         "responsibility":  "Provider-neutral project, audio metadata, and binary-object repository interfaces."
+                                                     },
+                                                     {
+                                                         "path":  "src/lib/sesh/persistence/serialization.ts",
+                                                         "responsibility":  "Deterministic serialization/deserialization of canonical Sesh persistence envelopes."
+                                                     },
+                                                     {
+                                                         "path":  "src/lib/sesh/persistence/memory.ts",
+                                                         "responsibility":  "In-memory reference adapters used to prove repository contracts before choosing production storage."
+                                                     },
+                                                     {
+                                                         "path":  "src/lib/sesh/persistence/index.ts",
+                                                         "responsibility":  "Stable public export surface for Sesh persistence boundaries."
+                                                     },
+                                                     {
+                                                         "path":  "src/lib/sesh/persistence/serialization.test.ts",
+                                                         "responsibility":  "Serialization, schema-version and validation round-trip tests."
+                                                     },
+                                                     {
+                                                         "path":  "src/lib/sesh/persistence/memory.test.ts",
+                                                         "responsibility":  "Reference repository contract and failure-semantics tests."
+                                                     }
+                                                 ]
+                                   },
+    "deferredTechnologyDecisions":  [
+                                        {
+                                            "decision":  "Production metadata store",
+                                            "candidates":  [
+                                                               "Cloudflare D1",
+                                                               "another relational store",
+                                                               "local development filesystem adapter"
+                                                           ],
+                                            "reasonDeferred":  "Repository contracts and persisted record shape should be proven before coupling Sesh to a production database."
+                                        },
+                                        {
+                                            "decision":  "Production binary audio store",
+                                            "candidates":  [
+                                                               "Cloudflare R2",
+                                                               "another object store",
+                                                               "local development filesystem adapter"
+                                                           ],
+                                            "reasonDeferred":  "Binary-object interface should be established before provider selection."
+                                        },
+                                        {
+                                            "decision":  "Realtime collaborative coordination",
+                                            "candidates":  [
+                                                               "Durable Objects",
+                                                               "another coordination service",
+                                                               "local-first synchronization architecture"
+                                                           ],
+                                            "reasonDeferred":  "Realtime collaboration is later than durable single-project persistence."
+                                        }
+                                    ],
+    "testsRequired":  [
+                          "Round-trips a canonical SeshMusicProject through serialization.",
+                          "Round-trips a canonical SeshAudioAsset through serialization.",
+                          "Rejects malformed canonical payloads during deserialization.",
+                          "Rejects unsupported persistence schema versions.",
+                          "Rejects record identifiers that disagree with payload identifiers.",
+                          "Preserves canonical Sesh identifiers exactly.",
+                          "Stores and retrieves a project through the in-memory project repository.",
+                          "Returns explicit not-found behavior for missing projects.",
+                          "Stores and retrieves audio metadata through the in-memory audio repository.",
+                          "Lists audio assets by project.",
+                          "Keeps audio metadata deletion separate from binary-object deletion.",
+                          "Stores and retrieves binary bytes through the in-memory object-store contract.",
+                          "Distinguishes validation failure from persistence failure.",
+                          "Does not import Astro, Cloudflare, Stripe, D1, R2, Web Audio, or River OS in provider-neutral persistence contracts."
+                      ],
+    "explicitlyOutOfScope":  [
+                                 "Production D1 table creation.",
+                                 "Production R2 bucket creation.",
+                                 "Cloudflare binding configuration.",
+                                 "Cloudflare deployment.",
+                                 "Filesystem production storage.",
+                                 "Authentication.",
+                                 "Authorization.",
+                                 "Realtime collaboration.",
+                                 "Multi-user conflict resolution implementation.",
+                                 "Audio playback.",
+                                 "Audio recording.",
+                                 "Waveform generation.",
+                                 "Audio decoding.",
+                                 "Sesh Studio UI.",
+                                 "Sesh Sounds marketplace.",
+                                 "Checkout.",
+                                 "Memberships.",
+                                 "Rights accounting.",
+                                 "Royalty accounting.",
+                                 "Artist-management workflows.",
+                                 "Sesh Launch workflows.",
+                                 "AI integration.",
+                                 "Hardware integration."
+                             ],
+    "safetyAndGovernance":  [
+                                "SESH-003 is an architecture and local-domain persistence foundation.",
+                                "SESH-003 does not deploy.",
+                                "SESH-003 does not provision D1 or R2.",
+                                "SESH-003 does not alter Cloudflare configuration.",
+                                "SESH-003 does not create live customer data stores.",
+                                "SESH-003 does not process payments.",
+                                "SESH-003 does not contact external parties.",
+                                "SESH-003 does not create rights or ownership authority."
+                            ],
+    "acceptanceCriteria":  [
+                               "Canonical Sesh models remain unchanged by persistence concerns.",
+                               "Project persistence has an explicit provider-neutral repository contract.",
+                               "Audio metadata persistence has an explicit provider-neutral repository contract.",
+                               "Binary audio storage has a separate provider-neutral object-store boundary.",
+                               "Persistence envelopes carry explicit schema versioning.",
+                               "Failure semantics distinguish not-found, validation, conflict, version and storage failures.",
+                               "A reference in-memory implementation is defined before production storage selection.",
+                               "Production D1/R2 decisions remain deferred.",
+                               "No deployment or infrastructure provisioning occurs.",
+                               "The next implementation target is explicitly identified."
+                           ],
+    "implementationOrder":  [
+                                "Create provider-neutral persistence types.",
+                                "Create repository interfaces.",
+                                "Create persistence envelope serialization.",
+                                "Create in-memory project repository.",
+                                "Create in-memory audio metadata repository.",
+                                "Create in-memory binary object-store adapter.",
+                                "Create focused persistence tests.",
+                                "Run architecture-coupling checks.",
+                                "Run Sesh core and persistence tests together.",
+                                "Review staged diff before commit."
+                            ],
+    "nextTargetAfterCompletion":  {
+                                      "id":  "SESH-004",
+                                      "title":  "Production Sesh Persistence Adapter Selection",
+                                      "purpose":  "Evaluate and select production metadata and binary-object persistence adapters using the stable SESH-003 contracts."
+                                  }
+}
