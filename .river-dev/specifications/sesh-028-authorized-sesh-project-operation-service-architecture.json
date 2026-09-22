@@ -1,0 +1,122 @@
+{
+    "id":  "SESH-028",
+    "title":  "Authorized Sesh Project Operation Service Architecture",
+    "status":  "IMPLEMENTED_LOCALLY_PENDING_REVIEW",
+    "objective":  "Compose SESH-027 ownership authorization with project read, update, and delete operations while preserving immutable project identity and ownership fields, rejecting caller attempts to reassign ownership through ordinary updates, rechecking persisted owner state after authorization, and exposing no public HTTP API.",
+    "sourceBaseline":  {
+                           "branch":  "cif-001-canonical-content-source-record",
+                           "commit":  "56b7f164a88aeb0336af02d985c97dda2270c83b",
+                           "predecessor":  "SESH-027"
+                       },
+    "service":  {
+                    "interface":  "AuthorizedSeshProjectOperationService",
+                    "implementation":  "DefaultAuthorizedSeshProjectOperationService",
+                    "path":  "src/lib/sesh/operations/project-operation-service.ts",
+                    "dependencies":  [
+                                         "SeshProjectOwnershipAuthorizer",
+                                         "SeshProjectRepository",
+                                         "clock"
+                                     ],
+                    "operations":  [
+                                       "readProject",
+                                       "updateProject",
+                                       "deleteProject"
+                                   ]
+                },
+    "authorizationOrdering":  {
+                                  "read":  "OWNER_AUTHORIZATION_BEFORE_PROJECT_RETURN",
+                                  "update":  "OWNER_WRITE_AUTHORIZATION_BEFORE_PROJECT_WRITE",
+                                  "delete":  "OWNER_DELETE_AUTHORIZATION_BEFORE_PROJECT_DELETE",
+                                  "rule":  "No project write or delete operation may execute before SESH-027 authorization succeeds."
+                              },
+    "updateBoundary":  {
+                           "mutableFields":  [
+                                                 "title",
+                                                 "trackIds",
+                                                 "sessionIds",
+                                                 "audioAssetIds",
+                                                 "tempoMapId",
+                                                 "beatGridId",
+                                                 "description"
+                                             ],
+                           "immutableFields":  [
+                                                   "id",
+                                                   "ownerCreatorId",
+                                                   "createdAt"
+                                               ],
+                           "updatedAt":  "SERVICE_GENERATED",
+                           "immutableFieldRule":  "id, ownerCreatorId, and createdAt are reconstructed exclusively from the persisted canonical project and cannot be supplied by an ordinary update.",
+                           "unknownFields":  "REJECT",
+                           "emptyUpdate":  "REJECT"
+                       },
+    "postAuthorizationRecheck":  {
+                                     "required":  true,
+                                     "checks":  [
+                                                    "Persisted project id still equals requested project id.",
+                                                    "Persisted ownerCreatorId still equals the SESH-027 authorized SeshCreatorId."
+                                                ],
+                                     "failure":  "FAIL_CLOSED_AS_UNAVAILABLE",
+                                     "purpose":  "Reduce stale-authorization risk before mutation using currently available repository contracts."
+                                 },
+    "persistenceBoundary":  {
+                                "reads":  "ALLOWED_AFTER_AUTHORIZATION",
+                                "writes":  "ALLOWED_ONLY_THROUGH_AUTHORIZED_SERVICE",
+                                "deletes":  "ALLOWED_ONLY_THROUGH_AUTHORIZED_SERVICE",
+                                "directRepositoryOwnershipProtection":  "NOT_YET_ENFORCED",
+                                "productionMutationPerformedByThisSlice":  false
+                            },
+    "concurrencyBoundary":  {
+                                "atomicCompareAndSwap":  "NOT_AVAILABLE_YET",
+                                "transactionallyCoupledAuthorizationAndMutation":  false,
+                                "residualRisk":  "A concurrent repository mutation could occur between the service recheck and save/delete because the current repository has no conditional revision or owner predicate.",
+                                "publicCreatorOwnedApi":  "FORBIDDEN_UNTIL_THIS_IS_RESOLVED",
+                                "nextRequirement":  "Introduce persistence-level conditional mutation / revision protection before creator-owned HTTP mutation routes."
+                            },
+    "rightsBoundary":  {
+                           "collaboratorAccess":  "NOT_GRANTED",
+                           "publishingRights":  "NOT_GRANTED",
+                           "managementRights":  "NOT_GRANTED",
+                           "legalOwnership":  "NOT_INFERRED",
+                           "copyrightOwnership":  "NOT_INFERRED"
+                       },
+    "httpBoundary":  {
+                         "publicEndpoint":  "NOT_CREATED",
+                         "creatorOwnedReadApi":  "STILL_FORBIDDEN",
+                         "creatorOwnedMutationApi":  "STILL_FORBIDDEN",
+                         "deployment":  "NOT_AUTHORIZED"
+                     },
+    "nextSlice":  {
+                      "id":  "SESH-029",
+                      "title":  "Sesh Project Conditional Mutation and Ownership Invariant Persistence Architecture",
+                      "scope":  [
+                                    "Define persistence-level conditional project writes and deletes.",
+                                    "Use project revision or equivalent compare-and-swap semantics to detect stale mutation state.",
+                                    "Require expected ownerCreatorId or equivalent immutable ownership predicate at mutation time.",
+                                    "Prevent ordinary repository updates from silently reassigning ownerCreatorId.",
+                                    "Preserve SESH-028 service authorization ordering.",
+                                    "Keep collaborator, publishing, management, legal, and copyright rights separate.",
+                                    "Do not expose public creator-owned HTTP APIs.",
+                                    "Do not mutate production project data.",
+                                    "Do not deploy."
+                                ]
+                  },
+    "nonGoals":  [
+                     "Creating a Principal",
+                     "Creating credentials",
+                     "Creating a Sesh creator profile",
+                     "Creating a PrincipalId to SeshCreatorId mapping",
+                     "Creating a production project",
+                     "Mutating a production project",
+                     "Ownership transfer",
+                     "Collaborator authorization",
+                     "Publishing authorization",
+                     "Management authorization",
+                     "Legal ownership determination",
+                     "Copyright ownership determination",
+                     "Public login",
+                     "Registration",
+                     "Public creator-owned Sesh API",
+                     "Database migration",
+                     "Deployment"
+                 ]
+}
