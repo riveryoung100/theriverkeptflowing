@@ -24,6 +24,11 @@ export interface SeshProjectPersistenceSnapshot {
   readonly revision: SeshPersistenceRevision;
 }
 
+export interface SeshCreatorProfilePersistenceSnapshot {
+  readonly profile: SeshCreatorProfile;
+  readonly revision: SeshPersistenceRevision;
+}
+
 export interface SeshCreatorProfilePersistenceEnvelope {
   readonly schemaVersion:
     typeof SESH_PERSISTENCE_SCHEMA_VERSION;

@@ -121,6 +121,98 @@ implements SeshD1DatabaseLike {
         }
 
         if (
+          sql.includes(
+            "UPDATE sesh_creator_profiles",
+          )
+        ) {
+          const [
+            schemaVersionValue,
+            nextRevisionValue,
+            storedAtValue,
+            payloadJsonValue,
+            creatorIdValue,
+            expectedRevisionValue,
+          ] =
+            this.values;
+
+          const creatorId =
+            String(
+              creatorIdValue,
+            );
+
+          const current =
+            rows.get(
+              creatorId,
+            );
+
+          const expectedRevision =
+            Number(
+              expectedRevisionValue,
+            );
+
+          const currentRevision =
+            current?.revision ===
+              null
+              ? 0
+              : current?.revision;
+
+          if (
+            current ===
+              undefined ||
+            currentRevision !==
+              expectedRevision
+          ) {
+            return {
+              success:
+                true,
+
+              meta: {
+                changes:
+                  0,
+              },
+            };
+          }
+
+          rows.set(
+            creatorId,
+            {
+              creator_id:
+                creatorId,
+
+              schema_version:
+                Number(
+                  schemaVersionValue,
+                ),
+
+              revision:
+                Number(
+                  nextRevisionValue,
+                ),
+
+              stored_at:
+                String(
+                  storedAtValue,
+                ),
+
+              payload_json:
+                String(
+                  payloadJsonValue,
+                ),
+            },
+          );
+
+          return {
+            success:
+              true,
+
+            meta: {
+              changes:
+                1,
+            },
+          };
+        }
+
+        if (
           !sql.includes(
             "INSERT INTO sesh_creator_profiles",
           )
@@ -545,6 +637,240 @@ test(
       assert.equal(
         result.error.kind,
         "storage",
+      );
+    }
+  },
+);
+test(
+  "D1 creator profile snapshot exposes canonical revision zero",
+  async () => {
+    const repository =
+      new D1SeshCreatorProfileRepository(
+        new FakeCreatorProfileD1(),
+      );
+
+    const creatorId =
+      createSeshCreatorId(
+        "snapshot",
+      );
+
+    await repository.saveCreatorProfile({
+      id:
+        creatorId,
+
+      displayName:
+        "River",
+
+      createdAt,
+    });
+
+    const snapshot =
+      await repository.getCreatorProfileSnapshot(
+        creatorId,
+      );
+
+    assert.equal(
+      snapshot.ok,
+      true,
+    );
+
+    if (
+      !snapshot.ok
+    ) {
+      throw new Error(
+        "Expected creator profile snapshot.",
+      );
+    }
+
+    assert.equal(
+      snapshot.value.revision,
+      0,
+    );
+
+    assert.equal(
+      snapshot.value.profile.id,
+      creatorId,
+    );
+  },
+);
+
+test(
+  "D1 conditional creator profile update increments revision and rejects stale writes",
+  async () => {
+    const repository =
+      new D1SeshCreatorProfileRepository(
+        new FakeCreatorProfileD1(),
+      );
+
+    const creatorId =
+      createSeshCreatorId(
+        "cas-profile",
+      );
+
+    await repository.saveCreatorProfile({
+      id:
+        creatorId,
+
+      displayName:
+        "River",
+
+      createdAt,
+    });
+
+    const updated =
+      await repository.updateCreatorProfileConditionally(
+        {
+          id:
+            creatorId,
+
+          displayName:
+            "River Young",
+
+          createdAt,
+
+          handle:
+            "river",
+
+          bio:
+            "Making music.",
+        },
+        0,
+      );
+
+    assert.equal(
+      updated.ok,
+      true,
+    );
+
+    if (
+      !updated.ok
+    ) {
+      throw new Error(
+        "Expected conditional creator profile update.",
+      );
+    }
+
+    assert.equal(
+      updated.value.revision,
+      1,
+    );
+
+    assert.equal(
+      updated.value.profile.displayName,
+      "River Young",
+    );
+
+    const stale =
+      await repository.updateCreatorProfileConditionally(
+        updated.value.profile,
+        0,
+      );
+
+    assert.equal(
+      stale.ok,
+      false,
+    );
+
+    if (
+      !stale.ok
+    ) {
+      assert.equal(
+        stale.error.kind,
+        "conflict",
+      );
+    }
+  },
+);
+
+test(
+  "D1 conditional creator profile update preserves immutable createdAt",
+  async () => {
+    const repository =
+      new D1SeshCreatorProfileRepository(
+        new FakeCreatorProfileD1(),
+      );
+
+    const creatorId =
+      createSeshCreatorId(
+        "immutable-created-at",
+      );
+
+    await repository.saveCreatorProfile({
+      id:
+        creatorId,
+
+      displayName:
+        "River",
+
+      createdAt,
+    });
+
+    const changed =
+      await repository.updateCreatorProfileConditionally(
+        {
+          id:
+            creatorId,
+
+          displayName:
+            "River",
+
+          createdAt:
+            "2026-09-22T20:00:00.000Z",
+        },
+        0,
+      );
+
+    assert.equal(
+      changed.ok,
+      false,
+    );
+
+    if (
+      !changed.ok
+    ) {
+      assert.equal(
+        changed.error.kind,
+        "conflict",
+      );
+    }
+  },
+);
+
+test(
+  "D1 conditional creator profile update validates expected revision",
+  async () => {
+    const repository =
+      new D1SeshCreatorProfileRepository(
+        new FakeCreatorProfileD1(),
+      );
+
+    const result =
+      await repository.updateCreatorProfileConditionally(
+        {
+          id:
+            createSeshCreatorId(
+              "invalid-revision",
+            ),
+
+          displayName:
+            "River",
+
+          createdAt,
+        },
+        -1,
+      );
+
+    assert.equal(
+      result.ok,
+      false,
+    );
+
+    if (
+      !result.ok
+    ) {
+      assert.equal(
+        result.error.kind,
+        "validation",
       );
     }
   },

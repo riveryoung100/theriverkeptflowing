@@ -12,6 +12,7 @@ import type {
 } from "../../model";
 
 import type {
+  SeshCreatorProfilePersistenceSnapshot,
   SeshPersistenceResult,
 } from "../model";
 
@@ -88,6 +89,45 @@ function changedExactlyOne(
   );
 }
 
+function canonicalRevision(
+  rowRevision:
+    number | null,
+
+  envelopeRevision:
+    number | undefined,
+): number {
+  const revision =
+    rowRevision ??
+    envelopeRevision ??
+    0;
+
+  if (
+    !Number.isInteger(
+      revision,
+    ) ||
+    revision <
+      0
+  ) {
+    throw new TypeError(
+      "Stored Sesh creator profile revision must be a non-negative integer.",
+    );
+  }
+
+  if (
+    rowRevision !==
+      null &&
+    envelopeRevision !==
+      undefined &&
+    rowRevision !==
+      envelopeRevision
+  ) {
+    throw new TypeError(
+      "Stored Sesh creator profile revision metadata does not agree.",
+    );
+  }
+
+  return revision;
+}
 function profilesEqual(
   left:
     SeshCreatorProfile,
@@ -283,6 +323,29 @@ implements SeshCreatorProfileRepository {
       SeshCreatorProfile
     >
   > {
+    const snapshot =
+      await this.getCreatorProfileSnapshot(
+        creatorId,
+      );
+
+    if (
+      !snapshot.ok
+    ) {
+      return snapshot;
+    }
+
+    return success(
+      snapshot.value.profile,
+    );
+  }
+  async getCreatorProfileSnapshot(
+    creatorId:
+      SeshCreatorId,
+  ): Promise<
+    SeshPersistenceResult<
+      SeshCreatorProfilePersistenceSnapshot
+    >
+  > {
     let canonicalId:
       SeshCreatorId;
 
@@ -383,21 +446,11 @@ implements SeshCreatorProfileRepository {
         );
       }
 
-      if (
-        (
-          row.revision ??
-          0
-        ) !==
-        (
-          envelope.revision ??
-          0
-        )
-      ) {
-        return failure(
-          "validation",
-          "Stored Sesh creator profile revision metadata does not agree.",
+      const revision =
+        canonicalRevision(
+          row.revision,
+          envelope.revision,
         );
-      }
 
       if (
         row.stored_at !==
@@ -409,9 +462,12 @@ implements SeshCreatorProfileRepository {
         );
       }
 
-      return success(
-        envelope.payload,
-      );
+      return success({
+        profile:
+          envelope.payload,
+
+        revision,
+      });
     }
     catch (error) {
       return rowFailure(
@@ -420,6 +476,167 @@ implements SeshCreatorProfileRepository {
     }
   }
 
+
+  async updateCreatorProfileConditionally(
+    profile:
+      unknown,
+
+    expectedRevision:
+      number,
+  ): Promise<
+    SeshPersistenceResult<
+      SeshCreatorProfilePersistenceSnapshot
+    >
+  > {
+    let validated:
+      SeshCreatorProfile;
+
+    try {
+      validated =
+        validateSeshCreatorProfile(
+          profile,
+        );
+
+      if (
+        !Number.isInteger(
+          expectedRevision,
+        ) ||
+        expectedRevision <
+          0
+      ) {
+        throw new TypeError(
+          "Expected Sesh creator profile revision must be a non-negative integer.",
+        );
+      }
+    }
+    catch (error) {
+      return failure(
+        "validation",
+        error instanceof Error
+          ? error.message
+          : "Sesh conditional creator profile update validation failed.",
+      );
+    }
+
+    const current =
+      await this.getCreatorProfileSnapshot(
+        validated.id,
+      );
+
+    if (
+      !current.ok
+    ) {
+      return current;
+    }
+
+    if (
+      current.value.revision !==
+        expectedRevision
+    ) {
+      return failure(
+        "conflict",
+        "Sesh creator profile changed before conditional update.",
+      );
+    }
+
+    if (
+      current.value.profile.id !==
+        validated.id
+    ) {
+      return failure(
+        "conflict",
+        "Ordinary Sesh creator profile updates cannot reassign id.",
+      );
+    }
+
+    if (
+      current.value.profile.createdAt !==
+        validated.createdAt
+    ) {
+      return failure(
+        "conflict",
+        "Ordinary Sesh creator profile updates cannot change createdAt.",
+      );
+    }
+
+    const nextRevision =
+      expectedRevision +
+      1;
+
+    const storedAt =
+      new Date().toISOString();
+
+    const envelope =
+      createSeshCreatorProfileEnvelope(
+        validated,
+        storedAt,
+        nextRevision,
+      );
+
+    const payloadJson =
+      serializeSeshPersistenceEnvelope(
+        envelope,
+      );
+
+    try {
+      const result =
+        await this.database
+          .prepare(
+            `UPDATE sesh_creator_profiles
+            SET
+              schema_version = ?,
+              revision = ?,
+              stored_at = ?,
+              payload_json = ?
+            WHERE
+              creator_id = ?
+              AND (
+                revision = ?
+                OR (
+                  revision IS NULL
+                  AND ? = 0
+                )
+              )`,
+          )
+          .bind(
+            envelope.schemaVersion,
+            nextRevision,
+            storedAt,
+            payloadJson,
+            validated.id,
+            expectedRevision,
+            expectedRevision,
+          )
+          .run();
+
+      if (
+        !changedExactlyOne(
+          result,
+        )
+      ) {
+        return failure(
+          "conflict",
+          "Sesh creator profile changed before conditional update.",
+        );
+      }
+
+      return success({
+        profile:
+          validated,
+
+        revision:
+          nextRevision,
+      });
+    }
+    catch (error) {
+      return failure(
+        "storage",
+        error instanceof Error
+          ? error.message
+          : "Sesh D1 conditional creator profile update failed.",
+      );
+    }
+  }
   async creatorProfileExists(
     creatorId:
       SeshCreatorId,

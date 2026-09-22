@@ -10,6 +10,7 @@ import type {
   SeshStorageReference,
 } from "../model";
 import type {
+  SeshCreatorProfilePersistenceSnapshot,
   SeshPersistenceResult,
   SeshProjectPersistenceSnapshot,
   SeshStoredAudioObject,
@@ -30,6 +31,26 @@ export interface SeshCreatorProfileRepository {
   ): Promise<
     SeshPersistenceResult<
       SeshCreatorProfile
+    >
+  >;
+
+  getCreatorProfileSnapshot(
+    creatorId:
+      SeshCreatorId,
+  ): Promise<
+    SeshPersistenceResult<
+      SeshCreatorProfilePersistenceSnapshot
+    >
+  >;
+
+  updateCreatorProfileConditionally(
+    profile:
+      unknown,
+    expectedRevision:
+      number,
+  ): Promise<
+    SeshPersistenceResult<
+      SeshCreatorProfilePersistenceSnapshot
     >
   >;
 

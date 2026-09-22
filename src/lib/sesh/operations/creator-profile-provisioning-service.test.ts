@@ -201,6 +201,123 @@ implements SeshCreatorProfileRepository {
         };
   }
 
+  async getCreatorProfileSnapshot(
+    creatorId:
+      SeshCreatorId,
+  ): Promise<
+    SeshPersistenceResult<{
+      readonly profile:
+        SeshCreatorProfile;
+
+      readonly revision:
+        number;
+    }>
+  > {
+    const result =
+      await this.getCreatorProfile(
+        creatorId,
+      );
+
+    if (
+      !result.ok
+    ) {
+      return result;
+    }
+
+    return {
+      ok:
+        true,
+
+      value: {
+        profile:
+          result.value,
+
+        revision:
+          0,
+      },
+    };
+  }
+
+  async updateCreatorProfileConditionally(
+    profile:
+      unknown,
+
+    expectedRevision:
+      number,
+  ): Promise<
+    SeshPersistenceResult<{
+      readonly profile:
+        SeshCreatorProfile;
+
+      readonly revision:
+        number;
+    }>
+  > {
+    const canonical =
+      profile as
+        SeshCreatorProfile;
+
+    const existing =
+      this.profiles.get(
+        canonical.id,
+      );
+
+    if (
+      existing ===
+        undefined
+    ) {
+      return {
+        ok:
+          false,
+
+        error: {
+          kind:
+            "not-found",
+
+          message:
+            "missing",
+        },
+      };
+    }
+
+    if (
+      expectedRevision !==
+        0 ||
+      existing.createdAt !==
+        canonical.createdAt
+    ) {
+      return {
+        ok:
+          false,
+
+        error: {
+          kind:
+            "conflict",
+
+          message:
+            "profile conflict",
+        },
+      };
+    }
+
+    this.profiles.set(
+      canonical.id,
+      canonical,
+    );
+
+    return {
+      ok:
+        true,
+
+      value: {
+        profile:
+          canonical,
+
+        revision:
+          1,
+      },
+    };
+  }
   async creatorProfileExists(
     creatorId:
       SeshCreatorId,

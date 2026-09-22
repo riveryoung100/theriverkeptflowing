@@ -1,0 +1,33 @@
+{
+  "id": "SESH-034",
+  "title": "Creator profile revision and conditional lifecycle persistence",
+  "status": "source-implementation",
+  "persistence": {
+    "table": "sesh_creator_profiles",
+    "creationRevision": 0,
+    "snapshotIncludesRevision": true,
+    "conditionalUpdate": true,
+    "revisionIncrement": 1,
+    "atomicPredicate": "creator_id plus expected revision",
+    "legacyNullRevisionMatchesZero": true,
+    "zeroRowMutation": "conflict"
+  },
+  "immutability": {
+    "id": true,
+    "createdAt": true
+  },
+  "mutableProfileFields": [
+    "displayName",
+    "handle",
+    "bio"
+  ],
+  "authorization": {
+    "included": false,
+    "rightsInferred": false
+  },
+  "liveActions": {
+    "databaseMutation": false,
+    "migration": false,
+    "deployment": false
+  }
+}
