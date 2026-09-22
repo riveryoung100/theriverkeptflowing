@@ -1,0 +1,122 @@
+{
+    "id":  "SESH-027",
+    "title":  "Sesh Project Ownership Authorization Architecture",
+    "status":  "IMPLEMENTED_LOCALLY_PENDING_REVIEW",
+    "objective":  "Define a provider-neutral, fail-closed ownership authorization boundary that permits an authenticated mapped Sesh creator to act on a SeshMusicProject only when the canonical persisted project ownerCreatorId equals the authenticated SeshCreatorId.",
+    "sourceBaseline":  {
+                           "branch":  "cif-001-canonical-content-source-record",
+                           "commit":  "36dc9b8be1dc48fbb5d97a54f725ec4ad1b43117",
+                           "predecessor":  "SESH-026"
+                       },
+    "authorizer":  {
+                       "interface":  "SeshProjectOwnershipAuthorizer",
+                       "implementation":  "DefaultSeshProjectOwnershipAuthorizer",
+                       "path":  "src/lib/sesh/authorization/project-ownership-authorizer.ts",
+                       "dependencies":  [
+                                            "AuthenticatedSeshCreatorResolver",
+                                            "SeshProjectRepository.getProject"
+                                        ],
+                       "actions":  [
+                                       "read",
+                                       "write",
+                                       "delete"
+                                   ],
+                       "successFields":  [
+                                             "principalId",
+                                             "seshCreatorId",
+                                             "projectId",
+                                             "action"
+                                         ],
+                       "failureCodes":  [
+                                            "unauthenticated",
+                                            "unmapped",
+                                            "not-found",
+                                            "forbidden",
+                                            "unavailable"
+                                        ]
+                   },
+    "authorizationFlow":  [
+                              "Validate the canonical SeshMusicProjectId.",
+                              "Resolve the authenticated PrincipalId and explicit SeshCreatorId mapping through SESH-026.",
+                              "Do not load project state when authentication or creator mapping fails.",
+                              "Load the canonical SeshMusicProject through SeshProjectRepository.",
+                              "Fail closed when persistence, version, validation, or provider behavior is inconsistent.",
+                              "Require the loaded project id to equal the requested canonical project id.",
+                              "Require SeshMusicProject.ownerCreatorId to equal the authenticated SeshCreatorId.",
+                              "Return narrowly scoped ownership authorization for the requested action only."
+                          ],
+    "ownershipSemantics":  {
+                               "canonicalOwnerField":  "SeshMusicProject.ownerCreatorId",
+                               "authenticatedCreator":  "AuthenticatedSeshCreatorResolver.value.seshCreatorId",
+                               "rule":  "Ownership authorization succeeds only when canonical persisted ownerCreatorId equals authenticated SeshCreatorId.",
+                               "mappingAloneMeansOwnership":  false,
+                               "principalIdAloneMeansOwnership":  false,
+                               "creatorProfileMeansOwnership":  false
+                           },
+    "actionSemantics":  {
+                            "read":  "Authorize owner-level project read.",
+                            "write":  "Authorize owner-level project mutation eligibility, but perform no mutation.",
+                            "delete":  "Authorize owner-level project deletion eligibility, but perform no deletion.",
+                            "rule":  "Authorization and execution remain separate boundaries."
+                        },
+    "collaboratorBoundary":  {
+                                 "modeled":  false,
+                                 "collaboratorFallback":  "FORBIDDEN",
+                                 "ownershipAuthorizerMayGrantCollaboratorAccess":  false,
+                                 "rule":  "A non-owner is forbidden by this boundary even if a future collaborator model may later authorize another path."
+                             },
+    "rightsBoundary":  {
+                           "projectOwnership":  "ACTION_SCOPED",
+                           "collaboratorAccess":  "NOT_GRANTED",
+                           "publishingRights":  "NOT_GRANTED",
+                           "managementRights":  "NOT_GRANTED",
+                           "legalOwnership":  "NOT_INFERRED",
+                           "copyrightOwnership":  "NOT_INFERRED",
+                           "creatorProfileExistence":  "NOT_PROVEN"
+                       },
+    "persistence":  {
+                        "projectRead":  "REQUIRED_FOR_AUTHORIZATION",
+                        "projectWrite":  "NONE",
+                        "projectDelete":  "NONE",
+                        "mappingWrite":  "NONE",
+                        "databaseMutation":  false,
+                        "migration":  "NONE"
+                    },
+    "httpBoundary":  {
+                         "publicEndpoint":  "NOT_CREATED",
+                         "creatorOwnedApis":  "STILL_FORBIDDEN",
+                         "csrf":  "NOT_AN_AUTHORIZATION_SUBSTITUTE",
+                         "rule":  "This source boundary is not permission to expose creator-owned HTTP routes."
+                     },
+    "nextSlice":  {
+                      "id":  "SESH-028",
+                      "title":  "Authorized Sesh Project Operation Service Architecture",
+                      "scope":  [
+                                    "Compose ownership authorization with project read and mutation operations without exposing public HTTP routes.",
+                                    "Ensure authorization occurs before any project write or delete.",
+                                    "Define mutation input rules that prevent ownerCreatorId reassignment through ordinary project updates.",
+                                    "Keep collaborator authorization separate.",
+                                    "Keep publishing, management, legal, and copyright rights separate.",
+                                    "Do not create production projects or mappings.",
+                                    "Do not deploy."
+                                ]
+                  },
+    "nonGoals":  [
+                     "Creating a Principal",
+                     "Creating credentials",
+                     "Creating a Sesh creator profile",
+                     "Creating a PrincipalId to SeshCreatorId mapping",
+                     "Creating or mutating a production project",
+                     "Collaborator authorization",
+                     "Publishing authorization",
+                     "Management authorization",
+                     "Legal ownership determination",
+                     "Copyright ownership determination",
+                     "Public login",
+                     "Registration",
+                     "Public creator-owned Sesh API",
+                     "Database mutation",
+                     "Migration",
+                     "Deployment"
+                 ]
+}
