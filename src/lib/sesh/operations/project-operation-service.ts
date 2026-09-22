@@ -509,21 +509,50 @@ implements AuthorizedSeshProjectOperationService {
       );
     }
 
-    const currentResult =
-      await this.#loadCanonicalProject(
-        canonicalProjectId,
+    let currentResult:
+      Awaited<
+        ReturnType<
+          SeshProjectRepository[
+            "getProjectSnapshot"
+          ]
+        >
+      >;
+
+    try {
+      currentResult =
+        await this.#projects
+          .getProjectSnapshot(
+            canonicalProjectId,
+          );
+    }
+    catch {
+      return failure(
+        "unavailable",
+        "Sesh project update is temporarily unavailable.",
       );
+    }
 
     if (
       !currentResult.ok
     ) {
-      return mapProjectReadFailure(
-        currentResult,
+      if (
+        currentResult.error.kind ===
+        "not-found"
+      ) {
+        return failure(
+          "not-found",
+          "Sesh project was not found.",
+        );
+      }
+
+      return failure(
+        "unavailable",
+        "Sesh project update is temporarily unavailable.",
       );
     }
 
     const current =
-      currentResult.value;
+      currentResult.value.project;
 
     if (
       current.id !==
@@ -584,8 +613,10 @@ implements AuthorizedSeshProjectOperationService {
     try {
       saveResult =
         await this.#projects
-          .saveProject(
+          .updateProjectConditionally(
             candidate,
+            currentResult.value.revision,
+            authorization.value.seshCreatorId,
           );
     }
     catch {
@@ -625,11 +656,11 @@ implements AuthorizedSeshProjectOperationService {
     }
 
     if (
-      saveResult.value.id !==
+      saveResult.value.project.id !==
         current.id ||
-      saveResult.value.ownerCreatorId !==
+      saveResult.value.project.ownerCreatorId !==
         current.ownerCreatorId ||
-      saveResult.value.createdAt !==
+      saveResult.value.project.createdAt !==
         current.createdAt
     ) {
       return failure(
@@ -639,7 +670,7 @@ implements AuthorizedSeshProjectOperationService {
     }
 
     return success(
-      saveResult.value,
+      saveResult.value.project,
     );
   }
 
@@ -679,24 +710,53 @@ implements AuthorizedSeshProjectOperationService {
       );
     }
 
-    const currentResult =
-      await this.#loadCanonicalProject(
-        canonicalProjectId,
-      );
+    let currentResult:
+      Awaited<
+        ReturnType<
+          SeshProjectRepository[
+            "getProjectSnapshot"
+          ]
+        >
+      >;
 
-    if (
-      !currentResult.ok
-    ) {
-      return mapProjectReadFailure(
-        currentResult,
+    try {
+      currentResult =
+        await this.#projects
+          .getProjectSnapshot(
+            canonicalProjectId,
+          );
+    }
+    catch {
+      return failure(
+        "unavailable",
+        "Sesh project deletion is temporarily unavailable.",
       );
     }
 
     if (
-      currentResult.value.id !==
+      !currentResult.ok
+    ) {
+      if (
+        currentResult.error.kind ===
+        "not-found"
+      ) {
+        return failure(
+          "not-found",
+          "Sesh project was not found.",
+        );
+      }
+
+      return failure(
+        "unavailable",
+        "Sesh project deletion is temporarily unavailable.",
+      );
+    }
+
+    if (
+      currentResult.value.project.id !==
         canonicalProjectId ||
       !canonicalOwnerMatches(
-        currentResult.value,
+        currentResult.value.project,
         authorization.value.seshCreatorId,
       )
     ) {
@@ -718,8 +778,10 @@ implements AuthorizedSeshProjectOperationService {
     try {
       deleteResult =
         await this.#projects
-          .deleteProject(
+          .deleteProjectConditionally(
             canonicalProjectId,
+            currentResult.value.revision,
+            authorization.value.seshCreatorId,
           );
     }
     catch {

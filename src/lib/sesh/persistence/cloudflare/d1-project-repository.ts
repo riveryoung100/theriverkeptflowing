@@ -1,26 +1,36 @@
 import {
+  parseSeshCreatorId,
   parseSeshMusicProjectId,
+  type SeshCreatorId,
   type SeshMusicProjectId,
 } from "../../identifiers";
+
 import type {
   SeshMusicProject,
 } from "../../model";
+
 import {
   validateSeshMusicProject,
 } from "../../validation";
+
 import type {
   SeshPersistenceResult,
+  SeshProjectPersistenceSnapshot,
 } from "../model";
+
 import type {
   SeshProjectRepository,
 } from "../repositories";
+
 import {
   createSeshMusicProjectEnvelope,
   deserializeSeshPersistenceEnvelope,
   serializeSeshPersistenceEnvelope,
 } from "../serialization";
+
 import type {
   SeshD1DatabaseLike,
+  SeshD1RunResultLike,
 } from "./types";
 
 interface ProjectRow {
@@ -41,7 +51,12 @@ function success<T>(
 }
 
 function failure<T>(
-  kind: "not-found" | "validation" | "version" | "storage",
+  kind:
+    | "not-found"
+    | "validation"
+    | "version"
+    | "conflict"
+    | "storage",
   message: string,
 ): SeshPersistenceResult<T> {
   return {
@@ -61,8 +76,15 @@ function mapReadError<T>(
       ? error.message
       : "Unknown Sesh D1 project read failure.";
 
-  if (message.includes("Unsupported Sesh persistence schema version")) {
-    return failure("version", message);
+  if (
+    message.includes(
+      "Unsupported Sesh persistence schema version",
+    )
+  ) {
+    return failure(
+      "version",
+      message,
+    );
   }
 
   if (
@@ -70,25 +92,78 @@ function mapReadError<T>(
     message.includes("payload") ||
     message.includes("recordId")
   ) {
-    return failure("validation", message);
+    return failure(
+      "validation",
+      message,
+    );
   }
 
-  return failure("storage", message);
+  return failure(
+    "storage",
+    message,
+  );
+}
+
+function canonicalRevision(
+  rowRevision: number | null,
+  envelopeRevision: number | undefined,
+): number {
+  const revision =
+    rowRevision ??
+    envelopeRevision ??
+    0;
+
+  if (
+    !Number.isInteger(revision) ||
+    revision < 0
+  ) {
+    throw new TypeError(
+      "Stored Sesh project revision must be a non-negative integer.",
+    );
+  }
+
+  if (
+    rowRevision !== null &&
+    envelopeRevision !== undefined &&
+    rowRevision !== envelopeRevision
+  ) {
+    throw new TypeError(
+      "Stored Sesh project revision metadata does not agree.",
+    );
+  }
+
+  return revision;
+}
+
+function changedExactlyOne(
+  result: SeshD1RunResultLike,
+): boolean {
+  return (
+    result.success !== false &&
+    result.meta?.changes === 1
+  );
 }
 
 export class D1SeshProjectRepository
 implements SeshProjectRepository {
   constructor(
-    private readonly database: SeshD1DatabaseLike,
+    private readonly database:
+      SeshD1DatabaseLike,
   ) {}
 
   async saveProject(
     project: unknown,
-  ): Promise<SeshPersistenceResult<SeshMusicProject>> {
-    let validated: SeshMusicProject;
+  ): Promise<
+    SeshPersistenceResult<SeshMusicProject>
+  > {
+    let validated:
+      SeshMusicProject;
 
     try {
-      validated = validateSeshMusicProject(project);
+      validated =
+        validateSeshMusicProject(
+          project,
+        );
     }
     catch (error) {
       return failure(
@@ -99,58 +174,86 @@ implements SeshProjectRepository {
       );
     }
 
-    const storedAt = new Date().toISOString();
-    const envelope = createSeshMusicProjectEnvelope(
-      validated,
-      storedAt,
-    );
+    const storedAt =
+      new Date().toISOString();
+
+    const revision =
+      0;
+
+    const envelope =
+      createSeshMusicProjectEnvelope(
+        validated,
+        storedAt,
+        revision,
+      );
+
     const payloadJson =
-      serializeSeshPersistenceEnvelope(envelope);
+      serializeSeshPersistenceEnvelope(
+        envelope,
+      );
 
     try {
-      await this.database
-        .prepare(
-          `INSERT INTO sesh_projects (
-            project_id,
-            schema_version,
+      const result =
+        await this.database
+          .prepare(
+            `INSERT INTO sesh_projects (
+              project_id,
+              schema_version,
+              revision,
+              stored_at,
+              payload_json
+            ) VALUES (?, ?, ?, ?, ?)
+            ON CONFLICT(project_id) DO NOTHING`,
+          )
+          .bind(
+            validated.id,
+            envelope.schemaVersion,
             revision,
-            stored_at,
-            payload_json
-          ) VALUES (?, ?, ?, ?, ?)
-          ON CONFLICT(project_id) DO UPDATE SET
-            schema_version = excluded.schema_version,
-            revision = excluded.revision,
-            stored_at = excluded.stored_at,
-            payload_json = excluded.payload_json`,
-        )
-        .bind(
-          validated.id,
-          envelope.schemaVersion,
-          envelope.revision ?? null,
-          storedAt,
-          payloadJson,
-        )
-        .run();
+            storedAt,
+            payloadJson,
+          )
+          .run();
 
-      return success(validated);
+      if (
+        !changedExactlyOne(
+          result,
+        )
+      ) {
+        return failure(
+          "conflict",
+          "Sesh project already exists.",
+        );
+      }
+
+      return success(
+        validated,
+      );
     }
     catch (error) {
       return failure(
         "storage",
         error instanceof Error
           ? error.message
-          : "Sesh D1 project write failed.",
+          : "Sesh D1 project creation failed.",
       );
     }
   }
 
-  async getProject(
+  async getProjectSnapshot(
     projectId: SeshMusicProjectId,
-  ): Promise<SeshPersistenceResult<SeshMusicProject>> {
-    let canonicalId: SeshMusicProjectId;
+  ): Promise<
+    SeshPersistenceResult<
+      SeshProjectPersistenceSnapshot
+    >
+  > {
+    let canonicalId:
+      SeshMusicProjectId;
 
     try {
-      canonicalId = parseSeshMusicProjectId(projectId);
+      canonicalId =
+        parseSeshMusicProjectId(
+          projectId,
+        );
     }
     catch (error) {
       return failure(
@@ -161,22 +264,26 @@ implements SeshProjectRepository {
       );
     }
 
-    let row: ProjectRow | null;
+    let row:
+      ProjectRow | null;
 
     try {
-      row = await this.database
-        .prepare(
-          `SELECT
-            project_id,
-            schema_version,
-            revision,
-            stored_at,
-            payload_json
-          FROM sesh_projects
-          WHERE project_id = ?`,
-        )
-        .bind(canonicalId)
-        .first<ProjectRow>();
+      row =
+        await this.database
+          .prepare(
+            `SELECT
+              project_id,
+              schema_version,
+              revision,
+              stored_at,
+              payload_json
+            FROM sesh_projects
+            WHERE project_id = ?`,
+          )
+          .bind(
+            canonicalId,
+          )
+          .first<ProjectRow>();
     }
     catch (error) {
       return failure(
@@ -187,7 +294,10 @@ implements SeshProjectRepository {
       );
     }
 
-    if (row === null) {
+    if (
+      row ===
+      null
+    ) {
       return failure(
         "not-found",
         `Sesh project not found: ${canonicalId}`,
@@ -200,7 +310,10 @@ implements SeshProjectRepository {
           row.payload_json,
         );
 
-      if (envelope.recordType !== "music-project") {
+      if (
+        envelope.recordType !==
+        "music-project"
+      ) {
         return failure(
           "validation",
           "Stored Sesh project row contains the wrong record type.",
@@ -208,8 +321,10 @@ implements SeshProjectRepository {
       }
 
       if (
-        row.project_id !== canonicalId ||
-        envelope.recordId !== canonicalId
+        row.project_id !==
+          canonicalId ||
+        envelope.recordId !==
+          canonicalId
       ) {
         return failure(
           "validation",
@@ -217,63 +332,364 @@ implements SeshProjectRepository {
         );
       }
 
-      return success(envelope.payload);
+      const revision =
+        canonicalRevision(
+          row.revision,
+          envelope.revision,
+        );
+
+      return success({
+        project:
+          envelope.payload,
+
+        revision,
+      });
     }
     catch (error) {
-      return mapReadError(error);
+      return mapReadError(
+        error,
+      );
     }
   }
 
-  async deleteProject(
+  async getProject(
     projectId: SeshMusicProjectId,
-  ): Promise<SeshPersistenceResult<boolean>> {
-    let canonicalId: SeshMusicProjectId;
+  ): Promise<
+    SeshPersistenceResult<SeshMusicProject>
+  > {
+    const snapshot =
+      await this.getProjectSnapshot(
+        projectId,
+      );
+
+    if (
+      !snapshot.ok
+    ) {
+      return snapshot;
+    }
+
+    return success(
+      snapshot.value.project,
+    );
+  }
+
+  async updateProjectConditionally(
+    project: unknown,
+    expectedRevision: number,
+    expectedOwnerCreatorId: string,
+  ): Promise<
+    SeshPersistenceResult<
+      SeshProjectPersistenceSnapshot
+    >
+  > {
+    let validated:
+      SeshMusicProject;
+
+    let expectedOwner:
+      SeshCreatorId;
 
     try {
-      canonicalId = parseSeshMusicProjectId(projectId);
+      validated =
+        validateSeshMusicProject(
+          project,
+        );
+
+      expectedOwner =
+        parseSeshCreatorId(
+          expectedOwnerCreatorId,
+        );
+
+      if (
+        !Number.isInteger(
+          expectedRevision,
+        ) ||
+        expectedRevision < 0
+      ) {
+        throw new TypeError(
+          "Expected Sesh project revision must be a non-negative integer.",
+        );
+      }
     }
     catch (error) {
       return failure(
         "validation",
         error instanceof Error
           ? error.message
-          : "Sesh project identifier validation failed.",
+          : "Sesh conditional project update validation failed.",
       );
     }
 
-    try {
-      const existed = await this.projectExists(canonicalId);
+    const current =
+      await this.getProjectSnapshot(
+        validated.id,
+      );
 
-      if (!existed.ok) {
-        return existed;
+    if (
+      !current.ok
+    ) {
+      return current;
+    }
+
+    if (
+      current.value.revision !==
+        expectedRevision ||
+      current.value.project.ownerCreatorId !==
+        expectedOwner
+    ) {
+      return failure(
+        "conflict",
+        "Sesh project changed before conditional update.",
+      );
+    }
+
+    if (
+      validated.ownerCreatorId !==
+        expectedOwner
+    ) {
+      return failure(
+        "conflict",
+        "Ordinary Sesh project updates cannot reassign ownerCreatorId.",
+      );
+    }
+
+    const nextRevision =
+      expectedRevision +
+      1;
+
+    const storedAt =
+      new Date().toISOString();
+
+    const envelope =
+      createSeshMusicProjectEnvelope(
+        validated,
+        storedAt,
+        nextRevision,
+      );
+
+    const payloadJson =
+      serializeSeshPersistenceEnvelope(
+        envelope,
+      );
+
+    try {
+      const result =
+        await this.database
+          .prepare(
+            `UPDATE sesh_projects
+            SET
+              schema_version = ?,
+              revision = ?,
+              stored_at = ?,
+              payload_json = ?
+            WHERE
+              project_id = ?
+              AND (
+                revision = ?
+                OR (
+                  revision IS NULL
+                  AND ? = 0
+                )
+              )`,
+          )
+          .bind(
+            envelope.schemaVersion,
+            nextRevision,
+            storedAt,
+            payloadJson,
+            validated.id,
+            expectedRevision,
+            expectedRevision,
+          )
+          .run();
+
+      if (
+        !changedExactlyOne(
+          result,
+        )
+      ) {
+        return failure(
+          "conflict",
+          "Sesh project changed before conditional update.",
+        );
       }
 
-      await this.database
-        .prepare(
-          "DELETE FROM sesh_projects WHERE project_id = ?",
-        )
-        .bind(canonicalId)
-        .run();
+      return success({
+        project:
+          validated,
 
-      return success(existed.value);
+        revision:
+          nextRevision,
+      });
     }
     catch (error) {
       return failure(
         "storage",
         error instanceof Error
           ? error.message
-          : "Sesh D1 project deletion failed.",
+          : "Sesh D1 conditional project update failed.",
       );
     }
   }
 
-  async projectExists(
+  async deleteProjectConditionally(
     projectId: SeshMusicProjectId,
-  ): Promise<SeshPersistenceResult<boolean>> {
-    let canonicalId: SeshMusicProjectId;
+    expectedRevision: number,
+    expectedOwnerCreatorId: string,
+  ): Promise<
+    SeshPersistenceResult<boolean>
+  > {
+    let canonicalId:
+      SeshMusicProjectId;
+
+    let expectedOwner:
+      SeshCreatorId;
 
     try {
-      canonicalId = parseSeshMusicProjectId(projectId);
+      canonicalId =
+        parseSeshMusicProjectId(
+          projectId,
+        );
+
+      expectedOwner =
+        parseSeshCreatorId(
+          expectedOwnerCreatorId,
+        );
+
+      if (
+        !Number.isInteger(
+          expectedRevision,
+        ) ||
+        expectedRevision < 0
+      ) {
+        throw new TypeError(
+          "Expected Sesh project revision must be a non-negative integer.",
+        );
+      }
+    }
+    catch (error) {
+      return failure(
+        "validation",
+        error instanceof Error
+          ? error.message
+          : "Sesh conditional project deletion validation failed.",
+      );
+    }
+
+    const current =
+      await this.getProjectSnapshot(
+        canonicalId,
+      );
+
+    if (
+      !current.ok
+    ) {
+      return current;
+    }
+
+    if (
+      current.value.revision !==
+        expectedRevision ||
+      current.value.project.ownerCreatorId !==
+        expectedOwner
+    ) {
+      return failure(
+        "conflict",
+        "Sesh project changed before conditional deletion.",
+      );
+    }
+
+    try {
+      const result =
+        await this.database
+          .prepare(
+            `DELETE FROM sesh_projects
+            WHERE
+              project_id = ?
+              AND (
+                revision = ?
+                OR (
+                  revision IS NULL
+                  AND ? = 0
+                )
+              )`,
+          )
+          .bind(
+            canonicalId,
+            expectedRevision,
+            expectedRevision,
+          )
+          .run();
+
+      if (
+        !changedExactlyOne(
+          result,
+        )
+      ) {
+        return failure(
+          "conflict",
+          "Sesh project changed before conditional deletion.",
+        );
+      }
+
+      return success(
+        true,
+      );
+    }
+    catch (error) {
+      return failure(
+        "storage",
+        error instanceof Error
+          ? error.message
+          : "Sesh D1 conditional project deletion failed.",
+      );
+    }
+  }
+
+  async deleteProject(
+    projectId: SeshMusicProjectId,
+  ): Promise<
+    SeshPersistenceResult<boolean>
+  > {
+    const snapshot =
+      await this.getProjectSnapshot(
+        projectId,
+      );
+
+    if (
+      !snapshot.ok
+    ) {
+      if (
+        snapshot.error.kind ===
+        "not-found"
+      ) {
+        return success(
+          false,
+        );
+      }
+
+      return snapshot;
+    }
+
+    return this.deleteProjectConditionally(
+      projectId,
+      snapshot.value.revision,
+      snapshot.value.project.ownerCreatorId,
+    );
+  }
+
+  async projectExists(
+    projectId: SeshMusicProjectId,
+  ): Promise<
+    SeshPersistenceResult<boolean>
+  > {
+    let canonicalId:
+      SeshMusicProjectId;
+
+    try {
+      canonicalId =
+        parseSeshMusicProjectId(
+          projectId,
+        );
     }
     catch (error) {
       return failure(
@@ -285,14 +701,23 @@ implements SeshProjectRepository {
     }
 
     try {
-      const row = await this.database
-        .prepare(
-          "SELECT project_id FROM sesh_projects WHERE project_id = ?",
-        )
-        .bind(canonicalId)
-        .first<{ readonly project_id: string }>();
+      const row =
+        await this.database
+          .prepare(
+            "SELECT project_id FROM sesh_projects WHERE project_id = ?",
+          )
+          .bind(
+            canonicalId,
+          )
+          .first<{
+            readonly project_id:
+              string;
+          }>();
 
-      return success(row !== null);
+      return success(
+        row !==
+        null,
+      );
     }
     catch (error) {
       return failure(

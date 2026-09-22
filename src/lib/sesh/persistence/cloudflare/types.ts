@@ -1,5 +1,9 @@
 export interface SeshD1RunResultLike {
   readonly success?: boolean;
+
+  readonly meta?: {
+    readonly changes?: number;
+  };
 }
 
 export interface SeshD1AllResultLike<T> {

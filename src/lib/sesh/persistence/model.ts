@@ -17,6 +17,11 @@ export type SeshPersistenceRecordType =
 
 export type SeshPersistenceRevision = number;
 
+export interface SeshProjectPersistenceSnapshot {
+  readonly project: SeshMusicProject;
+  readonly revision: SeshPersistenceRevision;
+}
+
 export interface SeshMusicProjectPersistenceEnvelope {
   readonly schemaVersion: typeof SESH_PERSISTENCE_SCHEMA_VERSION;
   readonly recordType: "music-project";

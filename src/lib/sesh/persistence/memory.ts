@@ -15,6 +15,7 @@ import {
 } from "../validation";
 import type {
   SeshPersistenceResult,
+  SeshProjectPersistenceSnapshot,
   SeshStoredAudioObject,
 } from "./model";
 import type {
@@ -123,18 +124,56 @@ function validateStorageReference(
 export class InMemorySeshProjectRepository
 implements SeshProjectRepository {
   private readonly projects =
-    new Map<SeshMusicProjectId, SeshMusicProject>();
+    new Map<
+      SeshMusicProjectId,
+      {
+        readonly project:
+          SeshMusicProject;
+        readonly revision:
+          number;
+      }
+    >();
 
   async saveProject(
     project: unknown,
   ): Promise<SeshPersistenceResult<SeshMusicProject>> {
     try {
-      const validated = validateSeshMusicProject(project);
-      const cloned = cloneProject(validated);
+      const validated =
+        validateSeshMusicProject(
+          project,
+        );
 
-      this.projects.set(cloned.id, cloned);
+      if (
+        this.projects.has(
+          validated.id,
+        )
+      ) {
+        return failure(
+          "conflict",
+          "Sesh project already exists.",
+        );
+      }
 
-      return success(cloneProject(cloned));
+      const cloned =
+        cloneProject(
+          validated,
+        );
+
+      this.projects.set(
+        cloned.id,
+        {
+          project:
+            cloned,
+          revision:
+            0,
+        },
+      );
+
+      return success(
+        cloneProject(
+          cloned,
+        ),
+      );
     }
     catch (error) {
       return failure(
@@ -146,21 +185,43 @@ implements SeshProjectRepository {
     }
   }
 
-  async getProject(
+  async getProjectSnapshot(
     projectId: SeshMusicProjectId,
-  ): Promise<SeshPersistenceResult<SeshMusicProject>> {
+  ): Promise<
+    SeshPersistenceResult<
+      SeshProjectPersistenceSnapshot
+    >
+  > {
     try {
-      const canonicalId = parseSeshMusicProjectId(projectId);
-      const project = this.projects.get(canonicalId);
+      const canonicalId =
+        parseSeshMusicProjectId(
+          projectId,
+        );
 
-      if (project === undefined) {
+      const stored =
+        this.projects.get(
+          canonicalId,
+        );
+
+      if (
+        stored ===
+        undefined
+      ) {
         return failure(
           "not-found",
           `Sesh project not found: ${canonicalId}`,
         );
       }
 
-      return success(cloneProject(project));
+      return success({
+        project:
+          cloneProject(
+            stored.project,
+          ),
+
+        revision:
+          stored.revision,
+      });
     }
     catch (error) {
       return failure(
@@ -168,6 +229,192 @@ implements SeshProjectRepository {
         error instanceof Error
           ? error.message
           : "Project identifier validation failed.",
+      );
+    }
+  }
+
+  async getProject(
+    projectId: SeshMusicProjectId,
+  ): Promise<SeshPersistenceResult<SeshMusicProject>> {
+    const snapshot =
+      await this.getProjectSnapshot(
+        projectId,
+      );
+
+    if (
+      !snapshot.ok
+    ) {
+      return snapshot;
+    }
+
+    return success(
+      snapshot.value.project,
+    );
+  }
+
+  async updateProjectConditionally(
+    project: unknown,
+    expectedRevision: number,
+    expectedOwnerCreatorId: string,
+  ): Promise<
+    SeshPersistenceResult<
+      SeshProjectPersistenceSnapshot
+    >
+  > {
+    try {
+      const validated =
+        validateSeshMusicProject(
+          project,
+        );
+
+      if (
+        !Number.isInteger(
+          expectedRevision,
+        ) ||
+        expectedRevision < 0
+      ) {
+        return failure(
+          "validation",
+          "Expected Sesh project revision must be a non-negative integer.",
+        );
+      }
+
+      const current =
+        this.projects.get(
+          validated.id,
+        );
+
+      if (
+        current ===
+        undefined
+      ) {
+        return failure(
+          "not-found",
+          `Sesh project not found: ${validated.id}`,
+        );
+      }
+
+      if (
+        current.revision !==
+          expectedRevision ||
+        current.project.ownerCreatorId !==
+          expectedOwnerCreatorId
+      ) {
+        return failure(
+          "conflict",
+          "Sesh project changed before conditional update.",
+        );
+      }
+
+      if (
+        validated.ownerCreatorId !==
+          expectedOwnerCreatorId
+      ) {
+        return failure(
+          "conflict",
+          "Ordinary Sesh project updates cannot reassign ownerCreatorId.",
+        );
+      }
+
+      const cloned =
+        cloneProject(
+          validated,
+        );
+
+      const revision =
+        expectedRevision +
+        1;
+
+      this.projects.set(
+        cloned.id,
+        {
+          project:
+            cloned,
+          revision,
+        },
+      );
+
+      return success({
+        project:
+          cloneProject(
+            cloned,
+          ),
+
+        revision,
+      });
+    }
+    catch (error) {
+      return failure(
+        "validation",
+        error instanceof Error
+          ? error.message
+          : "Conditional project update validation failed.",
+      );
+    }
+  }
+
+  async deleteProjectConditionally(
+    projectId: SeshMusicProjectId,
+    expectedRevision: number,
+    expectedOwnerCreatorId: string,
+  ): Promise<SeshPersistenceResult<boolean>> {
+    try {
+      const canonicalId =
+        parseSeshMusicProjectId(
+          projectId,
+        );
+
+      if (
+        !Number.isInteger(
+          expectedRevision,
+        ) ||
+        expectedRevision < 0
+      ) {
+        return failure(
+          "validation",
+          "Expected Sesh project revision must be a non-negative integer.",
+        );
+      }
+
+      const current =
+        this.projects.get(
+          canonicalId,
+        );
+
+      if (
+        current ===
+        undefined
+      ) {
+        return failure(
+          "not-found",
+          `Sesh project not found: ${canonicalId}`,
+        );
+      }
+
+      if (
+        current.revision !==
+          expectedRevision ||
+        current.project.ownerCreatorId !==
+          expectedOwnerCreatorId
+      ) {
+        return failure(
+          "conflict",
+          "Sesh project changed before conditional deletion.",
+        );
+      }
+
+      return success(
+        this.projects.delete(
+          canonicalId,
+        ),
+      );
+    }
+    catch (error) {
+      return failure(
+        "validation",
+        error instanceof Error
+          ? error.message
+          : "Conditional project deletion validation failed.",
       );
     }
   }
@@ -175,28 +422,47 @@ implements SeshProjectRepository {
   async deleteProject(
     projectId: SeshMusicProjectId,
   ): Promise<SeshPersistenceResult<boolean>> {
-    try {
-      const canonicalId = parseSeshMusicProjectId(projectId);
-
-      return success(this.projects.delete(canonicalId));
-    }
-    catch (error) {
-      return failure(
-        "validation",
-        error instanceof Error
-          ? error.message
-          : "Project identifier validation failed.",
+    const snapshot =
+      await this.getProjectSnapshot(
+        projectId,
       );
+
+    if (
+      !snapshot.ok
+    ) {
+      if (
+        snapshot.error.kind ===
+        "not-found"
+      ) {
+        return success(
+          false,
+        );
+      }
+
+      return snapshot;
     }
+
+    return this.deleteProjectConditionally(
+      projectId,
+      snapshot.value.revision,
+      snapshot.value.project.ownerCreatorId,
+    );
   }
 
   async projectExists(
     projectId: SeshMusicProjectId,
   ): Promise<SeshPersistenceResult<boolean>> {
     try {
-      const canonicalId = parseSeshMusicProjectId(projectId);
+      const canonicalId =
+        parseSeshMusicProjectId(
+          projectId,
+        );
 
-      return success(this.projects.has(canonicalId));
+      return success(
+        this.projects.has(
+          canonicalId,
+        ),
+      );
     }
     catch (error) {
       return failure(

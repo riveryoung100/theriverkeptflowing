@@ -9,6 +9,7 @@ import type {
 } from "../model";
 import type {
   SeshPersistenceResult,
+  SeshProjectPersistenceSnapshot,
   SeshStoredAudioObject,
 } from "./model";
 
@@ -20,6 +21,22 @@ export interface SeshProjectRepository {
   getProject(
     projectId: SeshMusicProjectId,
   ): Promise<SeshPersistenceResult<SeshMusicProject>>;
+
+  getProjectSnapshot(
+    projectId: SeshMusicProjectId,
+  ): Promise<SeshPersistenceResult<SeshProjectPersistenceSnapshot>>;
+
+  updateProjectConditionally(
+    project: unknown,
+    expectedRevision: number,
+    expectedOwnerCreatorId: string,
+  ): Promise<SeshPersistenceResult<SeshProjectPersistenceSnapshot>>;
+
+  deleteProjectConditionally(
+    projectId: SeshMusicProjectId,
+    expectedRevision: number,
+    expectedOwnerCreatorId: string,
+  ): Promise<SeshPersistenceResult<boolean>>;
 
   deleteProject(
     projectId: SeshMusicProjectId,

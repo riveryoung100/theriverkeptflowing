@@ -1,0 +1,83 @@
+{
+    "id":  "SESH-029",
+    "title":  "Sesh Project Conditional Mutation and Ownership Invariant Persistence Architecture",
+    "status":  "IMPLEMENTED_LOCALLY_PENDING_REVIEW",
+    "sourceBaseline":  {
+                           "branch":  "cif-001-canonical-content-source-record",
+                           "commit":  "f593c852f37cd5355715696f09d1f1c790215d42",
+                           "predecessor":  "SESH-028"
+                       },
+    "revisionSemantics":  {
+                              "initialRevision":  0,
+                              "mutationRule":  "Every successful conditional project update increments revision by exactly one.",
+                              "legacyNullRevision":  "TREATED_AS_REVISION_ZERO",
+                              "schemaMigrationRequired":  false,
+                              "existingSchemaColumn":  "sesh_projects.revision"
+                          },
+    "creationBoundary":  {
+                             "saveProject":  "CREATE_ONLY",
+                             "duplicateProjectId":  "CONFLICT",
+                             "upsert":  "FORBIDDEN",
+                             "ownerReassignmentThroughSave":  "FORBIDDEN_BY_CREATE_ONLY_SEMANTICS"
+                         },
+    "conditionalUpdate":  {
+                              "method":  "updateProjectConditionally",
+                              "requiredPredicates":  [
+                                                         "canonical project id",
+                                                         "expected revision",
+                                                         "expected ownerCreatorId"
+                                                     ],
+                              "ownerCreatorIdMutation":  "FORBIDDEN",
+                              "staleRevision":  "CONFLICT",
+                              "changedRows":  "MUST_EQUAL_ONE"
+                          },
+    "conditionalDelete":  {
+                              "method":  "deleteProjectConditionally",
+                              "requiredPredicates":  [
+                                                         "canonical project id",
+                                                         "expected revision",
+                                                         "expected ownerCreatorId"
+                                                     ],
+                              "staleRevision":  "CONFLICT",
+                              "changedRows":  "MUST_EQUAL_ONE"
+                          },
+    "d1Boundary":  {
+                       "runResultChanges":  "meta.changes",
+                       "conditionalSql":  "REVISION_PREDICATE",
+                       "nullRevisionCompatibility":  "revision IS NULL is accepted only when expectedRevision is zero."
+                   },
+    "serviceComposition":  {
+                               "predecessor":  "SESH-028",
+                               "authorizationOrdering":  "UNCHANGED",
+                               "update":  "AUTHORIZATION -\u003e SNAPSHOT -\u003e CONDITIONAL UPDATE",
+                               "delete":  "AUTHORIZATION -\u003e SNAPSHOT -\u003e CONDITIONAL DELETE",
+                               "staleMutation":  "CONFLICT"
+                           },
+    "rightsBoundary":  {
+                           "ownershipTransfer":  "NOT_IMPLEMENTED",
+                           "collaboratorAccess":  "NOT_GRANTED",
+                           "publishingRights":  "NOT_GRANTED",
+                           "managementRights":  "NOT_GRANTED",
+                           "legalOwnership":  "NOT_INFERRED",
+                           "copyrightOwnership":  "NOT_INFERRED"
+                       },
+    "productionBoundary":  {
+                               "databaseMutation":  false,
+                               "projectMutation":  false,
+                               "migrationExecuted":  false,
+                               "httpEndpointCreated":  false,
+                               "deployment":  false
+                           },
+    "nextSlice":  {
+                      "id":  "SESH-030",
+                      "title":  "Authenticated Creator-Owned Project API Boundary Architecture",
+                      "scope":  [
+                                    "Design private authenticated creator-owned project HTTP boundary.",
+                                    "Map session PrincipalId through explicit SeshCreatorId mapping.",
+                                    "Route project reads and mutations exclusively through SESH-028/029 authorization and conditional mutation services.",
+                                    "Define CSRF and request validation separately from ownership authorization.",
+                                    "Do not grant collaborator, publishing, management, legal, or copyright rights.",
+                                    "Do not deploy until endpoint architecture and tests are complete."
+                                ]
+                  }
+}

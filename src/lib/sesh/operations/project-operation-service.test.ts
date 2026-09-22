@@ -219,6 +219,33 @@ test(
             );
           },
 
+          async getProjectSnapshot() {
+            reads +=
+              1;
+
+            throw new Error(
+              "Unexpected snapshot read.",
+            );
+          },
+
+          async updateProjectConditionally() {
+            writes +=
+              1;
+
+            throw new Error(
+              "Unexpected conditional write.",
+            );
+          },
+
+          async deleteProjectConditionally() {
+            deletes +=
+              1;
+
+            throw new Error(
+              "Unexpected conditional delete.",
+            );
+          },
+
           async deleteProject() {
             deletes +=
               1;
@@ -522,23 +549,10 @@ test(
 );
 
 test(
-  "fails closed when project owner changes after authorization",
+  "maps conditional repository conflicts to operation conflicts",
   async () => {
     const repository =
       await repositoryWithProject();
-
-    const changed =
-      await repository.saveProject({
-        ...project,
-
-        ownerCreatorId:
-          otherCreatorId,
-      });
-
-    assert.equal(
-      changed.ok,
-      true,
-    );
 
     const service =
       new DefaultAuthorizedSeshProjectOperationService({
@@ -549,8 +563,54 @@ test(
             ),
           ),
 
-        projects:
-          repository,
+        projects: {
+          ...repository,
+
+          getProject:
+            repository.getProject.bind(
+              repository,
+            ),
+
+          getProjectSnapshot:
+            repository.getProjectSnapshot.bind(
+              repository,
+            ),
+
+          saveProject:
+            repository.saveProject.bind(
+              repository,
+            ),
+
+          projectExists:
+            repository.projectExists.bind(
+              repository,
+            ),
+
+          deleteProject:
+            repository.deleteProject.bind(
+              repository,
+            ),
+
+          deleteProjectConditionally:
+            repository.deleteProjectConditionally.bind(
+              repository,
+            ),
+
+          async updateProjectConditionally() {
+            return {
+              ok:
+                false,
+
+              error: {
+                kind:
+                  "conflict",
+
+                message:
+                  "Concurrent mutation.",
+              },
+            };
+          },
+        },
 
         now:
           () => updatedAt,
@@ -561,7 +621,7 @@ test(
         projectId,
         {
           title:
-            "Must not persist",
+            "Must conflict",
         },
       );
 
@@ -574,38 +634,14 @@ test(
       result.ok
     ) {
       throw new Error(
-        "Expected fail-closed result.",
+        "Expected conflict.",
       );
     }
 
     assert.equal(
       result.error.code,
-      "unavailable",
+      "conflict",
     );
-
-    const loaded =
-      await repository.getProject(
-        projectId,
-      );
-
-    assert.equal(
-      loaded.ok,
-      true,
-    );
-
-    if (
-      loaded.ok
-    ) {
-      assert.equal(
-        loaded.value.title,
-        "Original",
-      );
-
-      assert.equal(
-        loaded.value.ownerCreatorId,
-        otherCreatorId,
-      );
-    }
   },
 );
 
@@ -655,76 +691,6 @@ test(
     assert.equal(
       loaded.ok,
       false,
-    );
-  },
-);
-
-test(
-  "fails closed rather than deleting when owner no longer matches authorization",
-  async () => {
-    const repository =
-      await repositoryWithProject();
-
-    const changed =
-      await repository.saveProject({
-        ...project,
-
-        ownerCreatorId:
-          otherCreatorId,
-      });
-
-    assert.equal(
-      changed.ok,
-      true,
-    );
-
-    const service =
-      new DefaultAuthorizedSeshProjectOperationService({
-        authorizer:
-          authorizer(
-            ownerAuthorization(
-              "delete",
-            ),
-          ),
-
-        projects:
-          repository,
-
-        now:
-          () => updatedAt,
-      });
-
-    const result =
-      await service.deleteProject(
-        projectId,
-      );
-
-    assert.equal(
-      result.ok,
-      false,
-    );
-
-    if (
-      result.ok
-    ) {
-      throw new Error(
-        "Expected fail-closed deletion result.",
-      );
-    }
-
-    assert.equal(
-      result.error.code,
-      "unavailable",
-    );
-
-    const loaded =
-      await repository.getProject(
-        projectId,
-      );
-
-    assert.equal(
-      loaded.ok,
-      true,
     );
   },
 );
