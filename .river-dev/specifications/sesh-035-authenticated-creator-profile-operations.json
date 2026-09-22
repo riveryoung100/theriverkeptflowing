@@ -1,0 +1,54 @@
+{
+  "id": "SESH-035",
+  "title": "Authenticated Creator Profile Operations",
+  "status": "source-implementation",
+  "objective": "Provide an authenticated operation boundary for reading and updating only the canonical Sesh creator profile mapped to the current authenticated Principal.",
+  "identity": {
+    "authority": "AuthenticatedSeshCreatorResolver",
+    "successFields": [
+      "principalId",
+      "seshCreatorId"
+    ],
+    "failureCodes": [
+      "unauthenticated",
+      "unmapped",
+      "unavailable"
+    ],
+    "clientSuppliedCreatorIdentity": false
+  },
+  "operations": {
+    "readProfile": true,
+    "updateProfile": true,
+    "deleteProfile": false
+  },
+  "mutableFields": [
+    "displayName",
+    "handle",
+    "bio"
+  ],
+  "immutableFields": [
+    "id",
+    "createdAt"
+  ],
+  "concurrency": {
+    "snapshotRead": true,
+    "conditionalMutation": true,
+    "expectedRevisionDerivedServerSide": true,
+    "staleWrite": "conflict"
+  },
+  "authorization": {
+    "profileAccessDerivedOnlyFromAuthenticatedCreatorMapping": true,
+    "projectRightsGranted": false,
+    "collaboratorRightsGranted": false,
+    "publishingRightsGranted": false,
+    "managementRightsGranted": false,
+    "legalRightsGranted": false,
+    "copyrightRightsGranted": false
+  },
+  "liveActions": {
+    "databaseMutation": false,
+    "migration": false,
+    "httpEndpointChange": false,
+    "deployment": false
+  }
+}

@@ -21,3 +21,14 @@ export type {
   SeshProjectCreateInput,
 } from "./project-collection-service";
 export * from "./creator-profile-provisioning-service";
+export {
+  DefaultAuthenticatedSeshCreatorProfileOperationService,
+} from "./creator-profile-operation-service";
+
+export type {
+  AuthenticatedSeshCreatorProfileOperationService,
+  DefaultAuthenticatedSeshCreatorProfileOperationServiceDependencies,
+  SeshCreatorProfileMutableUpdate,
+  SeshCreatorProfileOperationFailureCode,
+  SeshCreatorProfileOperationResult,
+} from "./creator-profile-operation-service";
