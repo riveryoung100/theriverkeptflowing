@@ -1,4 +1,7 @@
 import type {
+  AuthenticatedSeshCreatorProfileOperationService,
+  SeshCreatorProfileOperationFailureCode,
+  SeshCreatorProfileOperationResult,
   SeshCreatorProfileProvisioningFailureCode,
   SeshCreatorProfileProvisioningResult,
   SeshCreatorProfileProvisioningService,
@@ -14,6 +17,14 @@ export interface SeshCreatorProfileProvisioningApiInput {
 
   readonly provisioning:
     SeshCreatorProfileProvisioningService;
+}
+
+export interface SeshCreatorProfileOperationApiInput {
+  readonly request:
+    Request;
+
+  readonly operations:
+    AuthenticatedSeshCreatorProfileOperationService;
 }
 
 function jsonResponse(
@@ -270,6 +281,128 @@ export async function handleSeshCreatorProfileProvisioning(
     await input.provisioning
       .provision(
         parsed.value,
+      ),
+  );
+}
+function profileOperationFailureStatus(
+  code:
+    SeshCreatorProfileOperationFailureCode,
+): number {
+  switch (
+    code
+  ) {
+    case "invalid-input":
+      return 400;
+
+    case "unauthenticated":
+      return 401;
+
+    case "unmapped":
+      return 403;
+
+    case "not-found":
+      return 404;
+
+    case "conflict":
+      return 409;
+
+    case "unavailable":
+      return 503;
+  }
+}
+
+function profileOperationResponse<T>(
+  result:
+    SeshCreatorProfileOperationResult<T>,
+): Response {
+  if (
+    result.ok
+  ) {
+    return jsonResponse(
+      {
+        ok:
+          true,
+
+        value:
+          result.value,
+      },
+      200,
+    );
+  }
+
+  return jsonResponse(
+    {
+      ok:
+        false,
+
+      error: {
+        code:
+          result.error.code,
+
+        message:
+          result.error.message,
+      },
+    },
+    profileOperationFailureStatus(
+      result.error.code,
+    ),
+  );
+}
+
+export async function handleSeshCreatorProfileRead(
+  input:
+    SeshCreatorProfileOperationApiInput,
+): Promise<Response> {
+  return profileOperationResponse(
+    await input.operations
+      .readProfile(),
+  );
+}
+
+export async function handleSeshCreatorProfileUpdate(
+  input:
+    SeshCreatorProfileOperationApiInput,
+): Promise<Response> {
+  if (
+    !isSameOriginSeshWriteRequest(
+      input.request,
+    )
+  ) {
+    return jsonResponse(
+      {
+        ok:
+          false,
+
+        error: {
+          code:
+            "forbidden",
+
+          message:
+            "Sesh creator profile write request was rejected.",
+        },
+      },
+      403,
+    );
+  }
+
+  let body:
+    unknown;
+
+  try {
+    body =
+      await input.request
+        .json();
+  }
+  catch {
+    return invalidInput(
+      "Sesh creator profile update requires a valid JSON body.",
+    );
+  }
+
+  return profileOperationResponse(
+    await input.operations
+      .updateProfile(
+        body,
       ),
   );
 }

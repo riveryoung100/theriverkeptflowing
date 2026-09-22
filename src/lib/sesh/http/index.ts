@@ -18,8 +18,11 @@ export type {
 } from "./project-collection-api";
 export {
   handleSeshCreatorProfileProvisioning,
+  handleSeshCreatorProfileRead,
+  handleSeshCreatorProfileUpdate,
 } from "./creator-profile-api";
 
 export type {
+  SeshCreatorProfileOperationApiInput,
   SeshCreatorProfileProvisioningApiInput,
 } from "./creator-profile-api";

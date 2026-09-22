@@ -8,6 +8,10 @@ import type {
 } from "../../identity/cloudflare";
 
 import {
+  DefaultAuthenticatedSeshCreatorResolver,
+} from "../../identity/sesh";
+
+import {
   AstroPrincipalSessionStore,
   DefaultSessionPrincipalResolver,
 } from "../../identity/session";
@@ -17,10 +21,12 @@ import type {
 } from "../../identity/session";
 
 import {
+  DefaultAuthenticatedSeshCreatorProfileOperationService,
   DefaultSeshCreatorProfileProvisioningService,
 } from "../operations";
 
 import type {
+  AuthenticatedSeshCreatorProfileOperationService,
   SeshCreatorProfileProvisioningService,
 } from "../operations";
 
@@ -163,5 +169,78 @@ export function createSeshCreatorProfileProvisioningAtRuntime(
       ),
 
     now,
+  });
+}
+export function createAuthenticatedSeshCreatorProfileOperationsAtRuntime(
+  session:
+    AstroSessionLike,
+
+  runtimeEnvironment:
+    SeshCreatorProfileApiRuntimeEnvironment,
+): AuthenticatedSeshCreatorProfileOperationService {
+  if (
+    typeof session !==
+      "object" ||
+    session ===
+      null
+  ) {
+    throw new TypeError(
+      "Astro session support is required for authenticated Sesh creator profile operations.",
+    );
+  }
+
+  if (
+    typeof runtimeEnvironment !==
+      "object" ||
+    runtimeEnvironment ===
+      null
+  ) {
+    throw new TypeError(
+      "Sesh creator profile runtime environment is required.",
+    );
+  }
+
+  const identityDatabase =
+    requireIdentityDatabase(
+      runtimeEnvironment
+        .RIVER_IDENTITY_DB,
+    );
+
+  const seshDatabase =
+    requireSeshDatabase(
+      runtimeEnvironment
+        .SESH_DB,
+    );
+
+  const principalResolver =
+    new DefaultSessionPrincipalResolver({
+      sessions:
+        new AstroPrincipalSessionStore(
+          session,
+        ),
+
+      principals:
+        new D1PrincipalRepository(
+          identityDatabase,
+        ),
+    });
+
+  const creatorResolver =
+    new DefaultAuthenticatedSeshCreatorResolver({
+      principalResolver,
+
+      mappings:
+        new D1PrincipalSeshCreatorMappingRepository(
+          identityDatabase,
+        ),
+    });
+
+  return new DefaultAuthenticatedSeshCreatorProfileOperationService({
+    creatorResolver,
+
+    profiles:
+      new D1SeshCreatorProfileRepository(
+        seshDatabase,
+      ),
   });
 }

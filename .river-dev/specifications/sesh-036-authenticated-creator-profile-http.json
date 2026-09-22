@@ -1,0 +1,51 @@
+{
+  "id": "SESH-036",
+  "title": "Authenticated Creator Profile HTTP and Runtime Boundary",
+  "status": "source-implementation",
+  "route": "/api/sesh/creator/profile",
+  "methods": {
+    "GET": {
+      "authentication": "canonical Principal session plus explicit PrincipalId to SeshCreatorId mapping",
+      "sameOriginRequired": false,
+      "cacheControl": "no-store"
+    },
+    "PATCH": {
+      "authentication": "canonical Principal session plus explicit PrincipalId to SeshCreatorId mapping",
+      "sameOriginRequired": true,
+      "body": "JSON object delegated to SESH-035 profile operation validation",
+      "concurrency": "server-side revision snapshot plus conditional D1 CAS",
+      "cacheControl": "no-store"
+    }
+  },
+  "failureStatus": {
+    "invalid-input": 400,
+    "unauthenticated": 401,
+    "unmapped": 403,
+    "not-found": 404,
+    "conflict": 409,
+    "unavailable": 503
+  },
+  "identity": {
+    "clientCreatorIdAccepted": false,
+    "clientPrincipalIdAccepted": false,
+    "profileIdServerDerived": true,
+    "createdAtImmutable": true
+  },
+  "rights": {
+    "project": false,
+    "collaboration": false,
+    "publishing": false,
+    "management": false,
+    "legal": false,
+    "copyright": false
+  },
+  "provisioningRoute": {
+    "path": "/api/sesh/creator/provision",
+    "preservedPostOnly": true
+  },
+  "liveActions": {
+    "databaseMutation": false,
+    "migration": false,
+    "deployment": false
+  }
+}
