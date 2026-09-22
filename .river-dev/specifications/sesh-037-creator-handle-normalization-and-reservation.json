@@ -1,0 +1,51 @@
+{
+  "id": "SESH-037",
+  "title": "Creator Handle Normalization and Reservation",
+  "status": "source-implementation",
+  "objective": "Create a canonical creator-handle grammar and D1-backed uniqueness reservation boundary before exposing handle mutation publicly.",
+  "normalization": {
+    "unicode": "NFKC",
+    "trim": true,
+    "lowercase": true,
+    "minimumLength": 3,
+    "maximumLength": 32,
+    "grammar": "lowercase ASCII alphanumeric with internal hyphen or underscore separators",
+    "leadingSeparator": false,
+    "trailingSeparator": false,
+    "consecutiveSeparators": false
+  },
+  "reservation": {
+    "database": "SESH_DB",
+    "table": "sesh_creator_handle_reservations",
+    "normalizedHandleGloballyUnique": true,
+    "oneHandlePerCreator": true,
+    "creatorIdCanonical": true,
+    "createdAtImmutable": true
+  },
+  "ordinaryProfileUpdate": {
+    "displayNameMutable": true,
+    "bioMutable": true,
+    "handleMutable": false,
+    "reason": "Handle changes require the dedicated reservation boundary."
+  },
+  "futureClaimOperation": {
+    "authenticatedCreatorOnly": true,
+    "dedicatedOperationRequired": true,
+    "dedicatedHttpRequired": true,
+    "notImplementedHere": true
+  },
+  "rights": {
+    "project": false,
+    "collaboration": false,
+    "publishing": false,
+    "management": false,
+    "legal": false,
+    "copyright": false
+  },
+  "liveActions": {
+    "migrationAuthored": true,
+    "migrationExecuted": false,
+    "databaseMutation": false,
+    "deployment": false
+  }
+}

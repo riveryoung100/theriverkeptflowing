@@ -349,6 +349,171 @@ function profileOperationResponse<T>(
   );
 }
 
+function parseProfileUpdateInput(
+  value:
+    unknown,
+):
+  | {
+      readonly ok:
+        true;
+
+      readonly value: {
+        readonly displayName?:
+          string;
+
+        readonly bio?:
+          string;
+      };
+    }
+  | {
+      readonly ok:
+        false;
+
+      readonly response:
+        Response;
+    } {
+  if (
+    typeof value !==
+      "object" ||
+    value ===
+      null ||
+    Array.isArray(
+      value,
+    )
+  ) {
+    return {
+      ok:
+        false,
+
+      response:
+        invalidInput(
+          "Sesh creator profile update requires a JSON object.",
+        ),
+    };
+  }
+
+  const record =
+    value as
+      Record<
+        string,
+        unknown
+      >;
+
+  const keys =
+    Object.keys(
+      record,
+    );
+
+  if (
+    keys.length ===
+      0
+  ) {
+    return {
+      ok:
+        false,
+
+      response:
+        invalidInput(
+          "Sesh creator profile update requires at least one mutable field.",
+        ),
+    };
+  }
+
+  const allowedFields =
+    new Set([
+      "displayName",
+      "bio",
+    ]);
+
+  for (
+    const key of keys
+  ) {
+    if (
+      !allowedFields.has(
+        key,
+      )
+    ) {
+      return {
+        ok:
+          false,
+
+        response:
+          invalidInput(
+            "Sesh creator profile update accepts only displayName and bio.",
+          ),
+      };
+    }
+  }
+
+  if (
+    Object.prototype.hasOwnProperty.call(
+      record,
+      "displayName",
+    ) &&
+    typeof record.displayName !==
+      "string"
+  ) {
+    return {
+      ok:
+        false,
+
+      response:
+        invalidInput(
+          "Sesh creator profile displayName must be a string.",
+        ),
+    };
+  }
+
+  if (
+    Object.prototype.hasOwnProperty.call(
+      record,
+      "bio",
+    ) &&
+    typeof record.bio !==
+      "string"
+  ) {
+    return {
+      ok:
+        false,
+
+      response:
+        invalidInput(
+          "Sesh creator profile bio must be a string.",
+        ),
+    };
+  }
+
+  return {
+    ok:
+      true,
+
+    value: {
+      ...(
+        Object.prototype.hasOwnProperty.call(
+          record,
+          "displayName",
+        )
+          ? {
+              displayName:
+                record.displayName as string,
+            }
+          : {}
+      ),
+
+      ...(
+        Object.prototype.hasOwnProperty.call(
+          record,
+          "bio",
+        )
+          ? {
+              bio:
+                record.bio as string,
+            }
+          : {}
+      ),
+    },
+  };
+}
 export async function handleSeshCreatorProfileRead(
   input:
     SeshCreatorProfileOperationApiInput,
@@ -399,10 +564,21 @@ export async function handleSeshCreatorProfileUpdate(
     );
   }
 
+  const parsed =
+    parseProfileUpdateInput(
+      body,
+    );
+
+  if (
+    !parsed.ok
+  ) {
+    return parsed.response;
+  }
+
   return profileOperationResponse(
     await input.operations
       .updateProfile(
-        body,
+        parsed.value,
       ),
   );
 }

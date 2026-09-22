@@ -393,7 +393,7 @@ test(
 );
 
 test(
-  "updates only displayName handle and bio while preserving id and createdAt",
+  "updates only displayName and bio while preserving id createdAt and handle",
   async () => {
     const profiles =
       new FakeProfileRepository();
@@ -410,9 +410,6 @@ test(
       await service.updateProfile({
         displayName:
           "River Young",
-
-        handle:
-          "river",
 
         bio:
           "Making music.",
@@ -448,7 +445,7 @@ test(
 
     assert.equal(
       result.value.handle,
-      "river",
+      undefined,
     );
 
     assert.equal(
@@ -463,6 +460,46 @@ test(
   },
 );
 
+test(
+  "rejects ordinary handle mutation before persistence",
+  async () => {
+    const profiles =
+      new FakeProfileRepository();
+
+    const service =
+      new DefaultAuthenticatedSeshCreatorProfileOperationService({
+        creatorResolver:
+          successfulResolver(),
+
+        profiles,
+      });
+
+    const result =
+      await service.updateProfile({
+        handle:
+          "river",
+      });
+
+    assert.equal(
+      result.ok,
+      false,
+    );
+
+    assert.equal(
+      profiles.updateCalls,
+      0,
+    );
+
+    if (
+      !result.ok
+    ) {
+      assert.equal(
+        result.error.code,
+        "invalid-input",
+      );
+    }
+  },
+);
 test(
   "rejects identity and lifecycle fields before persistence",
   async () => {

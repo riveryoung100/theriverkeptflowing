@@ -19,8 +19,6 @@ export interface SeshCreatorProfileMutableUpdate {
   readonly displayName?:
     SeshCreatorProfile["displayName"];
 
-  readonly handle?:
-    SeshCreatorProfile["handle"];
 
   readonly bio?:
     SeshCreatorProfile["bio"];
@@ -195,7 +193,6 @@ function validateUpdate(
   const allowed =
     new Set([
       "displayName",
-      "handle",
       "bio",
     ]);
 
@@ -235,22 +232,6 @@ function validateUpdate(
     };
   }
 
-  if (
-    Object.prototype.hasOwnProperty.call(
-      record,
-      "handle",
-    ) &&
-    typeof record.handle !==
-      "string"
-  ) {
-    return {
-      ok:
-        false,
-
-      message:
-        "Sesh creator profile handle must be a string.",
-    };
-  }
 
   if (
     Object.prototype.hasOwnProperty.call(
@@ -286,17 +267,6 @@ function validateUpdate(
           : {}
       ),
 
-      ...(
-        Object.prototype.hasOwnProperty.call(
-          record,
-          "handle",
-        )
-          ? {
-              handle:
-                record.handle as string,
-            }
-          : {}
-      ),
 
       ...(
         Object.prototype.hasOwnProperty.call(

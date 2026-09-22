@@ -144,7 +144,7 @@ test(
 );
 
 test(
-  "allows same-origin PATCH and delegates body to authenticated profile operations",
+  "allows only sanitized displayName and bio through same-origin PATCH",
   async () => {
     let received:
       unknown;
@@ -266,6 +266,218 @@ test(
   },
 );
 
+for (
+  const forbiddenField of [
+    "handle",
+    "id",
+    "createdAt",
+    "principalId",
+    "seshCreatorId",
+    "unexpected",
+  ] as const
+) {
+  test(
+    `rejects ${forbiddenField} at the profile HTTP PATCH boundary before operation execution`,
+    async () => {
+      let calls =
+        0;
+
+      const response =
+        await handleSeshCreatorProfileUpdate({
+          request:
+            new Request(
+              "https://theriverkeptflowing.com/api/sesh/creator/profile",
+              {
+                method:
+                  "PATCH",
+
+                headers: {
+                  origin:
+                    "https://theriverkeptflowing.com",
+
+                  "content-type":
+                    "application/json",
+                },
+
+                body:
+                  JSON.stringify({
+                    [forbiddenField]:
+                      "forbidden",
+                  }),
+              },
+            ),
+
+          operations:
+            operationService(
+              success,
+              success,
+              {
+                onUpdate() {
+                  calls +=
+                    1;
+                },
+              },
+            ),
+        });
+
+      assert.equal(
+        response.status,
+        400,
+      );
+
+      assert.equal(
+        calls,
+        0,
+      );
+
+      const body =
+        await payload(
+          response,
+        );
+
+      assert.equal(
+        (
+          body.error as
+            Record<string, unknown>
+        ).code,
+        "invalid-input",
+      );
+    },
+  );
+}
+
+for (
+  const invalidBody of [
+    [],
+    null,
+    "profile",
+    42,
+    {},
+  ]
+) {
+  test(
+    `rejects invalid profile PATCH shape ${JSON.stringify(invalidBody)} before operation execution`,
+    async () => {
+      let calls =
+        0;
+
+      const response =
+        await handleSeshCreatorProfileUpdate({
+          request:
+            new Request(
+              "https://theriverkeptflowing.com/api/sesh/creator/profile",
+              {
+                method:
+                  "PATCH",
+
+                headers: {
+                  origin:
+                    "https://theriverkeptflowing.com",
+
+                  "content-type":
+                    "application/json",
+                },
+
+                body:
+                  JSON.stringify(
+                    invalidBody,
+                  ),
+              },
+            ),
+
+          operations:
+            operationService(
+              success,
+              success,
+              {
+                onUpdate() {
+                  calls +=
+                    1;
+                },
+              },
+            ),
+        });
+
+      assert.equal(
+        response.status,
+        400,
+      );
+
+      assert.equal(
+        calls,
+        0,
+      );
+    },
+  );
+}
+
+for (
+  const invalidTypedUpdate of [
+    {
+      displayName:
+        42,
+    },
+    {
+      bio:
+        false,
+    },
+  ]
+) {
+  test(
+    "rejects non-string profile PATCH fields before operation execution",
+    async () => {
+      let calls =
+        0;
+
+      const response =
+        await handleSeshCreatorProfileUpdate({
+          request:
+            new Request(
+              "https://theriverkeptflowing.com/api/sesh/creator/profile",
+              {
+                method:
+                  "PATCH",
+
+                headers: {
+                  origin:
+                    "https://theriverkeptflowing.com",
+
+                  "content-type":
+                    "application/json",
+                },
+
+                body:
+                  JSON.stringify(
+                    invalidTypedUpdate,
+                  ),
+              },
+            ),
+
+          operations:
+            operationService(
+              success,
+              success,
+              {
+                onUpdate() {
+                  calls +=
+                    1;
+                },
+              },
+            ),
+        });
+
+      assert.equal(
+        response.status,
+        400,
+      );
+
+      assert.equal(
+        calls,
+        0,
+      );
+    },
+  );
+}
 test(
   "rejects malformed profile PATCH JSON before operation execution",
   async () => {

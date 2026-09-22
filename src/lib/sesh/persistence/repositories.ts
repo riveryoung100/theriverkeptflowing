@@ -1,4 +1,8 @@
 import type {
+  SeshCreatorHandle,
+  SeshCreatorHandleReservation,
+} from "../creator-handle";
+import type {
   SeshAudioAssetId,
   SeshCreatorId,
   SeshMusicProjectId,
@@ -16,6 +20,44 @@ import type {
   SeshStoredAudioObject,
 } from "./model";
 
+export interface SeshCreatorHandleReservationRepository {
+  reserveHandle(
+    reservation:
+      unknown,
+  ): Promise<
+    SeshPersistenceResult<
+      SeshCreatorHandleReservation
+    >
+  >;
+
+  getByHandle(
+    normalizedHandle:
+      SeshCreatorHandle,
+  ): Promise<
+    SeshPersistenceResult<
+      SeshCreatorHandleReservation
+    >
+  >;
+
+  getByCreatorId(
+    creatorId:
+      SeshCreatorId,
+  ): Promise<
+    SeshPersistenceResult<
+      SeshCreatorHandleReservation
+    >
+  >;
+
+  releaseHandle(
+    normalizedHandle:
+      SeshCreatorHandle,
+
+    creatorId:
+      SeshCreatorId,
+  ): Promise<
+    SeshPersistenceResult<boolean>
+  >;
+}
 export interface SeshCreatorProfileRepository {
   saveCreatorProfile(
     profile: unknown,
