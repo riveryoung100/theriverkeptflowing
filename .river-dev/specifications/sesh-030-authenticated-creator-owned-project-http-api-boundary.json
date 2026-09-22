@@ -1,0 +1,83 @@
+{
+  "id": "SESH-030",
+  "title": "Authenticated Creator-Owned Sesh Project HTTP API Boundary",
+  "status": "implemented-locally-uncommitted",
+  "predecessor": "SESH-029",
+  "purpose": "Expose the already-authorized creator-owned Sesh project read, update, and delete operations through a fail-closed HTTP boundary without trusting client-supplied identity or weakening persistence concurrency guarantees.",
+  "identityBoundary": {
+    "authoritativeIdentitySource": "Astro authenticated PrincipalId session",
+    "principalValidation": "DefaultSessionPrincipalResolver rechecks the canonical active Principal record",
+    "creatorResolution": "DefaultAuthenticatedSeshCreatorResolver resolves only through the explicit PrincipalId -> SeshCreatorId mapping",
+    "clientSuppliedPrincipalIdAuthoritative": false,
+    "clientSuppliedSeshCreatorIdAuthoritative": false,
+    "clientSuppliedOwnerCreatorIdAuthoritative": false,
+    "riverOsOperatorSessionIsCreatorAuthentication": false
+  },
+  "route": {
+    "path": "/api/sesh/projects/:projectId",
+    "methods": [
+      "GET",
+      "PATCH",
+      "DELETE"
+    ],
+    "createProjectIncluded": false,
+    "listProjectsIncluded": false
+  },
+  "authorization": {
+    "GET": "SESH-027 owner read authorization through SESH-028 operation service",
+    "PATCH": "SESH-027 owner write authorization through SESH-028 operation service",
+    "DELETE": "SESH-027 owner delete authorization through SESH-028 operation service",
+    "collaboratorRightsInferred": false,
+    "publishingRightsInferred": false,
+    "managementRightsInferred": false,
+    "legalRightsInferred": false
+  },
+  "writeRequestProtection": {
+    "sameOriginRequired": true,
+    "sameOriginPurpose": "CSRF defense only",
+    "sameOriginIsAuthentication": false,
+    "missingOriginAccepted": false,
+    "malformedOriginAccepted": false
+  },
+  "persistenceBoundary": {
+    "repository": "D1SeshProjectRepository",
+    "conditionalMutation": "SESH-029 revision CAS",
+    "ownerMutationAllowed": false,
+    "clientRevisionAccepted": false,
+    "schemaMigrationRequired": false
+  },
+  "requestBoundary": {
+    "projectIdSource": "route parameter",
+    "PATCHBody": "JSON object passed to the canonical SESH-028 mutable update validator",
+    "immutableProjectFieldsRejected": [
+      "id",
+      "ownerCreatorId",
+      "createdAt"
+    ],
+    "unknownUpdateFieldsRejected": true,
+    "emptyUpdateRejected": true
+  },
+  "statusMapping": {
+    "invalid-input": 400,
+    "unauthenticated": 401,
+    "unmapped": 403,
+    "forbidden": 403,
+    "not-found": 404,
+    "conflict": 409,
+    "unavailable": 503
+  },
+  "responseBoundary": {
+    "format": "application/json",
+    "cacheControl": "no-store",
+    "identityMetadataReturned": false
+  },
+  "productionBoundary": {
+    "databaseMutation": false,
+    "migrationExecution": false,
+    "deployment": false
+  },
+  "nextSlice": {
+    "id": "SESH-031",
+    "purpose": "Define authenticated Sesh project creation and creator-owned project collection/listing semantics without inferring ownership from client input."
+  }
+}

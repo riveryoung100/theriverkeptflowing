@@ -5,3 +5,5 @@ export * from "./validation";
 export * from "./authorization/index";
 
 export * from "./operations/index";
+
+export * from "./http/index";
