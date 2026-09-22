@@ -33,3 +33,10 @@ export {
 export type {
   SeshCreatorHandleClaimApiInput,
 } from "./creator-handle-claim-api";
+export {
+  handlePublicSeshCreatorHandleRead,
+} from "./public-creator-handle-api";
+
+export type {
+  PublicSeshCreatorHandleApiInput,
+} from "./public-creator-handle-api";

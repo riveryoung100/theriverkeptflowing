@@ -1,0 +1,28 @@
+{
+  "id": "SESH-042",
+  "title": "Public Creator Handle Read HTTP and Runtime Boundary",
+  "status": "implementation",
+  "route": "GET /api/sesh/creators/[handle]",
+  "summary": "Expose the SESH-041 public creator handle resolution operation through a narrow anonymous GET-only HTTP boundary and SESH_DB-only runtime composition.",
+  "invariants": [
+    "The route is server rendered and GET only.",
+    "The handle comes only from the dynamic route parameter.",
+    "The public HTTP boundary performs no authentication or session resolution.",
+    "The runtime uses SESH_DB only and does not require RIVER_IDENTITY_DB.",
+    "The runtime composes the canonical D1 creator handle reservation and creator profile repositories.",
+    "The operation remains responsible for normalization, canonical reservation resolution, creator profile lookup, identity consistency, and public field minimization.",
+    "Successful responses expose only handle, displayName, and optional bio.",
+    "Responses are JSON with cache-control no-store.",
+    "invalid-input maps to HTTP 400.",
+    "not-found maps to HTTP 404.",
+    "unavailable maps to HTTP 503.",
+    "No public handle availability oracle is introduced.",
+    "No SeshCreatorId, PrincipalId, account identity, session identity, CRM identity, persistence metadata, project rights, collaboration rights, publishing rights, management rights, legal rights, or copyright rights are exposed or inferred.",
+    "This step does not create a public vanity page, handle release, or handle rename behavior."
+  ],
+  "liveActions": {
+    "databaseMutation": false,
+    "migrationExecution": false,
+    "deployment": false
+  }
+}
