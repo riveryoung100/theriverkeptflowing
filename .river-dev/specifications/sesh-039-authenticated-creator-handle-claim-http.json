@@ -1,0 +1,28 @@
+{
+  "id": "SESH-039",
+  "title": "Authenticated Creator Handle Claim HTTP and Runtime Boundary",
+  "status": "implementation",
+  "route": "POST /api/sesh/creator/handle",
+  "summary": "Expose the SESH-038 one-time creator handle claim operation through a narrow authenticated same-origin HTTP boundary and canonical runtime composition.",
+  "invariants": [
+    "The route is server rendered and POST only.",
+    "The request must pass the existing Sesh same-origin write guard before claim execution.",
+    "The JSON body must be a non-array object containing exactly one field named handle.",
+    "Client supplied principalId, seshCreatorId, creatorId, createdAt, profile identity, lifecycle fields, rights fields, release fields, rename fields, and unknown fields are rejected before operation execution.",
+    "The runtime derives PrincipalId from the canonical authenticated Astro session.",
+    "PrincipalId resolves to SeshCreatorId only through the explicit identity mapping repository.",
+    "The claim operation uses the canonical Sesh handle reservation repository in SESH_DB.",
+    "The route exposes no release or rename method.",
+    "The route does not write SeshCreatorProfile.handle.",
+    "The route grants no project, collaborator, publishing, management, legal, copyright, CRM, account, or ownership rights beyond the canonical handle reservation itself.",
+    "Responses are no-store JSON."
+  ],
+  "failure_statuses": {
+    "invalid-input": 400,
+    "unauthenticated": 401,
+    "unmapped": 403,
+    "conflict": 409,
+    "unavailable": 503,
+    "cross-origin": 403
+  }
+}

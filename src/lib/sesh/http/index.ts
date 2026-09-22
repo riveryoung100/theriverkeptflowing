@@ -26,3 +26,10 @@ export type {
   SeshCreatorProfileOperationApiInput,
   SeshCreatorProfileProvisioningApiInput,
 } from "./creator-profile-api";
+export {
+  handleSeshCreatorHandleClaim,
+} from "./creator-handle-claim-api";
+
+export type {
+  SeshCreatorHandleClaimApiInput,
+} from "./creator-handle-claim-api";
