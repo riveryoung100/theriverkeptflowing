@@ -42,3 +42,14 @@ export type {
   SeshCreatorHandleClaimFailureCode,
   SeshCreatorHandleClaimResult,
 } from "./creator-handle-claim-service";
+export {
+  DefaultPublicSeshCreatorHandleResolutionService,
+} from "./public-creator-handle-resolution-service";
+
+export type {
+  DefaultPublicSeshCreatorHandleResolutionServiceDependencies,
+  PublicSeshCreatorHandleResolutionFailureCode,
+  PublicSeshCreatorHandleResolutionResult,
+  PublicSeshCreatorHandleResolutionService,
+  PublicSeshCreatorProfile,
+} from "./public-creator-handle-resolution-service";

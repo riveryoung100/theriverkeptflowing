@@ -1,0 +1,40 @@
+{
+  "id": "SESH-041",
+  "title": "Public Creator Handle Resolution Operation",
+  "status": "implementation",
+  "summary": "Resolve a public creator-facing read model from a requested Sesh handle using only the canonical handle reservation and creator profile repositories.",
+  "input": {
+    "requestedHandle": "unknown",
+    "normalization": "normalizeSeshCreatorHandle"
+  },
+  "output": {
+    "handle": "canonical normalized Sesh creator handle",
+    "displayName": "public creator display name",
+    "bio": "optional public creator bio"
+  },
+  "invariants": [
+    "The requested handle is normalized with the locked Sesh handle grammar before persistence access.",
+    "The canonical handle reservation row is the only source of handle ownership truth.",
+    "The creator profile is loaded only through the SeshCreatorId stored in the canonical reservation.",
+    "Persisted SeshCreatorProfile.handle is never trusted or returned as handle ownership truth.",
+    "The returned handle always comes from the canonical reservation.",
+    "The public read model does not expose SeshCreatorId, PrincipalId, account identity, session identity, CRM identity, creation timestamps, persistence revisions, or storage metadata.",
+    "Missing reservation returns not-found.",
+    "A reservation whose normalized handle contradicts the requested canonical handle fails closed as unavailable.",
+    "Missing profile for an otherwise valid reservation returns not-found.",
+    "A profile whose creator id contradicts the reservation fails closed as unavailable.",
+    "Persistence validation, conflict, storage failure, or thrown repository errors fail closed as unavailable.",
+    "The operation grants no project ownership, collaboration, publishing, management, legal, copyright, CRM, account, authentication, or authorization rights.",
+    "This step exposes no HTTP endpoint, vanity route, handle availability endpoint, release operation, or rename operation."
+  ],
+  "failure_codes": [
+    "invalid-input",
+    "not-found",
+    "unavailable"
+  ],
+  "liveActions": {
+    "databaseMutation": false,
+    "migrationExecution": false,
+    "deployment": false
+  }
+}
