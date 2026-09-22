@@ -1,0 +1,36 @@
+{
+  "id": "SESH-038",
+  "title": "Authenticated Creator Handle Claim",
+  "status": "implementation",
+  "summary": "Provide a dedicated authenticated one-time creator handle claim operation backed by the canonical Sesh creator handle reservation repository.",
+  "invariants": [
+    "The authenticated canonical PrincipalId must resolve through the explicit PrincipalId to SeshCreatorId mapping before any handle claim.",
+    "Client input supplies only a requested handle; creator identity is never client supplied.",
+    "The requested handle is canonicalized through normalizeSeshCreatorHandle using NFKC, trim, lowercase, and the locked Sesh handle grammar.",
+    "A creator may own at most one canonical handle reservation.",
+    "A normalized handle may belong to at most one creator.",
+    "Claiming the same canonical handle again by the same creator is idempotent.",
+    "Claiming a different handle after a creator already owns one returns conflict.",
+    "Claiming a handle owned by a different creator returns conflict.",
+    "The reservation row is the canonical handle ownership record.",
+    "The operation does not write SeshCreatorProfile.handle because the D1 abstraction provides no transaction primitive spanning reservation and profile persistence.",
+    "No release or change operation is exposed by this service.",
+    "A creator handle reservation grants no project ownership, collaborator, publishing, management, legal, copyright, CRM, or account rights."
+  ],
+  "failure_codes": [
+    "invalid-input",
+    "unauthenticated",
+    "unmapped",
+    "conflict",
+    "unavailable"
+  ],
+  "deferred": [
+    "HTTP handle claim route",
+    "runtime composition",
+    "public creator URL routing",
+    "public handle availability lookup",
+    "handle release",
+    "handle rename",
+    "profile read overlay from canonical reservation"
+  ]
+}

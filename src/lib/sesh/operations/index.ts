@@ -32,3 +32,13 @@ export type {
   SeshCreatorProfileOperationFailureCode,
   SeshCreatorProfileOperationResult,
 } from "./creator-profile-operation-service";
+export {
+  DefaultAuthenticatedSeshCreatorHandleClaimService,
+} from "./creator-handle-claim-service";
+
+export type {
+  AuthenticatedSeshCreatorHandleClaimService,
+  DefaultAuthenticatedSeshCreatorHandleClaimServiceDependencies,
+  SeshCreatorHandleClaimFailureCode,
+  SeshCreatorHandleClaimResult,
+} from "./creator-handle-claim-service";
