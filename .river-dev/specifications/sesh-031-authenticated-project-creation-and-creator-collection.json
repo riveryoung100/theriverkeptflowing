@@ -1,0 +1,83 @@
+{
+  "id": "SESH-031",
+  "title": "Authenticated Sesh Project Creation and Creator-Owned Collection",
+  "status": "implemented-locally-uncommitted",
+  "predecessor": "SESH-030",
+  "purpose": "Allow an authenticated mapped Sesh creator to create a project whose identity, owner, and timestamps are server-derived, and to list only projects owned by that authenticated creator.",
+  "route": {
+    "path": "/api/sesh/projects",
+    "methods": [
+      "GET",
+      "POST"
+    ]
+  },
+  "identityBoundary": {
+    "authoritativeIdentitySource": "Astro authenticated PrincipalId session",
+    "creatorResolution": "Explicit PrincipalId -> SeshCreatorId mapping",
+    "clientSuppliedPrincipalIdAuthoritative": false,
+    "clientSuppliedSeshCreatorIdAuthoritative": false,
+    "clientSuppliedOwnerCreatorIdAuthoritative": false
+  },
+  "creationBoundary": {
+    "clientFields": [
+      "title",
+      "description"
+    ],
+    "serverDerivedFields": [
+      "id",
+      "ownerCreatorId",
+      "createdAt",
+      "updatedAt",
+      "trackIds",
+      "sessionIds",
+      "audioAssetIds"
+    ],
+    "initialTrackIds": [],
+    "initialSessionIds": [],
+    "initialAudioAssetIds": [],
+    "projectIdGeneration": "Server-side crypto.randomUUID() wrapped as canonical SeshMusicProjectId",
+    "persistence": "Existing create-only saveProject() contract"
+  },
+  "collectionBoundary": {
+    "ownershipFilter": "Authenticated SeshCreatorId only",
+    "storageQuery": "json_extract(payload_json, '$.payload.ownerCreatorId') = ?",
+    "ordering": [
+      "payload.updatedAt DESC",
+      "project_id ASC"
+    ],
+    "crossCreatorProjectsReturned": false
+  },
+  "writeRequestProtection": {
+    "POSTSameOriginRequired": true,
+    "sameOriginPurpose": "CSRF defense only",
+    "sameOriginIsAuthentication": false
+  },
+  "persistenceBoundary": {
+    "schemaMigrationRequired": false,
+    "existingPayloadEnvelopePath": "$.payload.ownerCreatorId",
+    "newDatabaseColumns": [],
+    "existingCreateOnlyConflictSemanticsPreserved": true
+  },
+  "statusMapping": {
+    "invalid-input": 400,
+    "unauthenticated": 401,
+    "unmapped": 403,
+    "conflict": 409,
+    "unavailable": 503
+  },
+  "rightsBoundary": {
+    "collaboratorRightsInferred": false,
+    "publishingRightsInferred": false,
+    "managementRightsInferred": false,
+    "legalRightsInferred": false
+  },
+  "productionBoundary": {
+    "databaseMutationDuringImplementation": false,
+    "migrationExecution": false,
+    "deployment": false
+  },
+  "nextSlice": {
+    "id": "SESH-032",
+    "purpose": "Define authenticated creator profile provisioning and lifecycle semantics without conflating profile, legal identity, CRM identity, or authorization."
+  }
+}

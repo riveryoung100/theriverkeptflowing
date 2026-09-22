@@ -6,6 +6,7 @@ import type {
 } from "../../identity/session";
 
 import {
+  createAuthenticatedSeshProjectCollectionAtRuntime,
   createAuthorizedSeshProjectOperationsAtRuntime,
 } from "./project-api";
 
@@ -139,6 +140,39 @@ test(
           },
         ),
       /SESH_DB/,
+    );
+  },
+);
+test(
+  "composes authenticated Sesh creator project collection operations",
+  () => {
+    const service =
+      createAuthenticatedSeshProjectCollectionAtRuntime(
+        new FakeSession(),
+        {
+          RIVER_IDENTITY_DB:
+            new FakeD1Database(),
+
+          SESH_DB:
+            new FakeD1Database(),
+
+          SESH_AUDIO:
+            new FakeR2Bucket(),
+        },
+        () =>
+          "2026-09-22T17:00:00.000Z",
+        () =>
+          "sesh-project:runtime-test",
+      );
+
+    assert.equal(
+      typeof service.createProject,
+      "function",
+    );
+
+    assert.equal(
+      typeof service.listProjects,
+      "function",
     );
   },
 );

@@ -22,6 +22,10 @@ export interface SeshProjectRepository {
     projectId: SeshMusicProjectId,
   ): Promise<SeshPersistenceResult<SeshMusicProject>>;
 
+  listProjectsForOwner(
+    ownerCreatorId: string,
+  ): Promise<SeshPersistenceResult<readonly SeshMusicProject[]>>;
+
   getProjectSnapshot(
     projectId: SeshMusicProjectId,
   ): Promise<SeshPersistenceResult<SeshProjectPersistenceSnapshot>>;

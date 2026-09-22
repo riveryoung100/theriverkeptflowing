@@ -416,3 +416,102 @@ test("conditional project deletion rejects stale revision", async () => {
     value: true,
   });
 });
+test(
+  "lists only projects for the requested canonical owner in updated order",
+  async () => {
+    const repository =
+      new InMemorySeshProjectRepository();
+
+    await repository.saveProject({
+      id:
+        createSeshMusicProjectId(
+          "list-old",
+        ),
+      ownerCreatorId:
+        "sesh-creator:river",
+      title:
+        "Old",
+      createdAt:
+        timestamp,
+      updatedAt:
+        "2026-09-21T20:01:00.000Z",
+      trackIds:
+        [],
+      sessionIds:
+        [],
+      audioAssetIds:
+        [],
+    });
+
+    await repository.saveProject({
+      id:
+        createSeshMusicProjectId(
+          "list-new",
+        ),
+      ownerCreatorId:
+        "sesh-creator:river",
+      title:
+        "New",
+      createdAt:
+        timestamp,
+      updatedAt:
+        "2026-09-21T20:02:00.000Z",
+      trackIds:
+        [],
+      sessionIds:
+        [],
+      audioAssetIds:
+        [],
+    });
+
+    await repository.saveProject({
+      id:
+        createSeshMusicProjectId(
+          "list-other",
+        ),
+      ownerCreatorId:
+        "sesh-creator:other",
+      title:
+        "Other",
+      createdAt:
+        timestamp,
+      updatedAt:
+        "2026-09-21T20:03:00.000Z",
+      trackIds:
+        [],
+      sessionIds:
+        [],
+      audioAssetIds:
+        [],
+    });
+
+    const listed =
+      await repository.listProjectsForOwner(
+        "sesh-creator:river",
+      );
+
+    assert.equal(
+      listed.ok,
+      true,
+    );
+
+    if (
+      !listed.ok
+    ) {
+      throw new Error(
+        "Expected owned collection.",
+      );
+    }
+
+    assert.deepEqual(
+      listed.value.map(
+        (project) =>
+          project.id,
+      ),
+      [
+        "sesh-project:list-new",
+        "sesh-project:list-old",
+      ],
+    );
+  },
+);

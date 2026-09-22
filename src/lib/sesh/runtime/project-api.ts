@@ -25,10 +25,12 @@ import {
 } from "../authorization";
 
 import {
+  DefaultAuthenticatedSeshProjectCollectionService,
   DefaultAuthorizedSeshProjectOperationService,
 } from "../operations";
 
 import type {
+  AuthenticatedSeshProjectCollectionService,
   AuthorizedSeshProjectOperationService,
 } from "../operations";
 
@@ -154,5 +156,91 @@ export function createAuthorizedSeshProjectOperationsAtRuntime(
       persistence.projectRepository,
 
     now,
+  });
+}
+export function createAuthenticatedSeshProjectCollectionAtRuntime(
+  session:
+    AstroSessionLike,
+
+  runtimeEnvironment:
+    SeshProjectApiRuntimeEnvironment,
+
+  now:
+    () => string =
+      () =>
+        new Date().toISOString(),
+
+  createProjectId:
+    () => SeshMusicProjectId =
+      () =>
+        createSeshMusicProjectId(
+          crypto.randomUUID(),
+        ),
+): AuthenticatedSeshProjectCollectionService {
+  if (
+    typeof session !==
+      "object" ||
+    session ===
+      null
+  ) {
+    throw new TypeError(
+      "Astro session support is required for authenticated Sesh project collection operations.",
+    );
+  }
+
+  if (
+    typeof runtimeEnvironment !==
+      "object" ||
+    runtimeEnvironment ===
+      null
+  ) {
+    throw new TypeError(
+      "Sesh project collection runtime environment is required.",
+    );
+  }
+
+  const identityDatabase =
+    requireIdentityDatabase(
+      runtimeEnvironment
+        .RIVER_IDENTITY_DB,
+    );
+
+  const persistence =
+    createSeshRuntimePersistence(
+      runtimeEnvironment,
+    );
+
+  const principalResolver =
+    new DefaultSessionPrincipalResolver({
+      sessions:
+        new AstroPrincipalSessionStore(
+          session,
+        ),
+
+      principals:
+        new D1PrincipalRepository(
+          identityDatabase,
+        ),
+    });
+
+  const creatorResolver =
+    new DefaultAuthenticatedSeshCreatorResolver({
+      principalResolver,
+
+      mappings:
+        new D1PrincipalSeshCreatorMappingRepository(
+          identityDatabase,
+        ),
+    });
+
+  return new DefaultAuthenticatedSeshProjectCollectionService({
+    creatorResolver,
+
+    projects:
+      persistence.projectRepository,
+
+    now,
+
+    createProjectId,
   });
 }

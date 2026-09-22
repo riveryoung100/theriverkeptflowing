@@ -9,3 +9,14 @@ export type {
   SeshProjectOperationFailureCode,
   SeshProjectOperationResult,
 } from "./project-operation-service";
+export {
+  DefaultAuthenticatedSeshProjectCollectionService,
+} from "./project-collection-service";
+
+export type {
+  AuthenticatedSeshProjectCollectionService,
+  DefaultAuthenticatedSeshProjectCollectionServiceDependencies,
+  SeshProjectCollectionFailureCode,
+  SeshProjectCollectionResult,
+  SeshProjectCreateInput,
+} from "./project-collection-service";

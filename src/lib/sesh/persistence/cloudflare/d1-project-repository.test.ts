@@ -27,9 +27,19 @@ implements SeshD1DatabaseLike {
   fail =
     false;
 
+  readonly statements:
+    {
+      readonly sql:
+        string;
+    }[] =
+      [];
+
   prepare(
     sql: string,
   ): SeshD1PreparedStatementLike {
+    this.statements.push({
+      sql,
+    });
     const rows =
       this.rows;
 
@@ -99,6 +109,127 @@ implements SeshD1DatabaseLike {
       Promise<
         SeshD1AllResultLike<T>
       > {
+        if (
+          shouldFail()
+        ) {
+          throw new Error(
+            "fake D1 failure",
+          );
+        }
+
+        if (
+          sql.includes(
+            "json_extract",
+          ) &&
+          sql.includes(
+            "$.payload.ownerCreatorId",
+          )
+        ) {
+          const ownerCreatorId =
+            String(
+              this.values[0],
+            );
+
+          const matchingRows =
+            Array.from(
+              rows.values(),
+            )
+              .filter(
+                (row) => {
+                  try {
+                    const payload =
+                      JSON.parse(
+                        String(
+                          row.payload_json,
+                        ),
+                      ) as {
+                        payload?: {
+                          ownerCreatorId?:
+                            unknown;
+                          updatedAt?:
+                            unknown;
+                        };
+                      };
+
+                    return (
+                      payload.payload
+                        ?.ownerCreatorId ===
+                      ownerCreatorId
+                    );
+                  }
+                  catch {
+                    return false;
+                  }
+                },
+              )
+              .sort(
+                (left, right) => {
+                  const leftPayload =
+                    JSON.parse(
+                      String(
+                        left.payload_json,
+                      ),
+                    ) as {
+                      payload?: {
+                        updatedAt?:
+                          unknown;
+                      };
+                    };
+
+                  const rightPayload =
+                    JSON.parse(
+                      String(
+                        right.payload_json,
+                      ),
+                    ) as {
+                      payload?: {
+                        updatedAt?:
+                          unknown;
+                      };
+                    };
+
+                  const leftUpdatedAt =
+                    String(
+                      leftPayload.payload
+                        ?.updatedAt ??
+                        "",
+                    );
+
+                  const rightUpdatedAt =
+                    String(
+                      rightPayload.payload
+                        ?.updatedAt ??
+                        "",
+                    );
+
+                  const updatedOrder =
+                    rightUpdatedAt.localeCompare(
+                      leftUpdatedAt,
+                    );
+
+                  if (
+                    updatedOrder !==
+                    0
+                  ) {
+                    return updatedOrder;
+                  }
+
+                  return String(
+                    left.project_id,
+                  ).localeCompare(
+                    String(
+                      right.project_id,
+                    ),
+                  );
+                },
+              );
+
+          return {
+            results:
+              matchingRows as readonly T[],
+          };
+        }
+
         return {
           results:
             [],
@@ -727,6 +858,62 @@ test(
     assert.equal(
       result.error.kind,
       "storage",
+    );
+  },
+);
+test(
+  "D1 project adapter lists creator-owned projects through the canonical envelope owner path",
+  async () => {
+    const database =
+      new FakeProjectD1();
+
+    const repository =
+      new D1SeshProjectRepository(
+        database,
+      );
+
+    await repository.saveProject({
+      id:
+        createSeshMusicProjectId(
+          "collection-owned",
+        ),
+      ownerCreatorId:
+        "sesh-creator:river",
+      title:
+        "Owned",
+      createdAt:
+        timestamp,
+      updatedAt:
+        timestamp,
+      trackIds:
+        [],
+      sessionIds:
+        [],
+      audioAssetIds:
+        [],
+    });
+
+    const result =
+      await repository.listProjectsForOwner(
+        "sesh-creator:river",
+      );
+
+    assert.equal(
+      result.ok,
+      true,
+    );
+
+    assert.equal(
+      database.statements.some(
+        (statement) =>
+          statement.sql.includes(
+            "json_extract",
+          ) &&
+          statement.sql.includes(
+            "$.payload.ownerCreatorId",
+          ),
+      ),
+      true,
     );
   },
 );

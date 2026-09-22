@@ -1,5 +1,6 @@
 import {
   parseSeshAudioAssetId,
+  parseSeshCreatorId,
   parseSeshMusicProjectId,
   type SeshAudioAssetId,
   type SeshMusicProjectId,
@@ -181,6 +182,63 @@ implements SeshProjectRepository {
         error instanceof Error
           ? error.message
           : "Project validation failed.",
+      );
+    }
+  }
+
+  async listProjectsForOwner(
+    ownerCreatorId: string,
+  ): Promise<
+    SeshPersistenceResult<
+      readonly SeshMusicProject[]
+    >
+  > {
+    try {
+      const canonicalOwnerCreatorId =
+        parseSeshCreatorId(
+          ownerCreatorId,
+        );
+
+      const projects =
+        Array.from(
+          this.projects.values(),
+        )
+          .map(
+            (stored) =>
+              cloneProject(
+                stored.project,
+              ),
+          )
+          .filter(
+            (project) =>
+              project.ownerCreatorId ===
+              canonicalOwnerCreatorId,
+          )
+          .sort(
+            (left, right) => {
+              const updatedOrder =
+                right.updatedAt.localeCompare(
+                  left.updatedAt,
+                );
+
+              return updatedOrder !== 0
+                ? updatedOrder
+                : left.id.localeCompare(
+                    right.id,
+                  );
+            },
+          );
+
+      return success(
+        projects,
+      );
+    }
+    catch (error) {
+      return failure(
+        "validation",
+        error instanceof Error
+          ? error.message
+          : "Sesh creator identifier validation failed.",
       );
     }
   }

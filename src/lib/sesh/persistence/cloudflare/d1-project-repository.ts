@@ -239,6 +239,139 @@ implements SeshProjectRepository {
     }
   }
 
+  async listProjectsForOwner(
+    ownerCreatorId: string,
+  ): Promise<
+    SeshPersistenceResult<
+      readonly SeshMusicProject[]
+    >
+  > {
+    let canonicalOwnerCreatorId:
+      SeshCreatorId;
+
+    try {
+      canonicalOwnerCreatorId =
+        parseSeshCreatorId(
+          ownerCreatorId,
+        );
+    }
+    catch (error) {
+      return failure(
+        "validation",
+        error instanceof Error
+          ? error.message
+          : "Sesh creator identifier validation failed.",
+      );
+    }
+
+    let rows:
+      readonly ProjectRow[];
+
+    try {
+      const result =
+        await this.database
+          .prepare(
+            `SELECT
+              project_id,
+              schema_version,
+              revision,
+              stored_at,
+              payload_json
+            FROM sesh_projects
+            WHERE json_extract(
+              payload_json,
+              '$.payload.ownerCreatorId'
+            ) = ?
+            ORDER BY
+              json_extract(
+                payload_json,
+                '$.payload.updatedAt'
+              ) DESC,
+              project_id ASC`,
+          )
+          .bind(
+            canonicalOwnerCreatorId,
+          )
+          .all<ProjectRow>();
+
+      rows =
+        result.results;
+    }
+    catch (error) {
+      return failure(
+        "storage",
+        error instanceof Error
+          ? error.message
+          : "Sesh D1 project collection read failed.",
+      );
+    }
+
+    const projects:
+      SeshMusicProject[] =
+        [];
+
+    for (
+      const row of rows
+    ) {
+      try {
+        const envelope =
+          deserializeSeshPersistenceEnvelope(
+            row.payload_json,
+          );
+
+        if (
+          envelope.recordType !==
+          "music-project"
+        ) {
+          return failure(
+            "validation",
+            "Stored Sesh project row contains the wrong record type.",
+          );
+        }
+
+        if (
+          row.project_id !==
+            envelope.recordId ||
+          envelope.payload.id !==
+            row.project_id
+        ) {
+          return failure(
+            "validation",
+            "Stored Sesh project identifiers do not agree.",
+          );
+        }
+
+        canonicalRevision(
+          row.revision,
+          envelope.revision,
+        );
+
+        if (
+          envelope.payload.ownerCreatorId !==
+          canonicalOwnerCreatorId
+        ) {
+          return failure(
+            "validation",
+            "Stored Sesh project ownership does not agree with the collection query.",
+          );
+        }
+
+        projects.push(
+          envelope.payload,
+        );
+      }
+      catch (error) {
+        return mapReadError(
+          error,
+        );
+      }
+    }
+
+    return success(
+      projects,
+    );
+  }
+
   async getProjectSnapshot(
     projectId: SeshMusicProjectId,
   ): Promise<
