@@ -15,3 +15,13 @@ export type {
 export {
   InMemoryPrincipalSeshCreatorMappingRepository,
 } from "./memory-creator-mapping-repository";
+export {
+  DefaultAuthenticatedSeshCreatorResolver,
+} from "./authenticated-creator-resolver";
+
+export type {
+  AuthenticatedSeshCreatorResolutionFailureCode,
+  AuthenticatedSeshCreatorResolutionResult,
+  AuthenticatedSeshCreatorResolver,
+  DefaultAuthenticatedSeshCreatorResolverDependencies,
+} from "./authenticated-creator-resolver";

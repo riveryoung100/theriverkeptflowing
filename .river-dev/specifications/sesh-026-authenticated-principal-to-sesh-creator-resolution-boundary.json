@@ -1,0 +1,100 @@
+{
+    "id":  "SESH-026",
+    "title":  "Authenticated Principal to Sesh Creator Resolution Boundary",
+    "status":  "IMPLEMENTED_LOCALLY_PENDING_REVIEW",
+    "objective":  "Resolve an authenticated canonical PrincipalId to a canonical SeshCreatorId only through the explicit PrincipalSeshCreatorMappingRepository, while preserving authentication failures, distinguishing an authenticated but unprovisioned principal, failing closed on identity or persistence inconsistency, and granting no Sesh project authorization.",
+    "sourceBaseline":  {
+                           "branch":  "cif-001-canonical-content-source-record",
+                           "commit":  "6472aa63e6a867ab92ebdb8c9a8e95d87853fbd9",
+                           "predecessor":  "SESH-025"
+                       },
+    "resolver":  {
+                     "interface":  "AuthenticatedSeshCreatorResolver",
+                     "implementation":  "DefaultAuthenticatedSeshCreatorResolver",
+                     "path":  "src/lib/identity/sesh/authenticated-creator-resolver.ts",
+                     "dependencies":  [
+                                          "SessionPrincipalResolver",
+                                          "PrincipalSeshCreatorMappingRepository"
+                                      ],
+                     "successFields":  [
+                                           "principalId",
+                                           "seshCreatorId"
+                                       ],
+                     "failureCodes":  [
+                                          "unauthenticated",
+                                          "unmapped",
+                                          "unavailable"
+                                      ]
+                 },
+    "resolutionFlow":  [
+                           "Resolve canonical authenticated PrincipalId using SessionPrincipalResolver.",
+                           "Return unauthenticated without consulting Sesh mappings when no authenticated principal exists.",
+                           "Preserve authentication infrastructure failure as unavailable.",
+                           "Resolve SeshCreatorId only through PrincipalSeshCreatorMappingRepository.getByPrincipalId.",
+                           "Return unmapped when the authenticated PrincipalId has no explicit canonical Sesh mapping.",
+                           "Treat mapping storage, validation, conflict, thrown provider failure, malformed creator identity, or PrincipalId mismatch as unavailable.",
+                           "Return PrincipalId and SeshCreatorId only after both canonical identity boundaries agree."
+                       ],
+    "inferenceRules":  {
+                           "email":  "FORBIDDEN",
+                           "displayName":  "FORBIDDEN",
+                           "crmPerson":  "FORBIDDEN",
+                           "sessionId":  "FORBIDDEN",
+                           "legalIdentity":  "FORBIDDEN",
+                           "creatorProfile":  "FORBIDDEN_AS_IDENTITY_MAPPING_SOURCE",
+                           "rule":  "SeshCreatorId is resolved exclusively through the explicit canonical PrincipalId to SeshCreatorId mapping."
+                       },
+    "authorizationBoundary":  {
+                                  "resultMeans":  "The currently authenticated PrincipalId is explicitly associated with the returned SeshCreatorId.",
+                                  "ownership":  "NOT_GRANTED",
+                                  "projectReadAccess":  "NOT_GRANTED",
+                                  "projectWriteAccess":  "NOT_GRANTED",
+                                  "collaboratorAccess":  "NOT_GRANTED",
+                                  "publishingRights":  "NOT_GRANTED",
+                                  "managementRights":  "NOT_GRANTED",
+                                  "creatorProfileExistence":  "NOT_PROVEN",
+                                  "creatorOwnedApis":  "STILL_FORBIDDEN"
+                              },
+    "persistence":  {
+                        "writes":  "NONE",
+                        "mappingCreation":  "NONE",
+                        "databaseMigration":  "NONE",
+                        "productionDataMutation":  false
+                    },
+    "httpBoundary":  {
+                         "publicLogin":  "DEFERRED",
+                         "registration":  "DEFERRED",
+                         "creatorEndpoint":  "NOT_CREATED",
+                         "creatorOwnedMutationApi":  "FORBIDDEN"
+                     },
+    "nextSlice":  {
+                      "id":  "SESH-027",
+                      "title":  "Sesh Project Ownership Authorization Architecture",
+                      "scope":  [
+                                    "Define authorization separately from authenticated creator identity resolution.",
+                                    "Define how SeshMusicProject.ownerCreatorId is checked against the authenticated SeshCreatorId.",
+                                    "Do not treat PrincipalId to SeshCreatorId mapping as project ownership.",
+                                    "Define fail-closed ownership read and mutation authorization contracts.",
+                                    "Keep collaborator authorization separate unless explicitly modeled.",
+                                    "Do not create public creator-owned APIs.",
+                                    "Do not create production identity, creator, project, or mapping data.",
+                                    "Do not deploy."
+                                ]
+                  },
+    "nonGoals":  [
+                     "Creating a Principal",
+                     "Creating credentials",
+                     "Creating a Sesh creator profile",
+                     "Creating a PrincipalId to SeshCreatorId mapping",
+                     "Project ownership authorization",
+                     "Collaborator authorization",
+                     "Publishing rights",
+                     "Management rights",
+                     "Public login",
+                     "Registration",
+                     "Public creator-owned Sesh API",
+                     "Database mutation",
+                     "Migration",
+                     "Deployment"
+                 ]
+}
