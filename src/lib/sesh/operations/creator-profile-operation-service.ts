@@ -12,6 +12,7 @@ import {
 } from "../validation";
 
 import type {
+  SeshCreatorHandleReservationRepository,
   SeshCreatorProfileRepository,
 } from "../persistence/repositories";
 
@@ -75,6 +76,9 @@ export interface DefaultAuthenticatedSeshCreatorProfileOperationServiceDependenc
 
   readonly profiles:
     SeshCreatorProfileRepository;
+
+  readonly handles:
+    SeshCreatorHandleReservationRepository;
 }
 
 function success<T>(
@@ -132,6 +136,79 @@ function resolverFailure<T>(
   }
 }
 
+async function overlayCanonicalHandle(
+  profile:
+    SeshCreatorProfile,
+
+  handles:
+    SeshCreatorHandleReservationRepository,
+): Promise<
+  SeshCreatorProfileOperationResult<
+    SeshCreatorProfile
+  >
+> {
+  let reservationResult:
+    Awaited<
+      ReturnType<
+        SeshCreatorHandleReservationRepository[
+          "getByCreatorId"
+        ]
+      >
+    >;
+
+  try {
+    reservationResult =
+      await handles
+        .getByCreatorId(
+          profile.id,
+        );
+  }
+  catch {
+    return failure(
+      "unavailable",
+      "Sesh creator handle is temporarily unavailable.",
+    );
+  }
+
+  if (
+    !reservationResult.ok
+  ) {
+    if (
+      reservationResult.error.kind ===
+        "not-found"
+    ) {
+      return success({
+        ...profile,
+
+        handle:
+          undefined,
+      });
+    }
+
+    return failure(
+      "unavailable",
+      "Sesh creator handle is temporarily unavailable.",
+    );
+  }
+
+  if (
+    reservationResult.value.creatorId !==
+      profile.id
+  ) {
+    return failure(
+      "unavailable",
+      "Persisted Sesh creator handle reservation failed its identity invariant.",
+    );
+  }
+
+  return success({
+    ...profile,
+
+    handle:
+      reservationResult.value
+        .normalizedHandle,
+  });
+}
 function validateUpdate(
   value:
     unknown,
@@ -291,6 +368,9 @@ implements AuthenticatedSeshCreatorProfileOperationService {
   readonly #profiles:
     SeshCreatorProfileRepository;
 
+  readonly #handles:
+    SeshCreatorHandleReservationRepository;
+
   constructor(
     dependencies:
       DefaultAuthenticatedSeshCreatorProfileOperationServiceDependencies,
@@ -300,6 +380,9 @@ implements AuthenticatedSeshCreatorProfileOperationService {
 
     this.#profiles =
       dependencies.profiles;
+
+    this.#handles =
+      dependencies.handles;
   }
 
   async #resolveCreator():
@@ -443,8 +526,9 @@ implements AuthenticatedSeshCreatorProfileOperationService {
       );
     }
 
-    return success(
+    return overlayCanonicalHandle(
       profileResult.value,
+      this.#handles,
     );
   }
 
@@ -622,8 +706,9 @@ implements AuthenticatedSeshCreatorProfileOperationService {
       );
     }
 
-    return success(
+    return overlayCanonicalHandle(
       saveResult.value.profile,
+      this.#handles,
     );
   }
 }

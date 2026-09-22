@@ -14,6 +14,14 @@ import {
   createSeshCreatorId,
 } from "../identifiers";
 
+import {
+  normalizeSeshCreatorHandle,
+} from "../creator-handle";
+
+import type {
+  SeshCreatorHandleReservation,
+} from "../creator-handle";
+
 import type {
   SeshCreatorProfile,
 } from "../model";
@@ -24,6 +32,7 @@ import type {
 } from "../persistence/model";
 
 import type {
+  SeshCreatorHandleReservationRepository,
   SeshCreatorProfileRepository,
 } from "../persistence/repositories";
 
@@ -263,6 +272,104 @@ implements SeshCreatorProfileRepository {
   }
 }
 
+class FakeHandleReservationRepository
+implements SeshCreatorHandleReservationRepository {
+  reservation:
+    SeshCreatorHandleReservation | undefined;
+
+  forceStorageFailure =
+    false;
+
+  async reserveHandle():
+  Promise<
+    SeshPersistenceResult<
+      SeshCreatorHandleReservation
+    >
+  > {
+    throw new Error(
+      "reserveHandle is outside profile-operation scope.",
+    );
+  }
+
+  async getByHandle():
+  Promise<
+    SeshPersistenceResult<
+      SeshCreatorHandleReservation
+    >
+  > {
+    throw new Error(
+      "getByHandle is outside profile-operation scope.",
+    );
+  }
+
+  async getByCreatorId(
+    creatorIdInput:
+      typeof creatorId,
+  ): Promise<
+    SeshPersistenceResult<
+      SeshCreatorHandleReservation
+    >
+  > {
+    if (
+      this.forceStorageFailure
+    ) {
+      return {
+        ok:
+          false,
+
+        error: {
+          kind:
+            "storage",
+
+          message:
+            "storage unavailable",
+        },
+      };
+    }
+
+    if (
+      this.reservation ===
+        undefined ||
+      this.reservation.creatorId !==
+        creatorIdInput
+    ) {
+      return {
+        ok:
+          false,
+
+        error: {
+          kind:
+            "not-found",
+
+          message:
+            "missing",
+        },
+      };
+    }
+
+    return {
+      ok:
+        true,
+
+      value:
+        this.reservation,
+    };
+  }
+
+  async releaseHandle():
+  Promise<
+    SeshPersistenceResult<boolean>
+  > {
+    throw new Error(
+      "releaseHandle is outside profile-operation scope.",
+    );
+  }
+}
+
+function noHandleReservations():
+FakeHandleReservationRepository {
+  return new FakeHandleReservationRepository();
+}
 test(
   "reads only the profile of the authenticated mapped Sesh creator",
   async () => {
@@ -275,6 +382,11 @@ test(
           successfulResolver(),
 
         profiles,
+
+
+        handles:
+
+          noHandleReservations(),
       });
 
     const result =
@@ -334,6 +446,11 @@ for (
             }),
 
           profiles,
+
+
+          handles:
+
+            noHandleReservations(),
         });
 
       const result =
@@ -371,6 +488,11 @@ test(
           successfulResolver(),
 
         profiles,
+
+
+        handles:
+
+          noHandleReservations(),
       });
 
     const result =
@@ -404,6 +526,11 @@ test(
           successfulResolver(),
 
         profiles,
+
+
+        handles:
+
+          noHandleReservations(),
       });
 
     const result =
@@ -472,6 +599,11 @@ test(
           successfulResolver(),
 
         profiles,
+
+
+        handles:
+
+          noHandleReservations(),
       });
 
     const result =
@@ -512,6 +644,11 @@ test(
           successfulResolver(),
 
         profiles,
+
+
+        handles:
+
+          noHandleReservations(),
       });
 
     const result =
@@ -576,6 +713,11 @@ test(
         },
 
         profiles,
+
+
+        handles:
+
+          noHandleReservations(),
       });
 
     const result =
@@ -613,6 +755,11 @@ test(
           successfulResolver(),
 
         profiles,
+
+
+        handles:
+
+          noHandleReservations(),
       });
 
     const result =
@@ -661,6 +808,11 @@ test(
           successfulResolver(),
 
         profiles,
+
+
+        handles:
+
+          noHandleReservations(),
       });
 
     const result =
@@ -693,12 +845,235 @@ test(
 
           profiles:
             new FakeProfileRepository(),
+
+
+          handles:
+            noHandleReservations(),
         }),
       );
 
     assert.deepEqual(
       serviceSourceKeys,
       [],
+    );
+  },
+);
+test(
+  "overlays canonical reserved handle on authenticated profile reads",
+  async () => {
+    const profiles =
+      new FakeProfileRepository();
+
+    const handles =
+      noHandleReservations();
+
+    handles.reservation = {
+      normalizedHandle:
+        normalizeSeshCreatorHandle(
+          "river",
+        ),
+
+      creatorId,
+
+      createdAt,
+    };
+
+    const service =
+      new DefaultAuthenticatedSeshCreatorProfileOperationService({
+        creatorResolver:
+          successfulResolver(),
+
+        profiles,
+
+        handles,
+      });
+
+    const result =
+      await service.readProfile();
+
+    assert.equal(
+      result.ok,
+      true,
+    );
+
+    if (
+      !result.ok
+    ) {
+      throw new Error(
+        "Expected canonical handle overlay.",
+      );
+    }
+
+    assert.equal(
+      result.value.handle,
+      "river",
+    );
+  },
+);
+
+test(
+  "hides stale legacy profile handle when no canonical reservation exists",
+  async () => {
+    const profiles =
+      new FakeProfileRepository();
+
+    profiles.profile = {
+      id:
+        creatorId,
+
+      displayName:
+        "River",
+
+      createdAt,
+
+      handle:
+        "stale-profile-handle",
+    };
+
+    const service =
+      new DefaultAuthenticatedSeshCreatorProfileOperationService({
+        creatorResolver:
+          successfulResolver(),
+
+        profiles,
+
+        handles:
+          noHandleReservations(),
+      });
+
+    const result =
+      await service.readProfile();
+
+    assert.equal(
+      result.ok,
+      true,
+    );
+
+    if (
+      !result.ok
+    ) {
+      throw new Error(
+        "Expected profile read without reservation.",
+      );
+    }
+
+    assert.equal(
+      result.value.handle,
+      undefined,
+    );
+
+    assert.equal(
+      profiles.profile?.handle,
+      "stale-profile-handle",
+    );
+  },
+);
+
+test(
+  "fails closed when canonical handle lookup is unavailable",
+  async () => {
+    const handles =
+      noHandleReservations();
+
+    handles.forceStorageFailure =
+      true;
+
+    const service =
+      new DefaultAuthenticatedSeshCreatorProfileOperationService({
+        creatorResolver:
+          successfulResolver(),
+
+        profiles:
+          new FakeProfileRepository(),
+
+        handles,
+      });
+
+    const result =
+      await service.readProfile();
+
+    assert.equal(
+      result.ok,
+      false,
+    );
+
+    if (
+      result.ok
+    ) {
+      throw new Error(
+        "Expected unavailable canonical handle read.",
+      );
+    }
+
+    assert.equal(
+      result.error.code,
+      "unavailable",
+    );
+  },
+);
+
+test(
+  "profile update response overlays canonical handle without persisting handle into profile JSON",
+  async () => {
+    const profiles =
+      new FakeProfileRepository();
+
+    const handles =
+      noHandleReservations();
+
+    handles.reservation = {
+      normalizedHandle:
+        normalizeSeshCreatorHandle(
+          "river",
+        ),
+
+      creatorId,
+
+      createdAt,
+    };
+
+    const service =
+      new DefaultAuthenticatedSeshCreatorProfileOperationService({
+        creatorResolver:
+          successfulResolver(),
+
+        profiles,
+
+        handles,
+      });
+
+    const result =
+      await service.updateProfile({
+        displayName:
+          "River Young",
+      });
+
+    assert.equal(
+      result.ok,
+      true,
+    );
+
+    if (
+      !result.ok
+    ) {
+      throw new Error(
+        "Expected profile update with canonical handle overlay.",
+      );
+    }
+
+    assert.equal(
+      result.value.handle,
+      "river",
+    );
+
+    assert.equal(
+      profiles.profile?.handle,
+      undefined,
+    );
+
+    assert.equal(
+      profiles.profile?.displayName,
+      "River Young",
     );
   },
 );

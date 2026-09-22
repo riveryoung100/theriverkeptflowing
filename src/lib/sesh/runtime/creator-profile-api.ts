@@ -31,6 +31,10 @@ import type {
 } from "../operations";
 
 import {
+  D1SeshCreatorHandleReservationRepository,
+} from "../persistence/cloudflare/d1-creator-handle-reservation-repository";
+
+import {
   D1SeshCreatorProfileRepository,
 } from "../persistence/cloudflare/d1-creator-profile-repository";
 
@@ -240,6 +244,11 @@ export function createAuthenticatedSeshCreatorProfileOperationsAtRuntime(
 
     profiles:
       new D1SeshCreatorProfileRepository(
+        seshDatabase,
+      ),
+
+    handles:
+      new D1SeshCreatorHandleReservationRepository(
         seshDatabase,
       ),
   });

@@ -1,0 +1,24 @@
+{
+  "id": "SESH-040",
+  "title": "Canonical Creator Handle Read Overlay",
+  "status": "implementation",
+  "summary": "Make authenticated creator profile reads expose handle state exclusively from the canonical Sesh creator handle reservation record without synchronizing or trusting duplicated profile JSON handle state.",
+  "invariants": [
+    "The canonical handle ownership record remains sesh_creator_handle_reservations.",
+    "SeshCreatorProfile.handle remains a legacy-compatible serialized field but is not authoritative for handle ownership.",
+    "Authenticated profile reads resolve the creator first, load the canonical profile, then overlay handle state from the reservation repository by the exact authenticated SeshCreatorId.",
+    "A canonical reservation causes the returned profile handle to equal reservation.normalizedHandle.",
+    "No reservation causes the returned profile handle to be absent even if persisted profile JSON contains a stale legacy handle.",
+    "Reservation storage or validation failure causes the profile operation to fail closed as unavailable.",
+    "A reservation whose creatorId differs from the authenticated profile identity fails closed.",
+    "Profile updates remain limited to displayName and bio.",
+    "Profile updates do not persist or synchronize handle into the profile record.",
+    "The successful profile-update response also overlays canonical reservation handle state so read and update responses share one handle truth.",
+    "No handle release, rename, project ownership, collaborator, publishing, management, legal, copyright, CRM, or account rights are inferred."
+  ],
+  "liveActions": {
+    "databaseMutation": false,
+    "migrationExecution": false,
+    "deployment": false
+  }
+}
