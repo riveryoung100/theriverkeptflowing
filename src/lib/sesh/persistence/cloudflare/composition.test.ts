@@ -5,6 +5,9 @@ import {
   D1SeshAudioAssetRepository,
 } from "./d1-audio-asset-repository";
 import {
+  D1SeshCreatorProfileRepository,
+} from "./d1-creator-profile-repository";
+import {
   D1SeshProjectRepository,
 } from "./d1-project-repository";
 import {
@@ -50,24 +53,19 @@ implements SeshD1DatabaseLike {
 
 class FakeR2Bucket
 implements SeshR2BucketLike {
-  async put(
-    _key: string,
-    _value: Uint8Array,
-  ): Promise<void> {}
+  async put():
+  Promise<void> {}
 
-  async get(
-    _key: string,
-  ): Promise<SeshR2ObjectLike | null> {
+  async get():
+  Promise<SeshR2ObjectLike | null> {
     return null;
   }
 
-  async delete(
-    _key: string,
-  ): Promise<void> {}
+  async delete():
+  Promise<void> {}
 
-  async head(
-    _key: string,
-  ): Promise<unknown | null> {
+  async head():
+  Promise<unknown | null> {
     return null;
   }
 }
@@ -77,6 +75,11 @@ test("composes all Sesh Cloudflare persistence adapters from injected bindings",
     SESH_DB: new FakeD1Database(),
     SESH_AUDIO: new FakeR2Bucket(),
   });
+
+  assert.ok(
+    composition.creatorProfileRepository
+      instanceof D1SeshCreatorProfileRepository,
+  );
 
   assert.ok(
     composition.projectRepository

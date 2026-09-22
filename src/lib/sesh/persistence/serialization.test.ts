@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   createSeshAudioAssetEnvelope,
+  createSeshCreatorProfileEnvelope,
   createSeshMusicProjectEnvelope,
   deserializeSeshPersistenceEnvelope,
   serializeSeshPersistenceEnvelope,
@@ -11,6 +12,79 @@ import {
 const storedAt = "2026-09-21T20:30:00.000Z";
 const createdAt = "2026-09-21T20:00:00.000Z";
 
+test("round-trips a canonical creator profile", () => {
+  const envelope =
+    createSeshCreatorProfileEnvelope(
+      {
+        id:
+          "sesh-creator:river",
+
+        displayName:
+          "River",
+
+        createdAt,
+
+        handle:
+          "river",
+
+        bio:
+          "Making music.",
+      },
+      storedAt,
+      0,
+    );
+
+  const restored =
+    deserializeSeshPersistenceEnvelope(
+      serializeSeshPersistenceEnvelope(
+        envelope,
+      ),
+    );
+
+  assert.equal(
+    restored.recordType,
+    "creator-profile",
+  );
+
+  assert.equal(
+    restored.recordId,
+    "sesh-creator:river",
+  );
+
+  assert.equal(
+    restored.payload.id,
+    "sesh-creator:river",
+  );
+
+  assert.equal(
+    restored.revision,
+    0,
+  );
+
+  if (
+    restored.recordType !==
+    "creator-profile"
+  ) {
+    throw new Error(
+      "Unexpected restored record type.",
+    );
+  }
+
+  assert.equal(
+    restored.payload.displayName,
+    "River",
+  );
+
+  assert.equal(
+    restored.payload.handle,
+    "river",
+  );
+
+  assert.equal(
+    restored.payload.bio,
+    "Making music.",
+  );
+});
 test("round-trips a canonical music project", () => {
   const envelope = createSeshMusicProjectEnvelope(
     {

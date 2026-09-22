@@ -1,9 +1,11 @@
 import type {
   SeshAudioAssetId,
+  SeshCreatorId,
   SeshMusicProjectId,
 } from "../identifiers";
 import type {
   SeshAudioAsset,
+  SeshCreatorProfile,
   SeshMusicProject,
   SeshStorageReference,
 } from "../model";
@@ -13,6 +15,31 @@ import type {
   SeshStoredAudioObject,
 } from "./model";
 
+export interface SeshCreatorProfileRepository {
+  saveCreatorProfile(
+    profile: unknown,
+  ): Promise<
+    SeshPersistenceResult<
+      SeshCreatorProfile
+    >
+  >;
+
+  getCreatorProfile(
+    creatorId:
+      SeshCreatorId,
+  ): Promise<
+    SeshPersistenceResult<
+      SeshCreatorProfile
+    >
+  >;
+
+  creatorProfileExists(
+    creatorId:
+      SeshCreatorId,
+  ): Promise<
+    SeshPersistenceResult<boolean>
+  >;
+}
 export interface SeshProjectRepository {
   saveProject(
     project: unknown,

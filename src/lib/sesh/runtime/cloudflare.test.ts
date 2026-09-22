@@ -5,6 +5,9 @@ import {
   D1SeshAudioAssetRepository,
 } from "../persistence/cloudflare/d1-audio-asset-repository";
 import {
+  D1SeshCreatorProfileRepository,
+} from "../persistence/cloudflare/d1-creator-profile-repository";
+import {
   D1SeshProjectRepository,
 } from "../persistence/cloudflare/d1-project-repository";
 import {
@@ -87,6 +90,11 @@ test(
         SESH_AUDIO:
           bucket,
       });
+
+    assert.ok(
+      persistence.creatorProfileRepository instanceof
+        D1SeshCreatorProfileRepository,
+    );
 
     assert.ok(
       persistence.projectRepository instanceof

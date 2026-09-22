@@ -1,5 +1,6 @@
 import type {
   SeshAudioAsset,
+  SeshCreatorProfile,
   SeshMusicProject,
   SeshStorageReference,
   SeshTimestamp,
@@ -8,6 +9,7 @@ import type {
 export const SESH_PERSISTENCE_SCHEMA_VERSION = 1 as const;
 
 export const SESH_PERSISTENCE_RECORD_TYPES = [
+  "creator-profile",
   "music-project",
   "audio-asset",
 ] as const;
@@ -22,6 +24,20 @@ export interface SeshProjectPersistenceSnapshot {
   readonly revision: SeshPersistenceRevision;
 }
 
+export interface SeshCreatorProfilePersistenceEnvelope {
+  readonly schemaVersion:
+    typeof SESH_PERSISTENCE_SCHEMA_VERSION;
+  readonly recordType:
+    "creator-profile";
+  readonly recordId:
+    string;
+  readonly storedAt:
+    SeshTimestamp;
+  readonly revision?:
+    SeshPersistenceRevision;
+  readonly payload:
+    SeshCreatorProfile;
+}
 export interface SeshMusicProjectPersistenceEnvelope {
   readonly schemaVersion: typeof SESH_PERSISTENCE_SCHEMA_VERSION;
   readonly recordType: "music-project";
@@ -41,6 +57,7 @@ export interface SeshAudioAssetPersistenceEnvelope {
 }
 
 export type SeshPersistenceEnvelope =
+  | SeshCreatorProfilePersistenceEnvelope
   | SeshMusicProjectPersistenceEnvelope
   | SeshAudioAssetPersistenceEnvelope;
 

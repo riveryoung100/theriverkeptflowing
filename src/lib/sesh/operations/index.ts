@@ -20,3 +20,4 @@ export type {
   SeshProjectCollectionResult,
   SeshProjectCreateInput,
 } from "./project-collection-service";
+export * from "./creator-profile-provisioning-service";

@@ -1,0 +1,27 @@
+{
+  "id": "SESH-032",
+  "title": "Creator profile persistence and recoverable provisioning",
+  "status": "source-implementation",
+  "invariants": [
+    "SeshCreatorId remains distinct from PrincipalId, legal identity, CRM identity, session identity, and profile display data.",
+    "The explicit PrincipalId to SeshCreatorId mapping remains authoritative for authenticated creator resolution.",
+    "Creator profiles are Sesh-domain records persisted in SESH_DB, not identity records in RIVER_IDENTITY_DB.",
+    "Creator profile persistence uses the canonical Sesh persistence envelope.",
+    "Creator profile creation is idempotent only when the canonical persisted profile is exactly equivalent.",
+    "Conflicting reuse of a SeshCreatorId fails closed.",
+    "No profile persistence grants project ownership, collaborator, publishing, management, copyright, legal, or payment rights.",
+    "Cross-database provisioning must be recoverable without claiming atomic transactions across RIVER_IDENTITY_DB and SESH_DB.",
+    "Live migration execution and deployment require separate fresh authorization."
+  ],
+  "persistence": {
+    "database": "SESH_DB",
+    "table": "sesh_creator_profiles",
+    "migration": "migrations/sesh/0002_sesh_creator_profiles.sql",
+    "recordType": "creator-profile"
+  },
+  "liveActions": {
+    "migrationExecuted": false,
+    "databaseMutationPerformed": false,
+    "deployed": false
+  }
+}

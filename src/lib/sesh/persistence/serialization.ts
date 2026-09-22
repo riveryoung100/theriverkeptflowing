@@ -1,15 +1,18 @@
 import {
   validateSeshAudioAsset,
+  validateSeshCreatorProfile,
   validateSeshMusicProject,
 } from "../validation";
 import type {
   SeshAudioAsset,
+  SeshCreatorProfile,
   SeshMusicProject,
   SeshTimestamp,
 } from "../model";
 import {
   SESH_PERSISTENCE_SCHEMA_VERSION,
   type SeshAudioAssetPersistenceEnvelope,
+  type SeshCreatorProfilePersistenceEnvelope,
   type SeshMusicProjectPersistenceEnvelope,
   type SeshPersistenceEnvelope,
   type SeshPersistenceRecordType,
@@ -100,6 +103,7 @@ function requireRecordType(
   value: unknown,
 ): SeshPersistenceRecordType {
   if (
+    value !== "creator-profile" &&
     value !== "music-project" &&
     value !== "audio-asset"
   ) {
@@ -122,6 +126,39 @@ function validateRecordIdentity(
   }
 }
 
+export function createSeshCreatorProfileEnvelope(
+  profile: unknown,
+  storedAt: SeshTimestamp,
+  revision?: SeshPersistenceRevision,
+): SeshCreatorProfilePersistenceEnvelope {
+  const payload =
+    validateSeshCreatorProfile(
+      profile,
+    );
+
+  return {
+    schemaVersion:
+      SESH_PERSISTENCE_SCHEMA_VERSION,
+
+    recordType:
+      "creator-profile",
+
+    recordId:
+      payload.id,
+
+    storedAt:
+      requireStoredAt(
+        storedAt,
+      ),
+
+    revision:
+      optionalRevision(
+        revision,
+      ),
+
+    payload,
+  };
+}
 export function createSeshMusicProjectEnvelope(
   project: unknown,
   storedAt: SeshTimestamp,
@@ -192,6 +229,30 @@ export function deserializeSeshPersistenceEnvelope(
   const storedAt = requireStoredAt(record.storedAt);
   const revision = optionalRevision(record.revision);
 
+  if (
+    recordType ===
+    "creator-profile"
+  ) {
+    const payload:
+      SeshCreatorProfile =
+        validateSeshCreatorProfile(
+          record.payload,
+        );
+
+    validateRecordIdentity(
+      recordId,
+      payload.id,
+    );
+
+    return {
+      schemaVersion,
+      recordType,
+      recordId,
+      storedAt,
+      revision,
+      payload,
+    };
+  }
   if (recordType === "music-project") {
     const payload: SeshMusicProject =
       validateSeshMusicProject(record.payload);
