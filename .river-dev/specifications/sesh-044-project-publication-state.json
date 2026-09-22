@@ -1,0 +1,44 @@
+{
+  "id": "SESH-044",
+  "title": "Project Public-Presentation State Domain Contract",
+  "status": "implementation",
+  "summary": "Define an explicit Sesh project public-presentation state that remains separate from the canonical music-project aggregate and from copyright, music publishing, distribution, management, label, royalty, licensing, ownership, and commercial-rights semantics.",
+  "problem": [
+    "Canonical SeshMusicProject currently has no public visibility or publication field.",
+    "Authenticated creator project collections are owner-private.",
+    "The existing sesh_projects table stores canonical project envelopes and has no dedicated public-presentation state.",
+    "A creator vanity page must not expose private projects merely because the creator owns them."
+  ],
+  "states": {
+    "private": "The project is not eligible for anonymous public presentation.",
+    "public": "The project may be selected by a future anonymous public-read operation."
+  },
+  "record": {
+    "projectId": "canonical SeshMusicProjectId",
+    "ownerCreatorId": "canonical SeshCreatorId used to bind presentation state to the known project owner",
+    "state": "private | public",
+    "updatedAt": "canonical ISO-8601 timestamp for this presentation-state record"
+  },
+  "invariants": [
+    "Public-presentation state is a separate domain record and is not added to SeshMusicProject in this step.",
+    "The only accepted states are private and public.",
+    "Private is the safe absence-equivalent state; no project may be treated as public without an explicit canonical public state.",
+    "A public state means only that a project may appear on an anonymous Sesh presentation surface.",
+    "Public state does not grant or establish copyright ownership, composition ownership, master ownership, music publishing rights, distribution rights, label rights, management authority, royalty rights, licensing rights, revenue participation, collaborator rights, project ownership, or account authority.",
+    "ownerCreatorId binds the presentation record to project ownership evidence but does not itself establish legal music rights.",
+    "This step defines no authenticated mutation service, no anonymous public project endpoint, and no public creator project listing.",
+    "This step creates no persistence repository and no database table.",
+    "This step performs no migration and no deployment."
+  ],
+  "nextBoundaries": [
+    "Persist project public-presentation state independently from canonical project payloads.",
+    "Require authenticated project-owner authorization before changing presentation state.",
+    "Build anonymous public project reads only from explicit public presentation state.",
+    "Keep private R2 audio inaccessible until a separately authorized public-media delivery contract exists."
+  ],
+  "liveActions": {
+    "databaseMutation": false,
+    "migrationExecution": false,
+    "deployment": false
+  }
+}
