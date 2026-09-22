@@ -1,0 +1,213 @@
+---
+import {
+    env
+} from "cloudflare:workers";
+
+import MainLayout from "../../layouts/MainLayout.astro";
+
+import type {
+    PublicSeshCreatorProfile
+} from "../../lib/sesh/operations";
+
+import {
+    createPublicSeshCreatorHandleResolutionAtRuntime
+} from "../../lib/sesh/runtime/public-creator-handle-api";
+
+import type {
+    PublicSeshCreatorHandleApiRuntimeEnvironment
+} from "../../lib/sesh/runtime/public-creator-handle-api";
+
+export const prerender =
+    false;
+
+Astro.response.headers.set(
+    "cache-control",
+    "no-store"
+);
+
+const requestedHandle =
+    Astro.params.handle;
+
+let profile:
+    PublicSeshCreatorProfile | undefined;
+
+let pageStatus:
+    200 | 404 | 503 =
+        200;
+
+try {
+    const resolution =
+        createPublicSeshCreatorHandleResolutionAtRuntime(
+            env as unknown as
+                PublicSeshCreatorHandleApiRuntimeEnvironment
+        );
+
+    const result =
+        await resolution.resolveByHandle(
+            requestedHandle
+        );
+
+    if (
+        result.ok
+    ) {
+        profile =
+            result.value;
+    }
+    else if (
+        result.error.code ===
+            "unavailable"
+    ) {
+        pageStatus =
+            503;
+    }
+    else {
+        pageStatus =
+            404;
+    }
+}
+catch {
+    pageStatus =
+        503;
+}
+
+Astro.response.status =
+    pageStatus;
+
+const canonical =
+    profile === undefined
+        ? undefined
+        : new URL(
+            `/sesh/${profile.handle}/`,
+            Astro.site ?? Astro.url
+        ).toString();
+
+const title =
+    profile === undefined
+        ? (
+            pageStatus === 503
+                ? "Sesh Creator Temporarily Unavailable | The River Kept Flowing"
+                : "Sesh Creator Not Found | The River Kept Flowing"
+        )
+        : `${profile.displayName} (@${profile.handle}) | Sesh`;
+
+const description =
+    profile === undefined
+        ? (
+            pageStatus === 503
+                ? "This Sesh creator profile is temporarily unavailable."
+                : "The requested Sesh creator profile could not be found."
+        )
+        : (
+            profile.bio ??
+            `View @${profile.handle} on Sesh.`
+        );
+
+const noindex =
+    profile ===
+        undefined;
+---
+
+<MainLayout
+    title={title}
+    description={description}
+    canonical={canonical}
+    noindex={noindex}
+>
+    <main
+        class="sesh-public-creator"
+        data-pagefind-body={profile === undefined ? undefined : true}
+    >
+        {
+            profile ? (
+                <section class="sesh-public-creator__hero">
+                    <div class="sesh-public-creator__shell">
+                        <p class="sesh-public-creator__eyebrow">
+                            Sesh Creator
+                        </p>
+
+                        <h1>{profile.displayName}</h1>
+
+                        <p class="sesh-public-creator__handle">
+                            @{profile.handle}
+                        </p>
+
+                        {
+                            profile.bio && (
+                                <p class="sesh-public-creator__bio">
+                                    {profile.bio}
+                                </p>
+                            )
+                        }
+                    </div>
+                </section>
+            ) : (
+                <section class="sesh-public-creator__hero">
+                    <div class="sesh-public-creator__shell">
+                        <p class="sesh-public-creator__eyebrow">
+                            Sesh
+                        </p>
+
+                        <h1>
+                            {
+                                pageStatus === 503
+                                    ? "Creator profile temporarily unavailable"
+                                    : "Creator not found"
+                            }
+                        </h1>
+
+                        <p class="sesh-public-creator__bio">
+                            {
+                                pageStatus === 503
+                                    ? "This creator page cannot be loaded right now."
+                                    : "There is no public Sesh creator at this handle."
+                            }
+                        </p>
+                    </div>
+                </section>
+            )
+        }
+    </main>
+</MainLayout>
+
+<style>
+    .sesh-public-creator {
+        min-height: 70vh;
+    }
+
+    .sesh-public-creator__hero {
+        padding: clamp(5rem, 12vw, 9rem) 1.5rem;
+    }
+
+    .sesh-public-creator__shell {
+        width: min(100%, 760px);
+        margin: 0 auto;
+    }
+
+    .sesh-public-creator__eyebrow {
+        margin: 0 0 1rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        opacity: 0.68;
+    }
+
+    .sesh-public-creator h1 {
+        margin: 0;
+        font-size: clamp(2.75rem, 8vw, 5.75rem);
+        line-height: 0.98;
+    }
+
+    .sesh-public-creator__handle {
+        margin: 1.25rem 0 0;
+        font-size: clamp(1.05rem, 2vw, 1.3rem);
+        opacity: 0.68;
+    }
+
+    .sesh-public-creator__bio {
+        max-width: 640px;
+        margin: 2rem 0 0;
+        font-size: clamp(1.05rem, 2vw, 1.25rem);
+        line-height: 1.7;
+    }
+</style>

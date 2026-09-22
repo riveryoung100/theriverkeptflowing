@@ -1,0 +1,27 @@
+{
+  "id": "SESH-043",
+  "title": "Public Creator Vanity Page",
+  "status": "implementation",
+  "route": "/sesh/[handle]",
+  "summary": "Render a public server-side creator page from the canonical SESH-041 public creator handle resolution contract using the already-locked SESH-042 SESH_DB-only runtime composition.",
+  "invariants": [
+    "The vanity page is server rendered and never statically enumerates creator handles.",
+    "The dynamic route handle is the only creator lookup input.",
+    "The page reuses createPublicSeshCreatorHandleResolutionAtRuntime and does not create a second persistence or identity composition path.",
+    "The page does not authenticate visitors and does not require session or RIVER_IDENTITY_DB.",
+    "Successful pages expose only canonical handle, displayName, and optional bio.",
+    "Canonical metadata uses the normalized handle returned by the public resolver.",
+    "Invalid handles and missing creators render a 404 response and are noindex.",
+    "Infrastructure or persistence unavailability renders a 503 response and is noindex.",
+    "Successful creator pages are indexable and use the canonical creator URL.",
+    "All vanity page responses use cache-control no-store at this stage.",
+    "The page exposes no SeshCreatorId, PrincipalId, account identity, session identity, CRM identity, persistence revision, timestamps, or storage metadata.",
+    "The page grants or implies no project ownership, collaborator, publishing, management, legal, copyright, account, authentication, or authorization rights.",
+    "This step introduces no handle availability oracle, release operation, rename operation, follow graph, messaging system, music publication state, or management relationship."
+  ],
+  "liveActions": {
+    "databaseMutation": false,
+    "migrationExecution": false,
+    "deployment": false
+  }
+}
