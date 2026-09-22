@@ -16,3 +16,10 @@ export {
 export type {
   SeshProjectCollectionApiInput,
 } from "./project-collection-api";
+export {
+  handleSeshCreatorProfileProvisioning,
+} from "./creator-profile-api";
+
+export type {
+  SeshCreatorProfileProvisioningApiInput,
+} from "./creator-profile-api";

@@ -1,0 +1,37 @@
+{
+  "id": "SESH-033",
+  "title": "Authenticated creator provisioning HTTP boundary",
+  "status": "source-implementation",
+  "route": "POST /api/sesh/creator/provision",
+  "authentication": {
+    "authority": "canonical authenticated Principal session",
+    "operatorSessionIsCreatorAuth": false
+  },
+  "request": {
+    "sameOriginRequired": true,
+    "allowedFields": [
+      "displayName"
+    ],
+    "clientIdentityFieldsAuthoritative": false
+  },
+  "provisioning": {
+    "principalToSeshCreatorMapping": "RIVER_IDENTITY_DB",
+    "creatorProfile": "SESH_DB",
+    "crossD1AtomicityClaimed": false,
+    "retryRecovery": "reuse canonical PrincipalId to SeshCreatorId mapping",
+    "existingProfileDisplayNameUpdate": false
+  },
+  "authorization": {
+    "projectOwnershipGranted": false,
+    "collaborationRightsGranted": false,
+    "publishingRightsGranted": false,
+    "managementRightsGranted": false,
+    "legalRightsGranted": false,
+    "copyrightRightsGranted": false
+  },
+  "liveActions": {
+    "databaseMutation": false,
+    "migration": false,
+    "deployment": false
+  }
+}
