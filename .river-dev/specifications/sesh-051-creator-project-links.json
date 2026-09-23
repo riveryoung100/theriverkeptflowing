@@ -1,0 +1,58 @@
+{
+  "id": "SESH-051",
+  "title": "Creator Vanity Public Project Links",
+  "status": "implementation",
+  "summary": "Link each already-authorized explicit-public project presentation on a creator vanity page to its anonymous public project detail page.",
+  "sourcePage": "/sesh/[handle]/",
+  "targetPage": "/sesh/projects/[projectId]/",
+  "linkContract": [
+    "Only projects already returned by the anonymous explicit-public creator project collection are linkable.",
+    "The href is derived only from the already-public project.id route identifier.",
+    "The visible link text remains project.title.",
+    "Optional project.description remains presentation text outside the route identifier.",
+    "No additional persistence read is introduced by link construction.",
+    "No private project is linked or probed."
+  ],
+  "renderedProjectFields": [
+    "title",
+    "description"
+  ],
+  "routeOnlyField": "id",
+  "excludedFields": [
+    "ownerCreatorId",
+    "creatorId",
+    "principalId",
+    "createdAt",
+    "updatedAt",
+    "trackIds",
+    "sessionIds",
+    "audioAssetIds",
+    "tempoMapId",
+    "beatGridId",
+    "revision",
+    "schemaVersion",
+    "publication metadata",
+    "storageReference",
+    "media metadata"
+  ],
+  "preservedBoundaries": [
+    "Creator vanity resolution remains profile-first.",
+    "Creator collection remains explicit-public only.",
+    "Canonical creator handle agreement remains required.",
+    "Creator not-found remains 404.",
+    "Collection inconsistency or unavailable state remains 503.",
+    "Failure pages remain noindex.",
+    "Creator page remains no-store.",
+    "No identity database or authenticated session is introduced.",
+    "No SESH_AUDIO or R2 access is introduced.",
+    "No mutation is introduced.",
+    "Public presentation grants no copyright, master, composition, publishing, distribution, management, label, royalty, licensing, revenue, collaborator, legal, or account rights."
+  ],
+  "scope": [
+    "No project payload expansion occurs.",
+    "No media delivery is introduced.",
+    "No database mutation occurs.",
+    "No migration is authored or executed.",
+    "No deployment occurs."
+  ]
+}

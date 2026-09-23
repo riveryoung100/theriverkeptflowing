@@ -135,22 +135,22 @@ test(
 
     assert.doesNotMatch(
       page,
-      /project\.id\b/s,
+      />\s*\{project\.id\}\s*</s,
     );
   },
 );
 
 test(
-  "creator vanity page does not invent a public project detail link",
+  "creator vanity page links public projects only to the human public detail route",
   () => {
-    assert.doesNotMatch(
+    assert.match(
       page,
-      /\/sesh\/projects\//s,
+      /href=\{`\/sesh\/projects\/\$\{project\.id\}\/`\}/s,
     );
 
     assert.doesNotMatch(
       page,
-      /\/api\/sesh\/projects\/public\//s,
+      /href=\{`\/api\/sesh\/projects\/public\//s,
     );
   },
 );
