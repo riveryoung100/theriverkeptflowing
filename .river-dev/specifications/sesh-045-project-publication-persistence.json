@@ -1,0 +1,36 @@
+{
+  "id": "SESH-045",
+  "title": "Project Public-Presentation Persistence",
+  "status": "implementation",
+  "summary": "Persist SESH-044 project public-presentation state independently from canonical SeshMusicProject payloads using a dedicated SESH_DB table and repository.",
+  "table": "sesh_project_publication",
+  "primaryKey": "project_id",
+  "fields": {
+    "project_id": "canonical SeshMusicProjectId",
+    "owner_creator_id": "canonical SeshCreatorId",
+    "state": "private | public",
+    "updated_at": "canonical ISO-8601 timestamp"
+  },
+  "invariants": [
+    "Publication state remains outside the canonical SeshMusicProject payload.",
+    "No row is equivalent to not-public.",
+    "Only an explicit row with state public may later authorize anonymous presentation.",
+    "Repository reads and writes validate canonical project, creator, state, and timestamp values.",
+    "The persisted ownerCreatorId is immutable for a project publication record.",
+    "Changing private/public state does not modify project ownership.",
+    "Changing private/public state grants no copyright, composition, master, publishing, distribution, label, management, royalty, licensing, collaborator, legal, or commercial rights.",
+    "This step creates persistence only; it creates no authenticated mutation operation and no anonymous public project API.",
+    "The migration is authored locally but is not executed in this step.",
+    "No deployment occurs in this step."
+  ],
+  "repository": {
+    "getByProjectId": "read explicit publication record or not-found",
+    "save": "create the first explicit publication record",
+    "update": "change state only when the persisted ownerCreatorId matches"
+  },
+  "liveActions": {
+    "databaseMutation": false,
+    "migrationExecution": false,
+    "deployment": false
+  }
+}
