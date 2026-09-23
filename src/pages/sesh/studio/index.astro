@@ -1,0 +1,1545 @@
+---
+import MainLayout from "../../../layouts/MainLayout.astro";
+
+export const prerender =
+  false;
+
+Astro.response.headers.set(
+  "cache-control",
+  "no-store",
+);
+
+const canonical =
+  "https://theriverkeptflowing.com/sesh/studio/";
+---
+
+<MainLayout
+  title="Sesh Studio"
+  description="Your private Sesh creator workspace."
+  canonical={canonical}
+  noindex={true}
+>
+  <main class="sesh-studio">
+    <section class="sesh-studio__hero">
+      <div class="sesh-studio__shell">
+        <p class="sesh-studio__eyebrow">
+          Sesh Studio
+        </p>
+
+        <h1>
+          Make something worth hearing.
+        </h1>
+
+        <p class="sesh-studio__lead">
+          Your private creator workspace for your profile and projects.
+        </p>
+
+        <a
+          class="sesh-studio__public-link"
+          href="/sesh/"
+        >
+          Explore public Sesh
+        </a>
+      </div>
+    </section>
+
+    <section
+      class="sesh-studio__shell sesh-studio__workspace"
+      aria-live="polite"
+    >
+      <p
+        id="studio-status"
+        class="sesh-studio__status"
+      >
+        Loading your Studio…
+      </p>
+
+      <section
+        id="studio-sign-in"
+        class="sesh-studio__panel"
+        hidden
+      >
+        <p class="sesh-studio__kicker">
+          Creator access
+        </p>
+
+        <h2>
+          Sign in to Sesh
+        </h2>
+
+        <p>
+          Use your River account to open your creator workspace.
+        </p>
+
+        <form id="studio-login-form">
+          <label>
+            Email
+
+            <input
+              name="email"
+              type="email"
+              autocomplete="email"
+              required
+            />
+          </label>
+
+          <label>
+            Password
+
+            <input
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              required
+            />
+          </label>
+
+          <button type="submit">
+            Sign in
+          </button>
+        </form>
+      </section>
+
+      <section
+        id="studio-provision"
+        class="sesh-studio__panel"
+        hidden
+      >
+        <p class="sesh-studio__kicker">
+          First-time setup
+        </p>
+
+        <h2>
+          Create your Sesh creator profile
+        </h2>
+
+        <p>
+          This creates your explicit Sesh creator identity. It does not
+          grant publishing, management, ownership, or other unrelated
+          rights.
+        </p>
+
+        <form id="studio-provision-form">
+          <label>
+            Display name
+
+            <input
+              name="displayName"
+              type="text"
+              maxlength="120"
+              autocomplete="name"
+              required
+            />
+          </label>
+
+          <button type="submit">
+            Create creator profile
+          </button>
+        </form>
+
+        <button
+          id="studio-provision-logout"
+          class="sesh-studio__button-secondary"
+          type="button"
+        >
+          Sign out
+        </button>
+      </section>
+
+      <section
+        id="studio-main"
+        hidden
+      >
+        <div class="sesh-studio__topline">
+          <div>
+            <p class="sesh-studio__kicker">
+              Creator workspace
+            </p>
+
+            <h2 id="studio-greeting">
+              Your Studio
+            </h2>
+          </div>
+
+          <button
+            id="studio-logout"
+            class="sesh-studio__button-secondary"
+            type="button"
+          >
+            Sign out
+          </button>
+        </div>
+
+        <div class="sesh-studio__grid">
+          <section class="sesh-studio__panel">
+            <p class="sesh-studio__kicker">
+              Profile
+            </p>
+
+            <h3>
+              Public creator profile
+            </h3>
+
+            <form id="studio-profile-form">
+              <label>
+                Display name
+
+                <input
+                  id="studio-display-name"
+                  name="displayName"
+                  type="text"
+                  maxlength="120"
+                  required
+                />
+              </label>
+
+              <label>
+                Bio
+
+                <textarea
+                  id="studio-bio"
+                  name="bio"
+                  rows="5"
+                  maxlength="1000"
+                ></textarea>
+              </label>
+
+              <button type="submit">
+                Save profile
+              </button>
+            </form>
+          </section>
+
+          <section class="sesh-studio__panel">
+            <p class="sesh-studio__kicker">
+              Public handle
+            </p>
+
+            <h3>
+              Your Sesh address
+            </h3>
+
+            <div
+              id="studio-handle-current"
+              class="sesh-studio__handle"
+              hidden
+            >
+              <span>
+                Your creator page
+              </span>
+
+              <a
+                id="studio-handle-link"
+                href="/sesh/"
+              ></a>
+            </div>
+
+            <form id="studio-handle-form">
+              <label>
+                Handle
+
+                <input
+                  id="studio-handle"
+                  name="handle"
+                  type="text"
+                  minlength="3"
+                  maxlength="32"
+                  autocomplete="off"
+                  placeholder="your-name"
+                  required
+                />
+              </label>
+
+              <p class="sesh-studio__hint">
+                Handles are canonical and are not ordinary profile fields.
+              </p>
+
+              <button type="submit">
+                Claim handle
+              </button>
+            </form>
+          </section>
+        </div>
+
+        <section class="sesh-studio__projects">
+          <div class="sesh-studio__topline">
+            <div>
+              <p class="sesh-studio__kicker">
+                Projects
+              </p>
+
+              <h2>
+                Your music projects
+              </h2>
+            </div>
+          </div>
+
+          <div class="sesh-studio__grid">
+            <section class="sesh-studio__panel">
+              <h3>
+                Start a project
+              </h3>
+
+              <form id="studio-project-form">
+                <label>
+                  Project title
+
+                  <input
+                    name="title"
+                    type="text"
+                    maxlength="200"
+                    required
+                  />
+                </label>
+
+                <button type="submit">
+                  Create project
+                </button>
+              </form>
+            </section>
+
+            <section class="sesh-studio__panel">
+              <h3>
+                Projects
+              </h3>
+
+              <div id="studio-project-list">
+                <p class="sesh-studio__muted">
+                  Loading projects…
+                </p>
+              </div>
+            </section>
+          </div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <script is:inline>
+    (() => {
+      const status =
+        document.getElementById(
+          "studio-status",
+        );
+
+      const signIn =
+        document.getElementById(
+          "studio-sign-in",
+        );
+
+      const provision =
+        document.getElementById(
+          "studio-provision",
+        );
+
+      const main =
+        document.getElementById(
+          "studio-main",
+        );
+
+      const loginForm =
+        document.getElementById(
+          "studio-login-form",
+        );
+
+      const provisionForm =
+        document.getElementById(
+          "studio-provision-form",
+        );
+
+      const profileForm =
+        document.getElementById(
+          "studio-profile-form",
+        );
+
+      const handleForm =
+        document.getElementById(
+          "studio-handle-form",
+        );
+
+      const projectForm =
+        document.getElementById(
+          "studio-project-form",
+        );
+
+      const logoutButton =
+        document.getElementById(
+          "studio-logout",
+        );
+
+      const provisionLogout =
+        document.getElementById(
+          "studio-provision-logout",
+        );
+
+      const projectList =
+        document.getElementById(
+          "studio-project-list",
+        );
+
+      const greeting =
+        document.getElementById(
+          "studio-greeting",
+        );
+
+      const displayNameInput =
+        document.getElementById(
+          "studio-display-name",
+        );
+
+      const bioInput =
+        document.getElementById(
+          "studio-bio",
+        );
+
+      const handleInput =
+        document.getElementById(
+          "studio-handle",
+        );
+
+      const handleCurrent =
+        document.getElementById(
+          "studio-handle-current",
+        );
+
+      const handleLink =
+        document.getElementById(
+          "studio-handle-link",
+        );
+
+      const setStatus =
+        (message, isError = false) => {
+          if (!status) {
+            return;
+          }
+
+          status.textContent =
+            message;
+
+          status.dataset.state =
+            isError
+              ? "error"
+              : "normal";
+        };
+
+      const showOnly =
+        (target) => {
+          if (signIn) {
+            signIn.hidden =
+              target !== signIn;
+          }
+
+          if (provision) {
+            provision.hidden =
+              target !== provision;
+          }
+
+          if (main) {
+            main.hidden =
+              target !== main;
+          }
+        };
+
+      const fetchJson =
+        async (
+          url,
+          options = {},
+        ) => {
+          const response =
+            await fetch(
+              url,
+              {
+                credentials:
+                  "same-origin",
+
+                cache:
+                  "no-store",
+
+                ...options,
+              },
+            );
+
+          let body;
+
+          try {
+            body =
+              await response.json();
+          }
+          catch {
+            body =
+              null;
+          }
+
+          return {
+            response,
+            body,
+          };
+        };
+
+      const successValue =
+        (body) => {
+          if (
+            !body ||
+            typeof body !==
+              "object"
+          ) {
+            return body;
+          }
+
+          if (
+            Object.prototype.hasOwnProperty.call(
+              body,
+              "value",
+            )
+          ) {
+            return body.value;
+          }
+
+          return body;
+        };
+
+      const profileFrom =
+        (body) => {
+          const value =
+            successValue(
+              body,
+            );
+
+          if (
+            value &&
+            typeof value ===
+              "object" &&
+            value.profile &&
+            typeof value.profile ===
+              "object"
+          ) {
+            return value.profile;
+          }
+
+          if (
+            value &&
+            typeof value ===
+              "object" &&
+            typeof value.displayName ===
+              "string"
+          ) {
+            return value;
+          }
+
+          if (
+            body &&
+            typeof body ===
+              "object" &&
+            body.profile &&
+            typeof body.profile ===
+              "object"
+          ) {
+            return body.profile;
+          }
+
+          return null;
+        };
+
+      const projectsFrom =
+        (body) => {
+          const value =
+            successValue(
+              body,
+            );
+
+          if (
+            Array.isArray(
+              value,
+            )
+          ) {
+            return value;
+          }
+
+          if (
+            value &&
+            typeof value ===
+              "object" &&
+            Array.isArray(
+              value.projects,
+            )
+          ) {
+            return value.projects;
+          }
+
+          if (
+            body &&
+            typeof body ===
+              "object" &&
+            Array.isArray(
+              body.projects,
+            )
+          ) {
+            return body.projects;
+          }
+
+          return [];
+        };
+
+      const errorMessage =
+        (
+          body,
+          fallback,
+        ) => {
+          if (
+            body &&
+            typeof body ===
+              "object" &&
+            body.error &&
+            typeof body.error ===
+              "object" &&
+            typeof body.error.message ===
+              "string"
+          ) {
+            return body.error.message;
+          }
+
+          return fallback;
+        };
+
+      const renderProfile =
+        (profile) => {
+          const displayName =
+            typeof profile.displayName ===
+              "string"
+              ? profile.displayName
+              : "";
+
+          const bio =
+            typeof profile.bio ===
+              "string"
+              ? profile.bio
+              : "";
+
+          const handle =
+            typeof profile.handle ===
+              "string"
+              ? profile.handle
+              : "";
+
+          if (greeting) {
+            greeting.textContent =
+              displayName
+                ? `${displayName}'s Studio`
+                : "Your Studio";
+          }
+
+          if (displayNameInput) {
+            displayNameInput.value =
+              displayName;
+          }
+
+          if (bioInput) {
+            bioInput.value =
+              bio;
+          }
+
+          if (
+            handle &&
+            handleCurrent &&
+            handleLink &&
+            handleForm
+          ) {
+            handleCurrent.hidden =
+              false;
+
+            handleForm.hidden =
+              true;
+
+            handleLink.textContent =
+              `sesh/${handle}`;
+
+            handleLink.href =
+              `/sesh/${encodeURIComponent(
+                handle,
+              )}/`;
+          }
+          else {
+            if (handleCurrent) {
+              handleCurrent.hidden =
+                true;
+            }
+
+            if (handleForm) {
+              handleForm.hidden =
+                false;
+            }
+
+            if (handleInput) {
+              handleInput.value =
+                "";
+            }
+          }
+        };
+
+      const renderProjects =
+        (projects) => {
+          if (!projectList) {
+            return;
+          }
+
+          projectList.textContent =
+            "";
+
+          const safeProjects =
+            projects.filter(
+              (project) =>
+                project &&
+                typeof project ===
+                  "object" &&
+                typeof project.title ===
+                  "string",
+            );
+
+          if (
+            safeProjects.length ===
+              0
+          ) {
+            const empty =
+              document.createElement(
+                "p",
+              );
+
+            empty.className =
+              "sesh-studio__muted";
+
+            empty.textContent =
+              "No projects yet. Start your first one.";
+
+            projectList.appendChild(
+              empty,
+            );
+
+            return;
+          }
+
+          const list =
+            document.createElement(
+              "div",
+            );
+
+          list.className =
+            "sesh-studio__project-list";
+
+          for (
+            const project of
+            safeProjects
+          ) {
+            const article =
+              document.createElement(
+                "article",
+              );
+
+            article.className =
+              "sesh-studio__project";
+
+            const title =
+              document.createElement(
+                "h4",
+              );
+
+            title.textContent =
+              project.title;
+
+            article.appendChild(
+              title,
+            );
+
+            if (
+              typeof project.description ===
+                "string" &&
+              project.description.trim()
+            ) {
+              const description =
+                document.createElement(
+                  "p",
+                );
+
+              description.textContent =
+                project.description;
+
+              article.appendChild(
+                description,
+              );
+            }
+
+            list.appendChild(
+              article,
+            );
+          }
+
+          projectList.appendChild(
+            list,
+          );
+        };
+
+      const loadProjects =
+        async () => {
+          if (projectList) {
+            projectList.innerHTML =
+              '<p class="sesh-studio__muted">Loading projects…</p>';
+          }
+
+          try {
+            const {
+              response,
+              body,
+            } =
+              await fetchJson(
+                "/api/sesh/projects",
+              );
+
+            if (!response.ok) {
+              if (projectList) {
+                projectList.innerHTML =
+                  '<p class="sesh-studio__muted">Projects are temporarily unavailable.</p>';
+              }
+
+              return;
+            }
+
+            renderProjects(
+              projectsFrom(
+                body,
+              ),
+            );
+          }
+          catch {
+            if (projectList) {
+              projectList.innerHTML =
+                '<p class="sesh-studio__muted">Projects are temporarily unavailable.</p>';
+            }
+          }
+        };
+
+      const refreshStudio =
+        async () => {
+          setStatus(
+            "Loading your Studio…",
+          );
+
+          try {
+            const {
+              response,
+              body,
+            } =
+              await fetchJson(
+                "/api/sesh/creator/profile",
+              );
+
+            if (
+              response.status ===
+                401
+            ) {
+              showOnly(
+                signIn,
+              );
+
+              setStatus(
+                "Sign in to open your creator workspace.",
+              );
+
+              return;
+            }
+
+            if (
+              response.status ===
+                403 ||
+              response.status ===
+                404
+            ) {
+              showOnly(
+                provision,
+              );
+
+              setStatus(
+                "Your River account is signed in. Create your Sesh creator profile to continue.",
+              );
+
+              return;
+            }
+
+            if (!response.ok) {
+              showOnly(
+                null,
+              );
+
+              setStatus(
+                errorMessage(
+                  body,
+                  "Sesh Studio is temporarily unavailable.",
+                ),
+                true,
+              );
+
+              return;
+            }
+
+            const profile =
+              profileFrom(
+                body,
+              );
+
+            if (!profile) {
+              showOnly(
+                null,
+              );
+
+              setStatus(
+                "Sesh Studio could not read your creator profile.",
+                true,
+              );
+
+              return;
+            }
+
+            renderProfile(
+              profile,
+            );
+
+            showOnly(
+              main,
+            );
+
+            setStatus(
+              "Studio ready.",
+            );
+
+            await loadProjects();
+          }
+          catch {
+            showOnly(
+              null,
+            );
+
+            setStatus(
+              "Sesh Studio is temporarily unavailable.",
+              true,
+            );
+          }
+        };
+
+      if (loginForm) {
+        loginForm.addEventListener(
+          "submit",
+          async (event) => {
+            event.preventDefault();
+
+            const form =
+              new FormData(
+                loginForm,
+              );
+
+            const email =
+              String(
+                form.get(
+                  "email",
+                ) ??
+                  "",
+              );
+
+            const password =
+              String(
+                form.get(
+                  "password",
+                ) ??
+                  "",
+              );
+
+            setStatus(
+              "Signing in…",
+            );
+
+            const {
+              response,
+              body,
+            } =
+              await fetchJson(
+                "/api/identity/login",
+                {
+                  method:
+                    "POST",
+
+                  headers: {
+                    "content-type":
+                      "application/json",
+                  },
+
+                  body:
+                    JSON.stringify({
+                      email,
+                      password,
+                    }),
+                },
+              );
+
+            if (!response.ok) {
+              setStatus(
+                errorMessage(
+                  body,
+                  "Unable to sign in.",
+                ),
+                true,
+              );
+
+              return;
+            }
+
+            loginForm.reset();
+
+            await refreshStudio();
+          },
+        );
+      }
+
+      if (provisionForm) {
+        provisionForm.addEventListener(
+          "submit",
+          async (event) => {
+            event.preventDefault();
+
+            const form =
+              new FormData(
+                provisionForm,
+              );
+
+            const displayName =
+              String(
+                form.get(
+                  "displayName",
+                ) ??
+                  "",
+              ).trim();
+
+            setStatus(
+              "Creating your creator profile…",
+            );
+
+            const {
+              response,
+              body,
+            } =
+              await fetchJson(
+                "/api/sesh/creator/provision",
+                {
+                  method:
+                    "POST",
+
+                  headers: {
+                    "content-type":
+                      "application/json",
+                  },
+
+                  body:
+                    JSON.stringify({
+                      displayName,
+                    }),
+                },
+              );
+
+            if (!response.ok) {
+              setStatus(
+                errorMessage(
+                  body,
+                  "Unable to create your creator profile.",
+                ),
+                true,
+              );
+
+              return;
+            }
+
+            await refreshStudio();
+          },
+        );
+      }
+
+      if (profileForm) {
+        profileForm.addEventListener(
+          "submit",
+          async (event) => {
+            event.preventDefault();
+
+            const form =
+              new FormData(
+                profileForm,
+              );
+
+            const displayName =
+              String(
+                form.get(
+                  "displayName",
+                ) ??
+                  "",
+              ).trim();
+
+            const bio =
+              String(
+                form.get(
+                  "bio",
+                ) ??
+                  "",
+              ).trim();
+
+            const update = {
+              displayName,
+            };
+
+            if (bio) {
+              update.bio =
+                bio;
+            }
+
+            setStatus(
+              "Saving profile…",
+            );
+
+            const {
+              response,
+              body,
+            } =
+              await fetchJson(
+                "/api/sesh/creator/profile",
+                {
+                  method:
+                    "PATCH",
+
+                  headers: {
+                    "content-type":
+                      "application/json",
+                  },
+
+                  body:
+                    JSON.stringify(
+                      update,
+                    ),
+                },
+              );
+
+            if (!response.ok) {
+              setStatus(
+                errorMessage(
+                  body,
+                  "Unable to save your profile.",
+                ),
+                true,
+              );
+
+              return;
+            }
+
+            setStatus(
+              "Profile saved.",
+            );
+
+            await refreshStudio();
+          },
+        );
+      }
+
+      if (handleForm) {
+        handleForm.addEventListener(
+          "submit",
+          async (event) => {
+            event.preventDefault();
+
+            const form =
+              new FormData(
+                handleForm,
+              );
+
+            const handle =
+              String(
+                form.get(
+                  "handle",
+                ) ??
+                  "",
+              ).trim();
+
+            setStatus(
+              "Claiming handle…",
+            );
+
+            const {
+              response,
+              body,
+            } =
+              await fetchJson(
+                "/api/sesh/creator/handle",
+                {
+                  method:
+                    "POST",
+
+                  headers: {
+                    "content-type":
+                      "application/json",
+                  },
+
+                  body:
+                    JSON.stringify({
+                      handle,
+                    }),
+                },
+              );
+
+            if (!response.ok) {
+              setStatus(
+                errorMessage(
+                  body,
+                  "Unable to claim that handle.",
+                ),
+                true,
+              );
+
+              return;
+            }
+
+            setStatus(
+              "Handle claimed.",
+            );
+
+            await refreshStudio();
+          },
+        );
+      }
+
+      if (projectForm) {
+        projectForm.addEventListener(
+          "submit",
+          async (event) => {
+            event.preventDefault();
+
+            const form =
+              new FormData(
+                projectForm,
+              );
+
+            const title =
+              String(
+                form.get(
+                  "title",
+                ) ??
+                  "",
+              ).trim();
+
+            setStatus(
+              "Creating project…",
+            );
+
+            const {
+              response,
+              body,
+            } =
+              await fetchJson(
+                "/api/sesh/projects",
+                {
+                  method:
+                    "POST",
+
+                  headers: {
+                    "content-type":
+                      "application/json",
+                  },
+
+                  body:
+                    JSON.stringify({
+                      title,
+                    }),
+                },
+              );
+
+            if (!response.ok) {
+              setStatus(
+                errorMessage(
+                  body,
+                  "Unable to create the project.",
+                ),
+                true,
+              );
+
+              return;
+            }
+
+            projectForm.reset();
+
+            setStatus(
+              "Project created.",
+            );
+
+            await loadProjects();
+          },
+        );
+      }
+
+      const logout =
+        async () => {
+          setStatus(
+            "Signing out…",
+          );
+
+          try {
+            const {
+              response,
+              body,
+            } =
+              await fetchJson(
+                "/api/identity/logout",
+                {
+                  method:
+                    "POST",
+                },
+              );
+
+            if (!response.ok) {
+              setStatus(
+                errorMessage(
+                  body,
+                  "Unable to sign out.",
+                ),
+                true,
+              );
+
+              return;
+            }
+
+            await refreshStudio();
+          }
+          catch {
+            setStatus(
+              "Unable to sign out.",
+              true,
+            );
+          }
+        };
+
+      if (logoutButton) {
+        logoutButton.addEventListener(
+          "click",
+          logout,
+        );
+      }
+
+      if (provisionLogout) {
+        provisionLogout.addEventListener(
+          "click",
+          logout,
+        );
+      }
+
+      refreshStudio();
+    })();
+  </script>
+
+  <style>
+    .sesh-studio {
+      min-height: 70vh;
+      background:
+        linear-gradient(
+          180deg,
+          rgba(244, 240, 232, 0.72),
+          rgba(255, 255, 255, 0)
+        );
+    }
+
+    .sesh-studio__shell {
+      width: min(1120px, calc(100% - 2rem));
+      margin-inline: auto;
+    }
+
+    .sesh-studio__hero {
+      padding: clamp(4rem, 9vw, 7rem) 0 2.5rem;
+    }
+
+    .sesh-studio__hero h1 {
+      max-width: 760px;
+      margin: 0.35rem 0 1rem;
+      font-size: clamp(2.8rem, 8vw, 6rem);
+      line-height: 0.95;
+      letter-spacing: -0.055em;
+    }
+
+    .sesh-studio__eyebrow,
+    .sesh-studio__kicker {
+      margin: 0;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .sesh-studio__lead {
+      max-width: 680px;
+      font-size: clamp(1.05rem, 2vw, 1.3rem);
+      line-height: 1.7;
+    }
+
+    .sesh-studio__public-link {
+      display: inline-block;
+      margin-top: 1rem;
+    }
+
+    .sesh-studio__workspace {
+      padding-bottom: 7rem;
+    }
+
+    .sesh-studio__status {
+      min-height: 1.5rem;
+      margin: 0 0 1.2rem;
+      font-size: 0.92rem;
+    }
+
+    .sesh-studio__status[data-state="error"] {
+      font-weight: 700;
+    }
+
+    .sesh-studio__panel {
+      padding: clamp(1.25rem, 3vw, 2rem);
+      border: 1px solid rgba(20, 20, 20, 0.14);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.82);
+    }
+
+    .sesh-studio__panel h2,
+    .sesh-studio__panel h3 {
+      margin-top: 0.45rem;
+    }
+
+    .sesh-studio__grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .sesh-studio__topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .sesh-studio__projects {
+      margin-top: 2.5rem;
+    }
+
+    .sesh-studio form {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+
+    .sesh-studio label {
+      display: grid;
+      gap: 0.45rem;
+      font-size: 0.88rem;
+      font-weight: 650;
+    }
+
+    .sesh-studio input,
+    .sesh-studio textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0.85rem 0.95rem;
+      border: 1px solid rgba(20, 20, 20, 0.22);
+      border-radius: 10px;
+      background: #fff;
+      color: inherit;
+      font: inherit;
+    }
+
+    .sesh-studio textarea {
+      resize: vertical;
+    }
+
+    .sesh-studio button {
+      justify-self: start;
+      padding: 0.75rem 1rem;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      background: #171717;
+      color: #fff;
+      font: inherit;
+      font-weight: 650;
+      cursor: pointer;
+    }
+
+    .sesh-studio__button-secondary {
+      margin-top: 1rem;
+      background: transparent !important;
+      color: inherit !important;
+    }
+
+    .sesh-studio__handle {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 12px;
+      background: rgba(20, 20, 20, 0.05);
+    }
+
+    .sesh-studio__handle span,
+    .sesh-studio__handle a {
+      display: block;
+    }
+
+    .sesh-studio__handle a {
+      margin-top: 0.3rem;
+      font-weight: 700;
+    }
+
+    .sesh-studio__hint,
+    .sesh-studio__muted {
+      font-size: 0.9rem;
+      line-height: 1.55;
+      opacity: 0.72;
+    }
+
+    .sesh-studio__project-list {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .sesh-studio__project {
+      padding: 1rem 0;
+      border-top: 1px solid rgba(20, 20, 20, 0.12);
+    }
+
+    .sesh-studio__project:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .sesh-studio__project h4 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .sesh-studio__project p {
+      margin: 0.35rem 0 0;
+      line-height: 1.55;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    @media (max-width: 760px) {
+      .sesh-studio__grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sesh-studio__topline {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .sesh-studio__topline button {
+        align-self: start;
+      }
+    }
+  </style>
+</MainLayout>

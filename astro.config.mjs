@@ -14,7 +14,11 @@ export default defineConfig({
 
     integrations: [
         mdx(),
-        sitemap()
+        sitemap({
+            filter: (page) =>
+                page !==
+                "https://theriverkeptflowing.com/sesh/studio/"
+        })
     ],
 
     build: {

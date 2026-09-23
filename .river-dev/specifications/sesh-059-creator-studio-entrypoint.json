@@ -1,0 +1,72 @@
+{
+    "id":  "SESH-059",
+    "title":  "Authenticated Sesh Creator Studio Entrypoint",
+    "status":  "IMPLEMENTED_LOCALLY_PENDING_REVIEW",
+    "sourceBaseline":  {
+                           "branch":  "cif-001-canonical-content-source-record",
+                           "commit":  "747c9a7560554ccfc38309443f927ba5d08305b3",
+                           "predecessor":  "SESH-058"
+                       },
+    "objective":  "Create the first human Sesh creator workspace by composing the already-authorized Principal login, creator provisioning, creator profile, handle claim, and creator-owned project collection HTTP boundaries without duplicating authorization or exposing internal identity.",
+    "route":  "/sesh/studio/",
+    "behavior":  {
+                     "signedOut":  "Render email/password login form backed only by /api/identity/login.",
+                     "authenticatedUnmapped":  "Offer creator initialization through /api/sesh/creator/provision.",
+                     "creatorProfile":  "Display and edit public-facing display name, optional bio, and canonical handle.",
+                     "handleClaim":  "Claim a first canonical creator handle through /api/sesh/creator/handle.",
+                     "projectCollection":  "Read creator-owned projects through /api/sesh/projects.",
+                     "projectCreation":  "Create title-only projects through /api/sesh/projects.",
+                     "logout":  "Destroy canonical Principal session through /api/identity/logout."
+                 },
+    "privacy":  [
+                    "Do not render PrincipalId.",
+                    "Do not render SeshCreatorId.",
+                    "Do not render persistence revisions.",
+                    "Do not render project ownerCreatorId.",
+                    "Do not render lifecycle timestamps.",
+                    "Do not render credential metadata.",
+                    "Project identifiers may be held in browser memory only when required by future authorized actions; this slice does not render them as visible text."
+                ],
+    "security":  [
+                     "The page performs no direct D1 access.",
+                     "The page performs no direct identity resolution.",
+                     "The page performs no direct creator mapping resolution.",
+                     "Every mutation flows through an existing same-origin authenticated HTTP boundary.",
+                     "The Studio does not infer creator identity.",
+                     "Authentication alone does not grant Sesh creator authority.",
+                     "Creator initialization remains an explicit provisioning operation.",
+                     "Project ownership remains server-derived.",
+                     "River OS authentication remains unrelated.",
+                     "Page is no-store.",
+                     "Page is noindex.",
+                     "The Studio page is not included in public discovery."
+                 ],
+    "intentionallyDeferred":  [
+                                  "Project editing",
+                                  "Project deletion",
+                                  "Project publication toggle",
+                                  "Audio upload",
+                                  "R2 media delivery",
+                                  "Collaboration",
+                                  "Publishing ownership",
+                                  "Distribution",
+                                  "Artist management",
+                                  "Royalty participation",
+                                  "Licensing",
+                                  "Commerce",
+                                  "Registration",
+                                  "Password reset",
+                                  "OAuth",
+                                  "Passkeys"
+                              ],
+    "nextSlice":  {
+                      "id":  "SESH-060",
+                      "title":  "Creator Project Management Controls",
+                      "candidates":  [
+                                         "Project edit",
+                                         "Project delete",
+                                         "Explicit private/public presentation control",
+                                         "Human project detail/editor route"
+                                     ]
+                  }
+}
