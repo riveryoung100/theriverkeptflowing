@@ -1,0 +1,302 @@
+---
+import {
+    env
+} from "cloudflare:workers";
+
+import MainLayout from "../../layouts/MainLayout.astro";
+
+import type {
+    PublicSeshProjectDiscoveryItem
+} from "../../lib/sesh/operations";
+
+import {
+    createPublicSeshProjectDiscoveryAtRuntime
+} from "../../lib/sesh/runtime/public-project-discovery-api";
+
+import type {
+    PublicSeshProjectDiscoveryRuntimeEnvironment
+} from "../../lib/sesh/runtime/public-project-discovery-api";
+
+export const prerender =
+    false;
+
+Astro.response.headers.set(
+    "cache-control",
+    "no-store"
+);
+
+const DISCOVERY_LIMIT =
+    20;
+
+let projects:
+    readonly PublicSeshProjectDiscoveryItem[] =
+        [];
+
+let pageStatus:
+    200 | 503 =
+        200;
+
+try {
+    const discovery =
+        createPublicSeshProjectDiscoveryAtRuntime(
+            env as unknown as
+                PublicSeshProjectDiscoveryRuntimeEnvironment
+        );
+
+    const result =
+        await discovery.listPublicProjects(
+            DISCOVERY_LIMIT
+        );
+
+    if (
+        result.ok
+    ) {
+        projects =
+            result.value.projects;
+    }
+    else {
+        projects =
+            [];
+
+        pageStatus =
+            503;
+    }
+}
+catch {
+    projects =
+        [];
+
+    pageStatus =
+        503;
+}
+
+Astro.response.status =
+    pageStatus;
+
+const canonical =
+    new URL(
+        "/sesh/",
+        Astro.site ?? Astro.url
+    ).toString();
+
+const title =
+    pageStatus ===
+        503
+        ? "Sesh Temporarily Unavailable | The River Kept Flowing"
+        : "Sesh | Discover Public Projects";
+
+const description =
+    pageStatus ===
+        503
+        ? "Sesh public project discovery is temporarily unavailable."
+        : "Discover public projects and creators on Sesh.";
+
+const noindex =
+    pageStatus !==
+        200;
+---
+
+<MainLayout
+    title={title}
+    description={description}
+    canonical={canonical}
+    noindex={noindex}
+>
+    <main
+        class="sesh-discovery"
+        data-pagefind-body={pageStatus === 200 ? true : undefined}
+    >
+        {
+            pageStatus === 200 ? (
+                <>
+                    <section class="sesh-discovery__hero">
+                        <div class="sesh-discovery__shell">
+                            <p class="sesh-discovery__eyebrow">
+                                Sesh
+                            </p>
+
+                            <h1>
+                                Discover what people are creating.
+                            </h1>
+
+                            <p class="sesh-discovery__intro">
+                                Public projects shared through Sesh.
+                            </p>
+                        </div>
+                    </section>
+
+                    <section
+                        class="sesh-discovery__projects"
+                        aria-labelledby="sesh-discovery-projects"
+                    >
+                        <div class="sesh-discovery__shell">
+                            <h2 id="sesh-discovery-projects">
+                                Public projects
+                            </h2>
+
+                            {
+                                projects.length > 0 ? (
+                                    <div class="sesh-discovery__project-list">
+                                        {
+                                            projects.map(
+                                                ({ project, creator }) => (
+                                                    <article class="sesh-discovery__project">
+                                                        <h3>
+                                                            <a
+                                                                href={`/sesh/projects/${project.id}/`}
+                                                            >
+                                                                {project.title}
+                                                            </a>
+                                                        </h3>
+
+                                                        {
+                                                            creator && (
+                                                                <p class="sesh-discovery__creator">
+                                                                    By{" "}
+                                                                    <a
+                                                                        href={`/sesh/${creator.handle}/`}
+                                                                    >
+                                                                        {creator.displayName}
+                                                                    </a>
+                                                                </p>
+                                                            )
+                                                        }
+
+                                                        {
+                                                            project.description && (
+                                                                <p class="sesh-discovery__description">
+                                                                    {project.description}
+                                                                </p>
+                                                            )
+                                                        }
+                                                    </article>
+                                                )
+                                            )
+                                        }
+                                    </div>
+                                ) : (
+                                    <p class="sesh-discovery__empty">
+                                        No public Sesh projects have been shared yet.
+                                    </p>
+                                )
+                            }
+                        </div>
+                    </section>
+                </>
+            ) : (
+                <section class="sesh-discovery__hero">
+                    <div class="sesh-discovery__shell">
+                        <p class="sesh-discovery__eyebrow">
+                            Sesh
+                        </p>
+
+                        <h1>
+                            Sesh is temporarily unavailable.
+                        </h1>
+
+                        <p class="sesh-discovery__intro">
+                            Public project discovery cannot be loaded right now.
+                        </p>
+                    </div>
+                </section>
+            )
+        }
+    </main>
+</MainLayout>
+
+<style>
+    .sesh-discovery {
+        min-height: 70vh;
+    }
+
+    .sesh-discovery__hero {
+        padding: clamp(5rem, 12vw, 9rem) 1.5rem clamp(3rem, 8vw, 6rem);
+    }
+
+    .sesh-discovery__projects {
+        padding: 0 1.5rem clamp(5rem, 12vw, 9rem);
+    }
+
+    .sesh-discovery__shell {
+        width: min(100%, 860px);
+        margin: 0 auto;
+    }
+
+    .sesh-discovery__eyebrow {
+        margin: 0 0 1rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        opacity: 0.68;
+    }
+
+    .sesh-discovery h1 {
+        max-width: 760px;
+        margin: 0;
+        font-size: clamp(2.75rem, 8vw, 5.75rem);
+        line-height: 0.98;
+    }
+
+    .sesh-discovery__intro {
+        max-width: 640px;
+        margin: 2rem 0 0;
+        font-size: clamp(1.05rem, 2vw, 1.25rem);
+        line-height: 1.7;
+    }
+
+    .sesh-discovery h2 {
+        margin: 0;
+        font-size: clamp(1.6rem, 4vw, 2.4rem);
+        line-height: 1.1;
+    }
+
+    .sesh-discovery__project-list {
+        display: grid;
+        gap: 0;
+        margin-top: 2rem;
+    }
+
+    .sesh-discovery__project {
+        padding: 1.5rem 0;
+        border-top: 1px solid currentColor;
+    }
+
+    .sesh-discovery__project:last-child {
+        border-bottom: 1px solid currentColor;
+    }
+
+    .sesh-discovery__project h3 {
+        margin: 0;
+        font-size: clamp(1.25rem, 3vw, 1.7rem);
+        line-height: 1.2;
+    }
+
+    .sesh-discovery__project h3 a,
+    .sesh-discovery__creator a {
+        color: inherit;
+        text-decoration-thickness: 0.08em;
+        text-underline-offset: 0.16em;
+    }
+
+    .sesh-discovery__creator {
+        margin: 0.75rem 0 0;
+        line-height: 1.6;
+    }
+
+    .sesh-discovery__creator a {
+        font-weight: 600;
+    }
+
+    .sesh-discovery__description {
+        max-width: 640px;
+        margin: 0.75rem 0 0;
+        line-height: 1.65;
+        opacity: 0.78;
+    }
+
+    .sesh-discovery__empty {
+        margin: 1.5rem 0 0;
+        opacity: 0.68;
+    }
+</style>

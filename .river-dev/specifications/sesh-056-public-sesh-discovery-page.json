@@ -1,0 +1,75 @@
+{
+  "id": "SESH-056",
+  "increment": "public-sesh-discovery-page",
+  "title": "Public Sesh discovery page",
+  "status": "implemented-local",
+  "route": "/sesh/",
+  "purpose": "Expose the locked SESH-055 anonymous public-project discovery service through one server-rendered human discovery surface.",
+  "requestContract": {
+    "method": "GET",
+    "queryParameters": "none",
+    "discoveryLimit": 20
+  },
+  "responseContract": {
+    "successStatus": 200,
+    "unavailableStatus": 503,
+    "cacheControl": "no-store",
+    "canonical": "/sesh/",
+    "successIndexing": "allowed",
+    "failureIndexing": "noindex"
+  },
+  "emptyState": [
+    "An empty explicit-public collection is a successful 200 response.",
+    "The empty state does not imply whether private projects exist."
+  ],
+  "presentation": {
+    "project": [
+      "title",
+      "optional description",
+      "link to /sesh/projects/{project.id}/"
+    ],
+    "creator": [
+      "optional displayName",
+      "optional link to /sesh/{creator.handle}/"
+    ],
+    "routeOnlyValues": [
+      "project.id",
+      "creator.handle"
+    ]
+  },
+  "privacyBoundary": [
+    "Project id may appear only as the canonical public project route identifier and is not rendered as visible page text.",
+    "Creator handle may appear only in its canonical vanity href and is not rendered as visible page text on discovery cards.",
+    "No ownerCreatorId is exposed.",
+    "No creatorId is exposed.",
+    "No PrincipalId, account identity, session identity, CRM identity, or legal identity is exposed.",
+    "No private-project existence oracle is introduced."
+  ],
+  "runtimeBoundary": [
+    "SESH_DB only through the SESH-055 runtime.",
+    "No RIVER_IDENTITY_DB.",
+    "No SESSION.",
+    "No SESH_AUDIO.",
+    "No R2.",
+    "No JSON API dependency."
+  ],
+  "failureContract": [
+    "Discovery service failure produces HTTP 503.",
+    "Runtime composition failure produces HTTP 503.",
+    "Failure responses are noindex.",
+    "No 404 state exists for the collection route."
+  ],
+  "scope": [
+    "Human /sesh/ page.",
+    "Wiring tests.",
+    "No new anonymous JSON API.",
+    "No mutation.",
+    "No public media delivery.",
+    "No database mutation.",
+    "No migration.",
+    "No deployment."
+  ],
+  "rightsBoundary": [
+    "Public presentation does not grant copyright, master, composition, publishing, distribution, label, management, royalty, licensing, revenue, collaborator, legal, CRM, account, or identity rights."
+  ]
+}
