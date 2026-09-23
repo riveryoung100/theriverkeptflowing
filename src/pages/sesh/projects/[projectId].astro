@@ -9,13 +9,17 @@ import type {
     PublicSeshProject
 } from "../../../lib/sesh/operations";
 
+import type {
+    PublicSeshProjectCreatorPresentation
+} from "../../../lib/sesh/operations/public-project-presentation-service";
+
 import {
-    createPublicSeshProjectResolutionAtRuntime
-} from "../../../lib/sesh/runtime/public-project-api";
+    createPublicSeshProjectPresentationAtRuntime
+} from "../../../lib/sesh/runtime/public-project-presentation-api";
 
 import type {
-    PublicSeshProjectApiRuntimeEnvironment
-} from "../../../lib/sesh/runtime/public-project-api";
+    PublicSeshProjectPresentationRuntimeEnvironment
+} from "../../../lib/sesh/runtime/public-project-presentation-api";
 
 export const prerender =
     false;
@@ -31,15 +35,18 @@ const requestedProjectId =
 let project:
     PublicSeshProject | undefined;
 
+let creator:
+    PublicSeshProjectCreatorPresentation | undefined;
+
 let pageStatus:
     200 | 404 | 503 =
         200;
 
 try {
     const resolution =
-        createPublicSeshProjectResolutionAtRuntime(
+        createPublicSeshProjectPresentationAtRuntime(
             env as unknown as
-                PublicSeshProjectApiRuntimeEnvironment
+                PublicSeshProjectPresentationRuntimeEnvironment
         );
 
     const result =
@@ -51,7 +58,10 @@ try {
         result.ok
     ) {
         project =
-            result.value;
+            result.value.project;
+
+        creator =
+            result.value.creator;
     }
     else if (
         result.error.code ===
@@ -67,6 +77,9 @@ try {
 }
 catch {
     project =
+        undefined;
+
+    creator =
         undefined;
 
     pageStatus =
@@ -129,6 +142,17 @@ const noindex =
                         </p>
 
                         <h1>{project.title}</h1>
+
+                        {
+                            creator && (
+                                <p class="sesh-public-project__creator">
+                                    By{" "}
+                                    <a href={`/sesh/${creator.handle}/`}>
+                                        {creator.displayName}
+                                    </a>
+                                </p>
+                            )
+                        }
 
                         {
                             project.description && (
@@ -195,6 +219,19 @@ const noindex =
         margin: 0;
         font-size: clamp(2.75rem, 8vw, 5.75rem);
         line-height: 0.98;
+    }
+
+    .sesh-public-project__creator {
+        margin: 1.25rem 0 0;
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    .sesh-public-project__creator a {
+        color: inherit;
+        font-weight: 600;
+        text-decoration-thickness: 0.08em;
+        text-underline-offset: 0.16em;
     }
 
     .sesh-public-project__description {

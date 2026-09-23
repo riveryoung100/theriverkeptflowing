@@ -1,0 +1,68 @@
+{
+  "id": "SESH-053",
+  "title": "Public project creator attribution and canonical creator link",
+  "status": "implemented-local",
+  "purpose": "Use the SESH-052 presentation resolver on the human public project page and optionally render canonical public creator attribution.",
+  "page": "/sesh/projects/[projectId]/",
+  "resolution": [
+    "Read only the dynamic projectId route parameter.",
+    "Resolve through createPublicSeshProjectPresentationAtRuntime.",
+    "Use only SESH_DB.",
+    "Preserve the explicit-public project boundary established by SESH-052.",
+    "Map invalid-input and not-found to page 404.",
+    "Map unavailable or invariant failure to page 503.",
+    "Canonicalize from project.id."
+  ],
+  "creatorPresentation": {
+    "optional": true,
+    "visibleFields": [
+      "displayName"
+    ],
+    "routeField": "handle",
+    "route": "/sesh/[handle]/",
+    "behaviorWhenAbsent": "Render the public project normally without creator attribution."
+  },
+  "projectPresentation": [
+    "title",
+    "optional description"
+  ],
+  "privacyBoundary": [
+    "Do not render ownerCreatorId.",
+    "Do not render SeshCreatorId.",
+    "Do not render PrincipalId.",
+    "Do not infer account or legal identity.",
+    "The canonical creator handle is used only as an already-public vanity route identifier.",
+    "Do not expose project lifecycle, revision, media graph, storage, or private metadata."
+  ],
+  "runtimeBoundary": [
+    "SESH_DB only",
+    "No session",
+    "No RIVER_IDENTITY_DB",
+    "No SESH_AUDIO",
+    "No public R2 access"
+  ],
+  "apiBoundary": [
+    "Do not change the existing anonymous public-project JSON API.",
+    "Do not add creator attribution to the JSON API in this increment.",
+    "Human page navigation targets /sesh/[handle]/ rather than an API route."
+  ],
+  "rightsBoundary": [
+    "Creator attribution is presentation only.",
+    "Attribution does not grant or imply copyright, master, composition, publishing, distribution, management, label, royalty, licensing, revenue, collaborator, legal, CRM, account, or identity rights."
+  ],
+  "failureBehavior": {
+    "notFound": 404,
+    "unavailable": 503,
+    "failurePagesNoindex": true,
+    "cacheControl": "no-store"
+  },
+  "scope": [
+    "No mutation.",
+    "No database mutation.",
+    "No migration.",
+    "No media delivery.",
+    "No new HTTP API route.",
+    "No deployment.",
+    "No commit in the authoring step."
+  ]
+}

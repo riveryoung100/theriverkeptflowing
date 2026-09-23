@@ -36,11 +36,11 @@ test(
 );
 
 test(
-  "public project page reuses the locked SESH_DB-only public project resolver",
+  "public project page reuses the locked SESH_DB-only public project presentation resolver",
   () => {
     assert.match(
       page,
-      /createPublicSeshProjectResolutionAtRuntime/s,
+      /createPublicSeshProjectPresentationAtRuntime/s,
     );
 
     assert.match(
@@ -121,7 +121,7 @@ test(
 );
 
 test(
-  "public project page renders only project title and optional description",
+  "public project page renders sanitized project presentation without internal metadata",
   () => {
     assert.match(
       page,
