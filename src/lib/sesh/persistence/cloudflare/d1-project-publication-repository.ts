@@ -22,6 +22,7 @@ import type {
 
 import type {
   SeshProjectPublicationRepository,
+  SeshPublicProjectPublicationDiscoveryRepository,
 } from "../project-publication-repository";
 
 import type {
@@ -94,7 +95,9 @@ function recordFromRow(
 }
 
 export class D1SeshProjectPublicationRepository
-implements SeshProjectPublicationRepository {
+implements
+  SeshProjectPublicationRepository,
+  SeshPublicProjectPublicationDiscoveryRepository {
   constructor(
     private readonly database:
       SeshD1DatabaseLike,
@@ -262,6 +265,119 @@ implements SeshProjectPublicationRepository {
           : "Sesh project publication read failed.",
       );
     }
+  }
+
+  async listPublicProjectPublications(
+    limit: number,
+  ): Promise<
+    SeshPersistenceResult<
+      readonly SeshProjectPublicationRecord[]
+    >
+  > {
+    if (
+      !Number.isInteger(
+        limit,
+      ) ||
+      limit <
+        1 ||
+      limit >
+        50
+    ) {
+      return failure(
+        "validation",
+        "Sesh public project discovery limit must be an integer from 1 through 50.",
+      );
+    }
+
+    let rows:
+      readonly ProjectPublicationRow[];
+
+    try {
+      const result =
+        await this.database
+          .prepare(
+            `SELECT
+              project_id,
+              owner_creator_id,
+              state,
+              updated_at
+            FROM sesh_project_publication
+            WHERE state = 'public'
+            ORDER BY
+              updated_at DESC,
+              project_id ASC
+            LIMIT ?`,
+          )
+          .bind(
+            limit,
+          )
+          .all<ProjectPublicationRow>();
+
+      rows =
+        result.results;
+    }
+    catch (error) {
+      return failure(
+        "storage",
+        error instanceof Error
+          ? error.message
+          : "Sesh global public project publication read failed.",
+      );
+    }
+
+    if (
+      rows.length >
+        limit
+    ) {
+      return failure(
+        "validation",
+        "Sesh global public project publication read exceeded its requested result bound.",
+      );
+    }
+
+    const publications:
+      SeshProjectPublicationRecord[] =
+        [];
+
+    for (
+      const row of rows
+    ) {
+      let validated:
+        SeshProjectPublicationRecord;
+
+      try {
+        validated =
+          recordFromRow(
+            row,
+          );
+      }
+      catch (error) {
+        return failure(
+          "validation",
+          error instanceof Error
+            ? error.message
+            : "Stored Sesh project publication record is invalid.",
+        );
+      }
+
+      if (
+        validated.state !==
+          "public"
+      ) {
+        return failure(
+          "validation",
+          "Global Sesh public project publication read returned a non-public record.",
+        );
+      }
+
+      publications.push(
+        validated,
+      );
+    }
+
+    return success(
+      publications,
+    );
   }
 
   async listPublicProjectPublicationsForOwner(

@@ -1,0 +1,59 @@
+{
+  "id": "SESH-054",
+  "increment": "global-publication-read",
+  "title": "Bounded global explicit-public project publication read",
+  "status": "implemented-local",
+  "purpose": "Introduce the smallest persistence capability needed for a future anonymous Sesh discovery surface without querying or exposing private project presentation state.",
+  "repositoryCapability": {
+    "name": "SeshPublicProjectPublicationDiscoveryRepository",
+    "method": "listPublicProjectPublications",
+    "input": {
+      "limit": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 50
+      }
+    },
+    "result": "readonly SeshProjectPublicationRecord[]"
+  },
+  "queryContract": [
+    "Query sesh_project_publication only.",
+    "Require state = 'public' in SQL.",
+    "Do not filter by owner.",
+    "Order by updated_at DESC then project_id ASC.",
+    "Require LIMIT ?.",
+    "Bind the caller-supplied validated limit.",
+    "Never return more records than the validated limit."
+  ],
+  "validation": [
+    "Reject non-integer limits.",
+    "Reject limits below 1.",
+    "Reject limits above 50.",
+    "Validate every persisted publication record through the canonical publication validator.",
+    "Fail closed if any returned record is not public.",
+    "Fail closed if the provider returns more records than requested."
+  ],
+  "privacyBoundary": [
+    "Private publication records must never be returned by this capability.",
+    "This capability does not provide a private-project existence oracle.",
+    "ownerCreatorId remains internal persistence data for downstream invariant checks and is not approved as public presentation output.",
+    "No PrincipalId, account identity, session identity, CRM identity, or legal identity is introduced."
+  ],
+  "scope": [
+    "Persistence capability only.",
+    "No HTTP route.",
+    "No /sesh/ page.",
+    "No anonymous DTO yet.",
+    "No creator presentation yet.",
+    "No public audio or media delivery.",
+    "No R2 access.",
+    "No mutation.",
+    "No database mutation.",
+    "No migration.",
+    "No deployment."
+  ],
+  "rightsBoundary": [
+    "Explicit public presentation state does not grant copyright, master, composition, publishing, distribution, label, management, royalty, licensing, revenue, collaborator, legal, CRM, account, or identity rights."
+  ],
+  "next": "Compose this bounded persistence capability with canonical project and creator presentation checks before exposing any discovery page or API."
+}

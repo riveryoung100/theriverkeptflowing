@@ -98,6 +98,64 @@ implements SeshD1DatabaseLike {
             "FROM sesh_project_publication",
           ) &&
           sql.includes(
+            "state = 'public'",
+          ) &&
+          sql.includes(
+            "LIMIT ?",
+          ) &&
+          !sql.includes(
+            "owner_creator_id = ?",
+          )
+        ) {
+          const limit =
+            Number(
+              this.values[0],
+            );
+
+          const matching =
+            Array.from(
+              rows.values(),
+            )
+              .filter(
+                (row) =>
+                  row.state ===
+                    "public",
+              )
+              .sort(
+                (left, right) => {
+                  const updated =
+                    right.updated_at.localeCompare(
+                      left.updated_at,
+                    );
+
+                  if (
+                    updated !==
+                      0
+                  ) {
+                    return updated;
+                  }
+
+                  return left.project_id.localeCompare(
+                    right.project_id,
+                  );
+                },
+              )
+              .slice(
+                0,
+                limit,
+              );
+
+          return {
+            results:
+              matching as T[],
+          };
+        }
+
+        if (
+          sql.includes(
+            "FROM sesh_project_publication",
+          ) &&
+          sql.includes(
             "owner_creator_id = ?",
           ) &&
           sql.includes(
@@ -911,6 +969,261 @@ test(
     ) {
       throw new Error(
         "Expected storage failure.",
+      );
+    }
+
+    assert.equal(
+      result.error.kind,
+      "storage",
+    );
+  },
+);
+test(
+  "lists only globally explicit-public publications with deterministic ordering and a hard result bound",
+  async () => {
+    const database =
+      new FakePublicationD1();
+
+    const repository =
+      new D1SeshProjectPublicationRepository(
+        database,
+      );
+
+    const firstOwner =
+      createSeshCreatorId(
+        "global-public-owner-a",
+      );
+
+    const secondOwner =
+      createSeshCreatorId(
+        "global-public-owner-b",
+      );
+
+    const privateProject =
+      createSeshMusicProjectId(
+        "global-private-project",
+      );
+
+    const earlier =
+      createSeshMusicProjectId(
+        "global-public-earlier",
+      );
+
+    const laterB =
+      createSeshMusicProjectId(
+        "global-public-later-b",
+      );
+
+    const laterA =
+      createSeshMusicProjectId(
+        "global-public-later-a",
+      );
+
+    for (
+      const record of [
+        {
+          projectId:
+            privateProject,
+          ownerCreatorId:
+            firstOwner,
+          state:
+            "private" as const,
+          updatedAt:
+            "2026-09-23T15:00:00.000Z",
+        },
+        {
+          projectId:
+            earlier,
+          ownerCreatorId:
+            firstOwner,
+          state:
+            "public" as const,
+          updatedAt:
+            "2026-09-23T13:00:00.000Z",
+        },
+        {
+          projectId:
+            laterB,
+          ownerCreatorId:
+            secondOwner,
+          state:
+            "public" as const,
+          updatedAt:
+            "2026-09-23T14:00:00.000Z",
+        },
+        {
+          projectId:
+            laterA,
+          ownerCreatorId:
+            firstOwner,
+          state:
+            "public" as const,
+          updatedAt:
+            "2026-09-23T14:00:00.000Z",
+        },
+      ]
+    ) {
+      const saved =
+        await repository
+          .saveProjectPublication(
+            record,
+          );
+
+      assert.equal(
+        saved.ok,
+        true,
+      );
+    }
+
+    const result =
+      await repository
+        .listPublicProjectPublications(
+          2,
+        );
+
+    assert.equal(
+      result.ok,
+      true,
+    );
+
+    if (
+      !result.ok
+    ) {
+      throw new Error(
+        "Expected bounded global public publication collection.",
+      );
+    }
+
+    assert.deepEqual(
+      result.value.map(
+        (record) =>
+          record.projectId,
+      ),
+      [
+        laterA,
+        laterB,
+      ],
+    );
+
+    assert.equal(
+      result.value.length,
+      2,
+    );
+
+    for (
+      const record of result.value
+    ) {
+      assert.equal(
+        record.state,
+        "public",
+      );
+    }
+
+    assert.equal(
+      result.value.some(
+        (record) =>
+          record.projectId ===
+            privateProject,
+      ),
+      false,
+    );
+
+    assert.deepEqual(
+      new Set(
+        result.value.map(
+          (record) =>
+            record.ownerCreatorId,
+        ),
+      ),
+      new Set([
+        firstOwner,
+        secondOwner,
+      ]),
+    );
+  },
+);
+
+test(
+  "global public publication read rejects invalid limits before D1 execution",
+  async () => {
+    for (
+      const limit of [
+        0,
+        -1,
+        1.5,
+        51,
+        Number.NaN,
+        Number.POSITIVE_INFINITY,
+      ]
+    ) {
+      const database =
+        new FakePublicationD1();
+
+      database.fail =
+        true;
+
+      const repository =
+        new D1SeshProjectPublicationRepository(
+          database,
+        );
+
+      const result =
+        await repository
+          .listPublicProjectPublications(
+            limit,
+          );
+
+      assert.equal(
+        result.ok,
+        false,
+      );
+
+      if (
+        result.ok
+      ) {
+        throw new Error(
+          "Expected global discovery limit validation failure.",
+        );
+      }
+
+      assert.equal(
+        result.error.kind,
+        "validation",
+      );
+    }
+  },
+);
+
+test(
+  "global public publication read maps D1 failure to storage",
+  async () => {
+    const database =
+      new FakePublicationD1();
+
+    database.fail =
+      true;
+
+    const repository =
+      new D1SeshProjectPublicationRepository(
+        database,
+      );
+
+    const result =
+      await repository
+        .listPublicProjectPublications(
+          20,
+        );
+
+    assert.equal(
+      result.ok,
+      false,
+    );
+
+    if (
+      result.ok
+    ) {
+      throw new Error(
+        "Expected global public publication storage failure.",
       );
     }
 

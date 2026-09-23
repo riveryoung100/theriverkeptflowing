@@ -11,6 +11,16 @@ import type {
   SeshPersistenceResult,
 } from "./model";
 
+export interface SeshPublicProjectPublicationDiscoveryRepository {
+  listPublicProjectPublications(
+    limit: number,
+  ): Promise<
+    SeshPersistenceResult<
+      readonly SeshProjectPublicationRecord[]
+    >
+  >;
+}
+
 export interface SeshProjectPublicationRepository {
   saveProjectPublication(
     record: unknown,
