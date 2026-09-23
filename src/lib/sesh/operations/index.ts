@@ -76,3 +76,14 @@ export type {
   PublicSeshProjectResolutionResult,
   PublicSeshProjectResolutionService,
 } from "./public-project-resolution-service";
+export {
+  DefaultPublicSeshCreatorProjectCollectionService,
+} from "./public-creator-project-collection-service";
+
+export type {
+  DefaultPublicSeshCreatorProjectCollectionServiceDependencies,
+  PublicSeshCreatorProjectCollection,
+  PublicSeshCreatorProjectCollectionFailureCode,
+  PublicSeshCreatorProjectCollectionResult,
+  PublicSeshCreatorProjectCollectionService,
+} from "./public-creator-project-collection-service";

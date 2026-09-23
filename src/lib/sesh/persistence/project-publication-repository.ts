@@ -1,4 +1,5 @@
 import type {
+  SeshCreatorId,
   SeshMusicProjectId,
 } from "../identifiers";
 
@@ -24,6 +25,15 @@ export interface SeshProjectPublicationRepository {
   ): Promise<
     SeshPersistenceResult<
       SeshProjectPublicationRecord
+    >
+  >;
+
+  listPublicProjectPublicationsForOwner(
+    ownerCreatorId:
+      SeshCreatorId,
+  ): Promise<
+    SeshPersistenceResult<
+      readonly SeshProjectPublicationRecord[]
     >
   >;
 

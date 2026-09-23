@@ -85,6 +85,67 @@ implements SeshD1DatabaseLike {
       Promise<
         SeshD1AllResultLike<T>
       > {
+        if (
+          shouldFail()
+        ) {
+          throw new Error(
+            "fake D1 failure",
+          );
+        }
+
+        if (
+          sql.includes(
+            "FROM sesh_project_publication",
+          ) &&
+          sql.includes(
+            "owner_creator_id = ?",
+          ) &&
+          sql.includes(
+            "state = 'public'",
+          )
+        ) {
+          const ownerCreatorId =
+            String(
+              this.values[0],
+            );
+
+          const matching =
+            Array.from(
+              rows.values(),
+            )
+              .filter(
+                (row) =>
+                  row.owner_creator_id ===
+                    ownerCreatorId &&
+                  row.state ===
+                    "public",
+              )
+              .sort(
+                (left, right) => {
+                  const updated =
+                    right.updated_at.localeCompare(
+                      left.updated_at,
+                    );
+
+                  if (
+                    updated !==
+                      0
+                  ) {
+                    return updated;
+                  }
+
+                  return left.project_id.localeCompare(
+                    right.project_id,
+                  );
+                },
+              );
+
+          return {
+            results:
+              matching as T[],
+          };
+        }
+
         return {
           results: [],
         };
@@ -610,6 +671,235 @@ test(
       await repository.getProjectPublication(
         projectId,
       );
+
+    assert.equal(
+      result.ok,
+      false,
+    );
+
+    if (
+      result.ok
+    ) {
+      throw new Error(
+        "Expected storage failure.",
+      );
+    }
+
+    assert.equal(
+      result.error.kind,
+      "storage",
+    );
+  },
+);
+test(
+  "lists only explicit-public publication records for one canonical owner",
+  async () => {
+    const database =
+      new FakePublicationD1();
+
+    const repository =
+      new D1SeshProjectPublicationRepository(
+        database,
+      );
+
+    const secondProjectId =
+      createSeshMusicProjectId(
+        "publication-second-project",
+      );
+
+    const otherOwner =
+      createSeshCreatorId(
+        "publication-other-owner",
+      );
+
+    await repository.saveProjectPublication({
+      projectId,
+      ownerCreatorId,
+      state:
+        "public",
+      updatedAt:
+        "2026-09-23T13:05:00.000Z",
+    });
+
+    await repository.saveProjectPublication({
+      projectId:
+        secondProjectId,
+      ownerCreatorId,
+      state:
+        "private",
+      updatedAt:
+        "2026-09-23T13:10:00.000Z",
+    });
+
+    await repository.saveProjectPublication({
+      projectId:
+        createSeshMusicProjectId(
+          "publication-other-project",
+        ),
+      ownerCreatorId:
+        otherOwner,
+      state:
+        "public",
+      updatedAt:
+        "2026-09-23T13:15:00.000Z",
+    });
+
+    const result =
+      await repository
+        .listPublicProjectPublicationsForOwner(
+          ownerCreatorId,
+        );
+
+    assert.equal(
+      result.ok,
+      true,
+    );
+
+    if (
+      !result.ok
+    ) {
+      throw new Error(
+        "Expected public publication collection.",
+      );
+    }
+
+    assert.deepEqual(
+      result.value.map(
+        (record) =>
+          record.projectId,
+      ),
+      [
+        projectId,
+      ],
+    );
+
+    assert.equal(
+      result.value[0]?.state,
+      "public",
+    );
+
+    assert.equal(
+      result.value[0]?.ownerCreatorId,
+      ownerCreatorId,
+    );
+  },
+);
+
+test(
+  "orders public publication collection by publication update descending then project id ascending",
+  async () => {
+    const database =
+      new FakePublicationD1();
+
+    const repository =
+      new D1SeshProjectPublicationRepository(
+        database,
+      );
+
+    const earlier =
+      createSeshMusicProjectId(
+        "publication-earlier",
+      );
+
+    const laterB =
+      createSeshMusicProjectId(
+        "publication-later-b",
+      );
+
+    const laterA =
+      createSeshMusicProjectId(
+        "publication-later-a",
+      );
+
+    for (
+      const record of [
+        {
+          projectId:
+            earlier,
+          ownerCreatorId,
+          state:
+            "public" as const,
+          updatedAt:
+            "2026-09-23T13:00:00.000Z",
+        },
+        {
+          projectId:
+            laterB,
+          ownerCreatorId,
+          state:
+            "public" as const,
+          updatedAt:
+            "2026-09-23T14:00:00.000Z",
+        },
+        {
+          projectId:
+            laterA,
+          ownerCreatorId,
+          state:
+            "public" as const,
+          updatedAt:
+            "2026-09-23T14:00:00.000Z",
+        },
+      ]
+    ) {
+      await repository
+        .saveProjectPublication(
+          record,
+        );
+    }
+
+    const result =
+      await repository
+        .listPublicProjectPublicationsForOwner(
+          ownerCreatorId,
+        );
+
+    assert.equal(
+      result.ok,
+      true,
+    );
+
+    if (
+      !result.ok
+    ) {
+      throw new Error(
+        "Expected ordered public collection.",
+      );
+    }
+
+    assert.deepEqual(
+      result.value.map(
+        (record) =>
+          record.projectId,
+      ),
+      [
+        laterA,
+        laterB,
+        earlier,
+      ],
+    );
+  },
+);
+
+test(
+  "public publication collection maps D1 failure to storage",
+  async () => {
+    const database =
+      new FakePublicationD1();
+
+    database.fail =
+      true;
+
+    const repository =
+      new D1SeshProjectPublicationRepository(
+        database,
+      );
+
+    const result =
+      await repository
+        .listPublicProjectPublicationsForOwner(
+          ownerCreatorId,
+        );
 
     assert.equal(
       result.ok,

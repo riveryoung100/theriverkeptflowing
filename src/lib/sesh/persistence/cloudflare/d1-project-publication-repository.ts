@@ -1,8 +1,10 @@
 import {
+  parseSeshCreatorId,
   parseSeshMusicProjectId,
 } from "../../identifiers";
 
 import type {
+  SeshCreatorId,
   SeshMusicProjectId,
 } from "../../identifiers";
 
@@ -260,6 +262,116 @@ implements SeshProjectPublicationRepository {
           : "Sesh project publication read failed.",
       );
     }
+  }
+
+  async listPublicProjectPublicationsForOwner(
+    ownerCreatorId:
+      SeshCreatorId,
+  ): Promise<
+    SeshPersistenceResult<
+      readonly SeshProjectPublicationRecord[]
+    >
+  > {
+    let canonicalOwnerCreatorId:
+      SeshCreatorId;
+
+    try {
+      canonicalOwnerCreatorId =
+        parseSeshCreatorId(
+          ownerCreatorId,
+        );
+    }
+    catch (error) {
+      return failure(
+        "validation",
+        error instanceof Error
+          ? error.message
+          : "Sesh creator identifier validation failed.",
+      );
+    }
+
+    let rows:
+      readonly ProjectPublicationRow[];
+
+    try {
+      const result =
+        await this.database
+          .prepare(
+            `SELECT
+              project_id,
+              owner_creator_id,
+              state,
+              updated_at
+            FROM sesh_project_publication
+            WHERE
+              owner_creator_id = ?
+              AND state = 'public'
+            ORDER BY
+              updated_at DESC,
+              project_id ASC`,
+          )
+          .bind(
+            canonicalOwnerCreatorId,
+          )
+          .all<ProjectPublicationRow>();
+
+      rows =
+        result.results;
+    }
+    catch (error) {
+      return failure(
+        "storage",
+        error instanceof Error
+          ? error.message
+          : "Sesh public project publication collection read failed.",
+      );
+    }
+
+    const publications:
+      SeshProjectPublicationRecord[] =
+        [];
+
+    for (
+      const row of rows
+    ) {
+      let validated:
+        SeshProjectPublicationRecord;
+
+      try {
+        validated =
+          recordFromRow(
+            row,
+          );
+      }
+      catch (error) {
+        return failure(
+          "validation",
+          error instanceof Error
+            ? error.message
+            : "Stored Sesh project publication record is invalid.",
+        );
+      }
+
+      if (
+        validated.ownerCreatorId !==
+          canonicalOwnerCreatorId ||
+        validated.state !==
+          "public"
+      ) {
+        return failure(
+          "validation",
+          "Stored Sesh project publication does not agree with the public owner collection query.",
+        );
+      }
+
+      publications.push(
+        validated,
+      );
+    }
+
+    return success(
+      publications,
+    );
   }
 
   async updateProjectPublication(

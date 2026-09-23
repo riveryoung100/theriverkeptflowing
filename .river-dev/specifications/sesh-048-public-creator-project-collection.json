@@ -1,0 +1,85 @@
+{
+  "id": "SESH-048",
+  "title": "Anonymous Public Creator Project Collection",
+  "status": "implementation",
+  "summary": "Resolve a canonical public creator handle and return only that creator's explicitly public project presentations.",
+  "route": "/api/sesh/creators/[handle]/projects",
+  "method": "GET",
+  "runtime": {
+    "requiredBindings": [
+      "SESH_DB"
+    ],
+    "forbiddenDependencies": [
+      "session",
+      "RIVER_IDENTITY_DB",
+      "SESH_AUDIO"
+    ]
+  },
+  "persistence": {
+    "publicationCollection": "listPublicProjectPublicationsForOwner",
+    "selection": [
+      "canonical owner_creator_id",
+      "state = public"
+    ],
+    "ordering": [
+      "publication updated_at DESC",
+      "project_id ASC"
+    ],
+    "privateProjectRowsReadForFiltering": false
+  },
+  "resolutionOrder": [
+    "Normalize the requested creator handle.",
+    "Resolve the canonical handle reservation.",
+    "Require a matching persisted creator profile so collection existence matches the public creator boundary.",
+    "List only explicit-public publication records for that creator.",
+    "Load only projects named by those explicit-public records.",
+    "Require project identity and owner identity to agree with each publication record.",
+    "Return only sanitized public project presentation fields."
+  ],
+  "publicOutput": {
+    "creator": [
+      "handle"
+    ],
+    "project": [
+      "id",
+      "title",
+      "description"
+    ]
+  },
+  "excludedOutput": [
+    "creatorId",
+    "ownerCreatorId",
+    "principalId",
+    "createdAt",
+    "updatedAt",
+    "trackIds",
+    "sessionIds",
+    "audioAssetIds",
+    "tempoMapId",
+    "beatGridId",
+    "revision",
+    "schemaVersion",
+    "publication.updatedAt",
+    "publication.ownerCreatorId",
+    "storageReference",
+    "media metadata"
+  ],
+  "failureSemantics": {
+    "invalid-input": 400,
+    "not-found": 404,
+    "unavailable": 503
+  },
+  "rightsBoundary": [
+    "Public presentation does not grant copyright ownership.",
+    "Public presentation does not grant master or composition ownership.",
+    "Public presentation does not grant publishing, distribution, label, management, royalty, licensing, revenue, collaborator, legal, or account rights."
+  ],
+  "scope": [
+    "R2 remains private.",
+    "No public audio or media delivery is introduced.",
+    "No database mutation occurs.",
+    "No migration is authored or executed.",
+    "No creator vanity page is modified in this step.",
+    "No deployment occurs."
+  ]
+}
