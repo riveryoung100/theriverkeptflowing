@@ -1,0 +1,76 @@
+{
+  "id": "SESH-055",
+  "increment": "public-project-discovery-service",
+  "title": "Anonymous bounded public Sesh project discovery service",
+  "status": "implemented-local",
+  "purpose": "Compose the SESH-054 bounded explicit-public publication read with canonical project and optional creator presentation checks before any discovery route or page exists.",
+  "input": {
+    "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 50
+    }
+  },
+  "publicOutput": {
+    "projects": [
+      {
+        "project": {
+          "id": "canonical public route identifier",
+          "title": "public project title",
+          "description": "optional public description"
+        },
+        "creator": {
+          "optional": true,
+          "handle": "canonical reserved public handle",
+          "displayName": "public creator display name"
+        }
+      }
+    ]
+  },
+  "resolutionContract": [
+    "Read only bounded explicit-public publication records.",
+    "Fail closed if a returned publication is not public.",
+    "Load each canonical project by publication projectId.",
+    "Require canonical project id to equal publication projectId.",
+    "Require canonical project ownerCreatorId to equal publication ownerCreatorId.",
+    "Sanitize project output to id, title, and optional description.",
+    "Look up creator handle only by the verified canonical project owner.",
+    "A missing creator handle reservation does not hide an otherwise explicit-public project.",
+    "Require any returned reservation creatorId to equal the verified project owner.",
+    "Look up public creator profile only after a valid reservation exists.",
+    "A missing public creator profile does not hide an otherwise explicit-public project.",
+    "Require any returned profile id to equal the canonical reservation creatorId.",
+    "Sanitize creator output to handle and displayName only.",
+    "Any persistence/storage failure fails the complete discovery read closed as unavailable."
+  ],
+  "privacyBoundary": [
+    "Private projects are never queried through a private-state discovery path.",
+    "No ownerCreatorId is emitted publicly.",
+    "No creatorId is emitted publicly.",
+    "No PrincipalId, account identity, session identity, CRM identity, or legal identity is emitted.",
+    "Missing creator public presentation is not an existence oracle for private project state."
+  ],
+  "runtimeBoundary": [
+    "SESH_DB only.",
+    "No RIVER_IDENTITY_DB.",
+    "No SESSION.",
+    "No SESH_AUDIO.",
+    "No public R2 access."
+  ],
+  "scope": [
+    "Operations service.",
+    "Runtime composition.",
+    "Tests.",
+    "No HTTP route.",
+    "No /sesh/ page.",
+    "No public media delivery.",
+    "No mutation.",
+    "No database mutation.",
+    "No migration.",
+    "No deployment."
+  ],
+  "rightsBoundary": [
+    "Public presentation does not grant copyright, master, composition, publishing, distribution, label, management, royalty, licensing, revenue, collaborator, legal, CRM, account, or identity rights."
+  ],
+  "next": "Expose the locked sanitized discovery service through a human /sesh/ discovery page or a separately justified anonymous HTTP boundary."
+}

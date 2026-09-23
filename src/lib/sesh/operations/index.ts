@@ -87,3 +87,15 @@ export type {
   PublicSeshCreatorProjectCollectionResult,
   PublicSeshCreatorProjectCollectionService,
 } from "./public-creator-project-collection-service";
+export {
+  DefaultPublicSeshProjectDiscoveryService,
+} from "./public-project-discovery-service";
+
+export type {
+  DefaultPublicSeshProjectDiscoveryServiceDependencies,
+  PublicSeshProjectDiscovery,
+  PublicSeshProjectDiscoveryFailureCode,
+  PublicSeshProjectDiscoveryItem,
+  PublicSeshProjectDiscoveryResult,
+  PublicSeshProjectDiscoveryService,
+} from "./public-project-discovery-service";
