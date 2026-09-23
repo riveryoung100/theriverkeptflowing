@@ -1,0 +1,69 @@
+{
+  "id": "SESH-050",
+  "title": "Anonymous Public Project Detail Page",
+  "status": "implementation",
+  "summary": "Render one explicitly public Sesh project through the existing anonymous public-project resolution boundary.",
+  "page": "/sesh/projects/[projectId]/",
+  "runtime": {
+    "requiredBindings": [
+      "SESH_DB"
+    ],
+    "forbiddenDependencies": [
+      "session",
+      "RIVER_IDENTITY_DB",
+      "SESH_AUDIO"
+    ]
+  },
+  "resolution": [
+    "Read only the dynamic projectId route parameter.",
+    "Resolve through createPublicSeshProjectResolutionAtRuntime.",
+    "Require the existing explicit-public publication boundary.",
+    "Treat invalid project identifiers, absent publication, private publication, and missing projects as page 404.",
+    "Treat persistence or invariant failure as page 503.",
+    "Canonicalize the page from the resolved public project id."
+  ],
+  "renderedFields": [
+    "title",
+    "description"
+  ],
+  "routeIdentity": "project.id is an explicitly public route identifier but is not rendered as presentation text.",
+  "excludedFields": [
+    "ownerCreatorId",
+    "principalId",
+    "creatorId",
+    "createdAt",
+    "updatedAt",
+    "trackIds",
+    "sessionIds",
+    "audioAssetIds",
+    "tempoMapId",
+    "beatGridId",
+    "revision",
+    "schemaVersion",
+    "publication state metadata",
+    "storageReference",
+    "media metadata"
+  ],
+  "failureBehavior": {
+    "invalid-input": 404,
+    "not-found": 404,
+    "unavailable": 503,
+    "failurePagesNoindex": true,
+    "cacheControl": "no-store"
+  },
+  "rightsBoundary": [
+    "Public presentation does not grant copyright ownership.",
+    "Public presentation does not grant master or composition ownership.",
+    "Public presentation does not grant publishing, distribution, label, management, royalty, licensing, revenue, collaborator, legal, or account rights."
+  ],
+  "scope": [
+    "No public audio or media delivery is introduced.",
+    "No creator identity is inferred from the project.",
+    "No R2 access is introduced.",
+    "No mutation is introduced.",
+    "No database mutation occurs.",
+    "No migration is authored or executed.",
+    "No creator vanity project links are added in this step.",
+    "No deployment occurs."
+  ]
+}

@@ -1,0 +1,206 @@
+---
+import {
+    env
+} from "cloudflare:workers";
+
+import MainLayout from "../../../layouts/MainLayout.astro";
+
+import type {
+    PublicSeshProject
+} from "../../../lib/sesh/operations";
+
+import {
+    createPublicSeshProjectResolutionAtRuntime
+} from "../../../lib/sesh/runtime/public-project-api";
+
+import type {
+    PublicSeshProjectApiRuntimeEnvironment
+} from "../../../lib/sesh/runtime/public-project-api";
+
+export const prerender =
+    false;
+
+Astro.response.headers.set(
+    "cache-control",
+    "no-store"
+);
+
+const requestedProjectId =
+    Astro.params.projectId;
+
+let project:
+    PublicSeshProject | undefined;
+
+let pageStatus:
+    200 | 404 | 503 =
+        200;
+
+try {
+    const resolution =
+        createPublicSeshProjectResolutionAtRuntime(
+            env as unknown as
+                PublicSeshProjectApiRuntimeEnvironment
+        );
+
+    const result =
+        await resolution.resolveByProjectId(
+            requestedProjectId
+        );
+
+    if (
+        result.ok
+    ) {
+        project =
+            result.value;
+    }
+    else if (
+        result.error.code ===
+            "unavailable"
+    ) {
+        pageStatus =
+            503;
+    }
+    else {
+        pageStatus =
+            404;
+    }
+}
+catch {
+    project =
+        undefined;
+
+    pageStatus =
+        503;
+}
+
+Astro.response.status =
+    pageStatus;
+
+const canonical =
+    project === undefined
+        ? undefined
+        : new URL(
+            `/sesh/projects/${project.id}/`,
+            Astro.site ?? Astro.url
+        ).toString();
+
+const title =
+    project === undefined
+        ? (
+            pageStatus === 503
+                ? "Sesh Project Temporarily Unavailable | The River Kept Flowing"
+                : "Sesh Project Not Found | The River Kept Flowing"
+        )
+        : `${project.title} | Sesh`;
+
+const description =
+    project === undefined
+        ? (
+            pageStatus === 503
+                ? "This Sesh project is temporarily unavailable."
+                : "The requested public Sesh project could not be found."
+        )
+        : (
+            project.description ??
+            `View ${project.title} on Sesh.`
+        );
+
+const noindex =
+    project ===
+        undefined;
+---
+
+<MainLayout
+    title={title}
+    description={description}
+    canonical={canonical}
+    noindex={noindex}
+>
+    <main
+        class="sesh-public-project"
+        data-pagefind-body={project === undefined ? undefined : true}
+    >
+        {
+            project ? (
+                <section class="sesh-public-project__hero">
+                    <div class="sesh-public-project__shell">
+                        <p class="sesh-public-project__eyebrow">
+                            Sesh Project
+                        </p>
+
+                        <h1>{project.title}</h1>
+
+                        {
+                            project.description && (
+                                <p class="sesh-public-project__description">
+                                    {project.description}
+                                </p>
+                            )
+                        }
+                    </div>
+                </section>
+            ) : (
+                <section class="sesh-public-project__hero">
+                    <div class="sesh-public-project__shell">
+                        <p class="sesh-public-project__eyebrow">
+                            Sesh
+                        </p>
+
+                        <h1>
+                            {
+                                pageStatus === 503
+                                    ? "Project temporarily unavailable"
+                                    : "Project not found"
+                            }
+                        </h1>
+
+                        <p class="sesh-public-project__description">
+                            {
+                                pageStatus === 503
+                                    ? "This project page cannot be loaded right now."
+                                    : "There is no public Sesh project at this address."
+                            }
+                        </p>
+                    </div>
+                </section>
+            )
+        }
+    </main>
+</MainLayout>
+
+<style>
+    .sesh-public-project {
+        min-height: 70vh;
+    }
+
+    .sesh-public-project__hero {
+        padding: clamp(5rem, 12vw, 9rem) 1.5rem;
+    }
+
+    .sesh-public-project__shell {
+        width: min(100%, 760px);
+        margin: 0 auto;
+    }
+
+    .sesh-public-project__eyebrow {
+        margin: 0 0 1rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        opacity: 0.68;
+    }
+
+    .sesh-public-project h1 {
+        margin: 0;
+        font-size: clamp(2.75rem, 8vw, 5.75rem);
+        line-height: 0.98;
+    }
+
+    .sesh-public-project__description {
+        max-width: 640px;
+        margin: 2rem 0 0;
+        font-size: clamp(1.05rem, 2vw, 1.25rem);
+        line-height: 1.7;
+    }
+</style>
