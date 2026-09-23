@@ -1,0 +1,45 @@
+{
+  "id": "SESH-052",
+  "title": "Public project presentation resolver",
+  "status": "implemented-local",
+  "purpose": "Resolve one explicitly public Sesh project together with optional canonical public creator presentation without exposing internal creator identity.",
+  "input": {
+    "projectId": "unknown"
+  },
+  "success": {
+    "project": {
+      "id": "canonical SeshMusicProjectId",
+      "title": "string",
+      "description": "optional string"
+    },
+    "creator": {
+      "presence": "optional",
+      "handle": "canonical reserved public handle",
+      "displayName": "public creator display name"
+    }
+  },
+  "boundaries": [
+    "SESH_DB only",
+    "No session",
+    "No RIVER_IDENTITY_DB",
+    "No SESH_AUDIO",
+    "No R2 public access",
+    "Project must have explicit public publication state",
+    "Publication owner must equal canonical project owner",
+    "Creator lookup uses internal ownerCreatorId only after project/publication agreement",
+    "Internal ownerCreatorId is never returned",
+    "Internal SeshCreatorId is never returned",
+    "Creator presentation is emitted only when canonical reservation and profile agree",
+    "No reservation means project remains public without creator attribution",
+    "No creator profile means project remains public without creator attribution",
+    "Reservation/profile identity contradiction fails closed as unavailable",
+    "Storage failure fails closed as unavailable",
+    "No rights, copyright, publishing, distribution, management, royalty, licensing, label, collaboration, CRM, account, or identity grants",
+    "No mutation",
+    "No migration",
+    "No HTTP route introduced",
+    "Existing public project JSON API remains unchanged",
+    "Existing public project page remains unchanged in SESH-052"
+  ],
+  "next": "A later page-wiring increment may render the sanitized creator handle/displayName and link to /sesh/[handle]/."
+}
