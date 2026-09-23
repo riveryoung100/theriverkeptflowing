@@ -1,0 +1,49 @@
+{
+  "id": "SESH-057",
+  "increment": "public-entrypoint-navigation",
+  "title": "Intentional public Sesh navigation entrypoint",
+  "status": "implemented-local",
+  "purpose": "Make the already-live public Sesh discovery surface intentionally reachable from the shared public site shell.",
+  "entrypoints": {
+    "primaryNavigation": {
+      "href": "/sesh/",
+      "label": "Sesh",
+      "implementation": "shared primaryLinks model used by desktop and mobile navigation"
+    },
+    "footer": {
+      "href": "/sesh/",
+      "label": "Sesh"
+    }
+  },
+  "sitemap": {
+    "changeRequired": false,
+    "reason": "The Astro sitemap integration already emits https://theriverkeptflowing.com/sesh/."
+  },
+  "runtimeBoundary": [
+    "Navigation links target only the human /sesh/ page.",
+    "No Sesh JSON API is introduced or linked.",
+    "No SESH_DB access is introduced into navigation components.",
+    "No RIVER_IDENTITY_DB access is introduced into navigation components.",
+    "No SESSION dependency is introduced.",
+    "No SESH_AUDIO or R2 access is introduced."
+  ],
+  "privacyBoundary": [
+    "No PrincipalId is exposed.",
+    "No SeshCreatorId is exposed.",
+    "No project owner identity is exposed.",
+    "No private-project existence behavior is introduced."
+  ],
+  "rightsBoundary": [
+    "Navigation does not grant copyright, master, composition, publishing, distribution, label, management, royalty, licensing, revenue, collaborator, legal, CRM, account, or identity rights."
+  ],
+  "scope": [
+    "Shared Navbar public entrypoint.",
+    "Shared Footer public entrypoint.",
+    "Navigation wiring test.",
+    "No Sesh page behavior change.",
+    "No persistence change.",
+    "No database mutation.",
+    "No migration.",
+    "No deployment."
+  ]
+}
