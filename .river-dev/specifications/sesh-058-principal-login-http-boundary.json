@@ -1,0 +1,82 @@
+{
+    "id":  "SESH-058",
+    "title":  "Canonical Principal Login and Logout HTTP Boundary",
+    "status":  "IMPLEMENTED_LOCALLY_PENDING_REVIEW",
+    "sourceBaseline":  {
+                           "branch":  "cif-001-canonical-content-source-record",
+                           "commit":  "9fa28aff0602eb265fd36b5fc52cef5e52415f91",
+                           "predecessor":  "SESH-057"
+                       },
+    "objective":  "Expose the existing canonical River Principal password-authentication and Principal session architecture through minimal same-origin no-store login and logout HTTP endpoints without granting Sesh creator identity, ownership, publishing, collaboration, management, legal, CRM, or account authority.",
+    "architecture":  {
+                         "authentication":  "DefaultPasswordAuthenticationService",
+                         "principalPersistence":  "D1PrincipalRepository via RIVER_IDENTITY_DB",
+                         "credentialPersistence":  "D1PasswordCredentialRepository via RIVER_IDENTITY_DB",
+                         "passwordHasher":  "Argon2idPasswordHasher",
+                         "sessionStore":  "AstroPrincipalSessionStore",
+                         "canonicalSessionKey":  "river-authenticated-principal",
+                         "riverOsSession":  "river-os-authenticated remains completely distinct",
+                         "sessionFixationDefense":  "AstroPrincipalSessionStore regenerates the Astro session before storing PrincipalId",
+                         "publicIdentityDisclosure":  "Successful login returns only ok=true and does not expose PrincipalId",
+                         "dummyVerification":  "Use a fixed non-secret valid Argon2id PHC hash matching the canonical verification parameters for unknown-user verification."
+                     },
+    "http":  {
+                 "login":  {
+                               "method":  "POST",
+                               "route":  "/api/identity/login",
+                               "body":  [
+                                            "email",
+                                            "password"
+                                        ],
+                               "success":  200,
+                               "invalidInput":  400,
+                               "invalidCredentials":  401,
+                               "crossOrigin":  403,
+                               "unavailable":  503,
+                               "cache":  "no-store"
+                           },
+                 "logout":  {
+                                "method":  "POST",
+                                "route":  "/api/identity/logout",
+                                "success":  200,
+                                "crossOrigin":  403,
+                                "unavailable":  503,
+                                "cache":  "no-store"
+                            }
+             },
+    "security":  [
+                     "Passwords are never returned.",
+                     "Credential failures remain generic.",
+                     "Successful login regenerates the transport session before PrincipalId persistence.",
+                     "Logout destroys the authenticated transport session.",
+                     "Same-origin validation is CSRF protection only.",
+                     "Authentication establishes PrincipalId only.",
+                     "Authentication does not establish SeshCreatorId.",
+                     "Authentication grants no project ownership.",
+                     "Authentication grants no collaborator authority.",
+                     "Authentication grants no publishing or management rights.",
+                     "River OS authentication remains distinct."
+                 ],
+    "nonGoals":  [
+                     "Registration",
+                     "Account creation",
+                     "Credential creation",
+                     "Password reset",
+                     "Email verification",
+                     "OAuth",
+                     "Passkeys",
+                     "Creator profile provisioning",
+                     "Creator handle claim",
+                     "Creator workspace UI",
+                     "Project mutation UI",
+                     "Publishing UI",
+                     "Production identity mutation",
+                     "Database migration",
+                     "River OS auth replacement",
+                     "Deployment"
+                 ],
+    "nextSlice":  {
+                      "id":  "SESH-059",
+                      "title":  "Authenticated Sesh Creator Studio Entrypoint"
+                  }
+}
