@@ -48,3 +48,10 @@ export {
 export type {
   SeshProjectPublicationApiInput,
 } from "./project-publication-api";
+export {
+  handlePublicSeshProjectRead,
+} from "./public-project-api";
+
+export type {
+  PublicSeshProjectApiInput,
+} from "./public-project-api";

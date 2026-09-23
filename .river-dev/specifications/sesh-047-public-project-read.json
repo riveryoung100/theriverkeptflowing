@@ -1,0 +1,72 @@
+{
+  "id": "SESH-047",
+  "title": "Anonymous Explicit-Public Project Read",
+  "status": "implementation",
+  "summary": "Expose a minimal anonymous project presentation only when canonical project publication state is explicitly public.",
+  "route": "/api/sesh/projects/public/[projectId]",
+  "method": "GET",
+  "runtime": {
+    "requiredBindings": [
+      "SESH_DB"
+    ],
+    "forbiddenDependencies": [
+      "session",
+      "RIVER_IDENTITY_DB",
+      "SESH_AUDIO"
+    ]
+  },
+  "resolutionOrder": [
+    "Parse canonical SeshMusicProjectId.",
+    "Read canonical project-publication record.",
+    "Treat absent publication as not-found.",
+    "Treat private publication as not-found.",
+    "Read canonical project only after explicit public state is established.",
+    "Require publication projectId to match requested projectId.",
+    "Require publication ownerCreatorId to match canonical project ownerCreatorId.",
+    "Return only sanitized public presentation fields."
+  ],
+  "publicOutput": [
+    "id",
+    "title",
+    "description"
+  ],
+  "excludedOutput": [
+    "ownerCreatorId",
+    "createdAt",
+    "updatedAt",
+    "trackIds",
+    "sessionIds",
+    "audioAssetIds",
+    "tempoMapId",
+    "beatGridId",
+    "revision",
+    "schemaVersion",
+    "publication.updatedAt",
+    "publication.ownerCreatorId",
+    "storageReference",
+    "media metadata"
+  ],
+  "failureSemantics": {
+    "invalid-input": 400,
+    "not-found": 404,
+    "unavailable": 503
+  },
+  "privacy": [
+    "Private and absent publication states are indistinguishable to anonymous callers.",
+    "No owner identity is returned.",
+    "No persistence metadata is returned.",
+    "No project graph identifiers are returned."
+  ],
+  "rightsBoundary": [
+    "Public presentation does not grant copyright ownership.",
+    "Public presentation does not grant master or composition ownership.",
+    "Public presentation does not grant publishing, distribution, label, management, royalty, licensing, revenue, collaborator, legal, or account rights."
+  ],
+  "scope": [
+    "R2 remains private.",
+    "No public audio or media delivery is introduced.",
+    "No database mutation occurs.",
+    "No migration is authored or executed.",
+    "No deployment occurs."
+  ]
+}

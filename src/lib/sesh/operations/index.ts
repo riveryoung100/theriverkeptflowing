@@ -65,3 +65,14 @@ export type {
   SeshProjectPublicationOperationResult,
   SeshProjectPublicationUpdateInput,
 } from "./project-publication-operation-service";
+export {
+  DefaultPublicSeshProjectResolutionService,
+} from "./public-project-resolution-service";
+
+export type {
+  DefaultPublicSeshProjectResolutionServiceDependencies,
+  PublicSeshProject,
+  PublicSeshProjectResolutionFailureCode,
+  PublicSeshProjectResolutionResult,
+  PublicSeshProjectResolutionService,
+} from "./public-project-resolution-service";
