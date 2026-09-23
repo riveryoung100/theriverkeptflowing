@@ -11,6 +11,9 @@ import {
   D1SeshProjectRepository,
 } from "./d1-project-repository";
 import {
+  D1SeshProjectPublicationRepository,
+} from "./d1-project-publication-repository";
+import {
   R2SeshAudioObjectStore,
 } from "./r2-audio-object-store";
 import {
@@ -84,6 +87,11 @@ test("composes all Sesh Cloudflare persistence adapters from injected bindings",
   assert.ok(
     composition.projectRepository
       instanceof D1SeshProjectRepository,
+  );
+
+  assert.ok(
+    composition.projectPublicationRepository
+      instanceof D1SeshProjectPublicationRepository,
   );
 
   assert.ok(

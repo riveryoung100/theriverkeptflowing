@@ -8,6 +8,9 @@ import {
   D1SeshProjectRepository,
 } from "./d1-project-repository";
 import {
+  D1SeshProjectPublicationRepository,
+} from "./d1-project-publication-repository";
+import {
   R2SeshAudioObjectStore,
 } from "./r2-audio-object-store";
 import type {
@@ -23,6 +26,7 @@ export interface SeshCloudflarePersistenceBindings {
 export interface SeshCloudflarePersistenceComposition {
   readonly creatorProfileRepository: D1SeshCreatorProfileRepository;
   readonly projectRepository: D1SeshProjectRepository;
+  readonly projectPublicationRepository: D1SeshProjectPublicationRepository;
   readonly audioAssetRepository: D1SeshAudioAssetRepository;
   readonly audioObjectStore: R2SeshAudioObjectStore;
 }
@@ -68,6 +72,9 @@ export function createSeshCloudflarePersistence(
 
     projectRepository:
       new D1SeshProjectRepository(bindings.SESH_DB),
+
+    projectPublicationRepository:
+      new D1SeshProjectPublicationRepository(bindings.SESH_DB),
 
     audioAssetRepository:
       new D1SeshAudioAssetRepository(bindings.SESH_DB),

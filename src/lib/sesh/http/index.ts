@@ -40,3 +40,11 @@ export {
 export type {
   PublicSeshCreatorHandleApiInput,
 } from "./public-creator-handle-api";
+
+export {
+  handleSeshProjectPublicationUpdate,
+} from "./project-publication-api";
+
+export type {
+  SeshProjectPublicationApiInput,
+} from "./project-publication-api";

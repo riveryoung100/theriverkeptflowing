@@ -1,0 +1,50 @@
+{
+  "id": "SESH-046",
+  "title": "Authenticated Project Public-Presentation Operation",
+  "status": "implementation",
+  "summary": "Allow only the authenticated mapped owner of a canonical Sesh project to explicitly set its public-presentation state to private or public.",
+  "route": "/api/sesh/projects/[projectId]/publication",
+  "method": "PATCH",
+  "request": {
+    "allowed": {
+      "state": "private | public"
+    },
+    "rejected": [
+      "ownerCreatorId",
+      "principalId",
+      "seshCreatorId",
+      "project payload",
+      "rights fields",
+      "unexpected fields"
+    ]
+  },
+  "authorization": [
+    "Authentication is required.",
+    "Principal-to-SeshCreator mapping is required.",
+    "Canonical project existence is required.",
+    "Authenticated Sesh creator must own the project.",
+    "The existing project ownership authorizer is invoked with action write.",
+    "Same-origin checking is CSRF defense only and does not replace authentication or ownership authorization."
+  ],
+  "persistence": [
+    "Project public-presentation persistence remains separate from SeshMusicProject.",
+    "No row means not public.",
+    "First explicit state mutation creates a publication record.",
+    "Subsequent mutation updates only where project_id and owner_creator_id match.",
+    "Persisted owner identity cannot be reassigned."
+  ],
+  "rightsBoundary": [
+    "Public means eligible for anonymous presentation only.",
+    "Public state grants no copyright ownership.",
+    "Public state grants no master or composition ownership.",
+    "Public state grants no music publishing, distribution, label, management, royalty, licensing, collaborator, revenue, legal, or account authority."
+  ],
+  "scope": [
+    "No anonymous project read is introduced.",
+    "No public media delivery is introduced.",
+    "R2 remains private.",
+    "No migration is authored or executed.",
+    "No live database mutation occurs.",
+    "No deployment occurs."
+  ]
+}

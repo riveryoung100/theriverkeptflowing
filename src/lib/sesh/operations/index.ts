@@ -53,3 +53,15 @@ export type {
   PublicSeshCreatorHandleResolutionService,
   PublicSeshCreatorProfile,
 } from "./public-creator-handle-resolution-service";
+
+export {
+  DefaultAuthorizedSeshProjectPublicationOperationService,
+} from "./project-publication-operation-service";
+
+export type {
+  AuthorizedSeshProjectPublicationOperationService,
+  DefaultAuthorizedSeshProjectPublicationOperationServiceDependencies,
+  SeshProjectPublicationOperationFailureCode,
+  SeshProjectPublicationOperationResult,
+  SeshProjectPublicationUpdateInput,
+} from "./project-publication-operation-service";
