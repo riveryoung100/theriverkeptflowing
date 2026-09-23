@@ -1,0 +1,60 @@
+{
+  "id": "SESH-049",
+  "title": "Public Creator Vanity Project List",
+  "status": "implementation",
+  "summary": "Render the already-authorized anonymous public project collection on the existing public creator vanity page without expanding identity, media, rights, or mutation boundaries.",
+  "page": "/sesh/[handle]/",
+  "runtime": {
+    "requiredBindings": [
+      "SESH_DB"
+    ],
+    "forbiddenDependencies": [
+      "session",
+      "RIVER_IDENTITY_DB",
+      "SESH_AUDIO"
+    ]
+  },
+  "resolution": [
+    "Resolve the existing public creator profile first.",
+    "Preserve the existing creator-profile 404 and 503 behavior.",
+    "Only after successful creator resolution, resolve the public creator project collection by the canonical resolved handle.",
+    "Require the collection canonical handle to equal the resolved profile canonical handle.",
+    "Treat collection unavailable, not-found after successful profile resolution, invalid-input, or handle disagreement as page 503.",
+    "Do not perform any private-project filtering in the page."
+  ],
+  "renderedCreatorFields": [
+    "displayName",
+    "handle",
+    "bio"
+  ],
+  "renderedProjectFields": [
+    "title",
+    "description"
+  ],
+  "projectIdPolicy": "The collection may contain the public project identifier, but the vanity page does not render it because no public project page is introduced by this step.",
+  "failureBehavior": {
+    "creator-not-found": 404,
+    "creator-unavailable": 503,
+    "project-collection-failure-after-public-creator-resolution": 503,
+    "failurePagesNoindex": true,
+    "cacheControl": "no-store"
+  },
+  "preservedBoundaries": [
+    "Canonical vanity URL derives from the canonical resolved creator handle.",
+    "No PrincipalId or SeshCreatorId is rendered or composed.",
+    "No ownerCreatorId is rendered.",
+    "No project lifecycle or graph metadata is rendered.",
+    "No media references are rendered.",
+    "No R2 access is introduced.",
+    "No mutation is introduced.",
+    "No handle availability behavior is introduced.",
+    "Public presentation grants no copyright, master, composition, publishing, distribution, management, label, royalty, licensing, revenue, collaborator, legal, or account rights."
+  ],
+  "scope": [
+    "No public project detail page is introduced.",
+    "No public project link is invented.",
+    "No database mutation occurs.",
+    "No migration is authored or executed.",
+    "No deployment occurs."
+  ]
+}

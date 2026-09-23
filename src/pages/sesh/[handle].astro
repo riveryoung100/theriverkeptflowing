@@ -6,7 +6,8 @@ import {
 import MainLayout from "../../layouts/MainLayout.astro";
 
 import type {
-    PublicSeshCreatorProfile
+    PublicSeshCreatorProfile,
+    PublicSeshProject
 } from "../../lib/sesh/operations";
 
 import {
@@ -16,6 +17,14 @@ import {
 import type {
     PublicSeshCreatorHandleApiRuntimeEnvironment
 } from "../../lib/sesh/runtime/public-creator-handle-api";
+
+import {
+    createPublicSeshCreatorProjectCollectionAtRuntime
+} from "../../lib/sesh/runtime/public-creator-projects-api";
+
+import type {
+    PublicSeshCreatorProjectsApiRuntimeEnvironment
+} from "../../lib/sesh/runtime/public-creator-projects-api";
 
 export const prerender =
     false;
@@ -30,6 +39,10 @@ const requestedHandle =
 
 let profile:
     PublicSeshCreatorProfile | undefined;
+
+let projects:
+    readonly PublicSeshProject[] =
+        [];
 
 let pageStatus:
     200 | 404 | 503 =
@@ -52,6 +65,36 @@ try {
     ) {
         profile =
             result.value;
+
+        const collection =
+            createPublicSeshCreatorProjectCollectionAtRuntime(
+                env as unknown as
+                    PublicSeshCreatorProjectsApiRuntimeEnvironment
+            );
+
+        const collectionResult =
+            await collection.listByHandle(
+                profile.handle
+            );
+
+        if (
+            collectionResult.ok &&
+            collectionResult.value.handle ===
+                profile.handle
+        ) {
+            projects =
+                collectionResult.value.projects;
+        }
+        else {
+            profile =
+                undefined;
+
+            projects =
+                [];
+
+            pageStatus =
+                503;
+        }
     }
     else if (
         result.error.code ===
@@ -66,6 +109,12 @@ try {
     }
 }
 catch {
+    profile =
+        undefined;
+
+    projects =
+        [];
+
     pageStatus =
         503;
 }
@@ -119,27 +168,72 @@ const noindex =
     >
         {
             profile ? (
-                <section class="sesh-public-creator__hero">
-                    <div class="sesh-public-creator__shell">
-                        <p class="sesh-public-creator__eyebrow">
-                            Sesh Creator
-                        </p>
+                <>
+                    <section class="sesh-public-creator__hero">
+                        <div class="sesh-public-creator__shell">
+                            <p class="sesh-public-creator__eyebrow">
+                                Sesh Creator
+                            </p>
 
-                        <h1>{profile.displayName}</h1>
+                            <h1>{profile.displayName}</h1>
 
-                        <p class="sesh-public-creator__handle">
-                            @{profile.handle}
-                        </p>
+                            <p class="sesh-public-creator__handle">
+                                @{profile.handle}
+                            </p>
 
-                        {
-                            profile.bio && (
-                                <p class="sesh-public-creator__bio">
-                                    {profile.bio}
-                                </p>
-                            )
-                        }
-                    </div>
-                </section>
+                            {
+                                profile.bio && (
+                                    <p class="sesh-public-creator__bio">
+                                        {profile.bio}
+                                    </p>
+                                )
+                            }
+                        </div>
+                    </section>
+
+                    <section
+                        class="sesh-public-creator__projects"
+                        aria-labelledby="sesh-public-projects-heading"
+                    >
+                        <div class="sesh-public-creator__shell">
+                            <p class="sesh-public-creator__eyebrow">
+                                Public Projects
+                            </p>
+
+                            <h2 id="sesh-public-projects-heading">
+                                Projects
+                            </h2>
+
+                            {
+                                projects.length > 0 ? (
+                                    <div class="sesh-public-creator__project-list">
+                                        {
+                                            projects.map((project) => (
+                                                <article class="sesh-public-creator__project">
+                                                    <h3>
+                                                        {project.title}
+                                                    </h3>
+
+                                                    {
+                                                        project.description && (
+                                                            <p>
+                                                                {project.description}
+                                                            </p>
+                                                        )
+                                                    }
+                                                </article>
+                                            ))
+                                        }
+                                    </div>
+                                ) : (
+                                    <p class="sesh-public-creator__empty">
+                                        No public projects yet.
+                                    </p>
+                                )
+                            }
+                        </div>
+                    </section>
+                </>
             ) : (
                 <section class="sesh-public-creator__hero">
                     <div class="sesh-public-creator__shell">
@@ -178,6 +272,10 @@ const noindex =
         padding: clamp(5rem, 12vw, 9rem) 1.5rem;
     }
 
+    .sesh-public-creator__projects {
+        padding: 0 1.5rem clamp(5rem, 12vw, 9rem);
+    }
+
     .sesh-public-creator__shell {
         width: min(100%, 760px);
         margin: 0 auto;
@@ -198,6 +296,12 @@ const noindex =
         line-height: 0.98;
     }
 
+    .sesh-public-creator__projects h2 {
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 3rem);
+        line-height: 1.05;
+    }
+
     .sesh-public-creator__handle {
         margin: 1.25rem 0 0;
         font-size: clamp(1.05rem, 2vw, 1.3rem);
@@ -209,5 +313,38 @@ const noindex =
         margin: 2rem 0 0;
         font-size: clamp(1.05rem, 2vw, 1.25rem);
         line-height: 1.7;
+    }
+
+    .sesh-public-creator__project-list {
+        display: grid;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .sesh-public-creator__project {
+        padding: 1.5rem 0;
+        border-top: 1px solid currentColor;
+    }
+
+    .sesh-public-creator__project:last-child {
+        border-bottom: 1px solid currentColor;
+    }
+
+    .sesh-public-creator__project h3 {
+        margin: 0;
+        font-size: clamp(1.25rem, 3vw, 1.65rem);
+        line-height: 1.2;
+    }
+
+    .sesh-public-creator__project p {
+        max-width: 640px;
+        margin: 0.75rem 0 0;
+        line-height: 1.65;
+        opacity: 0.78;
+    }
+
+    .sesh-public-creator__empty {
+        margin: 1.5rem 0 0;
+        opacity: 0.68;
     }
 </style>
