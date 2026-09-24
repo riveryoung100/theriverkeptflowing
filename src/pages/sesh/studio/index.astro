@@ -750,6 +750,29 @@ const canonical =
             );
 
             if (
+              typeof project.id ===
+                "string" &&
+              project.id
+            ) {
+              const manage =
+                document.createElement(
+                  "a",
+                );
+
+              manage.textContent =
+                "Manage project";
+
+              manage.href =
+                `/sesh/studio/projects/${encodeURIComponent(
+                  project.id,
+                )}/`;
+
+              article.appendChild(
+                manage,
+              );
+            }
+
+            if (
               typeof project.description ===
                 "string" &&
               project.description.trim()

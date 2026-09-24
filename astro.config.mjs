@@ -16,8 +16,9 @@ export default defineConfig({
         mdx(),
         sitemap({
             filter: (page) =>
-                page !==
-                "https://theriverkeptflowing.com/sesh/studio/"
+                !page.startsWith(
+                    "https://theriverkeptflowing.com/sesh/studio/"
+                )
         })
     ],
 

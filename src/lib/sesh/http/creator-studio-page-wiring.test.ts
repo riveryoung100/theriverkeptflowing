@@ -273,7 +273,7 @@ test(
 
     assert.match(
       config,
-      /sitemap\(\{\s*filter:\s*\(page\)\s*=>\s*page\s*!==\s*"https:\/\/theriverkeptflowing\.com\/sesh\/studio\/"/s,
+      /sitemap\(\{\s*filter:\s*\(page\)\s*=>\s*!page\.startsWith\(\s*"https:\/\/theriverkeptflowing\.com\/sesh\/studio\/"\s*\)/s,
     );
   },
 );

@@ -1,0 +1,950 @@
+---
+import MainLayout from "../../../../layouts/MainLayout.astro";
+
+export const prerender =
+  false;
+
+Astro.response.headers.set(
+  "cache-control",
+  "no-store",
+);
+
+const canonical =
+  "https://theriverkeptflowing.com/sesh/studio/";
+---
+
+<MainLayout
+  title="Manage Project | Sesh Studio"
+  description="Private Sesh project management."
+  canonical={canonical}
+  noindex={true}
+>
+  <main class="sesh-project-manager">
+    <section class="sesh-project-manager__shell">
+      <a
+        href="/sesh/studio/"
+        class="sesh-project-manager__back"
+      >
+        ← Back to Sesh Studio
+      </a>
+
+      <p class="sesh-project-manager__eyebrow">
+        Sesh Studio
+      </p>
+
+      <h1 id="project-manager-title">
+        Project
+      </h1>
+
+      <p
+        id="project-manager-status"
+        aria-live="polite"
+      >
+        Loading project…
+      </p>
+
+      <section
+        id="project-manager-content"
+        hidden
+      >
+        <div class="sesh-project-manager__grid">
+          <section class="sesh-project-manager__panel">
+            <h2>
+              Edit project
+            </h2>
+
+            <form id="project-manager-edit-form">
+              <label>
+                Project title
+
+                <input
+                  id="project-manager-title-input"
+                  name="title"
+                  type="text"
+                  required
+                />
+              </label>
+
+              <button type="submit">
+                Save title
+              </button>
+            </form>
+
+            <div
+              id="project-manager-description-wrap"
+              hidden
+            >
+              <h3>
+                Description
+              </h3>
+
+              <p id="project-manager-description"></p>
+            </div>
+          </section>
+
+          <section class="sesh-project-manager__panel">
+            <h2>
+              Public visibility
+            </h2>
+
+            <p>
+              Publishing here controls only the public Sesh presentation
+              of this project. It does not transfer ownership, copyright,
+              master rights, composition rights, publishing rights,
+              distribution rights, management rights, royalties,
+              licensing rights, or revenue rights.
+            </p>
+
+            <p>
+              Current visibility:
+              <strong id="project-manager-visibility">
+                Checking…
+              </strong>
+            </p>
+
+            <div class="sesh-project-manager__actions">
+              <button
+                id="project-manager-publish"
+                type="button"
+              >
+                Make public
+              </button>
+
+              <button
+                id="project-manager-private"
+                type="button"
+              >
+                Make private
+              </button>
+            </div>
+          </section>
+        </div>
+
+        <section class="sesh-project-manager__danger">
+          <h2>
+            Delete project
+          </h2>
+
+          <p>
+            Delete this project only if you intend to remove the
+            canonical Sesh project record.
+          </p>
+
+          <button
+            id="project-manager-delete"
+            type="button"
+          >
+            Delete project
+          </button>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <script is:inline>
+    (() => {
+      const status =
+        document.getElementById(
+          "project-manager-status",
+        );
+
+      const content =
+        document.getElementById(
+          "project-manager-content",
+        );
+
+      const heading =
+        document.getElementById(
+          "project-manager-title",
+        );
+
+      const titleInput =
+        document.getElementById(
+          "project-manager-title-input",
+        );
+
+      const editForm =
+        document.getElementById(
+          "project-manager-edit-form",
+        );
+
+      const descriptionWrap =
+        document.getElementById(
+          "project-manager-description-wrap",
+        );
+
+      const description =
+        document.getElementById(
+          "project-manager-description",
+        );
+
+      const visibility =
+        document.getElementById(
+          "project-manager-visibility",
+        );
+
+      const publishButton =
+        document.getElementById(
+          "project-manager-publish",
+        );
+
+      const privateButton =
+        document.getElementById(
+          "project-manager-private",
+        );
+
+      const deleteButton =
+        document.getElementById(
+          "project-manager-delete",
+        );
+
+      const segments =
+        window.location.pathname
+          .split("/")
+          .filter(Boolean);
+
+      const encodedProjectId =
+        segments.length >=
+          4
+          ? segments[3]
+          : "";
+
+      let projectId;
+
+      try {
+        projectId =
+          decodeURIComponent(
+            encodedProjectId,
+          );
+      }
+      catch {
+        projectId =
+          "";
+      }
+
+      const projectEndpoint =
+        projectId
+          ? `/api/sesh/projects/${encodeURIComponent(
+              projectId,
+            )}`
+          : "";
+
+      const publicationEndpoint =
+        projectEndpoint
+          ? `${projectEndpoint}/publication`
+          : "";
+
+      const publicEndpoint =
+        projectId
+          ? `/api/sesh/projects/public/${encodeURIComponent(
+              projectId,
+            )}`
+          : "";
+
+      const setStatus =
+        (
+          message,
+          isError = false,
+        ) => {
+          if (!status) {
+            return;
+          }
+
+          status.textContent =
+            message;
+
+          status.dataset.state =
+            isError
+              ? "error"
+              : "normal";
+        };
+
+      const fetchJson =
+        async (
+          url,
+          options = {},
+        ) => {
+          const response =
+            await fetch(
+              url,
+              {
+                credentials:
+                  "same-origin",
+
+                cache:
+                  "no-store",
+
+                ...options,
+              },
+            );
+
+          let body;
+
+          try {
+            body =
+              await response.json();
+          }
+          catch {
+            body =
+              null;
+          }
+
+          return {
+            response,
+            body,
+          };
+        };
+
+      const getValue =
+        (body) => {
+          if (
+            body &&
+            typeof body ===
+              "object" &&
+            Object.prototype.hasOwnProperty.call(
+              body,
+              "value",
+            )
+          ) {
+            return body.value;
+          }
+
+          return null;
+        };
+
+      const getErrorMessage =
+        (
+          body,
+          fallback,
+        ) => {
+          if (
+            body &&
+            typeof body ===
+              "object" &&
+            body.error &&
+            typeof body.error ===
+              "object" &&
+            typeof body.error.message ===
+              "string"
+          ) {
+            return body.error.message;
+          }
+
+          return fallback;
+        };
+
+      const renderProject =
+        (project) => {
+          if (
+            !project ||
+            typeof project !==
+              "object" ||
+            typeof project.title !==
+              "string"
+          ) {
+            return false;
+          }
+
+          if (heading) {
+            heading.textContent =
+              project.title;
+          }
+
+          if (titleInput) {
+            titleInput.value =
+              project.title;
+          }
+
+          if (
+            descriptionWrap &&
+            description
+          ) {
+            if (
+              typeof project.description ===
+                "string" &&
+              project.description.trim()
+            ) {
+              description.textContent =
+                project.description;
+
+              descriptionWrap.hidden =
+                false;
+            }
+            else {
+              description.textContent =
+                "";
+
+              descriptionWrap.hidden =
+                true;
+            }
+          }
+
+          return true;
+        };
+
+      const refreshVisibility =
+        async () => {
+          if (
+            !publicEndpoint ||
+            !visibility
+          ) {
+            return;
+          }
+
+          visibility.textContent =
+            "Checking…";
+
+          try {
+            const {
+              response,
+            } =
+              await fetchJson(
+                publicEndpoint,
+              );
+
+            if (
+              response.status ===
+              200
+            ) {
+              visibility.textContent =
+                "Public";
+
+              return;
+            }
+
+            if (
+              response.status ===
+              404
+            ) {
+              visibility.textContent =
+                "Private";
+
+              return;
+            }
+
+            visibility.textContent =
+              "Unavailable";
+          }
+          catch {
+            visibility.textContent =
+              "Unavailable";
+          }
+        };
+
+      const loadProject =
+        async () => {
+          if (!projectEndpoint) {
+            setStatus(
+              "This project address is invalid.",
+              true,
+            );
+
+            return;
+          }
+
+          try {
+            const {
+              response,
+              body,
+            } =
+              await fetchJson(
+                projectEndpoint,
+              );
+
+            if (
+              response.status ===
+              401
+            ) {
+              window.location.assign(
+                "/sesh/studio/",
+              );
+
+              return;
+            }
+
+            if (
+              response.status ===
+              403
+            ) {
+              setStatus(
+                "You do not have access to manage this project.",
+                true,
+              );
+
+              return;
+            }
+
+            if (
+              response.status ===
+              404
+            ) {
+              setStatus(
+                "Project not found.",
+                true,
+              );
+
+              return;
+            }
+
+            if (!response.ok) {
+              setStatus(
+                getErrorMessage(
+                  body,
+                  "This project is temporarily unavailable.",
+                ),
+                true,
+              );
+
+              return;
+            }
+
+            const project =
+              getValue(
+                body,
+              );
+
+            if (
+              !renderProject(
+                project,
+              )
+            ) {
+              setStatus(
+                "The project response could not be displayed.",
+                true,
+              );
+
+              return;
+            }
+
+            if (content) {
+              content.hidden =
+                false;
+            }
+
+            setStatus(
+              "Project ready.",
+            );
+
+            await refreshVisibility();
+          }
+          catch {
+            setStatus(
+              "This project is temporarily unavailable.",
+              true,
+            );
+          }
+        };
+
+      if (editForm) {
+        editForm.addEventListener(
+          "submit",
+          async (event) => {
+            event.preventDefault();
+
+            if (!projectEndpoint) {
+              return;
+            }
+
+            const form =
+              new FormData(
+                editForm,
+              );
+
+            const title =
+              String(
+                form.get(
+                  "title",
+                ) ??
+                  "",
+              ).trim();
+
+            setStatus(
+              "Saving project…",
+            );
+
+            try {
+              const {
+                response,
+                body,
+              } =
+                await fetchJson(
+                  projectEndpoint,
+                  {
+                    method:
+                      "PATCH",
+
+                    headers: {
+                      "content-type":
+                        "application/json",
+                    },
+
+                    body:
+                      JSON.stringify({
+                        title,
+                      }),
+                  },
+                );
+
+              if (!response.ok) {
+                setStatus(
+                  getErrorMessage(
+                    body,
+                    "Unable to save this project.",
+                  ),
+                  true,
+                );
+
+                return;
+              }
+
+              const project =
+                getValue(
+                  body,
+                );
+
+              if (
+                project &&
+                typeof project ===
+                  "object"
+              ) {
+                renderProject(
+                  project,
+                );
+              }
+
+              setStatus(
+                "Project saved.",
+              );
+            }
+            catch {
+              setStatus(
+                "Unable to save this project.",
+                true,
+              );
+            }
+          },
+        );
+      }
+
+      const updatePublication =
+        async (state) => {
+          if (
+            !publicationEndpoint
+          ) {
+            return;
+          }
+
+          setStatus(
+            state ===
+              "public"
+              ? "Publishing project…"
+              : "Making project private…",
+          );
+
+          try {
+            const {
+              response,
+              body,
+            } =
+              await fetchJson(
+                publicationEndpoint,
+                {
+                  method:
+                    "PATCH",
+
+                  headers: {
+                    "content-type":
+                      "application/json",
+                  },
+
+                  body:
+                    JSON.stringify({
+                      state,
+                    }),
+                },
+              );
+
+            if (!response.ok) {
+              setStatus(
+                getErrorMessage(
+                  body,
+                  "Unable to update project visibility.",
+                ),
+                true,
+              );
+
+              return;
+            }
+
+            setStatus(
+              state ===
+                "public"
+                ? "Project is public."
+                : "Project is private.",
+            );
+
+            await refreshVisibility();
+          }
+          catch {
+            setStatus(
+              "Unable to update project visibility.",
+              true,
+            );
+          }
+        };
+
+      if (publishButton) {
+        publishButton.addEventListener(
+          "click",
+          () => {
+            updatePublication(
+              "public",
+            );
+          },
+        );
+      }
+
+      if (privateButton) {
+        privateButton.addEventListener(
+          "click",
+          () => {
+            updatePublication(
+              "private",
+            );
+          },
+        );
+      }
+
+      if (deleteButton) {
+        deleteButton.addEventListener(
+          "click",
+          async () => {
+            if (!projectEndpoint) {
+              return;
+            }
+
+            const confirmed =
+              window.confirm(
+                "Delete this Sesh project? This cannot be undone from this screen.",
+              );
+
+            if (!confirmed) {
+              return;
+            }
+
+            setStatus(
+              "Deleting project…",
+            );
+
+            try {
+              const {
+                response,
+                body,
+              } =
+                await fetchJson(
+                  projectEndpoint,
+                  {
+                    method:
+                      "DELETE",
+                  },
+                );
+
+              if (!response.ok) {
+                setStatus(
+                  getErrorMessage(
+                    body,
+                    "Unable to delete this project.",
+                  ),
+                  true,
+                );
+
+                return;
+              }
+
+              window.location.assign(
+                "/sesh/studio/",
+              );
+            }
+            catch {
+              setStatus(
+                "Unable to delete this project.",
+                true,
+              );
+            }
+          },
+        );
+      }
+
+      loadProject();
+    })();
+  </script>
+
+  <style>
+    .sesh-project-manager {
+      min-height: 72vh;
+      padding:
+        clamp(4rem, 9vw, 7rem)
+        0
+        7rem;
+    }
+
+    .sesh-project-manager__shell {
+      width:
+        min(
+          1040px,
+          calc(100% - 2rem)
+        );
+      margin-inline:
+        auto;
+    }
+
+    .sesh-project-manager__back {
+      display:
+        inline-block;
+      margin-bottom:
+        2.5rem;
+      font-weight:
+        700;
+    }
+
+    .sesh-project-manager__eyebrow {
+      margin:
+        0;
+      font-size:
+        0.78rem;
+      font-weight:
+        700;
+      letter-spacing:
+        0.14em;
+      text-transform:
+        uppercase;
+    }
+
+    .sesh-project-manager h1 {
+      margin:
+        0.5rem
+        0
+        1rem;
+      font-size:
+        clamp(
+          2.6rem,
+          8vw,
+          5rem
+        );
+      line-height:
+        1;
+    }
+
+    .sesh-project-manager__grid {
+      display:
+        grid;
+      grid-template-columns:
+        repeat(
+          2,
+          minmax(
+            0,
+            1fr
+          )
+        );
+      gap:
+        1rem;
+      margin-top:
+        2rem;
+    }
+
+    .sesh-project-manager__panel,
+    .sesh-project-manager__danger {
+      padding:
+        clamp(
+          1.25rem,
+          3vw,
+          2rem
+        );
+      border:
+        1px
+        solid
+        rgba(
+          20,
+          20,
+          20,
+          0.14
+        );
+      border-radius:
+        18px;
+    }
+
+    .sesh-project-manager form {
+      display:
+        grid;
+      gap:
+        1rem;
+      margin-top:
+        1rem;
+    }
+
+    .sesh-project-manager label {
+      display:
+        grid;
+      gap:
+        0.5rem;
+    }
+
+    .sesh-project-manager input {
+      width:
+        100%;
+      box-sizing:
+        border-box;
+      padding:
+        0.8rem
+        0.9rem;
+      font:
+        inherit;
+    }
+
+    .sesh-project-manager button {
+      padding:
+        0.75rem
+        1rem;
+      border:
+        1px
+        solid
+        currentColor;
+      border-radius:
+        999px;
+      font:
+        inherit;
+      font-weight:
+        650;
+      cursor:
+        pointer;
+    }
+
+    .sesh-project-manager__actions {
+      display:
+        flex;
+      flex-wrap:
+        wrap;
+      gap:
+        0.75rem;
+      margin-top:
+        1rem;
+    }
+
+    .sesh-project-manager__danger {
+      margin-top:
+        1rem;
+    }
+
+    [hidden] {
+      display:
+        none !important;
+    }
+
+    @media (max-width: 760px) {
+      .sesh-project-manager__grid {
+        grid-template-columns:
+          1fr;
+      }
+    }
+  </style>
+</MainLayout>

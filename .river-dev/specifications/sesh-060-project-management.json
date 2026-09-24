@@ -1,0 +1,61 @@
+{
+    "id":  "SESH-060",
+    "title":  "Creator Project Management",
+    "status":  "IMPLEMENTED_LOCALLY_PENDING_REVIEW",
+    "sourceBaseline":  {
+                           "branch":  "cif-001-canonical-content-source-record",
+                           "commit":  "0579be42ef64bbf3a668fc190b605ad713d6e79b",
+                           "predecessor":  "SESH-059"
+                       },
+    "objective":  "Add a private human project-management surface that composes the existing authenticated owner-authorized project and publication HTTP boundaries without moving ownership, persistence, concurrency, publication, or rights authority into browser code.",
+    "routes":  {
+                   "studio":  "/sesh/studio/",
+                   "project":  "/sesh/studio/projects/{projectId}/"
+               },
+    "projectManagement":  [
+                              "Read one creator-owned project.",
+                              "Rename one creator-owned project.",
+                              "Explicitly publish one creator-owned project.",
+                              "Explicitly return one creator-owned project to private.",
+                              "Delete one creator-owned project."
+                          ],
+    "concurrency":  [
+                        "Revision CAS remains server-side.",
+                        "Browser UI does not render persistence revision.",
+                        "Browser UI does not submit expectedRevision.",
+                        "Existing project operation service performs current snapshot and conditional persistence checks."
+                    ],
+    "privacy":  [
+                    "Project id is route-only and may appear in href/API routing but not as visible project metadata.",
+                    "PrincipalId is never rendered.",
+                    "SeshCreatorId is never rendered.",
+                    "ownerCreatorId is never rendered.",
+                    "Persistence revisions are never rendered.",
+                    "Lifecycle timestamps are not rendered by this slice."
+                ],
+    "publication":  [
+                        "Only private and public presentation states are available.",
+                        "Publication is an explicit owner-authorized operation.",
+                        "Public presentation does not grant copyright, master, composition, publishing, distribution, label, management, royalty, licensing, revenue, collaborator, legal, CRM, account, or identity rights."
+                    ],
+    "sitemap":  "The complete /sesh/studio/ namespace is excluded from the public sitemap.",
+    "intentionallyDeferred":  [
+                                  "Track editing",
+                                  "Session editing",
+                                  "Audio asset editing",
+                                  "R2 upload or delivery",
+                                  "Tempo map editing",
+                                  "Beat grid editing",
+                                  "Collaboration",
+                                  "Publishing ownership",
+                                  "Distribution",
+                                  "Artist management",
+                                  "Royalties",
+                                  "Licensing",
+                                  "Commerce"
+                              ],
+    "nextSlice":  {
+                      "id":  "SESH-061",
+                      "title":  "Creator Audio and Project Asset Boundary Discovery"
+                  }
+}
