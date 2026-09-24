@@ -1,0 +1,46 @@
+{
+  "id": "SESH-065A",
+  "title": "Owner-Authorized Private Audio Binary Read",
+  "status": "implementation",
+  "baselineCommit": "a27e4ff6507f71f211dd6dab49831155e4757192",
+  "goal": "Allow an authenticated project owner to retrieve private WAV bytes through a server-only Sesh API without exposing private storage authority.",
+  "route": {
+    "method": "GET",
+    "path": "/api/sesh/projects/{projectId}/audio/{audioAssetId}/content",
+    "authentication": "canonical session principal",
+    "authorization": "existing owner-authorized private audio item read",
+    "cache": "no-store",
+    "contentType": "audio/wav"
+  },
+  "sequence": [
+    "validate canonical project and audio identifiers",
+    "perform existing owner-authorized sanitized audio item read",
+    "reload canonical private audio metadata server-side",
+    "verify project and audio identity agree with the authorized read",
+    "require a private storage reference and audio/wav content type",
+    "read private bytes from injected Sesh audio object store",
+    "return copied bytes without exposing storage metadata"
+  ],
+  "browserAuthority": {
+    "directR2": false,
+    "directD1": false,
+    "storageReference": false,
+    "bucket": false,
+    "objectKey": false,
+    "versionId": false,
+    "ownerCreatorId": false
+  },
+  "notIncluded": [
+    "Studio audio element",
+    "range requests",
+    "delete",
+    "public audio",
+    "share URLs",
+    "rights",
+    "publishing",
+    "management"
+  ],
+  "deployment": false,
+  "liveD1Mutation": false,
+  "liveR2Mutation": false
+}
