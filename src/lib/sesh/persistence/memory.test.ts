@@ -515,3 +515,153 @@ test(
     );
   },
 );
+test("audio metadata conditional update increments revision and rejects stale writes", async () => {
+  const repository =
+    new InMemorySeshAudioAssetRepository();
+
+  const asset = {
+    id: "sesh-audio:conditional",
+    projectId: "sesh-project:one",
+    kind: "recording" as const,
+    name: "Original",
+    createdAt: timestamp,
+    contentType: "audio/wav",
+    storageReference: {
+      provider: "memory",
+      key: "conditional.wav",
+    },
+  };
+
+  const saved =
+    await repository.saveAudioAsset(
+      asset,
+    );
+
+  assert.equal(
+    saved.ok,
+    true,
+  );
+
+  const snapshot =
+    await repository.getAudioAssetSnapshot(
+      createSeshAudioAssetId(
+        "conditional",
+      ),
+    );
+
+  assert.equal(
+    snapshot.ok,
+    true,
+  );
+
+  if (!snapshot.ok) {
+    throw new Error(
+      "Expected audio snapshot.",
+    );
+  }
+
+  assert.equal(
+    snapshot.value.revision,
+    0,
+  );
+
+  const updated =
+    await repository.updateAudioAssetConditionally(
+      {
+        ...snapshot.value.asset,
+        name:
+          "Renamed",
+      },
+      snapshot.value.revision,
+    );
+
+  assert.equal(
+    updated.ok,
+    true,
+  );
+
+  if (!updated.ok) {
+    throw new Error(
+      "Expected conditional audio update.",
+    );
+  }
+
+  assert.equal(
+    updated.value.revision,
+    1,
+  );
+
+  assert.equal(
+    updated.value.asset.name,
+    "Renamed",
+  );
+
+  assert.deepEqual(
+    updated.value.asset.storageReference,
+    {
+      provider:
+        "memory",
+
+      key:
+        "conditional.wav",
+
+      bucket:
+        undefined,
+
+      versionId:
+        undefined,
+    },
+  );
+
+  const stale =
+    await repository.updateAudioAssetConditionally(
+      {
+        ...updated.value.asset,
+        name:
+          "Stale",
+      },
+      0,
+    );
+
+  assert.equal(
+    stale.ok,
+    false,
+  );
+
+  if (stale.ok) {
+    throw new Error(
+      "Expected stale audio update conflict.",
+    );
+  }
+
+  assert.equal(
+    stale.error.kind,
+    "conflict",
+  );
+
+  const immutableMutation =
+    await repository.updateAudioAssetConditionally(
+      {
+        ...updated.value.asset,
+        contentType:
+          "audio/mpeg",
+      },
+      updated.value.revision,
+    );
+
+  assert.equal(
+    immutableMutation.ok,
+    false,
+  );
+
+  if (immutableMutation.ok) {
+    throw new Error(
+      "Expected immutable audio mutation conflict.",
+    );
+  }
+
+  assert.equal(
+    immutableMutation.error.kind,
+    "conflict",
+  );
+});

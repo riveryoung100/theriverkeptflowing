@@ -538,6 +538,9 @@ implements SeshAudioAssetRepository {
   private readonly assets =
     new Map<SeshAudioAssetId, SeshAudioAsset>();
 
+  private readonly revisions =
+    new Map<SeshAudioAssetId, number>();
+
   async saveAudioAsset(
     asset: unknown,
   ): Promise<SeshPersistenceResult<SeshAudioAsset>> {
@@ -546,6 +549,17 @@ implements SeshAudioAssetRepository {
       const cloned = cloneAudioAsset(validated);
 
       this.assets.set(cloned.id, cloned);
+
+      if (
+        !this.revisions.has(
+          cloned.id,
+        )
+      ) {
+        this.revisions.set(
+          cloned.id,
+          0,
+        );
+      }
 
       return success(cloneAudioAsset(cloned));
     }
@@ -585,6 +599,145 @@ implements SeshAudioAssetRepository {
     }
   }
 
+  async getAudioAssetSnapshot(
+    assetId: SeshAudioAssetId,
+  ) {
+    const assetResult =
+      await this.getAudioAsset(
+        assetId,
+      );
+
+    if (!assetResult.ok) {
+      return assetResult;
+    }
+
+    const revision =
+      this.revisions.get(
+        assetResult.value.id,
+      ) ??
+      0;
+
+    return success({
+      asset:
+        cloneAudioAsset(
+          assetResult.value,
+        ),
+
+      revision,
+    });
+  }
+
+  async updateAudioAssetConditionally(
+    asset: unknown,
+    expectedRevision: number,
+  ) {
+    try {
+      const validated =
+        validateSeshAudioAsset(
+          asset,
+        );
+
+      if (
+        !Number.isInteger(
+          expectedRevision,
+        ) ||
+        expectedRevision <
+          0
+      ) {
+        return failure(
+          "validation",
+          "Expected Sesh audio revision must be a non-negative integer.",
+        );
+      }
+
+      const currentResult =
+        await this.getAudioAssetSnapshot(
+          validated.id,
+        );
+
+      if (!currentResult.ok) {
+        return currentResult;
+      }
+
+      const current =
+        currentResult.value;
+
+      if (
+        current.revision !==
+        expectedRevision
+      ) {
+        return failure(
+          "conflict",
+          "Sesh audio metadata changed before conditional update.",
+        );
+      }
+
+      const previous =
+        current.asset;
+
+      if (
+        previous.id !== validated.id ||
+        previous.projectId !== validated.projectId ||
+        previous.kind !== validated.kind ||
+        previous.createdAt !== validated.createdAt ||
+        previous.durationSeconds !== validated.durationSeconds ||
+        previous.sampleRateHz !== validated.sampleRateHz ||
+        previous.channelCount !== validated.channelCount ||
+        previous.contentType !== validated.contentType ||
+        JSON.stringify(
+          previous.storageReference ??
+          null,
+        ) !==
+        JSON.stringify(
+          validated.storageReference ??
+          null,
+        )
+      ) {
+        return failure(
+          "conflict",
+          "Ordinary Sesh audio metadata updates cannot change immutable audio fields.",
+        );
+      }
+
+      const nextRevision =
+        expectedRevision +
+        1;
+
+      const cloned =
+        cloneAudioAsset(
+          validated,
+        );
+
+      this.assets.set(
+        cloned.id,
+        cloned,
+      );
+
+      this.revisions.set(
+        cloned.id,
+        nextRevision,
+      );
+
+      return success({
+        asset:
+          cloneAudioAsset(
+            cloned,
+          ),
+
+        revision:
+          nextRevision,
+      });
+    }
+    catch (error) {
+      return failure(
+        "validation",
+        error instanceof Error
+          ? error.message
+          : "Audio asset conditional update validation failed.",
+      );
+    }
+  }
+
   async listAudioAssetsForProject(
     projectId: SeshMusicProjectId,
   ): Promise<SeshPersistenceResult<readonly SeshAudioAsset[]>> {
@@ -616,7 +769,18 @@ implements SeshAudioAssetRepository {
     try {
       const canonicalId = parseSeshAudioAssetId(assetId);
 
-      return success(this.assets.delete(canonicalId));
+      const deleted =
+        this.assets.delete(
+          canonicalId,
+        );
+
+      this.revisions.delete(
+        canonicalId,
+      );
+
+      return success(
+        deleted,
+      );
     }
     catch (error) {
       return failure(

@@ -20,7 +20,11 @@ implements SeshD1DatabaseLike {
   fail = false;
 
   prepare(sql: string): SeshD1PreparedStatementLike {
-    const database = this;
+    const rows =
+      this.rows;
+
+    const shouldFail =
+      () => this.fail;
 
     return new class implements SeshD1PreparedStatementLike {
       private values: readonly unknown[] = [];
@@ -31,23 +35,23 @@ implements SeshD1DatabaseLike {
       }
 
       async first<T>(): Promise<T | null> {
-        if (database.fail) {
+        if (shouldFail()) {
           throw new Error("fake audio D1 failure");
         }
 
         return (
-          database.rows.get(String(this.values[0])) ?? null
+          rows.get(String(this.values[0])) ?? null
         ) as T | null;
       }
 
       async all<T>(): Promise<SeshD1AllResultLike<T>> {
-        if (database.fail) {
+        if (shouldFail()) {
           throw new Error("fake audio D1 failure");
         }
 
         const projectId = String(this.values[0]);
 
-        const results = Array.from(database.rows.values())
+        const results = Array.from(rows.values())
           .filter(
             (row) => row.project_id === projectId,
           )
@@ -62,7 +66,7 @@ implements SeshD1DatabaseLike {
       }
 
       async run(): Promise<{ readonly success: boolean }> {
-        if (database.fail) {
+        if (shouldFail()) {
           throw new Error("fake audio D1 failure");
         }
 
@@ -76,7 +80,7 @@ implements SeshD1DatabaseLike {
             payloadJson,
           ] = this.values;
 
-          database.rows.set(String(audioAssetId), {
+          rows.set(String(audioAssetId), {
             audio_asset_id: audioAssetId,
             project_id: projectId,
             schema_version: schemaVersion,
@@ -86,7 +90,7 @@ implements SeshD1DatabaseLike {
           });
         }
         else if (sql.includes("DELETE FROM sesh_audio_assets")) {
-          database.rows.delete(String(this.values[0]));
+          rows.delete(String(this.values[0]));
         }
 
         return { success: true };
@@ -202,4 +206,55 @@ test("D1 audio adapter maps provider failure to storage", async () => {
   }
 
   assert.equal(result.error.kind, "storage");
+});
+
+test("D1 audio adapter exposes revision-gated metadata update semantics", async () => {
+  const source =
+    await import(
+      "node:fs/promises"
+    ).then(
+      ({ readFile }) =>
+        readFile(
+          new URL(
+            "./d1-audio-asset-repository.ts",
+            import.meta.url,
+          ),
+          "utf8",
+        ),
+    );
+
+  assert.match(
+    source,
+    /getAudioAssetSnapshot\s*\(/s,
+  );
+
+  assert.match(
+    source,
+    /updateAudioAssetConditionally\s*\(/s,
+  );
+
+  assert.match(
+    source,
+    /expectedRevision\s*\+\s*1/s,
+  );
+
+  assert.match(
+    source,
+    /WHERE[\s\S]*audio_asset_id\s*=\s*\?[\s\S]*project_id\s*=\s*\?[\s\S]*revision\s*=\s*\?/s,
+  );
+
+  assert.match(
+    source,
+    /Ordinary Sesh audio metadata updates cannot change immutable audio fields\./s,
+  );
+
+  assert.doesNotMatch(
+    source,
+    /\.putObject\s*\(/s,
+  );
+
+  assert.doesNotMatch(
+    source,
+    /\.deleteObject\s*\(/s,
+  );
 });

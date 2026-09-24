@@ -141,6 +141,14 @@ export interface SeshProjectRepository {
   ): Promise<SeshPersistenceResult<boolean>>;
 }
 
+export interface SeshAudioAssetPersistenceSnapshot {
+  readonly asset:
+    SeshAudioAsset;
+
+  readonly revision:
+    number;
+}
+
 export interface SeshAudioAssetRepository {
   saveAudioAsset(
     asset: unknown,
@@ -149,6 +157,23 @@ export interface SeshAudioAssetRepository {
   getAudioAsset(
     assetId: SeshAudioAssetId,
   ): Promise<SeshPersistenceResult<SeshAudioAsset>>;
+
+  getAudioAssetSnapshot(
+    assetId: SeshAudioAssetId,
+  ): Promise<
+    SeshPersistenceResult<
+      SeshAudioAssetPersistenceSnapshot
+    >
+  >;
+
+  updateAudioAssetConditionally(
+    asset: unknown,
+    expectedRevision: number,
+  ): Promise<
+    SeshPersistenceResult<
+      SeshAudioAssetPersistenceSnapshot
+    >
+  >;
 
   listAudioAssetsForProject(
     projectId: SeshMusicProjectId,

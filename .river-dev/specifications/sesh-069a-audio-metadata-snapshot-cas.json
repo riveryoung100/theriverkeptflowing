@@ -1,0 +1,15 @@
+{
+  "id": "SESH-069A",
+  "title": "Audio metadata snapshot and conditional update foundation",
+  "purpose": "Add canonical optimistic concurrency support for private Sesh audio metadata before exposing rename mutation.",
+  "invariants": [
+    "Audio metadata snapshots expose the canonical asset and server persistence revision only to server-side operations.",
+    "New audio metadata begins at revision zero.",
+    "Conditional metadata updates require the exact current revision.",
+    "A stale revision fails with conflict and does not overwrite newer metadata.",
+    "Audio id, projectId, kind, createdAt, storageReference, contentType, durationSeconds, sampleRateHz, and channelCount are immutable through ordinary metadata updates.",
+    "The binary object store is not read, written, moved, copied, or deleted by metadata CAS.",
+    "No public URL, sharing, download, publishing, master, management, copyright, royalty, or collaborator authority is introduced.",
+    "This slice does not expose HTTP PATCH or Studio rename controls."
+  ]
+}
