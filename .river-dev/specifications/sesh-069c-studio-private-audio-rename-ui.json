@@ -1,0 +1,22 @@
+{
+  "id": "SESH-069C",
+  "title": "Studio private audio rename UI",
+  "purpose": "Expose the verified owner-authorized private audio rename PATCH through the creator Studio without introducing new storage, identity, project, public-media, or music-rights authority.",
+  "invariants": [
+    "Rename controls are rendered only from already-sanitized private audio asset metadata.",
+    "Studio sends PATCH only to the authenticated private project audio item endpoint.",
+    "PATCH body contains only name.",
+    "Client trims the requested name and rejects empty or greater-than-120-character values before the request.",
+    "Server remains authoritative for authorization and validation.",
+    "Studio never sends storageReference, revision, owner identity, creator identity, or project ownership hints.",
+    "Rename and delete controls are disabled while rename is in flight.",
+    "Sanitized private audio metadata is refreshed after successful rename.",
+    "Private playback remains unchanged.",
+    "Private delete remains unchanged.",
+    "No direct D1 or R2 access is introduced.",
+    "No public URL, download, sharing, publishing, master, management, copyright, collaborator, or royalty authority is introduced."
+  ],
+  "deployment": false,
+  "liveD1Mutation": false,
+  "liveR2Mutation": false
+}

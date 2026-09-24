@@ -1148,6 +1148,69 @@ const deleteProjectAudio =
     return body;
   };
 
+const renameProjectAudio =
+  async (
+    projectId,
+    audioAssetId,
+    name,
+  ) => {
+    const response =
+      await fetch(
+        `/api/sesh/projects/${encodeURIComponent(
+          projectId,
+        )}/audio/${encodeURIComponent(
+          audioAssetId,
+        )}`,
+        {
+          method:
+            "PATCH",
+
+          headers: {
+            "content-type":
+              "application/json",
+          },
+
+          body:
+            JSON.stringify({
+              name,
+            }),
+        },
+      );
+
+    let body =
+      null;
+
+    try {
+      body =
+        await response.json();
+    }
+    catch {
+      body =
+        null;
+    }
+
+    if (
+      !response.ok ||
+      !body ||
+      body.ok !==
+        true
+    ) {
+      const message =
+        body &&
+        body.error &&
+        typeof body.error.message ===
+          "string"
+          ? body.error.message
+          : "Unable to rename private audio.";
+
+      throw new Error(
+        message,
+      );
+    }
+
+    return body;
+  };
+
 const renderAudioAssets = (
   assets,
   projectId,
@@ -1245,6 +1308,130 @@ const renderAudioAssets = (
       title,
     );
 
+    const actions =
+      document.createElement(
+        "div",
+      );
+
+    actions.className =
+      "sesh-studio__audio-actions";
+
+    actions.style.display =
+      "flex";
+
+    actions.style.alignItems =
+      "center";
+
+    actions.style.gap =
+      "0.5rem";
+
+    const renameButton =
+      document.createElement(
+        "button",
+      );
+
+    renameButton.type =
+      "button";
+
+    renameButton.className =
+      "sesh-studio__audio-delete sesh-studio__audio-rename";
+
+    renameButton.textContent =
+      "Rename";
+
+    renameButton.setAttribute(
+      "aria-label",
+      `Rename ${title.textContent}`,
+    );
+
+    renameButton.addEventListener(
+      "click",
+      async () => {
+        const currentName =
+          typeof title.textContent ===
+            "string"
+            ? title.textContent
+            : "";
+
+        const requestedName =
+          window.prompt(
+            "Rename private audio",
+            currentName,
+          );
+
+        if (
+          requestedName ===
+          null
+        ) {
+          return;
+        }
+
+        const name =
+          requestedName.trim();
+
+        if (
+          name.length ===
+            0 ||
+          name.length >
+            120
+        ) {
+          setPrivateAudioStatus(
+            "Private audio name must be between 1 and 120 characters.",
+            "error",
+          );
+
+          return;
+        }
+
+        if (
+          name ===
+          currentName
+        ) {
+          return;
+        }
+
+        renameButton.disabled =
+          true;
+
+        deleteButton.disabled =
+          true;
+
+        setPrivateAudioStatus(
+          "Renaming private audio…",
+        );
+
+        try {
+          await renameProjectAudio(
+            projectId,
+            asset.id,
+            name,
+          );
+
+          await loadProjectAudio(
+            projectId,
+          );
+
+          setPrivateAudioStatus(
+            "Private audio renamed.",
+          );
+        }
+        catch (error) {
+          renameButton.disabled =
+            false;
+
+          deleteButton.disabled =
+            false;
+
+          setPrivateAudioStatus(
+            error instanceof Error
+              ? error.message
+              : "Unable to rename private audio.",
+            "error",
+          );
+        }
+      },
+    );
+
     const deleteButton =
       document.createElement(
         "button",
@@ -1311,8 +1498,13 @@ const renderAudioAssets = (
       },
     );
 
-    heading.append(
+    actions.append(
+      renameButton,
       deleteButton,
+    );
+
+    heading.append(
+      actions,
     );
 
     item.append(
