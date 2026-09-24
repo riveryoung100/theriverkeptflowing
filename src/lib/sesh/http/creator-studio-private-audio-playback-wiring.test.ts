@@ -110,7 +110,7 @@ test(
 );
 
 test(
-  "Studio playback does not introduce delete download sharing or rights controls",
+  "Studio playback does not introduce download sharing or rights controls",
   async () => {
     const value =
       await source();
@@ -120,10 +120,6 @@ test(
       /audioDownload/s,
     );
 
-    assert.doesNotMatch(
-      value,
-      /deleteAudio/s,
-    );
 
     assert.doesNotMatch(
       value,

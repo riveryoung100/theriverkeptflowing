@@ -1076,200 +1076,365 @@ const canonical =
           }
         };
 
-      const renderAudioAssets =
-        (
-          assets,
+      const setPrivateAudioStatus = (
+  message,
+  state = "",
+) => {
+  if (!audioStatus) {
+    return;
+  }
+
+  audioStatus.textContent =
+    message;
+
+  if (state) {
+    audioStatus.dataset.state =
+      state;
+  }
+  else {
+    delete audioStatus.dataset.state;
+  }
+};
+
+const deleteProjectAudio =
+  async (
+    projectId,
+    audioAssetId,
+  ) => {
+    const response =
+      await fetch(
+        `/api/sesh/projects/${encodeURIComponent(
           projectId,
-        ) => {
-          if (!audioList) {
-            return;
-          }
+        )}/audio/${encodeURIComponent(
+          audioAssetId,
+        )}`,
+        {
+          method:
+            "DELETE",
+        },
+      );
 
-          audioList.textContent =
-            "";
+    let body =
+      null;
 
-          const safeAssets =
-            assets.filter(
-              (asset) =>
-                asset &&
-                typeof asset ===
-                  "object" &&
-                typeof asset.id ===
-                  "string" &&
-                asset.id &&
-                typeof asset.name ===
-                  "string",
-            );
+    try {
+      body =
+        await response.json();
+    }
+    catch {
+      body =
+        null;
+    }
 
-          if (
-            safeAssets.length ===
-              0
-          ) {
-            const empty =
-              document.createElement(
-                "p",
-              );
+    if (
+      !response.ok ||
+      !body ||
+      body.ok !==
+        true
+    ) {
+      const message =
+        body &&
+        body.error &&
+        typeof body.error.message ===
+          "string"
+          ? body.error.message
+          : "Unable to delete private audio.";
 
-            empty.className =
-              "sesh-studio__muted";
+      throw new Error(
+        message,
+      );
+    }
 
-            empty.textContent =
-              "No private audio has been uploaded to this project yet.";
+    return body;
+  };
 
-            audioList.appendChild(
-              empty,
-            );
+const renderAudioAssets = (
+  assets,
+  projectId,
+) => {
+  if (!audioList) {
+    return;
+  }
 
-            return;
-          }
+  audioList.textContent =
+    "";
 
-          const list =
-            document.createElement(
-              "div",
-            );
+  const sanitizedAssets =
+    Array.isArray(
+      assets,
+    )
+      ? assets.filter(
+          (
+            asset,
+          ) =>
+            asset &&
+            typeof asset ===
+              "object" &&
+            typeof asset.id ===
+              "string" &&
+            asset.id &&
+            typeof projectId ===
+              "string" &&
+            projectId,
+        )
+      : [];
 
-          list.className =
-            "sesh-studio__audio-list";
+  if (
+    sanitizedAssets.length ===
+    0
+  ) {
+    const empty =
+      document.createElement(
+        "p",
+      );
 
-          for (
-            const asset of
-            safeAssets
-          ) {
-            const article =
-              document.createElement(
-                "article",
-              );
+    empty.className =
+      "sesh-studio__muted";
 
-            article.className =
-              "sesh-studio__audio-item";
+    empty.textContent =
+      "No private audio has been uploaded to this project yet.";
 
-            const title =
-              document.createElement(
-                "h4",
-              );
+    audioList.append(
+      empty,
+    );
 
-            title.textContent =
-              asset.name;
+    return;
+  }
 
-            article.appendChild(
-              title,
-            );
+  const list =
+    document.createElement(
+      "div",
+    );
 
-            const player =
-              document.createElement(
-                "audio",
-              );
+  list.className =
+    "sesh-studio__audio-list";
 
-            player.className =
-              "sesh-studio__audio-player";
+  for (
+    const asset of
+    sanitizedAssets
+  ) {
+    const item =
+      document.createElement(
+        "article",
+      );
 
-            player.controls =
-              true;
+    item.className =
+      "sesh-studio__audio-item";
 
-            player.preload =
-              "metadata";
+    const heading =
+      document.createElement(
+        "div",
+      );
 
-            player.src =
-              `/api/sesh/projects/${encodeURIComponent(
-                projectId,
-              )}/audio/${encodeURIComponent(
-                asset.id,
-              )}/content`;
+    heading.className =
+      "sesh-studio__audio-heading";
 
-            player.setAttribute(
-              "aria-label",
-              `Play ${asset.name}`,
-            );
+    const title =
+      document.createElement(
+        "strong",
+      );
 
-            article.appendChild(
-              player,
-            );
+    title.textContent =
+      typeof asset.name ===
+        "string" &&
+      asset.name
+        ? asset.name
+        : "Private audio";
 
-            const metadata =
-              [];
+    heading.append(
+      title,
+    );
 
-            if (
-              typeof asset.contentType ===
-                "string"
-            ) {
-              metadata.push(
-                asset.contentType,
-              );
-            }
+    const deleteButton =
+      document.createElement(
+        "button",
+      );
 
-            if (
-              typeof asset.durationSeconds ===
-                "number" &&
-              Number.isFinite(
-                asset.durationSeconds,
-              )
-            ) {
-              metadata.push(
-                `${asset.durationSeconds.toFixed(2)} seconds`,
-              );
-            }
+    deleteButton.type =
+      "button";
 
-            if (
-              typeof asset.sampleRateHz ===
-                "number" &&
-              Number.isFinite(
-                asset.sampleRateHz,
-              )
-            ) {
-              metadata.push(
-                `${asset.sampleRateHz} Hz`,
-              );
-            }
+    deleteButton.className =
+      "sesh-studio__audio-delete";
 
-            if (
-              typeof asset.channelCount ===
-                "number" &&
-              Number.isFinite(
-                asset.channelCount,
-              )
-            ) {
-              metadata.push(
-                `${asset.channelCount} channel${
-                  asset.channelCount === 1
-                    ? ""
-                    : "s"
-                }`,
-              );
-            }
+    deleteButton.textContent =
+      "Delete";
 
-            if (
-              metadata.length >
-                0
-            ) {
-              const detail =
-                document.createElement(
-                  "p",
-                );
+    deleteButton.setAttribute(
+      "aria-label",
+      `Delete ${title.textContent}`,
+    );
 
-              detail.className =
-                "sesh-studio__muted";
-
-              detail.textContent =
-                metadata.join(
-                  " · ",
-                );
-
-              article.appendChild(
-                detail,
-              );
-            }
-
-            list.appendChild(
-              article,
-            );
-          }
-
-          audioList.appendChild(
-            list,
+    deleteButton.addEventListener(
+      "click",
+      async () => {
+        const confirmed =
+          window.confirm(
+            `Delete "${title.textContent}"? This permanently removes this private audio from the project.`,
           );
-        };
 
-      const loadProjectAudio =
+        if (!confirmed) {
+          return;
+        }
+
+        deleteButton.disabled =
+          true;
+
+        setPrivateAudioStatus(
+          "Deleting private audio…",
+        );
+
+        try {
+          await deleteProjectAudio(
+            projectId,
+            asset.id,
+          );
+
+          await loadProjectAudio(
+            projectId,
+          );
+
+          setPrivateAudioStatus(
+            "Private audio deleted.",
+          );
+        }
+        catch (error) {
+          deleteButton.disabled =
+            false;
+
+          setPrivateAudioStatus(
+            error instanceof Error
+              ? error.message
+              : "Unable to delete private audio.",
+            "error",
+          );
+        }
+      },
+    );
+
+    heading.append(
+      deleteButton,
+    );
+
+    item.append(
+      heading,
+    );
+
+    if (
+      asset.hasStoredAudio ===
+      true
+    ) {
+      const player =
+        document.createElement(
+          "audio",
+        );
+
+      player.className =
+        "sesh-studio__audio-player";
+
+      player.controls =
+        true;
+
+      player.preload =
+        "metadata";
+
+      player.src =
+        `/api/sesh/projects/${encodeURIComponent(
+          projectId,
+        )}/audio/${encodeURIComponent(
+          asset.id,
+        )}/content`;
+
+      item.append(
+        player,
+      );
+    }
+
+    const details =
+      [];
+
+    if (
+      typeof asset.contentType ===
+        "string" &&
+      asset.contentType
+    ) {
+      details.push(
+        asset.contentType,
+      );
+    }
+
+    if (
+      typeof asset.durationSeconds ===
+        "number" &&
+      Number.isFinite(
+        asset.durationSeconds,
+      )
+    ) {
+      details.push(
+        `${asset.durationSeconds}s`,
+      );
+    }
+
+    if (
+      typeof asset.sampleRateHz ===
+        "number" &&
+      Number.isFinite(
+        asset.sampleRateHz,
+      )
+    ) {
+      details.push(
+        `${asset.sampleRateHz} Hz`,
+      );
+    }
+
+    if (
+      typeof asset.channelCount ===
+        "number" &&
+      Number.isFinite(
+        asset.channelCount,
+      )
+    ) {
+      details.push(
+        `${asset.channelCount} channel${
+          asset.channelCount ===
+          1
+            ? ""
+            : "s"
+        }`,
+      );
+    }
+
+    if (
+      details.length >
+      0
+    ) {
+      const detail =
+        document.createElement(
+          "p",
+        );
+
+      detail.className =
+        "sesh-studio__muted";
+
+      detail.textContent =
+        details.join(
+          " · ",
+        );
+
+      item.append(
+        detail,
+      );
+    }
+
+    list.append(
+      item,
+    );
+  }
+
+  audioList.append(
+    list,
+  );
+};
+const loadProjectAudio =
         async (
           projectId,
         ) => {
@@ -2381,5 +2546,27 @@ const canonical =
         align-self: start;
       }
     }
-  </style>
+
+  .sesh-studio__audio-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .sesh-studio__audio-delete {
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    padding: 0.35rem 0.7rem;
+  }
+
+  .sesh-studio__audio-delete:disabled {
+    cursor: wait;
+    opacity: 0.55;
+  }
+</style>
 </MainLayout>

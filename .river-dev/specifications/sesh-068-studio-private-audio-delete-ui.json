@@ -1,0 +1,47 @@
+{
+  "id": "SESH-068",
+  "title": "Studio Private Audio Delete UI and Post-Delete Refresh",
+  "status": "implementation",
+  "baselineCommit": "81932a548a4df80a096d1de0d8dfb32243a88184",
+  "dependsOn": [
+    "SESH-064",
+    "SESH-065B",
+    "SESH-066",
+    "SESH-067"
+  ],
+  "goal": "Expose owner-authorized private audio deletion from Studio using only sanitized asset identifiers and the authenticated same-origin audio item API.",
+  "browserAuthority": {
+    "projectId": "route identifier only",
+    "audioAssetId": "sanitized route identifier only",
+    "storageReference": false,
+    "r2Key": false,
+    "ownerCreatorId": false,
+    "revision": false
+  },
+  "interaction": {
+    "explicitConfirmation": true,
+    "disableDuringDelete": true,
+    "successRefresh": true,
+    "failurePreservesRenderedAsset": true
+  },
+  "http": {
+    "method": "DELETE",
+    "endpoint": "/api/sesh/projects/{projectId}/audio/{audioAssetId}",
+    "sameOrigin": true
+  },
+  "notIncluded": [
+    "bulk delete",
+    "direct R2 access",
+    "signed URLs",
+    "download",
+    "sharing",
+    "public media",
+    "publishing rights",
+    "master rights",
+    "management rights",
+    "royalties"
+  ],
+  "deployment": false,
+  "liveD1Mutation": false,
+  "liveR2Mutation": false
+}
