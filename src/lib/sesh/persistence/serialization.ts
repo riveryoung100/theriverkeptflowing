@@ -2,12 +2,14 @@ import {
   validateSeshAudioAsset,
   validateSeshCreatorProfile,
   validateSeshMusicProject,
+  validateSeshTrack,
 } from "../validation";
 import type {
   SeshAudioAsset,
   SeshCreatorProfile,
   SeshMusicProject,
   SeshTimestamp,
+  SeshTrack,
 } from "../model";
 import {
   SESH_PERSISTENCE_SCHEMA_VERSION,
@@ -17,6 +19,7 @@ import {
   type SeshPersistenceEnvelope,
   type SeshPersistenceRecordType,
   type SeshPersistenceRevision,
+  type SeshTrackPersistenceEnvelope,
 } from "./model";
 
 type UnknownRecord = Record<string, unknown>;
@@ -105,7 +108,8 @@ function requireRecordType(
   if (
     value !== "creator-profile" &&
     value !== "music-project" &&
-    value !== "audio-asset"
+    value !== "audio-asset" &&
+    value !== "track"
   ) {
     throw new TypeError(
       `Unsupported Sesh persistence record type: ${String(value)}.`,
@@ -193,6 +197,23 @@ export function createSeshAudioAssetEnvelope(
   };
 }
 
+export function createSeshTrackEnvelope(
+  track: unknown,
+  storedAt: SeshTimestamp,
+  revision?: SeshPersistenceRevision,
+): SeshTrackPersistenceEnvelope {
+  const payload = validateSeshTrack(track);
+
+  return {
+    schemaVersion: SESH_PERSISTENCE_SCHEMA_VERSION,
+    recordType: "track",
+    recordId: payload.id,
+    storedAt: requireStoredAt(storedAt),
+    revision: optionalRevision(revision),
+    payload,
+  };
+}
+
 export function serializeSeshPersistenceEnvelope(
   envelope: SeshPersistenceEnvelope,
 ): string {
@@ -269,8 +290,27 @@ export function deserializeSeshPersistenceEnvelope(
     };
   }
 
-  const payload: SeshAudioAsset =
-    validateSeshAudioAsset(record.payload);
+  if (
+    recordType ===
+    "audio-asset"
+  ) {
+    const payload: SeshAudioAsset =
+      validateSeshAudioAsset(record.payload);
+
+    validateRecordIdentity(recordId, payload.id);
+
+    return {
+      schemaVersion,
+      recordType,
+      recordId,
+      storedAt,
+      revision,
+      payload,
+    };
+  }
+
+  const payload: SeshTrack =
+    validateSeshTrack(record.payload);
 
   validateRecordIdentity(recordId, payload.id);
 

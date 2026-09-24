@@ -7,6 +7,7 @@ import {
   createSeshMusicProjectEnvelope,
   deserializeSeshPersistenceEnvelope,
   serializeSeshPersistenceEnvelope,
+  createSeshTrackEnvelope,
 } from "./serialization";
 
 const storedAt = "2026-09-21T20:30:00.000Z";
@@ -239,3 +240,91 @@ test("preserves canonical identifiers exactly", () => {
     ["sesh-track:Track-A"],
   );
 });
+
+test(
+  "round-trips a canonical track",
+  () => {
+    const envelope =
+      createSeshTrackEnvelope(
+        {
+          id:
+            "sesh-track:serialization-track",
+
+          projectId:
+            "sesh-project:serialization-project",
+
+          name:
+            "Vocal",
+
+          order:
+            0,
+
+          audioAssetIds: [
+            "sesh-audio:serialization-take",
+          ],
+
+          muted:
+            false,
+
+          solo:
+            true,
+
+          gain:
+            0.75,
+        },
+        "2026-09-24T22:00:00.000Z",
+        3,
+      );
+
+    const restored =
+      deserializeSeshPersistenceEnvelope(
+        serializeSeshPersistenceEnvelope(
+          envelope,
+        ),
+      );
+
+    assert.equal(
+      restored.recordType,
+      "track",
+    );
+
+    assert.equal(
+      restored.revision,
+      3,
+    );
+
+    if (
+      restored.recordType !==
+      "track"
+    ) {
+      return;
+    }
+
+    assert.equal(
+      restored.payload.id,
+      "sesh-track:serialization-track",
+    );
+
+    assert.equal(
+      restored.payload.projectId,
+      "sesh-project:serialization-project",
+    );
+
+    assert.equal(
+      restored.payload.name,
+      "Vocal",
+    );
+
+    assert.equal(
+      restored.payload.order,
+      0,
+    );
+
+    assert.deepEqual(
+      restored.payload.audioAssetIds,
+      [
+        "sesh-audio:serialization-take",
+      ],
+    );
+  },
+);

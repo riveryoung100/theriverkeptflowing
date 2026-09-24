@@ -1,0 +1,58 @@
+{
+  "id": "SESH-070B",
+  "title": "D1 track persistence foundation",
+  "purpose": "Persist canonical SeshTrack records durably in SESH_DB while preserving the SESH-070A repository and compare-and-swap concurrency contract.",
+  "table": {
+    "name": "sesh_tracks",
+    "primaryKey": "track_id",
+    "projectLookup": "project_id",
+    "columns": [
+      "track_id",
+      "project_id",
+      "schema_version",
+      "revision",
+      "stored_at",
+      "payload_json"
+    ],
+    "index": "idx_sesh_tracks_project_id"
+  },
+  "serialization": {
+    "recordType": "track",
+    "schemaVersion": 1,
+    "canonicalValidator": "validateSeshTrack",
+    "identityInvariant": "row track_id, envelope recordId, payload id, and project_id must agree"
+  },
+  "repositoryCapabilities": [
+    "create-only save",
+    "read by canonical track id",
+    "project-scoped collection read",
+    "revision snapshot",
+    "revision-gated conditional update",
+    "metadata deletion"
+  ],
+  "concurrency": {
+    "initialRevision": 0,
+    "mechanism": "compare-and-swap",
+    "legacyNullRevision": "accepted only as revision zero",
+    "staleWrite": "conflict",
+    "immutableFields": [
+      "id",
+      "projectId"
+    ]
+  },
+  "boundaries": [
+    "This slice does not mutate project.trackIds.",
+    "This slice does not authorize track creation, update, or deletion for a user.",
+    "This slice does not expose an HTTP API.",
+    "This slice does not add Studio UI.",
+    "This slice does not access R2 or audio bytes.",
+    "This slice does not grant public media authority.",
+    "This slice does not establish collaborator, copyright, publishing, master, management, licensing, royalty, or ownership rights.",
+    "Migration file creation does not authorize local or remote migration execution.",
+    "Production SESH_DB remains unchanged until separately and explicitly authorized."
+  ],
+  "migrationExecutionAuthorized": false,
+  "deployment": false,
+  "liveD1Mutation": false,
+  "liveR2Mutation": false
+}

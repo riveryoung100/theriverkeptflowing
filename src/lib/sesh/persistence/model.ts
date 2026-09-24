@@ -3,6 +3,7 @@ import type {
   SeshCreatorProfile,
   SeshMusicProject,
   SeshStorageReference,
+  SeshTrack,
   SeshTimestamp,
 } from "../model";
 
@@ -12,6 +13,7 @@ export const SESH_PERSISTENCE_RECORD_TYPES = [
   "creator-profile",
   "music-project",
   "audio-asset",
+  "track",
 ] as const;
 
 export type SeshPersistenceRecordType =
@@ -61,10 +63,20 @@ export interface SeshAudioAssetPersistenceEnvelope {
   readonly payload: SeshAudioAsset;
 }
 
+export interface SeshTrackPersistenceEnvelope {
+  readonly schemaVersion: typeof SESH_PERSISTENCE_SCHEMA_VERSION;
+  readonly recordType: "track";
+  readonly recordId: string;
+  readonly storedAt: SeshTimestamp;
+  readonly revision?: SeshPersistenceRevision;
+  readonly payload: SeshTrack;
+}
+
 export type SeshPersistenceEnvelope =
   | SeshCreatorProfilePersistenceEnvelope
   | SeshMusicProjectPersistenceEnvelope
-  | SeshAudioAssetPersistenceEnvelope;
+  | SeshAudioAssetPersistenceEnvelope
+  | SeshTrackPersistenceEnvelope;
 
 export type SeshPersistenceErrorKind =
   | "not-found"
