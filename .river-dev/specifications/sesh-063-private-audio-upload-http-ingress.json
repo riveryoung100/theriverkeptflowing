@@ -1,0 +1,70 @@
+{
+  "id": "SESH-063",
+  "title": "Private Audio Upload HTTP Ingress",
+  "status": "implementation",
+  "baseline": {
+    "commit": "489e8bebc869b4433572de4a69958417932e59f1",
+    "previousSlice": "SESH-062"
+  },
+  "goal": "Expose owner-authorized private WAV upload through the existing authenticated project audio collection route without granting direct browser D1 or R2 authority.",
+  "route": {
+    "method": "POST",
+    "path": "/api/sesh/projects/{projectId}/audio/",
+    "sameOriginRequired": true,
+    "authentication": "canonical Astro Principal session",
+    "authorization": "canonical Sesh project owner write authorization"
+  },
+  "transport": {
+    "body": "raw WAV bytes",
+    "contentType": "audio/wav",
+    "assetKind": "recording",
+    "nameHeader": "x-sesh-audio-name",
+    "optionalHeaders": [
+      "x-sesh-duration-seconds",
+      "x-sesh-sample-rate-hz",
+      "x-sesh-channel-count"
+    ],
+    "multipart": false,
+    "base64": false,
+    "boundedStreamingRead": true,
+    "maximumBytes": 26214400
+  },
+  "authority": {
+    "clientAudioAssetId": false,
+    "clientStorageReference": false,
+    "clientR2Key": false,
+    "clientOwnerCreatorId": false,
+    "directBrowserR2": false,
+    "directBrowserD1": false,
+    "publicMedia": false,
+    "deleteAuthority": false,
+    "rightsGrant": false
+  },
+  "response": {
+    "successStatus": 201,
+    "cacheControl": "no-store",
+    "exposesStorageReference": false,
+    "exposesR2Key": false,
+    "exposesBucket": false,
+    "exposesRevision": false
+  },
+  "failureStatus": {
+    "invalid-input": 400,
+    "unauthenticated": 401,
+    "unmapped": 403,
+    "forbidden": 403,
+    "not-found": 404,
+    "conflict": 409,
+    "unavailable": 503
+  },
+  "persistence": {
+    "delegatesLifecycleTo": "DefaultCreatorAudioUploadService",
+    "liveDatabaseMutationDuringImplementation": false,
+    "liveR2MutationDuringImplementation": false,
+    "deployment": false
+  },
+  "next": {
+    "id": "SESH-064",
+    "title": "Studio private audio upload UI and metadata refresh"
+  }
+}
