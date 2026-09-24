@@ -24,7 +24,27 @@ export interface SeshD1DatabaseLike {
   prepare(sql: string): SeshD1PreparedStatementLike;
 }
 
-export interface SeshR2ObjectLike {
+export interface SeshR2RangeLike {
+  readonly offset?:
+    number;
+
+  readonly length?:
+    number;
+
+  readonly suffix?:
+    number;
+}
+
+export interface SeshR2HeadObjectLike {
+  readonly size?:
+    number;
+
+  readonly range?:
+    SeshR2RangeLike;
+}
+
+export interface SeshR2ObjectLike
+extends SeshR2HeadObjectLike {
   arrayBuffer(): Promise<ArrayBuffer>;
 }
 
@@ -36,6 +56,10 @@ export interface SeshR2BucketLike {
 
   get(
     key: string,
+    options?: {
+      readonly range?:
+        SeshR2RangeLike;
+    },
   ): Promise<SeshR2ObjectLike | null>;
 
   delete(
@@ -44,5 +68,5 @@ export interface SeshR2BucketLike {
 
   head(
     key: string,
-  ): Promise<unknown | null>;
+  ): Promise<SeshR2HeadObjectLike | null>;
 }

@@ -26,6 +26,7 @@ export const GET:
 APIRoute =
   async ({
     params,
+    request,
     session,
   }) => {
     try {
@@ -46,6 +47,11 @@ APIRoute =
 
         audioAssetId:
           params.audioAssetId,
+
+        rangeHeader:
+          request.headers.get(
+            "range",
+          ),
 
         reads:
           createCreatorPrivateAudioReadAtRuntime(

@@ -1,0 +1,51 @@
+{
+  "id": "SESH-066",
+  "title": "Owner-Authorized Private Audio HTTP Byte Ranges",
+  "status": "implementation",
+  "baselineCommit": "9830c04298d0de77dcde7ddacbb7b1fea27af9f4",
+  "dependsOn": [
+    "SESH-065A",
+    "SESH-065B"
+  ],
+  "goal": "Allow private Studio audio playback to seek efficiently through authenticated single-byte-range requests backed by true Cloudflare R2 ranged reads.",
+  "http": {
+    "method": "GET",
+    "rangeUnit": "bytes",
+    "supported": [
+      "bytes=start-end",
+      "bytes=start-",
+      "bytes=-suffix"
+    ],
+    "multiRange": false,
+    "validRangeStatus": 206,
+    "invalidOrUnsatisfiableStatus": 416,
+    "noRangeStatus": 200,
+    "acceptRanges": "bytes",
+    "cacheControl": "no-store"
+  },
+  "storage": {
+    "wholeObjectFallbackForRange": false,
+    "cloudflareR2NativeRange": true,
+    "browserStorageAuthority": false
+  },
+  "authorization": {
+    "ownerAuthorizationBeforeMetadata": true,
+    "ownerAuthorizationBeforeR2": true
+  },
+  "notIncluded": [
+    "multi-range multipart/byteranges",
+    "If-Range",
+    "ETag exposure",
+    "public audio",
+    "signed URLs",
+    "delete",
+    "download UX",
+    "sharing",
+    "rights",
+    "publishing",
+    "management"
+  ],
+  "deployment": false,
+  "liveD1Mutation": false,
+  "liveR2Mutation": false
+}

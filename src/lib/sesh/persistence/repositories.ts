@@ -159,6 +159,34 @@ export interface SeshAudioAssetRepository {
   ): Promise<SeshPersistenceResult<boolean>>;
 }
 
+export interface SeshAudioObjectReadRange {
+  readonly offset?:
+    number;
+
+  readonly length?:
+    number;
+
+  readonly suffix?:
+    number;
+}
+
+export interface SeshResolvedAudioObjectRange {
+  readonly offset:
+    number;
+
+  readonly length:
+    number;
+}
+
+export interface SeshStoredAudioObjectRead
+extends SeshStoredAudioObject {
+  readonly totalSize?:
+    number;
+
+  readonly range?:
+    SeshResolvedAudioObjectRange;
+}
+
 export interface SeshAudioObjectStore {
   putObject(
     reference: SeshStorageReference,
@@ -167,7 +195,8 @@ export interface SeshAudioObjectStore {
 
   getObject(
     reference: SeshStorageReference,
-  ): Promise<SeshPersistenceResult<SeshStoredAudioObject>>;
+    range?: SeshAudioObjectReadRange,
+  ): Promise<SeshPersistenceResult<SeshStoredAudioObjectRead>>;
 
   deleteObject(
     reference: SeshStorageReference,

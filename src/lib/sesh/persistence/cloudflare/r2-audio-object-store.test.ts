@@ -30,24 +30,93 @@ implements SeshR2BucketLike {
 
   async get(
     key: string,
+    options?: {
+      readonly range?: {
+        readonly offset?: number;
+        readonly length?: number;
+        readonly suffix?: number;
+      };
+    },
   ): Promise<SeshR2ObjectLike | null> {
     if (this.fail) {
       throw new Error("fake R2 failure");
     }
 
-    const bytes = this.objects.get(key);
+    const bytes =
+      this.objects.get(
+        key,
+      );
 
-    if (bytes === undefined) {
+    if (
+      bytes ===
+      undefined
+    ) {
       return null;
     }
 
-    const copy = new Uint8Array(bytes);
+    const requested =
+      options?.range;
+
+    let start =
+      0;
+
+    let length =
+      bytes.byteLength;
+
+    if (
+      requested?.suffix !==
+      undefined
+    ) {
+      length =
+        Math.min(
+          requested.suffix,
+          bytes.byteLength,
+        );
+
+      start =
+        bytes.byteLength -
+        length;
+    }
+    else if (
+      requested !==
+      undefined
+    ) {
+      start =
+        requested.offset ??
+        0;
+
+      length =
+        Math.min(
+          requested.length ??
+            (
+              bytes.byteLength -
+              start
+            ),
+          bytes.byteLength -
+            start,
+        );
+    }
+
+    const copy =
+      bytes.slice(
+        start,
+        start +
+          length,
+      );
 
     return {
-      async arrayBuffer(): Promise<ArrayBuffer> {
+      size:
+        bytes.byteLength,
+
+      range:
+        requested,
+
+      async arrayBuffer():
+      Promise<ArrayBuffer> {
         return copy.buffer.slice(
           copy.byteOffset,
-          copy.byteOffset + copy.byteLength,
+          copy.byteOffset +
+            copy.byteLength,
         ) as ArrayBuffer;
       },
     };
@@ -70,9 +139,18 @@ implements SeshR2BucketLike {
       throw new Error("fake R2 failure");
     }
 
-    return this.objects.has(key)
-      ? { key }
-      : null;
+    const bytes =
+      this.objects.get(
+        key,
+      );
+
+    return bytes ===
+      undefined
+      ? null
+      : {
+          size:
+            bytes.byteLength,
+        };
   }
 }
 
@@ -164,3 +242,206 @@ test("R2 adapter maps provider failures to storage", async () => {
 
   assert.equal(result.error.kind, "storage");
 });
+
+test(
+  "R2 adapter performs a true bounded ranged read without loading the whole object",
+  async () => {
+    const bucket =
+      new FakeR2Bucket();
+
+    const store =
+      new R2SeshAudioObjectStore(
+        bucket,
+      );
+
+    const reference = {
+      provider:
+        "r2",
+      key:
+        "range.wav",
+    };
+
+    await store.putObject(
+      reference,
+      Uint8Array.from([
+        10,
+        20,
+        30,
+        40,
+        50,
+        60,
+      ]),
+    );
+
+    const result =
+      await store.getObject(
+        reference,
+        {
+          offset:
+            2,
+          length:
+            3,
+        },
+      );
+
+    assert.equal(
+      result.ok,
+      true,
+    );
+
+    if (!result.ok) {
+      throw new Error(
+        "Expected ranged object.",
+      );
+    }
+
+    assert.deepEqual(
+      Array.from(
+        result.value.bytes,
+      ),
+      [
+        30,
+        40,
+        50,
+      ],
+    );
+
+    assert.equal(
+      result.value.totalSize,
+      6,
+    );
+
+    assert.deepEqual(
+      result.value.range,
+      {
+        offset:
+          2,
+        length:
+          3,
+      },
+    );
+  },
+);
+
+test(
+  "R2 adapter supports suffix and open-ended reads and rejects unsatisfiable offsets",
+  async () => {
+    const store =
+      new R2SeshAudioObjectStore(
+        new FakeR2Bucket(),
+      );
+
+    const reference = {
+      provider:
+        "r2",
+      key:
+        "seek.wav",
+    };
+
+    await store.putObject(
+      reference,
+      Uint8Array.from([
+        1,
+        2,
+        3,
+        4,
+        5,
+      ]),
+    );
+
+    const suffix =
+      await store.getObject(
+        reference,
+        {
+          suffix:
+            2,
+        },
+      );
+
+    assert.equal(
+      suffix.ok,
+      true,
+    );
+
+    if (!suffix.ok) {
+      throw new Error(
+        "Expected suffix range.",
+      );
+    }
+
+    assert.deepEqual(
+      Array.from(
+        suffix.value.bytes,
+      ),
+      [
+        4,
+        5,
+      ],
+    );
+
+    assert.deepEqual(
+      suffix.value.range,
+      {
+        offset:
+          3,
+        length:
+          2,
+      },
+    );
+
+    const openEnded =
+      await store.getObject(
+        reference,
+        {
+          offset:
+            3,
+        },
+      );
+
+    assert.equal(
+      openEnded.ok,
+      true,
+    );
+
+    if (!openEnded.ok) {
+      throw new Error(
+        "Expected open-ended range.",
+      );
+    }
+
+    assert.deepEqual(
+      Array.from(
+        openEnded.value.bytes,
+      ),
+      [
+        4,
+        5,
+      ],
+    );
+
+    const invalid =
+      await store.getObject(
+        reference,
+        {
+          offset:
+            5,
+        },
+      );
+
+    assert.equal(
+      invalid.ok,
+      false,
+    );
+
+    if (invalid.ok) {
+      throw new Error(
+        "Expected unsatisfiable range.",
+      );
+    }
+
+    assert.equal(
+      invalid.error.kind,
+      "validation",
+    );
+  },
+);

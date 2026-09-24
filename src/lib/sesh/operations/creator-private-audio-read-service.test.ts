@@ -490,3 +490,252 @@ test(
     );
   },
 );
+test(
+  "passes a bounded byte range to private storage only after owner authorization",
+  async () => {
+    let receivedRange:
+      unknown;
+
+    const service =
+      new DefaultCreatorPrivateAudioReadService({
+        authorizedAssets: {
+          async listProjectAudioAssets() {
+            throw new Error(
+              "Unexpected collection read.",
+            );
+          },
+
+          async readProjectAudioAsset() {
+            return {
+              ok:
+                true as const,
+
+              value: {
+                id:
+                  audioAssetId,
+
+                kind:
+                  "recording" as const,
+
+                name:
+                  "Private take",
+
+                createdAt:
+                  "2026-09-24T00:00:00.000Z",
+
+                contentType:
+                  "audio/wav",
+
+                hasStoredAudio:
+                  true,
+              },
+            };
+          },
+        },
+
+        audioAssets: {
+          async getAudioAsset() {
+            return {
+              ok:
+                true as const,
+
+              value:
+                asset(),
+            };
+          },
+        },
+
+        audioObjects: {
+          async getObject(
+            _reference,
+            range,
+          ) {
+            receivedRange =
+              range;
+
+            return {
+              ok:
+                true as const,
+
+              value: {
+                bytes:
+                  Uint8Array.from([
+                    30,
+                    40,
+                  ]),
+
+                totalSize:
+                  5,
+
+                range: {
+                  offset:
+                    2,
+
+                  length:
+                    2,
+                },
+              },
+            };
+          },
+        },
+      });
+
+    const result =
+      await service
+        .readProjectAudioBytes(
+          projectId,
+          audioAssetId,
+          {
+            offset:
+              2,
+
+            length:
+              2,
+          },
+        );
+
+    assert.deepEqual(
+      receivedRange,
+      {
+        offset:
+          2,
+
+        length:
+          2,
+      },
+    );
+
+    assert.equal(
+      result.ok,
+      true,
+    );
+
+    if (!result.ok) {
+      throw new Error(
+        "Expected ranged private audio.",
+      );
+    }
+
+    assert.equal(
+      result.value.totalSize,
+      5,
+    );
+
+    assert.deepEqual(
+      result.value.range,
+      {
+        offset:
+          2,
+
+        length:
+          2,
+      },
+    );
+  },
+);
+
+test(
+  "maps ranged storage validation failure to range-not-satisfiable",
+  async () => {
+    const service =
+      new DefaultCreatorPrivateAudioReadService({
+        authorizedAssets: {
+          async listProjectAudioAssets() {
+            throw new Error(
+              "Unexpected collection read.",
+            );
+          },
+
+          async readProjectAudioAsset() {
+            return {
+              ok:
+                true as const,
+
+              value: {
+                id:
+                  audioAssetId,
+
+                kind:
+                  "recording" as const,
+
+                name:
+                  "Private take",
+
+                createdAt:
+                  "2026-09-24T00:00:00.000Z",
+
+                contentType:
+                  "audio/wav",
+
+                hasStoredAudio:
+                  true,
+              },
+            };
+          },
+        },
+
+        audioAssets: {
+          async getAudioAsset() {
+            return {
+              ok:
+                true as const,
+
+              value:
+                asset(),
+            };
+          },
+        },
+
+        audioObjects: {
+          async getObject() {
+            return {
+              ok:
+                false as const,
+
+              error: {
+                kind:
+                  "validation" as const,
+
+                message:
+                  "provider-specific range failure",
+              },
+            };
+          },
+        },
+      });
+
+    const result =
+      await service
+        .readProjectAudioBytes(
+          projectId,
+          audioAssetId,
+          {
+            offset:
+              999,
+          },
+        );
+
+    assert.equal(
+      result.ok,
+      false,
+    );
+
+    if (result.ok) {
+      throw new Error(
+        "Expected unsatisfiable range.",
+      );
+    }
+
+    assert.equal(
+      result.error.code,
+      "range-not-satisfiable",
+    );
+
+    assert.equal(
+      result.error.message.includes(
+        "provider-specific",
+      ),
+      false,
+    );
+  },
+);

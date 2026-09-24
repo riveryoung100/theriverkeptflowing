@@ -10,7 +10,9 @@ import type {
 
 import type {
   SeshAudioAssetRepository,
+  SeshAudioObjectReadRange,
   SeshAudioObjectStore,
+  SeshResolvedAudioObjectRange,
 } from "../persistence";
 
 import type {
@@ -24,11 +26,21 @@ export interface CreatorPrivateAudioReadValue {
 
   readonly contentType:
     "audio/wav";
+
+  readonly totalSize:
+    number;
+
+  readonly range?:
+    SeshResolvedAudioObjectRange;
 }
+
+export type CreatorPrivateAudioReadFailureCode =
+  | CreatorAudioAssetOperationFailureCode
+  | "range-not-satisfiable";
 
 export interface CreatorPrivateAudioReadFailure {
   readonly code:
-    CreatorAudioAssetOperationFailureCode;
+    CreatorPrivateAudioReadFailureCode;
 
   readonly message:
     string;
@@ -57,6 +69,9 @@ export interface CreatorPrivateAudioReadService {
 
     audioAssetId:
       unknown,
+
+    range?:
+      SeshAudioObjectReadRange,
   ): Promise<CreatorPrivateAudioReadResult>;
 }
 
@@ -79,7 +94,7 @@ export interface DefaultCreatorPrivateAudioReadServiceDependencies {
 
 function failure(
   code:
-    CreatorAudioAssetOperationFailureCode,
+    CreatorPrivateAudioReadFailureCode,
 
   message:
     string,
@@ -165,6 +180,9 @@ implements CreatorPrivateAudioReadService {
 
     audioAssetIdInput:
       unknown,
+
+    range?:
+      SeshAudioObjectReadRange,
   ): Promise<CreatorPrivateAudioReadResult> {
     const ids =
       parseIds(
@@ -254,11 +272,24 @@ implements CreatorPrivateAudioReadService {
       await this.#audioObjects
         .getObject(
           asset.storageReference,
+          range,
         );
 
     if (
       !object.ok
     ) {
+      if (
+        range !==
+          undefined &&
+        object.error.kind ===
+          "validation"
+      ) {
+        return failure(
+          "range-not-satisfiable",
+          "The requested private audio byte range is not satisfiable.",
+        );
+      }
+
       return failure(
         object.error.kind ===
           "not-found"
@@ -297,6 +328,23 @@ implements CreatorPrivateAudioReadService {
 
         contentType:
           "audio/wav",
+
+        totalSize:
+          Number.isSafeInteger(
+            object.value.totalSize,
+          ) &&
+          object.value.totalSize! >=
+            object.value.bytes.byteLength
+            ? object.value.totalSize!
+            : object.value.bytes.byteLength,
+
+        range:
+          object.value.range ===
+          undefined
+            ? undefined
+            : {
+                ...object.value.range,
+              },
       },
     };
   }

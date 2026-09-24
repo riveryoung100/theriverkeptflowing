@@ -3,10 +3,12 @@ import type {
 } from "../../model";
 import type {
   SeshPersistenceResult,
-  SeshStoredAudioObject,
 } from "../model";
 import type {
+  SeshAudioObjectReadRange,
   SeshAudioObjectStore,
+  SeshResolvedAudioObjectRange,
+  SeshStoredAudioObjectRead,
 } from "../repositories";
 import type {
   SeshR2BucketLike,
@@ -55,6 +57,188 @@ function validateReference(
     key: reference.key,
     bucket: reference.bucket,
     versionId: reference.versionId,
+  };
+}
+
+function validateRange(
+  range:
+    SeshAudioObjectReadRange | undefined,
+): SeshAudioObjectReadRange | undefined {
+  if (
+    range ===
+    undefined
+  ) {
+    return undefined;
+  }
+
+  const hasOffset =
+    range.offset !==
+    undefined;
+
+  const hasLength =
+    range.length !==
+    undefined;
+
+  const hasSuffix =
+    range.suffix !==
+    undefined;
+
+  if (
+    hasSuffix &&
+    (
+      hasOffset ||
+      hasLength
+    )
+  ) {
+    throw new RangeError(
+      "Sesh audio range suffix cannot be combined with offset or length.",
+    );
+  }
+
+  if (
+    !hasSuffix &&
+    !hasOffset
+  ) {
+    throw new RangeError(
+      "Sesh audio range requires an offset or suffix.",
+    );
+  }
+
+  if (
+    hasOffset &&
+    (
+      !Number.isSafeInteger(
+        range.offset,
+      ) ||
+      range.offset! <
+        0
+    )
+  ) {
+    throw new RangeError(
+      "Sesh audio range offset must be a non-negative safe integer.",
+    );
+  }
+
+  if (
+    hasLength &&
+    (
+      !Number.isSafeInteger(
+        range.length,
+      ) ||
+      range.length! <=
+        0
+    )
+  ) {
+    throw new RangeError(
+      "Sesh audio range length must be a positive safe integer.",
+    );
+  }
+
+  if (
+    hasSuffix &&
+    (
+      !Number.isSafeInteger(
+        range.suffix,
+      ) ||
+      range.suffix! <=
+        0
+    )
+  ) {
+    throw new RangeError(
+      "Sesh audio range suffix must be a positive safe integer.",
+    );
+  }
+
+  if (
+    hasOffset &&
+    hasLength &&
+    !Number.isSafeInteger(
+      range.offset! +
+      range.length!,
+    )
+  ) {
+    throw new RangeError(
+      "Sesh audio range exceeds the supported integer range.",
+    );
+  }
+
+  return {
+    offset:
+      range.offset,
+
+    length:
+      range.length,
+
+    suffix:
+      range.suffix,
+  };
+}
+
+function resolveRange(
+  range:
+    SeshAudioObjectReadRange,
+
+  totalSize:
+    number,
+): SeshResolvedAudioObjectRange {
+  if (
+    !Number.isSafeInteger(
+      totalSize,
+    ) ||
+    totalSize <=
+      0
+  ) {
+    throw new RangeError(
+      "Sesh audio object size is unavailable for ranged reads.",
+    );
+  }
+
+  if (
+    range.suffix !==
+    undefined
+  ) {
+    const length =
+      Math.min(
+        range.suffix,
+        totalSize,
+      );
+
+    return {
+      offset:
+        totalSize -
+        length,
+
+      length,
+    };
+  }
+
+  const offset =
+    range.offset!;
+
+  if (
+    offset >=
+    totalSize
+  ) {
+    throw new RangeError(
+      "Sesh audio range starts beyond the stored object.",
+    );
+  }
+
+  const remaining =
+    totalSize -
+    offset;
+
+  return {
+    offset,
+
+    length:
+      range.length ===
+      undefined
+        ? remaining
+        : Math.min(
+            range.length,
+            remaining,
+          ),
   };
 }
 
@@ -109,36 +293,157 @@ implements SeshAudioObjectStore {
 
   async getObject(
     reference: SeshStorageReference,
-  ): Promise<SeshPersistenceResult<SeshStoredAudioObject>> {
-    let validated: SeshStorageReference;
+    range?: SeshAudioObjectReadRange,
+  ): Promise<SeshPersistenceResult<SeshStoredAudioObjectRead>> {
+    let validated:
+      SeshStorageReference;
+
+    let validatedRange:
+      SeshAudioObjectReadRange | undefined;
 
     try {
-      validated = validateReference(reference);
+      validated =
+        validateReference(
+          reference,
+        );
+
+      validatedRange =
+        validateRange(
+          range,
+        );
     }
     catch (error) {
       return failure(
         "validation",
         error instanceof Error
           ? error.message
-          : "Sesh R2 storage-reference validation failed.",
+          : "Sesh R2 read validation failed.",
       );
     }
 
     try {
-      const object = await this.bucket.get(validated.key);
+      let resolvedRange:
+        SeshResolvedAudioObjectRange | undefined;
 
-      if (object === null) {
+      let totalSize:
+        number | undefined;
+
+      if (
+        validatedRange !==
+        undefined
+      ) {
+        const metadata =
+          await this.bucket.head(
+            validated.key,
+          );
+
+        if (
+          metadata ===
+          null
+        ) {
+          return failure(
+            "not-found",
+            `Sesh audio object not found: ${validated.key}`,
+          );
+        }
+
+        if (
+          !Number.isSafeInteger(
+            metadata.size,
+          ) ||
+          metadata.size! <=
+            0
+        ) {
+          return failure(
+            "storage",
+            "Sesh R2 object size is unavailable for ranged reads.",
+          );
+        }
+
+        totalSize =
+          metadata.size;
+
+        try {
+          resolvedRange =
+            resolveRange(
+              validatedRange,
+              totalSize,
+            );
+        }
+        catch (error) {
+          return failure(
+            "validation",
+            error instanceof Error
+              ? error.message
+              : "Sesh R2 range validation failed.",
+          );
+        }
+      }
+
+      const object =
+        await this.bucket.get(
+          validated.key,
+          resolvedRange ===
+            undefined
+            ? undefined
+            : {
+                range: {
+                  offset:
+                    resolvedRange.offset,
+
+                  length:
+                    resolvedRange.length,
+                },
+              },
+        );
+
+      if (
+        object ===
+        null
+      ) {
         return failure(
           "not-found",
           `Sesh audio object not found: ${validated.key}`,
         );
       }
 
-      const buffer = await object.arrayBuffer();
+      const buffer =
+        await object.arrayBuffer();
+
+      const bytes =
+        new Uint8Array(
+          buffer.slice(0),
+        );
+
+      if (
+        totalSize ===
+        undefined
+      ) {
+        totalSize =
+          Number.isSafeInteger(
+            object.size,
+          ) &&
+          object.size! >=
+            bytes.byteLength
+            ? object.size
+            : bytes.byteLength;
+      }
 
       return success({
-        reference: { ...validated },
-        bytes: new Uint8Array(buffer.slice(0)),
+        reference:
+          { ...validated },
+
+        bytes,
+
+        totalSize,
+
+        range:
+          resolvedRange ===
+          undefined
+            ? undefined
+            : {
+                ...resolvedRange,
+              },
       });
     }
     catch (error) {
@@ -150,7 +455,6 @@ implements SeshAudioObjectStore {
       );
     }
   }
-
   async deleteObject(
     reference: SeshStorageReference,
   ): Promise<SeshPersistenceResult<boolean>> {
