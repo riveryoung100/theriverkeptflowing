@@ -1,0 +1,49 @@
+{
+  "id": "SESH-070A",
+  "title": "Track persistence contract and in-memory CAS foundation",
+  "purpose": "Establish the first dedicated persistence boundary for canonical SeshTrack records before D1, HTTP, Studio track management, or project-track lifecycle orchestration is introduced.",
+  "canonicalTrackFields": {
+    "required": [
+      "id",
+      "projectId",
+      "name",
+      "order",
+      "audioAssetIds"
+    ],
+    "optional": [
+      "muted",
+      "solo",
+      "gain"
+    ]
+  },
+  "repositoryCapabilities": [
+    "create-only track save",
+    "track read by canonical SeshTrackId",
+    "track collection read by canonical SeshMusicProjectId",
+    "revision snapshot read",
+    "revision-gated conditional update",
+    "metadata deletion"
+  ],
+  "concurrency": {
+    "initialRevision": 0,
+    "updateMechanism": "compare-and-swap",
+    "staleWrite": "conflict",
+    "immutableFields": [
+      "id",
+      "projectId"
+    ]
+  },
+  "boundaries": [
+    "Track persistence does not create or mutate project.trackIds.",
+    "Track persistence does not attach or detach audio assets from a project.",
+    "Track persistence does not move, copy, delete, or rewrite audio bytes.",
+    "Track persistence does not grant project ownership or collaborator authority.",
+    "Track persistence does not create public audio authority.",
+    "Track persistence does not establish copyright, publishing, master, management, royalty, licensing, or ownership rights.",
+    "D1 persistence remains a later explicit slice.",
+    "HTTP and Studio UI remain later explicit slices."
+  ],
+  "deployment": false,
+  "liveD1Mutation": false,
+  "liveR2Mutation": false
+}
