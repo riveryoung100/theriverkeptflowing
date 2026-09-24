@@ -19,6 +19,10 @@ import {
 } from "../../../../../../lib/sesh/http/creator-audio-delete-api";
 
 import {
+  handleCreatorAudioRename,
+} from "../../../../../../lib/sesh/http/creator-audio-rename-api";
+
+import {
   createCreatorAudioAssetOperationsAtRuntime,
   type CreatorAudioAssetApiRuntimeEnvironment,
 } from "../../../../../../lib/sesh/runtime/creator-audio-asset-api";
@@ -27,6 +31,11 @@ import {
   createCreatorAudioDeleteAtRuntime,
   type CreatorAudioDeleteApiRuntimeEnvironment,
 } from "../../../../../../lib/sesh/runtime/creator-audio-delete-api";
+
+import {
+  createCreatorAudioRenameAtRuntime,
+  type CreatorAudioRenameApiRuntimeEnvironment,
+} from "../../../../../../lib/sesh/runtime/creator-audio-rename-api";
 
 export const prerender =
   false;
@@ -140,6 +149,39 @@ APIRoute =
           createCreatorAudioDeleteAtRuntime(
             canonicalSession,
             env as unknown as CreatorAudioDeleteApiRuntimeEnvironment,
+          ),
+      });
+    }
+    catch {
+      return infrastructureFailure();
+    }
+  };
+export const PATCH:
+APIRoute =
+  async ({
+    request,
+    params,
+    session,
+  }) => {
+    try {
+      const canonicalSession =
+        requireSession(
+          session,
+        );
+
+      return await handleCreatorAudioRename({
+        request,
+
+        projectId:
+          params.projectId,
+
+        audioAssetId:
+          params.audioAssetId,
+
+        renames:
+          createCreatorAudioRenameAtRuntime(
+            canonicalSession,
+            env as unknown as CreatorAudioRenameApiRuntimeEnvironment,
           ),
       });
     }

@@ -1,0 +1,23 @@
+{
+  "id": "SESH-069B",
+  "title": "Owner-authorized private audio rename PATCH",
+  "purpose": "Allow the authenticated canonical project owner to rename one private audio asset through a strict same-origin HTTP PATCH backed by audio metadata CAS.",
+  "invariants": [
+    "PATCH body is exactly one field: name.",
+    "Audio name is trimmed, non-empty, and at most 120 characters.",
+    "Malformed JSON, extra fields, missing name, and non-string name are rejected.",
+    "Project and audio route identifiers are parsed canonically.",
+    "Owner write authorization occurs before private audio metadata is read or mutated.",
+    "The audio asset must belong to the authorized route project.",
+    "Only name may change.",
+    "id, projectId, kind, createdAt, durationSeconds, sampleRateHz, channelCount, contentType, and storageReference remain unchanged.",
+    "Metadata update uses the SESH-069A revision CAS.",
+    "A stale revision maps to conflict.",
+    "Response contains sanitized creator audio metadata only.",
+    "storageReference and persistence revision are never returned to the browser.",
+    "R2 is never read, written, moved, copied, or deleted.",
+    "Project audioAssetIds are unchanged.",
+    "No public media, download, sharing, collaborator, publishing, master, management, copyright, or royalty authority is introduced.",
+    "Studio rename UI is not included in this slice."
+  ]
+}
