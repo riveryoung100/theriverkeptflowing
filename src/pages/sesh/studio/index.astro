@@ -1077,7 +1077,10 @@ const canonical =
         };
 
       const renderAudioAssets =
-        (assets) => {
+        (
+          assets,
+          projectId,
+        ) => {
           if (!audioList) {
             return;
           }
@@ -1091,6 +1094,9 @@ const canonical =
                 asset &&
                 typeof asset ===
                   "object" &&
+                typeof asset.id ===
+                  "string" &&
+                asset.id &&
                 typeof asset.name ===
                   "string",
             );
@@ -1147,6 +1153,36 @@ const canonical =
 
             article.appendChild(
               title,
+            );
+
+            const player =
+              document.createElement(
+                "audio",
+              );
+
+            player.className =
+              "sesh-studio__audio-player";
+
+            player.controls =
+              true;
+
+            player.preload =
+              "metadata";
+
+            player.src =
+              `/api/sesh/projects/${encodeURIComponent(
+                projectId,
+              )}/audio/${encodeURIComponent(
+                asset.id,
+              )}/content`;
+
+            player.setAttribute(
+              "aria-label",
+              `Play ${asset.name}`,
+            );
+
+            article.appendChild(
+              player,
             );
 
             const metadata =
@@ -1295,6 +1331,7 @@ const canonical =
               audioAssetsFrom(
                 body,
               ),
+              projectId,
             );
 
             setAudioStatus(
@@ -2220,6 +2257,12 @@ const canonical =
 
     .sesh-studio__audio-item p {
       margin-top: 0.35rem;
+    }
+
+    .sesh-studio__audio-player {
+      display: block;
+      width: 100%;
+      margin-top: 0.75rem;
     }
 
     .sesh-studio form {

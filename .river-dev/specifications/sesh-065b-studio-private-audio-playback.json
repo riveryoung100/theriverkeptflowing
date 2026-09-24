@@ -1,0 +1,43 @@
+{
+  "id": "SESH-065B",
+  "title": "Studio Private Audio Playback",
+  "status": "implementation",
+  "baselineCommit": "1eca120509b30b186c45a01fae79a448a6bfca23",
+  "dependsOn": [
+    "SESH-061",
+    "SESH-064",
+    "SESH-065A"
+  ],
+  "goal": "Allow an authenticated creator to play private project WAV audio from Studio through the owner-authorized SESH-065A content endpoint.",
+  "studio": {
+    "surface": "/sesh/studio/",
+    "element": "audio",
+    "controls": true,
+    "preload": "metadata",
+    "source": "/api/sesh/projects/{projectId}/audio/{audioAssetId}/content"
+  },
+  "authority": {
+    "browserR2": false,
+    "browserD1": false,
+    "storageReferenceExposed": false,
+    "bucketExposed": false,
+    "objectKeyExposed": false,
+    "signedUrl": false,
+    "publicUrl": false,
+    "publicMediaAuthority": false
+  },
+  "scope": {
+    "playbackOnly": true,
+    "rangeRequests": false,
+    "delete": false,
+    "downloadFeature": false,
+    "publicPlayback": false,
+    "sharing": false,
+    "rights": false,
+    "publishing": false,
+    "management": false
+  },
+  "deployment": false,
+  "liveD1Mutation": false,
+  "liveR2Mutation": false
+}
