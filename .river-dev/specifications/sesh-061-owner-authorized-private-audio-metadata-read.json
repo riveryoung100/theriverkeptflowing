@@ -1,0 +1,74 @@
+{
+    "id":  "SESH-061",
+    "title":  "Owner-Authorized Private Audio Metadata Read",
+    "status":  "IMPLEMENTED_LOCALLY_PENDING_REVIEW",
+    "sourceBaseline":  {
+                           "branch":  "cif-001-canonical-content-source-record",
+                           "commit":  "0f4a885d5dffe885074be6d4700b4ec951d3c978",
+                           "predecessor":  "SESH-060"
+                       },
+    "businessSequence":  {
+                             "currentConstraint":  "The creator loop can create and manage projects but cannot yet inspect canonical audio assets belonging to those projects.",
+                             "capabilityUnlocked":  "A signed-in project owner can privately enumerate and inspect sanitized audio metadata through server-authorized product boundaries.",
+                             "intentionallyNotUnlocked":  [
+                                                              "Audio upload",
+                                                              "Audio binary download",
+                                                              "Audio playback",
+                                                              "Audio deletion",
+                                                              "Public media delivery",
+                                                              "Track editing",
+                                                              "Session editing",
+                                                              "Marketplace behavior",
+                                                              "Publishing rights",
+                                                              "Management rights"
+                                                          ]
+                         },
+    "authorization":  [
+                          "Every audio metadata read first proves authenticated ownership of the canonical project.",
+                          "Audio asset ownership is derived through the canonical project relationship.",
+                          "A caller cannot gain access merely by knowing an AudioAssetId.",
+                          "An audio asset whose persisted projectId contradicts the authorized route project fails closed.",
+                          "Principal authentication alone does not grant Sesh project or audio authority."
+                      ],
+    "privatePresentation":  [
+                                "Responses expose only product-facing audio metadata.",
+                                "storageReference is never returned.",
+                                "R2 key is never returned.",
+                                "R2 bucket is never returned.",
+                                "R2 versionId is never returned.",
+                                "projectId is route context and is not repeated in the sanitized audio representation.",
+                                "ownerCreatorId and PrincipalId are never returned.",
+                                "hasStoredAudio may disclose only whether canonical metadata references stored binary audio to the already-authorized owner."
+                            ],
+    "persistence":  [
+                        "Reuse existing SeshAudioAssetRepository.",
+                        "Reuse existing canonical project authorization through AuthorizedSeshProjectOperationService.readProject.",
+                        "Do not write D1.",
+                        "Do not mutate R2.",
+                        "Do not conflate audio metadata lifecycle with binary-object lifecycle."
+                    ],
+    "routes":  {
+                   "collection":  "GET /api/sesh/projects/{projectId}/audio/",
+                   "item":  "GET /api/sesh/projects/{projectId}/audio/{audioAssetId}"
+               },
+    "http":  [
+                 "GET only.",
+                 "All JSON responses are cache-control no-store.",
+                 "No public availability oracle is created.",
+                 "No same-origin write logic is necessary because this slice has no mutation method."
+             ],
+    "rightsBoundary":  [
+                           "Audio metadata does not prove copyright ownership.",
+                           "Audio metadata does not prove master ownership.",
+                           "Audio metadata does not grant publishing rights.",
+                           "Audio metadata does not grant distribution rights.",
+                           "Audio metadata does not grant management rights.",
+                           "Audio metadata does not grant licensing rights.",
+                           "Audio metadata does not grant royalty or revenue rights."
+                       ],
+    "nextSlice":  {
+                      "id":  "SESH-062",
+                      "title":  "Owner-Authorized Private Audio Upload Lifecycle",
+                      "designRequirement":  "Design explicit compensation and project-graph attachment rules across private R2 binary persistence, D1 metadata persistence, and project revision-safe attachment before granting upload authority."
+                  }
+}
