@@ -15,17 +15,26 @@ import {
 } from "../../../../../../lib/sesh/http/creator-audio-asset-api";
 
 import {
+  handleCreatorAudioDelete,
+} from "../../../../../../lib/sesh/http/creator-audio-delete-api";
+
+import {
   createCreatorAudioAssetOperationsAtRuntime,
   type CreatorAudioAssetApiRuntimeEnvironment,
 } from "../../../../../../lib/sesh/runtime/creator-audio-asset-api";
 
+import {
+  createCreatorAudioDeleteAtRuntime,
+  type CreatorAudioDeleteApiRuntimeEnvironment,
+} from "../../../../../../lib/sesh/runtime/creator-audio-delete-api";
+
 export const prerender =
   false;
 
-function operationsForSession(
+function requireSession(
   session:
     unknown,
-) {
+): AstroSessionLike {
   if (
     typeof session !==
       "object" ||
@@ -37,9 +46,40 @@ function operationsForSession(
     );
   }
 
-  return createCreatorAudioAssetOperationsAtRuntime(
-    session as AstroSessionLike,
-    env as unknown as CreatorAudioAssetApiRuntimeEnvironment,
+  return session as
+    AstroSessionLike;
+}
+
+function infrastructureFailure():
+Response {
+  return new Response(
+    JSON.stringify({
+      ok:
+        false,
+
+      error: {
+        code:
+          "unavailable",
+
+        message:
+          "Sesh private audio API is temporarily unavailable.",
+      },
+    }),
+    {
+      status:
+        503,
+
+      headers: {
+        "cache-control":
+          "no-store",
+
+        "content-type":
+          "application/json; charset=utf-8",
+
+        "x-content-type-options":
+          "nosniff",
+      },
+    },
   );
 }
 
@@ -49,16 +89,61 @@ APIRoute =
     params,
     session,
   }) => {
-    return await handleCreatorAudioAssetRead({
-      projectId:
-        params.projectId,
-
-      audioAssetId:
-        params.audioAssetId,
-
-      operations:
-        operationsForSession(
+    try {
+      const canonicalSession =
+        requireSession(
           session,
-        ),
-    });
+        );
+
+      return await handleCreatorAudioAssetRead({
+        projectId:
+          params.projectId,
+
+        audioAssetId:
+          params.audioAssetId,
+
+        operations:
+          createCreatorAudioAssetOperationsAtRuntime(
+            canonicalSession,
+            env as unknown as CreatorAudioAssetApiRuntimeEnvironment,
+          ),
+      });
+    }
+    catch {
+      return infrastructureFailure();
+    }
+  };
+
+export const DELETE:
+APIRoute =
+  async ({
+    request,
+    params,
+    session,
+  }) => {
+    try {
+      const canonicalSession =
+        requireSession(
+          session,
+        );
+
+      return await handleCreatorAudioDelete({
+        request,
+
+        projectId:
+          params.projectId,
+
+        audioAssetId:
+          params.audioAssetId,
+
+        deletes:
+          createCreatorAudioDeleteAtRuntime(
+            canonicalSession,
+            env as unknown as CreatorAudioDeleteApiRuntimeEnvironment,
+          ),
+      });
+    }
+    catch {
+      return infrastructureFailure();
+    }
   };

@@ -1,0 +1,42 @@
+{
+  "id": "SESH-067",
+  "title": "Owner-Authorized Private Audio Delete Lifecycle",
+  "status": "implementation",
+  "baselineCommit": "ef0fd3e4bf256de4b5ba78f472f9b9ba9657916a",
+  "goal": "Delete one owner-authorized private audio asset without ever leaving the canonical project graph pointing at removed private audio.",
+  "ordering": [
+    "validate canonical route identifiers",
+    "authorize authenticated Sesh project owner for write",
+    "load canonical project snapshot",
+    "load canonical audio metadata",
+    "verify project/audio/storage identity invariants",
+    "conditionally detach audio asset id from project graph",
+    "delete D1 audio metadata",
+    "delete private R2 object"
+  ],
+  "failurePolicy": {
+    "projectCasFailure": "stop before destructive metadata or R2 deletion",
+    "metadataDeleteFailureAfterDetach": "return unavailable and retain binary for recoverability",
+    "r2DeleteFailureAfterMetadataDelete": "return unavailable and surface orphan cleanup risk without restoring project reference"
+  },
+  "http": {
+    "method": "DELETE",
+    "sameOriginRequired": true,
+    "successStatus": 200,
+    "cacheControl": "no-store"
+  },
+  "notIncluded": [
+    "Studio delete button",
+    "bulk deletion",
+    "project deletion cascade",
+    "public media",
+    "signed URLs",
+    "rights",
+    "publishing",
+    "sharing",
+    "management"
+  ],
+  "deployment": false,
+  "liveD1Mutation": false,
+  "liveR2Mutation": false
+}
