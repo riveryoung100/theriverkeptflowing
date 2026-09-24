@@ -310,6 +310,85 @@ const canonical =
               </div>
             </section>
           </div>
+
+          <section class="sesh-studio__panel sesh-studio__audio">
+            <p class="sesh-studio__kicker">
+              Private audio
+            </p>
+
+            <h3>
+              Upload a WAV recording
+            </h3>
+
+            <p class="sesh-studio__hint">
+              Audio uploaded here stays private. Playback, public media,
+              deletion, ownership transfers, publishing rights, master rights,
+              management rights, and royalties are not created by this upload.
+            </p>
+
+            <form id="studio-audio-form">
+              <label>
+                Project
+
+                <select
+                  id="studio-audio-project"
+                  name="project"
+                  required
+                >
+                  <option value="">
+                    Choose a project
+                  </option>
+                </select>
+              </label>
+
+              <label>
+                WAV file
+
+                <input
+                  id="studio-audio-file"
+                  name="audio"
+                  type="file"
+                  accept=".wav,audio/wav"
+                  required
+                />
+              </label>
+
+              <label>
+                Recording name
+
+                <input
+                  id="studio-audio-name"
+                  name="name"
+                  type="text"
+                  maxlength="200"
+                  autocomplete="off"
+                  placeholder="Take one"
+                  required
+                />
+              </label>
+
+              <p class="sesh-studio__hint">
+                WAV only. Maximum file size: 25 MiB.
+              </p>
+
+              <button
+                id="studio-audio-upload"
+                type="submit"
+              >
+                Upload WAV
+              </button>
+            </form>
+
+            <p
+              id="studio-audio-status"
+              class="sesh-studio__audio-status sesh-studio__muted"
+              aria-live="polite"
+            >
+              Choose a project to view its private audio.
+            </p>
+
+            <div id="studio-audio-list"></div>
+          </section>
         </section>
       </section>
     </section>
@@ -375,6 +454,41 @@ const canonical =
       const projectList =
         document.getElementById(
           "studio-project-list",
+        );
+
+      const audioForm =
+        document.getElementById(
+          "studio-audio-form",
+        );
+
+      const audioProject =
+        document.getElementById(
+          "studio-audio-project",
+        );
+
+      const audioFile =
+        document.getElementById(
+          "studio-audio-file",
+        );
+
+      const audioName =
+        document.getElementById(
+          "studio-audio-name",
+        );
+
+      const audioUpload =
+        document.getElementById(
+          "studio-audio-upload",
+        );
+
+      const audioStatus =
+        document.getElementById(
+          "studio-audio-status",
+        );
+
+      const audioList =
+        document.getElementById(
+          "studio-audio-list",
         );
 
       const greeting =
@@ -676,6 +790,75 @@ const canonical =
           }
         };
 
+      const audioAssetsFrom =
+        (body) => {
+          const value =
+            successValue(
+              body,
+            );
+
+          if (
+            Array.isArray(
+              value,
+            )
+          ) {
+            return value;
+          }
+
+          if (
+            value &&
+            typeof value ===
+              "object" &&
+            Array.isArray(
+              value.audioAssets,
+            )
+          ) {
+            return value.audioAssets;
+          }
+
+          return [];
+        };
+
+      const setAudioStatus =
+        (
+          message,
+          isError = false,
+        ) => {
+          if (!audioStatus) {
+            return;
+          }
+
+          audioStatus.textContent =
+            message;
+
+          audioStatus.dataset.state =
+            isError
+              ? "error"
+              : "ok";
+        };
+
+      const setAudioBusy =
+        (busy) => {
+          if (audioUpload) {
+            audioUpload.disabled =
+              busy;
+          }
+
+          if (audioProject) {
+            audioProject.disabled =
+              busy;
+          }
+
+          if (audioFile) {
+            audioFile.disabled =
+              busy;
+          }
+
+          if (audioName) {
+            audioName.disabled =
+              busy;
+          }
+        };
       const renderProjects =
         (projects) => {
           if (!projectList) {
@@ -800,6 +983,336 @@ const canonical =
           );
         };
 
+      const renderAudioProjectOptions =
+        (projects) => {
+          if (!audioProject) {
+            return;
+          }
+
+          const previousValue =
+            audioProject.value;
+
+          audioProject.textContent =
+            "";
+
+          const placeholder =
+            document.createElement(
+              "option",
+            );
+
+          placeholder.value =
+            "";
+
+          placeholder.textContent =
+            "Choose a project";
+
+          audioProject.appendChild(
+            placeholder,
+          );
+
+          const safeProjects =
+            projects.filter(
+              (project) =>
+                project &&
+                typeof project ===
+                  "object" &&
+                typeof project.id ===
+                  "string" &&
+                project.id &&
+                typeof project.title ===
+                  "string",
+            );
+
+          for (
+            const project of
+            safeProjects
+          ) {
+            const option =
+              document.createElement(
+                "option",
+              );
+
+            option.value =
+              project.id;
+
+            option.textContent =
+              project.title;
+
+            audioProject.appendChild(
+              option,
+            );
+          }
+
+          if (
+            safeProjects.some(
+              (project) =>
+                project.id ===
+                  previousValue,
+            )
+          ) {
+            audioProject.value =
+              previousValue;
+          }
+
+          if (
+            safeProjects.length ===
+              0
+          ) {
+            audioProject.disabled =
+              true;
+
+            setAudioStatus(
+              "Create a project before uploading private audio.",
+            );
+
+            if (audioList) {
+              audioList.textContent =
+                "";
+            }
+          }
+          else {
+            audioProject.disabled =
+              false;
+          }
+        };
+
+      const renderAudioAssets =
+        (assets) => {
+          if (!audioList) {
+            return;
+          }
+
+          audioList.textContent =
+            "";
+
+          const safeAssets =
+            assets.filter(
+              (asset) =>
+                asset &&
+                typeof asset ===
+                  "object" &&
+                typeof asset.name ===
+                  "string",
+            );
+
+          if (
+            safeAssets.length ===
+              0
+          ) {
+            const empty =
+              document.createElement(
+                "p",
+              );
+
+            empty.className =
+              "sesh-studio__muted";
+
+            empty.textContent =
+              "No private audio has been uploaded to this project yet.";
+
+            audioList.appendChild(
+              empty,
+            );
+
+            return;
+          }
+
+          const list =
+            document.createElement(
+              "div",
+            );
+
+          list.className =
+            "sesh-studio__audio-list";
+
+          for (
+            const asset of
+            safeAssets
+          ) {
+            const article =
+              document.createElement(
+                "article",
+              );
+
+            article.className =
+              "sesh-studio__audio-item";
+
+            const title =
+              document.createElement(
+                "h4",
+              );
+
+            title.textContent =
+              asset.name;
+
+            article.appendChild(
+              title,
+            );
+
+            const metadata =
+              [];
+
+            if (
+              typeof asset.contentType ===
+                "string"
+            ) {
+              metadata.push(
+                asset.contentType,
+              );
+            }
+
+            if (
+              typeof asset.durationSeconds ===
+                "number" &&
+              Number.isFinite(
+                asset.durationSeconds,
+              )
+            ) {
+              metadata.push(
+                `${asset.durationSeconds.toFixed(2)} seconds`,
+              );
+            }
+
+            if (
+              typeof asset.sampleRateHz ===
+                "number" &&
+              Number.isFinite(
+                asset.sampleRateHz,
+              )
+            ) {
+              metadata.push(
+                `${asset.sampleRateHz} Hz`,
+              );
+            }
+
+            if (
+              typeof asset.channelCount ===
+                "number" &&
+              Number.isFinite(
+                asset.channelCount,
+              )
+            ) {
+              metadata.push(
+                `${asset.channelCount} channel${
+                  asset.channelCount === 1
+                    ? ""
+                    : "s"
+                }`,
+              );
+            }
+
+            if (
+              metadata.length >
+                0
+            ) {
+              const detail =
+                document.createElement(
+                  "p",
+                );
+
+              detail.className =
+                "sesh-studio__muted";
+
+              detail.textContent =
+                metadata.join(
+                  " · ",
+                );
+
+              article.appendChild(
+                detail,
+              );
+            }
+
+            list.appendChild(
+              article,
+            );
+          }
+
+          audioList.appendChild(
+            list,
+          );
+        };
+
+      const loadProjectAudio =
+        async (
+          projectId,
+        ) => {
+          if (
+            typeof projectId !==
+              "string" ||
+            !projectId
+          ) {
+            if (audioList) {
+              audioList.textContent =
+                "";
+            }
+
+            setAudioStatus(
+              "Choose a project to view its private audio.",
+            );
+
+            return;
+          }
+
+          setAudioStatus(
+            "Loading private audio…",
+          );
+
+          if (audioList) {
+            audioList.innerHTML =
+              '<p class="sesh-studio__muted">Loading private audio…</p>';
+          }
+
+          try {
+            const {
+              response,
+              body,
+            } =
+              await fetchJson(
+                `/api/sesh/projects/${encodeURIComponent(
+                  projectId,
+                )}/audio/`,
+              );
+
+            if (!response.ok) {
+              if (audioList) {
+                audioList.textContent =
+                  "";
+              }
+
+              setAudioStatus(
+                errorMessage(
+                  body,
+                  "Private audio is temporarily unavailable.",
+                ),
+                true,
+              );
+
+              return;
+            }
+
+            renderAudioAssets(
+              audioAssetsFrom(
+                body,
+              ),
+            );
+
+            setAudioStatus(
+              "Private audio is up to date.",
+            );
+          }
+          catch {
+            if (audioList) {
+              audioList.textContent =
+                "";
+            }
+
+            setAudioStatus(
+              "Private audio is temporarily unavailable.",
+              true,
+            );
+          }
+        };
       const loadProjects =
         async () => {
           if (projectList) {
@@ -825,10 +1338,17 @@ const canonical =
               return;
             }
 
-            renderProjects(
+            const projects =
               projectsFrom(
                 body,
-              ),
+              );
+
+            renderProjects(
+              projects,
+            );
+
+            renderAudioProjectOptions(
+              projects,
             );
           }
           catch {
@@ -1230,6 +1750,221 @@ const canonical =
         );
       }
 
+      if (audioProject) {
+        audioProject.addEventListener(
+          "change",
+          async () => {
+            await loadProjectAudio(
+              audioProject.value,
+            );
+          },
+        );
+      }
+
+      if (
+        audioFile &&
+        audioName
+      ) {
+        audioFile.addEventListener(
+          "change",
+          () => {
+            const files =
+              audioFile.files;
+
+            if (
+              !files ||
+              files.length !==
+                1
+            ) {
+              return;
+            }
+
+            const file =
+              files[0];
+
+            if (
+              !audioName.value.trim()
+            ) {
+              audioName.value =
+                file.name.replace(
+                  /\.wav$/i,
+                  "",
+                );
+            }
+          },
+        );
+      }
+
+      if (audioForm) {
+        audioForm.addEventListener(
+          "submit",
+          async (event) => {
+            event.preventDefault();
+
+            const projectId =
+              audioProject
+                ? audioProject.value
+                : "";
+
+            const files =
+              audioFile
+                ? audioFile.files
+                : null;
+
+            const name =
+              audioName
+                ? audioName.value.trim()
+                : "";
+
+            if (!projectId) {
+              setAudioStatus(
+                "Choose a project before uploading audio.",
+                true,
+              );
+
+              return;
+            }
+
+            if (
+              !files ||
+              files.length !==
+                1
+            ) {
+              setAudioStatus(
+                "Choose one WAV file to upload.",
+                true,
+              );
+
+              return;
+            }
+
+            const file =
+              files[0];
+
+            if (
+              !/\.wav$/i.test(
+                file.name,
+              )
+            ) {
+              setAudioStatus(
+                "Choose a WAV file.",
+                true,
+              );
+
+              return;
+            }
+
+            if (
+              file.size <=
+                0
+            ) {
+              setAudioStatus(
+                "The selected WAV file is empty.",
+                true,
+              );
+
+              return;
+            }
+
+            if (
+              file.size >
+                26214400
+            ) {
+              setAudioStatus(
+                "The selected WAV file is larger than 25 MiB.",
+                true,
+              );
+
+              return;
+            }
+
+            if (!name) {
+              setAudioStatus(
+                "Give this recording a name.",
+                true,
+              );
+
+              return;
+            }
+
+            setAudioBusy(
+              true,
+            );
+
+            setAudioStatus(
+              "Uploading private audio…",
+            );
+
+            try {
+              const {
+                response,
+                body,
+              } =
+                await fetchJson(
+                  `/api/sesh/projects/${encodeURIComponent(
+                    projectId,
+                  )}/audio/`,
+                  {
+                    method:
+                      "POST",
+
+                    headers: {
+                      "content-type":
+                        "audio/wav",
+
+                      "x-sesh-audio-name":
+                        name,
+                    },
+
+                    body:
+                      file,
+                  },
+                );
+
+              if (!response.ok) {
+                setAudioStatus(
+                  errorMessage(
+                    body,
+                    "Unable to upload private audio.",
+                  ),
+                  true,
+                );
+
+                return;
+              }
+
+              if (audioFile) {
+                audioFile.value =
+                  "";
+              }
+
+              if (audioName) {
+                audioName.value =
+                  "";
+              }
+
+              setAudioStatus(
+                "Private audio uploaded.",
+              );
+
+              await loadProjectAudio(
+                projectId,
+              );
+            }
+            catch {
+              setAudioStatus(
+                "Unable to upload private audio.",
+                true,
+              );
+            }
+            finally {
+              setAudioBusy(
+                false,
+              );
+            }
+          },
+        );
+      }
       if (projectForm) {
         projectForm.addEventListener(
           "submit",
@@ -1449,6 +2184,44 @@ const canonical =
       margin-top: 2.5rem;
     }
 
+    .sesh-studio__audio {
+      margin-top: 1rem;
+    }
+
+    .sesh-studio__audio-status {
+      min-height: 1.4rem;
+      margin: 1rem 0 0;
+    }
+
+    .sesh-studio__audio-status[data-state="error"] {
+      font-weight: 700;
+      opacity: 1;
+    }
+
+    .sesh-studio__audio-list {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .sesh-studio__audio-item {
+      padding: 1rem 0;
+      border-top: 1px solid rgba(20, 20, 20, 0.12);
+    }
+
+    .sesh-studio__audio-item:first-child {
+      border-top: 0;
+    }
+
+    .sesh-studio__audio-item h4,
+    .sesh-studio__audio-item p {
+      margin: 0;
+    }
+
+    .sesh-studio__audio-item p {
+      margin-top: 0.35rem;
+    }
+
     .sesh-studio form {
       display: grid;
       gap: 1rem;
@@ -1463,6 +2236,7 @@ const canonical =
     }
 
     .sesh-studio input,
+    .sesh-studio select,
     .sesh-studio textarea {
       width: 100%;
       box-sizing: border-box;

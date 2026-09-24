@@ -1,0 +1,65 @@
+{
+  "id": "SESH-064",
+  "title": "Studio Private Audio Upload UI and Metadata Refresh",
+  "status": "implementation",
+  "baseline": {
+    "commit": "cf289ac891d46bd3e6b09a9720e7b5884260aeb9",
+    "previousSlice": "SESH-063"
+  },
+  "goal": "Allow an authenticated Sesh creator to select one owned project, choose a WAV file, upload through the existing owner-authorized private audio HTTP ingress, and refresh sanitized private audio metadata.",
+  "ui": {
+    "surface": "/sesh/studio/",
+    "projectSelection": "existing authenticated creator project collection",
+    "fileInput": "single WAV",
+    "assetName": "human-facing name",
+    "maximumBytes": 26214400,
+    "states": [
+      "idle",
+      "loading",
+      "uploading",
+      "success",
+      "error"
+    ]
+  },
+  "http": {
+    "uploadMethod": "POST",
+    "uploadPath": "/api/sesh/projects/{projectId}/audio/",
+    "uploadBody": "raw File bytes",
+    "uploadContentType": "audio/wav",
+    "nameHeader": "x-sesh-audio-name",
+    "metadataRefreshMethod": "GET",
+    "metadataRefreshPath": "/api/sesh/projects/{projectId}/audio/",
+    "credentials": "same-origin",
+    "cache": "no-store"
+  },
+  "authority": {
+    "browserProjectOwnershipAuthority": false,
+    "browserAudioAssetIdAuthority": false,
+    "browserStorageReferenceAuthority": false,
+    "browserR2KeyAuthority": false,
+    "browserD1Authority": false,
+    "browserR2Authority": false,
+    "playbackAuthority": false,
+    "deleteAuthority": false,
+    "publicationAuthority": false,
+    "rightsGrant": false
+  },
+  "presentation": {
+    "projectIdRenderedAsHumanText": false,
+    "audioAssetIdRenderedAsHumanText": false,
+    "storageReferenceRendered": false,
+    "privateObjectKeyRendered": false,
+    "sanitizedMetadataOnly": true
+  },
+  "persistence": {
+    "directMutation": false,
+    "delegatesTo": "SESH-063 HTTP ingress and SESH-062 upload lifecycle",
+    "liveDatabaseMutationDuringImplementation": false,
+    "liveR2MutationDuringImplementation": false,
+    "deployment": false
+  },
+  "next": {
+    "id": "SESH-065",
+    "title": "Owner-authorized private binary audio read and playback"
+  }
+}
