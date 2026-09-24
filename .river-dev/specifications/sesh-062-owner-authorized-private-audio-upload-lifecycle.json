@@ -1,0 +1,77 @@
+{
+    "id":  "SESH-062",
+    "title":  "Owner-Authorized Private Audio Upload Lifecycle",
+    "status":  "IMPLEMENTED_LOCALLY_PENDING_REVIEW",
+    "sourceBaseline":  {
+                           "branch":  "cif-001-canonical-content-source-record",
+                           "commit":  "497428ad71ad0382f3b7e7986096ed07571324f3",
+                           "predecessor":  "SESH-061"
+                       },
+    "scope":  [
+                  "Private audio upload orchestration service",
+                  "Canonical private R2 storage-reference generation",
+                  "Owner authorization before persistence mutation",
+                  "D1 audio metadata creation",
+                  "Revision-safe project graph attachment",
+                  "Reverse-order compensation on partial failure"
+              ],
+    "phaseOneUploadPolicy":  {
+                                 "contentTypes":  [
+                                                      "audio/wav"
+                                                  ],
+                                 "maximumBytes":  26214400,
+                                 "emptyUploadAllowed":  false,
+                                 "transport":  "Not exposed through HTTP in SESH-062"
+                             },
+    "sequence":  [
+                     "Validate request before writes.",
+                     "Authorize canonical project owner for write.",
+                     "Capture canonical project snapshot and revision.",
+                     "Generate AudioAssetId server-side.",
+                     "Generate private storage reference server-side.",
+                     "Write binary bytes to private R2.",
+                     "Create canonical D1 audio metadata.",
+                     "Append AudioAssetId through project conditional CAS.",
+                     "Return sanitized product metadata only."
+                 ],
+    "compensation":  [
+                         "R2 failure stops before D1 or project writes.",
+                         "Metadata failure after R2 deletes the R2 object.",
+                         "Project CAS failure first deletes metadata, then deletes the R2 object.",
+                         "If metadata rollback fails, retain the corresponding R2 object rather than create metadata pointing at missing binary.",
+                         "If R2 rollback fails after metadata rollback, surface unavailable and explicit orphan-object risk.",
+                         "Compensation failure is never reported as successful upload."
+                     ],
+    "invariants":  [
+                       "No client-supplied AudioAssetId.",
+                       "No client-supplied storage reference.",
+                       "No client-supplied R2 key.",
+                       "No direct browser D1.",
+                       "No direct browser R2.",
+                       "Project owner authority is server derived.",
+                       "Project graph attachment uses expected revision.",
+                       "Concurrent stale project mutation fails closed.",
+                       "Duplicate audio asset reference is forbidden.",
+                       "Binary storage and metadata lifecycles remain explicitly separate.",
+                       "Upload does not grant copyright, master, publishing, distribution, licensing, management, royalty, or revenue rights."
+                   ],
+    "deliberatelyDeferred":  [
+                                 "HTTP POST upload route",
+                                 "Browser upload UI",
+                                 "Binary download/playback",
+                                 "Audio deletion product flow",
+                                 "Public media delivery",
+                                 "Resumable uploads",
+                                 "Multipart uploads",
+                                 "Presigned direct-to-R2 uploads",
+                                 "Transcoding",
+                                 "Waveform generation",
+                                 "Track assignment",
+                                 "Marketplace behavior"
+                             ],
+    "nextSlice":  {
+                      "id":  "SESH-063",
+                      "title":  "Private Audio Upload HTTP Ingress",
+                      "prerequisite":  "SESH-062 compensation lifecycle must be committed and locked first."
+                  }
+}
