@@ -1,0 +1,66 @@
+{
+  "id": "SESH-071A",
+  "title": "Studio track mix controls",
+  "baseline": {
+    "studioTrackCrud": "SESH-070G",
+    "trackAudioAttachment": "SESH-070H-D"
+  },
+  "purpose": [
+    "Expose owner-authorized Studio controls for canonical track muted state.",
+    "Expose owner-authorized Studio controls for canonical track solo state.",
+    "Expose owner-authorized Studio input for canonical finite numeric track gain."
+  ],
+  "canonicalFields": {
+    "muted": "optional boolean",
+    "solo": "optional boolean",
+    "gain": "optional finite number",
+    "gainCanonicalMin": null,
+    "gainCanonicalMax": null,
+    "orderIncluded": false
+  },
+  "mutation": {
+    "boundary": "existing authenticated owner-authorized generic track PATCH",
+    "routeIdentity": [
+      "projectId",
+      "trackId"
+    ],
+    "bodyPolicy": "exactly one mix field per request",
+    "permittedBodyFields": [
+      "muted",
+      "solo",
+      "gain"
+    ],
+    "clientRevisionTrusted": false,
+    "clientOwnerIdentityTrusted": false,
+    "successfulMutationRefreshesCanonicalServerState": true,
+    "optimisticCanonicalMutation": false
+  },
+  "excludedMutationFields": [
+    "id",
+    "projectId",
+    "name",
+    "order",
+    "audioAssetIds"
+  ],
+  "boundaries": {
+    "trackReordering": false,
+    "trackAudioMutation": "SESH-070H-B/C dedicated operations only",
+    "projectAudioMutation": false,
+    "directD1": false,
+    "directR2": false,
+    "seshAudioBinding": false,
+    "publicAudio": false,
+    "collaboratorRights": false,
+    "publishingRights": false,
+    "managementRights": false,
+    "masterRights": false,
+    "royaltyRights": false,
+    "ownershipTransfer": false
+  },
+  "production": {
+    "migrationExecutionAuthorized": false,
+    "deployment": false,
+    "liveD1Mutation": false,
+    "liveR2Mutation": false
+  }
+}

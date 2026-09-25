@@ -1429,6 +1429,95 @@ const canonical =
           return body.value;
         };
 
+      const updateTrackMixField =
+        async (
+          projectId,
+          trackId,
+          field,
+          value,
+        ) => {
+          let body;
+
+          if (
+            field ===
+            "muted" &&
+            typeof value ===
+              "boolean"
+          ) {
+            body = {
+              muted:
+                value,
+            };
+          }
+          else if (
+            field ===
+            "solo" &&
+            typeof value ===
+              "boolean"
+          ) {
+            body = {
+              solo:
+                value,
+            };
+          }
+          else if (
+            field ===
+            "gain" &&
+            typeof value ===
+              "number" &&
+            Number.isFinite(
+              value,
+            )
+          ) {
+            body = {
+              gain:
+                value,
+            };
+          }
+          else {
+            throw new Error(
+              "Invalid track mix update.",
+            );
+          }
+
+          const {
+            response,
+            body: responseBody,
+          } =
+            await fetchJson(
+              `/api/sesh/projects/${encodeURIComponent(
+                projectId,
+              )}/tracks/${encodeURIComponent(
+                trackId,
+              )}`,
+              {
+                method:
+                  "PATCH",
+
+                headers: {
+                  "content-type":
+                    "application/json",
+                },
+
+                body:
+                  JSON.stringify(
+                    body,
+                  ),
+              },
+            );
+
+          if (!response.ok) {
+            throw new Error(
+              errorMessage(
+                responseBody,
+                "Unable to update track mix.",
+              ),
+            );
+          }
+
+          return responseBody;
+        };
+
       let trackAudioInventory =
         [];
 
@@ -1774,6 +1863,295 @@ const canonical =
 
           item.appendChild(
             details,
+          );
+
+          const trackMix =
+            document.createElement(
+              "div",
+            );
+
+          trackMix.className =
+            "sesh-studio__track-mix";
+
+          const mixTitle =
+            document.createElement(
+              "p",
+            );
+
+          mixTitle.className =
+            "sesh-studio__muted";
+
+          mixTitle.textContent =
+            "Mix";
+
+          trackMix.appendChild(
+            mixTitle,
+          );
+
+          const mixActions =
+            document.createElement(
+              "div",
+            );
+
+          mixActions.className =
+            "sesh-studio__actions";
+
+          const muteButton =
+            document.createElement(
+              "button",
+            );
+
+          muteButton.type =
+            "button";
+
+          muteButton.textContent =
+            track.muted ===
+            true
+              ? "Unmute"
+              : "Mute";
+
+          muteButton.setAttribute(
+            "aria-pressed",
+            track.muted ===
+              true
+              ? "true"
+              : "false",
+          );
+
+          muteButton.addEventListener(
+            "click",
+            async () => {
+              muteButton.disabled =
+                true;
+
+              setTrackStatus(
+                "Updating track mute…",
+              );
+
+              try {
+                await updateTrackMixField(
+                  projectId,
+                  track.id,
+                  "muted",
+                  track.muted !==
+                    true,
+                );
+
+                await loadProjectTracks(
+                  projectId,
+                );
+
+                setTrackStatus(
+                  "Track mute updated.",
+                );
+              }
+              catch (error) {
+                setTrackStatus(
+                  error instanceof Error
+                    ? error.message
+                    : "Unable to update track mute.",
+                  true,
+                );
+
+                muteButton.disabled =
+                  false;
+              }
+            },
+          );
+
+          const soloButton =
+            document.createElement(
+              "button",
+            );
+
+          soloButton.type =
+            "button";
+
+          soloButton.textContent =
+            track.solo ===
+            true
+              ? "Unsolo"
+              : "Solo";
+
+          soloButton.setAttribute(
+            "aria-pressed",
+            track.solo ===
+              true
+              ? "true"
+              : "false",
+          );
+
+          soloButton.addEventListener(
+            "click",
+            async () => {
+              soloButton.disabled =
+                true;
+
+              setTrackStatus(
+                "Updating track solo…",
+              );
+
+              try {
+                await updateTrackMixField(
+                  projectId,
+                  track.id,
+                  "solo",
+                  track.solo !==
+                    true,
+                );
+
+                await loadProjectTracks(
+                  projectId,
+                );
+
+                setTrackStatus(
+                  "Track solo updated.",
+                );
+              }
+              catch (error) {
+                setTrackStatus(
+                  error instanceof Error
+                    ? error.message
+                    : "Unable to update track solo.",
+                  true,
+                );
+
+                soloButton.disabled =
+                  false;
+              }
+            },
+          );
+
+          mixActions.append(
+            muteButton,
+            soloButton,
+          );
+
+          trackMix.appendChild(
+            mixActions,
+          );
+
+          const gainLabel =
+            document.createElement(
+              "label",
+            );
+
+          gainLabel.textContent =
+            "Gain";
+
+          const gainInput =
+            document.createElement(
+              "input",
+            );
+
+          gainInput.type =
+            "number";
+
+          gainInput.step =
+            "any";
+
+          gainInput.setAttribute(
+            "data-control",
+            "track-mix-gain",
+          );
+
+          if (
+            typeof track.gain ===
+              "number" &&
+            Number.isFinite(
+              track.gain,
+            )
+          ) {
+            gainInput.value =
+              String(
+                track.gain,
+              );
+          }
+          else {
+            gainInput.placeholder =
+              "Unset";
+          }
+
+          gainInput.addEventListener(
+            "change",
+            async () => {
+              const raw =
+                gainInput.value.trim();
+
+              if (!raw) {
+                setTrackStatus(
+                  "Enter a finite numeric gain value.",
+                  true,
+                );
+
+                return;
+              }
+
+              const gain =
+                Number(
+                  raw,
+                );
+
+              if (
+                !Number.isFinite(
+                  gain,
+                )
+              ) {
+                setTrackStatus(
+                  "Gain must be a finite number.",
+                  true,
+                );
+
+                return;
+              }
+
+              gainInput.disabled =
+                true;
+
+              setTrackStatus(
+                "Updating track gain…",
+              );
+
+              try {
+                await updateTrackMixField(
+                  projectId,
+                  track.id,
+                  "gain",
+                  gain,
+                );
+
+                await loadProjectTracks(
+                  projectId,
+                );
+
+                setTrackStatus(
+                  "Track gain updated.",
+                );
+              }
+              catch (error) {
+                setTrackStatus(
+                  error instanceof Error
+                    ? error.message
+                    : "Unable to update track gain.",
+                  true,
+                );
+
+                gainInput.disabled =
+                  false;
+              }
+            },
+          );
+
+          gainLabel.appendChild(
+            gainInput,
+          );
+
+          trackMix.appendChild(
+            gainLabel,
+          );
+
+          item.appendChild(
+            trackMix,
           );
 
           const attachedIds =
