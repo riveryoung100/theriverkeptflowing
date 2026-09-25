@@ -111,3 +111,13 @@ export type {
   SeshTrackOperationFailureCode,
   SeshTrackOperationResult,
 } from "./track-operation-service";
+export {
+  DefaultAuthorizedSeshTrackAudioOperationService,
+} from "./track-audio-operation-service";
+
+export type {
+  AuthorizedSeshTrackAudioOperationService,
+  DefaultAuthorizedSeshTrackAudioOperationServiceDependencies,
+  SeshTrackAudioOperationFailureCode,
+  SeshTrackAudioOperationResult,
+} from "./track-audio-operation-service";

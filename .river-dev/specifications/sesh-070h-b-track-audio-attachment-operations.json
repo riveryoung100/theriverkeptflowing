@@ -1,0 +1,66 @@
+{
+  "id": "SESH-070H-B",
+  "title": "Owner-authorized track audio attachment operations",
+  "purpose": "Provide explicit server-side attach and detach operations for assigning project-owned private audio assets to project tracks without widening ordinary track metadata update authority.",
+  "canonicalRelationship": {
+    "projectAudioAssetIds": "Canonical inventory of audio assets belonging to the project.",
+    "trackAudioAssetIds": "Ordered organizational references assigning project-owned audio assets to a track."
+  },
+  "attach": [
+    "Validate projectId, trackId, and audioAssetId.",
+    "Owner-authorize project write access.",
+    "Read canonical project snapshot and recheck owner identity.",
+    "Require trackId to be attached to the project.",
+    "Require audioAssetId to be present in project.audioAssetIds.",
+    "Read canonical audio metadata and require asset.projectId to equal projectId.",
+    "Read canonical track snapshot and require track.projectId to equal projectId.",
+    "If already attached, return canonical track idempotently without a write.",
+    "Otherwise append audioAssetId using revision-gated track CAS.",
+    "Verify the returned canonical track contains the attachment and preserves immutable identity."
+  ],
+  "detach": [
+    "Validate projectId, trackId, and audioAssetId.",
+    "Owner-authorize project write access.",
+    "Read canonical project snapshot and recheck owner identity.",
+    "Require trackId to be attached to the project.",
+    "Read canonical track snapshot and require track.projectId to equal projectId.",
+    "If the audioAssetId is absent from the track, return canonical track idempotently without a write.",
+    "Otherwise remove audioAssetId using revision-gated track CAS.",
+    "Verify the returned canonical track no longer contains the attachment and preserves immutable identity."
+  ],
+  "authority": {
+    "projectMutation": false,
+    "audioMetadataMutation": false,
+    "r2Authority": false,
+    "ordinaryTrackUpdateAudioAssetIds": false,
+    "trackAudioReferenceMutation": true,
+    "http": false,
+    "studio": false,
+    "publicMedia": false,
+    "collaborators": false,
+    "rights": false
+  },
+  "semantics": {
+    "duplicateAttach": "Idempotent success without CAS mutation.",
+    "absentDetach": "Idempotent success without CAS mutation.",
+    "trackCasConflict": "Return conflict.",
+    "persistenceFailure": "Fail closed as unavailable.",
+    "crossProjectAudio": "Fail closed.",
+    "projectInventoryRequiredForAttach": true
+  },
+  "deferred": [
+    "Authenticated HTTP endpoints.",
+    "Runtime composition.",
+    "Studio attachment UI.",
+    "Track ordering of audio clips beyond append order.",
+    "Timeline positioning.",
+    "Waveform editing.",
+    "Public sharing.",
+    "Collaborator rights.",
+    "Publishing or ownership rights."
+  ],
+  "migrationExecutionAuthorized": false,
+  "deployment": false,
+  "liveD1Mutation": false,
+  "liveR2Mutation": false
+}
