@@ -147,5 +147,8 @@ export function createCreatorAudioDeleteAtRuntime(
 
     audioObjects:
       persistence.audioObjectStore,
+
+    tracks:
+      persistence.trackRepository,
   });
 }

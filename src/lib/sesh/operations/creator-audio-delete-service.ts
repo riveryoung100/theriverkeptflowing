@@ -20,6 +20,10 @@ import type {
 } from "../persistence";
 
 import type {
+  SeshTrackRepository,
+} from "../persistence/track-repository";
+
+import type {
   SeshPersistenceError,
 } from "../persistence/model";
 
@@ -96,6 +100,11 @@ export interface DefaultCreatorAudioDeleteServiceDependencies {
       "deleteObject"
     >;
 
+  readonly tracks:
+    Pick<
+      SeshTrackRepository,
+      "listTracksForProject"
+    >;
   readonly now?:
     () => string;
 }
@@ -213,6 +222,12 @@ implements CreatorAudioDeleteService {
       "deleteObject"
     >;
 
+  readonly #tracks:
+    Pick<
+      SeshTrackRepository,
+      "listTracksForProject"
+    >;
+
   readonly #now:
     () => string;
 
@@ -231,6 +246,9 @@ implements CreatorAudioDeleteService {
 
     this.#audioObjects =
       dependencies.audioObjects;
+
+    this.#tracks =
+      dependencies.tracks;
 
     this.#now =
       dependencies.now ??
@@ -349,6 +367,47 @@ implements CreatorAudioDeleteService {
         "not-found",
         "Sesh private audio is not attached to this project.",
       );
+    }
+
+    const tracksResult =
+      await this.#tracks
+        .listTracksForProject(
+          ids.projectId,
+        );
+
+    if (
+      !tracksResult.ok
+    ) {
+      return mapPersistenceFailure(
+        tracksResult.error,
+        "Sesh project track references are unavailable.",
+      );
+    }
+
+    for (
+      const track of
+      tracksResult.value
+    ) {
+      if (
+        track.projectId !==
+        ids.projectId
+      ) {
+        return failure(
+          "unavailable",
+          "Sesh project track listing failed its project identity invariant.",
+        );
+      }
+
+      if (
+        track.audioAssetIds.includes(
+          ids.audioAssetId,
+        )
+      ) {
+        return failure(
+          "conflict",
+          "Sesh private audio is attached to a track. Detach it from all tracks before deleting it.",
+        );
+      }
     }
 
     if (

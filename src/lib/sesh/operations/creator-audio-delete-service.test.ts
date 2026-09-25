@@ -8,7 +8,16 @@ import type {
 import type {
   SeshAudioAsset,
   SeshMusicProject,
+  SeshTrack,
 } from "../model";
+
+import type {
+  DefaultCreatorAudioDeleteServiceDependencies,
+} from "./creator-audio-delete-service";
+
+import {
+  InMemorySeshTrackRepository,
+} from "../persistence/track-repository";
 
 import {
   DefaultCreatorAudioDeleteService,
@@ -116,6 +125,30 @@ SeshProjectOwnershipAuthorizer {
   };
 }
 
+function deleteService(
+  dependencies:
+    Omit<
+      DefaultCreatorAudioDeleteServiceDependencies,
+      "tracks"
+    >,
+): DefaultCreatorAudioDeleteService {
+  return new DefaultCreatorAudioDeleteService({
+    ...dependencies,
+
+    tracks: {
+      async listTracksForProject() {
+        return {
+          ok:
+            true as const,
+
+          value:
+            [] as readonly SeshTrack[],
+        };
+      },
+    },
+  });
+}
+
 test(
   "deletes private audio by detaching project first then metadata then R2",
   async () => {
@@ -124,7 +157,7 @@ test(
         [];
 
     const service =
-      new DefaultCreatorAudioDeleteService({
+      deleteService({
         authorizer:
           authorizer(),
 
@@ -283,7 +316,7 @@ test(
       false;
 
     const service =
-      new DefaultCreatorAudioDeleteService({
+      deleteService({
         authorizer:
           authorizer(),
 
@@ -393,7 +426,7 @@ test(
       false;
 
     const service =
-      new DefaultCreatorAudioDeleteService({
+      deleteService({
         authorizer: {
           async authorize() {
             return {
@@ -489,7 +522,7 @@ test(
       false;
 
     const service =
-      new DefaultCreatorAudioDeleteService({
+      deleteService({
         authorizer:
           authorizer(),
 
@@ -604,7 +637,7 @@ test(
   "surfaces orphan cleanup risk if R2 delete fails after metadata deletion",
   async () => {
     const service =
-      new DefaultCreatorAudioDeleteService({
+      deleteService({
         authorizer:
           authorizer(),
 
@@ -708,6 +741,306 @@ test(
     assert.match(
       result.error.message,
       /binary cleanup failed/i,
+    );
+  },
+);
+test(
+  "rejects deletion while private audio is referenced by a project track",
+  async () => {
+    const tracks =
+      new InMemorySeshTrackRepository();
+
+    const track:
+      SeshTrack = {
+        id:
+          "sesh-track:delete-guard-track",
+
+        projectId,
+
+        name:
+          "Referenced audio",
+
+        order:
+          0,
+
+        audioAssetIds: [
+          audioAssetId,
+        ],
+      };
+
+    const saved =
+      await tracks.saveTrack(
+        track,
+      );
+
+    assert.equal(
+      saved.ok,
+      true,
+    );
+
+    let projectDetached =
+      false;
+
+    let metadataDeleted =
+      false;
+
+    let objectDeleted =
+      false;
+
+    const service =
+      new DefaultCreatorAudioDeleteService({
+        authorizer:
+          authorizer(),
+
+        projects: {
+          async getProjectSnapshot() {
+            return {
+              ok:
+                true as const,
+
+              value: {
+                project,
+
+                revision:
+                  9,
+              },
+            };
+          },
+
+          async updateProjectConditionally() {
+            projectDetached =
+              true;
+
+            throw new Error(
+              "project detach must not run while audio is referenced",
+            );
+          },
+        },
+
+        audioAssets: {
+          async getAudioAsset() {
+            return {
+              ok:
+                true as const,
+
+              value:
+                asset,
+            };
+          },
+
+          async deleteAudioAssetMetadata() {
+            metadataDeleted =
+              true;
+
+            throw new Error(
+              "metadata delete must not run while audio is referenced",
+            );
+          },
+        },
+
+        audioObjects: {
+          async deleteObject() {
+            objectDeleted =
+              true;
+
+            throw new Error(
+              "R2 delete must not run while audio is referenced",
+            );
+          },
+        },
+
+        tracks,
+      });
+
+    const result =
+      await service.deleteProjectAudio(
+        projectId,
+        audioAssetId,
+      );
+
+    assert.equal(
+      result.ok,
+      false,
+    );
+
+    if (
+      result.ok
+    ) {
+      return;
+    }
+
+    assert.equal(
+      result.error.code,
+      "conflict",
+    );
+
+    assert.equal(
+      projectDetached,
+      false,
+    );
+
+    assert.equal(
+      metadataDeleted,
+      false,
+    );
+
+    assert.equal(
+      objectDeleted,
+      false,
+    );
+
+    const retainedTrack =
+      await tracks.getTrack(
+        track.id,
+      );
+
+    assert.equal(
+      retainedTrack.ok,
+      true,
+    );
+
+    if (
+      !retainedTrack.ok
+    ) {
+      return;
+    }
+
+    assert.deepEqual(
+      retainedTrack.value.audioAssetIds,
+      [
+        audioAssetId,
+      ],
+    );
+  },
+);
+
+test(
+  "fails closed before destructive audio deletion when track listing is unavailable",
+  async () => {
+    let projectDetached =
+      false;
+
+    let metadataDeleted =
+      false;
+
+    let objectDeleted =
+      false;
+
+    const service =
+      new DefaultCreatorAudioDeleteService({
+        authorizer:
+          authorizer(),
+
+        projects: {
+          async getProjectSnapshot() {
+            return {
+              ok:
+                true as const,
+
+              value: {
+                project,
+
+                revision:
+                  10,
+              },
+            };
+          },
+
+          async updateProjectConditionally() {
+            projectDetached =
+              true;
+
+            throw new Error(
+              "project detach must not run after track-list failure",
+            );
+          },
+        },
+
+        audioAssets: {
+          async getAudioAsset() {
+            return {
+              ok:
+                true as const,
+
+              value:
+                asset,
+            };
+          },
+
+          async deleteAudioAssetMetadata() {
+            metadataDeleted =
+              true;
+
+            throw new Error(
+              "metadata delete must not run after track-list failure",
+            );
+          },
+        },
+
+        audioObjects: {
+          async deleteObject() {
+            objectDeleted =
+              true;
+
+            throw new Error(
+              "R2 delete must not run after track-list failure",
+            );
+          },
+        },
+
+        tracks: {
+          async listTracksForProject() {
+            return {
+              ok:
+                false as const,
+
+              error: {
+                kind:
+                  "storage" as const,
+
+                message:
+                  "simulated track repository failure",
+              },
+            };
+          },
+        },
+      });
+
+    const result =
+      await service.deleteProjectAudio(
+        projectId,
+        audioAssetId,
+      );
+
+    assert.equal(
+      result.ok,
+      false,
+    );
+
+    if (
+      result.ok
+    ) {
+      return;
+    }
+
+    assert.equal(
+      result.error.code,
+      "unavailable",
+    );
+
+    assert.equal(
+      projectDetached,
+      false,
+    );
+
+    assert.equal(
+      metadataDeleted,
+      false,
+    );
+
+    assert.equal(
+      objectDeleted,
+      false,
     );
   },
 );
