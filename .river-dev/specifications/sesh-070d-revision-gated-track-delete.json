@@ -1,0 +1,51 @@
+{
+  "id": "SESH-070D",
+  "title": "Revision-gated track deletion persistence",
+  "purpose": "Close the track deletion concurrency gap by adding revision-gated compare-and-swap deletion to both canonical in-memory and D1 SeshTrackRepository implementations.",
+  "repositoryContract": {
+    "method": "deleteTrackConditionally",
+    "inputs": [
+      "SeshTrackId",
+      "expectedRevision"
+    ],
+    "result": "SeshPersistenceResult<boolean>",
+    "missingTrack": "not-found",
+    "staleRevision": "conflict",
+    "successfulDelete": true
+  },
+  "inMemorySemantics": {
+    "validateCanonicalTrackId": true,
+    "validateExpectedRevision": true,
+    "compareCurrentRevision": true,
+    "deleteTrackAndRevisionMetadataTogether": true
+  },
+  "d1Semantics": {
+    "preReadCanonicalSnapshot": true,
+    "compareSnapshotRevision": true,
+    "deletePredicate": "track_id plus revision CAS",
+    "legacyNullRevision": "matches expected revision zero only",
+    "zeroRowsChanged": "conflict"
+  },
+  "ordinaryDeleteCompatibility": {
+    "deleteTrackRetained": true,
+    "implementation": "Load current snapshot and delegate to deleteTrackConditionally.",
+    "reason": "Existing internal compensation callers remain compatible while all actual deletion becomes revision-gated."
+  },
+  "boundaries": [
+    "No owner-authorized track delete operation is exposed in this slice.",
+    "No project.trackIds mutation is added in this slice.",
+    "No HTTP endpoint is added.",
+    "No Studio UI is added.",
+    "No R2 or audio-byte authority is added.",
+    "No public media authority is added.",
+    "No collaborator authority is added.",
+    "No ownership transfer is added.",
+    "No copyright, publishing, master, management, licensing, or royalty semantics are added.",
+    "Migration 0005 is not executed.",
+    "No deployment is authorized."
+  ],
+  "migrationExecutionAuthorized": false,
+  "deployment": false,
+  "liveD1Mutation": false,
+  "liveR2Mutation": false
+}

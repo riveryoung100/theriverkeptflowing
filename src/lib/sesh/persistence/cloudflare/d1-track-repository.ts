@@ -745,9 +745,12 @@ implements SeshTrackRepository {
     }
   }
 
-  async deleteTrack(
+  async deleteTrackConditionally(
     trackId:
       SeshTrackId,
+
+    expectedRevision:
+      number,
   ): Promise<
     SeshPersistenceResult<
       boolean
@@ -756,10 +759,18 @@ implements SeshTrackRepository {
     let canonicalId:
       SeshTrackId;
 
+    let revision:
+      number;
+
     try {
       canonicalId =
         parseSeshTrackId(
           trackId,
+        );
+
+      revision =
+        validateExpectedRevision(
+          expectedRevision,
         );
     }
     catch (
@@ -769,45 +780,66 @@ implements SeshTrackRepository {
         "validation",
         error instanceof Error
           ? error.message
-          : "Sesh track identifier validation failed.",
+          : "Sesh conditional track deletion validation failed.",
       );
     }
 
-    const existing =
-      await this.getTrack(
+    const current =
+      await this.getTrackSnapshot(
         canonicalId,
       );
 
     if (
-      !existing.ok
+      !current.ok
     ) {
-      if (
-        existing.error.kind ===
-        "not-found"
-      ) {
-        return success(
-          false,
-        );
-      }
+      return current;
+    }
 
-      return existing;
+    if (
+      current.value.revision !==
+      revision
+    ) {
+      return failure(
+        "conflict",
+        "Sesh track changed before conditional deletion.",
+      );
     }
 
     try {
       const result =
         await this.database
           .prepare(
-            "DELETE FROM sesh_tracks WHERE track_id = ?",
+            `DELETE FROM sesh_tracks
+            WHERE
+              track_id = ?
+              AND (
+                revision = ?
+                OR (
+                  revision IS NULL
+                  AND ? = 0
+                )
+              )`,
           )
           .bind(
             canonicalId,
+            revision,
+            revision,
           )
           .run();
 
-      return success(
-        changedExactlyOne(
+      if (
+        !changedExactlyOne(
           result,
-        ),
+        )
+      ) {
+        return failure(
+          "conflict",
+          "Sesh track changed before conditional deletion.",
+        );
+      }
+
+      return success(
+        true,
       );
     }
     catch (
@@ -817,8 +849,42 @@ implements SeshTrackRepository {
         "storage",
         error instanceof Error
           ? error.message
-          : "Sesh D1 track deletion failed.",
+          : "Sesh D1 conditional track deletion failed.",
       );
     }
+  }
+
+  async deleteTrack(
+    trackId:
+      SeshTrackId,
+  ): Promise<
+    SeshPersistenceResult<
+      boolean
+    >
+  > {
+    const snapshot =
+      await this.getTrackSnapshot(
+        trackId,
+      );
+
+    if (
+      !snapshot.ok
+    ) {
+      if (
+        snapshot.error.kind ===
+        "not-found"
+      ) {
+        return success(
+          false,
+        );
+      }
+
+      return snapshot;
+    }
+
+    return this.deleteTrackConditionally(
+      trackId,
+      snapshot.value.revision,
+    );
   }
 }

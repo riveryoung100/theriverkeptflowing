@@ -77,6 +77,18 @@ export interface SeshTrackRepository {
     >
   >;
 
+  deleteTrackConditionally(
+    trackId:
+      SeshTrackId,
+
+    expectedRevision:
+      number,
+  ): Promise<
+    SeshPersistenceResult<
+      boolean
+    >
+  >;
+
   deleteTrack(
     trackId:
       SeshTrackId,
@@ -480,9 +492,12 @@ implements SeshTrackRepository {
     });
   }
 
-  async deleteTrack(
+  async deleteTrackConditionally(
     trackId:
       SeshTrackId,
+
+    expectedRevision:
+      number,
   ): Promise<
     SeshPersistenceResult<
       boolean
@@ -491,10 +506,18 @@ implements SeshTrackRepository {
     let canonicalId:
       SeshTrackId;
 
+    let revision:
+      number;
+
     try {
       canonicalId =
         parseSeshTrackId(
           trackId,
+        );
+
+      revision =
+        validateRevision(
+          expectedRevision,
         );
     }
     catch (
@@ -504,7 +527,28 @@ implements SeshTrackRepository {
         "validation",
         error instanceof Error
           ? error.message
-          : "Sesh track identifier validation failed.",
+          : "Sesh conditional track deletion validation failed.",
+      );
+    }
+
+    const current =
+      await this.getTrackSnapshot(
+        canonicalId,
+      );
+
+    if (
+      !current.ok
+    ) {
+      return current;
+    }
+
+    if (
+      current.value.revision !==
+      revision
+    ) {
+      return failure(
+        "conflict",
+        "Sesh track changed before conditional deletion.",
       );
     }
 
@@ -513,12 +557,55 @@ implements SeshTrackRepository {
         canonicalId,
       );
 
+    if (
+      !deleted
+    ) {
+      return failure(
+        "conflict",
+        "Sesh track changed before conditional deletion.",
+      );
+    }
+
     this.#revisions.delete(
       canonicalId,
     );
 
     return success(
-      deleted,
+      true,
+    );
+  }
+
+  async deleteTrack(
+    trackId:
+      SeshTrackId,
+  ): Promise<
+    SeshPersistenceResult<
+      boolean
+    >
+  > {
+    const snapshot =
+      await this.getTrackSnapshot(
+        trackId,
+      );
+
+    if (
+      !snapshot.ok
+    ) {
+      if (
+        snapshot.error.kind ===
+        "not-found"
+      ) {
+        return success(
+          false,
+        );
+      }
+
+      return snapshot;
+    }
+
+    return this.deleteTrackConditionally(
+      trackId,
+      snapshot.value.revision,
     );
   }
 }

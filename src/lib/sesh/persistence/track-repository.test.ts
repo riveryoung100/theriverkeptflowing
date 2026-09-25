@@ -555,3 +555,167 @@ test(
     );
   },
 );
+test(
+  "conditional track deletion rejects stale revision and deletes the current revision",
+  async () => {
+    const repository =
+      new InMemorySeshTrackRepository();
+
+    const original =
+      track({
+        id:
+          createSeshTrackId(
+            "conditional-delete",
+          ),
+      });
+
+    const saved =
+      await repository.saveTrack(
+        original,
+      );
+
+    assert.equal(
+      saved.ok,
+      true,
+    );
+
+    const updated =
+      await repository.updateTrackConditionally(
+        {
+          ...original,
+
+          name:
+            "Updated before delete",
+        },
+        0,
+      );
+
+    assert.equal(
+      updated.ok,
+      true,
+    );
+
+    const stale =
+      await repository.deleteTrackConditionally(
+        original.id,
+        0,
+      );
+
+    assert.equal(
+      stale.ok,
+      false,
+    );
+
+    if (
+      stale.ok
+    ) {
+      return;
+    }
+
+    assert.equal(
+      stale.error.kind,
+      "conflict",
+    );
+
+    const stillPresent =
+      await repository.getTrackSnapshot(
+        original.id,
+      );
+
+    assert.equal(
+      stillPresent.ok,
+      true,
+    );
+
+    if (
+      !stillPresent.ok
+    ) {
+      return;
+    }
+
+    assert.equal(
+      stillPresent.value.revision,
+      1,
+    );
+
+    const deleted =
+      await repository.deleteTrackConditionally(
+        original.id,
+        1,
+      );
+
+    assert.deepEqual(
+      deleted,
+      {
+        ok:
+          true,
+
+        value:
+          true,
+      },
+    );
+
+    const missing =
+      await repository.getTrackSnapshot(
+        original.id,
+      );
+
+    assert.equal(
+      missing.ok,
+      false,
+    );
+
+    if (
+      missing.ok
+    ) {
+      return;
+    }
+
+    assert.equal(
+      missing.error.kind,
+      "not-found",
+    );
+  },
+);
+
+test(
+  "conditional track deletion validates expected revision",
+  async () => {
+    const repository =
+      new InMemorySeshTrackRepository();
+
+    const original =
+      track({
+        id:
+          createSeshTrackId(
+            "invalid-delete-revision",
+          ),
+      });
+
+    await repository.saveTrack(
+      original,
+    );
+
+    const result =
+      await repository.deleteTrackConditionally(
+        original.id,
+        -1,
+      );
+
+    assert.equal(
+      result.ok,
+      false,
+    );
+
+    if (
+      result.ok
+    ) {
+      return;
+    }
+
+    assert.equal(
+      result.error.kind,
+      "validation",
+    );
+  },
+);

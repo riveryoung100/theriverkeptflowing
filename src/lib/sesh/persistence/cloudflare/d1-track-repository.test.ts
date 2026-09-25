@@ -914,3 +914,177 @@ test(
     );
   },
 );
+test(
+  "D1 conditional track deletion rejects stale revision and deletes the current revision",
+  async () => {
+    const repository =
+      new D1SeshTrackRepository(
+        new FakeDatabase(),
+      );
+
+    const original =
+      canonicalTrack({
+        id:
+          createSeshTrackId(
+            "d1-conditional-delete",
+          ),
+
+        audioAssetIds:
+          [],
+      });
+
+    const saved =
+      await repository.saveTrack(
+        original,
+      );
+
+    assert.equal(
+      saved.ok,
+      true,
+    );
+
+    const updated =
+      await repository.updateTrackConditionally(
+        {
+          ...original,
+
+          name:
+            "Updated before D1 delete",
+        },
+        0,
+      );
+
+    assert.equal(
+      updated.ok,
+      true,
+    );
+
+    const stale =
+      await repository.deleteTrackConditionally(
+        original.id,
+        0,
+      );
+
+    assert.equal(
+      stale.ok,
+      false,
+    );
+
+    if (
+      stale.ok
+    ) {
+      return;
+    }
+
+    assert.equal(
+      stale.error.kind,
+      "conflict",
+    );
+
+    const current =
+      await repository.getTrackSnapshot(
+        original.id,
+      );
+
+    assert.equal(
+      current.ok,
+      true,
+    );
+
+    if (
+      !current.ok
+    ) {
+      return;
+    }
+
+    assert.equal(
+      current.value.revision,
+      1,
+    );
+
+    const deleted =
+      await repository.deleteTrackConditionally(
+        original.id,
+        1,
+      );
+
+    assert.deepEqual(
+      deleted,
+      {
+        ok:
+          true,
+
+        value:
+          true,
+      },
+    );
+
+    const missing =
+      await repository.getTrack(
+        original.id,
+      );
+
+    assert.equal(
+      missing.ok,
+      false,
+    );
+
+    if (
+      missing.ok
+    ) {
+      return;
+    }
+
+    assert.equal(
+      missing.error.kind,
+      "not-found",
+    );
+  },
+);
+
+test(
+  "D1 conditional track deletion validates expected revision",
+  async () => {
+    const repository =
+      new D1SeshTrackRepository(
+        new FakeDatabase(),
+      );
+
+    const original =
+      canonicalTrack({
+        id:
+          createSeshTrackId(
+            "d1-invalid-delete-revision",
+          ),
+
+        audioAssetIds:
+          [],
+      });
+
+    await repository.saveTrack(
+      original,
+    );
+
+    const result =
+      await repository.deleteTrackConditionally(
+        original.id,
+        -1,
+      );
+
+    assert.equal(
+      result.ok,
+      false,
+    );
+
+    if (
+      result.ok
+    ) {
+      return;
+    }
+
+    assert.equal(
+      result.error.kind,
+      "validation",
+    );
+  },
+);
