@@ -99,3 +99,15 @@ export type {
   PublicSeshProjectDiscoveryResult,
   PublicSeshProjectDiscoveryService,
 } from "./public-project-discovery-service";
+export {
+  DefaultAuthorizedSeshTrackOperationService,
+} from "./track-operation-service";
+
+export type {
+  AuthorizedSeshTrackOperationService,
+  DefaultAuthorizedSeshTrackOperationServiceDependencies,
+  SeshTrackCreateInput,
+  SeshTrackMutableUpdate,
+  SeshTrackOperationFailureCode,
+  SeshTrackOperationResult,
+} from "./track-operation-service";

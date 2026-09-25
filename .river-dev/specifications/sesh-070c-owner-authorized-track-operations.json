@@ -1,0 +1,69 @@
+{
+  "id": "SESH-070C",
+  "title": "Owner-authorized track operations foundation",
+  "purpose": "Introduce owner-authorized private track creation, read, collection read, and metadata update on top of the canonical SeshProjectOwnershipAuthorizer, project CAS, and SESH-070A/B track persistence boundaries.",
+  "authorization": {
+    "boundary": "SeshProjectOwnershipAuthorizer",
+    "create": "write",
+    "read": "read",
+    "list": "read",
+    "update": "write",
+    "rule": "Authorization must succeed before track persistence is read or mutated."
+  },
+  "projectInvariant": {
+    "membershipField": "SeshMusicProject.trackIds",
+    "create": "Server-created track id is attached through project compare-and-swap.",
+    "read": "Track must remain attached to the authorized project.",
+    "list": "Only tracks represented by the current canonical project trackIds membership are returned.",
+    "update": "Track must remain attached to the authorized project.",
+    "ownerRecheck": true
+  },
+  "trackCreation": {
+    "serverGeneratedId": true,
+    "initialAudioAssetIds": [],
+    "initialOrder": "current canonical project track count",
+    "acceptedClientFields": [
+      "name"
+    ]
+  },
+  "trackUpdate": {
+    "mutableFields": [
+      "name",
+      "order",
+      "muted",
+      "solo",
+      "gain"
+    ],
+    "immutableFields": [
+      "id",
+      "projectId",
+      "audioAssetIds"
+    ],
+    "concurrency": "track revision compare-and-swap"
+  },
+  "compensation": {
+    "createTrackBeforeProjectAttachment": true,
+    "projectAttachmentFailure": "Delete the newly created track metadata as compensation.",
+    "compensationFailure": "Fail unavailable."
+  },
+  "deferredDeletion": {
+    "exposed": false,
+    "reason": "The current SeshTrackRepository exposes unconditional deleteTrack. Owner-authorized deletion remains deferred until revision-gated track deletion is modeled so concurrent track updates cannot be silently destroyed."
+  },
+  "boundaries": [
+    "No HTTP endpoint is added.",
+    "No Studio UI is added.",
+    "No R2 or audio-byte authority is added.",
+    "No audio asset is attached to or detached from a track.",
+    "No public media authority is added.",
+    "No collaborator authority is added.",
+    "No ownership transfer is added.",
+    "No copyright, publishing, master, management, licensing, or royalty semantics are added.",
+    "Migration 0005 is not executed.",
+    "No deployment is authorized."
+  ],
+  "migrationExecutionAuthorized": false,
+  "deployment": false,
+  "liveD1Mutation": false,
+  "liveR2Mutation": false
+}
