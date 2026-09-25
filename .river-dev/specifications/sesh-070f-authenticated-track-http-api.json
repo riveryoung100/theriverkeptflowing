@@ -1,0 +1,74 @@
+{
+  "id": "SESH-070F",
+  "title": "Authenticated owner-authorized track HTTP API",
+  "purpose": "Expose the existing owner-authorized track operation service through authenticated private HTTP routes without adding browser persistence authority, R2 authority, public track authority, or Studio UI.",
+  "routes": {
+    "collection": "/api/sesh/projects/:projectId/tracks",
+    "item": "/api/sesh/projects/:projectId/tracks/:trackId"
+  },
+  "methods": {
+    "collection": [
+      "GET",
+      "POST"
+    ],
+    "item": [
+      "GET",
+      "PATCH",
+      "DELETE"
+    ]
+  },
+  "authorization": {
+    "source": "Authenticated Principal session resolved through explicit PrincipalId to SeshCreatorId mapping.",
+    "ownerAuthority": "SeshProjectOwnershipAuthorizer inside the canonical track operation service.",
+    "clientOwnerIdentityTrusted": false
+  },
+  "writes": {
+    "sameOriginRequired": true,
+    "create": "POST delegates only to createTrack.",
+    "update": "PATCH delegates only to updateTrack.",
+    "delete": "DELETE delegates only to deleteTrack."
+  },
+  "reads": {
+    "collection": "GET delegates only to listTracks.",
+    "item": "GET delegates only to readTrack."
+  },
+  "responses": {
+    "format": "JSON",
+    "cacheControl": "no-store",
+    "failureStatusMapping": {
+      "invalid-input": 400,
+      "unauthenticated": 401,
+      "unmapped": 403,
+      "forbidden": 403,
+      "not-found": 404,
+      "conflict": 409,
+      "unavailable": 503
+    }
+  },
+  "runtime": {
+    "requiredBindings": [
+      "SESH_DB",
+      "RIVER_IDENTITY_DB"
+    ],
+    "sessionRequired": true,
+    "seshAudioRequired": false,
+    "directBrowserD1Authority": false
+  },
+  "boundaries": [
+    "No Studio track UI is added.",
+    "No direct browser D1 access is added.",
+    "No R2 or audio-byte authority is added.",
+    "No SESH_AUDIO runtime dependency is added.",
+    "No audio asset attachment or detachment API is added.",
+    "No public track API is added.",
+    "No collaborator authority is added.",
+    "No ownership transfer is added.",
+    "No copyright, publishing, master, management, licensing, or royalty semantics are added.",
+    "Migration 0005 is not executed.",
+    "No deployment is authorized."
+  ],
+  "migrationExecutionAuthorized": false,
+  "deployment": false,
+  "liveD1Mutation": false,
+  "liveR2Mutation": false
+}
