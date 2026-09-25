@@ -313,6 +313,67 @@ const canonical =
 
           <section class="sesh-studio__panel sesh-studio__audio">
             <p class="sesh-studio__kicker">
+              Tracks
+            </p>
+
+            <h3>
+              Organize this project
+            </h3>
+
+            <p class="sesh-studio__hint">
+              Tracks are private organizational records inside your project.
+              Creating or naming a track does not attach audio or create
+              publishing, master, management, licensing, or royalty rights.
+            </p>
+
+            <form id="studio-track-form">
+              <label>
+                Project
+
+                <select
+                  id="studio-track-project"
+                  required
+                >
+                  <option value="">
+                    Choose a project
+                  </option>
+                </select>
+              </label>
+
+              <label>
+                Track name
+
+                <input
+                  id="studio-track-name"
+                  name="name"
+                  type="text"
+                  maxlength="120"
+                  required
+                />
+              </label>
+
+              <button
+                id="studio-track-create"
+                type="submit"
+              >
+                Create track
+              </button>
+            </form>
+
+            <p
+              id="studio-track-status"
+              class="sesh-studio__audio-status sesh-studio__muted"
+              aria-live="polite"
+            ></p>
+
+            <div
+              id="studio-track-list"
+              class="sesh-studio__audio-list"
+            ></div>
+          </section>
+
+          <section class="sesh-studio__panel sesh-studio__audio">
+            <p class="sesh-studio__kicker">
               Private audio
             </p>
 
@@ -454,6 +515,36 @@ const canonical =
       const projectList =
         document.getElementById(
           "studio-project-list",
+        );
+
+      const trackForm =
+        document.getElementById(
+          "studio-track-form",
+        );
+
+      const trackProject =
+        document.getElementById(
+          "studio-track-project",
+        );
+
+      const trackName =
+        document.getElementById(
+          "studio-track-name",
+        );
+
+      const trackCreate =
+        document.getElementById(
+          "studio-track-create",
+        );
+
+      const trackStatus =
+        document.getElementById(
+          "studio-track-status",
+        );
+
+      const trackList =
+        document.getElementById(
+          "studio-track-list",
         );
 
       const audioForm =
@@ -983,6 +1074,81 @@ const canonical =
           );
         };
 
+      const renderTrackProjectOptions =
+        (projects) => {
+          if (!trackProject) {
+            return;
+          }
+
+          const currentValue =
+            trackProject.value;
+
+          trackProject.textContent =
+            "";
+
+          const placeholder =
+            document.createElement(
+              "option",
+            );
+
+          placeholder.value =
+            "";
+
+          placeholder.textContent =
+            "Choose a project";
+
+          trackProject.appendChild(
+            placeholder,
+          );
+
+          for (
+            const project of
+            Array.isArray(projects)
+              ? projects
+              : []
+          ) {
+            if (
+              !project ||
+              typeof project.id !==
+                "string" ||
+              !project.id ||
+              typeof project.title !==
+                "string"
+            ) {
+              continue;
+            }
+
+            const option =
+              document.createElement(
+                "option",
+              );
+
+            option.value =
+              project.id;
+
+            option.textContent =
+              project.title;
+
+            trackProject.appendChild(
+              option,
+            );
+          }
+
+          if (
+            currentValue &&
+            Array.from(
+              trackProject.options,
+            ).some(
+              (option) =>
+                option.value ===
+                  currentValue,
+            )
+          ) {
+            trackProject.value =
+              currentValue;
+          }
+        };
+
       const renderAudioProjectOptions =
         (projects) => {
           if (!audioProject) {
@@ -1073,6 +1239,544 @@ const canonical =
           else {
             audioProject.disabled =
               false;
+          }
+        };
+
+      const setTrackStatus = (
+        message,
+        error = false,
+      ) => {
+        if (!trackStatus) {
+          return;
+        }
+
+        trackStatus.textContent =
+          message;
+
+        if (error) {
+          trackStatus.dataset.state =
+            "error";
+        }
+        else {
+          delete trackStatus.dataset.state;
+        }
+      };
+
+      const setTrackBusy =
+        (busy) => {
+          if (trackProject) {
+            trackProject.disabled =
+              busy;
+          }
+
+          if (trackName) {
+            trackName.disabled =
+              busy;
+          }
+
+          if (trackCreate) {
+            trackCreate.disabled =
+              busy;
+          }
+        };
+
+      const tracksFrom =
+        (body) => {
+          if (
+            !body ||
+            body.ok !==
+              true ||
+            !Array.isArray(
+              body.value,
+            )
+          ) {
+            return [];
+          }
+
+          return body.value;
+        };
+
+      const createProjectTrack =
+        async (
+          projectId,
+          name,
+        ) => {
+          const {
+            response,
+            body,
+          } =
+            await fetchJson(
+              `/api/sesh/projects/${encodeURIComponent(
+                projectId,
+              )}/tracks`,
+              {
+                method:
+                  "POST",
+
+                headers: {
+                  "content-type":
+                    "application/json",
+                },
+
+                body:
+                  JSON.stringify({
+                    name,
+                  }),
+              },
+            );
+
+          if (
+            !response.ok ||
+            !body ||
+            body.ok !==
+              true
+          ) {
+            throw new Error(
+              errorMessage(
+                body,
+                "Unable to create track.",
+              ),
+            );
+          }
+
+          return body.value;
+        };
+
+      const renameProjectTrack =
+        async (
+          projectId,
+          trackId,
+          name,
+        ) => {
+          const {
+            response,
+            body,
+          } =
+            await fetchJson(
+              `/api/sesh/projects/${encodeURIComponent(
+                projectId,
+              )}/tracks/${encodeURIComponent(
+                trackId,
+              )}`,
+              {
+                method:
+                  "PATCH",
+
+                headers: {
+                  "content-type":
+                    "application/json",
+                },
+
+                body:
+                  JSON.stringify({
+                    name,
+                  }),
+              },
+            );
+
+          if (
+            !response.ok ||
+            !body ||
+            body.ok !==
+              true
+          ) {
+            throw new Error(
+              errorMessage(
+                body,
+                "Unable to rename track.",
+              ),
+            );
+          }
+
+          return body.value;
+        };
+
+      const deleteProjectTrack =
+        async (
+          projectId,
+          trackId,
+        ) => {
+          const {
+            response,
+            body,
+          } =
+            await fetchJson(
+              `/api/sesh/projects/${encodeURIComponent(
+                projectId,
+              )}/tracks/${encodeURIComponent(
+                trackId,
+              )}`,
+              {
+                method:
+                  "DELETE",
+              },
+            );
+
+          if (
+            !response.ok ||
+            !body ||
+            body.ok !==
+              true
+          ) {
+            throw new Error(
+              errorMessage(
+                body,
+                "Unable to delete track.",
+              ),
+            );
+          }
+
+          return body.value;
+        };
+
+      const renderTracks = (
+        tracks,
+        projectId,
+      ) => {
+        if (!trackList) {
+          return;
+        }
+
+        trackList.textContent =
+          "";
+
+        const sanitizedTracks =
+          Array.isArray(tracks)
+            ? tracks.filter(
+                (track) =>
+                  track &&
+                  typeof track.id ===
+                    "string" &&
+                  track.id &&
+                  typeof track.name ===
+                    "string" &&
+                  track.name &&
+                  typeof track.order ===
+                    "number",
+              )
+            : [];
+
+        if (
+          sanitizedTracks.length ===
+            0
+        ) {
+          const empty =
+            document.createElement(
+              "p",
+            );
+
+          empty.className =
+            "sesh-studio__muted";
+
+          empty.textContent =
+            "No tracks exist in this project yet.";
+
+          trackList.appendChild(
+            empty,
+          );
+
+          return;
+        }
+
+        for (
+          const track of
+          sanitizedTracks
+        ) {
+          const item =
+            document.createElement(
+              "article",
+            );
+
+          item.className =
+            "sesh-studio__audio-item";
+
+          const heading =
+            document.createElement(
+              "div",
+            );
+
+          heading.className =
+            "sesh-studio__audio-heading";
+
+          const title =
+            document.createElement(
+              "h4",
+            );
+
+          title.textContent =
+            track.name;
+
+          const actions =
+            document.createElement(
+              "div",
+            );
+
+          const renameButton =
+            document.createElement(
+              "button",
+            );
+
+          renameButton.type =
+            "button";
+
+          renameButton.className =
+            "sesh-studio__audio-delete sesh-studio__audio-rename";
+
+          renameButton.textContent =
+            "Rename";
+
+          const deleteButton =
+            document.createElement(
+              "button",
+            );
+
+          deleteButton.type =
+            "button";
+
+          deleteButton.className =
+            "sesh-studio__audio-delete";
+
+          deleteButton.textContent =
+            "Delete";
+
+          renameButton.addEventListener(
+            "click",
+            async () => {
+              const requestedName =
+                window.prompt(
+                  "Rename track",
+                  track.name,
+                );
+
+              if (
+                requestedName ===
+                  null
+              ) {
+                return;
+              }
+
+              const name =
+                requestedName.trim();
+
+              if (
+                name.length ===
+                  0 ||
+                name.length >
+                  120
+              ) {
+                setTrackStatus(
+                  "Track names must be between 1 and 120 characters.",
+                  true,
+                );
+
+                return;
+              }
+
+              renameButton.disabled =
+                true;
+
+              deleteButton.disabled =
+                true;
+
+              setTrackStatus(
+                "Renaming track…",
+              );
+
+              try {
+                await renameProjectTrack(
+                  projectId,
+                  track.id,
+                  name,
+                );
+
+                await loadProjectTracks(
+                  projectId,
+                );
+
+                setTrackStatus(
+                  "Track renamed.",
+                );
+              }
+              catch (error) {
+                renameButton.disabled =
+                  false;
+
+                deleteButton.disabled =
+                  false;
+
+                setTrackStatus(
+                  error instanceof Error
+                    ? error.message
+                    : "Unable to rename track.",
+                  true,
+                );
+              }
+            },
+          );
+
+          deleteButton.addEventListener(
+            "click",
+            async () => {
+              const confirmed =
+                window.confirm(
+                  `Delete "${track.name}"? This removes the track record from this project. It does not delete uploaded audio.`,
+                );
+
+              if (!confirmed) {
+                return;
+              }
+
+              renameButton.disabled =
+                true;
+
+              deleteButton.disabled =
+                true;
+
+              setTrackStatus(
+                "Deleting track…",
+              );
+
+              try {
+                await deleteProjectTrack(
+                  projectId,
+                  track.id,
+                );
+
+                await loadProjectTracks(
+                  projectId,
+                );
+
+                setTrackStatus(
+                  "Track deleted.",
+                );
+              }
+              catch (error) {
+                renameButton.disabled =
+                  false;
+
+                deleteButton.disabled =
+                  false;
+
+                setTrackStatus(
+                  error instanceof Error
+                    ? error.message
+                    : "Unable to delete track.",
+                  true,
+                );
+              }
+            },
+          );
+
+          actions.append(
+            renameButton,
+            deleteButton,
+          );
+
+          heading.append(
+            title,
+            actions,
+          );
+
+          item.appendChild(
+            heading,
+          );
+
+          const details =
+            document.createElement(
+              "p",
+            );
+
+          details.className =
+            "sesh-studio__muted";
+
+          details.textContent =
+            `Track ${track.order + 1}`;
+
+          item.appendChild(
+            details,
+          );
+
+          trackList.appendChild(
+            item,
+          );
+        }
+      };
+
+      const loadProjectTracks =
+        async (
+          projectId,
+        ) => {
+          if (!trackList) {
+            return;
+          }
+
+          if (
+            typeof projectId !==
+              "string" ||
+            !projectId
+          ) {
+            trackList.textContent =
+              "";
+
+            setTrackStatus(
+              "Choose a project to manage tracks.",
+            );
+
+            return;
+          }
+
+          trackList.innerHTML =
+            '<p class="sesh-studio__muted">Loading tracks…</p>';
+
+          setTrackStatus(
+            "Loading tracks…",
+          );
+
+          try {
+            const {
+              response,
+              body,
+            } =
+              await fetchJson(
+                `/api/sesh/projects/${encodeURIComponent(
+                  projectId,
+                )}/tracks`,
+              );
+
+            if (!response.ok) {
+              trackList.textContent =
+                "";
+
+              setTrackStatus(
+                errorMessage(
+                  body,
+                  "Tracks are temporarily unavailable.",
+                ),
+                true,
+              );
+
+              return;
+            }
+
+            renderTracks(
+              tracksFrom(
+                body,
+              ),
+              projectId,
+            );
+
+            setTrackStatus(
+              "Tracks are up to date.",
+            );
+          }
+          catch {
+            trackList.textContent =
+              "";
+
+            setTrackStatus(
+              "Tracks are temporarily unavailable.",
+              true,
+            );
           }
         };
 
@@ -1741,6 +2445,10 @@ const loadProjectAudio =
               projects,
             );
 
+            renderTrackProjectOptions(
+              projects,
+            );
+
             renderAudioProjectOptions(
               projects,
             );
@@ -2140,6 +2848,100 @@ const loadProjectAudio =
             );
 
             await refreshStudio();
+          },
+        );
+      }
+
+      if (trackProject) {
+        trackProject.addEventListener(
+          "change",
+          async () => {
+            await loadProjectTracks(
+              trackProject.value,
+            );
+          },
+        );
+      }
+
+      if (trackForm) {
+        trackForm.addEventListener(
+          "submit",
+          async (event) => {
+            event.preventDefault();
+
+            const projectId =
+              trackProject
+                ? trackProject.value
+                : "";
+
+            const name =
+              trackName
+                ? trackName.value.trim()
+                : "";
+
+            if (!projectId) {
+              setTrackStatus(
+                "Choose a project before creating a track.",
+                true,
+              );
+
+              return;
+            }
+
+            if (
+              name.length ===
+                0 ||
+              name.length >
+                120
+            ) {
+              setTrackStatus(
+                "Track names must be between 1 and 120 characters.",
+                true,
+              );
+
+              return;
+            }
+
+            setTrackBusy(
+              true,
+            );
+
+            setTrackStatus(
+              "Creating track…",
+            );
+
+            try {
+              await createProjectTrack(
+                projectId,
+                name,
+              );
+
+              if (trackName) {
+                trackName.value =
+                  "";
+              }
+
+              await loadProjectTracks(
+                projectId,
+              );
+
+              setTrackStatus(
+                "Track created.",
+              );
+            }
+            catch (error) {
+              setTrackStatus(
+                error instanceof Error
+                  ? error.message
+                  : "Unable to create track.",
+                true,
+              );
+            }
+            finally {
+              setTrackBusy(
+                false,
+              );
+            }
           },
         );
       }

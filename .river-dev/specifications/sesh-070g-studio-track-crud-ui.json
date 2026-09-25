@@ -1,0 +1,48 @@
+{
+  "id": "SESH-070G",
+  "title": "Studio track CRUD UI",
+  "purpose": "Expose the authenticated owner-authorized track HTTP API inside Sesh Studio for basic private organizational track management.",
+  "studioCapabilities": [
+    "Choose an owned project.",
+    "List owner-authorized project tracks.",
+    "Create a track with a name.",
+    "Rename a track.",
+    "Delete a track."
+  ],
+  "httpAuthority": {
+    "collectionGet": "/api/sesh/projects/:projectId/tracks",
+    "collectionPost": "/api/sesh/projects/:projectId/tracks",
+    "itemPatch": "/api/sesh/projects/:projectId/tracks/:trackId",
+    "itemDelete": "/api/sesh/projects/:projectId/tracks/:trackId"
+  },
+  "clientInput": {
+    "create": "exact name field",
+    "rename": "exact name field",
+    "serverGeneratedTrackId": true,
+    "clientOwnerIdentityTrusted": false,
+    "clientRevisionTrusted": false
+  },
+  "notIncluded": [
+    "Audio asset attachment or detachment.",
+    "Track reordering UI.",
+    "Mute controls.",
+    "Solo controls.",
+    "Gain controls.",
+    "Waveform editing.",
+    "Timeline editing.",
+    "Public tracks.",
+    "Sharing.",
+    "Collaborators.",
+    "Ownership transfer.",
+    "Publishing, master, management, licensing, or royalty semantics."
+  ],
+  "runtimeAuthority": {
+    "directD1": false,
+    "directR2": false,
+    "seshAudioBinding": false
+  },
+  "migrationExecutionAuthorized": false,
+  "deployment": false,
+  "liveD1Mutation": false,
+  "liveR2Mutation": false
+}
