@@ -1,0 +1,52 @@
+{
+  "id": "SESH-070E",
+  "title": "Owner-authorized track delete lifecycle",
+  "purpose": "Expose owner-authorized private track deletion through the canonical track operation service now that revision-gated track deletion exists.",
+  "authorization": {
+    "boundary": "SeshProjectOwnershipAuthorizer",
+    "action": "write",
+    "ownerRecheck": true
+  },
+  "deleteOrder": [
+    "Validate canonical project and track identifiers.",
+    "Owner-authorize the project for write.",
+    "Reload and recheck the canonical project snapshot.",
+    "Require the track id to be attached to project.trackIds.",
+    "Load the canonical track snapshot and require its projectId to match.",
+    "Detach the track id from project.trackIds through project compare-and-swap.",
+    "Delete track metadata through deleteTrackConditionally using the previously read track revision."
+  ],
+  "concurrency": {
+    "projectDetach": "project revision compare-and-swap",
+    "trackDelete": "track revision compare-and-swap",
+    "staleProject": "conflict",
+    "staleTrackAfterDetach": "fail unavailable and surface orphan cleanup risk"
+  },
+  "partialFailure": {
+    "rule": "Do not silently reattach a track after the project detach has succeeded and metadata deletion has been attempted.",
+    "reason": "After a destructive persistence attempt, outcome may be ambiguous; automatic reattachment could create a dangling project reference."
+  },
+  "audioBehavior": {
+    "trackAudioAssetIds": "Track deletion removes only the organizational track record.",
+    "projectAudioAssetIds": "Unchanged.",
+    "audioMetadata": "Unchanged.",
+    "audioBytes": "Unchanged.",
+    "r2Authority": false
+  },
+  "boundaries": [
+    "No HTTP endpoint is added.",
+    "No Studio UI is added.",
+    "No R2 or audio-byte authority is added.",
+    "No audio asset metadata is deleted.",
+    "No public media authority is added.",
+    "No collaborator authority is added.",
+    "No ownership transfer is added.",
+    "No copyright, publishing, master, management, licensing, or royalty semantics are added.",
+    "Migration 0005 is not executed.",
+    "No deployment is authorized."
+  ],
+  "migrationExecutionAuthorized": false,
+  "deployment": false,
+  "liveD1Mutation": false,
+  "liveR2Mutation": false
+}

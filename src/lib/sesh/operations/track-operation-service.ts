@@ -127,6 +127,17 @@ export interface AuthorizedSeshTrackOperationService {
       SeshTrack
     >
   >;
+  deleteTrack(
+    projectId:
+      unknown,
+
+    trackId:
+      unknown,
+  ): Promise<
+    SeshTrackOperationResult<
+      boolean
+    >
+  >;
 }
 
 export interface DefaultAuthorizedSeshTrackOperationServiceDependencies {
@@ -1222,6 +1233,198 @@ implements AuthorizedSeshTrackOperationService {
 
     return success(
       written.value.track,
+    );
+  }
+  async deleteTrack(
+    projectIdInput:
+      unknown,
+
+    trackIdInput:
+      unknown,
+  ): Promise<
+    SeshTrackOperationResult<
+      boolean
+    >
+  > {
+    const projectIdResult =
+      canonicalProjectId(
+        projectIdInput,
+      );
+
+    if (
+      !projectIdResult.ok
+    ) {
+      return projectIdResult;
+    }
+
+    const trackIdResult =
+      canonicalTrackId(
+        trackIdInput,
+      );
+
+    if (
+      !trackIdResult.ok
+    ) {
+      return trackIdResult;
+    }
+
+    const projectResult =
+      await this.#authorizedProjectSnapshot(
+        projectIdResult.value,
+        "write",
+      );
+
+    if (
+      !projectResult.ok
+    ) {
+      return projectResult;
+    }
+
+    if (
+      !projectResult.value.snapshot.project.trackIds.includes(
+        trackIdResult.value,
+      )
+    ) {
+      return failure(
+        "not-found",
+        "Sesh track was not found in this project.",
+      );
+    }
+
+    const trackSnapshot =
+      await this.#tracks
+        .getTrackSnapshot(
+          trackIdResult.value,
+        );
+
+    if (
+      !trackSnapshot.ok
+    ) {
+      return mapPersistenceFailure(
+        trackSnapshot.error,
+        "Sesh track snapshot is temporarily unavailable.",
+      );
+    }
+
+    if (
+      trackSnapshot.value.track.id !==
+        trackIdResult.value ||
+      trackSnapshot.value.track.projectId !==
+        projectIdResult.value
+    ) {
+      return failure(
+        "unavailable",
+        "Sesh track snapshot failed its project invariant before deletion.",
+      );
+    }
+
+    let detachedProject;
+
+    try {
+      detachedProject =
+        validateSeshMusicProject({
+          ...projectResult.value.snapshot.project,
+
+          trackIds:
+            projectResult.value.snapshot.project.trackIds.filter(
+              (
+                trackId,
+              ) =>
+                trackId !==
+                trackIdResult.value,
+            ),
+
+          updatedAt:
+            this.#now(),
+        });
+    }
+    catch {
+      return failure(
+        "unavailable",
+        "Sesh track detachment validation failed.",
+      );
+    }
+
+    const projectWrite =
+      await this.#projects
+        .updateProjectConditionally(
+          detachedProject,
+          projectResult.value.snapshot.revision,
+          projectResult.value.authorization.seshCreatorId,
+        );
+
+    if (
+      !projectWrite.ok
+    ) {
+      return mapPersistenceFailure(
+        projectWrite.error,
+        "Sesh track detachment is temporarily unavailable.",
+      );
+    }
+
+    if (
+      projectWrite.value.project.id !==
+        projectIdResult.value ||
+      projectWrite.value.project.ownerCreatorId !==
+        projectResult.value.authorization.seshCreatorId ||
+      projectWrite.value.project.trackIds.includes(
+        trackIdResult.value,
+      )
+    ) {
+      return failure(
+        "unavailable",
+        "Sesh track detachment result failed its canonical invariant.",
+      );
+    }
+
+    const deleted =
+      await this.#tracks
+        .deleteTrackConditionally(
+          trackIdResult.value,
+          trackSnapshot.value.revision,
+        );
+
+    if (
+      !deleted.ok
+    ) {
+      if (
+        deleted.error.kind ===
+          "conflict"
+      ) {
+        return failure(
+          "unavailable",
+          "Sesh project detached the track, but track metadata changed before deletion. Cleanup is required.",
+        );
+      }
+
+      if (
+        deleted.error.kind ===
+          "not-found"
+      ) {
+        return failure(
+          "unavailable",
+          "Sesh project detached the track, but track metadata disappeared before deletion completed.",
+        );
+      }
+
+      return failure(
+        "unavailable",
+        "Sesh project detached the track, but track metadata cleanup did not complete.",
+      );
+    }
+
+    if (
+      deleted.value !==
+        true
+    ) {
+      return failure(
+        "unavailable",
+        "Sesh project detached the track, but track metadata deletion did not confirm completion.",
+      );
+    }
+
+    return success(
+      true,
     );
   }
 }

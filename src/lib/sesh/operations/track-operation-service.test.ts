@@ -875,39 +875,6 @@ test(
   },
 );
 
-test(
-  "track deletion is intentionally absent until revision-gated delete exists",
-  async () => {
-    const projects =
-      await setupProject();
-
-    const service =
-      new DefaultAuthorizedSeshTrackOperationService({
-        authorizer:
-          ownerAuthorizer(),
-
-        projects,
-
-        tracks:
-          new InMemorySeshTrackRepository(),
-
-        createTrackId:
-          () =>
-            createSeshTrackId(
-              "delete-boundary",
-            ),
-
-        now:
-          () =>
-            updatedAt,
-      });
-
-    assert.equal(
-      "deleteTrack" in service,
-      false,
-    );
-  },
-);
 
 test(
   "invalid project input fails before authorization",
@@ -955,6 +922,560 @@ test(
     assert.deepEqual(
       actions,
       [],
+    );
+  },
+);
+test(
+  "deletes a track only after owner authorization project detach and revision-gated metadata delete",
+  async () => {
+    const trackId =
+      createSeshTrackId(
+        "delete-track",
+      );
+
+    const projects =
+      await setupProject([
+        trackId,
+      ]);
+
+    const tracks =
+      new InMemorySeshTrackRepository();
+
+    const saved =
+      await tracks.saveTrack({
+        id:
+          trackId,
+
+        projectId,
+
+        name:
+          "Delete Me",
+
+        order:
+          0,
+
+        audioAssetIds:
+          [],
+      });
+
+    assert.equal(
+      saved.ok,
+      true,
+    );
+
+    const actions:
+      string[] =
+        [];
+
+    const service =
+      new DefaultAuthorizedSeshTrackOperationService({
+        authorizer:
+          ownerAuthorizer(
+            actions,
+          ),
+
+        projects,
+
+        tracks,
+
+        createTrackId:
+          () =>
+            createSeshTrackId(
+              "unused-delete",
+            ),
+
+        now:
+          () =>
+            updatedAt,
+      });
+
+    const result =
+      await service.deleteTrack(
+        projectId,
+        trackId,
+      );
+
+    assert.deepEqual(
+      result,
+      {
+        ok:
+          true,
+
+        value:
+          true,
+      },
+    );
+
+    assert.deepEqual(
+      actions,
+      [
+        "write",
+      ],
+    );
+
+    const projectSnapshot =
+      await projects.getProjectSnapshot(
+        projectId,
+      );
+
+    assert.equal(
+      projectSnapshot.ok,
+      true,
+    );
+
+    if (
+      !projectSnapshot.ok
+    ) {
+      return;
+    }
+
+    assert.equal(
+      projectSnapshot.value.project.trackIds.includes(
+        trackId,
+      ),
+      false,
+    );
+
+    const trackRead =
+      await tracks.getTrack(
+        trackId,
+      );
+
+    assert.equal(
+      trackRead.ok,
+      false,
+    );
+
+    if (
+      trackRead.ok
+    ) {
+      return;
+    }
+
+    assert.equal(
+      trackRead.error.kind,
+      "not-found",
+    );
+  },
+);
+
+test(
+  "track delete stops before metadata deletion when project detach CAS conflicts",
+  async () => {
+    const trackId =
+      createSeshTrackId(
+        "delete-project-conflict",
+      );
+
+    const projects =
+      await setupProject([
+        trackId,
+      ]);
+
+    const tracks =
+      new InMemorySeshTrackRepository();
+
+    await tracks.saveTrack({
+      id:
+        trackId,
+
+      projectId,
+
+      name:
+        "Still Attached",
+
+      order:
+        0,
+
+      audioAssetIds:
+        [],
+    });
+
+    const service =
+      new DefaultAuthorizedSeshTrackOperationService({
+        authorizer:
+          ownerAuthorizer(),
+
+        projects: {
+          getProjectSnapshot:
+            projects.getProjectSnapshot.bind(
+              projects,
+            ),
+
+          async updateProjectConditionally() {
+            return {
+              ok:
+                false as const,
+
+              error: {
+                kind:
+                  "conflict" as const,
+
+                message:
+                  "simulated project detach conflict",
+              },
+            };
+          },
+        },
+
+        tracks,
+
+        createTrackId:
+          () =>
+            createSeshTrackId(
+              "unused-project-conflict",
+            ),
+
+        now:
+          () =>
+            updatedAt,
+      });
+
+    const result =
+      await service.deleteTrack(
+        projectId,
+        trackId,
+      );
+
+    assert.equal(
+      result.ok,
+      false,
+    );
+
+    if (
+      result.ok
+    ) {
+      return;
+    }
+
+    assert.equal(
+      result.error.code,
+      "conflict",
+    );
+
+    const trackRead =
+      await tracks.getTrack(
+        trackId,
+      );
+
+    assert.equal(
+      trackRead.ok,
+      true,
+    );
+  },
+);
+
+test(
+  "track delete never reads track persistence when owner authorization fails",
+  async () => {
+    const trackId =
+      createSeshTrackId(
+        "delete-denied",
+      );
+
+    const projects =
+      await setupProject([
+        trackId,
+      ]);
+
+    const tracks =
+      new InMemorySeshTrackRepository();
+
+    await tracks.saveTrack({
+      id:
+        trackId,
+
+      projectId,
+
+      name:
+        "Denied Delete",
+
+      order:
+        0,
+
+      audioAssetIds:
+        [],
+    });
+
+    let trackSnapshotReads =
+      0;
+
+    const originalGetTrackSnapshot =
+      tracks.getTrackSnapshot.bind(
+        tracks,
+      );
+
+    tracks.getTrackSnapshot =
+      async (
+        requestedTrackId,
+      ) => {
+        trackSnapshotReads +=
+          1;
+
+        return originalGetTrackSnapshot(
+          requestedTrackId,
+        );
+      };
+
+    const service =
+      new DefaultAuthorizedSeshTrackOperationService({
+        authorizer:
+          forbiddenAuthorizer(),
+
+        projects,
+
+        tracks,
+
+        createTrackId:
+          () =>
+            createSeshTrackId(
+              "unused-denied-delete",
+            ),
+
+        now:
+          () =>
+            updatedAt,
+      });
+
+    const result =
+      await service.deleteTrack(
+        projectId,
+        trackId,
+      );
+
+    assert.equal(
+      result.ok,
+      false,
+    );
+
+    if (
+      result.ok
+    ) {
+      return;
+    }
+
+    assert.equal(
+      result.error.code,
+      "forbidden",
+    );
+
+    assert.equal(
+      trackSnapshotReads,
+      0,
+    );
+  },
+);
+
+test(
+  "track delete fails closed without reattaching when metadata CAS conflicts after project detach",
+  async () => {
+    const trackId =
+      createSeshTrackId(
+        "delete-track-race",
+      );
+
+    const projects =
+      await setupProject([
+        trackId,
+      ]);
+
+    const tracks =
+      new InMemorySeshTrackRepository();
+
+    await tracks.saveTrack({
+      id:
+        trackId,
+
+      projectId,
+
+      name:
+        "Race Track",
+
+      order:
+        0,
+
+      audioAssetIds:
+        [],
+    });
+
+    tracks.deleteTrackConditionally =
+      async () => ({
+        ok:
+          false as const,
+
+        error: {
+          kind:
+            "conflict" as const,
+
+          message:
+            "simulated track delete conflict",
+        },
+      });
+
+    const service =
+      new DefaultAuthorizedSeshTrackOperationService({
+        authorizer:
+          ownerAuthorizer(),
+
+        projects,
+
+        tracks,
+
+        createTrackId:
+          () =>
+            createSeshTrackId(
+              "unused-race",
+            ),
+
+        now:
+          () =>
+            updatedAt,
+      });
+
+    const result =
+      await service.deleteTrack(
+        projectId,
+        trackId,
+      );
+
+    assert.equal(
+      result.ok,
+      false,
+    );
+
+    if (
+      result.ok
+    ) {
+      return;
+    }
+
+    assert.equal(
+      result.error.code,
+      "unavailable",
+    );
+
+    const projectSnapshot =
+      await projects.getProjectSnapshot(
+        projectId,
+      );
+
+    assert.equal(
+      projectSnapshot.ok,
+      true,
+    );
+
+    if (
+      !projectSnapshot.ok
+    ) {
+      return;
+    }
+
+    assert.equal(
+      projectSnapshot.value.project.trackIds.includes(
+        trackId,
+      ),
+      false,
+    );
+
+    const trackRead =
+      await tracks.getTrack(
+        trackId,
+      );
+
+    assert.equal(
+      trackRead.ok,
+      true,
+    );
+  },
+);
+
+test(
+  "track delete rejects a track that is not attached to the authorized project",
+  async () => {
+    const attachedId =
+      createSeshTrackId(
+        "attached-delete-control",
+      );
+
+    const orphanId =
+      createSeshTrackId(
+        "orphan-delete-control",
+      );
+
+    const projects =
+      await setupProject([
+        attachedId,
+      ]);
+
+    const tracks =
+      new InMemorySeshTrackRepository();
+
+    await tracks.saveTrack({
+      id:
+        orphanId,
+
+      projectId,
+
+      name:
+        "Orphan",
+
+      order:
+        1,
+
+      audioAssetIds:
+        [],
+    });
+
+    const service =
+      new DefaultAuthorizedSeshTrackOperationService({
+        authorizer:
+          ownerAuthorizer(),
+
+        projects,
+
+        tracks,
+
+        createTrackId:
+          () =>
+            createSeshTrackId(
+              "unused-orphan-delete",
+            ),
+
+        now:
+          () =>
+            updatedAt,
+      });
+
+    const result =
+      await service.deleteTrack(
+        projectId,
+        orphanId,
+      );
+
+    assert.equal(
+      result.ok,
+      false,
+    );
+
+    if (
+      result.ok
+    ) {
+      return;
+    }
+
+    assert.equal(
+      result.error.code,
+      "not-found",
+    );
+
+    const trackRead =
+      await tracks.getTrack(
+        orphanId,
+      );
+
+    assert.equal(
+      trackRead.ok,
+      true,
     );
   },
 );
