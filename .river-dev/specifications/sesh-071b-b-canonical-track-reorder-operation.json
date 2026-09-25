@@ -1,0 +1,78 @@
+{
+  "id": "SESH-071B-B",
+  "title": "Canonical owner-authorized track reorder operation contract",
+  "purpose": [
+    "Introduce one dedicated server-side operation for canonical project track reordering.",
+    "Prevent the browser from coordinating independent order PATCH requests or track revisions.",
+    "Define reorder input as the complete desired ordered set of canonical project track ids."
+  ],
+  "input": {
+    "routeAuthority": [
+      "projectId"
+    ],
+    "bodyAuthority": [
+      "orderedTrackIds"
+    ],
+    "orderedTrackIdsMeaning": "complete desired ordering of the canonical project track membership",
+    "clientRevisionTrusted": false,
+    "clientOwnerIdentityTrusted": false,
+    "clientOrderNumbersTrusted": false
+  },
+  "canonicalMembership": {
+    "authority": "project.trackIds",
+    "membershipMutation": false,
+    "inputMustContainEveryCanonicalTrackExactlyOnce": true,
+    "missingCanonicalTrack": "invalid-input",
+    "duplicateTrackId": "invalid-input",
+    "foreignTrackId": "invalid-input"
+  },
+  "canonicalOrder": {
+    "serverAssigned": true,
+    "firstOrder": 0,
+    "step": 1,
+    "contiguousAfterSuccessfulReorder": true,
+    "browserSuppliesOrderNumbers": false
+  },
+  "preservation": [
+    "track.id",
+    "track.projectId",
+    "track.name",
+    "track.audioAssetIds",
+    "track.muted",
+    "track.solo",
+    "track.gain"
+  ],
+  "operationBoundary": {
+    "ownerAuthorizationRequired": true,
+    "canonicalProjectSnapshotRequired": true,
+    "canonicalTrackMetadataRequired": true,
+    "partialBrowserOrchestration": false,
+    "http": false,
+    "studio": false
+  },
+  "failureSafety": {
+    "browserMustNotTreatPartialMutationAsSuccess": true,
+    "repositoryAtomicReorderRequiredBeforeHttpExposure": true,
+    "sequentialIndependentCasWritesAreNotSufficientForFinalProductionReorder": true
+  },
+  "boundaries": {
+    "projectTrackMembershipMutation": false,
+    "trackAudioMutation": false,
+    "projectAudioMutation": false,
+    "trackCreateDelete": false,
+    "directR2": false,
+    "publicAudio": false,
+    "collaboratorRights": false,
+    "publishingRights": false,
+    "managementRights": false,
+    "masterRights": false,
+    "royaltyRights": false,
+    "ownershipTransfer": false
+  },
+  "production": {
+    "migrationExecutionAuthorized": false,
+    "deployment": false,
+    "liveD1Mutation": false,
+    "liveR2Mutation": false
+  }
+}

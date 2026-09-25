@@ -121,3 +121,4 @@ export type {
   SeshTrackAudioOperationFailureCode,
   SeshTrackAudioOperationResult,
 } from "./track-audio-operation-service";
+export * from "./track-reorder-operation-service";
