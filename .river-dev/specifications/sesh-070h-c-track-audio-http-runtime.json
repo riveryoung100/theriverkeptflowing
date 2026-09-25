@@ -1,0 +1,72 @@
+{
+  "id": "SESH-070H-C",
+  "title": "Authenticated track audio attachment HTTP and runtime",
+  "purpose": "Expose the owner-authorized SESH-070H-B track audio attachment operations through a narrow authenticated same-origin HTTP subresource without granting browser revision, project mutation, audio metadata mutation, or R2 authority.",
+  "route": "/api/sesh/projects/{projectId}/tracks/{trackId}/audio/{audioAssetId}",
+  "methods": {
+    "PUT": "Attach the project-owned audio asset to the canonical attached track.",
+    "DELETE": "Detach the audio asset reference from the canonical attached track."
+  },
+  "requestAuthority": {
+    "projectId": "route",
+    "trackId": "route",
+    "audioAssetId": "route",
+    "requestBodyRequired": false,
+    "browserRevisionTrusted": false,
+    "browserOwnerIdentityTrusted": false,
+    "browserCreatorIdentityTrusted": false
+  },
+  "security": {
+    "sessionRequired": true,
+    "sameOriginRequired": true,
+    "ownerAuthorizationRequired": true,
+    "authenticationIsNotAuthorization": true
+  },
+  "runtime": {
+    "identityD1Required": true,
+    "seshD1Required": true,
+    "seshAudioRequired": false,
+    "projectRepository": true,
+    "trackRepository": true,
+    "audioMetadataRepository": true,
+    "audioObjectStore": false
+  },
+  "httpMapping": {
+    "invalid-input": 400,
+    "unauthenticated": 401,
+    "unmapped": 403,
+    "forbidden": 403,
+    "not-found": 404,
+    "conflict": 409,
+    "unavailable": 503
+  },
+  "authority": {
+    "trackMutation": "Only through DefaultAuthorizedSeshTrackAudioOperationService.",
+    "projectMutation": false,
+    "audioMetadataMutation": false,
+    "r2Authority": false,
+    "publicMediaAuthority": false,
+    "collaboratorAuthority": false,
+    "rightsAuthority": false,
+    "studio": false
+  },
+  "semantics": {
+    "duplicateAttach": "HTTP 200 idempotent success.",
+    "absentDetach": "HTTP 200 idempotent success.",
+    "conflict": "HTTP 409.",
+    "crossProjectExistenceDisclosure": false,
+    "cache": "no-store"
+  },
+  "deferred": [
+    "Studio audio-to-track assignment UI.",
+    "Clip placement and timeline semantics.",
+    "Audio ordering beyond track audioAssetIds append order.",
+    "Public sharing.",
+    "Collaborator permissions.",
+    "Publishing, master, management, royalty, licensing, or ownership rights."
+  ],
+  "migrationExecutionAuthorized": false,
+  "deployment": false,
+  "liveD1Mutation": false,
+  "liveR2Mutation": false
+}
