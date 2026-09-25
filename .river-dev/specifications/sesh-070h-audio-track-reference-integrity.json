@@ -1,47 +1,66 @@
 {
-  "id": "SESH-070H-A",
-  "title": "Private audio track-reference delete integrity",
-  "purpose": "Prevent destructive private-audio deletion from creating dangling SeshTrack.audioAssetIds references before track-audio attachment authority is introduced.",
-  "canonicalRelationship": {
-    "projectAudioAssetIds": "Canonical inventory of private audio assets attached to the project.",
-    "trackAudioAssetIds": "Organizational subset of project audio assigned to a track.",
-    "deleteInvariant": "An audio asset referenced by any track in its canonical project cannot be destructively deleted until every track reference has been removed."
-  },
-  "deleteOrder": [
-    "Validate project and audio identifiers.",
-    "Owner-authorize project write access.",
-    "Read and recheck the canonical project snapshot.",
-    "Read and recheck canonical audio metadata and project membership.",
-    "List canonical project tracks.",
-    "Fail with conflict if any track references the audio asset.",
-    "Only then detach audio from project through project CAS.",
-    "Only after project detachment delete audio metadata.",
-    "Only after metadata deletion delete private R2 bytes."
-  ],
-  "failureSemantics": {
-    "trackListFailure": "Fail closed as unavailable before any destructive mutation.",
-    "referencedByTrack": "Return conflict before project, metadata, or binary mutation."
-  },
-  "authority": {
-    "projectMutation": "Existing audio delete lifecycle only after reference guard passes.",
-    "trackMutation": false,
-    "audioAttachment": false,
-    "audioDetachment": false,
-    "directBrowserD1": false,
-    "directBrowserR2": false,
-    "publicMedia": false,
-    "collaborators": false,
-    "rights": false
-  },
-  "deferred": [
-    "Track-audio attach operation.",
-    "Track-audio detach operation.",
-    "Track-audio HTTP API.",
-    "Studio track-audio assignment UI.",
-    "Automatic cascade detachment."
-  ],
-  "migrationExecutionAuthorized": false,
-  "deployment": false,
-  "liveD1Mutation": false,
-  "liveR2Mutation": false
+    "id":  "SESH-070H-A",
+    "title":  "Private audio track-reference delete integrity",
+    "purpose":  "Prevent destructive private-audio deletion from creating dangling SeshTrack.audioAssetIds references before track-audio attachment authority is introduced.",
+    "canonicalRelationship":  {
+                                  "projectAudioAssetIds":  "Canonical inventory of private audio assets attached to the project.",
+                                  "trackAudioAssetIds":  "Organizational subset of project audio assigned to a track.",
+                                  "deleteInvariant":  "An audio asset referenced by any track in its canonical project cannot be destructively deleted until every track reference has been removed."
+                              },
+    "deleteOrder":  [
+                        "Validate project and audio identifiers.",
+                        "Owner-authorize project write access.",
+                        "Read and recheck the canonical project snapshot.",
+                        "Read and recheck canonical audio metadata and project membership.",
+                        "List canonical project tracks.",
+                        "Fail with conflict if any track references the audio asset.",
+                        "Only then detach audio from project through project CAS.",
+                        "Only after project detachment delete audio metadata.",
+                        "Only after metadata deletion delete private R2 bytes."
+                    ],
+    "failureSemantics":  {
+                             "trackListFailure":  "Fail closed as unavailable before any destructive mutation.",
+                             "referencedByTrack":  "Return conflict before project, metadata, or binary mutation."
+                         },
+    "authority":  {
+                      "projectMutation":  "Existing audio delete lifecycle only after reference guard passes.",
+                      "trackMutation":  false,
+                      "audioAttachment":  false,
+                      "audioDetachment":  false,
+                      "directBrowserD1":  false,
+                      "directBrowserR2":  false,
+                      "publicMedia":  false,
+                      "collaborators":  false,
+                      "rights":  false
+                  },
+    "deferred":  [
+                     "Track-audio attach operation.",
+                     "Track-audio detach operation.",
+                     "Track-audio HTTP API.",
+                     "Studio track-audio assignment UI.",
+                     "Automatic cascade detachment."
+                 ],
+    "migrationExecutionAuthorized":  false,
+    "deployment":  false,
+    "liveD1Mutation":  false,
+    "liveR2Mutation":  false,
+    "canonicalMembershipFixForward":  {
+                                          "id":  "SESH-070H-A2",
+                                          "canonicalTrackMembershipAuthority":  "project.trackIds",
+                                          "metadataListingPurpose":  "Integrity read only; project-scoped track metadata does not itself establish canonical attachment.",
+                                          "orphanMetadataMayBlockDeletion":  false,
+                                          "canonicalReferencedTrackBlocksDeletion":  true,
+                                          "missingCanonicalTrackMetadata":  "fail-closed-unavailable",
+                                          "duplicateCanonicalTrackMetadata":  "fail-closed-unavailable",
+                                          "destructiveMutationBeforeGuardPasses":  false,
+                                          "projectMutationModelChanged":  false,
+                                          "trackMutationAdded":  false,
+                                          "audioMetadataMutationModelChanged":  false,
+                                          "r2AuthorityChanged":  false,
+                                          "httpChanged":  false,
+                                          "runtimeChanged":  false,
+                                          "studioChanged":  false,
+                                          "migrationExecutionAuthorized":  false,
+                                          "deployment":  false
+                                      }
 }

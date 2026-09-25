@@ -384,6 +384,16 @@ implements CreatorAudioDeleteService {
       );
     }
 
+    const canonicalTrackIds =
+      new Set(
+        snapshot.project.trackIds,
+      );
+
+    const seenCanonicalTrackIds =
+      new Set<
+        (typeof snapshot.project.trackIds)[number]
+      >();
+
     for (
       const track of
       tracksResult.value
@@ -399,6 +409,29 @@ implements CreatorAudioDeleteService {
       }
 
       if (
+        !canonicalTrackIds.has(
+          track.id,
+        )
+      ) {
+        continue;
+      }
+
+      if (
+        seenCanonicalTrackIds.has(
+          track.id,
+        )
+      ) {
+        return failure(
+          "unavailable",
+          "Sesh project track listing contains duplicate canonical track metadata.",
+        );
+      }
+
+      seenCanonicalTrackIds.add(
+        track.id,
+      );
+
+      if (
         track.audioAssetIds.includes(
           ids.audioAssetId,
         )
@@ -408,6 +441,16 @@ implements CreatorAudioDeleteService {
           "Sesh private audio is attached to a track. Detach it from all tracks before deleting it.",
         );
       }
+    }
+
+    if (
+      seenCanonicalTrackIds.size !==
+      canonicalTrackIds.size
+    ) {
+      return failure(
+        "unavailable",
+        "Sesh project track listing is missing canonical track metadata.",
+      );
     }
 
     if (

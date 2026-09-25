@@ -5,6 +5,13 @@ import type {
   SeshProjectOwnershipAuthorizer,
 } from "../authorization/project-ownership-authorizer";
 
+import {
+  createSeshAudioAssetId,
+  createSeshCreatorId,
+  createSeshMusicProjectId,
+  createSeshTrackId,
+} from "../identifiers";
+
 import type {
   SeshAudioAsset,
   SeshMusicProject,
@@ -14,6 +21,12 @@ import type {
 import type {
   DefaultCreatorAudioDeleteServiceDependencies,
 } from "./creator-audio-delete-service";
+
+import {
+  InMemorySeshAudioAssetRepository,
+  InMemorySeshAudioObjectStore,
+  InMemorySeshProjectRepository,
+} from "../persistence/memory";
 
 import {
   InMemorySeshTrackRepository,
@@ -799,7 +812,13 @@ test(
                 true as const,
 
               value: {
-                project,
+                project: {
+                  ...project,
+
+                  trackIds: [
+                    track.id,
+                  ],
+                },
 
                 revision:
                   9,
@@ -1041,6 +1060,554 @@ test(
     assert.equal(
       objectDeleted,
       false,
+    );
+  },
+);
+async function createCanonicalMembershipDeleteFixture(
+  mode:
+    "orphan" |
+    "missing" |
+    "duplicate",
+) {
+  const fixtureProjectId =
+    createSeshMusicProjectId(
+      `audio-delete-canonical-${mode}`,
+    );
+
+  const fixtureCreatorId =
+    createSeshCreatorId(
+      `audio-delete-canonical-${mode}-owner`,
+    );
+
+  const fixtureAudioAssetId =
+    createSeshAudioAssetId(
+      `audio-delete-canonical-${mode}-audio`,
+    );
+
+  const canonicalTrackId =
+    createSeshTrackId(
+      `audio-delete-canonical-${mode}-track`,
+    );
+
+  const orphanTrackId =
+    createSeshTrackId(
+      `audio-delete-canonical-${mode}-orphan`,
+    );
+
+  const fixtureStorageReference = {
+    provider:
+      "r2" as const,
+
+    bucket:
+      "private-bucket",
+
+    key:
+      `private/${fixtureProjectId}/${fixtureAudioAssetId}.wav`,
+  };
+
+  const projects =
+    new InMemorySeshProjectRepository();
+
+  const audioAssets =
+    new InMemorySeshAudioAssetRepository();
+
+  const audioObjects =
+    new InMemorySeshAudioObjectStore();
+
+  const tracks =
+    new InMemorySeshTrackRepository();
+
+  const savedProject =
+    await projects.saveProject({
+      id:
+        fixtureProjectId,
+
+      ownerCreatorId:
+        fixtureCreatorId,
+
+      title:
+        `Canonical Guard ${mode}`,
+
+      createdAt:
+        "2026-09-25T21:00:00.000Z",
+
+      updatedAt:
+        "2026-09-25T21:00:00.000Z",
+
+      trackIds:
+        mode ===
+          "orphan"
+          ? []
+          : [
+              canonicalTrackId,
+            ],
+
+      sessionIds:
+        [],
+
+      audioAssetIds:
+        [
+          fixtureAudioAssetId,
+        ],
+    });
+
+  assert.equal(
+    savedProject.ok,
+    true,
+    "A2 fixture project seed must succeed.",
+  );
+
+  const savedAudioAsset =
+    await audioAssets.saveAudioAsset({
+      id:
+        fixtureAudioAssetId,
+
+      projectId:
+        fixtureProjectId,
+
+      kind:
+        "recording",
+
+      name:
+        "Canonical Guard Take",
+
+      createdAt:
+        "2026-09-25T21:00:00.000Z",
+
+      contentType:
+        "audio/wav",
+
+      storageReference:
+        fixtureStorageReference,
+    });
+
+  assert.equal(
+    savedAudioAsset.ok,
+    true,
+    "A2 fixture audio metadata seed must succeed.",
+  );
+
+  const savedAudioObject =
+    await audioObjects.putObject(
+      fixtureStorageReference,
+      new Uint8Array([
+        7,
+        8,
+        9,
+      ]),
+    );
+
+  assert.equal(
+    savedAudioObject.ok,
+    true,
+    "A2 fixture private audio object seed must succeed.",
+  );
+
+  if (
+    mode ===
+      "orphan"
+  ) {
+    const savedOrphanTrack =
+      await tracks.saveTrack({
+        id:
+          orphanTrackId,
+
+        projectId:
+          fixtureProjectId,
+
+        name:
+          "Orphan Metadata",
+
+        order:
+          0,
+
+        audioAssetIds:
+          [
+            fixtureAudioAssetId,
+          ],
+      });
+
+    assert.equal(
+      savedOrphanTrack.ok,
+      true,
+      "A2 orphan metadata track seed must succeed.",
+    );
+  }
+
+  if (
+    mode ===
+      "duplicate"
+  ) {
+    const savedCanonicalTrack =
+      await tracks.saveTrack({
+        id:
+          canonicalTrackId,
+
+        projectId:
+          fixtureProjectId,
+
+        name:
+          "Canonical Duplicate",
+
+        order:
+          0,
+
+        audioAssetIds:
+          [],
+      });
+
+    assert.equal(
+      savedCanonicalTrack.ok,
+      true,
+      "A2 canonical metadata track seed must succeed.",
+    );
+
+    const canonicalList =
+      await tracks.listTracksForProject(
+        fixtureProjectId,
+      );
+
+    assert.equal(
+      canonicalList.ok,
+      true,
+    );
+
+    if (
+      !canonicalList.ok
+    ) {
+      throw new Error(
+        "Canonical duplicate fixture failed to read its seeded track.",
+      );
+    }
+
+    const duplicatedTracks = [
+      ...canonicalList.value,
+      ...canonicalList.value,
+    ];
+
+    tracks.listTracksForProject =
+      async (
+        requestedProjectId,
+      ) => {
+        assert.equal(
+          requestedProjectId,
+          fixtureProjectId,
+        );
+
+        return {
+          ok:
+            true as const,
+
+          value:
+            duplicatedTracks,
+        };
+      };
+  }
+
+  const service =
+    new DefaultCreatorAudioDeleteService({
+      authorizer: {
+        async authorize() {
+          return {
+            ok:
+              true as const,
+
+            value: {
+              seshCreatorId:
+                fixtureCreatorId,
+            },
+          };
+        },
+      },
+
+      projects,
+      audioAssets,
+      audioObjects,
+      tracks,
+
+      now:
+        () =>
+          "2026-09-25T21:00:01.000Z",
+    });
+
+  return {
+    fixtureProjectId,
+    fixtureAudioAssetId,
+    canonicalTrackId,
+    orphanTrackId,
+    fixtureStorageReference,
+    projects,
+    audioAssets,
+    audioObjects,
+    tracks,
+    service,
+  };
+}
+
+test(
+  "orphan track metadata outside project trackIds does not block audio deletion",
+  async () => {
+    const fixture =
+      await createCanonicalMembershipDeleteFixture(
+        "orphan",
+      );
+
+    const result =
+      await fixture.service
+        .deleteProjectAudio(
+          fixture.fixtureProjectId,
+          fixture.fixtureAudioAssetId,
+        );
+
+    assert.equal(
+      result.ok,
+      true,
+    );
+
+    const projectAfter =
+      await fixture.projects
+        .getProjectSnapshot(
+          fixture.fixtureProjectId,
+        );
+
+    assert.equal(
+      projectAfter.ok,
+      true,
+    );
+
+    if (
+      !projectAfter.ok
+    ) {
+      return;
+    }
+
+    assert.equal(
+      projectAfter.value.project.audioAssetIds.includes(
+        fixture.fixtureAudioAssetId,
+      ),
+      false,
+    );
+
+    const metadataAfter =
+      await fixture.audioAssets
+        .getAudioAsset(
+          fixture.fixtureAudioAssetId,
+        );
+
+    assert.equal(
+      metadataAfter.ok,
+      false,
+    );
+
+    const objectAfter =
+      await fixture.audioObjects
+        .objectExists(
+          fixture.fixtureStorageReference,
+        );
+
+    assert.deepEqual(
+      objectAfter,
+      {
+        ok:
+          true,
+
+        value:
+          false,
+      },
+    );
+
+    const orphanAfter =
+      await fixture.tracks
+        .getTrack(
+          fixture.orphanTrackId,
+        );
+
+    assert.equal(
+      orphanAfter.ok,
+      true,
+    );
+
+    if (
+      !orphanAfter.ok
+    ) {
+      return;
+    }
+
+    assert.deepEqual(
+      orphanAfter.value.audioAssetIds,
+      [
+        fixture.fixtureAudioAssetId,
+      ],
+    );
+  },
+);
+
+test(
+  "missing canonical track metadata fails closed before destructive audio deletion",
+  async () => {
+    const fixture =
+      await createCanonicalMembershipDeleteFixture(
+        "missing",
+      );
+
+    const result =
+      await fixture.service
+        .deleteProjectAudio(
+          fixture.fixtureProjectId,
+          fixture.fixtureAudioAssetId,
+        );
+
+    assert.equal(
+      result.ok,
+      false,
+    );
+
+    if (
+      result.ok
+    ) {
+      return;
+    }
+
+    assert.equal(
+      result.error.code,
+      "unavailable",
+    );
+
+    const projectAfter =
+      await fixture.projects
+        .getProjectSnapshot(
+          fixture.fixtureProjectId,
+        );
+
+    assert.equal(
+      projectAfter.ok,
+      true,
+    );
+
+    if (
+      !projectAfter.ok
+    ) {
+      return;
+    }
+
+    assert.equal(
+      projectAfter.value.project.audioAssetIds.includes(
+        fixture.fixtureAudioAssetId,
+      ),
+      true,
+    );
+
+    const metadataAfter =
+      await fixture.audioAssets
+        .getAudioAsset(
+          fixture.fixtureAudioAssetId,
+        );
+
+    assert.equal(
+      metadataAfter.ok,
+      true,
+    );
+
+    const objectAfter =
+      await fixture.audioObjects
+        .objectExists(
+          fixture.fixtureStorageReference,
+        );
+
+    assert.deepEqual(
+      objectAfter,
+      {
+        ok:
+          true,
+
+        value:
+          true,
+      },
+    );
+  },
+);
+
+test(
+  "duplicate canonical track metadata fails closed before destructive audio deletion",
+  async () => {
+    const fixture =
+      await createCanonicalMembershipDeleteFixture(
+        "duplicate",
+      );
+
+    const result =
+      await fixture.service
+        .deleteProjectAudio(
+          fixture.fixtureProjectId,
+          fixture.fixtureAudioAssetId,
+        );
+
+    assert.equal(
+      result.ok,
+      false,
+    );
+
+    if (
+      result.ok
+    ) {
+      return;
+    }
+
+    assert.equal(
+      result.error.code,
+      "unavailable",
+    );
+
+    const projectAfter =
+      await fixture.projects
+        .getProjectSnapshot(
+          fixture.fixtureProjectId,
+        );
+
+    assert.equal(
+      projectAfter.ok,
+      true,
+    );
+
+    if (
+      !projectAfter.ok
+    ) {
+      return;
+    }
+
+    assert.equal(
+      projectAfter.value.project.audioAssetIds.includes(
+        fixture.fixtureAudioAssetId,
+      ),
+      true,
+    );
+
+    const metadataAfter =
+      await fixture.audioAssets
+        .getAudioAsset(
+          fixture.fixtureAudioAssetId,
+        );
+
+    assert.equal(
+      metadataAfter.ok,
+      true,
+    );
+
+    const objectAfter =
+      await fixture.audioObjects
+        .objectExists(
+          fixture.fixtureStorageReference,
+        );
+
+    assert.deepEqual(
+      objectAfter,
+      {
+        ok:
+          true,
+
+        value:
+          true,
+      },
     );
   },
 );
