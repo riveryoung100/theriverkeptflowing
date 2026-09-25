@@ -1,0 +1,76 @@
+{
+  "id": "SESH-071B-C",
+  "title": "Atomic track reorder persistence",
+  "purpose": [
+    "Implement the persistence contract locked by SESH-071B-B.",
+    "Guarantee that a project reorder either changes every requested canonical track order or changes none.",
+    "Provide equivalent atomic semantics in the in-memory and Cloudflare D1 track repositories."
+  ],
+  "input": {
+    "projectId": "canonical SeshMusicProjectId",
+    "writes": [
+      "track id",
+      "expected revision",
+      "server-assigned canonical order"
+    ],
+    "clientRevisionAuthority": false,
+    "clientOrderNumberAuthority": false
+  },
+  "validation": {
+    "uniqueTrackIds": true,
+    "nonNegativeIntegerExpectedRevision": true,
+    "orderMustEqualArrayIndex": true,
+    "canonicalContiguousOrder": "0..N-1"
+  },
+  "inMemory": {
+    "preflightEveryWriteBeforeMutation": true,
+    "allOrNothing": true,
+    "revisionIncrement": 1,
+    "mutatesOnlyOrder": true
+  },
+  "d1": {
+    "strategy": "single SQL UPDATE statement",
+    "batchRequired": false,
+    "globalAllTrackCasPrecondition": true,
+    "projectIdChecked": true,
+    "trackIdChecked": true,
+    "expectedRevisionChecked": true,
+    "legacyNullRevisionEquivalentToZero": true,
+    "successfulChangedRowsMustEqualRequestedTrackCount": true,
+    "revisionIncrement": 1,
+    "payloadOrderPath": "$.payload.order",
+    "payloadRevisionPath": "$.revision",
+    "payloadStoredAtPath": "$.storedAt"
+  },
+  "preservedTrackState": [
+    "id",
+    "projectId",
+    "name",
+    "audioAssetIds",
+    "muted",
+    "solo",
+    "gain"
+  ],
+  "boundaries": {
+    "projectTrackIdsMutation": false,
+    "projectAudioMutation": false,
+    "trackAudioMutation": false,
+    "trackCreateDelete": false,
+    "r2": false,
+    "http": false,
+    "studio": false,
+    "publicAudio": false,
+    "collaboratorRights": false,
+    "publishingRights": false,
+    "managementRights": false,
+    "masterRights": false,
+    "royaltyRights": false,
+    "ownershipTransfer": false
+  },
+  "production": {
+    "migrationExecutionAuthorized": false,
+    "deployment": false,
+    "liveD1Mutation": false,
+    "liveR2Mutation": false
+  }
+}

@@ -492,6 +492,214 @@ implements SeshTrackRepository {
     });
   }
 
+  async reorderProjectTracksAtomically(
+    projectId:
+      SeshMusicProjectId,
+
+    writes:
+      readonly {
+        readonly id:
+          SeshTrackId;
+
+        readonly expectedRevision:
+          number;
+
+        readonly order:
+          number;
+      }[],
+  ): Promise<
+    SeshPersistenceResult<
+      readonly SeshTrack[]
+    >
+  > {
+    let canonicalProjectId:
+      SeshMusicProjectId;
+
+    try {
+      canonicalProjectId =
+        parseSeshMusicProjectId(
+          projectId,
+        );
+    }
+    catch (
+      error
+    ) {
+      return failure(
+        "validation",
+        error instanceof Error
+          ? error.message
+          : "Sesh track reorder project identifier validation failed.",
+      );
+    }
+
+    const seen =
+      new Set<SeshTrackId>();
+
+    const planned:
+      {
+        readonly track:
+          SeshTrack;
+
+        readonly expectedRevision:
+          number;
+      }[] =
+      [];
+
+    for (
+      let index = 0;
+      index < writes.length;
+      index++
+    ) {
+      const write =
+        writes[index];
+
+      let canonicalId:
+        SeshTrackId;
+
+      try {
+        canonicalId =
+          parseSeshTrackId(
+            write.id,
+          );
+
+        if (
+          !Number.isInteger(
+            write.expectedRevision,
+          ) ||
+          write.expectedRevision <
+            0
+        ) {
+          throw new TypeError(
+            "Expected Sesh track revision must be a non-negative integer.",
+          );
+        }
+
+        if (
+          !Number.isInteger(
+            write.order,
+          ) ||
+          write.order !==
+            index
+        ) {
+          throw new TypeError(
+            "Atomic Sesh track reorder order must equal its canonical array position.",
+          );
+        }
+      }
+      catch (
+        error
+      ) {
+        return failure(
+          "validation",
+          error instanceof Error
+            ? error.message
+            : "Sesh track reorder input validation failed.",
+        );
+      }
+
+      if (
+        seen.has(
+          canonicalId,
+        )
+      ) {
+        return failure(
+          "validation",
+          "Atomic Sesh track reorder cannot contain duplicate track ids.",
+        );
+      }
+
+      seen.add(
+        canonicalId,
+      );
+
+      const current =
+        this.#tracks.get(
+          canonicalId,
+        );
+
+      const currentRevision =
+        this.#revisions.get(
+          canonicalId,
+        );
+
+      if (
+        current ===
+          undefined ||
+        currentRevision ===
+          undefined ||
+        current.projectId !==
+          canonicalProjectId ||
+        currentRevision !==
+          write.expectedRevision
+      ) {
+        return failure(
+          "conflict",
+          "Sesh track reorder conflicted with canonical track state.",
+        );
+      }
+
+      let reordered:
+        SeshTrack;
+
+      try {
+        reordered =
+          validateSeshTrack({
+            ...current,
+            order:
+              write.order,
+          });
+      }
+      catch (
+        error
+      ) {
+        return failure(
+          "validation",
+          error instanceof Error
+            ? error.message
+            : "Sesh reordered track validation failed.",
+        );
+      }
+
+      planned.push({
+        track:
+          cloneTrack(
+            reordered,
+          ),
+
+        expectedRevision:
+          write.expectedRevision,
+      });
+    }
+
+    for (
+      const entry of
+      planned
+    ) {
+      this.#tracks.set(
+        entry.track.id,
+        cloneTrack(
+          entry.track,
+        ),
+      );
+
+      this.#revisions.set(
+        entry.track.id,
+        entry.expectedRevision +
+          1,
+      );
+    }
+
+    return success(
+      planned.map(
+        (
+          entry,
+        ) =>
+          cloneTrack(
+            entry.track,
+          ),
+      ),
+    );
+  }
   async deleteTrackConditionally(
     trackId:
       SeshTrackId,

@@ -30,6 +30,7 @@ import {
 
 import type {
   SeshD1DatabaseLike,
+  SeshD1PreparedStatementLike,
   SeshD1RunResultLike,
 } from "./types";
 
@@ -745,6 +746,332 @@ implements SeshTrackRepository {
     }
   }
 
+  async reorderProjectTracksAtomically(
+    projectId:
+      SeshMusicProjectId,
+
+    writes:
+      readonly {
+        readonly id:
+          SeshTrackId;
+
+        readonly expectedRevision:
+          number;
+
+        readonly order:
+          number;
+      }[],
+  ): Promise<
+    SeshPersistenceResult<
+      readonly SeshTrack[]
+    >
+  > {
+    let canonicalProjectId:
+      SeshMusicProjectId;
+
+    try {
+      canonicalProjectId =
+        parseSeshMusicProjectId(
+          projectId,
+        );
+    }
+    catch (
+      error
+    ) {
+      return failure(
+        "validation",
+        error instanceof Error
+          ? error.message
+          : "Sesh D1 track reorder project identifier validation failed.",
+      );
+    }
+
+    if (
+      writes.length ===
+        0
+    ) {
+      return success(
+        [],
+      );
+    }
+
+    const seen =
+      new Set<SeshTrackId>();
+
+    const planned:
+      {
+        readonly track:
+          SeshTrack;
+
+        readonly expectedRevision:
+          number;
+
+        readonly order:
+          number;
+      }[] =
+      [];
+
+    for (
+      let index = 0;
+      index < writes.length;
+      index++
+    ) {
+      const write =
+        writes[index];
+
+      let canonicalId:
+        SeshTrackId;
+
+      try {
+        canonicalId =
+          parseSeshTrackId(
+            write.id,
+          );
+
+        if (
+          !Number.isInteger(
+            write.expectedRevision,
+          ) ||
+          write.expectedRevision <
+            0
+        ) {
+          throw new TypeError(
+            "Expected Sesh track revision must be a non-negative integer.",
+          );
+        }
+
+        if (
+          !Number.isInteger(
+            write.order,
+          ) ||
+          write.order !==
+            index
+        ) {
+          throw new TypeError(
+            "Atomic Sesh D1 track reorder order must equal its canonical array position.",
+          );
+        }
+      }
+      catch (
+        error
+      ) {
+        return failure(
+          "validation",
+          error instanceof Error
+            ? error.message
+            : "Sesh D1 track reorder input validation failed.",
+        );
+      }
+
+      if (
+        seen.has(
+          canonicalId,
+        )
+      ) {
+        return failure(
+          "validation",
+          "Atomic Sesh D1 track reorder cannot contain duplicate track ids.",
+        );
+      }
+
+      seen.add(
+        canonicalId,
+      );
+
+      const current =
+        await this.getTrackSnapshot(
+          canonicalId,
+        );
+
+      if (!current.ok) {
+        if (
+          current.error.kind ===
+            "not-found"
+        ) {
+          return failure(
+            "conflict",
+            "Sesh D1 track reorder conflicted with canonical track state.",
+          );
+        }
+
+        return current;
+      }
+
+      if (
+        current.value.track.projectId !==
+          canonicalProjectId
+      ) {
+        return failure(
+          "conflict",
+          "Sesh D1 track reorder cannot move a track outside its canonical project.",
+        );
+      }
+
+      let reordered:
+        SeshTrack;
+
+      try {
+        reordered =
+          validateSeshTrack({
+            ...current.value.track,
+            order:
+              write.order,
+          });
+      }
+      catch (
+        error
+      ) {
+        return failure(
+          "validation",
+          error instanceof Error
+            ? error.message
+            : "Sesh D1 reordered track validation failed.",
+        );
+      }
+
+      planned.push({
+        track:
+          reordered,
+
+        expectedRevision:
+          write.expectedRevision,
+
+        order:
+          write.order,
+      });
+    }
+
+    const valuesSql =
+      planned
+        .map(
+          () =>
+            "(?, ?, ?)",
+        )
+        .join(
+          ", ",
+        );
+
+    const sql =
+      `/* SESH_ATOMIC_TRACK_REORDER */
+WITH desired(track_id, expected_revision, next_order) AS (
+  VALUES ${valuesSql}
+),
+eligible AS (
+  SELECT COUNT(*) AS matched_count
+  FROM sesh_tracks AS current
+  JOIN desired
+    ON desired.track_id = current.track_id
+   AND current.project_id = ?
+   AND COALESCE(current.revision, 0) = desired.expected_revision
+)
+UPDATE sesh_tracks
+SET
+  revision = COALESCE(revision, 0) + 1,
+  stored_at = ?,
+  payload_json = json_set(
+    payload_json,
+    '$.revision',
+    COALESCE(revision, 0) + 1,
+    '$.storedAt',
+    ?,
+    '$.payload.order',
+    (
+      SELECT desired.next_order
+      FROM desired
+      WHERE desired.track_id = sesh_tracks.track_id
+    )
+  )
+WHERE project_id = ?
+  AND track_id IN (
+    SELECT track_id
+    FROM desired
+  )
+  AND (
+    SELECT matched_count
+    FROM eligible
+  ) = ?`;
+
+    const storedAt =
+      new Date().toISOString();
+
+    const bindValues:
+      unknown[] =
+        [];
+
+    for (
+      const entry of
+      planned
+    ) {
+      bindValues.push(
+        entry.track.id,
+        entry.expectedRevision,
+        entry.order,
+      );
+    }
+
+    bindValues.push(
+      canonicalProjectId,
+      storedAt,
+      storedAt,
+      canonicalProjectId,
+      planned.length,
+    );
+
+    let result:
+      Awaited<
+        ReturnType<
+          SeshD1PreparedStatementLike["run"]
+        >
+      >;
+
+    try {
+      result =
+        await this.database
+          .prepare(
+            sql,
+          )
+          .bind(
+            ...bindValues,
+          )
+          .run();
+    }
+    catch {
+      return failure(
+        "storage",
+        "Sesh D1 atomic track reorder failed.",
+      );
+    }
+
+    if (
+      result.success ===
+        false
+    ) {
+      return failure(
+        "storage",
+        "Sesh D1 atomic track reorder failed.",
+      );
+    }
+
+    if (
+      result.meta?.changes !==
+        planned.length
+    ) {
+      return failure(
+        "conflict",
+        "Sesh D1 track reorder conflicted with canonical revisions.",
+      );
+    }
+
+    return success(
+      planned.map(
+        (
+          entry,
+        ) => ({
+          ...entry.track,
+        }),
+      ),
+    );
+  }
   async deleteTrackConditionally(
     trackId:
       SeshTrackId,
