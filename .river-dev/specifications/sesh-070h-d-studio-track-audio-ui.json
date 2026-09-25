@@ -1,0 +1,64 @@
+{
+  "id": "SESH-070H-D",
+  "title": "Studio track-audio attachment UI",
+  "baseline": {
+    "trackCrudUi": "SESH-070G",
+    "audioDeleteCanonicalMembershipFix": "SESH-070H-A2",
+    "trackAudioOperationService": "SESH-070H-B",
+    "trackAudioHttpRuntime": "SESH-070H-C"
+  },
+  "purpose": [
+    "Let an authenticated Studio owner view canonical private-audio attachment state for each canonical project track.",
+    "Let the owner attach eligible project-owned private audio through the existing dedicated track-audio PUT route.",
+    "Let the owner detach currently attached private audio through the existing dedicated track-audio DELETE route."
+  ],
+  "canonicalAuthority": {
+    "projectAudioInventory": "project.audioAssetIds",
+    "trackAttachmentState": "track.audioAssetIds",
+    "attachMutation": "SESH-070H-C PUT",
+    "detachMutation": "SESH-070H-C DELETE",
+    "requestBodyAuthority": "none",
+    "browserRevisionAuthority": "none",
+    "genericTrackPatchAudioMutation": false,
+    "browserProjectAudioMutation": false
+  },
+  "studioBehavior": {
+    "trackAudioControls": true,
+    "privateAudioInventoryRead": true,
+    "alreadyAttachedAssetsShown": true,
+    "duplicateAttachChoiceShown": false,
+    "successfulMutationRefreshesCanonicalServerState": true,
+    "optimisticAttachmentMutation": false,
+    "boundedErrorPresentation": true,
+    "rawStorageIdentityDisplayed": false
+  },
+  "authorityBoundaries": {
+    "directD1": false,
+    "directR2": false,
+    "seshDbBinding": false,
+    "seshAudioBinding": false,
+    "identityBinding": false,
+    "ownerIdentityFromBrowserTrusted": false,
+    "revisionFromBrowserTrusted": false
+  },
+  "excluded": [
+    "Generic PATCH mutation of track.audioAssetIds.",
+    "Mutation of project.audioAssetIds.",
+    "Public audio or sharing behavior.",
+    "Collaborator rights.",
+    "Management rights.",
+    "Publishing rights.",
+    "Copyright ownership.",
+    "Master ownership.",
+    "Royalty allocation.",
+    "Ownership transfer.",
+    "Migration execution.",
+    "Deployment."
+  ],
+  "production": {
+    "migrationExecutionAuthorized": false,
+    "deployment": false,
+    "liveD1Mutation": false,
+    "liveR2Mutation": false
+  }
+}

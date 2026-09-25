@@ -1429,6 +1429,86 @@ const canonical =
           return body.value;
         };
 
+      let trackAudioInventory =
+        [];
+
+      const loadTrackAudioInventory =
+        async (
+          projectId,
+        ) => {
+          const {
+            response,
+            body,
+          } =
+            await fetchJson(
+              `/api/sesh/projects/${encodeURIComponent(
+                projectId,
+              )}/audio`,
+            );
+
+          if (!response.ok) {
+            throw new Error(
+              errorMessage(
+                body,
+                "Private audio is temporarily unavailable.",
+              ),
+            );
+          }
+
+          return audioAssetsFrom(
+            body,
+          );
+        };
+
+      const updateTrackAudioMembership =
+        async (
+          projectId,
+          trackId,
+          audioAssetId,
+          method,
+        ) => {
+          if (
+            method !==
+              "PUT" &&
+            method !==
+              "DELETE"
+          ) {
+            throw new Error(
+              "Unsupported track audio mutation.",
+            );
+          }
+
+          const {
+            response,
+            body,
+          } =
+            await fetchJson(
+              `/api/sesh/projects/${encodeURIComponent(
+                projectId,
+              )}/tracks/${encodeURIComponent(
+                trackId,
+              )}/audio/${encodeURIComponent(
+                audioAssetId,
+              )}`,
+              {
+                method,
+              },
+            );
+
+          if (!response.ok) {
+            throw new Error(
+              errorMessage(
+                body,
+                method ===
+                  "PUT"
+                  ? "Unable to attach private audio to track."
+                  : "Unable to detach private audio from track.",
+              ),
+            );
+          }
+
+          return body;
+        };
       const renderTracks = (
         tracks,
         projectId,
@@ -1696,6 +1776,366 @@ const canonical =
             details,
           );
 
+          const attachedIds =
+            Array.isArray(
+              track.audioAssetIds,
+            )
+              ? track.audioAssetIds.filter(
+                  (value) =>
+                    typeof value ===
+                      "string" &&
+                    value,
+                )
+              : [];
+
+          const inventory =
+            Array.isArray(
+              trackAudioInventory,
+            )
+              ? trackAudioInventory.filter(
+                  (asset) =>
+                    asset &&
+                    typeof asset ===
+                      "object" &&
+                    typeof asset.id ===
+                      "string" &&
+                    asset.id,
+                )
+              : [];
+
+          const inventoryById =
+            new Map(
+              inventory.map(
+                (asset) => [
+                  asset.id,
+                  asset,
+                ],
+              ),
+            );
+
+          const trackAudio =
+            document.createElement(
+              "div",
+            );
+
+          trackAudio.className =
+            "sesh-studio__track-audio";
+
+          const trackAudioTitle =
+            document.createElement(
+              "p",
+            );
+
+          trackAudioTitle.className =
+            "sesh-studio__muted";
+
+          trackAudioTitle.textContent =
+            "Private audio";
+
+          trackAudio.appendChild(
+            trackAudioTitle,
+          );
+
+          const attachedList =
+            document.createElement(
+              "div",
+            );
+
+          attachedList.className =
+            "sesh-studio__audio-list";
+
+          if (
+            attachedIds.length ===
+            0
+          ) {
+            const emptyAttached =
+              document.createElement(
+                "p",
+              );
+
+            emptyAttached.className =
+              "sesh-studio__muted";
+
+            emptyAttached.textContent =
+              "No private audio is attached to this track.";
+
+            attachedList.appendChild(
+              emptyAttached,
+            );
+          }
+          else {
+            for (
+              const attachedId of
+              attachedIds
+            ) {
+              const asset =
+                inventoryById.get(
+                  attachedId,
+                );
+
+              const attachedRow =
+                document.createElement(
+                  "div",
+                );
+
+              attachedRow.className =
+                "sesh-studio__audio-list";
+
+              const attachedName =
+                document.createElement(
+                  "span",
+                );
+
+              attachedName.textContent =
+                asset &&
+                typeof asset.name ===
+                  "string" &&
+                asset.name
+                  ? asset.name
+                  : "Attached private audio";
+
+              const detachButton =
+                document.createElement(
+                  "button",
+                );
+
+              detachButton.type =
+                "button";
+
+              detachButton.textContent =
+                "Detach";
+
+              detachButton.addEventListener(
+                "click",
+                async () => {
+                  detachButton.disabled =
+                    true;
+
+                  setTrackStatus(
+                    "Detaching private audio…",
+                  );
+
+                  try {
+                    await updateTrackAudioMembership(
+                      projectId,
+                      track.id,
+                      attachedId,
+                      "DELETE",
+                    );
+
+                    await loadProjectTracks(
+                      projectId,
+                    );
+
+                    setTrackStatus(
+                      "Private audio detached from track.",
+                    );
+                  }
+                  catch (error) {
+                    setTrackStatus(
+                      error instanceof Error
+                        ? error.message
+                        : "Unable to detach private audio from track.",
+                      true,
+                    );
+
+                    detachButton.disabled =
+                      false;
+                  }
+                },
+              );
+
+              attachedRow.append(
+                attachedName,
+                detachButton,
+              );
+
+              attachedList.appendChild(
+                attachedRow,
+              );
+            }
+          }
+
+          trackAudio.appendChild(
+            attachedList,
+          );
+
+          const availableAssets =
+            inventory.filter(
+              (asset) =>
+                !attachedIds.includes(
+                  asset.id,
+                ),
+            );
+
+          const attachControls =
+            document.createElement(
+              "div",
+            );
+
+          attachControls.className =
+            "sesh-studio__actions";
+
+          const attachSelect =
+            document.createElement(
+              "select",
+            );
+
+          attachSelect.setAttribute(
+            "aria-label",
+            "Private audio to attach",
+          );
+
+          const attachPlaceholder =
+            document.createElement(
+              "option",
+            );
+
+          attachPlaceholder.value =
+            "";
+
+          attachPlaceholder.textContent =
+            availableAssets.length > 0
+              ? "Choose private audio"
+              : "No unattached private audio";
+
+          attachSelect.appendChild(
+            attachPlaceholder,
+          );
+
+          for (
+            const asset of
+            availableAssets
+          ) {
+            const option =
+              document.createElement(
+                "option",
+              );
+
+            option.value =
+              asset.id;
+
+            option.textContent =
+              typeof asset.name ===
+                "string" &&
+              asset.name
+                ? asset.name
+                : "Private audio";
+
+            attachSelect.appendChild(
+              option,
+            );
+          }
+
+          attachSelect.disabled =
+            availableAssets.length ===
+            0;
+
+          const attachButton =
+            document.createElement(
+              "button",
+            );
+
+          attachButton.type =
+            "button";
+
+          attachButton.textContent =
+            "Attach";
+
+          attachButton.disabled =
+            availableAssets.length ===
+            0;
+
+          attachButton.addEventListener(
+            "click",
+            async () => {
+              const audioAssetId =
+                attachSelect.value;
+
+              if (!audioAssetId) {
+                setTrackStatus(
+                  "Choose private audio to attach.",
+                  true,
+                );
+
+                return;
+              }
+
+              attachButton.disabled =
+                true;
+
+              attachSelect.disabled =
+                true;
+
+              setTrackStatus(
+                "Attaching private audio…",
+              );
+
+              try {
+                const freshInventory =
+                  await loadTrackAudioInventory(
+                    projectId,
+                  );
+
+                if (
+                  !freshInventory.some(
+                    (asset) =>
+                      asset &&
+                      asset.id ===
+                        audioAssetId,
+                  )
+                ) {
+                  throw new Error(
+                    "That private audio is no longer available for this project.",
+                  );
+                }
+
+                await updateTrackAudioMembership(
+                  projectId,
+                  track.id,
+                  audioAssetId,
+                  "PUT",
+                );
+
+                await loadProjectTracks(
+                  projectId,
+                );
+
+                setTrackStatus(
+                  "Private audio attached to track.",
+                );
+              }
+              catch (error) {
+                setTrackStatus(
+                  error instanceof Error
+                    ? error.message
+                    : "Unable to attach private audio to track.",
+                  true,
+                );
+
+                attachButton.disabled =
+                  false;
+
+                attachSelect.disabled =
+                  availableAssets.length ===
+                  0;
+              }
+            },
+          );
+
+          attachControls.append(
+            attachSelect,
+            attachButton,
+          );
+
+          trackAudio.appendChild(
+            attachControls,
+          );
+
+          item.appendChild(
+            trackAudio,
+          );
+
           trackList.appendChild(
             item,
           );
@@ -1717,6 +2157,9 @@ const canonical =
           ) {
             trackList.textContent =
               "";
+
+            trackAudioInventory =
+              [];
 
             setTrackStatus(
               "Choose a project to manage tracks.",
@@ -1757,6 +2200,11 @@ const canonical =
 
               return;
             }
+
+            trackAudioInventory =
+              await loadTrackAudioInventory(
+                projectId,
+              );
 
             renderTracks(
               tracksFrom(
