@@ -1598,6 +1598,51 @@ const canonical =
 
           return body;
         };
+      const reorderProjectTracks =
+        async (
+          projectId,
+          orderedTrackIds,
+        ) => {
+          const {
+            response,
+            body,
+          } =
+            await fetchJson(
+              `/api/sesh/projects/${encodeURIComponent(
+                projectId,
+              )}/tracks/reorder`,
+              {
+                method:
+                  "POST",
+
+                headers: {
+                  "content-type":
+                    "application/json",
+                },
+
+                body:
+                  JSON.stringify({
+                    orderedTrackIds,
+                  }),
+              },
+            );
+
+          if (!response.ok) {
+            const message =
+              body &&
+              typeof body.error ===
+                "string"
+                ? body.error
+                : "Unable to reorder tracks.";
+
+            throw new Error(
+              message,
+            );
+          }
+
+          return body;
+        };
+
       const renderTracks = (
         tracks,
         projectId,
@@ -1679,6 +1724,177 @@ const canonical =
             document.createElement(
               "div",
             );
+
+          const trackIndex =
+            sanitizedTracks.findIndex(
+              (candidate) =>
+                candidate.id ===
+                track.id,
+            );
+
+          const moveTrack =
+            async (
+              offset,
+            ) => {
+              const targetIndex =
+                trackIndex +
+                offset;
+
+              if (
+                trackIndex <
+                  0 ||
+                targetIndex <
+                  0 ||
+                targetIndex >=
+                  sanitizedTracks.length
+              ) {
+                return;
+              }
+
+              const orderedTrackIds =
+                sanitizedTracks.map(
+                  (candidate) =>
+                    candidate.id,
+                );
+
+              const currentId =
+                orderedTrackIds[
+                  trackIndex
+                ];
+
+              orderedTrackIds[
+                trackIndex
+              ] =
+                orderedTrackIds[
+                  targetIndex
+                ];
+
+              orderedTrackIds[
+                targetIndex
+              ] =
+                currentId;
+
+              moveUpButton.disabled =
+                true;
+
+              moveDownButton.disabled =
+                true;
+
+              renameButton.disabled =
+                true;
+
+              deleteButton.disabled =
+                true;
+
+              setTrackStatus(
+                "Reordering tracks…",
+              );
+
+              try {
+                await reorderProjectTracks(
+                  projectId,
+                  orderedTrackIds,
+                );
+
+                await loadProjectTracks(
+                  projectId,
+                );
+
+                setTrackStatus(
+                  "Track order updated.",
+                );
+              }
+              catch (error) {
+                moveUpButton.disabled =
+                  trackIndex ===
+                  0;
+
+                moveDownButton.disabled =
+                  trackIndex ===
+                  sanitizedTracks.length -
+                    1;
+
+                renameButton.disabled =
+                  false;
+
+                deleteButton.disabled =
+                  false;
+
+                setTrackStatus(
+                  error instanceof Error
+                    ? error.message
+                    : "Unable to reorder tracks.",
+                  true,
+                );
+              }
+            };
+
+          const moveUpButton =
+            document.createElement(
+              "button",
+            );
+
+          moveUpButton.type =
+            "button";
+
+          moveUpButton.className =
+            "sesh-studio__audio-delete";
+
+          moveUpButton.textContent =
+            "Move up";
+
+          moveUpButton.disabled =
+            trackIndex <=
+            0;
+
+          moveUpButton.setAttribute(
+            "aria-label",
+            `Move ${track.name} up`,
+          );
+
+          moveUpButton.addEventListener(
+            "click",
+            async () => {
+              await moveTrack(
+                -1,
+              );
+            },
+          );
+
+          const moveDownButton =
+            document.createElement(
+              "button",
+            );
+
+          moveDownButton.type =
+            "button";
+
+          moveDownButton.className =
+            "sesh-studio__audio-delete";
+
+          moveDownButton.textContent =
+            "Move down";
+
+          moveDownButton.disabled =
+            trackIndex <
+              0 ||
+            trackIndex >=
+              sanitizedTracks.length -
+                1;
+
+          moveDownButton.setAttribute(
+            "aria-label",
+            `Move ${track.name} down`,
+          );
+
+          moveDownButton.addEventListener(
+            "click",
+            async () => {
+              await moveTrack(
+                1,
+              );
+            },
+          );
 
           const renameButton =
             document.createElement(
@@ -1837,6 +2053,8 @@ const canonical =
           );
 
           actions.append(
+            moveUpButton,
+            moveDownButton,
             renameButton,
             deleteButton,
           );
@@ -2644,8 +2862,7 @@ const deleteProjectAudio =
         },
       );
 
-    let body =
-      null;
+    let body;
 
     try {
       body =
@@ -2707,8 +2924,7 @@ const renameProjectAudio =
         },
       );
 
-    let body =
-      null;
+    let body;
 
     try {
       body =

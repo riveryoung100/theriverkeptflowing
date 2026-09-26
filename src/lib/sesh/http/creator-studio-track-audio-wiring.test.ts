@@ -98,7 +98,7 @@ test(
 
     const helperEnd =
       value.indexOf(
-        "const renderTracks =",
+        "const reorderProjectTracks =",
         helperStart,
       );
 

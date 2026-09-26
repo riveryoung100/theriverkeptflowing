@@ -1,0 +1,60 @@
+{
+  "id": "SESH-071B-E",
+  "title": "Studio track reorder UI",
+  "baseline": {
+    "reorderOperation": "SESH-071B-B",
+    "atomicPersistence": "SESH-071B-C",
+    "httpRuntime": "SESH-071B-D"
+  },
+  "studio": {
+    "controls": [
+      "Move up",
+      "Move down"
+    ],
+    "dragAndDrop": false,
+    "firstTrackMoveUpDisabled": true,
+    "lastTrackMoveDownDisabled": true
+  },
+  "request": {
+    "method": "POST",
+    "path": "/api/sesh/projects/{projectId}/tracks/reorder",
+    "bodyFields": [
+      "orderedTrackIds"
+    ],
+    "completeCurrentCanonicalTrackIds": true,
+    "clientRevisionAuthority": false,
+    "clientNumericOrderAuthority": false,
+    "clientOwnerIdentityAuthority": false,
+    "clientPrincipalIdentityAuthority": false
+  },
+  "success": {
+    "optimisticCanonicalAuthority": false,
+    "reloadCanonicalTracks": true,
+    "reloadThroughExistingTrackCollectionGet": true
+  },
+  "preservation": {
+    "trackRenameDeleteControls": true,
+    "trackMixControls": true,
+    "trackAudioAssignmentControls": true
+  },
+  "boundaries": {
+    "projectTrackIdsDirectMutation": false,
+    "trackAudioMutation": false,
+    "projectAudioMutation": false,
+    "directD1": false,
+    "directR2": false,
+    "publicMediaAuthority": false,
+    "collaboratorAuthority": false,
+    "publishingAuthority": false,
+    "managementAuthority": false,
+    "masterRightsAuthority": false,
+    "royaltyAuthority": false,
+    "ownershipTransferAuthority": false
+  },
+  "production": {
+    "migrationExecutionAuthorized": false,
+    "deployment": false,
+    "liveD1Mutation": false,
+    "liveR2Mutation": false
+  }
+}
