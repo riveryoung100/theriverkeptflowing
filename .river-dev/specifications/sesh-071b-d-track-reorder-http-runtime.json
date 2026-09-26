@@ -1,0 +1,59 @@
+{
+  "id": "SESH-071B-D",
+  "title": "Owner-authorized track reorder HTTP runtime",
+  "route": {
+    "method": "POST",
+    "path": "/api/sesh/projects/[projectId]/tracks/reorder",
+    "projectIdSource": "route parameter",
+    "requestBody": {
+      "allowedFields": [
+        "orderedTrackIds"
+      ],
+      "clientRevisionAuthority": false,
+      "clientNumericOrderAuthority": false,
+      "clientOwnerIdentityAuthority": false,
+      "clientPrincipalIdentityAuthority": false
+    }
+  },
+  "authorization": {
+    "sessionPrincipalRequired": true,
+    "principalToCreatorMappingRequired": true,
+    "canonicalProjectOwnerAuthorizationRequired": true,
+    "sameOriginWriteRequired": true
+  },
+  "runtime": {
+    "identityD1Required": true,
+    "seshD1Required": true,
+    "seshAudioRequired": false,
+    "trackRepositoryUsedForCanonicalReads": true,
+    "trackRepositoryUsedForAtomicReorder": true
+  },
+  "operation": {
+    "service": "DefaultAuthorizedSeshTrackReorderOperationService",
+    "completeCanonicalMembershipRequired": true,
+    "serverDerivesExpectedRevisions": true,
+    "serverAssignsOrder": "0..N-1",
+    "atomicPersistenceRequired": true
+  },
+  "boundaries": {
+    "studioChanges": false,
+    "projectTrackIdsMutation": false,
+    "trackAudioMutation": false,
+    "projectAudioMutation": false,
+    "directBrowserD1": false,
+    "directBrowserR2": false,
+    "publicTrackApi": false,
+    "collaboratorAuthority": false,
+    "publishingAuthority": false,
+    "managementAuthority": false,
+    "masterRightsAuthority": false,
+    "royaltyAuthority": false,
+    "ownershipTransferAuthority": false
+  },
+  "production": {
+    "migrationExecutionAuthorized": false,
+    "deployment": false,
+    "liveD1Mutation": false,
+    "liveR2Mutation": false
+  }
+}
