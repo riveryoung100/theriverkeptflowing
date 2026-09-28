@@ -1,0 +1,55 @@
+﻿{
+  "id": "INS-002E2C1",
+  "phase": "Canonical Telnyx Call-Leg Correlation Foundation",
+  "parent": "INS-002E2C",
+  "dependsOn": [
+    "INS-002E2A",
+    "INS-002E2B5"
+  ],
+  "status": "implementation-authorized",
+  "objective": "Define and persist a minimal River-owned correlation record that links one canonical InsuranceContactAttempt to an operator or lead Telnyx call-control reference without making provider identity canonical.",
+  "model": {
+    "canonicalIdentity": "attemptId plus leg role",
+    "legRoles": [
+      "operator",
+      "lead"
+    ],
+    "provider": "telnyx",
+    "providerReference": "external Telnyx call_control_id evidence"
+  },
+  "schema": {
+    "table": "river_crm_contact_call_correlations",
+    "primaryKey": [
+      "attempt_id",
+      "leg_role"
+    ],
+    "uniqueProviderEvidence": [
+      "provider",
+      "provider_reference"
+    ],
+    "foreignKey": "attempt_id -> river_crm_contact_attempts.attempt_id ON DELETE CASCADE"
+  },
+  "rules": [
+    "A contact attempt may have at most one operator leg and one lead leg.",
+    "A provider call-control reference may correlate to only one River attempt/leg record.",
+    "Provider call-control references never replace InsuranceContactAttemptId.",
+    "call_session_id and call_leg_id remain optional provider evidence outside canonical identity.",
+    "Correlation persistence is additive and does not mutate existing contact-attempt providerReference semantics."
+  ],
+  "outOfScope": [
+    "migration execution",
+    "bridge state persistence",
+    "event application rewiring",
+    "client_state",
+    "call_session_id correlation",
+    "call_leg_id correlation",
+    "webhook route",
+    "signature verification",
+    "raw webhook parsing",
+    "Telnyx API commands",
+    "live D1 mutation",
+    "live calls",
+    "deployment"
+  ],
+  "next": "INS-002E2C2 can make normalized Telnyx event resolution correlation-aware by resolving call_control_id through this additive leg-correlation persistence before bridge lifecycle reconciliation."
+}
