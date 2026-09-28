@@ -9,3 +9,4 @@ export * from "./integration-boundary";
 export * from "./contact-attempt";
 export * from "./d1-contact-attempt";
 export * from "./contact-orchestration";
+export * from "./private-contact-request";

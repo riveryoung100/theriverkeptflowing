@@ -1,0 +1,92 @@
+﻿{
+  "id": "INS-002D",
+  "phase": "INS-002D Private River OS Callback / Contact Request Ingress",
+  "parent": "INS-002",
+  "dependsOn": [
+    "INS-002C"
+  ],
+  "branch": "cif-001-canonical-content-source-record",
+  "status": "planned",
+  "objective": "Create the private River OS POST ingress for requesting immediate or callback contact without selecting or invoking a telephony provider. The ingress validates same-origin writes, canonical relationship identity, supported channel and intent, verifies that the relationship exists in River CRM, and fails closed until a provider runtime is explicitly composed in INS-002E.",
+  "plannedFiles": [
+    ".river-dev/specifications/ins-002d-private-river-os-contact-request-ingress.json",
+    "src/lib/insurance/private-contact-request.ts",
+    "src/lib/insurance/private-contact-request.test.ts",
+    "src/lib/insurance/private-contact-request-route-wiring.test.ts",
+    "src/lib/insurance/index.ts",
+    "src/pages/river-os/actions/insurance-contact.ts"
+  ],
+  "requestContract": {
+    "surface": "private River OS form POST",
+    "path": "/river-os/actions/insurance-contact",
+    "fields": [
+      "relationshipId",
+      "channel",
+      "intent"
+    ],
+    "channelValues": [
+      "phone",
+      "sms",
+      "email"
+    ],
+    "intentValues": [
+      "instant-contact",
+      "callback"
+    ]
+  },
+  "routeBehavior": {
+    "sameOriginRequired": true,
+    "relationshipMustExist": true,
+    "missingDatabaseStatus": 503,
+    "invalidRequestStatus": 400,
+    "unknownRelationshipStatus": 404,
+    "crossOriginStatus": 403,
+    "providerUnavailableStatus": 503,
+    "successfulProviderExecution": "deferred to INS-002E"
+  },
+  "security": [
+    "The route lives only beneath /river-os/actions.",
+    "The route reuses the canonical same-origin River CRM write guard.",
+    "No public quote route gains telephony controls.",
+    "No phone or email destination is accepted from the browser.",
+    "The browser submits only canonical relationship identity, channel, and intent.",
+    "Actual destination remains server-resolved by INS-002C."
+  ],
+  "providerGate": {
+    "providerSelected": false,
+    "providerSdkAdded": false,
+    "providerInvocationEnabled": false,
+    "behavior": "Fail closed with 503 after request and relationship validation until INS-002E composes an authorized provider adapter."
+  },
+  "explicitlyOutOfScope": [
+    "provider selection",
+    "provider credentials",
+    "live phone calls",
+    "SMS delivery",
+    "email delivery",
+    "webhooks",
+    "provider reconciliation",
+    "predictive dialing",
+    "parallel dialing",
+    "power dialing",
+    "call recording",
+    "AI voice agents",
+    "CRM presentation buttons",
+    "public contact controls",
+    "production D1 mutation",
+    "deployment"
+  ],
+  "acceptanceCriteria": [
+    "Exactly six INS-002D paths change.",
+    "Form parsing is canonical and provider-neutral.",
+    "Relationship ID must use relationship: identity.",
+    "Unsupported channel or intent is rejected.",
+    "Cross-origin writes are rejected.",
+    "Missing River CRM binding fails closed.",
+    "Unknown relationship returns 404.",
+    "A valid request cannot invoke a provider before INS-002E.",
+    "The route accepts no phone number or email destination field.",
+    "No provider SDK or network call is added.",
+    "No production resource is mutated."
+  ]
+}
