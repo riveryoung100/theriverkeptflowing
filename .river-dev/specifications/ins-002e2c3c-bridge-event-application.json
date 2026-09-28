@@ -1,0 +1,44 @@
+﻿{
+  "id": "INS-002E2C3C",
+  "phase": "Correlated Bridge Event Application",
+  "parent": "INS-002E2C3",
+  "dependsOn": [
+    "INS-002E2C2",
+    "INS-002E2C3A",
+    "INS-002E2C3B"
+  ],
+  "status": "implementation-authorized",
+  "objective": "Apply one already-resolved correlated Telnyx voice event to durable TelnyxCallBridge state with bounded optimistic stale-state recovery.",
+  "applicationRules": [
+    "The input event is already correlation-resolved; this slice performs no provider-reference lookup.",
+    "The durable bridge is loaded by canonical attempt_id.",
+    "A missing durable bridge returns bridge-not-found and never creates bridge state implicitly.",
+    "no-op and defer plans perform zero bridge writes.",
+    "update plans execute compareAndSetBridge(previous,next).",
+    "A stale-bridge result triggers exactly one fresh bridge read and one replan.",
+    "If the fresh replan is no-op or defer, recovery terminates without another write.",
+    "If the fresh replan is update, exactly one second compareAndSetBridge is allowed.",
+    "A second stale-bridge result is returned as retryable instead of looping.",
+    "Contact-attempt state and provider-event receipts remain untouched."
+  ],
+  "resultSemantics": [
+    "bridge-not-found",
+    "no-op",
+    "deferred",
+    "updated",
+    "stale-bridge"
+  ],
+  "outOfScope": [
+    "correlation lookup",
+    "raw webhook parsing",
+    "signature verification",
+    "provider-event receipt mutation",
+    "contact-attempt mutation",
+    "Telnyx API commands",
+    "migration execution",
+    "live D1 mutation",
+    "live calls",
+    "deployment"
+  ],
+  "next": "A later composition slice may combine correlation resolution, bridge application, and canonical attempt reconciliation only after those boundaries are explicitly reviewed."
+}

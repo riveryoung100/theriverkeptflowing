@@ -21,3 +21,4 @@ export * from "./d1-telnyx-call-correlation";
 export * from "./telnyx-correlated-event";
 export * from "./d1-telnyx-call-bridge";
 export * from "./telnyx-bridge-reconciliation";
+export * from "./telnyx-bridge-event-application";
