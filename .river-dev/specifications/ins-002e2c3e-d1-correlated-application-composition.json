@@ -1,0 +1,47 @@
+﻿{
+  "id": "INS-002E2C3E",
+  "phase": "D1 Correlated Application Composition",
+  "parent": "INS-002E2C3",
+  "dependsOn": [
+    "INS-002E2C2",
+    "INS-002E2C3C",
+    "INS-002E2C3D2",
+    "INS-002E2C3D3"
+  ],
+  "status": "implementation-authorized",
+  "objective": "Compose the landed Telnyx correlation resolver, durable bridge application, canonical attempt executor, and correlated event application service over one caller-provided River CRM D1 persistence boundary.",
+  "compositionRules": [
+    "Accept an already-provided D1-compatible database object.",
+    "Construct contact-attempt persistence from that database.",
+    "Construct Telnyx call-leg correlation persistence from that database.",
+    "Construct Telnyx call-bridge persistence from that database.",
+    "Construct the correlated event resolver from correlation persistence and attempt persistence.",
+    "Construct the bridge event application service from bridge persistence.",
+    "Construct the correlated attempt executor from the same database.",
+    "Construct the D3 correlated event application service from those dependencies.",
+    "Do not access Astro locals, Cloudflare env bindings, or RIVER_CRM_DB by name."
+  ],
+  "ownershipRules": [
+    "Correlation lookup remains owned by the existing correlation persistence and resolver.",
+    "Bridge state reads and compare-and-set writes remain owned by the existing bridge persistence and application service.",
+    "Attempt compare-and-set and provider-event receipts remain owned by the existing correlated attempt executor.",
+    "E2C3E owns composition only and performs no eager database queries."
+  ],
+  "outOfScope": [
+    "raw webhook parsing",
+    "webhook route",
+    "signature verification",
+    "Astro runtime wiring",
+    "Cloudflare environment lookup",
+    "Telnyx API credentials",
+    "outbound Telnyx commands",
+    "call-leg creation",
+    "bridge creation",
+    "migration authoring",
+    "migration execution",
+    "live D1 mutation",
+    "live calls",
+    "deployment"
+  ],
+  "next": "Any webhook or runtime ingress binding remains a separately authorized later slice."
+}

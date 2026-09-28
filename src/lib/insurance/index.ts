@@ -25,3 +25,4 @@ export * from "./telnyx-bridge-event-application";
 export * from "./telnyx-correlated-attempt-reconciliation";
 export * from "./d1-telnyx-correlated-attempt-reconciliation";
 export * from "./telnyx-correlated-event-application";
+export * from "./d1-telnyx-correlated-event-application";
