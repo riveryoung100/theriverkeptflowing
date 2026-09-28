@@ -1,0 +1,52 @@
+﻿{
+  "id": "INS-002E2C3A",
+  "phase": "Durable Telnyx Bridge-State Persistence",
+  "parent": "INS-002E2C3",
+  "dependsOn": [
+    "INS-002E2A",
+    "INS-002E2C1",
+    "INS-002E2C2"
+  ],
+  "status": "implementation-authorized",
+  "objective": "Persist one canonical TelnyxCallBridge snapshot per InsuranceContactAttempt so operator-first lifecycle evidence can survive separate normalized event deliveries.",
+  "persistenceModel": {
+    "table": "river_crm_contact_call_bridges",
+    "primaryKey": "attempt_id",
+    "foreignKey": "attempt_id -> river_crm_contact_attempts(attempt_id) ON DELETE CASCADE",
+    "fields": [
+      "attempt_id",
+      "state",
+      "operator_call_control_id",
+      "lead_call_control_id",
+      "failure_code",
+      "created_at",
+      "updated_at"
+    ],
+    "writeSemantics": [
+      "insert initial bridge exactly once",
+      "read bridge by canonical attempt identity",
+      "compare-and-set update using previous state plus previous updated_at",
+      "zero-row compare-and-set is reported as stale instead of silently overwriting newer bridge state"
+    ]
+  },
+  "identityRules": [
+    "attempt_id is canonical River identity.",
+    "operator_call_control_id and lead_call_control_id remain external Telnyx evidence.",
+    "call_session_id and call_leg_id are not persisted as canonical bridge identity.",
+    "The correlation table remains authoritative for mapping each provider call_control_id to operator or lead role."
+  ],
+  "outOfScope": [
+    "event-to-bridge reconciliation planning",
+    "contact-attempt state mutation",
+    "provider-event receipt mutation",
+    "webhook route",
+    "signature verification",
+    "raw webhook parsing",
+    "Telnyx API commands",
+    "migration execution",
+    "live D1 mutation",
+    "live calls",
+    "deployment"
+  ],
+  "next": "INS-002E2C3B can plan deterministic operator/lead normalized-event transitions against a durable TelnyxCallBridge snapshot."
+}
