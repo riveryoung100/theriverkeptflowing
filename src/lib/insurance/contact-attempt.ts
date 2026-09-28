@@ -197,6 +197,15 @@ export type InsuranceContactEligibility =
             InsuranceContactEligibilityDenialReason;
       };
 
+export interface InsuranceContactDestination {
+    readonly channel:
+        InsuranceContactChannel;
+
+    readonly value:
+        string;
+}
+
+
 export interface InsuranceContactProviderRequest {
     readonly attemptId:
         InsuranceContactAttemptId;
@@ -212,6 +221,9 @@ export interface InsuranceContactProviderRequest {
 
     readonly idempotencyKey:
         InsuranceContactIdempotencyKey;
+
+    readonly destination:
+        InsuranceContactDestination;
 }
 
 export type InsuranceContactProviderResult =

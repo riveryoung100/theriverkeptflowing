@@ -118,6 +118,15 @@ export interface InsuranceContactAttemptPersistence {
             undefined
         >;
 
+    getAttemptByIdempotencyKey(
+        idempotencyKey:
+            string
+    ):
+        Promise<
+            InsuranceContactAttempt |
+            undefined
+        >;
+
     listAttemptsForRelationship(
         relationshipId:
             RiverCrmRelationshipId | string,
@@ -745,6 +754,66 @@ implements InsuranceContactAttemptPersistence {
                 )
                 .bind(
                     canonicalAttemptId
+                )
+                .first<
+                    InsuranceContactAttemptRow
+                >();
+
+        return row === null
+            ? undefined
+            : rowToAttempt(
+                row
+            );
+    }
+
+
+    public async getAttemptByIdempotencyKey(
+        idempotencyKey:
+            string
+    ):
+        Promise<
+            InsuranceContactAttempt |
+            undefined
+        > {
+
+        const canonicalIdempotencyKey =
+            requiredText(
+                idempotencyKey,
+                "idempotency_key"
+            );
+
+        const row =
+            await this.database
+                .prepare(
+                    `
+                        SELECT
+                            attempt_id,
+                            relationship_id,
+                            trigger_event_id,
+                            channel,
+                            intent,
+                            state,
+                            idempotency_key,
+                            provider,
+                            provider_reference,
+                            requested_at,
+                            attempted_at,
+                            connected_at,
+                            completed_at,
+                            failed_at,
+                            canceled_at,
+                            failure_code,
+                            failure_message,
+                            retryable,
+                            created_at,
+                            updated_at
+                        FROM river_crm_contact_attempts
+                        WHERE idempotency_key = ?1
+                        LIMIT 1
+                    `
+                )
+                .bind(
+                    canonicalIdempotencyKey
                 )
                 .first<
                     InsuranceContactAttemptRow

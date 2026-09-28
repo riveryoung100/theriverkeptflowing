@@ -1,0 +1,116 @@
+﻿{
+  "id": "INS-002C",
+  "phase": "INS-002C Provider-Neutral Contact Orchestration Service",
+  "parent": "INS-002",
+  "dependsOn": [
+    "INS-002A",
+    "INS-002B"
+  ],
+  "branch": "cif-001-canonical-content-source-record",
+  "status": "planned",
+  "objective": "Create the provider-neutral server-side orchestration boundary for immediate and callback contact requests. Resolve the actual transport destination from canonical River CRM data, enforce current consent before provider invocation, persist queued and attempting execution state, and record provider acceptance or failure without selecting or implementing a telephony vendor.",
+  "plannedFiles": [
+    ".river-dev/specifications/ins-002c-provider-neutral-contact-orchestration.json",
+    "src/lib/insurance/contact-attempt.ts",
+    "src/lib/insurance/contact-orchestration.ts",
+    "src/lib/insurance/contact-orchestration.test.ts",
+    "src/lib/insurance/d1-contact-attempt.ts",
+    "src/lib/insurance/index.ts"
+  ],
+  "architecture": {
+    "canonicalIdentity": "RiverCrmRelationshipId",
+    "destinationOwnership": "RiverCrmRelationship.phone/email",
+    "destinationExposure": "server-only provider request",
+    "consentSource": "D1RiverCrmGrowthPersistence.listContactConsents",
+    "attemptPersistence": "InsuranceContactAttemptPersistence",
+    "providerBoundary": "InsuranceContactProvider",
+    "providerSelected": false,
+    "networkTransportImplemented": false
+  },
+  "destination": {
+    "type": "InsuranceContactDestination",
+    "fields": [
+      "channel",
+      "value"
+    ],
+    "resolution": {
+      "phone": "relationship.phone",
+      "sms": "relationship.phone",
+      "email": "relationship.email"
+    },
+    "rules": [
+      "The destination is resolved only after loading the canonical CRM relationship.",
+      "The destination is not added to InsuranceGrowthIntegrationContext.",
+      "The provider adapter does not fetch River CRM.",
+      "The provider request receives the resolved destination explicitly.",
+      "The destination is not redundantly persisted on the contact-attempt row."
+    ]
+  },
+  "orchestration": {
+    "factory": "createInsuranceContactOrchestrationService",
+    "method": "requestContact",
+    "dependencies": [
+      "relationship persistence get",
+      "current contact-consent read",
+      "contact-attempt persistence",
+      "provider-neutral InsuranceContactProvider",
+      "providerName",
+      "clock"
+    ],
+    "sequence": [
+      "Validate request identity and context relationship agreement.",
+      "Load canonical River CRM relationship.",
+      "Resolve channel destination server-side.",
+      "Load current consent records.",
+      "Use the newest consent record for the requested channel.",
+      "Evaluate contact eligibility.",
+      "Return denial without provider invocation when ineligible.",
+      "Persist a queued attempt.",
+      "Transition and persist the attempt to attempting before provider invocation.",
+      "Invoke provider with explicit destination.",
+      "Validate provider result.",
+      "If accepted, retain attempting state and persist provider reference when supplied.",
+      "If rejected, transition and persist failed state.",
+      "If provider throws, transition and persist a stable retryable provider-exception failure."
+    ]
+  },
+  "lifecycle": {
+    "providerAcceptedState": "attempting",
+    "providerRejectedState": "failed",
+    "providerExceptionState": "failed",
+    "asyncProviderReconciliation": "INS-002F"
+  },
+  "explicitlyOutOfScope": [
+    "provider selection",
+    "provider SDK",
+    "live telephone call",
+    "SMS delivery",
+    "email delivery",
+    "webhook route",
+    "webhook signature verification",
+    "provider webhook reconciliation",
+    "predictive dialing",
+    "parallel dialing",
+    "power dialing",
+    "call recording",
+    "AI voice agent",
+    "public quote route telephony control",
+    "production D1 migration execution",
+    "deployment"
+  ],
+  "acceptanceCriteria": [
+    "Exactly six INS-002C paths change.",
+    "Actual destination comes from canonical River CRM relationship data.",
+    "InsuranceGrowthIntegrationContext remains free of phone and email transport values.",
+    "Provider request includes explicit server-resolved destination.",
+    "Current requested-channel consent is re-read before provider invocation.",
+    "Denied eligibility never invokes provider.",
+    "Queued state is durable before attempting state.",
+    "Attempting state is durable before provider invocation.",
+    "Provider acceptance does not prematurely mark the attempt completed.",
+    "Provider rejection becomes failed state with canonical failure fields.",
+    "Provider exception becomes stable retryable failed state.",
+    "No provider is selected.",
+    "No network or production resource is touched."
+  ]
+}
