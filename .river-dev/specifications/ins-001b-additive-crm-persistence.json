@@ -1,0 +1,232 @@
+﻿{
+  "id": "INS-001B",
+  "phase": "INS-001B Additive River CRM Persistence",
+  "parent": "INS-001",
+  "dependsOn": "INS-001A",
+  "branch": "cif-001-canonical-content-source-record",
+  "status": "planned",
+  "objective": "Persist the INS-001A acquisition attribution, channel consent, relationship event, and insurance lead profile contracts inside the existing River CRM D1 boundary through additive schema and repository code, without replacing the canonical river_crm_relationships table, touching production D1, or introducing public ingress, UI, telephony, or AMS behavior.",
+  "architecture": {
+    "databaseBinding": "RIVER_CRM_DB",
+    "migrationDirectory": "migrations/river-crm",
+    "existingCanonicalTable": "river_crm_relationships",
+    "migrationStrategy": "Additive 0002 migration only. Never rewrite 0001.",
+    "relationshipAnchor": "All new records reference river_crm_relationships.relationship_id.",
+    "sharedPersistenceLocation": "src/lib/river-os",
+    "insurancePersistenceLocation": "src/lib/insurance",
+    "productionPolicy": "INS-001B may validate against ephemeral/local D1 only. Production migration execution is explicitly forbidden."
+  },
+  "plannedFiles": [
+    "migrations/river-crm/0002_river_crm_growth_foundation.sql",
+    "src/lib/river-os/d1-crm-growth.ts",
+    "src/lib/river-os/d1-crm-growth.test.ts",
+    "src/lib/insurance/d1-lead-profile.ts",
+    "src/lib/insurance/d1-lead-profile.test.ts",
+    "src/lib/river-os/index.ts",
+    "src/lib/insurance/index.ts"
+  ],
+  "tables": {
+    "river_crm_acquisition_attribution": {
+      "purpose": "Store one current structured acquisition attribution record per relationship.",
+      "primaryKey": "relationship_id",
+      "columns": [
+        "relationship_id",
+        "source",
+        "source_vendor",
+        "campaign",
+        "ad_or_creative_id",
+        "landing_page",
+        "utm_source",
+        "utm_medium",
+        "utm_campaign",
+        "utm_term",
+        "utm_content",
+        "referral_source",
+        "captured_at",
+        "updated_at"
+      ],
+      "foreignKeys": [
+        "relationship_id -> river_crm_relationships.relationship_id ON DELETE CASCADE"
+      ],
+      "indexes": [
+        "source",
+        "utm_campaign",
+        "captured_at"
+      ]
+    },
+    "river_crm_contact_consents": {
+      "purpose": "Store auditable channel-specific consent and suppression state.",
+      "primaryKey": "consent_id",
+      "columns": [
+        "consent_id",
+        "relationship_id",
+        "channel",
+        "status",
+        "consent_text_version",
+        "consent_source",
+        "captured_at",
+        "revoked_at",
+        "do_not_contact",
+        "created_at",
+        "updated_at"
+      ],
+      "constraints": [
+        "channel IN ('phone','sms','email')",
+        "status IN ('granted','denied','revoked','unknown')",
+        "do_not_contact IN (0,1)",
+        "revoked status requires revoked_at",
+        "non-revoked status must not carry revoked_at"
+      ],
+      "foreignKeys": [
+        "relationship_id -> river_crm_relationships.relationship_id ON DELETE CASCADE"
+      ],
+      "indexes": [
+        "relationship_id + channel",
+        "do_not_contact",
+        "updated_at"
+      ]
+    },
+    "river_crm_relationship_events": {
+      "purpose": "Store append-oriented relationship lifecycle events.",
+      "primaryKey": "event_id",
+      "columns": [
+        "event_id",
+        "relationship_id",
+        "event_type",
+        "occurred_at",
+        "source",
+        "external_reference",
+        "metadata_json"
+      ],
+      "constraints": [
+        "event_type limited to INS-001A initial event types"
+      ],
+      "foreignKeys": [
+        "relationship_id -> river_crm_relationships.relationship_id ON DELETE CASCADE"
+      ],
+      "indexes": [
+        "relationship_id + occurred_at",
+        "event_type + occurred_at",
+        "external_reference partial when non-null"
+      ]
+    },
+    "river_crm_insurance_lead_profiles": {
+      "purpose": "Persist insurance-only lead context without duplicating generic CRM contact or pipeline fields.",
+      "primaryKey": "relationship_id",
+      "columns": [
+        "relationship_id",
+        "state",
+        "postal_code",
+        "product_interest",
+        "quote_status",
+        "assigned_producer",
+        "created_at",
+        "updated_at"
+      ],
+      "constraints": [
+        "product_interest limited to INS-001A product interests",
+        "quote_status limited to INS-001A quote statuses"
+      ],
+      "foreignKeys": [
+        "relationship_id -> river_crm_relationships.relationship_id ON DELETE CASCADE"
+      ],
+      "indexes": [
+        "quote_status + updated_at",
+        "product_interest",
+        "state",
+        "assigned_producer partial when non-null"
+      ]
+    }
+  },
+  "repositoryContracts": {
+    "sharedGrowthRepository": {
+      "factory": "createD1RiverCrmGrowthPersistence",
+      "operations": [
+        "getAcquisitionAttribution",
+        "upsertAcquisitionAttribution",
+        "listContactConsents",
+        "saveContactConsent",
+        "appendRelationshipEvent",
+        "listRelationshipEvents"
+      ]
+    },
+    "insuranceLeadRepository": {
+      "factory": "createD1InsuranceLeadProfilePersistence",
+      "operations": [
+        "get",
+        "upsert"
+      ]
+    }
+  },
+  "persistenceRules": [
+    "Repository inputs must pass through INS-001A canonical constructors before writes.",
+    "Database rows must be mapped back through canonical constructors before being returned.",
+    "No repository may invent a second relationship identity format.",
+    "Acquisition attribution upsert is keyed by relationship_id.",
+    "Consent records remain independently addressable by consent_id and retain channel/status audit meaning.",
+    "Relationship events are append-only in INS-001B; no update or delete operation is exposed.",
+    "Event metadata is JSON serialized on write and JSON parsed on read.",
+    "Insurance lead profiles do not duplicate display name, email, phone, relationship kind, or generic pipeline stage.",
+    "Missing relationship foreign keys must fail rather than silently create orphan domain records.",
+    "D1 errors must not be converted into successful empty results."
+  ],
+  "localD1Proof": {
+    "required": true,
+    "environment": "Ephemeral local-only Wrangler/D1 database",
+    "requirements": [
+      "Apply 0001 then 0002 locally.",
+      "Create one canonical relationship.",
+      "Insert and read acquisition attribution.",
+      "Insert multiple channel consent records and read them.",
+      "Append multiple relationship events and verify chronological retrieval.",
+      "Insert and read an insurance lead profile.",
+      "Verify foreign-key rejection for a missing relationship.",
+      "Verify deleting a relationship cascades to its INS-001B child records.",
+      "Verify no production database identifier or --remote mode is used."
+    ]
+  },
+  "testRequirements": [
+    "Map acquisition attribution to and from D1 rows.",
+    "Upsert acquisition attribution by relationship.",
+    "Map contact consent boolean storage correctly.",
+    "Persist and list multiple channel consents.",
+    "Reject malformed persisted consent rows through canonical validation.",
+    "Append relationship events without update semantics.",
+    "Serialize and deserialize JSON event metadata.",
+    "Preserve event chronological ordering.",
+    "Map insurance lead profile to and from D1 rows.",
+    "Upsert insurance lead profile by relationship.",
+    "Preserve optional assignedProducer nullability.",
+    "Propagate D1 execution failures.",
+    "Do not touch or regress existing river_crm_relationships persistence behavior."
+  ],
+  "explicitlyOutOfScope": [
+    "production D1 migration execution",
+    "remote Wrangler migration application",
+    "public quote request endpoints",
+    "public form handling",
+    "River OS UI changes",
+    "lead deduplication",
+    "automated email",
+    "automated SMS",
+    "telephony",
+    "calendar provider integration",
+    "AMS integration",
+    "carrier systems",
+    "policy records",
+    "quote rating",
+    "commissions"
+  ],
+  "acceptanceCriteria": [
+    "0001 remains byte-for-byte unchanged.",
+    "Exactly one additive River CRM migration is introduced for INS-001B.",
+    "All four INS-001A domain record families have D1 persistence.",
+    "All new persistence remains anchored to canonical relationship_id.",
+    "Focused persistence tests pass.",
+    "Ephemeral local D1 proof passes with foreign-key and cascade behavior verified.",
+    "No production D1 resource is contacted or modified.",
+    "No Sesh source, migration, binding, or runtime is changed.",
+    "Repository-wide existing type debt is not broadened into this slice.",
+    "Working-tree scope remains limited to the INS-001B specification and planned files."
+  ]
+}
