@@ -1,0 +1,42 @@
+﻿{
+  "id": "INS-002E1",
+  "phase": "Telnyx Voice Provider Adapter",
+  "parent": "INS-002E",
+  "dependsOn": [
+    "INS-002C",
+    "INS-002D"
+  ],
+  "provider": "Telnyx",
+  "status": "implementation-authorized",
+  "objective": "Implement an isolated Telnyx Voice adapter behind the existing InsuranceContactProvider interface without wiring runtime secrets, enabling the River OS action, deploying, or placing live calls.",
+  "providerApi": {
+    "endpoint": "POST https://api.telnyx.com/v2/calls",
+    "authentication": "Bearer API v2 key",
+    "requiredFields": [
+      "connection_id",
+      "to",
+      "from"
+    ],
+    "providerReference": "data.call_control_id"
+  },
+  "channelScope": {
+    "phone": "implemented",
+    "sms": "explicitly unsupported in this slice",
+    "email": "explicitly unsupported in this slice"
+  },
+  "transport": {
+    "networkTransport": "injected Fetch-compatible function",
+    "productionFetchWiring": false,
+    "liveTraffic": false
+  },
+  "safety": [
+    "No API keys are stored in source.",
+    "No Telnyx account is created.",
+    "No Cloudflare secret is created.",
+    "No live call is placed.",
+    "No River OS route is wired to Telnyx in this slice.",
+    "No production D1 data is touched.",
+    "No deployment occurs."
+  ],
+  "next": "INS-002E2 defines runtime composition and the operator/bridge behavior required before the private action can execute useful live calls."
+}
