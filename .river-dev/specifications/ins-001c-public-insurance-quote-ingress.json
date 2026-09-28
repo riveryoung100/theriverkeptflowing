@@ -1,0 +1,350 @@
+﻿{
+  "id": "INS-001C",
+  "phase": "INS-001C Public Insurance Quote-Request Ingress",
+  "parent": "INS-001",
+  "dependsOn": [
+    "INS-001A",
+    "INS-001B"
+  ],
+  "branch": "cif-001-canonical-content-source-record",
+  "status": "planned",
+  "objective": "Introduce a governed public POST boundary that accepts a minimal insurance quote/contact request, validates and normalizes only approved public fields, creates one canonical River CRM lead, and atomically preserves insurance profile, acquisition attribution, auditable consent, and quote-request lifecycle evidence without exposing private River OS write controls or collecting sensitive underwriting/payment data.",
+  "architecture": {
+    "publicRoute": "/api/insurance/quote-request",
+    "method": "POST",
+    "databaseBinding": "RIVER_CRM_DB",
+    "canonicalRelationshipTable": "river_crm_relationships",
+    "relationshipKind": "lead",
+    "initialPipelineStage": "new",
+    "publicSource": "website",
+    "privateRiverOsBoundary": "The public route does not call, redirect through, or expose /river-os/actions/*.",
+    "domainBoundary": "Request validation and orchestration live in src/lib/insurance. Generic CRM identity, acquisition, consent, event, and D1 contracts remain reusable River infrastructure.",
+    "atomicity": "Creation of the canonical relationship and all INS-001C child records must execute as one D1 batch/unit. A request must not report success when only part of the CRM growth record set was written.",
+    "deduplicationPolicy": "INS-001C creates one new canonical relationship per accepted submission. Cross-submission person deduplication or lead association is deferred until a separately specified identity/deduplication rule exists.",
+    "productionPolicy": "Implementation and tests may use mocks and ephemeral/local D1 only. No production D1 migration, deployment, or live request is authorized by this slice."
+  },
+  "plannedFiles": [
+    "src/lib/insurance/quote-request.ts",
+    "src/lib/insurance/quote-request.test.ts",
+    "src/lib/insurance/d1-quote-request.ts",
+    "src/lib/insurance/d1-quote-request.test.ts",
+    "src/lib/insurance/http/quote-request-api.ts",
+    "src/lib/insurance/http/quote-request-api.test.ts",
+    "src/lib/insurance/http/quote-request-route-wiring.test.ts",
+    "src/pages/api/insurance/quote-request.ts",
+    "src/lib/insurance/index.ts"
+  ],
+  "publicRequestContract": {
+    "contentType": "application/json",
+    "maximumBodyBytes": 16384,
+    "requiredFields": [
+      "firstName",
+      "lastName",
+      "state",
+      "postalCode",
+      "productInterest",
+      "consent"
+    ],
+    "contactRule": "At least one of phone or email is required. Supplying both is allowed.",
+    "optionalContactFields": [
+      "phone",
+      "email"
+    ],
+    "optionalAttributionFields": [
+      "sourceVendor",
+      "campaign",
+      "adOrCreativeId",
+      "landingPage",
+      "utmSource",
+      "utmMedium",
+      "utmCampaign",
+      "utmTerm",
+      "utmContent",
+      "referralSource"
+    ],
+    "consentFields": [
+      "phone",
+      "sms",
+      "email",
+      "textVersion"
+    ],
+    "forbiddenAdministrativeFields": [
+      "relationshipId",
+      "kind",
+      "stage",
+      "owner",
+      "assignedProducer",
+      "quoteStatus",
+      "createdAt",
+      "updatedAt",
+      "eventId",
+      "consentId"
+    ],
+    "forbiddenSensitiveFields": [
+      "ssn",
+      "socialSecurityNumber",
+      "driverLicense",
+      "driverLicenseNumber",
+      "paymentCard",
+      "bankAccount",
+      "carrierCredential",
+      "carrierPassword"
+    ]
+  },
+  "normalizationRules": [
+    "firstName and lastName are trimmed non-empty text and are combined into canonical CRM displayName.",
+    "Email is trimmed and normalized to lowercase when provided.",
+    "Phone is trimmed and must contain a usable telephone value when provided; INS-001C does not infer consent merely from presence of a phone number.",
+    "state and postalCode pass through the canonical InsuranceLeadProfile validation rules.",
+    "productInterest must use the canonical INS-001A insurance product values.",
+    "Public input cannot choose relationship kind, pipeline stage, CRM owner, assigned producer, quote status, timestamps, identifiers, or event types.",
+    "Blank optional attribution fields are omitted rather than stored as meaningful values.",
+    "Acquisition source for this public route is canonicalized to website; client input may provide attribution detail but may not replace the route's canonical source."
+  ],
+  "consentPolicy": {
+    "required": true,
+    "textVersionRequired": true,
+    "rules": [
+      "Consent must be an object with explicit boolean channel choices rather than one ambiguous truthy value.",
+      "At least one provided contact channel must have explicit granted consent for the request to be accepted.",
+      "SMS consent cannot be granted without a phone number.",
+      "Phone consent cannot be granted without a phone number.",
+      "Email consent cannot be granted without an email address.",
+      "A consent record is persisted for each supplied contact channel with an explicit granted or denied state.",
+      "Consent capture source is website.",
+      "Consent capturedAt, createdAt, and updatedAt use the server-controlled accepted-request timestamp.",
+      "Public callers cannot submit revokedAt or doNotContact administrative state."
+    ]
+  },
+  "generatedIdentifiers": {
+    "relationshipId": "Server-generated relationship:<uuid> canonical identifier.",
+    "consentId": "Server-generated consent:<uuid> for each persisted channel consent.",
+    "leadCreatedEventId": "Server-generated crm-event:<uuid>.",
+    "quoteRequestedEventId": "Server-generated crm-event:<uuid>.",
+    "rule": "Identifiers are generated server-side only and are never accepted from the public request body."
+  },
+  "recordsCreated": {
+    "relationship": {
+      "table": "river_crm_relationships",
+      "values": [
+        "server-generated relationshipId",
+        "displayName from firstName + lastName",
+        "kind = lead",
+        "stage = new",
+        "source = website",
+        "validated email if supplied",
+        "validated phone if supplied",
+        "owner = null",
+        "nextFollowUpAt = null",
+        "appointmentAt = null",
+        "server-controlled createdAt",
+        "server-controlled updatedAt"
+      ]
+    },
+    "acquisition": {
+      "table": "river_crm_acquisition_attribution",
+      "values": [
+        "relationshipId",
+        "source = website",
+        "approved optional attribution fields",
+        "capturedAt = accepted-request timestamp",
+        "updatedAt = accepted-request timestamp"
+      ]
+    },
+    "insuranceProfile": {
+      "table": "river_crm_insurance_lead_profiles",
+      "values": [
+        "relationshipId",
+        "state",
+        "postalCode",
+        "productInterest",
+        "quoteStatus = requested",
+        "assignedProducer omitted/null",
+        "createdAt = accepted-request timestamp",
+        "updatedAt = accepted-request timestamp"
+      ]
+    },
+    "consents": {
+      "table": "river_crm_contact_consents",
+      "values": [
+        "one server-generated consentId per supplied phone/sms/email channel",
+        "relationshipId",
+        "channel",
+        "status = granted or denied from explicit public choice",
+        "consentTextVersion",
+        "consentSource = website",
+        "capturedAt = accepted-request timestamp",
+        "revokedAt = null",
+        "doNotContact = false",
+        "createdAt = accepted-request timestamp",
+        "updatedAt = accepted-request timestamp"
+      ]
+    },
+    "events": [
+      {
+        "type": "lead-created",
+        "source": "website",
+        "metadata": [
+          "productInterest",
+          "state"
+        ]
+      },
+      {
+        "type": "quote-requested",
+        "source": "website",
+        "metadata": [
+          "productInterest",
+          "state"
+        ]
+      }
+    ]
+  },
+  "d1Composition": {
+    "factory": "createD1InsuranceQuoteRequestPersistence",
+    "operation": "createQuoteRequest",
+    "rules": [
+      "The operation receives already-canonical domain records, not arbitrary request JSON.",
+      "The operation creates prepared D1 statements for relationship, acquisition attribution, insurance profile, all channel consent records, lead-created event, and quote-requested event.",
+      "The operation executes those statements with D1 batch semantics.",
+      "Any failed batch member rejects the entire quote-request operation.",
+      "Foreign keys remain enabled by the schema/database environment.",
+      "No table outside the existing River CRM 0001/0002 schema is required."
+    ]
+  },
+  "httpBoundary": {
+    "factory": "createInsuranceQuoteRequestApi",
+    "route": "src/pages/api/insurance/quote-request.ts",
+    "rules": [
+      "POST only.",
+      "Require JSON content type.",
+      "Reject request bodies above the configured maximum before domain orchestration.",
+      "Parse JSON once.",
+      "Reject arrays, null, primitives, malformed JSON, unknown sensitive fields, and forbidden administrative fields.",
+      "Validate the request completely before invoking persistence.",
+      "Use server-generated identifiers and timestamp dependencies for deterministic tests.",
+      "The public route does not require River OS authentication.",
+      "Browser submissions must be same-origin when an Origin header is present.",
+      "Absence of an Origin header is not treated as authenticated identity; server-to-server requests remain subject to the same body validation.",
+      "Never return raw D1 errors or stack traces."
+    ]
+  },
+  "responses": {
+    "201": {
+      "meaning": "Quote request accepted and atomically persisted.",
+      "body": {
+        "ok": true,
+        "relationshipId": "canonical relationship identifier"
+      }
+    },
+    "400": {
+      "meaning": "Malformed JSON or invalid public input.",
+      "body": {
+        "ok": false,
+        "error": "invalid-request"
+      }
+    },
+    "403": {
+      "meaning": "Browser Origin header is present and does not match the request URL origin.",
+      "body": {
+        "ok": false,
+        "error": "forbidden-origin"
+      }
+    },
+    "405": {
+      "meaning": "Unsupported HTTP method where applicable.",
+      "body": {
+        "ok": false,
+        "error": "method-not-allowed"
+      }
+    },
+    "413": {
+      "meaning": "Request body exceeds public ingress limit.",
+      "body": {
+        "ok": false,
+        "error": "request-too-large"
+      }
+    },
+    "415": {
+      "meaning": "Unsupported content type.",
+      "body": {
+        "ok": false,
+        "error": "unsupported-media-type"
+      }
+    },
+    "500": {
+      "meaning": "Persistence or unexpected server failure.",
+      "body": {
+        "ok": false,
+        "error": "quote-request-failed"
+      }
+    }
+  },
+  "testRequirements": [
+    "Accept a valid phone-only quote request with explicit phone consent.",
+    "Accept a valid email-only quote request with explicit email consent.",
+    "Accept a request containing both phone and email.",
+    "Normalize names and email.",
+    "Reuse canonical state, postal-code, product-interest, acquisition, consent, event, and insurance-profile validators.",
+    "Reject a request with neither phone nor email.",
+    "Reject phone or SMS consent when phone is absent.",
+    "Reject email consent when email is absent.",
+    "Reject a request with no granted contact channel.",
+    "Reject malformed JSON.",
+    "Reject non-object JSON.",
+    "Reject forbidden administrative fields.",
+    "Reject explicitly forbidden sensitive fields.",
+    "Reject unsupported product interests.",
+    "Reject invalid state or postal code.",
+    "Reject oversized bodies.",
+    "Reject unsupported content type.",
+    "Reject cross-origin browser writes.",
+    "Generate identifiers server-side.",
+    "Use one server timestamp consistently across records created from one request.",
+    "Create a canonical lead at stage new with source website.",
+    "Create insurance profile with quoteStatus requested.",
+    "Persist structured acquisition attribution.",
+    "Persist explicit per-channel consent evidence.",
+    "Emit lead-created and quote-requested events.",
+    "Execute all records as one D1 batch.",
+    "Propagate batch failure without returning success.",
+    "Return 201 only after successful persistence.",
+    "Route wiring uses RIVER_CRM_DB and does not reference private River OS action routes.",
+    "No Sesh route, source, persistence, or schema file changes."
+  ],
+  "explicitlyOutOfScope": [
+    "public quote form UI",
+    "landing-page redesign",
+    "lead/person deduplication",
+    "merging with an existing relationship",
+    "automatic owner assignment",
+    "setter assignment",
+    "automatic phone calls",
+    "automatic SMS",
+    "automatic email",
+    "calendar booking",
+    "telephony provider integration",
+    "comparative rating",
+    "carrier API calls",
+    "AMS integration",
+    "policy records",
+    "payment collection",
+    "driver-license collection",
+    "SSN collection",
+    "underwriting questionnaires",
+    "production deployment",
+    "production D1 mutation"
+  ],
+  "acceptanceCriteria": [
+    "Public request input is narrower than private CRM administration input.",
+    "Canonical River CRM relationship identity remains the parent record.",
+    "A successful request produces relationship, acquisition, insurance profile, consent, and event records.",
+    "All records for one accepted request are persisted through one D1 batch/unit.",
+    "Public callers cannot select CRM administrative state or identifiers.",
+    "No sensitive underwriting/payment fields are accepted or stored.",
+    "Private River OS write routes are not exposed or reused as public ingress.",
+    "Focused domain, D1, HTTP, and route-wiring tests pass.",
+    "Repository-wide existing type debt is not broadened into INS-001C.",
+    "No production D1 resource or deployment is touched.",
+    "Working-tree scope remains limited to the INS-001C specification and its planned files."
+  ]
+}
