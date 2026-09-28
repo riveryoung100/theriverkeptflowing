@@ -1,0 +1,424 @@
+﻿{
+  "id": "INS-002",
+  "phase": "INS-002 Instant Contact / Call Orchestration",
+  "dependsOn": [
+    "INS-001",
+    "INS-001E"
+  ],
+  "branch": "cif-001-canonical-content-source-record",
+  "status": "planned",
+  "objective": "Create a consent-aware, provider-neutral contact and call orchestration layer for insurance leads so River can request immediate or callback-based contact, persist the complete attempt lifecycle, safely hand attempts to a future telephony provider, and reconcile provider outcomes without replacing canonical River CRM identity or coupling the CRM domain to one vendor.",
+  "architecture": {
+    "canonicalRelationship": "RiverCrmRelationshipId remains the canonical person/lead relationship identity.",
+    "triggerBoundary": "RiverCrmRelationshipEvent with eventType callback-requested remains a CRM lifecycle trigger and audit record, not the telephony attempt state machine.",
+    "attemptBoundary": "InsuranceContactAttempt is the canonical provider-neutral execution record for each requested phone/SMS/email contact attempt.",
+    "persistenceBoundary": "Contact attempt execution state is persisted additively in RIVER_CRM_DB rather than encoded only inside relationship event metadata.",
+    "providerBoundary": "All vendor-specific call creation, authentication, provider request IDs, webhooks, status normalization, retry semantics, and transport behavior live behind an InsuranceContactProvider interface.",
+    "consentBoundary": "No attempt may be prepared for transport when canonical channel consent is not granted or when doNotContact is true.",
+    "orchestrationBoundary": "The orchestration service owns validation, eligibility, attempt creation, state transitions, idempotency intent, provider invocation, provider-result normalization, and persistence sequencing.",
+    "uiBoundary": "Private River OS may later request a callback/contact attempt through a same-origin private action. Public quote intake does not receive telephony controls in INS-002.",
+    "productionBoundary": "No production migration, deployment, provider account setup, purchased phone number, provider secret, or live call occurs without a later explicit authorization."
+  },
+  "coreDecisions": [
+    "Do not overload river_crm_relationship_events with call execution lifecycle.",
+    "Do not use provider call IDs as River identity.",
+    "Do not select a telephony vendor in the foundational slices.",
+    "Persist durable contact-attempt lifecycle before implementing a real provider adapter.",
+    "Treat consent/suppression as a hard orchestration prerequisite rather than a UI-only warning.",
+    "Keep callback-requested as an auditable trigger event that can be associated with a resulting contact attempt.",
+    "Use explicit idempotency keys for provider-bound attempts.",
+    "Provider webhook redelivery must be idempotent before any live provider integration is considered production-ready."
+  ],
+  "deliverySlices": [
+    {
+      "id": "INS-002A",
+      "name": "Canonical contact attempt and orchestration contracts",
+      "scope": [
+        "provider-neutral contact-attempt identity",
+        "channel and intent contracts",
+        "attempt lifecycle",
+        "contact eligibility",
+        "transition validation",
+        "provider request/result interface",
+        "idempotency contract",
+        "focused tests"
+      ]
+    },
+    {
+      "id": "INS-002B",
+      "name": "Additive River CRM contact-attempt persistence",
+      "scope": [
+        "one additive river-crm migration",
+        "contact-attempt table",
+        "provider event receipt table if required for durable webhook idempotency",
+        "repository contracts",
+        "D1 persistence tests",
+        "ephemeral local D1 proof"
+      ]
+    },
+    {
+      "id": "INS-002C",
+      "name": "Provider-neutral contact orchestration service",
+      "scope": [
+        "eligibility gate",
+        "attempt preparation",
+        "durable state sequencing",
+        "provider invocation through injected interface",
+        "provider result normalization",
+        "retryability classification",
+        "idempotency propagation",
+        "canonical event association",
+        "focused orchestration tests"
+      ]
+    },
+    {
+      "id": "INS-002D",
+      "name": "Private River OS callback/contact request ingress",
+      "scope": [
+        "private same-origin request contract",
+        "relationship resolution",
+        "insurance integration context",
+        "callback-requested event persistence",
+        "contact-attempt creation",
+        "no provider-specific browser fields",
+        "route wiring tests"
+      ]
+    },
+    {
+      "id": "INS-002E",
+      "name": "Telephony provider adapter selection and implementation",
+      "scope": [
+        "provider evaluation",
+        "one selected provider adapter",
+        "credential boundary",
+        "outbound call initiation",
+        "provider identifier mapping",
+        "structured provider failure handling",
+        "provider adapter tests"
+      ],
+      "requiresFreshAuthorization": true
+    },
+    {
+      "id": "INS-002F",
+      "name": "Provider webhook reconciliation",
+      "scope": [
+        "signature verification",
+        "raw provider event normalization",
+        "durable webhook idempotency",
+        "attempt lifecycle reconciliation",
+        "provider external references",
+        "redelivery tests",
+        "failure isolation"
+      ],
+      "requiresFreshAuthorization": true
+    },
+    {
+      "id": "INS-002G",
+      "name": "River OS contact-attempt presentation",
+      "scope": [
+        "read-only attempt history",
+        "current call state",
+        "provider-neutral failure state",
+        "retryability visibility",
+        "callback request control if authorized",
+        "no automatic bulk dialing"
+      ]
+    }
+  ],
+  "contactAttemptContract": {
+    "name": "InsuranceContactAttempt",
+    "identifier": {
+      "typeName": "InsuranceContactAttemptId",
+      "prefix": "contact-attempt:"
+    },
+    "channels": [
+      "phone",
+      "sms",
+      "email"
+    ],
+    "intents": [
+      "instant-contact",
+      "callback"
+    ],
+    "states": [
+      "queued",
+      "attempting",
+      "connected",
+      "completed",
+      "failed",
+      "canceled"
+    ],
+    "requiredFields": [
+      "attemptId",
+      "relationshipId",
+      "channel",
+      "intent",
+      "state",
+      "idempotencyKey",
+      "requestedAt",
+      "createdAt",
+      "updatedAt"
+    ],
+    "optionalFields": [
+      "triggerEventId",
+      "provider",
+      "providerReference",
+      "attemptedAt",
+      "connectedAt",
+      "completedAt",
+      "failedAt",
+      "canceledAt",
+      "failureCode",
+      "failureMessage",
+      "retryable"
+    ],
+    "rules": [
+      "attemptId is canonical River-owned identity.",
+      "relationshipId must be canonical RiverCrmRelationshipId.",
+      "Provider identifiers may never replace attemptId or relationshipId.",
+      "triggerEventId may associate the attempt with an existing callback-requested relationship event.",
+      "idempotencyKey is River-owned and required before any provider invocation.",
+      "provider and providerReference remain optional until an adapter actually returns provider identity.",
+      "Lifecycle timestamps must match the attempt state.",
+      "Failure details may appear only for failed attempts.",
+      "retryable is meaningful only for a failed provider/orchestration result.",
+      "No raw provider payload is stored on the canonical attempt."
+    ]
+  },
+  "stateMachine": {
+    "initialState": "queued",
+    "transitions": {
+      "queued": [
+        "attempting",
+        "canceled"
+      ],
+      "attempting": [
+        "connected",
+        "completed",
+        "failed",
+        "canceled"
+      ],
+      "connected": [
+        "completed",
+        "failed"
+      ],
+      "completed": [],
+      "failed": [],
+      "canceled": []
+    },
+    "rules": [
+      "Terminal attempts are immutable except through explicitly designed reconciliation rules.",
+      "A failed attempt is not silently reset to queued; a retry creates or explicitly derives a separately governed attempt.",
+      "No state may be skipped merely because a provider uses different terminology; provider statuses must be normalized.",
+      "Provider webhook ordering must not regress a terminal attempt to an earlier lifecycle state."
+    ]
+  },
+  "contactEligibility": {
+    "input": "InsuranceGrowthIntegrationContext",
+    "output": "InsuranceContactEligibility",
+    "requiredChecks": [
+      "relationship identity exists",
+      "requested channel exists in canonical contactChannels",
+      "requested channel status is granted",
+      "requested channel doNotContact is false",
+      "context-level doNotContact is false"
+    ],
+    "denialReasons": [
+      "channel-missing",
+      "consent-not-granted",
+      "channel-suppressed",
+      "relationship-suppressed"
+    ],
+    "rules": [
+      "Eligibility is deterministic and provider-neutral.",
+      "Unknown, denied, revoked, or missing consent is not eligible.",
+      "Eligibility does not infer legal permission beyond canonical River consent facts.",
+      "Provider invocation is impossible through the orchestration service when eligibility is denied."
+    ]
+  },
+  "providerContract": {
+    "interface": "InsuranceContactProvider",
+    "request": "InsuranceContactProviderRequest",
+    "result": "InsuranceContactProviderResult",
+    "requestFields": [
+      "attemptId",
+      "relationshipId",
+      "channel",
+      "intent",
+      "idempotencyKey"
+    ],
+    "providerSuppliedTransportFields": [
+      "destination",
+      "caller/source identity",
+      "provider configuration"
+    ],
+    "successResult": [
+      "accepted",
+      "providerReference",
+      "providerState"
+    ],
+    "failureResult": [
+      "accepted=false",
+      "code",
+      "message",
+      "retryable"
+    ],
+    "rules": [
+      "The core orchestrator depends only on the interface.",
+      "Provider adapter owns HTTP/network transport.",
+      "Provider adapter maps provider-specific responses into canonical result shape.",
+      "Provider failure must distinguish retryable from deterministic failure.",
+      "The provider receives the River idempotency key whenever the provider supports idempotency.",
+      "Secrets and account credentials are provider-adapter runtime concerns and never part of InsuranceContactAttempt.",
+      "ProviderReference is optional canonical evidence, not River identity."
+    ]
+  },
+  "idempotency": {
+    "requestKey": "River-owned idempotencyKey on InsuranceContactAttempt",
+    "rules": [
+      "The same attempt must not intentionally initiate provider transport twice.",
+      "Provider invocation receives a stable attempt idempotency key.",
+      "Webhook/provider-event ingestion must maintain durable provider-event redelivery idempotency.",
+      "A retryable failure does not justify blindly replaying an attempt without explicit retry orchestration.",
+      "Provider event identifiers remain external references."
+    ]
+  },
+  "persistence": {
+    "databaseBinding": "RIVER_CRM_DB",
+    "migrationDirectory": "migrations/river-crm",
+    "newTable": "river_crm_contact_attempts",
+    "contactAttemptColumns": [
+      "attempt_id",
+      "relationship_id",
+      "trigger_event_id",
+      "channel",
+      "intent",
+      "state",
+      "idempotency_key",
+      "provider",
+      "provider_reference",
+      "requested_at",
+      "attempted_at",
+      "connected_at",
+      "completed_at",
+      "failed_at",
+      "canceled_at",
+      "failure_code",
+      "failure_message",
+      "retryable",
+      "created_at",
+      "updated_at"
+    ],
+    "foreignKeys": [
+      "relationship_id -> river_crm_relationships.relationship_id ON DELETE CASCADE",
+      "trigger_event_id -> river_crm_relationship_events.event_id when present"
+    ],
+    "indexes": [
+      "relationship_id + requested_at",
+      "state + updated_at",
+      "idempotency_key unique",
+      "provider_reference partial when non-null",
+      "trigger_event_id partial when non-null"
+    ],
+    "providerEventReceipt": {
+      "decision": "INS-002B must determine whether a small provider-event receipt table is necessary before INS-002F; if introduced, it must remain provider-neutral and use provider + provider_event_id as the durable dedupe key.",
+      "purpose": "Prevent webhook redelivery from applying one provider lifecycle update multiple times."
+    }
+  },
+  "orchestrationSequence": [
+    "Receive canonical InsuranceGrowthIntegrationContext and contact intent.",
+    "Evaluate channel eligibility before any provider work.",
+    "Create canonical queued InsuranceContactAttempt with River-owned attemptId and idempotencyKey.",
+    "Persist queued attempt before provider invocation.",
+    "Transition and persist attempt to attempting.",
+    "Invoke injected InsuranceContactProvider.",
+    "On provider acceptance, preserve providerReference without changing River identity.",
+    "Normalize synchronous provider state where available.",
+    "On provider failure, persist structured failure code/message/retryability.",
+    "Use later authenticated provider webhook reconciliation for asynchronous connected/completed/failed lifecycle outcomes.",
+    "Never fabricate provider success when persistence or transport fails."
+  ],
+  "privateIngress": {
+    "location": "River OS private CRM boundary",
+    "rules": [
+      "Private action must enforce same-origin semantics consistent with existing River CRM write actions.",
+      "Caller supplies canonical relationshipId and requested contact intent/channel only.",
+      "Caller must not supply attempt state, provider, providerReference, idempotency key, failure state, or arbitrary event metadata.",
+      "Server generates attemptId, eventId, idempotencyKey, and timestamps.",
+      "Server resolves canonical insurance context and consent before orchestration.",
+      "Callback intent persists canonical callback-requested event before associating the attempt.",
+      "Private ingress does not expose telephony provider credentials or raw provider payloads."
+    ]
+  },
+  "webhookReconciliation": {
+    "rules": [
+      "Provider-specific webhook route exists only after provider selection.",
+      "Signature verification occurs before normalization or persistence.",
+      "Exact raw request body is preserved when the chosen provider requires it for signature verification.",
+      "Provider event identity is durably deduplicated.",
+      "Provider statuses are normalized into InsuranceContactAttempt states.",
+      "Unknown provider statuses do not silently advance canonical state.",
+      "Provider event relationship is resolved through providerReference/attempt association, never by replacing canonical relationship identity.",
+      "Webhook redelivery must be safe."
+    ]
+  },
+  "plannedInitialFiles": [
+    ".river-dev/specifications/ins-002-instant-contact-call-orchestration.json"
+  ],
+  "explicitlyOutOfScopeForSpecificationAuthoring": [
+    "source implementation",
+    "D1 migration creation",
+    "production D1 migration",
+    "provider selection",
+    "telephony SDK installation",
+    "provider credentials",
+    "phone number purchase",
+    "live phone call",
+    "SMS transmission",
+    "email transmission",
+    "webhook endpoint",
+    "deployment",
+    "production secret changes",
+    "Sesh changes"
+  ],
+  "globalOutOfScope": [
+    "predictive dialing",
+    "parallel dialing",
+    "power dial campaigns",
+    "robocalling",
+    "automatic voicemail drops",
+    "call recording",
+    "speech analytics",
+    "AI voice agents",
+    "automatic carrier quoting",
+    "AMS replacement",
+    "policy administration",
+    "commission accounting",
+    "setter payroll",
+    "multi-producer compensation"
+  ],
+  "acceptanceCriteria": [
+    "INS-001 canonical relationship identity remains authoritative.",
+    "Callback-requested remains a canonical CRM trigger event rather than becoming the call state machine.",
+    "Contact attempts have River-owned canonical identities.",
+    "Consent and suppression are enforced before provider invocation.",
+    "Contact lifecycle state is durable and provider-neutral.",
+    "Provider references remain external evidence only.",
+    "Provider calls are idempotency-aware.",
+    "Provider failures carry structured retryability.",
+    "Webhook redelivery can be made durably idempotent.",
+    "No vendor-specific type leaks into core orchestration contracts.",
+    "No Sesh schema, source, persistence, or runtime is changed.",
+    "Production resources are not mutated during local implementation unless separately authorized.",
+    "Repository-wide existing type debt is not broadened into INS-002."
+  ],
+  "implementationOrder": [
+    "INS-002A canonical contact-attempt and orchestration contracts",
+    "INS-002B additive River CRM attempt persistence",
+    "INS-002C provider-neutral orchestration service",
+    "INS-002D private River OS request ingress",
+    "INS-002E provider selection and adapter",
+    "INS-002F provider webhook reconciliation",
+    "INS-002G private River OS attempt presentation"
+  ]
+}
