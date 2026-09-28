@@ -1,0 +1,47 @@
+﻿{
+  "id": "INS-002E2C3D2",
+  "phase": "Correlated Canonical Attempt Execution",
+  "parent": "INS-002E2C3D",
+  "dependsOn": [
+    "INS-002E2C2",
+    "INS-002E2C3D1"
+  ],
+  "status": "implementation-authorized",
+  "objective": "Execute an already-planned correlated Telnyx canonical-attempt reconciliation against River CRM D1 while preserving provider-event receipt idempotency and optimistic stale-attempt semantics.",
+  "identityRules": [
+    "correlated.attempt.attemptId must equal correlated.correlation.attemptId",
+    "correlated.correlation.provider must be telnyx",
+    "correlated.correlation.providerReference must equal correlated.event.callControlId",
+    "correlated.correlation.legRole must equal correlated.legRole",
+    "canonical attempt provider must remain telnyx",
+    "canonical attempt providerReference is not required to equal a lead-leg call_control_id"
+  ],
+  "executionRules": [
+    "no-op plans record the provider-event receipt without updating the attempt",
+    "update plans compare-and-swap the canonical attempt before recording the receipt",
+    "a zero-row compare-and-swap returns retryable stale-attempt and does not consume the receipt",
+    "a successful compare-and-swap followed by duplicate receipt insertion remains successful and duplicate",
+    "provider-event receipt insertion failure after successful compare-and-swap is surfaced so provider redelivery remains recoverable",
+    "changed-row counts other than zero or one are rejected"
+  ],
+  "compatibility": [
+    "The existing createD1InsuranceContactEventReconciliationExecutor remains unchanged.",
+    "This executor is a single execution primitive; reread and replan retry belongs to a later correlated application slice."
+  ],
+  "outOfScope": [
+    "bridge persistence",
+    "bridge reconciliation",
+    "correlation lookup",
+    "attempt reread",
+    "automatic retry loop",
+    "webhook route",
+    "signature verification",
+    "raw payload parsing",
+    "Telnyx API commands",
+    "migration execution",
+    "live D1 mutation",
+    "live calls",
+    "deployment"
+  ],
+  "next": "INS-002E2C3D3 may compose correlation resolution, correlated attempt planning, bounded stale recovery, durable bridge application, and receipt-safe attempt execution."
+}
