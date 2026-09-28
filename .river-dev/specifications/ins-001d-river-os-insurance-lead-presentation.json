@@ -1,0 +1,188 @@
+﻿{
+  "id": "INS-001D",
+  "phase": "INS-001D River OS Insurance Lead Presentation",
+  "parent": "INS-001",
+  "dependsOn": [
+    "INS-001A",
+    "INS-001B",
+    "INS-001C"
+  ],
+  "branch": "cif-001-canonical-content-source-record",
+  "status": "planned",
+  "objective": "Surface insurance-specific acquisition and quote context inside the existing private River OS CRM relationship workspace without replacing the canonical generic CRM relationship model, introducing a second CRM, or adding automated outreach behavior.",
+  "architecture": {
+    "workspaceRoute": "/river-os/crm",
+    "databaseBinding": "RIVER_CRM_DB",
+    "canonicalRelationshipModel": "RiverCrmRelationship remains the primary workspace record.",
+    "presentationPattern": "Insurance context is an optional read-model attached to a canonical relationship only when a persisted insurance lead profile exists.",
+    "readOnlyScope": "INS-001D adds presentation and read composition only. It does not create public intake, quote-status editing, consent editing, messaging, dialing, calendar actions, carrier actions, or AMS behavior.",
+    "genericCompatibility": "Non-insurance relationships render exactly through the existing generic CRM presentation path and are not required to possess insurance records.",
+    "dataSource": "Use the existing River CRM 0001/0002 tables and canonical INS-001A/INS-001B constructors/repositories. No new D1 schema is required.",
+    "failureIsolation": "Failure to load optional insurance enrichment must not fabricate insurance data. Database read failure must remain distinguishable from a legitimate non-insurance relationship."
+  },
+  "plannedFiles": [
+    ".river-dev/specifications/ins-001d-river-os-insurance-lead-presentation.json",
+    "src/lib/insurance/lead-presentation.ts",
+    "src/lib/insurance/lead-presentation.test.ts",
+    "src/lib/insurance/d1-lead-presentation.ts",
+    "src/lib/insurance/d1-lead-presentation.test.ts",
+    "src/components/river-os/CrmRelationshipList.astro",
+    "src/pages/river-os/crm.astro",
+    "src/lib/river-os/crm-route-wiring.test.ts",
+    "src/lib/insurance/index.ts"
+  ],
+  "presentationReadModel": {
+    "name": "InsuranceLeadPresentation",
+    "relationshipAnchor": "relationshipId",
+    "fields": [
+      "relationshipId",
+      "state",
+      "postalCode",
+      "productInterest",
+      "quoteStatus",
+      "assignedProducer",
+      "acquisitionSource",
+      "sourceVendor",
+      "campaign",
+      "consentChannels",
+      "doNotContact",
+      "recentEvents"
+    ],
+    "rules": [
+      "The read model never duplicates displayName, email, phone, kind, stage, owner, follow-up, or appointment fields because those remain canonical RiverCrmRelationship fields.",
+      "Missing optional acquisition attribution is represented as absent context rather than an error.",
+      "Consent presentation preserves channel and status semantics from canonical consent records.",
+      "doNotContact is true when any current returned consent record has doNotContact true.",
+      "Recent event presentation uses canonical relationship events and does not invent derived lifecycle events.",
+      "Recent events are capped for workspace presentation rather than rendering unbounded history.",
+      "The UI may format labels for readability but must not mutate canonical values."
+    ]
+  },
+  "d1ReadProjection": {
+    "factory": "createD1InsuranceLeadPresentationPersistence",
+    "operation": "listForRelationships",
+    "input": "readonly canonical relationship IDs already loaded by the CRM workspace",
+    "output": "readonly InsuranceLeadPresentation[]",
+    "rules": [
+      "Read only from river_crm_insurance_lead_profiles, river_crm_acquisition_attribution, river_crm_contact_consents, and river_crm_relationship_events.",
+      "Only return presentations for relationship IDs that actually have an insurance lead profile.",
+      "Do not create a second relationship identity.",
+      "Do not write, upsert, append, update, or delete any data.",
+      "Do not require insurance data for non-insurance CRM relationships.",
+      "Use bounded queries and avoid one complete four-query enrichment sequence per relationship.",
+      "Preserve canonical validation when mapping persisted insurance, acquisition, consent, and event values.",
+      "Recent events should be bounded to the newest five events per insurance relationship for workspace rendering."
+    ]
+  },
+  "workspaceBehavior": {
+    "page": "src/pages/river-os/crm.astro",
+    "component": "src/components/river-os/CrmRelationshipList.astro",
+    "rules": [
+      "The CRM page continues to load canonical relationships through createD1RiverCrmPersistence(database).list().",
+      "When RIVER_CRM_DB is readable, the page separately loads optional insurance presentations for the canonical relationship IDs.",
+      "The relationship list receives insurance presentation context as an additional optional prop.",
+      "Generic relationship summary and edit controls remain intact.",
+      "Insurance presentation appears only on records with matching insurance context.",
+      "Insurance context is visually subordinate to the canonical relationship heading and generic CRM controls.",
+      "No automatic message, email, SMS, phone call, callback, calendar action, or carrier action is triggered by rendering the workspace."
+    ]
+  },
+  "insuranceCard": {
+    "heading": "Insurance",
+    "summaryFields": [
+      "Product",
+      "Quote status",
+      "State / ZIP",
+      "Source",
+      "Campaign"
+    ],
+    "consentPresentation": [
+      "Show each available channel: phone, sms, email.",
+      "Show canonical consent status: granted, denied, revoked, or unknown.",
+      "Clearly surface do-not-contact suppression when present.",
+      "Do not convert missing consent records into granted consent."
+    ],
+    "eventPresentation": [
+      "Show up to five recent events.",
+      "Show event type.",
+      "Show occurred timestamp.",
+      "Show source when useful.",
+      "Do not expose raw metadata JSON blobs by default."
+    ],
+    "assignedProducer": "Show only when present.",
+    "emptyOptionalFields": "Omit or display a neutral dash; never fabricate values."
+  },
+  "workspaceSummary": {
+    "additiveMetrics": [
+      "Insurance leads",
+      "Quote requested / in progress",
+      "Quoted",
+      "Bound"
+    ],
+    "rules": [
+      "Metrics derive only from loaded insurance presentations.",
+      "Existing generic CRM summary remains canonical and must not be replaced.",
+      "Insurance metrics are additive operational context, not a separate dashboard or CRM."
+    ]
+  },
+  "tests": [
+    "Build an insurance presentation from canonical profile, acquisition, consent, and event records.",
+    "Preserve canonical relationship ID.",
+    "Do not duplicate generic relationship contact or pipeline fields in the presentation model.",
+    "Represent missing acquisition attribution without inventing values.",
+    "Preserve consent channel/status values.",
+    "Surface do-not-contact when any returned consent record is suppressed.",
+    "Bound recent event history to five events.",
+    "Preserve recent-event ordering.",
+    "D1 projection returns only relationships with insurance profiles.",
+    "D1 projection accepts multiple relationship IDs without creating a second identity scheme.",
+    "D1 projection performs read-only SQL.",
+    "D1 projection never inserts, updates, deletes, upserts, or appends.",
+    "CRM page continues to use createD1RiverCrmPersistence for canonical relationships.",
+    "CRM page uses RIVER_CRM_DB for insurance presentation reads.",
+    "CrmRelationshipList accepts optional insurance presentation context.",
+    "Non-insurance relationship rendering remains supported.",
+    "Insurance records display product interest and quote status.",
+    "Insurance records display source/campaign when present.",
+    "Insurance records display channel consent state.",
+    "Insurance records display recent events.",
+    "Workspace does not introduce automated email, SMS, dialer, callback, carrier, or AMS actions.",
+    "No Sesh source, persistence, route, or schema changes."
+  ],
+  "explicitlyOutOfScope": [
+    "new D1 migrations",
+    "production D1 migration execution",
+    "public quote form changes",
+    "public quote endpoint changes",
+    "editing insurance profile fields",
+    "editing quote status",
+    "editing consent records",
+    "manual or automatic SMS",
+    "manual or automatic email",
+    "click-to-call",
+    "power dialing",
+    "parallel dialing",
+    "callback execution",
+    "calendar booking",
+    "lead assignment automation",
+    "carrier integrations",
+    "comparative rating",
+    "AMS integration",
+    "policy administration",
+    "commission tracking",
+    "production deployment"
+  ],
+  "acceptanceCriteria": [
+    "Existing River CRM relationship identity and workspace remain canonical.",
+    "Insurance context appears only as optional enrichment of canonical relationships.",
+    "Non-insurance relationships remain fully supported.",
+    "Source, campaign, product interest, consent state, quote status, and recent events are visible where available.",
+    "No sensitive quote-request fields beyond the existing canonical insurance profile are introduced.",
+    "No messaging or telephony action is added.",
+    "No schema migration is required.",
+    "Focused presentation, D1 read projection, component, and route-wiring tests pass.",
+    "Repository-wide pre-existing type debt is not broadened by INS-001D.",
+    "No production resource or deployment is touched.",
+    "Working-tree scope remains limited to the INS-001D specification and planned implementation files."
+  ]
+}

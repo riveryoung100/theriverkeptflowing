@@ -19,6 +19,14 @@ import {
     createD1RiverCrmPersistence
 } from "../../lib/river-os/d1-crm";
 
+import {
+    createD1InsuranceLeadPresentationPersistence
+} from "../../lib/insurance/d1-lead-presentation";
+
+import type {
+    InsuranceLeadPresentation
+} from "../../lib/insurance/lead-presentation";
+
 
 export const prerender =
     false;
@@ -47,6 +55,13 @@ let relationships:
     RiverCrmRelationship[] =
         [];
 
+let insurancePresentations:
+    InsuranceLeadPresentation[] =
+        [];
+
+let insurancePresentationReadable =
+    false;
+
 if (database !== undefined) {
     try {
         relationships =
@@ -56,6 +71,27 @@ if (database !== undefined) {
 
         databaseReadable =
             true;
+
+        try {
+            insurancePresentations =
+                [...await createD1InsuranceLeadPresentationPersistence(
+                    database
+                ).listForRelationships(
+                    relationships.map(
+                        relationship =>
+                            relationship.relationshipId
+                    )
+                )];
+
+            insurancePresentationReadable =
+                true;
+        } catch {
+            insurancePresentations =
+                [];
+
+            insurancePresentationReadable =
+                false;
+        }
     } catch {
         relationships =
             [];
@@ -66,6 +102,30 @@ const summary =
     summarizeRiverCrmWorkspace(
         relationships
     );
+
+const insuranceSummary = {
+    total:
+        insurancePresentations.length,
+
+    active:
+        insurancePresentations.filter(
+            presentation =>
+                presentation.quoteStatus === "requested" ||
+                presentation.quoteStatus === "in-progress"
+        ).length,
+
+    quoted:
+        insurancePresentations.filter(
+            presentation =>
+                presentation.quoteStatus === "quoted"
+        ).length,
+
+    bound:
+        insurancePresentations.filter(
+            presentation =>
+                presentation.quoteStatus === "bound"
+        ).length
+};
 ---
 
 <style>
@@ -206,6 +266,53 @@ const summary =
             1;
     }
 
+    .insurance-summary {
+        margin-top:
+            1rem;
+    }
+
+    .insurance-summary-heading {
+        display:
+            flex;
+        align-items:
+            baseline;
+        justify-content:
+            space-between;
+        gap:
+            1rem;
+        margin-bottom:
+            0.75rem;
+    }
+
+    .insurance-summary-heading h2,
+    .insurance-summary-heading p {
+        margin:
+            0;
+    }
+
+    .insurance-summary-heading h2 {
+        font-size:
+            1.4rem;
+    }
+
+    .insurance-summary-heading p {
+        color:
+            var(--river-text-muted);
+        font-size:
+            0.8rem;
+    }
+
+    .insurance-summary-grid {
+        display:
+            grid;
+        grid-template-columns:
+            repeat(
+                4,
+                minmax(0, 1fr)
+            );
+        gap:
+            1rem;
+    }
     .workspace-grid {
         display:
             grid;
@@ -295,6 +402,7 @@ const summary =
         max-width: 760px
     ) {
         .summary-grid,
+        .insurance-summary-grid,
         .workspace-grid {
             grid-template-columns:
                 1fr;
@@ -314,7 +422,7 @@ const summary =
 >
     <section class="crm-hero">
         <p class="eyebrow">
-            River OS · CRM
+            River OS Â· CRM
         </p>
 
         <h1>
@@ -329,10 +437,10 @@ const summary =
         <span class="connection-state">
             {
                 databaseReadable
-                    ? "CRM database connected · schema ready"
+                    ? "CRM database connected Â· schema ready"
                     : databaseConnected
-                        ? "CRM database connected · schema/read unavailable"
-                        : "CRM foundation ready · database not provisioned"
+                        ? "CRM database connected Â· schema/read unavailable"
+                        : "CRM foundation ready Â· database not provisioned"
             }
         </span>
     </section>
@@ -404,7 +512,73 @@ const summary =
 
     <CrmCreateRelationshipForm />
 
-    <CrmRelationshipList relationships={relationships} />
+        <section
+        class="insurance-summary"
+        aria-label="Insurance summary"
+    >
+        <div class="insurance-summary-heading">
+            <h2>
+                Insurance pipeline
+            </h2>
+
+            <p>
+                {
+                    insurancePresentationReadable
+                        ? "Read-only insurance acquisition and quote context"
+                        : databaseReadable
+                            ? "Insurance enrichment unavailable"
+                            : "Available when CRM persistence is readable"
+                }
+            </p>
+        </div>
+
+        <div class="insurance-summary-grid">
+            <article class="summary-card">
+                <span class="summary-label">
+                    Insurance leads
+                </span>
+
+                <strong class="summary-value">
+                    {insuranceSummary.total}
+                </strong>
+            </article>
+
+            <article class="summary-card">
+                <span class="summary-label">
+                    Requested / in progress
+                </span>
+
+                <strong class="summary-value">
+                    {insuranceSummary.active}
+                </strong>
+            </article>
+
+            <article class="summary-card">
+                <span class="summary-label">
+                    Quoted
+                </span>
+
+                <strong class="summary-value">
+                    {insuranceSummary.quoted}
+                </strong>
+            </article>
+
+            <article class="summary-card">
+                <span class="summary-label">
+                    Bound
+                </span>
+
+                <strong class="summary-value">
+                    {insuranceSummary.bound}
+                </strong>
+            </article>
+        </div>
+    </section>
+
+    <CrmRelationshipList
+        relationships={relationships}
+        insurancePresentations={insurancePresentations}
+    />
 
     <section
         class="workspace-grid"
@@ -417,7 +591,7 @@ const summary =
 
             <p>
                 The canonical people layer for leads, clients, recruits,
-                and partners—without forcing every relationship into the
+                and partnersâ€”without forcing every relationship into the
                 same sales process.
             </p>
 

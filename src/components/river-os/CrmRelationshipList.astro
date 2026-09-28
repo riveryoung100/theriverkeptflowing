@@ -1,19 +1,69 @@
----
+﻿---
 import type {
     RiverCrmRelationship
 } from "../../lib/river-os/crm-workspace";
 
+import type {
+    InsuranceLeadPresentation
+} from "../../lib/insurance/lead-presentation";
+
 
 interface Props {
-    relationships:
+    readonly relationships:
         readonly RiverCrmRelationship[];
+
+    readonly insurancePresentations?:
+        readonly InsuranceLeadPresentation[];
 }
 
 
 const {
-    relationships
-} =
-    Astro.props;
+    relationships,
+    insurancePresentations = []
+} = Astro.props as Props;
+
+const insuranceByRelationshipId =
+    new Map(
+        insurancePresentations.map(
+            presentation => [
+                presentation.relationshipId,
+                presentation
+            ]
+        )
+    );
+
+function readableLabel(
+    value:
+        string
+): string {
+    return value
+        .split("-")
+        .map(
+            word =>
+                word.length === 0
+                    ? word
+                    : word[0]!.toUpperCase() +
+                        word.slice(1)
+        )
+        .join(" ");
+}
+
+function formatInsuranceDate(
+    value:
+        string
+): string {
+    return new Date(
+        value
+    ).toLocaleString(
+        "en-US",
+        {
+            timeZone:
+                "America/Chicago",
+            timeZoneName:
+                "short"
+        }
+    );
+}
 ---
 
 <section
@@ -62,7 +112,7 @@ const {
 
                                             <span>
                                                 {relationship.kind}
-                                                {" · "}
+                                                {" Â· "}
                                                 {relationship.stage}
                                             </span>
                                         </div>
@@ -72,7 +122,214 @@ const {
                                         </span>
                                     </div>
 
-                                    <form
+                                                                        {
+                                        insuranceByRelationshipId.has(
+                                            relationship.relationshipId
+                                        ) && (
+                                            <section
+                                                class="crm-insurance-card"
+                                                aria-label={`Insurance context for ${relationship.displayName}`}
+                                            >
+                                                <div class="crm-insurance-heading">
+                                                    <div>
+                                                        <span class="crm-insurance-eyebrow">
+                                                            Insurance
+                                                        </span>
+
+                                                        <strong>
+                                                            {
+                                                                readableLabel(
+                                                                    insuranceByRelationshipId.get(
+                                                                        relationship.relationshipId
+                                                                    )!.productInterest
+                                                                )
+                                                            }
+                                                        </strong>
+                                                    </div>
+
+                                                    <span class="crm-insurance-status">
+                                                        {
+                                                            readableLabel(
+                                                                insuranceByRelationshipId.get(
+                                                                    relationship.relationshipId
+                                                                )!.quoteStatus
+                                                            )
+                                                        }
+                                                    </span>
+                                                </div>
+
+                                                <dl class="crm-insurance-facts">
+                                                    <div>
+                                                        <dt>State / ZIP</dt>
+                                                        <dd>
+                                                            {
+                                                                insuranceByRelationshipId.get(
+                                                                    relationship.relationshipId
+                                                                )!.state
+                                                            }
+                                                            {" "}
+                                                            {
+                                                                insuranceByRelationshipId.get(
+                                                                    relationship.relationshipId
+                                                                )!.postalCode
+                                                            }
+                                                        </dd>
+                                                    </div>
+
+                                                    <div>
+                                                        <dt>Source</dt>
+                                                        <dd>
+                                                            {
+                                                                insuranceByRelationshipId.get(
+                                                                    relationship.relationshipId
+                                                                )!.acquisitionSource ??
+                                                                "—"
+                                                            }
+                                                        </dd>
+                                                    </div>
+
+                                                    <div>
+                                                        <dt>Campaign</dt>
+                                                        <dd>
+                                                            {
+                                                                insuranceByRelationshipId.get(
+                                                                    relationship.relationshipId
+                                                                )!.campaign ??
+                                                                "—"
+                                                            }
+                                                        </dd>
+                                                    </div>
+
+                                                    {
+                                                        insuranceByRelationshipId.get(
+                                                            relationship.relationshipId
+                                                        )!.sourceVendor !== undefined && (
+                                                            <div>
+                                                                <dt>Vendor</dt>
+                                                                <dd>
+                                                                    {
+                                                                        insuranceByRelationshipId.get(
+                                                                            relationship.relationshipId
+                                                                        )!.sourceVendor
+                                                                    }
+                                                                </dd>
+                                                            </div>
+                                                        )
+                                                    }
+
+                                                    {
+                                                        insuranceByRelationshipId.get(
+                                                            relationship.relationshipId
+                                                        )!.assignedProducer !== undefined && (
+                                                            <div>
+                                                                <dt>Producer</dt>
+                                                                <dd>
+                                                                    {
+                                                                        insuranceByRelationshipId.get(
+                                                                            relationship.relationshipId
+                                                                        )!.assignedProducer
+                                                                    }
+                                                                </dd>
+                                                            </div>
+                                                        )
+                                                    }
+                                                </dl>
+
+                                                <div class="crm-insurance-section">
+                                                    <div class="crm-insurance-section-heading">
+                                                        <span>Consent</span>
+
+                                                        {
+                                                            insuranceByRelationshipId.get(
+                                                                relationship.relationshipId
+                                                            )!.doNotContact && (
+                                                                <strong class="crm-dnc-badge">
+                                                                    Do not contact
+                                                                </strong>
+                                                            )
+                                                        }
+                                                    </div>
+
+                                                    {
+                                                        insuranceByRelationshipId.get(
+                                                            relationship.relationshipId
+                                                        )!.consentChannels.length === 0
+                                                            ? (
+                                                                <p class="crm-insurance-empty">
+                                                                    No channel consent record available.
+                                                                </p>
+                                                            )
+                                                            : (
+                                                                <div class="crm-consent-list">
+                                                                    {
+                                                                        insuranceByRelationshipId.get(
+                                                                            relationship.relationshipId
+                                                                        )!.consentChannels.map(
+                                                                            consent => (
+                                                                                <span class="crm-consent-chip">
+                                                                                    {readableLabel(consent.channel)}
+                                                                                    {" · "}
+                                                                                    {readableLabel(consent.status)}
+                                                                                </span>
+                                                                            )
+                                                                        )
+                                                                    }
+                                                                </div>
+                                                            )
+                                                    }
+                                                </div>
+
+                                                <div class="crm-insurance-section">
+                                                    <div class="crm-insurance-section-heading">
+                                                        <span>Recent events</span>
+                                                    </div>
+
+                                                    {
+                                                        insuranceByRelationshipId.get(
+                                                            relationship.relationshipId
+                                                        )!.recentEvents.length === 0
+                                                            ? (
+                                                                <p class="crm-insurance-empty">
+                                                                    No recent insurance events.
+                                                                </p>
+                                                            )
+                                                            : (
+                                                                <ol class="crm-event-list">
+                                                                    {
+                                                                        insuranceByRelationshipId.get(
+                                                                            relationship.relationshipId
+                                                                        )!.recentEvents.map(
+                                                                            event => (
+                                                                                <li>
+                                                                                    <strong>
+                                                                                        {
+                                                                                            readableLabel(
+                                                                                                event.eventType
+                                                                                            )
+                                                                                        }
+                                                                                    </strong>
+
+                                                                                    <span>
+                                                                                        {
+                                                                                            formatInsuranceDate(
+                                                                                                event.occurredAt
+                                                                                            )
+                                                                                        }
+                                                                                        {" · "}
+                                                                                        {event.source}
+                                                                                    </span>
+                                                                                </li>
+                                                                            )
+                                                                        )
+                                                                    }
+                                                                </ol>
+                                                            )
+                                                    }
+                                                </div>
+                                            </section>
+                                        )
+                                    }
+<form
                                         class="crm-record-form"
                                         method="post"
                                         action="/river-os/actions/crm-update"
@@ -388,6 +645,198 @@ const {
             0.82rem;
     }
 
+    .crm-insurance-card {
+        display:
+            grid;
+        gap:
+            1rem;
+        border:
+            1px solid var(--river-line);
+        border-radius:
+            14px;
+        background:
+            var(--river-paper-warm);
+        padding:
+            1rem;
+    }
+
+    .crm-insurance-heading,
+    .crm-insurance-section-heading {
+        display:
+            flex;
+        align-items:
+            center;
+        justify-content:
+            space-between;
+        gap:
+            1rem;
+    }
+
+    .crm-insurance-heading > div {
+        display:
+            grid;
+        gap:
+            0.2rem;
+    }
+
+    .crm-insurance-eyebrow,
+    .crm-insurance-section-heading > span {
+        color:
+            var(--river-water);
+        font-size:
+            0.7rem;
+        font-weight:
+            800;
+        letter-spacing:
+            0.1em;
+        text-transform:
+            uppercase;
+    }
+
+    .crm-insurance-heading strong {
+        font-family:
+            var(--river-serif);
+        font-size:
+            1.15rem;
+        font-weight:
+            400;
+    }
+
+    .crm-insurance-status,
+    .crm-dnc-badge,
+    .crm-consent-chip {
+        width:
+            fit-content;
+        border:
+            1px solid var(--river-line);
+        border-radius:
+            999px;
+        background:
+            var(--river-white);
+        color:
+            var(--river-text-soft);
+        font-size:
+            0.72rem;
+        font-weight:
+            800;
+        padding:
+            0.4rem 0.6rem;
+    }
+
+    .crm-dnc-badge {
+        color:
+            var(--river-text);
+    }
+
+    .crm-insurance-facts {
+        display:
+            grid;
+        grid-template-columns:
+            repeat(
+                3,
+                minmax(0, 1fr)
+            );
+        gap:
+            0.75rem;
+        margin:
+            0;
+    }
+
+    .crm-insurance-facts div {
+        display:
+            grid;
+        gap:
+            0.15rem;
+    }
+
+    .crm-insurance-facts dt {
+        color:
+            var(--river-text-muted);
+        font-size:
+            0.68rem;
+        font-weight:
+            800;
+        letter-spacing:
+            0.08em;
+        text-transform:
+            uppercase;
+    }
+
+    .crm-insurance-facts dd {
+        margin:
+            0;
+        color:
+            var(--river-text);
+        font-size:
+            0.84rem;
+        font-weight:
+            700;
+    }
+
+    .crm-insurance-section {
+        display:
+            grid;
+        gap:
+            0.55rem;
+        border-top:
+            1px solid var(--river-line);
+        padding-top:
+            0.8rem;
+    }
+
+    .crm-consent-list {
+        display:
+            flex;
+        flex-wrap:
+            wrap;
+        gap:
+            0.45rem;
+    }
+
+    .crm-insurance-empty {
+        margin:
+            0;
+        color:
+            var(--river-text-muted);
+        font-size:
+            0.8rem;
+    }
+
+    .crm-event-list {
+        display:
+            grid;
+        gap:
+            0.5rem;
+        margin:
+            0;
+        padding:
+            0;
+        list-style:
+            none;
+    }
+
+    .crm-event-list li {
+        display:
+            flex;
+        align-items:
+            baseline;
+        justify-content:
+            space-between;
+        gap:
+            1rem;
+    }
+
+    .crm-event-list strong {
+        font-size:
+            0.82rem;
+    }
+
+    .crm-event-list span {
+        color:
+            var(--river-text-muted);
+        font-size:
+            0.74rem;
+    }
     .crm-record-form {
         display:
             grid;
@@ -470,6 +919,19 @@ const {
     @media (
         max-width: 760px
     ) {
+        .crm-insurance-facts {
+            grid-template-columns:
+                1fr;
+        }
+
+        .crm-insurance-heading,
+        .crm-insurance-section-heading,
+        .crm-event-list li {
+            align-items:
+                flex-start;
+            flex-direction:
+                column;
+        }
         .crm-record-form {
             grid-template-columns:
                 1fr;
