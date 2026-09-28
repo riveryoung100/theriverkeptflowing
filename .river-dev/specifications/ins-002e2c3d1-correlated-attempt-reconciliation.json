@@ -1,0 +1,47 @@
+﻿{
+  "id": "INS-002E2C3D1",
+  "phase": "Correlated Canonical Attempt Reconciliation",
+  "parent": "INS-002E2C3D",
+  "dependsOn": [
+    "INS-002E2C2",
+    "INS-002E2C3B",
+    "INS-002E2C3C"
+  ],
+  "status": "implementation-authorized",
+  "objective": "Plan canonical insurance contact-attempt state changes from an already-resolved Telnyx call-leg event without requiring the canonical attempt providerReference to equal every operator or lead call_control_id.",
+  "identityRules": [
+    "attempt.attemptId must equal correlation.attemptId",
+    "correlation.provider must be telnyx",
+    "correlation.providerReference must equal event.callControlId",
+    "resolved legRole must equal correlation.legRole",
+    "attempt.provider must remain telnyx",
+    "attempt.providerReference remains canonical attempt provider evidence and is not rewritten to each call leg"
+  ],
+  "stateSemantics": [
+    "call.initiated is canonical attempt no-op",
+    "call.answered is canonical attempt no-op",
+    "call.bridged advances attempting to connected",
+    "call.bridged against an already-advanced attempt is no-op",
+    "call.hangup advances attempting or connected to completed",
+    "call.hangup against a terminal attempt is no-op"
+  ],
+  "compatibility": [
+    "The existing planTelnyxAttemptEventReconciliation single-reference planner remains unchanged.",
+    "This slice introduces a separate correlated planner for multi-leg operator-first topology."
+  ],
+  "outOfScope": [
+    "D1 writes",
+    "provider-event receipt writes",
+    "bridge writes",
+    "correlation lookup",
+    "webhook route",
+    "signature verification",
+    "raw payload parsing",
+    "Telnyx API commands",
+    "migration execution",
+    "live D1 mutation",
+    "live calls",
+    "deployment"
+  ],
+  "next": "INS-002E2C3D2 may execute correlated canonical-attempt plans while preserving provider-event receipt idempotency and bounded stale-attempt recovery."
+}
