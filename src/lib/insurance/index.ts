@@ -5,3 +5,4 @@ export * from "./d1-quote-request";
 export * from "./http/quote-request-api";
 export * from "./lead-presentation";
 export * from "./d1-lead-presentation";
+export * from "./integration-boundary";

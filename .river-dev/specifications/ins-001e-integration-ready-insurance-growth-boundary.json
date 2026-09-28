@@ -1,0 +1,205 @@
+﻿{
+  "id": "INS-001E",
+  "phase": "INS-001E Integration-Ready Insurance Growth Boundary",
+  "parent": "INS-001",
+  "dependsOn": [
+    "INS-001A",
+    "INS-001B",
+    "INS-001C",
+    "INS-001D"
+  ],
+  "branch": "cif-001-canonical-content-source-record",
+  "status": "planned",
+  "objective": "Define the provider-neutral handoff contract that allows later telephony, messaging, calendar, automation, and AMS adapters to reference canonical River CRM insurance relationships without selecting a provider, creating a second identity system, introducing transport behavior, or changing the existing River CRM schema.",
+  "architecture": {
+    "canonicalIdentity": "RiverCrmRelationshipId remains the only canonical relationship identity passed across the insurance integration boundary.",
+    "canonicalEvents": "RiverCrmRelationshipEvent remains the canonical lifecycle/event record. Provider identifiers may appear only as optional external references.",
+    "providerNeutrality": "INS-001E defines provider-neutral request/context contracts only. No Twilio, RingCentral, OpenPhone, carrier, AMS, calendar, email, or other provider implementation is selected or imported.",
+    "transportBoundary": "No HTTP webhook, outbound API request, phone call, SMS, email, dialer, bridge, recording, or carrier request is executed by INS-001E.",
+    "persistenceBoundary": "No new D1 migration or provider-specific persistence table is required. Existing relationship, acquisition, consent, insurance profile, and event records remain authoritative.",
+    "handoffTarget": "INS-002 may consume these contracts to implement Instant Contact / Call Orchestration without restructuring INS-001 canonical records."
+  },
+  "plannedFiles": [
+    ".river-dev/specifications/ins-001e-integration-ready-insurance-growth-boundary.json",
+    "src/lib/insurance/integration-boundary.ts",
+    "src/lib/insurance/integration-boundary.test.ts",
+    "src/lib/insurance/index.ts"
+  ],
+  "providerNeutralExternalReference": {
+    "rule": "Provider-specific identifiers never replace RiverCrmRelationshipId, eventId, consentId, or any other canonical River identifier.",
+    "canonicalStorage": "When a provider-originated lifecycle event is later persisted, its provider identifier may be represented through RiverCrmRelationshipEvent.externalReference.",
+    "requirements": [
+      "External references are optional.",
+      "External references must be normalized non-empty text when supplied.",
+      "An external reference must never be treated as a relationship identifier.",
+      "INS-001E does not create provider-specific ID brands because no provider has been selected.",
+      "No provider credentials, API keys, phone-number SIDs, call SIDs, message SIDs, or carrier identifiers are introduced."
+    ]
+  },
+  "integrationContext": {
+    "name": "InsuranceGrowthIntegrationContext",
+    "purpose": "Provide later adapters with the minimum canonical context needed to make an independently governed integration decision without rereading or restructuring the River CRM domain.",
+    "fields": [
+      "relationshipId",
+      "productInterest",
+      "quoteStatus",
+      "state",
+      "postalCode",
+      "acquisitionSource",
+      "campaign",
+      "contactChannels",
+      "doNotContact"
+    ],
+    "rules": [
+      "relationshipId is required and canonical.",
+      "Insurance profile fields originate from InsuranceLeadProfile or InsuranceLeadPresentation.",
+      "Acquisition context remains optional.",
+      "Contact channels preserve canonical channel and consent status semantics.",
+      "doNotContact must remain explicit and may never be silently overridden.",
+      "The context does not contain provider credentials or transport-specific configuration.",
+      "The context does not duplicate generic CRM display name, owner, stage, follow-up, or appointment state."
+    ]
+  },
+  "contactEligibility": {
+    "purpose": "Expose facts needed by later orchestration without making INS-001E itself a dialer or messaging engine.",
+    "rules": [
+      "A channel with granted consent may be represented as available context.",
+      "Denied, revoked, unknown, or missing consent is never converted into granted consent.",
+      "doNotContact true is preserved as suppression context.",
+      "INS-001E does not decide legal compliance beyond preserving the canonical consent and suppression facts already stored by INS-001.",
+      "INS-001E does not send or schedule contact."
+    ]
+  },
+  "callbackRequestContract": {
+    "eventType": "callback-requested",
+    "factory": "createInsuranceCallbackRequestedEvent",
+    "output": "RiverCrmRelationshipEvent",
+    "requiredInput": [
+      "eventId",
+      "relationshipId",
+      "occurredAt",
+      "source"
+    ],
+    "optionalInput": [
+      "externalReference",
+      "requestedChannel",
+      "requestedAt",
+      "notes"
+    ],
+    "rules": [
+      "The resulting event must use the canonical RiverCrmRelationshipEvent constructor.",
+      "The event type is always callback-requested.",
+      "relationshipId remains canonical River CRM identity.",
+      "Provider-specific identifiers may appear only as optional externalReference.",
+      "Optional callback details are stored only in canonical event metadata.",
+      "The builder performs no persistence.",
+      "The builder performs no phone call, SMS, email, scheduling, or provider request.",
+      "Notes are bounded plain text and must not contain arbitrary nested provider payloads."
+    ]
+  },
+  "handoffContract": {
+    "name": "InsuranceGrowthIntegrationHandoff",
+    "purpose": "Represent the stable data package INS-002 or another separately governed adapter may consume.",
+    "fields": [
+      "context",
+      "triggerEvent"
+    ],
+    "rules": [
+      "context is provider-neutral InsuranceGrowthIntegrationContext.",
+      "triggerEvent is a canonical RiverCrmRelationshipEvent.",
+      "Both records must reference the same relationshipId.",
+      "The handoff is immutable data only.",
+      "Creating a handoff does not mean the contact attempt is authorized, scheduled, sent, dialed, or completed.",
+      "Adapters remain responsible for provider-specific authentication, idempotency, retries, transport, webhook verification, and delivery/call lifecycle handling."
+    ]
+  },
+  "validation": [
+    "Reject mismatched relationship identities between context and trigger event.",
+    "Reject malformed callback requested channel values.",
+    "Reject empty or whitespace-only provider external references.",
+    "Reject oversized callback notes.",
+    "Preserve optional acquisition context without inventing source or campaign.",
+    "Preserve canonical consent channel/status values.",
+    "Preserve do-not-contact suppression.",
+    "Never convert provider identifiers into canonical River IDs."
+  ],
+  "tests": [
+    "Build provider-neutral integration context from canonical insurance presentation data.",
+    "Preserve canonical relationshipId.",
+    "Preserve product interest, quote status, state, and postal code.",
+    "Preserve optional acquisition source and campaign.",
+    "Preserve canonical contact channel consent statuses.",
+    "Preserve doNotContact suppression.",
+    "Do not duplicate generic CRM display name, owner, stage, follow-up, or appointment fields.",
+    "Build a canonical callback-requested RiverCrmRelationshipEvent.",
+    "Allow optional provider externalReference without changing canonical identity.",
+    "Reject blank externalReference.",
+    "Place bounded callback details only in canonical event metadata.",
+    "Reject oversized callback notes.",
+    "Build provider-neutral handoff from matching context and trigger event.",
+    "Reject handoff relationship mismatch.",
+    "Contain no provider SDK import.",
+    "Contain no network request.",
+    "Contain no D1 write.",
+    "Contain no telephony, SMS, email, dialer, bridge, recording, calendar, carrier, or AMS runtime.",
+    "Contain no Sesh source or runtime dependency."
+  ],
+  "explicitlyOutOfScope": [
+    "new D1 migration",
+    "production D1 migration execution",
+    "production deployment",
+    "telephony provider selection",
+    "provider account setup",
+    "provider credentials",
+    "phone number provisioning",
+    "outbound phone calls",
+    "inbound phone handling",
+    "click-to-call",
+    "power dialing",
+    "parallel dialing",
+    "call bridging",
+    "call recording",
+    "voicemail drops",
+    "SMS delivery",
+    "email delivery",
+    "webhook endpoints",
+    "webhook signature verification",
+    "provider retry logic",
+    "provider idempotency persistence",
+    "calendar booking",
+    "automatic lead assignment",
+    "comparative rating",
+    "carrier APIs",
+    "AMS implementation",
+    "policy administration",
+    "commission accounting",
+    "CRM workspace UI changes",
+    "public quote-request changes",
+    "Sesh changes"
+  ],
+  "acceptanceCriteria": [
+    "River CRM relationship identity remains canonical across the integration boundary.",
+    "Provider identifiers remain optional external references only.",
+    "A provider-neutral insurance integration context can be created from existing canonical insurance presentation data.",
+    "Canonical consent and do-not-contact facts survive the handoff unchanged.",
+    "A callback-requested event can be created without persistence or transport behavior.",
+    "The callback event uses the existing canonical RiverCrmRelationshipEvent contract.",
+    "A provider-neutral handoff can bind context to a matching canonical trigger event.",
+    "No provider SDK, credential, webhook route, network transport, telephony runtime, messaging runtime, or AMS runtime is introduced.",
+    "No schema migration is required.",
+    "Focused INS-001E tests pass.",
+    "Repository-wide existing type debt is not broadened into INS-001E.",
+    "No production resource is touched.",
+    "Working-tree scope remains limited to the four planned INS-001E files."
+  ],
+  "ins002Readiness": {
+    "nextEpic": "INS-002 Instant Contact / Call Orchestration",
+    "readyWhen": [
+      "INS-002 can receive canonical relationship identity without inventing provider identity.",
+      "INS-002 can evaluate preserved consent and suppression context before provider transport.",
+      "INS-002 can create or consume callback-requested canonical lifecycle events.",
+      "INS-002 can attach provider event/call/message identifiers as external references without schema redesign.",
+      "Provider selection and transport behavior remain independently governable."
+    ]
+  }
+}
