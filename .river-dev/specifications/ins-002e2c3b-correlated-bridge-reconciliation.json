@@ -1,0 +1,44 @@
+﻿{
+  "id": "INS-002E2C3B",
+  "phase": "Deterministic Correlated Bridge Reconciliation",
+  "parent": "INS-002E2C3",
+  "dependsOn": [
+    "INS-002E2A",
+    "INS-002E2C2",
+    "INS-002E2C3A"
+  ],
+  "status": "implementation-authorized",
+  "objective": "Deterministically plan how one already-resolved operator or lead Telnyx voice event changes a durable TelnyxCallBridge snapshot without performing persistence, provider commands, webhook work, or contact-attempt mutation.",
+  "rules": [
+    "call.initiated is observational and does not advance bridge state.",
+    "operator call.answered advances operator-dial-requested to operator-answered and records the operator call_control_id.",
+    "lead call.answered may catch up operator-answered through lead-dial-requested to lead-answered because answered evidence proves the lead dial occurred.",
+    "lead call.answered before operator answer is deferred rather than violating operator-first ordering.",
+    "call.bridged advances only after the durable bridge has reached lead-answered or bridge-requested.",
+    "call.bridged arriving before lead-answered is deferred instead of inventing missing leg evidence.",
+    "call.hangup after bridged completes the bridge.",
+    "call.hangup before bridged fails the bridge with a deterministic role-specific bridge failure code.",
+    "hangup cause text does not become the canonical bridge failure code.",
+    "duplicate or late evidence against an already-advanced or terminal bridge is an idempotent no-op.",
+    "The planner does not mutate InsuranceContactAttempt state."
+  ],
+  "planKinds": [
+    "no-op",
+    "update",
+    "defer"
+  ],
+  "outOfScope": [
+    "D1 writes",
+    "provider-event receipt writes",
+    "contact-attempt mutation",
+    "webhook route",
+    "signature verification",
+    "raw webhook parsing",
+    "Telnyx API commands",
+    "migration execution",
+    "live D1 mutation",
+    "live calls",
+    "deployment"
+  ],
+  "next": "INS-002E2C3C can execute these plans against durable bridge persistence with optimistic stale-bridge recovery."
+}
