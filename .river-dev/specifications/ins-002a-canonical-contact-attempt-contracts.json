@@ -1,0 +1,218 @@
+﻿{
+  "id": "INS-002A",
+  "phase": "INS-002A Canonical Contact Attempt and Orchestration Contracts",
+  "parent": "INS-002",
+  "dependsOn": [
+    "INS-001E",
+    "INS-002"
+  ],
+  "branch": "cif-001-canonical-content-source-record",
+  "status": "planned",
+  "objective": "Define the pure provider-neutral contact-attempt identity, lifecycle, eligibility, idempotency, and provider interface contracts that later INS-002 slices can persist and execute without introducing D1 behavior, routes, provider SDKs, network transport, or production resources.",
+  "plannedFiles": [
+    ".river-dev/specifications/ins-002a-canonical-contact-attempt-contracts.json",
+    "src/lib/insurance/contact-attempt.ts",
+    "src/lib/insurance/contact-attempt.test.ts",
+    "src/lib/insurance/index.ts"
+  ],
+  "contactAttemptIdentity": {
+    "type": "InsuranceContactAttemptId",
+    "prefix": "contact-attempt:",
+    "rules": [
+      "IDs are non-empty normalized text with the required prefix.",
+      "Provider identifiers never replace canonical attempt IDs.",
+      "Relationship identity remains canonical RiverCrmRelationshipId."
+    ]
+  },
+  "enums": {
+    "channels": [
+      "phone",
+      "sms",
+      "email"
+    ],
+    "intents": [
+      "instant-contact",
+      "callback"
+    ],
+    "states": [
+      "queued",
+      "attempting",
+      "connected",
+      "completed",
+      "failed",
+      "canceled"
+    ]
+  },
+  "attemptContract": {
+    "name": "InsuranceContactAttempt",
+    "requiredFields": [
+      "attemptId",
+      "relationshipId",
+      "channel",
+      "intent",
+      "state",
+      "idempotencyKey",
+      "requestedAt",
+      "createdAt",
+      "updatedAt"
+    ],
+    "optionalFields": [
+      "triggerEventId",
+      "provider",
+      "providerReference",
+      "attemptedAt",
+      "connectedAt",
+      "completedAt",
+      "failedAt",
+      "canceledAt",
+      "failureCode",
+      "failureMessage",
+      "retryable"
+    ],
+    "rules": [
+      "Canonical constructors validate every field.",
+      "requestedAt createdAt and updatedAt must be valid timestamps.",
+      "Lifecycle timestamps are state-consistent.",
+      "Failure fields are allowed only when state is failed.",
+      "retryable is allowed only when state is failed.",
+      "providerReference requires provider.",
+      "No raw provider payload is accepted."
+    ]
+  },
+  "stateMachine": {
+    "transitions": {
+      "queued": [
+        "attempting",
+        "canceled"
+      ],
+      "attempting": [
+        "connected",
+        "completed",
+        "failed",
+        "canceled"
+      ],
+      "connected": [
+        "completed",
+        "failed"
+      ],
+      "completed": [],
+      "failed": [],
+      "canceled": []
+    },
+    "rules": [
+      "Terminal states cannot transition.",
+      "Invalid transitions throw.",
+      "Transitions preserve canonical identity and immutable request facts.",
+      "Transition helpers set only the lifecycle fields required by the destination state.",
+      "A failed attempt is not automatically retried."
+    ]
+  },
+  "eligibility": {
+    "input": "InsuranceGrowthIntegrationContext",
+    "output": "InsuranceContactEligibility",
+    "denialReasons": [
+      "channel-missing",
+      "consent-not-granted",
+      "channel-suppressed",
+      "relationship-suppressed"
+    ],
+    "rules": [
+      "Eligibility is provider-neutral and deterministic.",
+      "The requested channel must exist.",
+      "The requested channel status must be granted.",
+      "Channel doNotContact must be false.",
+      "Context doNotContact must be false.",
+      "Denied revoked unknown or missing consent is ineligible."
+    ]
+  },
+  "providerContract": {
+    "interface": "InsuranceContactProvider",
+    "request": "InsuranceContactProviderRequest",
+    "result": "InsuranceContactProviderResult",
+    "success": {
+      "accepted": true,
+      "fields": [
+        "providerReference",
+        "providerState"
+      ]
+    },
+    "failure": {
+      "accepted": false,
+      "fields": [
+        "code",
+        "message",
+        "retryable"
+      ]
+    },
+    "rules": [
+      "Core contracts contain no vendor names.",
+      "No transport is executed in INS-002A.",
+      "ProviderReference is evidence only.",
+      "Structured failures always include retryability."
+    ]
+  },
+  "idempotency": {
+    "type": "InsuranceContactIdempotencyKey",
+    "rules": [
+      "Keys are non-empty normalized text.",
+      "An attempt requires a key before provider transport.",
+      "INS-002A defines identity semantics only and performs no persistence or provider request."
+    ]
+  },
+  "tests": [
+    "Canonicalize valid contact-attempt IDs.",
+    "Reject malformed attempt IDs.",
+    "Validate channels intents and states.",
+    "Create valid queued attempt.",
+    "Reject malformed timestamps.",
+    "Reject providerReference without provider.",
+    "Reject failure fields outside failed state.",
+    "Reject retryable outside failed state.",
+    "Allow valid failed attempt.",
+    "Validate every allowed state transition.",
+    "Reject every forbidden state transition.",
+    "Reject transitions out of terminal states.",
+    "Preserve immutable attempt identity/request fields through transitions.",
+    "Eligibility allows granted unsuppressed channel.",
+    "Eligibility rejects missing channel.",
+    "Eligibility rejects denied revoked and unknown consent.",
+    "Eligibility rejects channel suppression.",
+    "Eligibility rejects relationship suppression.",
+    "Provider success result validates.",
+    "Provider failure result requires structured code message and retryable.",
+    "No provider SDK import.",
+    "No network request.",
+    "No D1 behavior.",
+    "No route behavior.",
+    "No Sesh dependency."
+  ],
+  "explicitlyOutOfScope": [
+    "D1 migration",
+    "D1 repository",
+    "provider selection",
+    "provider SDK",
+    "network transport",
+    "phone provisioning",
+    "live call",
+    "SMS send",
+    "email send",
+    "webhook",
+    "route",
+    "River OS UI",
+    "deployment",
+    "production resource mutation",
+    "Sesh changes"
+  ],
+  "acceptanceCriteria": [
+    "Exactly four planned INS-002A files are changed.",
+    "Canonical attempt identity is River-owned.",
+    "Relationship identity remains RiverCrmRelationshipId.",
+    "Eligibility preserves INS-001 consent and suppression semantics.",
+    "Attempt lifecycle transitions are explicit and validated.",
+    "Provider interface is vendor-neutral.",
+    "Idempotency key contract exists before transport.",
+    "Focused INS-002A tests pass.",
+    "Repository-wide existing type debt is not broadened into INS-002A.",
+    "No production resource is touched."
+  ]
+}
