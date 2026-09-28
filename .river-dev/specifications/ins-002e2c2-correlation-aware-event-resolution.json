@@ -1,0 +1,45 @@
+﻿{
+  "id": "INS-002E2C2",
+  "phase": "Correlation-Aware Telnyx Event Resolution",
+  "parent": "INS-002E2C",
+  "dependsOn": [
+    "INS-002E2B2",
+    "INS-002E2C1"
+  ],
+  "status": "implementation-authorized",
+  "objective": "Resolve an already-normalized Telnyx voice event through additive call-leg correlation into the canonical InsuranceContactAttempt and explicit operator/lead leg role without webhook transport, provider commands, bridge mutation, or D1 writes.",
+  "resolutionFlow": [
+    "receive already-normalized TelnyxVoiceEvent",
+    "lookup correlation by provider plus event.callControlId",
+    "if correlation is absent return unmatched",
+    "load canonical InsuranceContactAttempt by correlation.attemptId",
+    "if canonical attempt is absent return orphaned-correlation",
+    "verify correlation attempt identity matches the loaded canonical attempt",
+    "return event plus canonical attempt plus explicit legRole plus correlation"
+  ],
+  "identityRules": [
+    "InsuranceContactAttemptId remains canonical River identity.",
+    "operator and lead roles come only from persisted River correlation.",
+    "event.callControlId must match the persisted correlation providerReference.",
+    "call_session_id and call_leg_id do not determine operator versus lead role.",
+    "The canonical attempt providerReference is not required to equal every correlated call leg."
+  ],
+  "outOfScope": [
+    "contact-attempt state mutation",
+    "provider-event receipt mutation",
+    "bridge lifecycle mutation",
+    "event reconciliation planning",
+    "webhook route",
+    "signature verification",
+    "raw webhook parsing",
+    "client_state",
+    "call_session_id correlation",
+    "call_leg_id correlation",
+    "Telnyx API commands",
+    "migration execution",
+    "live D1 mutation",
+    "live calls",
+    "deployment"
+  ],
+  "next": "INS-002E2C3 can deterministically reconcile correlated operator/lead Telnyx lifecycle evidence into the operator-first bridge domain before any public webhook activation."
+}
