@@ -13,3 +13,4 @@ export * from "./private-contact-request";
 export * from "./telnyx-contact-provider";
 export * from "./telnyx-call-bridge";
 export * from "./telnyx-voice-event";
+export * from "./telnyx-event-reconciliation";

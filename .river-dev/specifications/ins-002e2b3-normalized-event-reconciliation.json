@@ -1,0 +1,54 @@
+﻿{
+  "id": "INS-002E2B3",
+  "phase": "Deterministic Normalized Event Reconciliation Planning",
+  "parent": "INS-002E2B",
+  "dependsOn": [
+    "INS-002E2A",
+    "INS-002E2B1",
+    "INS-002E2B2"
+  ],
+  "status": "implementation-authorized",
+  "objective": "Map already-normalized Telnyx voice lifecycle evidence into deterministic canonical contact-attempt reconciliation decisions without webhook transport, persistence writes, provider-event receipt mutation, or bridge runtime execution.",
+  "canonicalAttemptRules": {
+    "call.initiated": "no-advance",
+    "call.answered": "no-advance",
+    "call.bridged": "attempting-to-connected",
+    "call.hangup": "attempting-or-connected-to-completed"
+  },
+  "operatorFirstSafety": [
+    "call.answered does not prove the lead is connected because it may represent the operator leg.",
+    "call.bridged is the first normalized Telnyx event treated as canonical connected evidence.",
+    "call.hangup completes an active canonical attempt but does not by itself imply provider failure."
+  ],
+  "idempotency": [
+    "Repeated bridged evidence against connected or terminal state is a no-op.",
+    "Repeated hangup evidence against completed or other terminal state is a no-op.",
+    "Out-of-order initiated or answered evidence never regresses canonical state."
+  ],
+  "identity": [
+    "The canonical attempt must already be resolved by provider plus call_control_id before this planner is invoked.",
+    "Planner rejects a non-Telnyx attempt provider.",
+    "Planner rejects mismatched attempt providerReference and normalized callControlId."
+  ],
+  "failurePolicy": [
+    "Do not infer canonical failed state from hangup_cause, hangup_source, or sip_hangup_cause.",
+    "A later explicitly modeled provider-failure evidence path may transition active attempts to failed with structured canonical failure fields."
+  ],
+  "outOfScope": [
+    "webhook route",
+    "signature verification",
+    "raw webhook body",
+    "provider-reference lookup execution",
+    "provider-event receipt persistence",
+    "contact-attempt persistence mutation",
+    "bridge persistence",
+    "bridge runtime mutation",
+    "Telnyx API command execution",
+    "Cloudflare secrets",
+    "D1 migration",
+    "live D1 mutation",
+    "live calls",
+    "deployment"
+  ],
+  "next": "INS-002E2B4 designs durable reconciliation execution ordering around provider-reference lookup, canonical attempt update, and provider-event receipt deduplication."
+}
