@@ -884,3 +884,182 @@ test(
         );
     }
 );
+
+
+test(
+    "provider-reference lookup binds provider identity and returns canonical attempt",
+    async () => {
+        const database =
+            new FakeDatabase();
+
+        database.firstResult = {
+            attempt_id:
+                "contact-attempt:provider-reference-1",
+            relationship_id:
+                "relationship:provider-reference-1",
+            trigger_event_id:
+                null,
+            channel:
+                "phone",
+            intent:
+                "instant-contact",
+            state:
+                "attempting",
+            idempotency_key:
+                "contact-idempotency:provider-reference-1",
+            provider:
+                "telnyx",
+            provider_reference:
+                "call-control-1",
+            requested_at:
+                timestamp,
+            attempted_at:
+                timestamp,
+            connected_at:
+                null,
+            completed_at:
+                null,
+            failed_at:
+                null,
+            canceled_at:
+                null,
+            failure_code:
+                null,
+            failure_message:
+                null,
+            retryable:
+                null,
+            created_at:
+                timestamp,
+            updated_at:
+                timestamp
+        };
+
+        const persistence =
+            createD1InsuranceContactAttemptPersistence(
+                database
+            );
+
+        const result =
+            await persistence.getAttemptByProviderReference(
+                "telnyx",
+                "call-control-1"
+            );
+
+        assert.ok(
+            result
+        );
+
+        assert.equal(
+            result.attemptId,
+            "contact-attempt:provider-reference-1"
+        );
+
+        assert.equal(
+            result.provider,
+            "telnyx"
+        );
+
+        assert.equal(
+            result.providerReference,
+            "call-control-1"
+        );
+
+        const read =
+            database.recorded[0]!;
+
+        assert.match(
+            read.sql,
+            /WHERE\s+provider = \?1\s+AND provider_reference = \?2/i
+        );
+
+        assert.deepEqual(
+            read.binds,
+            [
+                "telnyx",
+                "call-control-1"
+            ]
+        );
+    }
+);
+
+
+test(
+    "provider-reference lookup returns undefined when no attempt matches",
+    async () => {
+        const database =
+            new FakeDatabase();
+
+        database.firstResult =
+            null;
+
+        const persistence =
+            createD1InsuranceContactAttemptPersistence(
+                database
+            );
+
+        assert.equal(
+            await persistence.getAttemptByProviderReference(
+                "telnyx",
+                "missing-call-control"
+            ),
+            undefined
+        );
+    }
+);
+
+
+test(
+    "provider-reference lookup rejects blank provider identity",
+    async () => {
+        const database =
+            new FakeDatabase();
+
+        const persistence =
+            createD1InsuranceContactAttemptPersistence(
+                database
+            );
+
+        await assert.rejects(
+            () =>
+                persistence.getAttemptByProviderReference(
+                    "",
+                    "call-control-1"
+                ),
+            /provider/
+        );
+
+        assert.equal(
+            database.recorded.length,
+            0
+        );
+    }
+);
+
+
+test(
+    "provider-reference lookup rejects blank provider reference",
+    async () => {
+        const database =
+            new FakeDatabase();
+
+        const persistence =
+            createD1InsuranceContactAttemptPersistence(
+                database
+            );
+
+        await assert.rejects(
+            () =>
+                persistence.getAttemptByProviderReference(
+                    "telnyx",
+                    " "
+                ),
+            /provider_reference/
+        );
+
+        assert.equal(
+            database.recorded.length,
+            0
+        );
+    }
+);

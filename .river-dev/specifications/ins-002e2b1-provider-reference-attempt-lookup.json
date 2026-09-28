@@ -1,0 +1,46 @@
+﻿{
+  "id": "INS-002E2B1",
+  "phase": "Provider-Reference Attempt Lookup",
+  "parent": "INS-002E2B",
+  "dependsOn": [
+    "INS-002B",
+    "INS-002E1",
+    "INS-002E2A"
+  ],
+  "status": "implementation-authorized",
+  "objective": "Add the minimal provider-neutral persistence lookup required to resolve an authenticated provider event's provider reference back to the canonical InsuranceContactAttempt.",
+  "contract": {
+    "method": "getAttemptByProviderReference",
+    "inputs": [
+      "provider",
+      "providerReference"
+    ],
+    "result": "InsuranceContactAttempt or undefined",
+    "identityRule": "Provider identity is lookup evidence only and never replaces canonical attempt or relationship identity."
+  },
+  "database": {
+    "migrationRequired": false,
+    "reason": "Migration 0003 already defines a unique partial index on provider plus provider_reference."
+  },
+  "rules": [
+    "Provider and providerReference are required non-empty strings.",
+    "Lookup binds provider and provider_reference separately.",
+    "Lookup returns undefined when no attempt matches.",
+    "Canonical row parsing remains delegated to rowToAttempt.",
+    "No raw provider payload is stored.",
+    "No provider event is persisted by this lookup.",
+    "No network operation occurs."
+  ],
+  "outOfScope": [
+    "Telnyx webhook route",
+    "signature verification",
+    "event normalization",
+    "bridge persistence",
+    "Cloudflare secrets",
+    "production D1 migration",
+    "live D1 mutation",
+    "live calls",
+    "deployment"
+  ],
+  "next": "INS-002E2B2 will normalize Telnyx voice webhook envelopes and use this lookup plus existing provider-event receipt deduplication."
+}
