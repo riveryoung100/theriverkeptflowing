@@ -1,0 +1,53 @@
+﻿{
+  "id": "INS-002E2B4",
+  "phase": "Durable Recoverable Reconciliation Execution",
+  "parent": "INS-002E2B",
+  "dependsOn": [
+    "INS-002B",
+    "INS-002E2B1",
+    "INS-002E2B2",
+    "INS-002E2B3"
+  ],
+  "status": "implementation-authorized",
+  "objective": "Persist already-normalized and already-planned Telnyx contact-attempt reconciliation with recoverable ordering that cannot durably consume a new provider event before its required canonical attempt state transition succeeds.",
+  "ordering": {
+    "updatePlan": [
+      "Execute the canonical attempt compare-and-swap UPDATE first.",
+      "Require exactly one changed row before recording the provider-event receipt.",
+      "Only after successful CAS record the provider-event receipt with INSERT OR IGNORE."
+    ],
+    "noOpPlan": [
+      "Record only the provider-event receipt with INSERT OR IGNORE."
+    ]
+  },
+  "recovery": [
+    "If CAS fails or changes zero rows, do not persist the provider-event receipt; caller may re-read and re-plan safely.",
+    "If CAS succeeds but receipt persistence later fails, provider redelivery is recoverable because the canonical attempt is already advanced; re-planning converts equivalent lifecycle evidence into a no-op and receipt recording can be retried.",
+    "Concurrent stale update plans cannot overwrite newer state because CAS predicates include prior state and prior updated_at.",
+    "Provider-event receipt insertion remains idempotent through provider plus provider_event_id."
+  ],
+  "explicitNonClaim": "This slice does not claim the CAS update and receipt insertion are one database transaction. It deliberately uses recoverable update-first ordering because a successful D1 batch containing a zero-row CAS would otherwise be able to commit the receipt and swallow retry.",
+  "identity": [
+    "Normalized provider must be telnyx.",
+    "call_control_id must match the canonical attempt providerReference.",
+    "Reconciliation cannot change immutable attempt identity."
+  ],
+  "outOfScope": [
+    "schema changes",
+    "migration changes",
+    "webhook route",
+    "signature verification",
+    "raw webhook body",
+    "provider-reference lookup orchestration",
+    "event normalization",
+    "reconciliation planning",
+    "bridge persistence",
+    "bridge runtime mutation",
+    "Telnyx API command execution",
+    "Cloudflare secret configuration",
+    "live D1 mutation",
+    "live calls",
+    "deployment"
+  ],
+  "next": "INS-002E2B5 composes provider-reference lookup, re-read/re-plan behavior, and this recoverable executor behind an authenticated-event application boundary without exposing a public webhook route."
+}
