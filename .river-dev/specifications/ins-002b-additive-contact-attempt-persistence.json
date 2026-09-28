@@ -1,0 +1,155 @@
+﻿{
+  "id": "INS-002B",
+  "phase": "INS-002B Additive River CRM Contact-Attempt Persistence",
+  "parent": "INS-002",
+  "dependsOn": [
+    "INS-002A"
+  ],
+  "branch": "cif-001-canonical-content-source-record",
+  "status": "planned",
+  "objective": "Persist provider-neutral insurance contact-attempt execution state durably in the existing River CRM D1 boundary without selecting a telephony vendor, performing transport, executing a production migration, or coupling canonical River identity to provider identifiers.",
+  "plannedFiles": [
+    ".river-dev/specifications/ins-002b-additive-contact-attempt-persistence.json",
+    "migrations/river-crm/0003_river_crm_contact_attempts.sql",
+    "src/lib/insurance/d1-contact-attempt.ts",
+    "src/lib/insurance/d1-contact-attempt.test.ts",
+    "src/lib/insurance/index.ts"
+  ],
+  "database": {
+    "binding": "RIVER_CRM_DB",
+    "migration": "migrations/river-crm/0003_river_crm_contact_attempts.sql",
+    "productionExecution": false
+  },
+  "contactAttemptTable": {
+    "name": "river_crm_contact_attempts",
+    "primaryKey": "attempt_id",
+    "columns": [
+      "attempt_id",
+      "relationship_id",
+      "trigger_event_id",
+      "channel",
+      "intent",
+      "state",
+      "idempotency_key",
+      "provider",
+      "provider_reference",
+      "requested_at",
+      "attempted_at",
+      "connected_at",
+      "completed_at",
+      "failed_at",
+      "canceled_at",
+      "failure_code",
+      "failure_message",
+      "retryable",
+      "created_at",
+      "updated_at"
+    ],
+    "foreignKeys": [
+      "relationship_id -> river_crm_relationships.relationship_id ON DELETE CASCADE",
+      "trigger_event_id -> river_crm_relationship_events.event_id ON DELETE SET NULL"
+    ],
+    "indexes": [
+      "relationship_id + requested_at DESC",
+      "state + updated_at DESC",
+      "idempotency_key UNIQUE",
+      "provider + provider_reference partial when provider_reference is non-null",
+      "trigger_event_id partial when trigger_event_id is non-null"
+    ],
+    "rules": [
+      "attempt_id remains canonical River-owned identity",
+      "provider_reference never replaces attempt_id",
+      "rows are created insert-only",
+      "lifecycle updates may mutate only execution fields",
+      "immutable request identity fields are matched during update",
+      "retryable is stored as nullable integer boolean",
+      "raw provider payload is not stored"
+    ]
+  },
+  "providerEventReceiptTable": {
+    "name": "river_crm_contact_provider_events",
+    "purpose": "Provide durable provider-neutral webhook redelivery deduplication before INS-002F adds a concrete provider webhook.",
+    "primaryKey": [
+      "provider",
+      "provider_event_id"
+    ],
+    "columns": [
+      "provider",
+      "provider_event_id",
+      "attempt_id",
+      "received_at"
+    ],
+    "rules": [
+      "No raw provider payload is stored.",
+      "Provider event identity remains external evidence.",
+      "Duplicate provider plus provider_event_id insertion is ignored.",
+      "Receipt persistence performs no lifecycle reconciliation in INS-002B."
+    ]
+  },
+  "repository": {
+    "factory": "createD1InsuranceContactAttemptPersistence",
+    "interface": "InsuranceContactAttemptPersistence",
+    "methods": [
+      "insertAttempt",
+      "updateAttempt",
+      "getAttempt",
+      "listAttemptsForRelationship",
+      "recordProviderEventReceipt"
+    ],
+    "rules": [
+      "All attempt rows are reconstructed through createInsuranceContactAttempt.",
+      "insertAttempt is insert-only and surfaces duplicate constraint failures.",
+      "updateAttempt validates the complete canonical attempt and matches immutable request identity in its WHERE clause.",
+      "getAttempt validates the canonical attempt identifier before querying.",
+      "listAttemptsForRelationship validates canonical relationship identity and bounds its limit.",
+      "recordProviderEventReceipt returns true only for the first durable provider event receipt and false for a duplicate.",
+      "D1 failures propagate.",
+      "No provider network behavior exists."
+    ]
+  },
+  "tests": [
+    "migration creates river_crm_contact_attempts",
+    "migration creates provider event receipt table",
+    "migration enforces unique idempotency key",
+    "migration contains required relationship and trigger-event foreign keys",
+    "insertAttempt validates canonical attempt before D1 write",
+    "insertAttempt binds nullable fields correctly",
+    "updateAttempt protects immutable request fields",
+    "getAttempt maps D1 row through canonical constructor",
+    "getAttempt returns undefined when missing",
+    "listAttemptsForRelationship orders newest attempts first",
+    "retryable maps null zero and one correctly",
+    "invalid persisted boolean is rejected",
+    "provider event receipt first insert returns true",
+    "provider event receipt duplicate returns false",
+    "provider event receipt stores no raw payload",
+    "D1 failure propagates"
+  ],
+  "explicitlyOutOfScope": [
+    "production D1 migration execution",
+    "provider selection",
+    "provider SDK",
+    "network transport",
+    "live call",
+    "SMS send",
+    "email send",
+    "webhook route",
+    "webhook signature verification",
+    "lifecycle reconciliation from provider events",
+    "River OS UI",
+    "deployment",
+    "Sesh changes"
+  ],
+  "acceptanceCriteria": [
+    "Exactly five INS-002B paths change.",
+    "Migration number is 0003.",
+    "RIVER_CRM_DB remains the persistence boundary.",
+    "Contact-attempt lifecycle is durable and provider-neutral.",
+    "Immutable request identity cannot be silently rewritten by updateAttempt.",
+    "Provider-event redelivery can be durably deduplicated later.",
+    "No raw provider payload is persisted.",
+    "Focused persistence tests pass.",
+    "No production D1 resource is mutated.",
+    "No provider or network behavior is introduced."
+  ]
+}
