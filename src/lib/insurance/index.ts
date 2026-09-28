@@ -15,3 +15,4 @@ export * from "./telnyx-call-bridge";
 export * from "./telnyx-voice-event";
 export * from "./telnyx-event-reconciliation";
 export * from "./d1-contact-event-reconciliation";
+export * from "./telnyx-event-application";
