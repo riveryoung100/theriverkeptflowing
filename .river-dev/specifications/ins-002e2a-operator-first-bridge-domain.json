@@ -1,0 +1,46 @@
+﻿{
+  "id": "INS-002E2A",
+  "phase": "Operator-First Telnyx Bridge Domain",
+  "parent": "INS-002E2",
+  "dependsOn": [
+    "INS-002E1"
+  ],
+  "status": "implementation-authorized",
+  "objective": "Define a deterministic operator-first call bridge lifecycle for Telnyx without introducing webhook transport, runtime secrets, production calls, or D1 mutation.",
+  "flow": [
+    "operator-dial-requested",
+    "operator-answered",
+    "lead-dial-requested",
+    "lead-answered",
+    "bridge-requested",
+    "bridged",
+    "completed"
+  ],
+  "terminalFailure": "failed",
+  "identity": {
+    "attemptId": "canonical InsuranceContactAttempt identity",
+    "operatorCallControlId": "external Telnyx reference",
+    "leadCallControlId": "external Telnyx reference"
+  },
+  "rules": [
+    "The lead leg cannot be requested before the operator leg has answered.",
+    "The bridge cannot be requested before both legs have answered.",
+    "External Telnyx call-control identifiers never replace the canonical attempt identity.",
+    "Terminal states cannot transition.",
+    "Duplicate lifecycle evidence may be handled as an idempotent no-op by later reconciliation.",
+    "The domain contains no fetch, Cloudflare runtime access, secrets, or D1 access."
+  ],
+  "outOfScope": [
+    "Telnyx webhook verification",
+    "Telnyx webhook route",
+    "Telnyx bridge API request",
+    "Telnyx call API request",
+    "operator phone number configuration",
+    "Cloudflare secrets",
+    "production D1 mutation",
+    "River OS action wiring",
+    "deployment",
+    "live calls"
+  ],
+  "next": "INS-002E2B will normalize verified Telnyx voice events into this bridge domain and durable provider-event reconciliation."
+}
