@@ -1,0 +1,226 @@
+﻿{
+  "id": "INS-001A",
+  "phase": "INS-001A Canonical Growth Contracts",
+  "parent": "INS-001",
+  "branch": "cif-001-canonical-content-source-record",
+  "objective": "Introduce validated TypeScript domain contracts for reusable River CRM acquisition attribution, contact consent, append-oriented relationship events, and insurance-specific lead profile data while preserving the existing River CRM relationship as canonical identity and without adding persistence, public routes, UI, telephony, or production mutations.",
+  "status": "planned",
+  "architecture": {
+    "canonicalRelationshipIdentity": "RiverCrmRelationship.relationshipId",
+    "sharedDomainLocation": "src/lib/river-os",
+    "insuranceDomainLocation": "src/lib/insurance",
+    "relationshipOwnership": "Existing River CRM remains canonical for people, relationship kind, and pipeline stage.",
+    "sharedGrowthBoundary": "Acquisition attribution, contact consent, and relationship event contracts belong to reusable River CRM infrastructure.",
+    "insuranceBoundary": "Insurance lead profile contracts live behind an explicit insurance module and reference a canonical River CRM relationship ID.",
+    "persistenceBoundary": "No D1 schema or repository implementation is part of INS-001A."
+  },
+  "plannedFiles": [
+    "src/lib/river-os/crm-growth-contracts.ts",
+    "src/lib/river-os/crm-growth-contracts.test.ts",
+    "src/lib/insurance/lead-profile.ts",
+    "src/lib/insurance/lead-profile.test.ts",
+    "src/lib/insurance/index.ts"
+  ],
+  "sharedContracts": {
+    "acquisitionAttribution": {
+      "typeName": "RiverCrmAcquisitionAttribution",
+      "requiredFields": [
+        "relationshipId",
+        "source",
+        "capturedAt",
+        "updatedAt"
+      ],
+      "optionalFields": [
+        "sourceVendor",
+        "campaign",
+        "adOrCreativeId",
+        "landingPage",
+        "utmSource",
+        "utmMedium",
+        "utmCampaign",
+        "utmTerm",
+        "utmContent",
+        "referralSource"
+      ],
+      "rules": [
+        "relationshipId must use the existing relationship: identity boundary.",
+        "source must be normalized non-empty text.",
+        "optional text fields are normalized when present and omitted when blank.",
+        "capturedAt and updatedAt must be valid timestamps.",
+        "updatedAt must not be earlier than capturedAt."
+      ]
+    },
+    "contactConsent": {
+      "typeName": "RiverCrmContactConsent",
+      "identifierTypeName": "RiverCrmConsentId",
+      "identifierPrefix": "consent:",
+      "channels": [
+        "phone",
+        "sms",
+        "email"
+      ],
+      "statuses": [
+        "granted",
+        "denied",
+        "revoked",
+        "unknown"
+      ],
+      "requiredFields": [
+        "consentId",
+        "relationshipId",
+        "channel",
+        "status",
+        "consentSource",
+        "capturedAt",
+        "doNotContact",
+        "createdAt",
+        "updatedAt"
+      ],
+      "optionalFields": [
+        "consentTextVersion",
+        "revokedAt"
+      ],
+      "rules": [
+        "Consent state is channel-specific.",
+        "A revoked status requires revokedAt.",
+        "A non-revoked status must not carry revokedAt.",
+        "doNotContact is an explicit suppression flag and is not inferred solely from status.",
+        "All timestamps must be valid.",
+        "updatedAt must not precede createdAt.",
+        "revokedAt must not precede capturedAt."
+      ]
+    },
+    "relationshipEvent": {
+      "typeName": "RiverCrmRelationshipEvent",
+      "identifierTypeName": "RiverCrmEventId",
+      "identifierPrefix": "crm-event:",
+      "initialEventTypes": [
+        "lead-created",
+        "quote-requested",
+        "consent-captured",
+        "consent-revoked",
+        "stage-changed",
+        "appointment-set",
+        "callback-requested"
+      ],
+      "requiredFields": [
+        "eventId",
+        "relationshipId",
+        "eventType",
+        "occurredAt",
+        "source"
+      ],
+      "optionalFields": [
+        "externalReference",
+        "metadata"
+      ],
+      "rules": [
+        "Events are modeled as immutable value records.",
+        "metadata must be JSON-compatible data.",
+        "event source must be normalized non-empty text.",
+        "occurredAt must be a valid timestamp.",
+        "Provider-specific IDs belong in externalReference rather than canonical identity."
+      ]
+    }
+  },
+  "insuranceContract": {
+    "typeName": "InsuranceLeadProfile",
+    "relationshipRule": "Every insurance lead profile references one canonical River CRM relationship ID and does not duplicate name, phone, email, relationship kind, or generic CRM pipeline stage.",
+    "productInterests": [
+      "auto",
+      "home",
+      "renters",
+      "landlord",
+      "umbrella",
+      "life",
+      "commercial",
+      "other"
+    ],
+    "quoteStatuses": [
+      "not-started",
+      "requested",
+      "in-progress",
+      "quoted",
+      "bound",
+      "declined",
+      "lost"
+    ],
+    "requiredFields": [
+      "relationshipId",
+      "state",
+      "postalCode",
+      "productInterest",
+      "quoteStatus",
+      "createdAt",
+      "updatedAt"
+    ],
+    "optionalFields": [
+      "assignedProducer"
+    ],
+    "rules": [
+      "state is normalized to a two-letter uppercase US state code.",
+      "postalCode accepts a five-digit ZIP or ZIP+4 representation.",
+      "productInterest must be one of the approved initial values.",
+      "quoteStatus must be one of the approved initial values.",
+      "assignedProducer is normalized optional text.",
+      "updatedAt must not precede createdAt.",
+      "No SSN, driver-license number, payment data, policy details, carrier credentials, or underwriting answers belong in this contract."
+    ]
+  },
+  "validationFunctions": [
+    "createRiverCrmAcquisitionAttribution",
+    "createRiverCrmContactConsent",
+    "createRiverCrmRelationshipEvent",
+    "createInsuranceLeadProfile"
+  ],
+  "testRequirements": [
+    "Accept a valid acquisition attribution record.",
+    "Reject invalid canonical relationship identities.",
+    "Normalize optional attribution text.",
+    "Reject invalid acquisition timestamps.",
+    "Accept channel-specific granted consent.",
+    "Accept explicit suppression independently from consent status.",
+    "Reject revoked consent without revokedAt.",
+    "Reject non-revoked consent carrying revokedAt.",
+    "Reject invalid consent timestamp ordering.",
+    "Accept a valid CRM relationship event.",
+    "Reject unsupported event types.",
+    "Reject non-JSON-compatible event metadata.",
+    "Accept valid insurance product and quote states.",
+    "Normalize insurance state codes.",
+    "Reject invalid state codes.",
+    "Accept ZIP and ZIP+4.",
+    "Reject invalid postal codes.",
+    "Reject unsupported product interests.",
+    "Reject unsupported quote statuses.",
+    "Preserve canonical relationship identity without duplicating generic CRM contact fields."
+  ],
+  "explicitlyOutOfScope": [
+    "D1 migrations",
+    "D1 repositories",
+    "production database access",
+    "public quote-request route",
+    "River OS UI changes",
+    "automated messaging",
+    "calendar integration",
+    "telephony",
+    "provider webhooks",
+    "AMS integration",
+    "carrier integration",
+    "lead deduplication across public submissions",
+    "policy records",
+    "comparative rating",
+    "commission accounting"
+  ],
+  "acceptanceCriteria": [
+    "Shared acquisition, consent, and event contracts compile independently of insurance-specific code.",
+    "InsuranceLeadProfile references canonical River CRM relationship identity.",
+    "Existing River CRM contracts remain backward compatible.",
+    "No Sesh source or contract is modified.",
+    "No persistence or migration file is added in INS-001A.",
+    "All validation behavior is covered by focused tests.",
+    "npm test or the narrow equivalent used for these files passes.",
+    "npm run typecheck passes before commit.",
+    "Working tree scope is limited to INS-001A planned files and its specification."
+  ]
+}
