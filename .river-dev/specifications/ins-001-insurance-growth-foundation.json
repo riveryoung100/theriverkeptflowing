@@ -1,0 +1,319 @@
+﻿{
+  "id": "INS-001",
+  "phase": "INS-001 Insurance Growth Foundation",
+  "branch": "cif-001-canonical-content-source-record",
+  "objective": "Extend the existing governed River CRM into a reusable acquisition foundation that can support River's independent insurance agency without creating a second CRM, coupling insurance logic to Sesh, or turning the public River platform into an insurance-specific application.",
+  "status": "planned",
+  "architectureDecision": {
+    "canonicalRelationshipSystem": "Existing River CRM",
+    "canonicalRelationshipTable": "river_crm_relationships",
+    "canonicalPrivateWorkspace": "/river-os/crm",
+    "crmDatabaseBinding": "RIVER_CRM_DB",
+    "insuranceBoundary": "Insurance-specific records reference canonical River CRM relationship identities rather than replacing or duplicating them.",
+    "publicBoundary": "Public insurance acquisition endpoints may create or enrich canonical CRM lead relationships through a separately governed public-ingress contract.",
+    "telephonyBoundary": "Voice transport, dialing, bridging, SMS delivery, and provider webhooks are explicitly deferred to INS-002."
+  },
+  "existingFoundation": {
+    "relationshipKinds": [
+      "lead",
+      "client",
+      "recruit",
+      "partner"
+    ],
+    "pipelineStages": [
+      "new",
+      "contacted",
+      "qualified",
+      "appointment-set",
+      "proposal",
+      "won",
+      "lost",
+      "nurture"
+    ],
+    "existingRelationshipFields": [
+      "relationship_id",
+      "display_name",
+      "kind",
+      "stage",
+      "source",
+      "email",
+      "phone",
+      "owner",
+      "next_follow_up_at",
+      "appointment_at",
+      "created_at",
+      "updated_at"
+    ],
+    "existingPrivateCapabilities": [
+      "manual relationship creation",
+      "manual relationship update",
+      "D1 persistence",
+      "pipeline summaries",
+      "follow-up tracking",
+      "appointment tracking",
+      "same-origin private write protection",
+      "River OS CRM workspace"
+    ]
+  },
+  "problemStatement": [
+    "The current CRM has a useful canonical people and pipeline model but does not yet preserve structured acquisition attribution.",
+    "The current CRM does not yet preserve auditable contact-consent state.",
+    "The current CRM does not yet expose a general event history suitable for acquisition, quote, callback, and later telephony events.",
+    "The current CRM does not yet contain an explicit insurance-domain lead profile.",
+    "The current public site does not yet expose a governed insurance quote-request intake boundary.",
+    "Insurance-specific functionality must not duplicate River CRM identities or leak into Sesh."
+  ],
+  "principles": [
+    "Reuse canonical River CRM relationship identity.",
+    "Prefer additive schema evolution over rewriting the existing CRM table.",
+    "Keep shared acquisition, consent, and event capabilities reusable by future River businesses.",
+    "Keep insurance-specific fields inside an explicit insurance domain boundary.",
+    "Minimize collection of sensitive information.",
+    "Do not store policy-system-of-record data that belongs in a future insurance AMS.",
+    "Do not implement telephony transport in this epic.",
+    "Do not implement comparative rating, carrier administration, payroll, workforce management, or multi-state compliance engines in this epic.",
+    "No production D1 migration is authorized by this specification."
+  ],
+  "targetModel": {
+    "sharedAcquisition": {
+      "purpose": "Preserve how a relationship entered the River ecosystem.",
+      "proposedFields": [
+        "relationship_id",
+        "source",
+        "source_vendor",
+        "campaign",
+        "ad_or_creative_id",
+        "landing_page",
+        "utm_source",
+        "utm_medium",
+        "utm_campaign",
+        "utm_term",
+        "utm_content",
+        "referral_source",
+        "captured_at",
+        "updated_at"
+      ]
+    },
+    "sharedConsent": {
+      "purpose": "Preserve auditable permission and suppression state by contact channel.",
+      "proposedFields": [
+        "consent_id",
+        "relationship_id",
+        "channel",
+        "status",
+        "consent_text_version",
+        "consent_source",
+        "captured_at",
+        "revoked_at",
+        "do_not_contact",
+        "created_at",
+        "updated_at"
+      ],
+      "channels": [
+        "phone",
+        "sms",
+        "email"
+      ]
+    },
+    "sharedEvents": {
+      "purpose": "Provide an append-oriented history for acquisition and operating events.",
+      "proposedFields": [
+        "event_id",
+        "relationship_id",
+        "event_type",
+        "occurred_at",
+        "source",
+        "external_reference",
+        "metadata_json"
+      ],
+      "initialEventExamples": [
+        "lead-created",
+        "quote-requested",
+        "consent-captured",
+        "consent-revoked",
+        "stage-changed",
+        "appointment-set",
+        "callback-requested"
+      ]
+    },
+    "insuranceLeadProfile": {
+      "purpose": "Store only insurance-domain acquisition context that should not become universal River CRM fields.",
+      "proposedFields": [
+        "relationship_id",
+        "state",
+        "postal_code",
+        "product_interest",
+        "quote_status",
+        "assigned_producer",
+        "created_at",
+        "updated_at"
+      ],
+      "initialProductInterests": [
+        "auto",
+        "home",
+        "renters",
+        "landlord",
+        "umbrella",
+        "life",
+        "commercial",
+        "other"
+      ],
+      "initialQuoteStatuses": [
+        "not-started",
+        "requested",
+        "in-progress",
+        "quoted",
+        "bound",
+        "declined",
+        "lost"
+      ]
+    }
+  },
+  "publicQuoteIntake": {
+    "required": true,
+    "purpose": "Allow a public visitor to request insurance contact or a quote while creating a canonical River CRM lead and preserving acquisition and consent evidence.",
+    "minimumFields": [
+      "first_name",
+      "last_name",
+      "phone_or_email",
+      "state",
+      "postal_code",
+      "product_interest",
+      "consent"
+    ],
+    "requirements": [
+      "Validate and normalize all public input.",
+      "Create or associate one canonical River CRM lead relationship.",
+      "Preserve structured acquisition attribution.",
+      "Preserve consent text version and capture timestamp.",
+      "Emit a quote-requested event.",
+      "Do not expose private River OS routes.",
+      "Do not accept arbitrary pipeline owner or administrative fields from public input.",
+      "Do not collect SSN, driver-license numbers, payment data, or carrier credentials."
+    ]
+  },
+  "privateWorkspace": {
+    "required": true,
+    "route": "/river-os/crm",
+    "requirements": [
+      "Preserve the existing River CRM relationship workspace.",
+      "Surface insurance acquisition context without replacing the generic relationship model.",
+      "Allow River to distinguish insurance leads from unrelated River relationships.",
+      "Expose source, campaign, product interest, consent state, quote status, and recent events where useful.",
+      "Do not automatically send messages from the workspace in INS-001."
+    ]
+  },
+  "externalIntegrationBoundary": {
+    "required": true,
+    "purpose": "Prepare stable identifiers and event contracts for later telephony, AMS, marketing, calendar, and automation providers.",
+    "requirements": [
+      "External integrations reference canonical relationship IDs.",
+      "Provider-specific identifiers remain optional external references rather than canonical identity.",
+      "No specific telephony provider is selected in INS-001.",
+      "No insurance AMS is implemented inside River CRM.",
+      "Later integrations must be able to consume relationship, acquisition, consent, and event records without restructuring the canonical model."
+    ]
+  },
+  "deliverySlices": [
+    {
+      "id": "INS-001A",
+      "name": "Canonical acquisition, consent, event, and insurance lead contracts",
+      "scope": [
+        "TypeScript domain contracts",
+        "validation",
+        "identifiers",
+        "tests"
+      ]
+    },
+    {
+      "id": "INS-001B",
+      "name": "Additive River CRM D1 persistence",
+      "scope": [
+        "new river-crm migration",
+        "repositories",
+        "persistence tests"
+      ]
+    },
+    {
+      "id": "INS-001C",
+      "name": "Public insurance quote-request ingress",
+      "scope": [
+        "public request contract",
+        "validation",
+        "CRM lead creation",
+        "acquisition preservation",
+        "consent preservation",
+        "event emission",
+        "route tests"
+      ]
+    },
+    {
+      "id": "INS-001D",
+      "name": "River OS insurance lead presentation",
+      "scope": [
+        "private CRM presentation",
+        "insurance context",
+        "consent state",
+        "source attribution",
+        "quote status",
+        "recent event history"
+      ]
+    },
+    {
+      "id": "INS-001E",
+      "name": "Integration-ready insurance growth boundary",
+      "scope": [
+        "provider-neutral external references",
+        "callback-request event contract",
+        "integration boundary tests",
+        "handoff readiness for INS-002"
+      ]
+    }
+  ],
+  "explicitlyOutOfScope": [
+    "production D1 migration execution",
+    "production deployment",
+    "telephony provider selection",
+    "phone number provisioning",
+    "click-to-call transport",
+    "power dialing",
+    "parallel dialing",
+    "call bridging",
+    "call recording",
+    "automated SMS delivery",
+    "automated email delivery",
+    "insurance comparative rating",
+    "carrier policy administration",
+    "custom insurance AMS",
+    "commission accounting",
+    "payroll",
+    "setter management",
+    "multi-producer compensation",
+    "advanced workforce management"
+  ],
+  "acceptanceCriteria": [
+    "Existing River CRM relationship identity remains canonical.",
+    "Existing generic CRM relationship behavior remains backward compatible.",
+    "Acquisition attribution is structured and queryable rather than encoded only in free-form source text.",
+    "Contact consent and suppression state can be audited by relationship and channel.",
+    "Insurance-specific lead data does not become required for non-insurance CRM relationships.",
+    "A public quote request can be represented without exposing private CRM write controls.",
+    "CRM event history can represent quote and callback lifecycle events.",
+    "Later telephony and AMS integrations can reference stable canonical relationship identities.",
+    "Sesh source, schema, persistence, and routes remain untouched by INS-001.",
+    "All new contracts and persistence behavior have focused tests.",
+    "No production resource is mutated as part of specification authoring or local implementation validation."
+  ],
+  "initialImplementationOrder": [
+    "INS-001A canonical contracts",
+    "INS-001B additive persistence",
+    "INS-001C public quote intake",
+    "INS-001D private workspace presentation",
+    "INS-001E integration boundary"
+  ],
+  "nextEpic": {
+    "id": "INS-002",
+    "name": "Instant Contact / Call Orchestration",
+    "dependency": "INS-001 relationship, acquisition, consent, event, and callback-request contracts"
+  }
+}
