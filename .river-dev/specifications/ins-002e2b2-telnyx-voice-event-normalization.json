@@ -1,0 +1,61 @@
+﻿{
+  "id": "INS-002E2B2",
+  "phase": "Telnyx Voice Event Normalization",
+  "parent": "INS-002E2B",
+  "dependsOn": [
+    "INS-002E1",
+    "INS-002E2A",
+    "INS-002E2B1"
+  ],
+  "status": "implementation-authorized",
+  "objective": "Normalize the small Telnyx Voice webhook event subset needed by the operator-first bridge without introducing webhook transport, signature verification, persistence, or runtime side effects.",
+  "provider": "telnyx",
+  "recognizedEventTypes": [
+    "call.initiated",
+    "call.answered",
+    "call.bridged",
+    "call.hangup"
+  ],
+  "envelope": {
+    "required": [
+      "id",
+      "record_type",
+      "event_type",
+      "occurred_at",
+      "payload.call_control_id"
+    ],
+    "recordType": "event",
+    "optionalCallIdentity": [
+      "payload.call_leg_id",
+      "payload.call_session_id"
+    ],
+    "hangupEvidence": [
+      "payload.hangup_cause",
+      "payload.hangup_source",
+      "payload.sip_hangup_cause"
+    ]
+  },
+  "rules": [
+    "Provider webhook id becomes providerEventId evidence only.",
+    "call_control_id remains provider reference evidence and never becomes River identity.",
+    "Unknown Telnyx event types return undefined and cannot silently advance canonical state.",
+    "Recognized event types require a valid event id, ISO-compatible occurred_at timestamp, record_type event, and call_control_id.",
+    "Normalized events retain only explicitly modeled lifecycle evidence and never retain the raw provider payload.",
+    "Normalization performs no persistence and no network operation."
+  ],
+  "outOfScope": [
+    "webhook route",
+    "signature verification",
+    "raw request body handling",
+    "provider-event receipt persistence",
+    "contact-attempt state mutation",
+    "bridge state mutation",
+    "Telnyx API command execution",
+    "Cloudflare secrets",
+    "D1 migration",
+    "live D1 mutation",
+    "live calls",
+    "deployment"
+  ],
+  "next": "INS-002E2B3 composes authenticated normalized events with provider-reference lookup and durable provider-event receipt deduplication."
+}
