@@ -1,0 +1,47 @@
+﻿{
+  "id": "INS-002E2C3D3",
+  "phase": "Correlated Event Application Composition",
+  "parent": "INS-002E2C3D",
+  "dependsOn": [
+    "INS-002E2C2",
+    "INS-002E2C3C",
+    "INS-002E2C3D1",
+    "INS-002E2C3D2"
+  ],
+  "status": "implementation-authorized",
+  "objective": "Compose normalized Telnyx correlation resolution, durable bridge application, and canonical attempt execution while preserving call-leg identity and bounded stale recovery.",
+  "orderingRules": [
+    "Resolve call-leg correlation once at application entry.",
+    "Apply durable bridge state before canonical attempt reconciliation.",
+    "A bridge deferred outcome stops canonical attempt mutation and receipt consumption.",
+    "bridge-not-found and stale-bridge stop canonical attempt mutation.",
+    "Bridge no-op or updated outcomes permit canonical attempt reconciliation.",
+    "Canonical stale-attempt recovery rereads the canonical attempt exactly once, replans with the same call-leg correlation, and retries the attempt executor exactly once.",
+    "Attempt-only stale recovery must not rerun bridge application."
+  ],
+  "identityRules": [
+    "The original resolved correlation and legRole remain authoritative through attempt retry.",
+    "A refreshed canonical attempt must retain the correlation attemptId.",
+    "Canonical providerReference may remain the operator call reference while lead-leg evidence is applied.",
+    "Provider-event receipt ownership remains with the correlated attempt executor."
+  ],
+  "unresolvedRules": [
+    "correlation-not-found performs zero bridge and attempt writes.",
+    "orphaned-correlation performs zero bridge and attempt writes.",
+    "A refreshed canonical attempt that disappears returns attempt-not-found."
+  ],
+  "outOfScope": [
+    "raw webhook parsing",
+    "webhook route",
+    "signature verification",
+    "Telnyx API commands",
+    "bridge creation",
+    "correlation creation",
+    "migration authoring",
+    "migration execution",
+    "live D1 mutation",
+    "live calls",
+    "deployment"
+  ],
+  "next": "A later authorized runtime slice may bind this normalized-event application service to verified webhook ingress."
+}
