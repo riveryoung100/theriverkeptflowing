@@ -1,0 +1,49 @@
+{
+  "id": "INS-003S",
+  "phase": "Pure Acquisition Outcome Analytics",
+  "parent": "INS-003",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003R"
+  ],
+  "objective": "Project canonical quoted and bound acquisition outcome facts into distinct relationship numerators over an explicit relationship cohort without persistence, rate rounding, or lifecycle inference.",
+  "projectionVersion": "insurance-acquisition-outcome-analytics-v1",
+  "measures": [
+    "relationshipCount",
+    "quotedRelationshipCount",
+    "boundRelationshipCount",
+    "outcomeFactCount",
+    "quotedOutcomeFactCount",
+    "boundOutcomeFactCount"
+  ],
+  "rules": [
+    "The caller supplies the explicit denominator cohort as relationshipIds.",
+    "Relationship IDs are canonically validated and deduplicated.",
+    "Every outcome fact is revalidated through the canonical INS-003R outcome contract.",
+    "Every outcome fact must belong to the explicit cohort.",
+    "Duplicate outcomeFactId values are rejected.",
+    "Multiple quoted facts for one relationship count as one quoted relationship.",
+    "Multiple bound facts for one relationship count as one bound relationship.",
+    "A bound outcome does not implicitly count as quoted unless a quoted outcome fact also exists.",
+    "Lost, declined, requested, in-progress, and written are not inferred as quoted or bound outcomes.",
+    "The projection is pure and performs no persistence reads or writes.",
+    "No percentages, rates, or cost-per-outcome values are calculated in this slice."
+  ],
+  "futureUse": [
+    "quote rate",
+    "bind rate",
+    "cost per quote",
+    "cost per bind"
+  ],
+  "explicitlyDeferred": [
+    "D1-backed outcome analytics",
+    "created-at cohort composition",
+    "rate representation and rounding",
+    "cost-per-outcome calculations",
+    "historical backfill policy",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
