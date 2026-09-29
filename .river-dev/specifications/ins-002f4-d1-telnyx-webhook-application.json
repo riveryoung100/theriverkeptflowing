@@ -1,0 +1,51 @@
+{
+  "id": "INS-002F4",
+  "phase": "D1 Telnyx Webhook Application Composition",
+  "parent": "INS-002F",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-002F3",
+    "INS-002E2C3E"
+  ],
+  "objective": "Compose an already-verified and already-normalized Telnyx voice event with the landed D1 correlated-event application and the landed webhook acknowledgement policy.",
+  "input": {
+    "database": "D1TelnyxCorrelatedEventApplicationDatabase",
+    "event": "TelnyxVoiceEvent",
+    "receivedAt": "string"
+  },
+  "execution": [
+    "Construct the landed D1 correlated-event application from the caller-provided database.",
+    "Apply the canonical TelnyxVoiceEvent exactly once per invocation.",
+    "Map the exact ApplyTelnyxCorrelatedEventResult through the landed F3 acknowledgement policy.",
+    "Return both domain application evidence and transport-neutral acknowledgement policy."
+  ],
+  "output": {
+    "application": "ApplyTelnyxCorrelatedEventResult",
+    "acknowledgement": "TelnyxWebhookAcknowledgement"
+  },
+  "invariants": [
+    "The D1 application service is composed once when the F4 service is created.",
+    "No D1 query occurs merely from constructing the F4 service.",
+    "Each apply invocation delegates exactly once to the landed D1 application.",
+    "F4 does not duplicate provider-event receipt persistence.",
+    "F4 does not reinterpret D3 application outcomes.",
+    "F4 does not reinterpret F3 acknowledgement policy."
+  ],
+  "outOfScope": [
+    "signature verification",
+    "public-key import",
+    "raw webhook body parsing",
+    "Telnyx provider payload normalization",
+    "Cloudflare environment lookup",
+    "Astro route wiring",
+    "Request access",
+    "Response construction",
+    "HTTP status selection",
+    "new migrations",
+    "secret creation",
+    "Telnyx API commands",
+    "live calls",
+    "deployment"
+  ],
+  "next": "INS-002F5 wires F1 through F4 into a public API route using caller/runtime-provided D1 and Telnyx public signing key."
+}
