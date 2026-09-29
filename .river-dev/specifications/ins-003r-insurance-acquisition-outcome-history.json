@@ -1,0 +1,52 @@
+{
+  "id": "INS-003R",
+  "phase": "Canonical Insurance Acquisition Outcome History",
+  "parent": "INS-003",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003O",
+    "INS-003P",
+    "INS-003Q3"
+  ],
+  "objective": "Create append-only canonical historical evidence that an insurance relationship reached quoted or bound, so future quote and bind numerators do not depend on mutable current quoteStatus or economic premium assumptions.",
+  "rootIdentity": "relationshipId",
+  "outcomeKinds": [
+    "quoted",
+    "bound"
+  ],
+  "rules": [
+    "Current InsuranceLeadProfile.quoteStatus remains current state and is not redefined as historical evidence.",
+    "Lost and declined do not imply historical quotation.",
+    "A written premium fact remains an economic fact and is not redefined as a bound lifecycle event.",
+    "Quoted and bound outcomes are explicit append-only facts.",
+    "Each outcome fact has its own stable outcomeFactId.",
+    "Outcome facts require relationshipId, kind, and occurredAt.",
+    "Provider, policy, and external references are optional metadata.",
+    "Persistence is provider-neutral.",
+    "Batch reads require an explicit finite relationship cohort.",
+    "Empty batch cohorts perform zero SQL reads.",
+    "No conversion rate is calculated in this slice."
+  ],
+  "futureUse": [
+    "quoted relationship count",
+    "bound relationship count",
+    "quote rate",
+    "bind rate",
+    "cost per quote",
+    "cost per bind"
+  ],
+  "explicitlyDeferred": [
+    "automatic lifecycle transition wiring",
+    "historical backfill policy",
+    "rate calculations",
+    "cost-per-outcome calculations",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ],
+  "migration": {
+    "file": "0007_river_crm_insurance_acquisition_outcomes.sql",
+    "executionStatus": "unexecuted"
+  }
+}
