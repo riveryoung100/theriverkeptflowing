@@ -49,3 +49,4 @@ export * from "./d1-acquisition-outcome-analytics";
 export * from "./d1-acquisition-outcome-created-at-cohort";
 export * from "./acquisition-outcome-rates";
 export * from "./d1-acquisition-outcome-rates-created-at-cohort";
+export * from "./acquisition-cost-per-outcome";

@@ -1,0 +1,58 @@
+{
+  "id": "INS-003Y",
+  "phase": "Pure Acquisition Cost Per Outcome",
+  "parent": "INS-003",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003L",
+    "INS-003S",
+    "INS-003V"
+  ],
+  "objective": "Project exact currency-isolated acquisition cost per quoted relationship and per bound relationship over one explicit canonical relationship cohort.",
+  "projectionVersion": "insurance-acquisition-cost-per-outcome-v1",
+  "costBasis": "sum of acquisitionCostMinorUnits across every relationship in the explicit cohort, isolated by currency",
+  "denominators": {
+    "costPerQuote": "quotedRelationshipCount",
+    "costPerBind": "boundRelationshipCount"
+  },
+  "representation": {
+    "type": "exact-money-per-count",
+    "fields": [
+      "numeratorMinorUnits",
+      "denominatorCount"
+    ],
+    "zeroOutcomeDenominator": "corresponding cost-per-outcome value omitted"
+  },
+  "rules": [
+    "The caller supplies the explicit relationship cohort.",
+    "Relationship IDs are canonically validated and deduplicated.",
+    "Exactly one attributed economics view must exist for every canonical cohort relationship.",
+    "No attributed economics view may exist outside the explicit cohort.",
+    "Each view analytics relationship identity must match the view relationship identity.",
+    "Relationship analytics must use the canonical acquisition analytics projection version.",
+    "Outcome analytics must use canonical outcome semantics through INS-003V validation.",
+    "Outcome analytics relationshipCount must equal the canonical explicit cohort size.",
+    "Acquisition cost is summed independently by currency.",
+    "Currencies are never converted or combined.",
+    "Cost per quote is total cohort acquisition cost in one currency divided by distinct quoted relationships.",
+    "Cost per bind is total cohort acquisition cost in one currency divided by distinct bound relationships.",
+    "The projection preserves numerator and denominator exactly and performs no arithmetic division.",
+    "A zero quoted denominator omits costPerQuote.",
+    "A zero bound denominator omits costPerBind.",
+    "Premium is not revenue and is not part of cost-per-outcome.",
+    "Commission and contribution are not part of cost-per-outcome."
+  ],
+  "explicitlyDeferred": [
+    "created-at D1 composition",
+    "display currency formatting",
+    "decimal division",
+    "rounding",
+    "cost per lead",
+    "quote-to-bind cost",
+    "LTV",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
