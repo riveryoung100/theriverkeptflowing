@@ -1,0 +1,41 @@
+{
+  "id": "INS-004C",
+  "phase": "D1-Backed Dimension Outcome Analytics",
+  "parent": "INS-004",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003I",
+    "INS-003R",
+    "INS-003L",
+    "INS-004B"
+  ],
+  "objective": "Compose one explicit canonical relationship cohort with attributed views and durable outcome facts, then delegate dimension-level quote and bind analytics entirely to INS-004B.",
+  "readPlan": {
+    "attributedViews": "at most one getViews call over the canonical cohort",
+    "outcomeFacts": "at most one listForRelationships call over the same canonical cohort",
+    "emptyCohort": "zero downstream reads"
+  },
+  "rules": [
+    "Relationship IDs are canonically validated and deduplicated at the application boundary while preserving first occurrence order.",
+    "The identical canonical relationship ID array is supplied to attributed economics and durable outcome readers.",
+    "Non-empty cohorts load attributed views and durable outcome facts concurrently.",
+    "The attributed view application is called at most once.",
+    "The durable outcome reader is called at most once.",
+    "An empty canonical cohort performs zero downstream reads and delegates empty data directly to INS-004B.",
+    "INS-004B remains sole owner of dimension validation, presentation grouping, durable quote and bind counting, fact validation, bound-does-not-imply-quoted semantics, deterministic buckets, and exact rates.",
+    "No new SQL is introduced.",
+    "No persistence mutation is introduced.",
+    "No mutable quoteStatus value is used as outcome evidence."
+  ],
+  "explicitlyDeferred": [
+    "all-seven-dimension outcome snapshot",
+    "created-at dimension outcome snapshot",
+    "dimension-level cost per quote",
+    "dimension-level cost per bind",
+    "percentage formatting",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
