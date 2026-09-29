@@ -1,0 +1,54 @@
+{
+  "id": "INS-003M",
+  "phase": "Multi-Dimension Acquisition Analytics Snapshot",
+  "parent": "INS-003",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003H",
+    "INS-003L"
+  ],
+  "objective": "Load one bounded attributed relationship economics view set and derive several acquisition aggregate dimensions from that same in-memory cohort without repeating persistence reads.",
+  "rootIdentity": "relationshipId",
+  "projectionVersion": "insurance-acquisition-aggregate-snapshot-v1",
+  "supportedDimensions": [
+    "acquisitionSource",
+    "sourceVendor",
+    "campaign",
+    "productInterest",
+    "state",
+    "quoteStatus",
+    "assignedProducer"
+  ],
+  "rules": [
+    "Relationship views are loaded exactly once per snapshot request.",
+    "All requested dimensions are pure projections over the same loaded view set.",
+    "Requested dimensions are validated through the existing aggregate projection.",
+    "Duplicate requested dimensions are removed while preserving first-request order.",
+    "Empty dimension input returns an empty aggregate set after one canonical view load.",
+    "RelationshipCount reflects the canonical deduplicated view set returned by the attributed economics batch application.",
+    "Currency isolation remains owned by INS-003H.",
+    "Premium remains distinct from River revenue.",
+    "Realized commission and contribution semantics remain owned by the canonical relationship and aggregate analytics layers.",
+    "No snapshot or aggregate result is persisted."
+  ],
+  "futureUse": [
+    "private River OS acquisition reporting",
+    "multi-chart dashboards",
+    "source and campaign economics review"
+  ],
+  "explicitlyDeferred": [
+    "calendar-period cohort semantics",
+    "full-book pagination",
+    "cost per lead",
+    "cost per quote",
+    "cost per bind",
+    "quote rate",
+    "bind rate",
+    "renewal rate",
+    "lifetime value",
+    "dashboard UI",
+    "migration 0006 production execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
