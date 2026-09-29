@@ -1,0 +1,42 @@
+{
+  "id": "INS-003Z",
+  "phase": "Created-At Acquisition Cost Per Outcome",
+  "parent": "INS-003",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003O",
+    "INS-003L",
+    "INS-003T",
+    "INS-003Y"
+  ],
+  "objective": "Read one canonical CRM created-at relationship cohort and use that exact cohort for attributed acquisition economics and durable outcome analytics before delegating exact currency-isolated cost-per-quote and cost-per-bind projection to INS-003Y.",
+  "readPlan": {
+    "createdAtCohort": "one listCreatedAtRange read",
+    "attributedEconomics": "one getViews application call over exact cohort IDs",
+    "outcomeAnalytics": "one getAnalytics application call over exact cohort IDs"
+  },
+  "rules": [
+    "CRM remains the sole owner of created-at timestamp validation, lower-inclusive upper-exclusive boundaries, ordering, default limit, and limit validation.",
+    "The CRM created-at cohort is read exactly once.",
+    "Returned relationship IDs are canonically validated.",
+    "The exact same canonical relationship ID array is supplied to attributed economics and outcome analytics.",
+    "Attributed economics is requested exactly once.",
+    "Outcome analytics is requested exactly once.",
+    "Economics and outcome applications may execute concurrently after the cohort is resolved.",
+    "INS-003Y remains the sole owner of currency isolation, cohort consistency validation, cost summation, zero-denominator omission, and exact money-per-count semantics.",
+    "No arithmetic division or currency conversion occurs in this composition layer.",
+    "No new SQL is introduced in this composition layer.",
+    "No persistence mutation occurs."
+  ],
+  "explicitlyDeferred": [
+    "dimension-level cost per outcome",
+    "percentage or decimal formatting",
+    "rounding",
+    "cost per lead",
+    "LTV",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
