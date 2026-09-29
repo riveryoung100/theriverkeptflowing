@@ -1,0 +1,58 @@
+{
+  "id": "INS-004J",
+  "phase": "Combined Created-At Acquisition Performance Snapshot",
+  "parent": "INS-004",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003O",
+    "INS-003H",
+    "INS-003L",
+    "INS-003R",
+    "INS-004B",
+    "INS-004F",
+    "INS-004I"
+  ],
+  "objective": "Resolve one CRM created-at relationship cohort, load attributed economics and durable outcome evidence once, and derive economics, durable outcomes, and exact acquisition cost per quote and bind across the same canonical dimensions from shared in-memory evidence.",
+  "projectionVersion": "insurance-acquisition-performance-snapshot-v1",
+  "readPlan": {
+    "createdAtCohort": "exactly one listCreatedAtRange call",
+    "attributedViews": "at most one getViews call over the canonical resolved cohort",
+    "outcomeFacts": "at most one listForRelationships call over the identical canonical resolved cohort",
+    "emptyCohortEvidence": "zero attributed-view and durable-outcome reads"
+  },
+  "rules": [
+    "Requested dimensions are validated against the seven canonical acquisition aggregate dimensions and deduplicated while preserving first occurrence order.",
+    "Unsupported dimensions fail before any persistence read.",
+    "CRM remains sole owner of created-at timestamp validation, lower-inclusive upper-exclusive boundaries, ordering, default limit, and limit validation.",
+    "Omitted limit remains omitted when constructing the CRM cohort query.",
+    "The CRM created-at cohort is resolved exactly once.",
+    "Returned relationship IDs are canonically validated and deduplicated while preserving first occurrence order.",
+    "A malformed CRM relationship identity fails before attributed economics or durable outcome reads.",
+    "A non-empty resolved cohort loads attributed economics views and durable outcome facts concurrently exactly once.",
+    "An empty resolved cohort performs zero attributed economics and durable outcome reads.",
+    "The same in-memory relationship IDs, attributed views, and durable outcome facts are supplied to every requested dimension.",
+    "Canonical acquisition aggregate analytics remain sole owner of economics bucket semantics.",
+    "Canonical dimension outcome analytics remain sole owner of durable quoted and bound semantics.",
+    "Canonical dimension acquisition cost-per-outcome analytics remain sole owner of currency isolation, bucket joins, exact numeratorMinorUnits and denominatorCount values, and zero-denominator omission.",
+    "Every dimension projection cross-checks dimension identity and relationship counts across economics, outcomes, and cost-per-outcome projections.",
+    "Bound does not imply quoted.",
+    "quoteStatus remains segmentation metadata only.",
+    "This snapshot represents lifetime-to-date economics and durable outcome attainment for relationships created inside the requested created-at window.",
+    "Outcome occurredAt and economics fact timestamps are not independently filtered by this composition layer.",
+    "No existing created-at economics, outcome, or cost-per-outcome wrapper is composed because doing so would duplicate cohort or evidence reads.",
+    "No new SQL, schema, persistence mutation, date parsing, date rewriting, arithmetic division, rounding, percentage formatting, or currency conversion is introduced."
+  ],
+  "explicitlyDeferred": [
+    "as-of cutoff semantics",
+    "outcome occurred-at windowing",
+    "economics occurred-at windowing",
+    "conversion within N days",
+    "cost per lead",
+    "LTV",
+    "presentation formatting",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}

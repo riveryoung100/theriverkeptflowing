@@ -59,3 +59,4 @@ export * from "./acquisition-dimension-cost-per-outcome";
 export * from "./d1-acquisition-dimension-cost-per-outcome";
 export * from "./acquisition-dimension-cost-per-outcome-snapshot";
 export * from "./d1-acquisition-dimension-cost-per-outcome-snapshot-created-at-cohort";
+export * from "./d1-acquisition-performance-snapshot-created-at-cohort";
