@@ -1,0 +1,54 @@
+{
+  "id": "INS-004B",
+  "phase": "Pure Dimension Outcome Analytics",
+  "parent": "INS-004",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003H",
+    "INS-003S",
+    "INS-003V",
+    "INS-004A"
+  ],
+  "objective": "Project durable quoted and bound outcome attainment by the same canonical acquisition dimensions already used by economics aggregation.",
+  "projectionVersion": "insurance-acquisition-dimension-outcome-analytics-v1",
+  "dimensions": [
+    "acquisitionSource",
+    "sourceVendor",
+    "campaign",
+    "productInterest",
+    "state",
+    "quoteStatus",
+    "assignedProducer"
+  ],
+  "inputs": [
+    "explicit canonical relationship cohort",
+    "one attributed relationship view per canonical cohort relationship",
+    "explicit durable quoted and bound outcome facts"
+  ],
+  "rules": [
+    "Relationship IDs are canonically validated and deduplicated.",
+    "Exactly one attributed view must exist for every canonical cohort relationship.",
+    "No attributed view may exist outside the explicit cohort.",
+    "Presentation relationship identity must match its attributed view relationship identity.",
+    "Missing presentation or missing selected dimension value is grouped into the absent dimension bucket.",
+    "Outcome facts are globally validated against the explicit cohort by canonical INS-003S analytics.",
+    "Outcome facts are partitioned by relationship and then projected through canonical INS-003S analytics for each dimension bucket.",
+    "Exact quote and bind fractions are projected through INS-003V for each bucket.",
+    "Repeated durable outcome facts count once at relationship level while fact counts remain preserved.",
+    "Bound does not imply quoted.",
+    "quoteStatus is segmentation metadata only and never creates quoted or bound outcome evidence.",
+    "Buckets are deterministic by dimension value with the absent bucket last.",
+    "No SQL, persistence access, persistence mutation, percentage formatting, floating-point division, or rounding is introduced."
+  ],
+  "explicitlyDeferred": [
+    "D1-backed dimension outcome composition",
+    "created-at dimension outcome composition",
+    "dimension-level cost per quote",
+    "dimension-level cost per bind",
+    "percentage formatting",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
