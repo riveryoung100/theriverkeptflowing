@@ -1,0 +1,47 @@
+{
+  "id": "INS-003P",
+  "phase": "Created-At Date-Window Acquisition Snapshot",
+  "parent": "INS-003",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003M",
+    "INS-003O"
+  ],
+  "objective": "Compose the canonical CRM created-at cohort with the reusable multi-dimension acquisition snapshot so River OS can produce bounded weekly, monthly, or explicit calendar-window economics without moving population semantics into insurance analytics.",
+  "cohortOwner": "D1RiverCrmCreatedAtCohortPersistence.listCreatedAtRange(query)",
+  "snapshotOwner": "InsuranceAcquisitionAggregateSnapshotApplication",
+  "boundarySemantics": {
+    "createdAtFromInclusive": "inclusive",
+    "createdAtToExclusive": "exclusive"
+  },
+  "rules": [
+    "The CRM persistence layer remains the sole owner of timestamp validation, date-window validation, ordering, and limit enforcement.",
+    "Insurance analytics does not duplicate created_at SQL.",
+    "Omitting limit preserves the canonical CRM default of 50.",
+    "Returned relationship IDs are canonically validated before snapshot execution.",
+    "CRM cohort order is preserved.",
+    "The snapshot application is invoked exactly once per request.",
+    "All requested aggregate dimensions operate over one reusable attributed economics view load.",
+    "No cohort, snapshot, view, or aggregate result is persisted."
+  ],
+  "futureUse": [
+    "weekly acquisition economics",
+    "monthly acquisition economics",
+    "custom reporting periods",
+    "future denominator-based performance metrics"
+  ],
+  "explicitlyDeferred": [
+    "pagination beyond the bounded first page",
+    "cost per lead",
+    "cost per quote",
+    "cost per bind",
+    "quote rate",
+    "bind rate",
+    "renewal rate",
+    "lifetime value",
+    "dashboard UI",
+    "migration 0006 production execution",
+    "deployment",
+    "telephony activation"
+  ]
+}

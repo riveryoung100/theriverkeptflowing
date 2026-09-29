@@ -41,3 +41,4 @@ export * from "./d1-acquisition-aggregate-cohort";
 export * from "./d1-attributed-economics-batch";
 export * from "./acquisition-aggregate-snapshot";
 export * from "./d1-acquisition-snapshot-cohort";
+export * from "./d1-acquisition-snapshot-created-at-cohort";
