@@ -1,0 +1,50 @@
+{
+  "id": "INS-003D",
+  "phase": "Acquisition Economics D1 Persistence",
+  "parent": "INS-003",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003B",
+    "INS-003C"
+  ],
+  "objective": "Persist canonical acquisition-cost, premium, commission, and renewal facts in River CRM D1 without changing attribution, lead, quote, provider, fulfillment, contact, or telephony ownership.",
+  "migration": {
+    "number": "0006",
+    "path": "migrations/river-crm/0006_river_crm_insurance_acquisition_economics.sql",
+    "strategy": "additive-only",
+    "productionApplication": "deferred"
+  },
+  "tables": [
+    "river_crm_insurance_acquisition_costs",
+    "river_crm_insurance_premium_facts",
+    "river_crm_insurance_commission_facts",
+    "river_crm_insurance_renewal_facts"
+  ],
+  "rootIdentity": "relationship_id -> river_crm_relationships.relationship_id",
+  "money": {
+    "amount": "INTEGER minor units",
+    "currency": "TEXT three-letter uppercase canonical value",
+    "premiumAndCost": "non-negative",
+    "commission": "signed"
+  },
+  "persistenceRules": [
+    "Canonical domain factories validate facts before write.",
+    "Rows are hydrated back through canonical domain factories.",
+    "Fact IDs are immutable table primary keys.",
+    "Optional domain values persist as SQL NULL.",
+    "Facts are append-only in this slice.",
+    "No update or delete API is introduced.",
+    "No production D1 migration is authorized by this implementation."
+  ],
+  "explicitlyDeferred": [
+    "production D1 migration execution",
+    "analytics projections",
+    "campaign aggregate reporting",
+    "dashboard UI",
+    "carrier imports",
+    "AMS integration",
+    "accounting ledger",
+    "telephony activation",
+    "deployment"
+  ]
+}
