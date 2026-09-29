@@ -37,3 +37,4 @@ export * from "./d1-acquisition-analytics";
 export * from "./d1-acquisition-economics-view";
 export * from "./acquisition-aggregate-analytics";
 export * from "./d1-acquisition-aggregate-analytics";
+export * from "./d1-acquisition-aggregate-cohort";

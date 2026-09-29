@@ -1,0 +1,48 @@
+{
+  "id": "INS-003K",
+  "phase": "Recent Relationship Cohort Acquisition Analytics",
+  "parent": "INS-003",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003J"
+  ],
+  "objective": "Reuse the canonical River CRM bounded relationship list as the owner of a recent-relationship cohort and feed only those canonical relationship IDs into INS-003J aggregate acquisition analytics.",
+  "cohortOwner": "RiverCrmPersistence.list(limit?)",
+  "cohortMeaning": "Most recently updated CRM relationships, ordered by updated_at DESC and relationship_id ASC.",
+  "canonicalD1Semantics": {
+    "defaultLimit": 50,
+    "minimumLimit": 1,
+    "maximumLimit": 100,
+    "ordering": [
+      "updated_at DESC",
+      "relationship_id ASC"
+    ]
+  },
+  "rules": [
+    "Do not create another relationship table or relationship source of truth.",
+    "Do not duplicate the CRM list SQL inside insurance analytics.",
+    "The D1 factory delegates cohort selection to createD1RiverCrmPersistence(database).list(limit?).",
+    "Omitting limit preserves the canonical CRM list default rather than hardcoding a second default.",
+    "Every returned relationship identity is canonically validated before INS-003J receives it.",
+    "The relationship list order is preserved when IDs are passed to INS-003J.",
+    "Final acquisition aggregation remains owned by INS-003J and INS-003H.",
+    "No aggregate result is persisted."
+  ],
+  "explicitlyDeferred": [
+    "full-book pagination",
+    "cursor semantics",
+    "all-time book-of-business population semantics",
+    "calendar-period filtering",
+    "cost per lead",
+    "cost per quote",
+    "cost per bind",
+    "quote rate",
+    "bind rate",
+    "renewal rate",
+    "lifetime value",
+    "dashboard UI",
+    "migration 0006 production execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
