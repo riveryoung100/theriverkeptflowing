@@ -1,0 +1,63 @@
+{
+  "id": "INS-003H",
+  "phase": "Source Campaign Aggregate Analytics",
+  "parent": "INS-003",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003E",
+    "INS-003F",
+    "INS-003G"
+  ],
+  "objective": "Aggregate canonical attributed relationship economics into deterministic reporting buckets so River OS can reason about source, vendor, campaign, product, geography, quote status, and producer economics without duplicating canonical relationship, attribution, presentation, or economic facts.",
+  "input": "InsuranceAttributedRelationshipEconomicsView[]",
+  "rootIdentity": "relationshipId",
+  "dimensions": [
+    "acquisitionSource",
+    "sourceVendor",
+    "campaign",
+    "productInterest",
+    "state",
+    "quoteStatus",
+    "assignedProducer"
+  ],
+  "measures": [
+    "relationshipCount",
+    "acquisitionCostMinorUnits",
+    "quotedPremiumMinorUnits",
+    "writtenPremiumMinorUnits",
+    "renewalPremiumMinorUnits",
+    "earnedCommissionMinorUnits",
+    "paidCommissionMinorUnits",
+    "chargebackMinorUnits",
+    "adjustmentMinorUnits",
+    "realizedCommissionMinorUnits",
+    "contributionMarginMinorUnits"
+  ],
+  "rules": [
+    "RelationshipId remains the canonical identity.",
+    "Duplicate relationship inputs are rejected rather than double counted.",
+    "Relationship, analytics, and optional presentation identities must match.",
+    "Currencies are aggregated independently and never summed across currencies.",
+    "Missing presentation or missing dimension values remain explicitly absent rather than being relabeled as unknown.",
+    "Premium is not River revenue.",
+    "Contribution remains realized commission minus acquisition cost.",
+    "The aggregate projection is pure, read-only, deterministic, and is not persisted.",
+    "No new attribution owner is created.",
+    "No new customer identity is created."
+  ],
+  "explicitlyDeferred": [
+    "cost per lead",
+    "cost per quote",
+    "cost per bind",
+    "quote rate",
+    "bind rate",
+    "renewal rate",
+    "lifetime value",
+    "cross-currency totals",
+    "D1 aggregate persistence",
+    "dashboard UI",
+    "migration 0006 production execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
