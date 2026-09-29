@@ -1,0 +1,38 @@
+{
+  "id": "INS-004E",
+  "phase": "Created-At Multi-Dimension Outcome Snapshot",
+  "parent": "INS-004",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003O",
+    "INS-004D"
+  ],
+  "objective": "Resolve one canonical CRM created-at relationship cohort and delegate that exact cohort once to the multi-dimension durable outcome snapshot application.",
+  "readPlan": {
+    "createdAtCohort": "one listCreatedAtRange call",
+    "outcomeSnapshot": "one getSnapshot call over the exact resolved cohort"
+  },
+  "rules": [
+    "CRM remains sole owner of created-at timestamp validation, lower-inclusive upper-exclusive boundaries, ordering, default limit, and limit validation.",
+    "The created-at relationship cohort is read exactly once.",
+    "Returned CRM relationship IDs are canonically validated before snapshot delegation.",
+    "The exact resolved relationship ID array is supplied to INS-004D once.",
+    "Requested dimensions are passed through unchanged; INS-004D owns dimension validation and deduplication.",
+    "Omitted limit remains omitted when constructing the CRM cohort query.",
+    "This represents lifetime-to-date durable outcome attainment for relationships created inside the requested date window.",
+    "Outcome occurredAt is not filtered by the created-at window.",
+    "No new SQL, date parsing, date rewriting, persistence mutation, percentage formatting, floating-point division, or status inference is introduced."
+  ],
+  "explicitlyDeferred": [
+    "as-of cutoff semantics",
+    "outcome occurred-at windowing",
+    "conversion within N days",
+    "dimension-level cost per quote",
+    "dimension-level cost per bind",
+    "combined economics and outcome reporting DTO",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
