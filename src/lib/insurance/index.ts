@@ -45,3 +45,4 @@ export * from "./d1-acquisition-snapshot-created-at-cohort";
 export * from "./acquisition-outcomes";
 export * from "./d1-acquisition-outcomes";
 export * from "./acquisition-outcome-analytics";
+export * from "./d1-acquisition-outcome-analytics";

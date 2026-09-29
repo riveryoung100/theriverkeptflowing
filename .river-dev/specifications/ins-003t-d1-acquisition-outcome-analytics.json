@@ -1,0 +1,43 @@
+{
+  "id": "INS-003T",
+  "phase": "D1-Backed Acquisition Outcome Analytics",
+  "parent": "INS-003",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003R",
+    "INS-003S"
+  ],
+  "objective": "Load canonical quoted and bound outcome facts for one explicit relationship cohort in one bounded batch read and delegate all numerator projection semantics to the pure INS-003S analytics layer.",
+  "readPlan": {
+    "outcomeFacts": "one listForRelationships batch read"
+  },
+  "rules": [
+    "The caller supplies the explicit relationship cohort.",
+    "The application invokes outcome-history batch reading exactly once.",
+    "The application does not issue SQL directly.",
+    "The application does not append or mutate outcome history.",
+    "Relationship cohort canonicalization and outcome validation remain owned by existing canonical layers.",
+    "Distinct quoted and bound relationship counting remains owned exclusively by INS-003S.",
+    "Bound does not imply quoted.",
+    "Current quoteStatus is not used as historical evidence.",
+    "Written premium is not used as bound evidence.",
+    "No rate or cost-per-outcome calculation occurs in this slice."
+  ],
+  "futureUse": [
+    "created-at cohort outcome analytics",
+    "quote rate",
+    "bind rate",
+    "cost per quote",
+    "cost per bind"
+  ],
+  "explicitlyDeferred": [
+    "created-at cohort composition",
+    "rate representation and rounding",
+    "cost-per-outcome calculations",
+    "historical backfill policy",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
