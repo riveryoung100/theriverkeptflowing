@@ -1,0 +1,41 @@
+{
+  "id": "INS-004H",
+  "phase": "Multi-Dimension Acquisition Cost Per Outcome Snapshot",
+  "parent": "INS-004",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003L",
+    "INS-003R",
+    "INS-004F",
+    "INS-004G"
+  ],
+  "objective": "Load attributed economics views and durable outcome facts once for one explicit canonical relationship cohort, then derive exact acquisition cost per quote and bind for multiple canonical acquisition dimensions in memory.",
+  "projectionVersion": "insurance-acquisition-dimension-cost-per-outcome-snapshot-v1",
+  "readPlan": {
+    "attributedViews": "at most one getViews call for the canonical cohort",
+    "outcomeFacts": "at most one listForRelationships call for the identical canonical cohort",
+    "emptyCohort": "zero downstream reads"
+  },
+  "rules": [
+    "Relationship IDs are canonically validated and deduplicated while preserving first occurrence order.",
+    "Dimensions are validated against the seven canonical acquisition aggregate dimensions and deduplicated while preserving first occurrence order.",
+    "Invalid relationship identity or unsupported dimension fails before downstream reads.",
+    "A non-empty cohort loads attributed views and durable outcome facts concurrently exactly once.",
+    "An empty cohort performs zero downstream reads.",
+    "Every requested dimension projection is derived in memory from the same attributed views and durable outcome facts.",
+    "INS-004F remains sole owner of economics/outcome bucket composition, durable quote and bind denominators, currency isolation, bucket consistency checks, exact money-per-outcome representation, and zero-denominator omission.",
+    "Bound does not imply quoted.",
+    "quoteStatus remains segmentation metadata only.",
+    "No new SQL, persistence mutation, arithmetic division, rounding, percentage formatting, or currency conversion is introduced."
+  ],
+  "explicitlyDeferred": [
+    "created-at multi-dimension cost-per-outcome snapshot",
+    "cost per lead",
+    "LTV",
+    "combined reporting DTO",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
