@@ -1,0 +1,52 @@
+{
+  "id": "INS-002F2",
+  "phase": "Verified Telnyx Webhook Event Normalization",
+  "parent": "INS-002F",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-002F1",
+    "INS-002E2B2"
+  ],
+  "objective": "Parse an already-authenticated Telnyx webhook raw body and delegate supported voice lifecycle semantics to the landed Telnyx voice-event normalizer without duplicating provider event rules.",
+  "inputBoundary": {
+    "rawBody": "Exact webhook body text after successful INS-002F1 authentication.",
+    "authentication": "Required by caller before invoking this F2 adapter; F2 performs no signature verification."
+  },
+  "outcomes": [
+    "normalized",
+    "invalid-json",
+    "invalid-payload",
+    "unsupported-event"
+  ],
+  "supportedVoiceEvents": [
+    "call.initiated",
+    "call.answered",
+    "call.bridged",
+    "call.hangup"
+  ],
+  "invariants": [
+    "JSON parsing occurs only after signature verification at the caller boundary.",
+    "Existing normalizeTelnyxVoiceEvent remains the sole owner of provider semantic normalization.",
+    "Unsupported Telnyx event types do not advance canonical state.",
+    "Malformed recognized Telnyx events are represented as invalid-payload.",
+    "Raw provider payload fields are not retained beyond the canonical TelnyxVoiceEvent shape.",
+    "providerEventId and callControlId remain exactly those produced by the landed normalizer."
+  ],
+  "outOfScope": [
+    "signature verification",
+    "public key import",
+    "Cloudflare environment access",
+    "Astro routes",
+    "HTTP acknowledgement or retry mapping",
+    "D1 access",
+    "event receipt persistence",
+    "correlation resolution",
+    "bridge reconciliation",
+    "migration execution",
+    "secret creation",
+    "Telnyx API commands",
+    "live calls",
+    "deployment"
+  ],
+  "next": "INS-002F3 may map application outcomes to deterministic webhook acknowledgement and retry semantics."
+}

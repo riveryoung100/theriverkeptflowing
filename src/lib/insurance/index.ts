@@ -27,3 +27,4 @@ export * from "./d1-telnyx-correlated-attempt-reconciliation";
 export * from "./telnyx-correlated-event-application";
 export * from "./d1-telnyx-correlated-event-application";
 export * from "./telnyx-webhook-signature";
+export * from "./telnyx-verified-webhook-event";
