@@ -1,4 +1,4 @@
-﻿export * from "./lead-profile";
+export * from "./lead-profile";
 export * from "./d1-lead-profile";
 export * from "./quote-request";
 export * from "./d1-quote-request";
@@ -30,3 +30,4 @@ export * from "./telnyx-webhook-signature";
 export * from "./telnyx-verified-webhook-event";
 export * from "./telnyx-webhook-acknowledgement";
 export * from "./d1-telnyx-webhook-application";
+export * from "./acquisition-economics";
