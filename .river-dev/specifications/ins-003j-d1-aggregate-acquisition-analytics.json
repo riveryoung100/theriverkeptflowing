@@ -1,0 +1,52 @@
+{
+  "id": "INS-003J",
+  "phase": "D1-Backed Aggregate Acquisition Analytics",
+  "parent": "INS-003",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003E",
+    "INS-003G",
+    "INS-003H",
+    "INS-003I"
+  ],
+  "objective": "Compose bounded insurance presentation and economic fact reads into canonical relationship economics views and delegate final source/campaign/product/state/status/producer aggregation to INS-003H without relationship-at-a-time economic reads.",
+  "rootIdentity": "relationshipId",
+  "cohortSemantics": "The caller supplies the explicit finite relationship ID cohort. INS-003J does not define all-leads, all-customers, all-policies, date-window, or book-of-business population semantics.",
+  "readPlan": {
+    "presentation": "one bounded listForRelationships call",
+    "acquisitionCosts": "one bounded listAcquisitionCostsForRelationships call",
+    "premiumFacts": "one bounded listPremiumFactsForRelationships call",
+    "commissionFacts": "one bounded listCommissionFactsForRelationships call",
+    "renewalFacts": "one bounded listRenewalFactsForRelationships call"
+  },
+  "rules": [
+    "Every requested relationship ID is canonicalized before any persistence read.",
+    "Duplicate requested relationship IDs are removed while preserving first-request order.",
+    "Empty relationship input returns an empty aggregate projection without any persistence reads.",
+    "Returned presentations and facts must belong to the requested relationship cohort.",
+    "At most one insurance presentation may exist per requested relationship.",
+    "Relationships without insurance presentation remain in the supplied cohort with absent presentation context.",
+    "Relationships without economic facts remain in the supplied cohort with an empty canonical economics projection.",
+    "Relationship economics are rebuilt through createInsuranceRelationshipAcquisitionAnalytics.",
+    "Final aggregation is delegated to createInsuranceAcquisitionAggregateAnalytics.",
+    "Currency isolation, premium-versus-revenue semantics, realized commission, and contribution semantics remain owned by the existing pure analytics layers.",
+    "No aggregate result is persisted."
+  ],
+  "explicitlyDeferred": [
+    "global relationship cohort ownership",
+    "all-leads query semantics",
+    "calendar-period filtering",
+    "cost per lead",
+    "cost per quote",
+    "cost per bind",
+    "quote rate",
+    "bind rate",
+    "renewal rate",
+    "lifetime value",
+    "aggregate persistence",
+    "dashboard UI",
+    "migration 0006 production execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
