@@ -1,0 +1,48 @@
+{
+  "id": "INS-004L",
+  "phase": "Shared Raw Acquisition Evidence Batch",
+  "parent": "INS-004",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003I",
+    "INS-003L",
+    "INS-003R",
+    "INS-004K"
+  ],
+  "objective": "Load current presentation metadata, all four raw acquisition economics fact families, and durable outcome facts exactly once for one explicit canonical relationship cohort without aggregation or cutoff filtering.",
+  "projectionVersion": "insurance-acquisition-raw-evidence-batch-v1",
+  "readPlan": {
+    "presentation": "exactly one listForRelationships call",
+    "acquisitionCosts": "exactly one listAcquisitionCostsForRelationships call",
+    "premiumFacts": "exactly one listPremiumFactsForRelationships call",
+    "commissionFacts": "exactly one listCommissionFactsForRelationships call",
+    "renewalFacts": "exactly one listRenewalFactsForRelationships call",
+    "outcomeFacts": "exactly one listForRelationships call",
+    "concurrency": "all six reads share one Promise.all boundary",
+    "emptyCohort": "zero downstream persistence reads"
+  },
+  "rules": [
+    "Relationship IDs are canonically validated and deduplicated while preserving first occurrence order.",
+    "Malformed requested relationship identity fails before any persistence read.",
+    "Empty relationship cohort performs zero downstream persistence reads.",
+    "Non-empty relationship cohort performs exactly six canonical batch reads.",
+    "Presentation, acquisition cost, premium, commission, renewal, and durable outcome reads receive the identical canonical relationship cohort.",
+    "All returned presentation and fact relationship identities must belong to the requested cohort.",
+    "At most one presentation may be returned for a relationship.",
+    "Raw evidence array order and object identity are preserved; this layer performs validation only.",
+    "No cutoff filtering occurs here; INS-004K remains sole owner of occurredAt < asOfExclusive semantics.",
+    "No relationship economics aggregation occurs here.",
+    "No dimension grouping, outcome analytics, cost-per-outcome calculation, current-status inference, currency conversion, or display formatting occurs here.",
+    "The D1 factory composes only existing canonical presentation, economics, and outcome readers.",
+    "No new SQL, schema, persistence mutation, migration execution, deployment, dashboard UI, or telephony activation is introduced."
+  ],
+  "explicitlyDeferred": [
+    "as-of attributed relationship views",
+    "as-of combined created-at acquisition performance snapshot",
+    "conversion within N days",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
