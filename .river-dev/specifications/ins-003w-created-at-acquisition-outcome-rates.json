@@ -1,0 +1,38 @@
+{
+  "id": "INS-003W",
+  "phase": "Created-At Acquisition Outcome Rates",
+  "parent": "INS-003",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003U",
+    "INS-003V"
+  ],
+  "objective": "Compose canonical created-at acquisition outcome analytics with exact quote-rate and bind-rate projection without adding SQL, persistence, rounding, or lifecycle inference.",
+  "analyticsOwner": "InsuranceCreatedAtOutcomeAnalyticsApplication.getCreatedAtAnalytics(input)",
+  "rateOwner": "createInsuranceAcquisitionOutcomeRates(analytics)",
+  "rules": [
+    "The created-at analytics application is invoked exactly once.",
+    "This composition layer performs no CRM or outcome persistence read directly.",
+    "CRM remains the owner of created-at cohort boundaries, ordering, and limit semantics.",
+    "INS-003S/T/U remain the owners of durable quoted and bound relationship numerators.",
+    "INS-003V remains the sole owner of exact quote-rate and bind-rate projection.",
+    "quoteRate denominator remains relationshipCount.",
+    "bindRate denominator remains relationshipCount.",
+    "Bound does not imply quoted.",
+    "Zero-denominator rate omission remains owned by INS-003V.",
+    "No floating-point percentage or rounding policy is introduced."
+  ],
+  "explicitlyDeferred": [
+    "percentage formatting",
+    "decimal precision",
+    "rounding mode",
+    "basis-point representation",
+    "quote-to-bind conversion rate",
+    "cost per quote",
+    "cost per bind",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
