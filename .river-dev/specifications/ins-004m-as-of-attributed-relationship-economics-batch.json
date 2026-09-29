@@ -1,0 +1,39 @@
+{
+  "id": "INS-004M",
+  "phase": "As-Of Attributed Relationship Economics Batch",
+  "parent": "INS-004",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003L",
+    "INS-004K",
+    "INS-004L"
+  ],
+  "objective": "Produce canonical attributed relationship economics views as of one upper-exclusive cutoff by loading the explicit cohort once through the shared raw evidence owner, filtering raw facts once through the canonical as-of owner, and delegating grouping and relationship analytics construction to the existing attributed economics batch owner.",
+  "projectionVersion": "insurance-acquisition-as-of-attributed-economics-batch-v1",
+  "composition": {
+    "rawEvidence": "exactly one INS-004L getEvidence call",
+    "cutoff": "exactly one INS-004K createInsuranceAcquisitionAsOfEvidence call",
+    "attribution": "exactly one canonical attributed economics batch projection over in-memory presentation and filtered economics evidence"
+  },
+  "rules": [
+    "Input contains relationshipIds and asOfExclusive.",
+    "INS-004L remains sole owner of relationship cohort canonicalization and six canonical persistence reads.",
+    "INS-004K remains sole owner of canonical UTC cutoff validation and fact.occurredAt < asOfExclusive filtering.",
+    "Current presentation metadata is not historically filtered and remains current-state segmentation metadata.",
+    "Only filtered acquisition cost, premium, commission, and renewal facts enter relationship economics analytics.",
+    "Filtered durable outcome facts are not exposed by this attributed economics application.",
+    "The existing attributed economics batch remains sole owner of presentation uniqueness, relationship grouping, requested-cohort ownership validation, canonical requested order, and InsuranceAttributedRelationshipEconomicsView construction.",
+    "Relationships remain present even when no presentation exists or no economics facts survive the cutoff.",
+    "Optional premium or renewal effectiveAt never controls inclusion.",
+    "No new SQL, schema, persistence mutation, alternate cutoff rule, arithmetic division, status inference, currency conversion, dashboard UI, deployment, or telephony activation is introduced."
+  ],
+  "explicitlyDeferred": [
+    "created-at as-of combined acquisition performance snapshot",
+    "conversion within N days",
+    "historical presentation reconstruction",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}

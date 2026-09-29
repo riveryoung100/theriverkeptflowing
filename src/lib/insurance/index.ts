@@ -62,3 +62,4 @@ export * from "./d1-acquisition-dimension-cost-per-outcome-snapshot-created-at-c
 export * from "./d1-acquisition-performance-snapshot-created-at-cohort";
 export * from "./acquisition-as-of-evidence";
 export * from "./d1-acquisition-raw-evidence-batch";
+export * from "./d1-acquisition-as-of-attributed-economics-batch";
