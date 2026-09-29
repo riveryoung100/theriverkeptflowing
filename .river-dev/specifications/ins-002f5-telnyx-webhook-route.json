@@ -1,0 +1,62 @@
+{
+  "id": "INS-002F5",
+  "phase": "Public Telnyx Webhook Ingress",
+  "parent": "INS-002F",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-002F1",
+    "INS-002F2A",
+    "INS-002F3",
+    "INS-002F4"
+  ],
+  "objective": "Expose a thin Astro POST endpoint that authenticates the exact Telnyx raw body before parsing, normalizes supported V2 voice events, applies them through the landed D1 composition, and translates the landed acknowledgement policy into HTTP acknowledgement or retry semantics.",
+  "runtimeConfiguration": {
+    "databaseBinding": "RIVER_CRM_DB",
+    "publicSigningKeyBinding": "TELNYX_WEBHOOK_PUBLIC_KEY",
+    "publicSigningKeyEncoding": "Base64-encoded raw 32-byte Ed25519 public key"
+  },
+  "pipeline": [
+    "Read request body exactly once with request.text().",
+    "Read telnyx-signature-ed25519 and telnyx-timestamp headers.",
+    "Import the configured Base64 Ed25519 public signing key.",
+    "Run F1 signature verification against the exact raw body before JSON parsing.",
+    "Reject failed authentication before F2 or D1 execution.",
+    "Run F2/F2A verified-body parsing and normalization only after authentication.",
+    "Acknowledge authenticated unsupported event types without D1 application.",
+    "Reject authenticated malformed JSON or malformed recognized events without D1 application.",
+    "Apply supported canonical events through the F4 D1 webhook application service.",
+    "Map F4 acknowledge=true to a successful 2xx response.",
+    "Map F4 retry=true to a non-2xx response so provider redelivery remains possible."
+  ],
+  "httpPolicy": {
+    "verifiedSupportedAcceptedOrIgnored": 204,
+    "verifiedSupportedTransient": 503,
+    "verifiedUnsupportedEvent": 204,
+    "verifiedMalformedPayload": 400,
+    "signatureFailure": 401,
+    "runtimeConfigurationFailure": 503,
+    "unexpectedInfrastructureFailure": 503
+  },
+  "invariants": [
+    "No JSON parsing occurs before successful F1 verification.",
+    "The request body is read exactly once.",
+    "Unsupported authenticated events never reach D1.",
+    "Malformed authenticated events never reach D1.",
+    "F5 does not persist provider receipts directly.",
+    "F5 does not issue Telnyx API commands.",
+    "The actual Telnyx public key value is not committed to source control.",
+    "No API key or other secret is required by this webhook ingress."
+  ],
+  "outOfScope": [
+    "creating or changing Cloudflare runtime bindings",
+    "deploying the route",
+    "live Telnyx webhook configuration",
+    "Telnyx API commands",
+    "D1 migrations",
+    "live D1 mutation",
+    "live calls",
+    "provider API keys",
+    "recording",
+    "AI voice"
+  ]
+}
