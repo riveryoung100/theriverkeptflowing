@@ -1,0 +1,42 @@
+{
+  "id": "INS-004K",
+  "phase": "Pure Acquisition As-Of Evidence Filter",
+  "parent": "INS-004",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003D",
+    "INS-003R",
+    "INS-004J"
+  ],
+  "objective": "Define one pure canonical upper-exclusive as-of boundary for raw insurance acquisition economics and durable outcome facts before aggregation.",
+  "projectionVersion": "insurance-acquisition-as-of-evidence-v1",
+  "semantics": {
+    "cutoff": "fact.occurredAt < asOfExclusive",
+    "boundary": "upper-exclusive",
+    "effectiveAt": "metadata only; never controls as-of inclusion",
+    "presentation": "not filtered; current-state segmentation remains separate from historical evidence"
+  },
+  "rules": [
+    "asOfExclusive must be a canonical UTC timestamp in ISO-8601 millisecond Z form.",
+    "Acquisition cost inclusion is controlled only by occurredAt.",
+    "Premium inclusion is controlled only by occurredAt; optional effectiveAt does not change inclusion.",
+    "Commission inclusion is controlled only by occurredAt.",
+    "Renewal inclusion is controlled only by occurredAt; optional effectiveAt does not change inclusion.",
+    "Durable quoted and bound outcome inclusion is controlled only by occurredAt.",
+    "Facts occurring exactly at asOfExclusive are excluded.",
+    "Facts before asOfExclusive are preserved without mutation and in original input order.",
+    "Facts after asOfExclusive are excluded.",
+    "No grouping, aggregation, currency conversion, status inference, SQL, persistence access, or mutation occurs in this layer.",
+    "Filtering must happen before createInsuranceRelationshipAcquisitionAnalytics because attributed economics views no longer retain complete raw fact-time evidence."
+  ],
+  "explicitlyDeferred": [
+    "shared raw D1 evidence loader",
+    "as-of attributed relationship views",
+    "as-of combined created-at acquisition performance snapshot",
+    "conversion within N days",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
