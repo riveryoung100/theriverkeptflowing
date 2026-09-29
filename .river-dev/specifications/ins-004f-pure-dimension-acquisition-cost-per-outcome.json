@@ -1,0 +1,44 @@
+{
+  "id": "INS-004F",
+  "phase": "Pure Dimension Acquisition Cost Per Outcome",
+  "parent": "INS-004",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003H",
+    "INS-003Y",
+    "INS-004B",
+    "INS-004F-DISCOVERY"
+  ],
+  "objective": "Compose canonical acquisition economics buckets with canonical durable outcome buckets to project exact currency-isolated acquisition cost per quote and acquisition cost per bind for one acquisition dimension.",
+  "projectionVersion": "insurance-acquisition-dimension-cost-per-outcome-v1",
+  "rules": [
+    "The caller supplies one explicit relationship cohort, attributed economics views, durable outcome facts, and one canonical acquisition dimension.",
+    "Canonical economics aggregation remains sole owner of acquisition-cost grouping by dimension and currency.",
+    "Canonical durable dimension outcome analytics remains sole owner of quote and bind denominators.",
+    "Economics and outcome projections must report the same dimension and overall relationship count.",
+    "Corresponding buckets are joined only by canonical optional dimensionValue.",
+    "Corresponding economics and outcome buckets must report the same relationshipCount.",
+    "Every economics bucket must have exactly one corresponding outcome bucket and vice versa.",
+    "Currency totals remain isolated and are never converted or combined.",
+    "costPerQuote is exact numeratorMinorUnits equal to bucket currency acquisitionCostMinorUnits and denominatorCount equal to bucket quotedRelationshipCount.",
+    "costPerBind is exact numeratorMinorUnits equal to bucket currency acquisitionCostMinorUnits and denominatorCount equal to bucket boundRelationshipCount.",
+    "costPerQuote is omitted when quotedRelationshipCount is zero.",
+    "costPerBind is omitted when boundRelationshipCount is zero.",
+    "Zero acquisition cost with a positive outcome denominator remains an exact zero-over-denominator representation.",
+    "Bound does not imply quoted.",
+    "quoteStatus remains segmentation metadata only and never creates durable outcome evidence.",
+    "No arithmetic division, rounding, percentage formatting, SQL, persistence read, persistence mutation, or currency conversion is introduced."
+  ],
+  "explicitlyDeferred": [
+    "D1-backed dimension cost-per-outcome composition",
+    "multi-dimension cost-per-outcome snapshot",
+    "created-at dimension cost-per-outcome snapshot",
+    "cost per lead",
+    "LTV",
+    "combined reporting DTO",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
