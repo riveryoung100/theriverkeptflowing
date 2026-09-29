@@ -1,0 +1,57 @@
+{
+  "id": "INS-002F6B",
+  "phase": "Telnyx Production Rollout Contract",
+  "parent": "INS-002F6",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-002F5",
+    "INS-002F6A"
+  ],
+  "objective": "Define a controlled production rollout sequence for the landed Telnyx V2 webhook ingress without performing live configuration, deployment, provider registration, or production mutation.",
+  "endpoint": "/api/insurance/telnyx-webhook",
+  "runtimeRequirements": {
+    "databaseBinding": "RIVER_CRM_DB",
+    "publicSigningKeyBinding": "TELNYX_WEBHOOK_PUBLIC_KEY",
+    "publicSigningKeyEncoding": "Base64-encoded raw 32-byte Ed25519 public key",
+    "publicSigningKeySource": "The Telnyx account V2 webhook signing public key"
+  },
+  "rolloutOrder": [
+    "Confirm the landed Git revision and clean working tree.",
+    "Confirm the production RIVER_CRM_DB binding is unchanged and points to the intended CRM database.",
+    "Obtain the Telnyx V2 webhook Ed25519 public signing key from the intended Telnyx account.",
+    "Configure TELNYX_WEBHOOK_PUBLIC_KEY in the production Worker runtime without committing its account-specific value to Git.",
+    "Build the application from the exact approved revision.",
+    "Deploy the application.",
+    "Verify the deployed endpoint rejects unsigned requests before any D1 application.",
+    "Verify the deployed endpoint is reachable over HTTPS.",
+    "Register the deployed endpoint with the intended Telnyx voice application for V2 webhook delivery.",
+    "Perform a controlled end-to-end webhook validation.",
+    "Confirm canonical correlation, bridge reconciliation, attempt reconciliation, and receipt deduplication behave as designed."
+  ],
+  "httpExpectations": {
+    "unsignedOrInvalidSignature": 401,
+    "authenticatedUnsupportedEvent": 204,
+    "authenticatedMalformedPayload": 400,
+    "authenticatedAcceptedOrIgnoredApplication": 204,
+    "authenticatedTransientApplication": 503,
+    "runtimeConfigurationFailure": 503
+  },
+  "rollback": [
+    "If deployment validation fails before Telnyx registration, do not register the endpoint.",
+    "If provider registration has occurred and webhook handling is unhealthy, remove or replace the Telnyx webhook destination before further testing.",
+    "Do not mutate D1 schema as part of webhook rollout.",
+    "Do not change canonical event or reconciliation semantics during rollout.",
+    "Return to the last known-good deployed revision if application deployment itself introduced unrelated regressions."
+  ],
+  "prohibitedDuringThisSlice": [
+    "Cloudflare variable creation",
+    "Cloudflare secret creation",
+    "wrangler deploy",
+    "production D1 query or mutation",
+    "migration execution",
+    "Telnyx API commands",
+    "Telnyx webhook registration",
+    "live phone calls",
+    "production resource mutation"
+  ]
+}
