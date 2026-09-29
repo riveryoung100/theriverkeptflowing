@@ -1,0 +1,42 @@
+{
+  "id": "INS-004G",
+  "phase": "D1-Backed Dimension Acquisition Cost Per Outcome",
+  "parent": "INS-004",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003I",
+    "INS-003L",
+    "INS-003R",
+    "INS-004F"
+  ],
+  "objective": "Load attributed economics views and durable outcome facts once for one explicit canonical relationship cohort, then delegate exact dimension-level acquisition cost per quote and bind projection to INS-004F.",
+  "readPlan": {
+    "attributedViews": "at most one getViews call over the canonical cohort",
+    "outcomeFacts": "at most one listForRelationships call over the identical canonical cohort",
+    "emptyCohort": "zero downstream reads"
+  },
+  "rules": [
+    "Relationship IDs are canonically validated and deduplicated at the application boundary while preserving first occurrence order.",
+    "The acquisition dimension is validated before downstream reads.",
+    "Invalid relationship identity or unsupported dimension fails before downstream reads.",
+    "The identical canonical relationship ID array is supplied to attributed economics and durable outcome readers.",
+    "A non-empty cohort loads attributed views and durable outcome facts concurrently.",
+    "The attributed view application is called at most once.",
+    "The durable outcome reader is called at most once.",
+    "An empty canonical cohort performs zero downstream reads.",
+    "INS-004F remains sole owner of economics/outcome bucket composition, currency isolation, denominator semantics, exact money-per-outcome representation, zero-denominator omission, and bucket consistency checks.",
+    "quoteStatus remains segmentation metadata only.",
+    "No new SQL, persistence mutation, arithmetic division, percentage formatting, rounding, or currency conversion is introduced."
+  ],
+  "explicitlyDeferred": [
+    "multi-dimension cost-per-outcome snapshot",
+    "created-at multi-dimension cost-per-outcome snapshot",
+    "cost per lead",
+    "LTV",
+    "combined reporting DTO",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
