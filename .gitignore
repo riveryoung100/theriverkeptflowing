@@ -28,3 +28,6 @@ Thumbs.db
 
 # Private durable semantic Knowledge records
 .river-knowledge/
+.dev.vars
+.dev.vars.*
+!.dev.vars.example

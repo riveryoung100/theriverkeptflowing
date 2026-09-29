@@ -1,0 +1,28 @@
+{
+  "id": "INS-002F6A",
+  "phase": "Local Telnyx Runtime Configuration Hygiene",
+  "parent": "INS-002F6",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-002F5"
+  ],
+  "objective": "Prevent local Wrangler runtime-variable files from being accidentally committed while providing a committed placeholder contract for the Telnyx webhook public signing key.",
+  "runtimeVariable": {
+    "name": "TELNYX_WEBHOOK_PUBLIC_KEY",
+    "encoding": "Base64-encoded raw 32-byte Ed25519 public key",
+    "exampleContainsRealValue": false
+  },
+  "changes": [
+    "Ignore .dev.vars and environment-specific .dev.vars.* files.",
+    "Keep .dev.vars.example tracked.",
+    "Document TELNYX_WEBHOOK_PUBLIC_KEY in .dev.vars.example without committing an actual key."
+  ],
+  "invariants": [
+    "No actual Telnyx signing key is committed.",
+    "No wrangler.jsonc production configuration is changed.",
+    "No generated Worker environment types are changed.",
+    "No Cloudflare variable or secret is created.",
+    "No deployment occurs.",
+    "No Telnyx API or webhook configuration is changed."
+  ]
+}

@@ -1,0 +1,5 @@
+# Local Wrangler runtime configuration example.
+# Copy this file to .dev.vars for local development only.
+# Never place a real value in this committed example.
+
+TELNYX_WEBHOOK_PUBLIC_KEY=
