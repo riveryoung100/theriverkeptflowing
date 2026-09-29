@@ -1,0 +1,51 @@
+{
+  "id": "INS-003V",
+  "phase": "Pure Acquisition Outcome Rates",
+  "parent": "INS-003",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003S",
+    "INS-003U"
+  ],
+  "objective": "Derive exact quote-rate and bind-rate fractions from canonical acquisition outcome analytics without introducing floating-point percentages, display rounding, persistence, or new lifecycle inference.",
+  "projectionVersion": "insurance-acquisition-outcome-rates-v1",
+  "denominator": "relationshipCount",
+  "rates": {
+    "quoteRate": "quotedRelationshipCount / relationshipCount",
+    "bindRate": "boundRelationshipCount / relationshipCount"
+  },
+  "representation": {
+    "type": "exact-rational",
+    "fields": [
+      "numerator",
+      "denominator"
+    ],
+    "zeroDenominator": "rate omitted"
+  },
+  "rules": [
+    "The denominator for both quoteRate and bindRate is canonical relationshipCount.",
+    "quoteRate numerator is quotedRelationshipCount.",
+    "bindRate numerator is boundRelationshipCount.",
+    "bindRate is not defined as boundRelationshipCount divided by quotedRelationshipCount.",
+    "Bound does not imply quoted.",
+    "A zero relationship denominator produces no rate value.",
+    "A positive denominator with zero outcomes produces an exact 0/N rate.",
+    "Counts must be safe non-negative integers.",
+    "Quoted and bound relationship counts cannot exceed relationshipCount.",
+    "The pure rate layer performs no division and therefore introduces no floating-point or rounding policy.",
+    "Presentation layers may later format exact fractions as percentages under a separately defined display policy."
+  ],
+  "explicitlyDeferred": [
+    "percentage formatting",
+    "decimal precision",
+    "rounding mode",
+    "basis-point representation",
+    "quote-to-bind conversion rate",
+    "cost per quote",
+    "cost per bind",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
