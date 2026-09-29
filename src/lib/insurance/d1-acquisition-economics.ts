@@ -178,6 +178,34 @@ export interface D1InsuranceAcquisitionEconomicsPersistence {
     ): Promise<
         readonly InsuranceRenewalFact[]
     >;
+
+    listAcquisitionCostsForRelationships(
+        relationshipIds:
+            readonly RiverCrmRelationshipId[]
+    ): Promise<
+        readonly InsuranceAcquisitionCostFact[]
+    >;
+
+    listPremiumFactsForRelationships(
+        relationshipIds:
+            readonly RiverCrmRelationshipId[]
+    ): Promise<
+        readonly InsurancePremiumFact[]
+    >;
+
+    listCommissionFactsForRelationships(
+        relationshipIds:
+            readonly RiverCrmRelationshipId[]
+    ): Promise<
+        readonly InsuranceCommissionFact[]
+    >;
+
+    listRenewalFactsForRelationships(
+        relationshipIds:
+            readonly RiverCrmRelationshipId[]
+    ): Promise<
+        readonly InsuranceRenewalFact[]
+    >;
 }
 
 
@@ -376,6 +404,50 @@ function renewalFromRow(
     });
 }
 
+
+function canonicalEconomicRelationshipIds(
+    relationshipIds:
+        readonly RiverCrmRelationshipId[]
+): readonly RiverCrmRelationshipId[] {
+    const result:
+        RiverCrmRelationshipId[] = [];
+
+    const seen =
+        new Set<
+            RiverCrmRelationshipId
+        >();
+
+    for(const relationshipId of relationshipIds){
+        const canonical =
+            requireRiverCrmRelationshipId(
+                relationshipId
+            );
+
+        if(!seen.has(canonical)){
+            seen.add(
+                canonical
+            );
+
+            result.push(
+                canonical
+            );
+        }
+    }
+
+    return result;
+}
+
+
+function economicPlaceholders(
+    count:
+        number
+): string {
+    return new Array(
+        count
+    )
+        .fill("?")
+        .join(", ");
+}
 
 export function createD1InsuranceAcquisitionEconomicsPersistence(
     database:
@@ -795,6 +867,234 @@ export function createD1InsuranceAcquisitionEconomicsPersistence(
             if(result.success === false){
                 throw new Error(
                     "Insurance acquisition economics D1 renewal list failed."
+                );
+            }
+
+            return (
+                result.results ??
+                []
+            ).map(
+                renewalFromRow
+            );
+        },
+
+        async listAcquisitionCostsForRelationships(
+            relationshipIds
+        ){
+            const ids =
+                canonicalEconomicRelationshipIds(
+                    relationshipIds
+                );
+
+            if(ids.length === 0){
+                return [];
+            }
+
+            const parameterList =
+                economicPlaceholders(
+                    ids.length
+                );
+
+            const result =
+                await database
+                    .prepare(`
+SELECT
+    cost_id,
+    relationship_id,
+    category,
+    amount_minor_units,
+    currency,
+    occurred_at,
+    source,
+    vendor,
+    campaign,
+    external_reference,
+    note
+FROM river_crm_insurance_acquisition_costs
+WHERE relationship_id IN (${parameterList})
+ORDER BY
+    relationship_id ASC,
+    occurred_at DESC,
+    cost_id DESC
+                    `)
+                    .bind(
+                        ...ids
+                    )
+                    .all<AcquisitionCostRow>();
+
+            if(result.success === false){
+                throw new Error(
+                    "Insurance acquisition economics D1 acquisition-cost batch list failed."
+                );
+            }
+
+            return (
+                result.results ??
+                []
+            ).map(
+                acquisitionCostFromRow
+            );
+        },
+
+        async listPremiumFactsForRelationships(
+            relationshipIds
+        ){
+            const ids =
+                canonicalEconomicRelationshipIds(
+                    relationshipIds
+                );
+
+            if(ids.length === 0){
+                return [];
+            }
+
+            const parameterList =
+                economicPlaceholders(
+                    ids.length
+                );
+
+            const result =
+                await database
+                    .prepare(`
+SELECT
+    premium_fact_id,
+    relationship_id,
+    kind,
+    amount_minor_units,
+    currency,
+    occurred_at,
+    provider_reference,
+    policy_reference,
+    effective_at,
+    external_reference
+FROM river_crm_insurance_premium_facts
+WHERE relationship_id IN (${parameterList})
+ORDER BY
+    relationship_id ASC,
+    occurred_at DESC,
+    premium_fact_id DESC
+                    `)
+                    .bind(
+                        ...ids
+                    )
+                    .all<PremiumFactRow>();
+
+            if(result.success === false){
+                throw new Error(
+                    "Insurance acquisition economics D1 premium batch list failed."
+                );
+            }
+
+            return (
+                result.results ??
+                []
+            ).map(
+                premiumFromRow
+            );
+        },
+
+        async listCommissionFactsForRelationships(
+            relationshipIds
+        ){
+            const ids =
+                canonicalEconomicRelationshipIds(
+                    relationshipIds
+                );
+
+            if(ids.length === 0){
+                return [];
+            }
+
+            const parameterList =
+                economicPlaceholders(
+                    ids.length
+                );
+
+            const result =
+                await database
+                    .prepare(`
+SELECT
+    commission_fact_id,
+    relationship_id,
+    kind,
+    amount_minor_units,
+    currency,
+    occurred_at,
+    provider_reference,
+    policy_reference,
+    external_reference,
+    note
+FROM river_crm_insurance_commission_facts
+WHERE relationship_id IN (${parameterList})
+ORDER BY
+    relationship_id ASC,
+    occurred_at DESC,
+    commission_fact_id DESC
+                    `)
+                    .bind(
+                        ...ids
+                    )
+                    .all<CommissionFactRow>();
+
+            if(result.success === false){
+                throw new Error(
+                    "Insurance acquisition economics D1 commission batch list failed."
+                );
+            }
+
+            return (
+                result.results ??
+                []
+            ).map(
+                commissionFromRow
+            );
+        },
+
+        async listRenewalFactsForRelationships(
+            relationshipIds
+        ){
+            const ids =
+                canonicalEconomicRelationshipIds(
+                    relationshipIds
+                );
+
+            if(ids.length === 0){
+                return [];
+            }
+
+            const parameterList =
+                economicPlaceholders(
+                    ids.length
+                );
+
+            const result =
+                await database
+                    .prepare(`
+SELECT
+    renewal_fact_id,
+    relationship_id,
+    kind,
+    occurred_at,
+    provider_reference,
+    policy_reference,
+    effective_at,
+    external_reference,
+    note
+FROM river_crm_insurance_renewal_facts
+WHERE relationship_id IN (${parameterList})
+ORDER BY
+    relationship_id ASC,
+    occurred_at DESC,
+    renewal_fact_id DESC
+                    `)
+                    .bind(
+                        ...ids
+                    )
+                    .all<RenewalFactRow>();
+
+            if(result.success === false){
+                throw new Error(
+                    "Insurance acquisition economics D1 renewal batch list failed."
                 );
             }
 

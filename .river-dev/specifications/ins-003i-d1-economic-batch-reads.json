@@ -1,0 +1,51 @@
+{
+  "id": "INS-003I",
+  "phase": "D1 Economic Batch Read Foundation",
+  "parent": "INS-003",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003D",
+    "INS-003E",
+    "INS-003F",
+    "INS-003G",
+    "INS-003H"
+  ],
+  "objective": "Add canonical bounded multi-relationship D1 reads for acquisition cost, premium, commission, and renewal facts so aggregate acquisition analytics can avoid relationship-at-a-time economic N+1 reads.",
+  "rootIdentity": "relationshipId",
+  "persistenceOwner": "D1InsuranceAcquisitionEconomicsPersistence",
+  "methods": [
+    "listAcquisitionCostsForRelationships",
+    "listPremiumFactsForRelationships",
+    "listCommissionFactsForRelationships",
+    "listRenewalFactsForRelationships"
+  ],
+  "rules": [
+    "The caller supplies a finite relationship ID set.",
+    "Every requested relationship ID is validated before database access.",
+    "Duplicate requested relationship IDs are removed while preserving first-request order.",
+    "Empty requested relationship sets return empty arrays without issuing a D1 query.",
+    "Each fact domain uses one bounded IN query for the requested relationships.",
+    "Existing canonical economic row hydrators remain the only hydration path.",
+    "Batch results are deterministically ordered by relationship ID, occurred timestamp, and fact identity.",
+    "Existing singular relationship reads remain available and unchanged.",
+    "No economic write semantics are changed.",
+    "No analytics result is persisted."
+  ],
+  "explicitlyDeferred": [
+    "relationship cohort discovery",
+    "calendar-period filtering",
+    "conversion-rate denominator semantics",
+    "cost per lead",
+    "cost per quote",
+    "cost per bind",
+    "quote rate",
+    "bind rate",
+    "renewal rate",
+    "aggregate persistence",
+    "dashboard UI",
+    "migration 0006 production execution",
+    "deployment",
+    "telephony activation"
+  ],
+  "next": "Compose bounded presentation and economics batch reads into the D1-backed aggregate acquisition analytics application."
+}

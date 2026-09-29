@@ -545,3 +545,508 @@ test(
         );
     }
 );
+
+test(
+    "batch acquisition-cost read deduplicates requested relationship IDs",
+    async () => {
+        const database =
+            new FakeDatabase();
+
+        const secondRelationshipId =
+            "relationship:ins-003i-cost";
+
+        database.allResults = [
+            {
+                cost_id:
+                    "acquisition-cost:ins-003i-1",
+                relationship_id:
+                    relationshipId,
+                category:
+                    "advertising",
+                amount_minor_units:
+                    10000,
+                currency:
+                    "USD",
+                occurred_at:
+                    occurredAt,
+                source:
+                    "google",
+                vendor:
+                    null,
+                campaign:
+                    "launch",
+                external_reference:
+                    null,
+                note:
+                    null
+            },
+            {
+                cost_id:
+                    "acquisition-cost:ins-003i-2",
+                relationship_id:
+                    secondRelationshipId,
+                category:
+                    "advertising",
+                amount_minor_units:
+                    12000,
+                currency:
+                    "USD",
+                occurred_at:
+                    occurredAt,
+                source:
+                    "website",
+                vendor:
+                    null,
+                campaign:
+                    "organic",
+                external_reference:
+                    null,
+                note:
+                    null
+            }
+        ];
+
+        const persistence =
+            createD1InsuranceAcquisitionEconomicsPersistence(
+                database
+            );
+
+        const values =
+            await persistence
+                .listAcquisitionCostsForRelationships([
+                    relationshipId,
+                    relationshipId,
+                    secondRelationshipId
+                ]);
+
+        assert.equal(
+            database.recorded.length,
+            1
+        );
+
+        assert.deepEqual(
+            database.recorded[0]!.binds,
+            [
+                relationshipId,
+                secondRelationshipId
+            ]
+        );
+
+        assert.match(
+            database.recorded[0]!.sql,
+            /WHERE relationship_id IN \(\?, \?\)/
+        );
+
+        assert.match(
+            database.recorded[0]!.sql,
+            /relationship_id ASC/
+        );
+
+        assert.equal(
+            values.length,
+            2
+        );
+
+        assert.equal(
+            values[0]!.money.amountMinorUnits,
+            10000
+        );
+
+        assert.equal(
+            values[1]!.relationshipId,
+            secondRelationshipId
+        );
+    }
+);
+
+
+test(
+    "batch premium read uses one bounded query and canonical hydration",
+    async () => {
+        const database =
+            new FakeDatabase();
+
+        const secondRelationshipId =
+            "relationship:ins-003i-premium";
+
+        database.allResults = [
+            {
+                premium_fact_id:
+                    "premium-fact:ins-003i-1",
+                relationship_id:
+                    relationshipId,
+                kind:
+                    "written",
+                amount_minor_units:
+                    220000,
+                currency:
+                    "USD",
+                occurred_at:
+                    occurredAt,
+                provider_reference:
+                    null,
+                policy_reference:
+                    "policy-1",
+                effective_at:
+                    null,
+                external_reference:
+                    null
+            },
+            {
+                premium_fact_id:
+                    "premium-fact:ins-003i-2",
+                relationship_id:
+                    secondRelationshipId,
+                kind:
+                    "quoted",
+                amount_minor_units:
+                    180000,
+                currency:
+                    "USD",
+                occurred_at:
+                    occurredAt,
+                provider_reference:
+                    null,
+                policy_reference:
+                    null,
+                effective_at:
+                    null,
+                external_reference:
+                    null
+            }
+        ];
+
+        const persistence =
+            createD1InsuranceAcquisitionEconomicsPersistence(
+                database
+            );
+
+        const values =
+            await persistence
+                .listPremiumFactsForRelationships([
+                    relationshipId,
+                    secondRelationshipId
+                ]);
+
+        assert.equal(
+            database.recorded.length,
+            1
+        );
+
+        assert.deepEqual(
+            database.recorded[0]!.binds,
+            [
+                relationshipId,
+                secondRelationshipId
+            ]
+        );
+
+        assert.match(
+            database.recorded[0]!.sql,
+            /FROM river_crm_insurance_premium_facts/
+        );
+
+        assert.match(
+            database.recorded[0]!.sql,
+            /WHERE relationship_id IN \(\?, \?\)/
+        );
+
+        assert.equal(
+            values.length,
+            2
+        );
+
+        assert.equal(
+            values[0]!.kind,
+            "written"
+        );
+
+        assert.equal(
+            values[1]!.money.amountMinorUnits,
+            180000
+        );
+    }
+);
+
+
+test(
+    "batch commission read directly covers signed commission hydration",
+    async () => {
+        const database =
+            new FakeDatabase();
+
+        const secondRelationshipId =
+            "relationship:ins-003i-commission";
+
+        database.allResults = [
+            {
+                commission_fact_id:
+                    "commission-fact:ins-003i-1",
+                relationship_id:
+                    relationshipId,
+                kind:
+                    "paid",
+                amount_minor_units:
+                    16000,
+                currency:
+                    "USD",
+                occurred_at:
+                    occurredAt,
+                provider_reference:
+                    null,
+                policy_reference:
+                    "policy-1",
+                external_reference:
+                    null,
+                note:
+                    null
+            },
+            {
+                commission_fact_id:
+                    "commission-fact:ins-003i-2",
+                relationship_id:
+                    secondRelationshipId,
+                kind:
+                    "chargeback",
+                amount_minor_units:
+                    -4000,
+                currency:
+                    "USD",
+                occurred_at:
+                    occurredAt,
+                provider_reference:
+                    null,
+                policy_reference:
+                    "policy-2",
+                external_reference:
+                    null,
+                note:
+                    null
+            }
+        ];
+
+        const persistence =
+            createD1InsuranceAcquisitionEconomicsPersistence(
+                database
+            );
+
+        const values =
+            await persistence
+                .listCommissionFactsForRelationships([
+                    relationshipId,
+                    secondRelationshipId
+                ]);
+
+        assert.equal(
+            database.recorded.length,
+            1
+        );
+
+        assert.deepEqual(
+            database.recorded[0]!.binds,
+            [
+                relationshipId,
+                secondRelationshipId
+            ]
+        );
+
+        assert.match(
+            database.recorded[0]!.sql,
+            /FROM river_crm_insurance_commission_facts/
+        );
+
+        assert.match(
+            database.recorded[0]!.sql,
+            /WHERE relationship_id IN \(\?, \?\)/
+        );
+
+        assert.equal(
+            values.length,
+            2
+        );
+
+        assert.equal(
+            values[1]!.kind,
+            "chargeback"
+        );
+
+        assert.equal(
+            values[1]!.money.amountMinorUnits,
+            -4000
+        );
+    }
+);
+
+
+test(
+    "batch renewal read uses one bounded query and canonical hydration",
+    async () => {
+        const database =
+            new FakeDatabase();
+
+        const secondRelationshipId =
+            "relationship:ins-003i-renewal";
+
+        database.allResults = [
+            {
+                renewal_fact_id:
+                    "renewal-fact:ins-003i-1",
+                relationship_id:
+                    relationshipId,
+                kind:
+                    "due",
+                occurred_at:
+                    occurredAt,
+                provider_reference:
+                    null,
+                policy_reference:
+                    "policy-1",
+                effective_at:
+                    "2027-10-01T00:00:00.000Z",
+                external_reference:
+                    null,
+                note:
+                    null
+            },
+            {
+                renewal_fact_id:
+                    "renewal-fact:ins-003i-2",
+                relationship_id:
+                    secondRelationshipId,
+                kind:
+                    "due",
+                occurred_at:
+                    occurredAt,
+                provider_reference:
+                    null,
+                policy_reference:
+                    "policy-2",
+                effective_at:
+                    "2027-11-01T00:00:00.000Z",
+                external_reference:
+                    null,
+                note:
+                    null
+            }
+        ];
+
+        const persistence =
+            createD1InsuranceAcquisitionEconomicsPersistence(
+                database
+            );
+
+        const values =
+            await persistence
+                .listRenewalFactsForRelationships([
+                    relationshipId,
+                    secondRelationshipId
+                ]);
+
+        assert.equal(
+            database.recorded.length,
+            1
+        );
+
+        assert.deepEqual(
+            database.recorded[0]!.binds,
+            [
+                relationshipId,
+                secondRelationshipId
+            ]
+        );
+
+        assert.match(
+            database.recorded[0]!.sql,
+            /FROM river_crm_insurance_renewal_facts/
+        );
+
+        assert.match(
+            database.recorded[0]!.sql,
+            /WHERE relationship_id IN \(\?, \?\)/
+        );
+
+        assert.equal(
+            values.length,
+            2
+        );
+
+        assert.equal(
+            values[0]!.kind,
+            "due"
+        );
+
+        assert.equal(
+            values[1]!.effectiveAt,
+            "2027-11-01T00:00:00.000Z"
+        );
+    }
+);
+
+
+test(
+    "empty economic batch reads perform zero database queries",
+    async () => {
+        const database =
+            new FakeDatabase();
+
+        const persistence =
+            createD1InsuranceAcquisitionEconomicsPersistence(
+                database
+            );
+
+        const values =
+            await Promise.all([
+                persistence
+                    .listAcquisitionCostsForRelationships([]),
+                persistence
+                    .listPremiumFactsForRelationships([]),
+                persistence
+                    .listCommissionFactsForRelationships([]),
+                persistence
+                    .listRenewalFactsForRelationships([])
+            ]);
+
+        assert.deepEqual(
+            values,
+            [
+                [],
+                [],
+                [],
+                []
+            ]
+        );
+
+        assert.equal(
+            database.recorded.length,
+            0
+        );
+    }
+);
+
+
+test(
+    "economic batch reads reject a noncanonical requested relationship before querying",
+    async () => {
+        const database =
+            new FakeDatabase();
+
+        const persistence =
+            createD1InsuranceAcquisitionEconomicsPersistence(
+                database
+            );
+
+        await assert.rejects(
+            persistence
+                .listCommissionFactsForRelationships([
+                    relationshipId,
+                    "lead:invalid" as never
+                ]),
+            /relationship/
+        );
+
+        assert.equal(
+            database.recorded.length,
+            0
+        );
+    }
+);
