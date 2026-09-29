@@ -1,0 +1,48 @@
+{
+  "id": "INS-003G",
+  "phase": "Attributed Relationship Economics View",
+  "parent": "INS-003",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-001D",
+    "INS-003E",
+    "INS-003F"
+  ],
+  "objective": "Compose canonical insurance lead/acquisition context with canonical relationship acquisition economics so source, vendor, campaign, product, state, quote status, producer context, premium, commission, cost, and contribution can be reasoned about from one relationship-rooted read model.",
+  "rootIdentity": "relationshipId",
+  "contextOwner": "InsuranceLeadPresentation remains the owner of insurance lead and acquisition presentation context.",
+  "economicsOwner": "InsuranceRelationshipAcquisitionAnalytics remains the owner of derived economics.",
+  "rules": [
+    "Do not copy acquisition attribution into economic fact tables.",
+    "Do not copy economic values into the insurance lead presentation.",
+    "Both sides must resolve to the same canonical relationshipId.",
+    "Missing insurance presentation context remains explicitly absent rather than fabricated.",
+    "Multiple presentations for one requested relationship are rejected.",
+    "A mismatched returned presentation relationship is rejected.",
+    "The view is read-only and is never persisted as a second source of truth."
+  ],
+  "futureReportingDimensions": [
+    "acquisitionSource",
+    "sourceVendor",
+    "campaign",
+    "productInterest",
+    "state",
+    "quoteStatus",
+    "assignedProducer"
+  ],
+  "explicitlyDeferred": [
+    "source aggregate projection",
+    "campaign aggregate projection",
+    "cost per lead",
+    "cost per quote",
+    "cost per bind",
+    "quote rate",
+    "bind rate",
+    "renewal rate",
+    "lifetime value",
+    "dashboard UI",
+    "migration 0006 production execution",
+    "deployment",
+    "telephony activation"
+  ]
+}

@@ -34,3 +34,4 @@ export * from "./acquisition-economics";
 export * from "./d1-acquisition-economics";
 export * from "./acquisition-analytics";
 export * from "./d1-acquisition-analytics";
+export * from "./d1-acquisition-economics-view";
