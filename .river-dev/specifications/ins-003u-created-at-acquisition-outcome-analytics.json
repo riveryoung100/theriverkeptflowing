@@ -1,0 +1,43 @@
+{
+  "id": "INS-003U",
+  "phase": "Created-At Acquisition Outcome Analytics",
+  "parent": "INS-003",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003O",
+    "INS-003T"
+  ],
+  "objective": "Compose the canonical CRM created-at relationship cohort with the D1-backed acquisition outcome analytics application so one bounded calendar population produces durable quoted and bound relationship numerators.",
+  "cohortOwner": "D1RiverCrmCreatedAtCohortPersistence.listCreatedAtRange(query)",
+  "outcomeOwner": "InsuranceAcquisitionOutcomeAnalyticsApplication.getAnalytics(input)",
+  "boundarySemantics": {
+    "createdAtFromInclusive": "inclusive",
+    "createdAtToExclusive": "exclusive"
+  },
+  "rules": [
+    "CRM remains the sole owner of timestamp validation, created-at range semantics, deterministic ordering, and limit validation.",
+    "Omitting limit preserves CRM default ownership.",
+    "Returned relationship IDs are canonically validated before outcome analytics execution.",
+    "The CRM cohort is read exactly once.",
+    "Outcome analytics is invoked exactly once.",
+    "Outcome-history persistence is not accessed directly by this composition layer.",
+    "Distinct quoted and bound relationship semantics remain owned by INS-003S through INS-003T.",
+    "Bound does not imply quoted.",
+    "No rate, percentage, rounding, or cost-per-outcome calculation occurs in this slice."
+  ],
+  "futureUse": [
+    "quote rate by created-at cohort",
+    "bind rate by created-at cohort",
+    "cost per quote",
+    "cost per bind"
+  ],
+  "explicitlyDeferred": [
+    "rate representation and rounding",
+    "cost-per-outcome calculations",
+    "historical backfill policy",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
