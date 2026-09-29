@@ -36,6 +36,27 @@ function parseVerifiedWebhookJson(
     }
 }
 
+function unwrapTelnyxV2DataEnvelope(
+    value: unknown
+): unknown {
+    if(
+        typeof value === "object" &&
+        value !== null &&
+        !Array.isArray(value) &&
+        Object.prototype.hasOwnProperty.call(
+            value,
+            "data"
+        )
+    ){
+        return (
+            value as
+                Record<string, unknown>
+        ).data;
+    }
+
+    return value;
+}
+
 export function normalizeVerifiedTelnyxWebhookVoiceEvent(
     rawBody: string
 ): TelnyxVerifiedWebhookEventNormalizationResult {
@@ -51,10 +72,15 @@ export function normalizeVerifiedTelnyxWebhookVoiceEvent(
         };
     }
 
+    const envelope =
+        unwrapTelnyxV2DataEnvelope(
+            parsed
+        );
+
     try {
         const event =
             normalizeTelnyxVoiceEvent(
-                parsed
+                envelope
             );
 
         if(event === undefined){

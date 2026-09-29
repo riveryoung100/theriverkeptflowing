@@ -1,0 +1,37 @@
+{
+  "id": "INS-002F2A",
+  "phase": "Telnyx V2 Data Envelope Compatibility",
+  "parent": "INS-002F2",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-002F1",
+    "INS-002F2"
+  ],
+  "problem": "The landed verified-webhook adapter normalized a direct Telnyx event object but treated the provider V2 top-level data envelope as unsupported.",
+  "objective": "After successful signature verification and JSON parsing, accept both the provider V2 top-level data envelope and the previously supported direct event object while keeping normalizeTelnyxVoiceEvent as the sole semantic normalizer.",
+  "behavior": [
+    "If parsed JSON is a non-array object with its own data property, pass that data value to normalizeTelnyxVoiceEvent.",
+    "Otherwise pass the parsed JSON value directly to normalizeTelnyxVoiceEvent.",
+    "Malformed recognized event data remains invalid-payload.",
+    "Unsupported event types remain unsupported-event.",
+    "Direct event objects remain supported for backward compatibility."
+  ],
+  "invariants": [
+    "Signature verification still occurs before this adapter.",
+    "No event semantics are duplicated outside normalizeTelnyxVoiceEvent.",
+    "Provider event id and call-control identity remain unchanged.",
+    "No route, HTTP, D1, environment, secret, or provider-command coupling is introduced."
+  ],
+  "outOfScope": [
+    "public route wiring",
+    "HTTP status mapping",
+    "D1 access",
+    "signature verification changes",
+    "public key import",
+    "migration execution",
+    "secret creation",
+    "Telnyx API commands",
+    "live calls",
+    "deployment"
+  ]
+}

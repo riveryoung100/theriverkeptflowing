@@ -431,3 +431,206 @@ test(
         }
     }
 );
+
+test(
+    "normalizes a Telnyx V2 top-level data envelope",
+    () => {
+        const result =
+            normalizeVerifiedTelnyxWebhookVoiceEvent(
+                JSON.stringify({
+                    data: {
+                        id:
+                            "event-v2-envelope-1",
+                        record_type:
+                            "event",
+                        event_type:
+                            "call.answered",
+                        occurred_at:
+                            occurredAt,
+                        payload: {
+                            call_control_id:
+                                "call-control-v2-envelope-1",
+                            call_leg_id:
+                                "call-leg-v2-envelope-1",
+                            call_session_id:
+                                "call-session-v2-envelope-1"
+                        }
+                    }
+                })
+            );
+
+        assert.deepEqual(
+            result,
+            {
+                normalized: true,
+                event: {
+                    provider:
+                        "telnyx",
+                    providerEventId:
+                        "event-v2-envelope-1",
+                    type:
+                        "call.answered",
+                    occurredAt,
+                    callControlId:
+                        "call-control-v2-envelope-1",
+                    callLegId:
+                        "call-leg-v2-envelope-1",
+                    callSessionId:
+                        "call-session-v2-envelope-1"
+                }
+            }
+        );
+    }
+);
+
+test(
+    "V2 data envelope preserves provider event and call-control identities exactly",
+    () => {
+        const result =
+            normalizeVerifiedTelnyxWebhookVoiceEvent(
+                JSON.stringify({
+                    data: {
+                        id:
+                            "evt:v2/exact_123",
+                        record_type:
+                            "event",
+                        event_type:
+                            "call.bridged",
+                        occurred_at:
+                            occurredAt,
+                        payload: {
+                            call_control_id:
+                                "v3:call-control/v2_exact_456"
+                        }
+                    }
+                })
+            );
+
+        assert.equal(
+            result.normalized,
+            true
+        );
+
+        if(result.normalized){
+            assert.equal(
+                result.event.providerEventId,
+                "evt:v2/exact_123"
+            );
+
+            assert.equal(
+                result.event.callControlId,
+                "v3:call-control/v2_exact_456"
+            );
+        }
+    }
+);
+
+test(
+    "unsupported V2 data-envelope event remains unsupported",
+    () => {
+        assert.deepEqual(
+            normalizeVerifiedTelnyxWebhookVoiceEvent(
+                JSON.stringify({
+                    data: {
+                        id:
+                            "event-v2-unsupported",
+                        record_type:
+                            "event",
+                        event_type:
+                            "call.playback.started",
+                        occurred_at:
+                            occurredAt,
+                        payload: {
+                            call_control_id:
+                                "call-control-v2-unsupported"
+                        }
+                    }
+                })
+            ),
+            {
+                normalized: false,
+                reason:
+                    "unsupported-event"
+            }
+        );
+    }
+);
+
+test(
+    "malformed recognized V2 data-envelope event remains invalid payload",
+    () => {
+        assert.deepEqual(
+            normalizeVerifiedTelnyxWebhookVoiceEvent(
+                JSON.stringify({
+                    data: {
+                        id:
+                            "event-v2-invalid",
+                        record_type:
+                            "event",
+                        event_type:
+                            "call.answered",
+                        occurred_at:
+                            occurredAt,
+                        payload: {
+                            call_leg_id:
+                                "call-leg-without-control-id"
+                        }
+                    }
+                })
+            ),
+            {
+                normalized: false,
+                reason:
+                    "invalid-payload"
+            }
+        );
+    }
+);
+
+test(
+    "null V2 data value is invalid payload",
+    () => {
+        assert.deepEqual(
+            normalizeVerifiedTelnyxWebhookVoiceEvent(
+                JSON.stringify({
+                    data:
+                        null
+                })
+            ),
+            {
+                normalized: false,
+                reason:
+                    "invalid-payload"
+            }
+        );
+    }
+);
+
+test(
+    "direct event object remains supported after V2 envelope compatibility change",
+    () => {
+        const result =
+            normalizeVerifiedTelnyxWebhookVoiceEvent(
+                rawEvent(
+                    "call.initiated"
+                )
+            );
+
+        assert.equal(
+            result.normalized,
+            true
+        );
+
+        if(result.normalized){
+            assert.equal(
+                result.event.type,
+                "call.initiated"
+            );
+
+            assert.equal(
+                result.event.providerEventId,
+                "event-1"
+            );
+        }
+    }
+);
