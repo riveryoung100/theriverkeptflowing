@@ -1,0 +1,56 @@
+{
+  "id": "INS-003E",
+  "phase": "Relationship Acquisition Analytics Projection",
+  "parent": "INS-003",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003B",
+    "INS-003C",
+    "INS-003D"
+  ],
+  "objective": "Derive deterministic relationship-level acquisition economics from canonical facts without creating another financial source of truth.",
+  "projectionVersion": "insurance-acquisition-economics-v1",
+  "rules": [
+    "The canonical relationship remains the analytics root.",
+    "Source facts are revalidated before projection.",
+    "Duplicate fact identities are rejected rather than silently double-counted.",
+    "Currencies are projected independently and are never summed across currencies.",
+    "Acquisition cost is the sum of acquisition-cost facts for a currency.",
+    "Quoted, written, and renewal premium remain separate measures.",
+    "Premium is never treated as River revenue.",
+    "Earned and paid commission remain separate observations.",
+    "Realized commission is paid commission plus recorded chargebacks plus recorded adjustments.",
+    "Contribution margin is realized commission minus acquisition cost.",
+    "Commission signs are respected exactly as recorded.",
+    "Latest renewal state is derived by renewal occurredAt and deterministic fact-id tie break.",
+    "The projection is derived and does not persist or rewrite canonical financial facts."
+  ],
+  "outputs": [
+    "relationshipId",
+    "projectionVersion",
+    "per-currency acquisition cost",
+    "per-currency quoted premium",
+    "per-currency written premium",
+    "per-currency renewal premium",
+    "per-currency earned commission",
+    "per-currency paid commission",
+    "per-currency chargebacks",
+    "per-currency adjustments",
+    "per-currency realized commission",
+    "per-currency contribution margin",
+    "fact counts",
+    "latest renewal lifecycle observation"
+  ],
+  "explicitlyDeferred": [
+    "D1 migration execution",
+    "aggregate source reporting",
+    "campaign reporting",
+    "quote-rate denominator logic",
+    "bind-rate denominator logic",
+    "renewal-rate denominator logic",
+    "lifetime-value modeling",
+    "dashboard UI",
+    "production deployment",
+    "telephony activation"
+  ]
+}

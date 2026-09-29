@@ -32,3 +32,4 @@ export * from "./telnyx-webhook-acknowledgement";
 export * from "./d1-telnyx-webhook-application";
 export * from "./acquisition-economics";
 export * from "./d1-acquisition-economics";
+export * from "./acquisition-analytics";
