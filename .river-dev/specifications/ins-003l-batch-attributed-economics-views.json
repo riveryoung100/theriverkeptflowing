@@ -1,0 +1,55 @@
+{
+  "id": "INS-003L",
+  "phase": "Reusable Batch Attributed Relationship Economics Views",
+  "parent": "INS-003",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003E",
+    "INS-003G",
+    "INS-003I",
+    "INS-003J",
+    "INS-003K"
+  ],
+  "objective": "Make bounded multi-relationship attributed economics views a reusable application layer so reporting can load a cohort once and derive multiple aggregate projections without repeating D1 reads.",
+  "rootIdentity": "relationshipId",
+  "readPlan": {
+    "presentation": "one bounded batch read",
+    "acquisitionCosts": "one bounded batch read",
+    "premiumFacts": "one bounded batch read",
+    "commissionFacts": "one bounded batch read",
+    "renewalFacts": "one bounded batch read"
+  },
+  "rules": [
+    "The caller supplies an explicit finite relationship ID set.",
+    "Requested relationship IDs are canonicalized and deduplicated before persistence reads.",
+    "Requested relationship order is preserved in the returned view array.",
+    "Empty input returns an empty view array without persistence reads.",
+    "Returned presentations and economic facts must belong to the requested cohort.",
+    "At most one insurance presentation may exist per requested relationship.",
+    "Relationships with no presentation remain represented with absent presentation context.",
+    "Relationships with no economics facts remain represented with an empty canonical analytics projection.",
+    "Relationship economics are created only through createInsuranceRelationshipAcquisitionAnalytics.",
+    "INS-003J delegates relationship-view construction to this application.",
+    "No view or aggregate result is persisted."
+  ],
+  "futureUse": [
+    "multi-dimension acquisition economics snapshots",
+    "private River OS reporting",
+    "dashboard read models"
+  ],
+  "explicitlyDeferred": [
+    "full-book pagination",
+    "calendar-period cohort semantics",
+    "cost per lead",
+    "cost per quote",
+    "cost per bind",
+    "quote rate",
+    "bind rate",
+    "renewal rate",
+    "lifetime value",
+    "dashboard UI",
+    "migration 0006 production execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
