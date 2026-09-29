@@ -1,0 +1,47 @@
+{
+  "id": "INS-003N",
+  "phase": "Recent Relationship Multi-Dimension Acquisition Snapshot",
+  "parent": "INS-003",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003K",
+    "INS-003M"
+  ],
+  "objective": "Compose the canonical bounded recent-relationship CRM cohort with the reusable multi-dimension acquisition snapshot so one application call can produce several acquisition economics breakdowns over the same recent CRM population.",
+  "cohortOwner": "RiverCrmPersistence.list(limit?)",
+  "snapshotOwner": "InsuranceAcquisitionAggregateSnapshotApplication",
+  "cohortMeaning": "Most recently updated CRM relationships using the canonical CRM list ordering and bounds.",
+  "canonicalD1Semantics": {
+    "defaultLimitOwnedByCrm": 50,
+    "minimumLimit": 1,
+    "maximumLimit": 100,
+    "ordering": [
+      "updated_at DESC",
+      "relationship_id ASC"
+    ]
+  },
+  "rules": [
+    "Do not duplicate CRM relationship SQL inside insurance analytics.",
+    "Omitting limit preserves CRM ownership of its default limit.",
+    "Returned CRM relationship IDs are canonically validated before snapshot execution.",
+    "Relationship ordering from the canonical CRM list is preserved.",
+    "The snapshot application is invoked exactly once per request.",
+    "All requested dimensions are evaluated by INS-003M over one reusable attributed economics view load.",
+    "No cohort, view, aggregate, or snapshot result is persisted."
+  ],
+  "explicitlyDeferred": [
+    "full-book pagination",
+    "calendar-period filtering",
+    "cost per lead",
+    "cost per quote",
+    "cost per bind",
+    "quote rate",
+    "bind rate",
+    "renewal rate",
+    "lifetime value",
+    "dashboard UI",
+    "migration 0006 production execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
