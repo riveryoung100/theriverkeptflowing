@@ -1,0 +1,42 @@
+{
+  "id": "INS-003F",
+  "phase": "D1-backed Relationship Acquisition Analytics",
+  "parent": "INS-003",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003C",
+    "INS-003D",
+    "INS-003E"
+  ],
+  "objective": "Compose relationship-scoped economic fact persistence with the pure acquisition analytics projection while keeping analytics reads provider-neutral and mutation-free.",
+  "flow": [
+    "Validate canonical relationshipId.",
+    "Load acquisition-cost facts.",
+    "Load premium facts.",
+    "Load commission facts.",
+    "Load renewal facts.",
+    "Project the canonical relationship analytics result.",
+    "Return the derived projection without persisting it."
+  ],
+  "invariants": [
+    "No analytics write table is introduced.",
+    "No projection result is persisted.",
+    "No source fact is mutated.",
+    "All four fact streams are loaded for the same canonical relationship.",
+    "The existing INS-003E projection remains the only relationship analytics calculator.",
+    "The D1 composition is provider-neutral.",
+    "No telephony dependency is introduced."
+  ],
+  "explicitlyDeferred": [
+    "production migration 0006 execution",
+    "source-level aggregate analytics",
+    "campaign-level aggregate analytics",
+    "quote-rate reporting",
+    "bind-rate reporting",
+    "renewal-rate reporting",
+    "lifetime-value modeling",
+    "dashboard UI",
+    "deployment",
+    "telephony activation"
+  ]
+}
