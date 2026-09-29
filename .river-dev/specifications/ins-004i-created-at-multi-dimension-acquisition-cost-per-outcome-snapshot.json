@@ -1,0 +1,41 @@
+{
+  "id": "INS-004I",
+  "phase": "Created-At Multi-Dimension Acquisition Cost Per Outcome Snapshot",
+  "parent": "INS-004",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003O",
+    "INS-004H"
+  ],
+  "objective": "Resolve one canonical CRM created-at relationship cohort and delegate that exact cohort once to the multi-dimension acquisition cost-per-outcome snapshot application.",
+  "readPlan": {
+    "createdAtCohort": "one listCreatedAtRange call",
+    "costPerOutcomeSnapshot": "one getSnapshot call over the exact resolved cohort"
+  },
+  "rules": [
+    "CRM remains sole owner of created-at timestamp validation, lower-inclusive upper-exclusive boundaries, ordering, default limit, and limit validation.",
+    "The created-at relationship cohort is read exactly once.",
+    "Returned CRM relationship IDs are canonically validated before snapshot delegation.",
+    "The exact resolved relationship ID array is supplied to INS-004H once.",
+    "Requested dimensions are passed through unchanged; INS-004H owns dimension validation and deduplication.",
+    "Omitted limit remains omitted when constructing the CRM cohort query.",
+    "This represents lifetime-to-date durable quote and bind attainment, and corresponding acquisition cost per outcome, for relationships created inside the requested date window.",
+    "Outcome occurredAt is not filtered by the created-at window.",
+    "Acquisition economics facts are not independently time-windowed by this composition layer.",
+    "INS-004H remains sole owner of attributed-economics and durable-outcome reads, dimension projection, currency isolation, exact numeratorMinorUnits/denominatorCount semantics, and zero-denominator omission.",
+    "No new SQL, date parsing, date rewriting, persistence mutation, arithmetic division, percentage formatting, rounding, status inference, or currency conversion is introduced."
+  ],
+  "explicitlyDeferred": [
+    "as-of cutoff semantics",
+    "outcome occurred-at windowing",
+    "economics occurred-at windowing",
+    "conversion within N days",
+    "cost per lead",
+    "LTV",
+    "combined reporting DTO",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
