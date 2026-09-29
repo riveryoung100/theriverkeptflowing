@@ -3,6 +3,7 @@ import {
 } from "./crm-workspace";
 
 import type {
+    RiverCrmCreatedAtCohortQuery,
     RiverCrmPersistence,
     RiverCrmRelationship,
     RiverCrmPipelineStage,
@@ -224,6 +225,109 @@ function requireLimit(
 }
 
 
+function requireCanonicalUtcTimestamp(
+    value:
+        unknown,
+    field:
+        string
+): string {
+    if(
+        typeof value !== "string" ||
+        value.trim() !== value
+    ){
+        throw new TypeError(
+            `River CRM created-at cohort requires ${field} to be a canonical UTC ISO timestamp.`
+        );
+    }
+
+    const parsed =
+        new Date(
+            value
+        );
+
+    if(
+        Number.isNaN(
+            parsed.getTime()
+        ) ||
+        parsed.toISOString() !== value
+    ){
+        throw new TypeError(
+            `River CRM created-at cohort requires ${field} to be a canonical UTC ISO timestamp.`
+        );
+    }
+
+    return value;
+}
+
+
+function requireCreatedAtCohortQuery(
+    query:
+        RiverCrmCreatedAtCohortQuery
+): {
+    readonly createdAtFromInclusive:
+        string;
+
+    readonly createdAtToExclusive:
+        string;
+
+    readonly limit:
+        number;
+} {
+    if(
+        typeof query !== "object" ||
+        query === null
+    ){
+        throw new TypeError(
+            "River CRM created-at cohort requires a query."
+        );
+    }
+
+    const createdAtFromInclusive =
+        requireCanonicalUtcTimestamp(
+            query.createdAtFromInclusive,
+            "createdAtFromInclusive"
+        );
+
+    const createdAtToExclusive =
+        requireCanonicalUtcTimestamp(
+            query.createdAtToExclusive,
+            "createdAtToExclusive"
+        );
+
+    if(
+        createdAtFromInclusive >=
+        createdAtToExclusive
+    ){
+        throw new TypeError(
+            "River CRM created-at cohort requires createdAtFromInclusive to be earlier than createdAtToExclusive."
+        );
+    }
+
+    const limit =
+        query.limit ??
+        50;
+
+    requireLimit(
+        limit
+    );
+
+    return {
+        createdAtFromInclusive,
+        createdAtToExclusive,
+        limit
+    };
+}
+
+
+export interface D1RiverCrmCreatedAtCohortPersistence {
+    listCreatedAtRange(
+        query:
+            RiverCrmCreatedAtCohortQuery
+    ): Promise<
+        readonly RiverCrmRelationship[]
+    >;
+}
+
 export class D1RiverCrmPersistence
 implements RiverCrmPersistence {
 
@@ -360,13 +464,50 @@ implements RiverCrmPersistence {
 
     }
 
+
+    public async listCreatedAtRange(
+        query:
+            RiverCrmCreatedAtCohortQuery
+    ): Promise<readonly RiverCrmRelationship[]> {
+
+        const validated =
+            requireCreatedAtCohortQuery(
+                query
+            );
+
+        const result =
+            await this.database
+                .prepare(
+                    `
+                        SELECT *
+                        FROM river_crm_relationships
+                        WHERE created_at >= ?1
+                          AND created_at < ?2
+                        ORDER BY created_at DESC, relationship_id ASC
+                        LIMIT ?3
+                    `
+                )
+                .bind(
+                    validated.createdAtFromInclusive,
+                    validated.createdAtToExclusive,
+                    validated.limit
+                )
+                .all<RiverCrmRelationshipRow>();
+
+        return result.results.map(
+            rowToRelationship
+        );
+
+    }
+
 }
 
 
 export function createD1RiverCrmPersistence(
     database:
         D1Database
-): RiverCrmPersistence {
+): RiverCrmPersistence &
+    D1RiverCrmCreatedAtCohortPersistence {
 
     return new D1RiverCrmPersistence(
         database

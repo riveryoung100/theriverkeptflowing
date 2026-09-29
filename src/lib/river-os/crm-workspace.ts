@@ -422,6 +422,17 @@ string {
 
 }
 
+export interface RiverCrmCreatedAtCohortQuery {
+    readonly createdAtFromInclusive:
+        string;
+
+    readonly createdAtToExclusive:
+        string;
+
+    readonly limit?:
+        number;
+}
+
 export interface RiverCrmPersistence {
 
     upsert(

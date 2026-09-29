@@ -1,0 +1,60 @@
+{
+  "id": "INS-003O",
+  "phase": "Bounded CRM Created-At Cohort",
+  "parent": "INS-003",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003K",
+    "INS-003N"
+  ],
+  "objective": "Give the canonical River CRM D1 relationship owner a bounded created-at date-window cohort primitive so later acquisition reporting can define calendar populations without inventing analytics-owned relationship selection semantics.",
+  "owner": "src/lib/river-os/d1-crm.ts",
+  "rootIdentity": "relationshipId",
+  "query": {
+    "createdAtFromInclusive": "canonical UTC ISO-8601 timestamp",
+    "createdAtToExclusive": "canonical UTC ISO-8601 timestamp",
+    "limit": "optional integer 1 through 100; canonical CRM default remains 50"
+  },
+  "ordering": [
+    "created_at DESC",
+    "relationship_id ASC"
+  ],
+  "boundarySemantics": {
+    "lower": "inclusive",
+    "upper": "exclusive"
+  },
+  "rules": [
+    "Created-at cohort selection belongs to River CRM, not insurance analytics.",
+    "Do not create another relationship source of truth.",
+    "Both timestamps must be canonical UTC ISO strings.",
+    "The lower bound must be strictly earlier than the upper bound.",
+    "The query remains bounded to at most 100 relationships.",
+    "Omitting limit preserves the existing canonical CRM default of 50.",
+    "Ordering is deterministic.",
+    "The method is read-only.",
+    "Existing RiverCrmPersistence list(), get(), and upsert() behavior remains unchanged.",
+    "The existing RiverCrmPersistence interface is not widened, avoiding breakage of alternate implementations.",
+    "The D1 factory exposes the added cohort capability as an intersection with the existing persistence contract."
+  ],
+  "futureUse": [
+    "weekly acquisition economics",
+    "monthly acquisition economics",
+    "period-bounded source and campaign reporting",
+    "rate denominator definition"
+  ],
+  "explicitlyDeferred": [
+    "pagination beyond the bounded first page",
+    "updated-at reporting windows",
+    "cost per lead",
+    "cost per quote",
+    "cost per bind",
+    "quote rate",
+    "bind rate",
+    "renewal rate",
+    "lifetime value",
+    "dashboard UI",
+    "migration 0006 production execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
