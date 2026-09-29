@@ -1,0 +1,65 @@
+{
+  "id": "INS-002F3",
+  "phase": "Telnyx Webhook Acknowledgement And Retry Policy",
+  "parent": "INS-002F",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-002F2",
+    "INS-002E2C3D"
+  ],
+  "objective": "Map landed correlated Telnyx event application outcomes into a pure provider-webhook acknowledgement policy without constructing an HTTP response or duplicating persistence behavior.",
+  "policy": {
+    "applied": "acknowledge",
+    "correlation-not-found": "retry",
+    "orphaned-correlation": "acknowledge-ignored",
+    "bridge-not-found": "acknowledge-ignored",
+    "stale-bridge": "retry",
+    "deferred": "retry",
+    "attempt-not-found": "acknowledge-ignored",
+    "stale-attempt": "retry"
+  },
+  "rationale": [
+    "Applied events are durably handled or deduplicated by the landed application stack and must be acknowledged.",
+    "correlation-not-found can represent webhook delivery racing local call-leg correlation persistence and therefore preserves provider redelivery.",
+    "stale-bridge, deferred, and stale-attempt explicitly carry retryable=true in the landed application contract.",
+    "orphaned-correlation, bridge-not-found, and attempt-not-found are structural internal inconsistencies not declared retryable by D3; provider redelivery is not used as an unbounded internal repair loop.",
+    "Durable provider-event receipt ownership remains exclusively in the landed D2 reconciliation executor."
+  ],
+  "output": {
+    "acknowledge": "Whether the later transport layer should return a provider-success acknowledgement.",
+    "retry": "Whether the later transport layer should intentionally permit provider redelivery.",
+    "classification": [
+      "accepted",
+      "ignored",
+      "transient"
+    ]
+  },
+  "invariants": [
+    "acknowledge and retry are logical opposites.",
+    "Every ApplyTelnyxCorrelatedEventResult variant is mapped exhaustively.",
+    "No HTTP status code is selected in this slice.",
+    "No Response object is created in this slice.",
+    "No D1 access or provider-event receipt write occurs in this slice.",
+    "No signature verification or JSON parsing occurs in this slice."
+  ],
+  "outOfScope": [
+    "Astro route wiring",
+    "HTTP Response construction",
+    "status-code selection",
+    "signature verification",
+    "public-key import",
+    "raw-body parsing",
+    "Telnyx event normalization",
+    "D1 access",
+    "provider-event receipt persistence",
+    "correlation mutation",
+    "bridge mutation",
+    "attempt mutation",
+    "migration execution",
+    "secret creation",
+    "Telnyx API commands",
+    "live calls",
+    "deployment"
+  ],
+  "next": "INS-002F4 composes verified normalized webhook events with the landed D1 correlated application and this acknowledgement policy."
+}
