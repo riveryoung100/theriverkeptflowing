@@ -1,0 +1,40 @@
+{
+  "id": "INS-004D",
+  "phase": "Multi-Dimension Outcome Snapshot",
+  "parent": "INS-004",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003L",
+    "INS-003R",
+    "INS-004B",
+    "INS-004C"
+  ],
+  "objective": "Load attributed relationship views and durable outcome facts once for one explicit canonical relationship cohort, then derive multiple requested dimension-level outcome projections in memory.",
+  "projectionVersion": "insurance-acquisition-dimension-outcome-snapshot-v1",
+  "readPlan": {
+    "attributedViews": "at most one getViews call for the canonical cohort",
+    "outcomeFacts": "at most one listForRelationships call for the identical canonical cohort",
+    "emptyCohort": "zero downstream reads"
+  },
+  "rules": [
+    "Relationship IDs are canonically validated and deduplicated while preserving first occurrence order.",
+    "Dimensions are validated against the seven canonical acquisition aggregate dimensions and deduplicated while preserving first occurrence order.",
+    "Invalid relationship identity or invalid dimension fails before downstream reads.",
+    "A non-empty cohort loads attributed views and durable outcome facts concurrently exactly once.",
+    "An empty cohort performs zero downstream reads.",
+    "Every requested dimension projection is derived in memory from the same loaded views and durable outcome facts.",
+    "INS-004B remains sole owner of dimension bucketing, durable outcome validation, distinct relationship counting, bound-does-not-imply-quoted semantics, absent buckets, deterministic bucket order, and exact quote and bind fractions.",
+    "quoteStatus remains segmentation metadata only.",
+    "No new SQL, persistence schema, persistence mutation, floating-point division, percentage formatting, or rounding is introduced."
+  ],
+  "explicitlyDeferred": [
+    "created-at multi-dimension outcome snapshot",
+    "dimension-level acquisition cost per quote",
+    "dimension-level acquisition cost per bind",
+    "combined economics and outcome reporting DTO",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
