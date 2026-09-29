@@ -1,0 +1,234 @@
+{
+  "id": "INS-003B",
+  "phase": "Canonical Acquisition Economics Contract",
+  "parent": "INS-003",
+  "status": "architecture",
+  "dependsOn": [
+    "INS-001A",
+    "INS-001B",
+    "INS-001D",
+    "INS-001E",
+    "INS-002",
+    "INS-003A"
+  ],
+  "objective": "Define the canonical additive economic facts required to measure insurance acquisition performance from relationship acquisition through written business, commissions, contribution, and renewal without overloading existing relationship, attribution, lead, quote, provider, fulfillment, or telephony records.",
+  "rootIdentity": {
+    "canonicalRoot": "relationshipId",
+    "rule": "Every acquisition-economics fact must resolve to one canonical River CRM relationship.",
+    "prohibited": [
+      "Creating an independent economic customer identity",
+      "Using provider policy numbers as the River customer identity",
+      "Using quote IDs as the River relationship identity",
+      "Using telephone-provider identifiers as economic identities"
+    ]
+  },
+  "existingOwnershipBoundaries": {
+    "relationship": "River CRM relationship remains the canonical customer/relationship root.",
+    "acquisitionAttribution": "river_crm_acquisition_attribution continues to own source, source vendor, campaign, creative, landing-page, UTM, referral, and capture attribution.",
+    "lead": "Insurance lead profile continues to own insurance lead qualification and presentation fields.",
+    "quote": "Quote request continues to own intake/request semantics and must not become an accounting record.",
+    "provider": "Provider routing/fulfillment identity remains distinct from customer acquisition economics.",
+    "contact": "Contact attempt and telephony state remain operational communication records, not economic records."
+  },
+  "economicFacts": {
+    "acquisitionCost": {
+      "purpose": "Record actual cost attributable to acquiring or progressing a relationship.",
+      "requiredDimensions": [
+        "relationshipId",
+        "costId",
+        "category",
+        "amount",
+        "currency",
+        "occurredAt"
+      ],
+      "optionalDimensions": [
+        "source",
+        "vendor",
+        "campaign",
+        "externalReference",
+        "note"
+      ],
+      "categories": [
+        "lead",
+        "advertising",
+        "setter",
+        "platform",
+        "data",
+        "creative",
+        "other"
+      ],
+      "rules": [
+        "Cost is a financial fact and must not replace attribution.",
+        "Multiple costs may belong to one relationship.",
+        "Costs must be append-only financial observations unless an explicit correction mechanism is introduced later."
+      ]
+    },
+    "premium": {
+      "purpose": "Record monetary premium observations associated with insurance outcomes.",
+      "requiredDimensions": [
+        "relationshipId",
+        "premiumFactId",
+        "kind",
+        "amount",
+        "currency",
+        "occurredAt"
+      ],
+      "kinds": [
+        "quoted",
+        "written",
+        "renewal"
+      ],
+      "optionalDimensions": [
+        "providerReference",
+        "policyReference",
+        "effectiveAt",
+        "externalReference"
+      ],
+      "rules": [
+        "Quoted premium is not revenue.",
+        "Written premium is not commission.",
+        "Premium must never be treated as River revenue by default.",
+        "Provider and policy references remain external references, not canonical customer identities."
+      ]
+    },
+    "commission": {
+      "purpose": "Record realized or reversed producer/agency compensation observations.",
+      "requiredDimensions": [
+        "relationshipId",
+        "commissionFactId",
+        "kind",
+        "amount",
+        "currency",
+        "occurredAt"
+      ],
+      "kinds": [
+        "earned",
+        "paid",
+        "chargeback",
+        "adjustment"
+      ],
+      "optionalDimensions": [
+        "providerReference",
+        "policyReference",
+        "externalReference",
+        "note"
+      ],
+      "rules": [
+        "Commission observations are separate from premium.",
+        "Chargebacks and adjustments may be negative.",
+        "Paid commission and earned commission are separate facts when both are known.",
+        "Do not infer commission from premium without an explicit compensation rule."
+      ]
+    },
+    "renewal": {
+      "purpose": "Record renewal lifecycle observations without mutating the canonical relationship into a policy record.",
+      "requiredDimensions": [
+        "relationshipId",
+        "renewalFactId",
+        "kind",
+        "occurredAt"
+      ],
+      "kinds": [
+        "due",
+        "quoted",
+        "renewed",
+        "lost"
+      ],
+      "optionalDimensions": [
+        "providerReference",
+        "policyReference",
+        "effectiveAt",
+        "externalReference",
+        "note"
+      ],
+      "rules": [
+        "A relationship may have multiple renewal observations.",
+        "Renewal lifecycle must remain separable from contact attempts and quote requests.",
+        "Renewal does not create a new canonical customer identity."
+      ]
+    }
+  },
+  "moneyContract": {
+    "storage": "integer minor units",
+    "currency": "ISO-4217-style uppercase three-letter currency code",
+    "rules": [
+      "Never store floating-point currency as the canonical amount.",
+      "Acquisition costs and premiums must be non-negative.",
+      "Commission facts may be signed to represent chargebacks or adjustments.",
+      "Derived metrics must preserve source facts rather than overwrite them."
+    ]
+  },
+  "derivedAnalytics": {
+    "rule": "Analytics projections are derived from canonical facts and are not themselves source-of-truth financial records.",
+    "metrics": {
+      "acquisitionCost": "Sum of acquisition cost facts for the selected scope.",
+      "writtenPremium": "Sum of written premium facts for the selected scope.",
+      "earnedCommission": "Net sum of earned, chargeback, and applicable adjustment commission facts according to the projection definition.",
+      "paidCommission": "Net paid compensation according to recorded paid and reversing facts.",
+      "contributionMargin": "Realized commission basis minus attributable acquisition cost. Premium must not be used as River revenue in this calculation.",
+      "costPerLead": "Acquisition cost divided by qualified lead count for the selected scope when denominator is non-zero.",
+      "costPerQuote": "Acquisition cost divided by quote count for the selected scope when denominator is non-zero.",
+      "costPerBind": "Acquisition cost divided by bind count for the selected scope when denominator is non-zero.",
+      "quoteRate": "Quoted relationships divided by eligible leads for the selected scope.",
+      "bindRate": "Bound relationships divided by quoted relationships for the selected scope.",
+      "renewalRate": "Renewed relationships divided by renewal-eligible relationships for the selected scope.",
+      "lifetimeValue": "A derived realized or modeled metric defined by an explicit projection version; it must not be silently persisted as an unexplained canonical scalar."
+    }
+  },
+  "requiredDimensionsForReporting": [
+    "relationship",
+    "acquisition source",
+    "source vendor",
+    "campaign",
+    "product interest",
+    "state",
+    "provider or fulfillment destination when known",
+    "producer or owner when known",
+    "calendar period"
+  ],
+  "invariants": [
+    "Customer/relationship remains the root.",
+    "Attribution remains separate from financial facts.",
+    "Premium remains separate from commission.",
+    "Commission remains separate from acquisition cost.",
+    "Provider remains separate from acquisition source.",
+    "Fulfillment destination remains separate from acquisition source.",
+    "Contact activity remains separate from financial facts.",
+    "No economic metric may rewrite historical source facts.",
+    "Derived contribution must never use premium as a substitute for commission.",
+    "No policy-management or AMS semantics are introduced by this contract."
+  ],
+  "plannedPersistence": {
+    "strategy": "additive River CRM tables keyed by canonical relationshipId",
+    "candidateTables": [
+      "river_crm_insurance_acquisition_costs",
+      "river_crm_insurance_premium_facts",
+      "river_crm_insurance_commission_facts",
+      "river_crm_insurance_renewal_facts"
+    ],
+    "rule": "Table creation is deferred to a later INS-003 persistence slice and is not authorized by this specification-authoring step."
+  },
+  "plannedApplicationLayers": [
+    "canonical TypeScript economic fact contracts",
+    "validation and normalization",
+    "D1 persistence",
+    "relationship-level analytics projection",
+    "campaign/source aggregate analytics",
+    "River OS reporting surfaces"
+  ],
+  "explicitlyDeferred": [
+    "D1 migration creation",
+    "production D1 mutation",
+    "carrier commission import",
+    "agency-management-system integration",
+    "policy administration",
+    "accounting ledger implementation",
+    "payroll",
+    "tax accounting",
+    "live marketing spend ingestion",
+    "dashboard UI",
+    "telephony activation",
+    "Telnyx account creation",
+    "deployment"
+  ]
+}
