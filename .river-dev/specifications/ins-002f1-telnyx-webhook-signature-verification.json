@@ -1,0 +1,44 @@
+﻿{
+  "id": "INS-002F1",
+  "phase": "Telnyx Webhook Signature Verification",
+  "parent": "INS-002F",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-002E2C3E"
+  ],
+  "objective": "Provide a pure runtime-portable verifier for Telnyx API v2 webhook signatures using the exact raw request body, the Telnyx timestamp header, an already-imported Ed25519 public CryptoKey, and a bounded replay window.",
+  "contract": {
+    "signatureHeader": "telnyx-signature-ed25519",
+    "timestampHeader": "telnyx-timestamp",
+    "signedMaterial": "{timestamp}|{rawBody}",
+    "algorithm": "Ed25519",
+    "defaultMaximumTimestampSkewSeconds": 300,
+    "publicKeyOwnership": "Caller supplied and already imported as CryptoKey",
+    "rawBodyRule": "Verification occurs against the exact raw request body before JSON parsing or transformation."
+  },
+  "resultReasons": [
+    "missing-signature",
+    "missing-timestamp",
+    "invalid-timestamp",
+    "stale-timestamp",
+    "invalid-signature-encoding",
+    "invalid-signature"
+  ],
+  "outOfScope": [
+    "public key string decoding or environment lookup",
+    "Cloudflare bindings",
+    "Astro routes",
+    "JSON parsing",
+    "Telnyx event normalization",
+    "HTTP acknowledgement mapping",
+    "D1 access",
+    "event receipt persistence",
+    "webhook route wiring",
+    "migration execution",
+    "secret creation",
+    "Telnyx API commands",
+    "live calls",
+    "deployment"
+  ],
+  "next": "INS-002F2 may compose verified raw payload parsing with the landed Telnyx voice-event normalizer after F1 is landed."
+}
