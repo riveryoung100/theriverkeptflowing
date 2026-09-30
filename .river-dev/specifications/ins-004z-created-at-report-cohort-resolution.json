@@ -1,0 +1,56 @@
+{
+  "id": "INS-004Z",
+  "phase": "Created-At Report Cohort Resolution",
+  "parent": "INS-004",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-004X",
+    "INS-004Y"
+  ],
+  "objective": "Define one canonical cohort-selection policy for created-at insurance reports so an omitted limit means the complete requested date range and an explicit limit remains an intentional bounded newest-N cohort.",
+  "semantics": {
+    "omittedLimit": "resolve the complete created-at range through bounded keyset pages",
+    "explicitLimit": "resolve at most the requested newest-N relationships from one bounded keyset page",
+    "explicitLimitRange": "1 through 100",
+    "limitedCompleteness": "hasMore false means the requested range happened to fit inside the explicit limit; hasMore true means the report cohort is intentionally truncated",
+    "ordering": "created_at DESC, relationship_id ASC"
+  },
+  "projection": {
+    "selectionModes": [
+      "complete-range",
+      "limited"
+    ],
+    "completenessFields": [
+      "isComplete",
+      "isTruncated"
+    ],
+    "diagnosticFields": [
+      "relationshipCount",
+      "pageCount",
+      "requestedLimit"
+    ]
+  },
+  "rules": [
+    "Omitting limit must never silently inherit the old CRM default of 50.",
+    "Explicit limit remains an intentional report cohort cap and is not reinterpreted as an internal pagination size.",
+    "Complete-range resolution delegates to INS-004Y.",
+    "Limited resolution performs exactly one bounded page read using pageSize equal to the explicit limit.",
+    "Limited resolution exposes whether additional relationships existed through isComplete and isTruncated.",
+    "Limited resolution never follows nextCursor.",
+    "All returned relationships are validated for canonical relationship identity, canonical UTC createdAt, and requested range membership.",
+    "Duplicate relationship identities are removed while preserving first occurrence.",
+    "Malformed page continuation metadata is rejected.",
+    "The resolver performs no economics, premium, commission, renewal, outcome, presentation, or evidence reads.",
+    "No reporting consumer is migrated in this slice.",
+    "No SQL, schema, migration, dashboard, deployment, or telephony behavior is introduced."
+  ],
+  "explicitlyDeferred": [
+    "created-at reporting consumer integration",
+    "propagation of cohort completeness metadata onto each report output",
+    "created_at plus relationship_id compound database index",
+    "migration execution",
+    "dashboard UI",
+    "deployment",
+    "telephony activation"
+  ]
+}
