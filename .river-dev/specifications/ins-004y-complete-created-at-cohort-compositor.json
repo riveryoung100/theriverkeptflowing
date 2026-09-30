@@ -1,0 +1,48 @@
+{
+  "id": "INS-004Y",
+  "phase": "Complete Created-At Cohort Composition",
+  "parent": "INS-004",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-004X"
+  ],
+  "objective": "Compose a complete deterministic insurance created-at relationship cohort from bounded keyset pages before any downstream evidence loading.",
+  "semantics": {
+    "range": "[createdAtFromInclusive, createdAtToExclusive)",
+    "ordering": "preserve bounded page order and first occurrence across pages",
+    "pageSize": "internal persistence page size only; default 100; valid range 1 through 100",
+    "completion": "continue until the page reader returns hasMore false",
+    "deduplication": "relationship identity is deduplicated defensively while preserving first occurrence"
+  },
+  "continuationSafety": [
+    "hasMore true requires nextCursor",
+    "hasMore false must not expose nextCursor",
+    "a continuation cursor must equal the final relationship returned by the current page",
+    "a continuation cursor must advance and must never repeat",
+    "hasMore true requires a non-empty page"
+  ],
+  "rules": [
+    "The compositor depends only on a structural bounded page-reader contract.",
+    "The compositor does not depend on D1Database.",
+    "The compositor performs no economics, outcome, presentation, or raw-evidence reads.",
+    "The compositor never uses OFFSET.",
+    "The compositor never performs an unbounded relationship read.",
+    "Canonical UTC range boundaries are validated before reader access.",
+    "Page size is validated before reader access.",
+    "Every returned relationship identity and createdAt timestamp is validated.",
+    "Every returned relationship must fall inside the requested created-at range.",
+    "Public reporting limit semantics are not changed in this slice.",
+    "No existing reporting consumer is migrated in this slice.",
+    "No schema migration is added or executed in this slice."
+  ],
+  "explicitlyDeferred": [
+    "migration of created-at reporting consumers",
+    "public report limit versus completeness semantics",
+    "explicit partial-cohort metadata on bounded reports",
+    "created_at plus relationship_id compound database index",
+    "migration execution",
+    "dashboard UI",
+    "deployment",
+    "telephony activation"
+  ]
+}

@@ -70,3 +70,4 @@ export * from "./d1-acquisition-performance-conversion-curve-created-at";
 export * from "./acquisition-overall-performance-summary";
 export * from "./acquisition-return-efficiency";
 export * from "./acquisition-dimension-return-efficiency";
+export * from "./complete-created-at-cohort";
