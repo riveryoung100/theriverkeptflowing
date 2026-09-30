@@ -303,6 +303,56 @@ function canonicalLimitedRelationships(
 }
 
 
+export interface InsuranceCreatedAtReportCohortMetadata {
+    readonly selection:
+        InsuranceCreatedAtReportCohortSelection;
+
+    readonly relationshipCount:
+        number;
+
+    readonly pageCount:
+        number;
+
+    readonly isComplete:
+        boolean;
+
+    readonly isTruncated:
+        boolean;
+
+    readonly requestedLimit?:
+        number;
+}
+
+
+export function projectInsuranceCreatedAtReportCohortMetadata(
+    cohort:
+        InsuranceCreatedAtReportCohort
+): InsuranceCreatedAtReportCohortMetadata {
+    return {
+        selection:
+            cohort.selection,
+
+        relationshipCount:
+            cohort.relationshipCount,
+
+        pageCount:
+            cohort.pageCount,
+
+        isComplete:
+            cohort.isComplete,
+
+        isTruncated:
+            cohort.isTruncated,
+
+        ...(cohort.requestedLimit !== undefined
+            ? {
+                requestedLimit:
+                    cohort.requestedLimit
+            }
+            : {})
+    };
+}
+
 export async function resolveInsuranceCreatedAtReportCohort(
     reader:
         InsuranceCreatedAtCohortPageReader,

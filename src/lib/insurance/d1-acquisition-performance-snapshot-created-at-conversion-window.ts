@@ -14,10 +14,6 @@ import type {
     RiverCrmRelationshipId
 } from "../river-os/crm-growth-contracts";
 
-import type {
-    RiverCrmCreatedAtCohortQuery
-} from "../river-os/crm-workspace";
-
 import {
     createD1RiverCrmPersistence
 } from "../river-os/d1-crm";
@@ -56,24 +52,25 @@ import type {
 } from "./d1-acquisition-performance-snapshot-created-at-cohort";
 
 
+import {
+    projectInsuranceCreatedAtReportCohortMetadata,
+    resolveInsuranceCreatedAtReportCohort
+} from "./created-at-report-cohort";
+
+import type {
+    InsuranceCreatedAtReportCohortMetadata
+} from "./created-at-report-cohort";
+
+import type {
+    InsuranceCreatedAtCohortPageReader
+} from "./complete-created-at-cohort";
+
 export const INSURANCE_ACQUISITION_CREATED_AT_CONVERSION_WINDOW_PERFORMANCE_SNAPSHOT_VERSION =
     "insurance-acquisition-created-at-conversion-window-performance-snapshot-v1" as const;
 
 
-export interface InsuranceCreatedAtConversionWindowPerformanceSnapshotCohortReader {
-    listCreatedAtRange(
-        query:
-            RiverCrmCreatedAtCohortQuery
-    ): Promise<
-        readonly {
-            readonly relationshipId:
-                string;
-
-            readonly createdAt:
-                string;
-        }[]
-    >;
-}
+export type InsuranceCreatedAtConversionWindowPerformanceSnapshotCohortReader =
+    InsuranceCreatedAtCohortPageReader;
 
 
 export interface GetInsuranceCreatedAtConversionWindowPerformanceSnapshotInput {
@@ -100,6 +97,9 @@ export interface GetInsuranceCreatedAtConversionWindowPerformanceSnapshotInput {
 export interface InsuranceAcquisitionCreatedAtConversionWindowPerformanceSnapshot {
     readonly version:
         typeof INSURANCE_ACQUISITION_CREATED_AT_CONVERSION_WINDOW_PERFORMANCE_SNAPSHOT_VERSION;
+
+    readonly cohort:
+        InsuranceCreatedAtReportCohortMetadata;
 
     readonly asOfExclusive:
         string;
@@ -149,27 +149,27 @@ export function createInsuranceAcquisitionCreatedAtConversionWindowPerformanceSn
                     input.dimensions
                 );
 
-            const cohortQuery:
-                RiverCrmCreatedAtCohortQuery = {
-                    createdAtFromInclusive:
-                        input.createdAtFromInclusive,
+            const cohort =
+                await resolveInsuranceCreatedAtReportCohort(
+                    cohortReader,
+                    {
+                        createdAtFromInclusive:
+                            input.createdAtFromInclusive,
 
-                    createdAtToExclusive:
-                        input.createdAtToExclusive,
+                        createdAtToExclusive:
+                            input.createdAtToExclusive,
 
-                    ...(input.limit !== undefined
-                        ? {
-                            limit:
-                                input.limit
-                        }
-                        : {})
-                };
+                        ...(input.limit !== undefined
+                            ? {
+                                limit:
+                                    input.limit
+                            }
+                            : {})
+                    }
+                );
 
             const rawRelationships =
-                await cohortReader
-                    .listCreatedAtRange(
-                        cohortQuery
-                    );
+                cohort.relationships;
 
             const relationships =
                 rawRelationships.map(
@@ -269,6 +269,11 @@ export function createInsuranceAcquisitionCreatedAtConversionWindowPerformanceSn
             return {
                 version:
                     INSURANCE_ACQUISITION_CREATED_AT_CONVERSION_WINDOW_PERFORMANCE_SNAPSHOT_VERSION,
+
+                cohort:
+                    projectInsuranceCreatedAtReportCohortMetadata(
+                        cohort
+                    ),
 
                 asOfExclusive:
                     conversionEvidence.asOfExclusive,

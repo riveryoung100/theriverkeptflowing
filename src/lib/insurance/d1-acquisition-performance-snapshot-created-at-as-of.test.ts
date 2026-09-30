@@ -81,11 +81,7 @@ implements InsuranceCreatedAtAsOfPerformanceSnapshotCohortReader {
         0;
 
     query:
-        Parameters<
-            InsuranceCreatedAtAsOfPerformanceSnapshotCohortReader[
-                "listCreatedAtRange"
-            ]
-        >[0] | undefined;
+        unknown;
 
     constructor(
         readonly relationships:
@@ -95,21 +91,49 @@ implements InsuranceCreatedAtAsOfPerformanceSnapshotCohortReader {
             }[]
     ){}
 
-    async listCreatedAtRange(
+    async listCreatedAtRangePage(
         query:
             Parameters<
                 InsuranceCreatedAtAsOfPerformanceSnapshotCohortReader[
-                    "listCreatedAtRange"
+                    "listCreatedAtRangePage"
                 ]
             >[0]
     ){
         this.calls +=
             1;
 
-        this.query =
-            query;
+        this.query = {
+            createdAtFromInclusive:
+                query.createdAtFromInclusive,
 
-        return this.relationships;
+            createdAtToExclusive:
+                query.createdAtToExclusive,
+
+            ...(query.pageSize === 100
+                ? {}
+                : {
+                    limit:
+                        query.pageSize
+                })
+        };
+
+        return {
+            relationships:
+                this.relationships.map(
+                    relationship => ({
+                        ...relationship,
+
+                        createdAt:
+                            "createdAt" in relationship &&
+                            typeof relationship.createdAt === "string"
+                                ? relationship.createdAt
+                                : query.createdAtFromInclusive
+                    })
+                ),
+
+            hasMore:
+                false
+        };
     }
 }
 
@@ -175,10 +199,10 @@ test(
             await application
                 .getCreatedAtAsOfSnapshot({
                     createdAtFromInclusive:
-                        "crm-owned-lower",
+                        "2026-09-01T00:00:00.000Z",
 
                     createdAtToExclusive:
-                        "crm-owned-upper",
+                        "2026-10-01T00:00:00.000Z",
 
                     asOfExclusive:
                         "2026-10-01T00:00:00.000Z",
@@ -202,10 +226,10 @@ test(
             cohortReader.query,
             {
                 createdAtFromInclusive:
-                    "crm-owned-lower",
+                    "2026-09-01T00:00:00.000Z",
 
                 createdAtToExclusive:
-                    "crm-owned-upper",
+                    "2026-10-01T00:00:00.000Z",
 
                 limit:
                     25
@@ -820,6 +844,78 @@ test(
         assert.equal(
             cohortReader.calls,
             1
+        );
+
+        assert.equal(
+            rawEvidenceApplication.calls,
+            1
+        );
+    }
+);
+
+test(
+    "projects explicit limited cohort metadata before as-of evidence loading",
+    async () => {
+        const cohortReader =
+            new RecordingCohortReader(
+                []
+            );
+
+        const rawEvidenceApplication =
+            new RecordingRawEvidenceApplication();
+
+        const application =
+            createInsuranceAcquisitionCreatedAtAsOfPerformanceSnapshotApplication(
+                cohortReader,
+                rawEvidenceApplication
+            );
+
+        const result =
+            await application
+                .getCreatedAtAsOfSnapshot({
+                    createdAtFromInclusive:
+                        "2026-09-01T00:00:00.000Z",
+
+                    createdAtToExclusive:
+                        "2026-10-01T00:00:00.000Z",
+
+                    asOfExclusive:
+                        "2026-10-01T00:00:00.000Z",
+
+                    limit:
+                        5,
+
+                    dimensions: [
+                        "state"
+                    ]
+                });
+
+        assert.deepEqual(
+            result.cohort,
+            {
+                selection:
+                    "limited",
+
+                relationshipCount:
+                    0,
+
+                pageCount:
+                    1,
+
+                isComplete:
+                    true,
+
+                isTruncated:
+                    false,
+
+                requestedLimit:
+                    5
+            }
+        );
+
+        assert.equal(
+            result.relationshipCount,
+            0
         );
 
         assert.equal(

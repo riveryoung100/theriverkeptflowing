@@ -84,11 +84,7 @@ implements InsuranceCreatedAtConversionWindowPerformanceSnapshotCohortReader {
         0;
 
     query:
-        Parameters<
-            InsuranceCreatedAtConversionWindowPerformanceSnapshotCohortReader[
-                "listCreatedAtRange"
-            ]
-        >[0] | undefined;
+        unknown;
 
     constructor(
         readonly relationships:
@@ -101,21 +97,49 @@ implements InsuranceCreatedAtConversionWindowPerformanceSnapshotCohortReader {
             }[]
     ){}
 
-    async listCreatedAtRange(
+    async listCreatedAtRangePage(
         query:
             Parameters<
                 InsuranceCreatedAtConversionWindowPerformanceSnapshotCohortReader[
-                    "listCreatedAtRange"
+                    "listCreatedAtRangePage"
                 ]
             >[0]
     ){
         this.calls +=
             1;
 
-        this.query =
-            query;
+        this.query = {
+            createdAtFromInclusive:
+                query.createdAtFromInclusive,
 
-        return this.relationships;
+            createdAtToExclusive:
+                query.createdAtToExclusive,
+
+            ...(query.pageSize === 100
+                ? {}
+                : {
+                    limit:
+                        query.pageSize
+                })
+        };
+
+        return {
+            relationships:
+                this.relationships.map(
+                    relationship => ({
+                        ...relationship,
+
+                        createdAt:
+                            "createdAt" in relationship &&
+                            typeof relationship.createdAt === "string"
+                                ? relationship.createdAt
+                                : query.createdAtFromInclusive
+                    })
+                ),
+
+            hasMore:
+                false
+        };
     }
 }
 
@@ -917,6 +941,91 @@ test(
         assert.equal(
             rawEvidenceApplication.calls,
             0
+        );
+    }
+);
+
+test(
+    "projects explicit limited cohort metadata without changing conversion maturity counts",
+    async () => {
+        const cohortReader =
+            new RecordingCohortReader(
+                []
+            );
+
+        const rawEvidenceApplication =
+            new RecordingRawEvidenceApplication();
+
+        const application =
+            createInsuranceAcquisitionCreatedAtConversionWindowPerformanceSnapshotApplication(
+                cohortReader,
+                rawEvidenceApplication
+            );
+
+        const result =
+            await application
+                .getCreatedAtConversionWindowSnapshot({
+                    createdAtFromInclusive:
+                        "2026-09-01T00:00:00.000Z",
+
+                    createdAtToExclusive:
+                        "2026-10-01T00:00:00.000Z",
+
+                    asOfExclusive:
+                        "2026-11-15T00:00:00.000Z",
+
+                    windowDays:
+                        30,
+
+                    limit:
+                        5,
+
+                    dimensions: [
+                        "state"
+                    ]
+                });
+
+        assert.deepEqual(
+            result.cohort,
+            {
+                selection:
+                    "limited",
+
+                relationshipCount:
+                    0,
+
+                pageCount:
+                    1,
+
+                isComplete:
+                    true,
+
+                isTruncated:
+                    false,
+
+                requestedLimit:
+                    5
+            }
+        );
+
+        assert.equal(
+            result.cohortRelationshipCount,
+            0
+        );
+
+        assert.equal(
+            result.matureRelationshipCount,
+            0
+        );
+
+        assert.equal(
+            result.immatureRelationshipCount,
+            0
+        );
+
+        assert.equal(
+            rawEvidenceApplication.calls,
+            1
         );
     }
 );

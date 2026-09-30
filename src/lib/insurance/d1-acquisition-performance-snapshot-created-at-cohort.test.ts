@@ -36,21 +36,49 @@ implements InsuranceAcquisitionPerformanceSnapshotCohortReader {
             }[]
     ){}
 
-    async listCreatedAtRange(
+    async listCreatedAtRangePage(
         query:
             Parameters<
                 InsuranceAcquisitionPerformanceSnapshotCohortReader[
-                    "listCreatedAtRange"
+                    "listCreatedAtRangePage"
                 ]
             >[0]
     ){
         this.calls +=
             1;
 
-        this.query =
-            query;
+        this.query = {
+            createdAtFromInclusive:
+                query.createdAtFromInclusive,
 
-        return this.relationships;
+            createdAtToExclusive:
+                query.createdAtToExclusive,
+
+            ...(query.pageSize === 100
+                ? {}
+                : {
+                    limit:
+                        query.pageSize
+                })
+        };
+
+        return {
+            relationships:
+                this.relationships.map(
+                    relationship => ({
+                        ...relationship,
+
+                        createdAt:
+                            "createdAt" in relationship &&
+                            typeof relationship.createdAt === "string"
+                                ? relationship.createdAt
+                                : query.createdAtFromInclusive
+                    })
+                ),
+
+            hasMore:
+                false
+        };
     }
 }
 
@@ -794,10 +822,10 @@ test(
         await application
             .getCreatedAtSnapshot({
                 createdAtFromInclusive:
-                    "crm-owned-lower",
+                    "2026-09-01T00:00:00.000Z",
 
                 createdAtToExclusive:
-                    "crm-owned-upper",
+                    "2026-10-01T00:00:00.000Z",
 
                 dimensions:
                     []
@@ -807,10 +835,10 @@ test(
             cohortReader.query,
             {
                 createdAtFromInclusive:
-                    "crm-owned-lower",
+                    "2026-09-01T00:00:00.000Z",
 
                 createdAtToExclusive:
-                    "crm-owned-upper"
+                    "2026-10-01T00:00:00.000Z"
             }
         );
     }
@@ -1247,5 +1275,83 @@ test(
                 projection.economics.buckets.length
             );
         }
+    }
+);
+
+test(
+    "projects explicit limited cohort metadata before lifetime evidence loading",
+    async () => {
+        const cohortReader =
+            new RecordingCohortReader(
+                []
+            );
+
+        const viewsApplication =
+            new RecordingViewsApplication();
+
+        const outcomeReader =
+            new RecordingOutcomeReader();
+
+        const application =
+            createInsuranceAcquisitionPerformanceSnapshotApplication(
+                cohortReader,
+                viewsApplication,
+                outcomeReader
+            );
+
+        const result =
+            await application
+                .getCreatedAtSnapshot({
+                    createdAtFromInclusive:
+                        "2026-09-01T00:00:00.000Z",
+
+                    createdAtToExclusive:
+                        "2026-10-01T00:00:00.000Z",
+
+                    limit:
+                        5,
+
+                    dimensions: [
+                        "state"
+                    ]
+                });
+
+        assert.deepEqual(
+            result.cohort,
+            {
+                selection:
+                    "limited",
+
+                relationshipCount:
+                    0,
+
+                pageCount:
+                    1,
+
+                isComplete:
+                    true,
+
+                isTruncated:
+                    false,
+
+                requestedLimit:
+                    5
+            }
+        );
+
+        assert.equal(
+            result.relationshipCount,
+            0
+        );
+
+        assert.equal(
+            viewsApplication.calls,
+            0
+        );
+
+        assert.equal(
+            outcomeReader.calls,
+            0
+        );
     }
 );

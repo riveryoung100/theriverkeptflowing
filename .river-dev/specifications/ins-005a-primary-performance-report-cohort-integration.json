@@ -1,0 +1,53 @@
+{
+  "id": "INS-005A",
+  "phase": "Primary Performance Report Cohort Integration",
+  "parent": "INS-005",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-004X",
+    "INS-004Y",
+    "INS-004Z"
+  ],
+  "objective": "Migrate the four primary acquisition-performance created-at report surfaces onto canonical cohort resolution and expose explicit nested cohort completeness metadata without changing their existing performance denominators.",
+  "surfaces": [
+    "lifetime created-at performance snapshot",
+    "fixed as-of created-at performance snapshot",
+    "fixed N-day conversion-window performance snapshot",
+    "multi-window conversion curve"
+  ],
+  "cohortMetadata": [
+    "selection",
+    "relationshipCount",
+    "pageCount",
+    "isComplete",
+    "isTruncated",
+    "requestedLimit when explicitly supplied"
+  ],
+  "semantics": {
+    "omittedLimit": "complete requested created-at range through bounded keyset pages",
+    "explicitLimit": "intentional newest-N report cap",
+    "relationshipCount": "preserve each report's existing relationship-count meaning",
+    "conversionMaturity": "matureRelationshipCount and immatureRelationshipCount remain conversion-window evidence semantics and are not replaced by cohort size"
+  },
+  "rules": [
+    "All four reports delegate cohort selection to resolveInsuranceCreatedAtReportCohort.",
+    "Each public limit?: number input remains unchanged.",
+    "Cohort resolution completes before any economics, outcome, presentation, or raw-evidence read.",
+    "Existing evidence/economics/outcome read counts remain unchanged after cohort resolution.",
+    "Lifetime empty-cohort short-circuit behavior remains intact.",
+    "As-of, conversion-window, and curve raw-evidence behavior remains intact.",
+    "D1 factories continue passing createD1RiverCrmPersistence(database).",
+    "Legacy listCreatedAtRange remains available for deferred specialized reports.",
+    "RiverCrmPersistence is not widened.",
+    "No OFFSET or unbounded SQL is introduced.",
+    "No schema or migration is added or executed."
+  ],
+  "explicitlyDeferred": [
+    "specialized older created-at report migration",
+    "created_at plus relationship_id compound index",
+    "migration execution",
+    "dashboard UI",
+    "deployment",
+    "telephony activation"
+  ]
+}
