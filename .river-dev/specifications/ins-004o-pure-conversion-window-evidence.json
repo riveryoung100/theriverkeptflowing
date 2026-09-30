@@ -1,0 +1,46 @@
+{
+  "id": "INS-004O",
+  "phase": "Pure N-Day Conversion Window Evidence",
+  "parent": "INS-004",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-004K",
+    "INS-004L",
+    "INS-004N"
+  ],
+  "objective": "Define one pure mature-cohort conversion-window boundary that restricts acquisition economics and durable outcome evidence to each relationship's complete N-day elapsed UTC observation window.",
+  "projectionVersion": "insurance-acquisition-conversion-window-evidence-v1",
+  "semantics": {
+    "duration": "windowDays * 86400000 elapsed UTC milliseconds",
+    "maturity": "relationship.createdAt + windowDays <= asOfExclusive",
+    "denominator": "only relationships whose complete N-day window has elapsed by asOfExclusive",
+    "evidenceUpperBound": "fact.occurredAt < min(asOfExclusive, relationshipWindowEndExclusive)",
+    "boundary": "upper-exclusive",
+    "effectiveAt": "metadata only; never controls conversion-window inclusion"
+  },
+  "rules": [
+    "asOfExclusive and relationship createdAt values must be canonical UTC timestamps in ISO-8601 millisecond Z form.",
+    "windowDays must be a positive safe integer.",
+    "N days means elapsed UTC duration, not local calendar-day arithmetic.",
+    "Relationship identities are canonically validated and deduplicated preserving first occurrence order.",
+    "Duplicate relationship identities with conflicting createdAt values are rejected.",
+    "A relationship is mature when its windowEndExclusive is less than or equal to asOfExclusive.",
+    "Immature relationships are excluded from the fixed-window denominator rather than treated as partially observed nonconversions.",
+    "Every economics and durable outcome fact must belong to the supplied relationship cohort.",
+    "Evidence for immature relationships is excluded.",
+    "Evidence for mature relationships is included only when occurredAt is earlier than both asOfExclusive and that relationship's windowEndExclusive.",
+    "Facts occurring exactly at the relationship window end are excluded.",
+    "Raw fact order and object identity are preserved.",
+    "No lower-bound occurredAt rule is introduced in this slice.",
+    "INS-004K remains unchanged as the global fixed-cutoff owner.",
+    "No presentation reconstruction, aggregation, rate calculation, division, currency conversion, SQL, persistence access, mutation, schema change, migration execution, dashboard UI, deployment, or telephony activation occurs in this layer."
+  ],
+  "explicitlyDeferred": [
+    "created-at N-day conversion performance snapshot",
+    "historical presentation reconstruction",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
