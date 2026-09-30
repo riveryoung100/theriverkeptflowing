@@ -68,11 +68,17 @@ implements RiverCrmD1Statement {
     >(): Promise<
         RiverCrmD1AllResult<T>
     > {
+        const results =
+            this.owner
+                .allResultBatches
+                .shift() ??
+            this.owner.allResults;
+
         return {
             success:
                 this.owner.allSuccess,
             results:
-                this.owner.allResults as
+                results as
                     readonly T[]
         };
     }
@@ -99,6 +105,20 @@ implements RiverCrmD1Database {
     public allResults:
         readonly Record<string, unknown>[] =
             [];
+
+    public readonly allResultBatches:
+        Array<
+            readonly Record<string, unknown>[]
+        > = [];
+
+    public queueAllResults(
+        rows:
+            readonly Record<string, unknown>[]
+    ): void {
+        this.allResultBatches.push(
+            rows
+        );
+    }
 
     public allSuccess:
         boolean | undefined =
@@ -1047,6 +1067,209 @@ test(
         assert.equal(
             database.recorded.length,
             0
+        );
+    }
+);
+
+test(
+    "economic batch readers partition one hundred plus one relationships into bounded D1 queries",
+    async () => {
+        type Persistence =
+            ReturnType<
+                typeof createD1InsuranceAcquisitionEconomicsPersistence
+            >;
+
+        const relationshipIds =
+            Array.from(
+                {
+                    length:
+                        101
+                },
+                (
+                    _,
+                    index
+                ) =>
+                    `relationship:ins-005e-${String(
+                        100 - index
+                    ).padStart(
+                        3,
+                        "0"
+                    )}`
+            ) as unknown as
+                Parameters<
+                    Persistence[
+                        "listAcquisitionCostsForRelationships"
+                    ]
+                >[0];
+
+        const firstRelationship =
+            relationshipIds[0]!;
+
+        const finalRelationship =
+            relationshipIds[100]!;
+
+        {
+            const database =
+                new FakeDatabase();
+
+            database.queueAllResults([
+                {
+                    cost_id:
+                        "acquisition-cost:ins-005e-high",
+                    relationship_id:
+                        firstRelationship,
+                    category:
+                        "advertising",
+                    amount_minor_units:
+                        100,
+                    currency:
+                        "USD",
+                    occurred_at:
+                        "2026-09-30T02:00:00.000Z",
+                    source:
+                        null,
+                    vendor:
+                        null,
+                    campaign:
+                        null,
+                    external_reference:
+                        null,
+                    note:
+                        null
+                }
+            ]);
+
+            database.queueAllResults([
+                {
+                    cost_id:
+                        "acquisition-cost:ins-005e-low",
+                    relationship_id:
+                        finalRelationship,
+                    category:
+                        "advertising",
+                    amount_minor_units:
+                        200,
+                    currency:
+                        "USD",
+                    occurred_at:
+                        "2026-09-30T01:00:00.000Z",
+                    source:
+                        null,
+                    vendor:
+                        null,
+                    campaign:
+                        null,
+                    external_reference:
+                        null,
+                    note:
+                        null
+                }
+            ]);
+
+            const values =
+                await createD1InsuranceAcquisitionEconomicsPersistence(
+                    database
+                ).listAcquisitionCostsForRelationships(
+                    relationshipIds
+                );
+
+            assert.equal(
+                database.recorded.length,
+                2
+            );
+
+            assert.equal(
+                database.recorded[0]!
+                    .binds.length,
+                100
+            );
+
+            assert.equal(
+                database.recorded[1]!
+                    .binds.length,
+                1
+            );
+
+            assert.deepEqual(
+                values.map(
+                    value =>
+                        value.relationshipId
+                ),
+                [
+                    finalRelationship,
+                    firstRelationship
+                ]
+            );
+        }
+
+        const verifyTwoChunks =
+            async (
+                read:
+                    (
+                        persistence:
+                            Persistence
+                    ) => Promise<
+                        readonly unknown[]
+                    >
+            ): Promise<void> => {
+                const database =
+                    new FakeDatabase();
+
+                const persistence =
+                    createD1InsuranceAcquisitionEconomicsPersistence(
+                        database
+                    );
+
+                const values =
+                    await read(
+                        persistence
+                    );
+
+                assert.deepEqual(
+                    values,
+                    []
+                );
+
+                assert.equal(
+                    database.recorded.length,
+                    2
+                );
+
+                assert.equal(
+                    database.recorded[0]!
+                        .binds.length,
+                    100
+                );
+
+                assert.equal(
+                    database.recorded[1]!
+                        .binds.length,
+                    1
+                );
+            };
+
+        await verifyTwoChunks(
+            persistence =>
+                persistence
+                    .listPremiumFactsForRelationships(
+                        relationshipIds
+                    )
+        );
+
+        await verifyTwoChunks(
+            persistence =>
+                persistence
+                    .listCommissionFactsForRelationships(
+                        relationshipIds
+                    )
+        );
+
+        await verifyTwoChunks(
+            persistence =>
+                persistence
+                    .listRenewalFactsForRelationships(
+                        relationshipIds
+                    )
         );
     }
 );

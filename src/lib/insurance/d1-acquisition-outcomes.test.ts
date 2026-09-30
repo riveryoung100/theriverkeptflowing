@@ -33,6 +33,20 @@ class FakeDatabase {
     rows:
         readonly Record<string, unknown>[] = [];
 
+    readonly rowBatches:
+        Array<
+            readonly Record<string, unknown>[]
+        > = [];
+
+    queueRows(
+        rows:
+            readonly Record<string, unknown>[]
+    ): void {
+        this.rowBatches.push(
+            rows
+        );
+    }
+
     prepare(
         sql:
             string
@@ -41,6 +55,7 @@ class FakeDatabase {
             this.calls;
 
         const rows =
+            this.rowBatches.shift() ??
             this.rows;
 
         return {
@@ -490,5 +505,137 @@ test(
             database.calls.length,
             0
         );
+    }
+);
+
+test(
+    "outcome batch read partitions one hundred plus one relationships and restores global relationship ordering",
+    async () => {
+        type Persistence =
+            ReturnType<
+                typeof createD1InsuranceAcquisitionOutcomePersistence
+            >;
+
+        const relationshipIds =
+            Array.from(
+                {
+                    length:
+                        101
+                },
+                (
+                    _,
+                    index
+                ) =>
+                    `relationship:ins-005e-${String(
+                        100 - index
+                    ).padStart(
+                        3,
+                        "0"
+                    )}`
+            ) as unknown as
+                Parameters<
+                    Persistence[
+                        "listForRelationships"
+                    ]
+                >[0];
+
+        const firstRelationship =
+            relationshipIds[0]!;
+
+        const finalRelationship =
+            relationshipIds[100]!;
+
+        const database =
+            new FakeDatabase();
+
+        database.queueRows([
+            {
+                outcome_fact_id:
+                    "outcome-fact:ins-005e-high",
+                relationship_id:
+                    firstRelationship,
+                kind:
+                    "quoted",
+                occurred_at:
+                    "2026-09-30T02:00:00.000Z",
+                provider_reference:
+                    null,
+                policy_reference:
+                    null,
+                external_reference:
+                    "quote-high",
+                note:
+                    null
+            }
+        ]);
+
+        database.queueRows([
+            {
+                outcome_fact_id:
+                    "outcome-fact:ins-005e-low",
+                relationship_id:
+                    finalRelationship,
+                kind:
+                    "bound",
+                occurred_at:
+                    "2026-09-30T01:00:00.000Z",
+                provider_reference:
+                    null,
+                policy_reference:
+                    "policy-low",
+                external_reference:
+                    null,
+                note:
+                    null
+            }
+        ]);
+
+        const values =
+            await createD1InsuranceAcquisitionOutcomePersistence(
+                database as unknown as
+                    RiverCrmD1Database
+            ).listForRelationships(
+                relationshipIds
+            );
+
+        assert.equal(
+            database.calls.length,
+            2
+        );
+
+        assert.equal(
+            database.calls[0]!
+                .bindings.length,
+            100
+        );
+
+        assert.equal(
+            database.calls[1]!
+                .bindings.length,
+            1
+        );
+
+        assert.deepEqual(
+            values.map(
+                value =>
+                    value.relationshipId
+            ),
+            [
+                finalRelationship,
+                firstRelationship
+            ]
+        );
+
+        for(const call of database.calls){
+            assert.equal(
+                call.operation,
+                "all"
+            );
+
+            assert.match(
+                call.sql,
+                /ORDER BY\s+relationship_id ASC,\s+occurred_at ASC,\s+outcome_fact_id ASC/
+            );
+        }
     }
 );

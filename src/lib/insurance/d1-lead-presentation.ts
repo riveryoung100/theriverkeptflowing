@@ -1,4 +1,10 @@
-﻿import {
+import {
+    INSURANCE_D1_RELATIONSHIP_BATCH_SIZE,
+    chunkInsuranceD1RelationshipIds,
+    compareInsuranceD1RelationshipIds
+} from "./d1-relationship-batch";
+
+import {
     createRiverCrmAcquisitionAttribution,
     createRiverCrmContactConsent,
     createRiverCrmRelationshipEvent
@@ -588,6 +594,46 @@ export function createD1InsuranceLeadPresentationPersistence(
 
             if(ids.length === 0){
                 return [];
+            }
+
+if(
+                ids.length >
+                INSURANCE_D1_RELATIONSHIP_BATCH_SIZE
+            ){
+                const values:
+                    InsuranceLeadPresentation[] = [];
+
+                const boundedPersistence =
+                    createD1InsuranceLeadPresentationPersistence(
+                        database
+                    );
+
+                for(
+                    const chunk of
+                    chunkInsuranceD1RelationshipIds(
+                        ids
+                    )
+                ){
+                    values.push(
+                        ...await boundedPersistence
+                            .listForRelationships(
+                                chunk
+                            )
+                    );
+                }
+
+                values.sort(
+                    (
+                        left,
+                        right
+                    ) =>
+                        compareInsuranceD1RelationshipIds(
+                            left.relationshipId,
+                            right.relationshipId
+                        )
+                );
+
+                return values;
             }
 
             const parameterList =

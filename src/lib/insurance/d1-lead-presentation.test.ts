@@ -1,4 +1,4 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
@@ -734,6 +734,135 @@ test(
                 idOne
             ]),
             /state code/
+        );
+    }
+);
+
+test(
+    "D1 insurance presentation projection partitions one hundred plus one relationships into bounded reads",
+    async () => {
+        type Persistence =
+            ReturnType<
+                typeof createD1InsuranceLeadPresentationPersistence
+            >;
+
+        const relationshipIds =
+            Array.from(
+                {
+                    length:
+                        101
+                },
+                (
+                    _,
+                    index
+                ) =>
+                    `relationship:ins-005e-${String(
+                        100 - index
+                    ).padStart(
+                        3,
+                        "0"
+                    )}`
+            ) as unknown as
+                Parameters<
+                    Persistence[
+                        "listForRelationships"
+                    ]
+                >[0];
+
+        const database =
+            new FakeDatabase();
+
+        const chunks = [
+            relationshipIds.slice(
+                0,
+                100
+            ),
+            relationshipIds.slice(
+                100
+            )
+        ];
+
+        for(const chunk of chunks){
+            database.queue({
+                success:
+                    true,
+                results:
+                    chunk.map(
+                        relationshipId =>
+                            profileRow(
+                                relationshipId
+                            )
+                    )
+            });
+
+            database.queue({
+                success:
+                    true,
+                results:
+                    []
+            });
+
+            database.queue({
+                success:
+                    true,
+                results:
+                    []
+            });
+
+            database.queue({
+                success:
+                    true,
+                results:
+                    []
+            });
+        }
+
+        const values =
+            await createD1InsuranceLeadPresentationPersistence(
+                database
+            ).listForRelationships(
+                relationshipIds
+            );
+
+        assert.equal(
+            database.statements.length,
+            8
+        );
+
+        for(
+            let index = 0;
+            index < 4;
+            index += 1
+        ){
+            assert.equal(
+                database.statements[index]!
+                    .binds[0]!
+                    .length,
+                100
+            );
+        }
+
+        for(
+            let index = 4;
+            index < 8;
+            index += 1
+        ){
+            assert.equal(
+                database.statements[index]!
+                    .binds[0]!
+                    .length,
+                1
+            );
+        }
+
+        assert.deepEqual(
+            values.map(
+                value =>
+                    value.relationshipId
+            ),
+            [
+                ...relationshipIds
+            ].sort()
         );
     }
 );

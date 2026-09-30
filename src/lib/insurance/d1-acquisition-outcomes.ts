@@ -1,4 +1,10 @@
 import {
+    INSURANCE_D1_RELATIONSHIP_BATCH_SIZE,
+    chunkInsuranceD1RelationshipIds,
+    compareInsuranceD1RelationshipIds
+} from "./d1-relationship-batch";
+
+import {
     requireRiverCrmRelationshipId
 } from "../river-os/crm-actions";
 
@@ -245,6 +251,46 @@ export function createD1InsuranceAcquisitionOutcomePersistence(
 
             if(relationshipIds.length === 0){
                 return [];
+            }
+
+if(
+                relationshipIds.length >
+                INSURANCE_D1_RELATIONSHIP_BATCH_SIZE
+            ){
+                const values:
+                    InsuranceAcquisitionOutcomeFact[] = [];
+
+                const boundedPersistence =
+                    createD1InsuranceAcquisitionOutcomePersistence(
+                        database
+                    );
+
+                for(
+                    const chunk of
+                    chunkInsuranceD1RelationshipIds(
+                        relationshipIds
+                    )
+                ){
+                    values.push(
+                        ...await boundedPersistence
+                            .listForRelationships(
+                                chunk
+                            )
+                    );
+                }
+
+                values.sort(
+                    (
+                        left,
+                        right
+                    ) =>
+                        compareInsuranceD1RelationshipIds(
+                            left.relationshipId,
+                            right.relationshipId
+                        )
+                );
+
+                return values;
             }
 
             const parameterList =

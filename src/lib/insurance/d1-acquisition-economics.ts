@@ -1,4 +1,10 @@
 import {
+    INSURANCE_D1_RELATIONSHIP_BATCH_SIZE,
+    chunkInsuranceD1RelationshipIds,
+    compareInsuranceD1RelationshipIds
+} from "./d1-relationship-batch";
+
+import {
     requireRiverCrmRelationshipId
 } from "../river-os/crm-actions";
 
@@ -890,6 +896,46 @@ export function createD1InsuranceAcquisitionEconomicsPersistence(
                 return [];
             }
 
+if(
+                ids.length >
+                INSURANCE_D1_RELATIONSHIP_BATCH_SIZE
+            ){
+                const values:
+                    InsuranceAcquisitionCostFact[] = [];
+
+                const boundedPersistence =
+                    createD1InsuranceAcquisitionEconomicsPersistence(
+                        database
+                    );
+
+                for(
+                    const chunk of
+                    chunkInsuranceD1RelationshipIds(
+                        ids
+                    )
+                ){
+                    values.push(
+                        ...await boundedPersistence
+                            .listAcquisitionCostsForRelationships(
+                                chunk
+                            )
+                    );
+                }
+
+                values.sort(
+                    (
+                        left,
+                        right
+                    ) =>
+                        compareInsuranceD1RelationshipIds(
+                            left.relationshipId,
+                            right.relationshipId
+                        )
+                );
+
+                return values;
+            }
+
             const parameterList =
                 economicPlaceholders(
                     ids.length
@@ -946,6 +992,46 @@ ORDER BY
 
             if(ids.length === 0){
                 return [];
+            }
+
+if(
+                ids.length >
+                INSURANCE_D1_RELATIONSHIP_BATCH_SIZE
+            ){
+                const values:
+                    InsurancePremiumFact[] = [];
+
+                const boundedPersistence =
+                    createD1InsuranceAcquisitionEconomicsPersistence(
+                        database
+                    );
+
+                for(
+                    const chunk of
+                    chunkInsuranceD1RelationshipIds(
+                        ids
+                    )
+                ){
+                    values.push(
+                        ...await boundedPersistence
+                            .listPremiumFactsForRelationships(
+                                chunk
+                            )
+                    );
+                }
+
+                values.sort(
+                    (
+                        left,
+                        right
+                    ) =>
+                        compareInsuranceD1RelationshipIds(
+                            left.relationshipId,
+                            right.relationshipId
+                        )
+                );
+
+                return values;
             }
 
             const parameterList =
@@ -1005,6 +1091,46 @@ ORDER BY
                 return [];
             }
 
+if(
+                ids.length >
+                INSURANCE_D1_RELATIONSHIP_BATCH_SIZE
+            ){
+                const values:
+                    InsuranceCommissionFact[] = [];
+
+                const boundedPersistence =
+                    createD1InsuranceAcquisitionEconomicsPersistence(
+                        database
+                    );
+
+                for(
+                    const chunk of
+                    chunkInsuranceD1RelationshipIds(
+                        ids
+                    )
+                ){
+                    values.push(
+                        ...await boundedPersistence
+                            .listCommissionFactsForRelationships(
+                                chunk
+                            )
+                    );
+                }
+
+                values.sort(
+                    (
+                        left,
+                        right
+                    ) =>
+                        compareInsuranceD1RelationshipIds(
+                            left.relationshipId,
+                            right.relationshipId
+                        )
+                );
+
+                return values;
+            }
+
             const parameterList =
                 economicPlaceholders(
                     ids.length
@@ -1060,6 +1186,46 @@ ORDER BY
 
             if(ids.length === 0){
                 return [];
+            }
+
+if(
+                ids.length >
+                INSURANCE_D1_RELATIONSHIP_BATCH_SIZE
+            ){
+                const values:
+                    InsuranceRenewalFact[] = [];
+
+                const boundedPersistence =
+                    createD1InsuranceAcquisitionEconomicsPersistence(
+                        database
+                    );
+
+                for(
+                    const chunk of
+                    chunkInsuranceD1RelationshipIds(
+                        ids
+                    )
+                ){
+                    values.push(
+                        ...await boundedPersistence
+                            .listRenewalFactsForRelationships(
+                                chunk
+                            )
+                    );
+                }
+
+                values.sort(
+                    (
+                        left,
+                        right
+                    ) =>
+                        compareInsuranceD1RelationshipIds(
+                            left.relationshipId,
+                            right.relationshipId
+                        )
+                );
+
+                return values;
             }
 
             const parameterList =

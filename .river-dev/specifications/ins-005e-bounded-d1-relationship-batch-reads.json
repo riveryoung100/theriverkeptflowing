@@ -1,0 +1,47 @@
+{
+  "id": "INS-005E",
+  "title": "Bounded D1 relationship batch reads",
+  "status": "implemented-by-this-slice",
+  "parent": "INS-005A",
+  "problem": "Primary created-at reports can now resolve complete cohorts larger than one hundred relationships while concrete D1 persistence readers still construct one relationship-id IN clause for the entire logical cohort.",
+  "decision": {
+    "boundary": "concrete insurance D1 persistence owners",
+    "relationshipChunkSize": 100,
+    "publicReportSemantics": "unchanged",
+    "riverCrmPersistence": "unchanged",
+    "rawEvidenceApplication": "unchanged",
+    "attributedEconomicsApplication": "unchanged"
+  },
+  "semantics": [
+    "Each persistence owner retains its existing canonical relationship-id validation and deduplication.",
+    "Cohorts larger than one hundred are split into deterministic contiguous chunks of at most one hundred relationship IDs.",
+    "Each bounded chunk re-enters the existing concrete persistence read contract so existing SQL, hydration, validation, and failure behavior remain authoritative.",
+    "Any failed chunk fails the full logical persistence read.",
+    "Empty cohorts continue to perform zero SELECTs.",
+    "Merged results are restored to the existing global relationship-id ordering.",
+    "Rows belonging to the same relationship never cross chunks after canonical deduplication, so their existing per-query SQL ordering remains intact.",
+    "Presentation retains its existing four-query-family behavior for chunks containing insurance profiles.",
+    "Economics retains separate acquisition-cost, premium, commission, and renewal persistence methods.",
+    "Outcomes retain the existing relationship_id ASC, occurred_at ASC, outcome_fact_id ASC ordering contract."
+  ],
+  "tests": [
+    "Shared chunk helper proves 100 plus 1 deterministic partitioning.",
+    "Presentation proves a 101-relationship cohort binds as 100 plus 1 and preserves global relationship ordering.",
+    "Every economics batch method proves a 101-relationship cohort executes exactly two bounded SELECTs.",
+    "Acquisition-cost batching additionally proves global relationship ordering across chunk boundaries.",
+    "Outcome batching proves exactly two bounded SELECTs and global relationship ordering across chunk boundaries."
+  ],
+  "excluded": [
+    "schema changes",
+    "indexes",
+    "migration execution",
+    "report limit changes",
+    "RiverCrmPersistence widening",
+    "raw-evidence orchestration changes",
+    "attributed-economics orchestration changes",
+    "INS-005A report changes",
+    "dashboard UI",
+    "deployment",
+    "telephony"
+  ]
+}
