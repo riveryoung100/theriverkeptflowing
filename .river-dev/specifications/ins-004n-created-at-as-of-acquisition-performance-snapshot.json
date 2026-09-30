@@ -1,0 +1,49 @@
+{
+  "id": "INS-004N",
+  "phase": "Created-At As-Of Acquisition Performance Snapshot",
+  "parent": "INS-004",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-004J",
+    "INS-004K",
+    "INS-004L",
+    "INS-004M"
+  ],
+  "objective": "Produce one combined acquisition performance snapshot for relationships created in an explicit created-at cohort using only economics and durable outcome evidence that occurred before one canonical upper-exclusive as-of cutoff.",
+  "projectionVersion": "insurance-acquisition-created-at-as-of-performance-snapshot-v1",
+  "semantics": {
+    "relationshipCohort": "createdAtFromInclusive <= relationship.createdAt < createdAtToExclusive",
+    "evidenceCutoff": "fact.occurredAt < asOfExclusive",
+    "presentation": "current-state segmentation metadata; not historical reconstruction",
+    "effectiveAt": "metadata only; never controls as-of inclusion"
+  },
+  "composition": {
+    "cohort": "exactly one canonical CRM listCreatedAtRange read",
+    "rawEvidence": "exactly one INS-004L getEvidence call",
+    "cutoff": "exactly one INS-004K createInsuranceAcquisitionAsOfEvidence call",
+    "attributedEconomics": "canonical in-memory attributed economics application over current presentation plus filtered economics",
+    "performanceProjection": "reuse INS-004J canonical dimension validation and pure combined economics/outcome/cost projection"
+  },
+  "rules": [
+    "Requested dimensions are validated and deduplicated before persistence access.",
+    "The created-at CRM query preserves caller date strings and omitted limit semantics.",
+    "The CRM created-at cohort is resolved exactly once.",
+    "Returned CRM relationship identities are canonically validated and deduplicated preserving first occurrence order.",
+    "INS-004L loads presentation, four raw economics fact families, and durable outcome facts exactly once for the canonical cohort.",
+    "INS-004K filters all economics and durable outcome facts exactly once using occurredAt < asOfExclusive.",
+    "Current presentation metadata remains unfiltered and may describe current state later than asOfExclusive.",
+    "Filtered economics are transformed to attributed relationship views entirely in memory.",
+    "The same filtered durable outcome facts are reused for outcome and acquisition-cost-per-outcome projections.",
+    "INS-004J remains the canonical owner of requested dimension normalization and combined per-dimension economics, outcome, and cost-per-outcome projection logic.",
+    "No second raw evidence load, outcome persistence read, or cutoff pass is permitted.",
+    "No new SQL, schema, persistence mutation, historical presentation reconstruction, alternate cutoff rule, arithmetic division, currency conversion, dashboard UI, deployment, or telephony activation is introduced."
+  ],
+  "explicitlyDeferred": [
+    "conversion within N days of relationship creation",
+    "historical presentation reconstruction",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}

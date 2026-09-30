@@ -165,7 +165,7 @@ function requireDimension(
 }
 
 
-function canonicalDimensions(
+export function canonicalInsuranceAcquisitionPerformanceDimensions(
     values:
         readonly InsuranceAcquisitionAggregateDimension[]
 ): readonly InsuranceAcquisitionAggregateDimension[] {
@@ -302,7 +302,7 @@ function projectDimension(
 }
 
 
-function projectDimensions(
+export function projectInsuranceAcquisitionPerformanceDimensions(
     dimensions:
         readonly InsuranceAcquisitionAggregateDimension[],
     relationshipIds:
@@ -337,7 +337,7 @@ export function createInsuranceAcquisitionPerformanceSnapshotApplication(
             input
         ){
             const dimensions =
-                canonicalDimensions(
+                canonicalInsuranceAcquisitionPerformanceDimensions(
                     input.dimensions
                 );
 
@@ -377,7 +377,7 @@ export function createInsuranceAcquisitionPerformanceSnapshotApplication(
                         0,
 
                     dimensions:
-                        projectDimensions(
+                        projectInsuranceAcquisitionPerformanceDimensions(
                             dimensions,
                             relationshipIds,
                             [],
@@ -410,7 +410,7 @@ export function createInsuranceAcquisitionPerformanceSnapshotApplication(
                     relationshipIds.length,
 
                 dimensions:
-                    projectDimensions(
+                    projectInsuranceAcquisitionPerformanceDimensions(
                         dimensions,
                         relationshipIds,
                         views,
