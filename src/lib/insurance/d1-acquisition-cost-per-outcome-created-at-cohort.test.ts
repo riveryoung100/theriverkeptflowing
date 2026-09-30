@@ -46,11 +46,11 @@ implements InsuranceCreatedAtCostPerOutcomeCohortReader {
             }[]
     ){}
 
-    async listCreatedAtRange(
+    async listCreatedAtRangePage(
         query:
             Parameters<
                 InsuranceCreatedAtCostPerOutcomeCohortReader[
-                    "listCreatedAtRange"
+                    "listCreatedAtRangePage"
                 ]
             >[0]
     ){
@@ -60,7 +60,41 @@ implements InsuranceCreatedAtCostPerOutcomeCohortReader {
         this.query =
             query;
 
-        return this.relationships;
+        const upperExclusive =
+            new Date(
+                query.createdAtToExclusive
+            ).getTime();
+
+        return {
+            relationships:
+                this.relationships.map(
+                    (
+                        relationship,
+                        index
+                    ) => ({
+                        relationshipId:
+                            relationship.relationshipId,
+
+                        createdAt:
+                            new Date(
+                                upperExclusive -
+                                (
+                                    index +
+                                    1
+                                )
+                            ).toISOString()
+                    })
+                ),
+
+            hasMore:
+                false
+        } as Awaited<
+            ReturnType<
+                InsuranceCreatedAtCostPerOutcomeCohortReader[
+                    "listCreatedAtRangePage"
+                ]
+            >
+        >;
     }
 }
 
@@ -347,7 +381,10 @@ test(
                     "2026-09-01T00:00:00.000Z",
 
                 createdAtToExclusive:
-                    "2026-10-01T00:00:00.000Z"
+                    "2026-10-01T00:00:00.000Z",
+
+                pageSize:
+                    100
             }
         );
     }
@@ -468,7 +505,7 @@ test(
 
 
 test(
-    "does not validate or rewrite CRM-owned timestamp strings",
+    "uses canonical created-at timestamps through report cohort resolution",
     async () => {
         const cohortReader =
             new RecordingCohortReader(
@@ -491,20 +528,23 @@ test(
         await application
             .getCreatedAtCostPerOutcome({
                 createdAtFromInclusive:
-                    "crm-owned-lower-bound",
+                    "2026-09-01T00:00:00.000Z",
 
                 createdAtToExclusive:
-                    "crm-owned-upper-bound"
+                    "2026-10-01T00:00:00.000Z"
             });
 
         assert.deepEqual(
             cohortReader.query,
             {
                 createdAtFromInclusive:
-                    "crm-owned-lower-bound",
+                    "2026-09-01T00:00:00.000Z",
 
                 createdAtToExclusive:
-                    "crm-owned-upper-bound"
+                    "2026-10-01T00:00:00.000Z",
+
+                pageSize:
+                    100
             }
         );
     }

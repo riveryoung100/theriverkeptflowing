@@ -34,11 +34,11 @@ implements InsuranceCreatedAtDimensionOutcomeSnapshotCohortReader {
             }[]
     ){}
 
-    async listCreatedAtRange(
+    async listCreatedAtRangePage(
         query:
             Parameters<
                 InsuranceCreatedAtDimensionOutcomeSnapshotCohortReader[
-                    "listCreatedAtRange"
+                    "listCreatedAtRangePage"
                 ]
             >[0]
     ){
@@ -48,7 +48,41 @@ implements InsuranceCreatedAtDimensionOutcomeSnapshotCohortReader {
         this.query =
             query;
 
-        return this.relationships;
+        const upperExclusive =
+            new Date(
+                query.createdAtToExclusive
+            ).getTime();
+
+        return {
+            relationships:
+                this.relationships.map(
+                    (
+                        relationship,
+                        index
+                    ) => ({
+                        relationshipId:
+                            relationship.relationshipId,
+
+                        createdAt:
+                            new Date(
+                                upperExclusive -
+                                (
+                                    index +
+                                    1
+                                )
+                            ).toISOString()
+                    })
+                ),
+
+            hasMore:
+                false
+        } as Awaited<
+            ReturnType<
+                InsuranceCreatedAtDimensionOutcomeSnapshotCohortReader[
+                    "listCreatedAtRangePage"
+                ]
+            >
+        >;
     }
 }
 
@@ -203,10 +237,10 @@ test(
         await application
             .getCreatedAtSnapshot({
                 createdAtFromInclusive:
-                    "crm-owned-lower",
+                    "2026-09-01T00:00:00.000Z",
 
                 createdAtToExclusive:
-                    "crm-owned-upper",
+                    "2026-10-01T00:00:00.000Z",
 
                 limit:
                     73,
@@ -220,12 +254,12 @@ test(
             cohortReader.query,
             {
                 createdAtFromInclusive:
-                    "crm-owned-lower",
+                    "2026-09-01T00:00:00.000Z",
 
                 createdAtToExclusive:
-                    "crm-owned-upper",
+                    "2026-10-01T00:00:00.000Z",
 
-                limit:
+                pageSize:
                     73
             }
         );
@@ -270,7 +304,10 @@ test(
                     "2026-09-01T00:00:00.000Z",
 
                 createdAtToExclusive:
-                    "2026-10-01T00:00:00.000Z"
+                    "2026-10-01T00:00:00.000Z",
+
+                pageSize:
+                    100
             }
         );
     }
@@ -385,7 +422,7 @@ test(
 
 
 test(
-    "does not validate rewrite or parse created-at timestamp strings",
+    "uses canonical created-at timestamps through report cohort resolution",
     async () => {
         const cohortReader =
             new RecordingCohortReader(
@@ -404,10 +441,10 @@ test(
         await application
             .getCreatedAtSnapshot({
                 createdAtFromInclusive:
-                    "lower-bound-owned-by-crm",
+                    "2026-09-01T00:00:00.000Z",
 
                 createdAtToExclusive:
-                    "upper-bound-owned-by-crm",
+                    "2026-10-01T00:00:00.000Z",
 
                 dimensions:
                     []
@@ -417,10 +454,13 @@ test(
             cohortReader.query,
             {
                 createdAtFromInclusive:
-                    "lower-bound-owned-by-crm",
+                    "2026-09-01T00:00:00.000Z",
 
                 createdAtToExclusive:
-                    "upper-bound-owned-by-crm"
+                    "2026-10-01T00:00:00.000Z",
+
+                pageSize:
+                    100
             }
         );
     }

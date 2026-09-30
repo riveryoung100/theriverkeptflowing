@@ -3,8 +3,17 @@ import {
 } from "../river-os/crm-actions";
 
 import type {
-    RiverCrmCreatedAtCohortQuery
-} from "../river-os/crm-workspace";
+    InsuranceCreatedAtCohortPageReader
+} from "./complete-created-at-cohort";
+
+import {
+    projectInsuranceCreatedAtReportCohortMetadata,
+    resolveInsuranceCreatedAtReportCohort
+} from "./created-at-report-cohort";
+
+import type {
+    InsuranceCreatedAtReportCohortMetadata
+} from "./created-at-report-cohort";
 
 import {
     createD1RiverCrmPersistence
@@ -24,17 +33,8 @@ import {
 } from "./acquisition-aggregate-snapshot";
 
 
-export interface InsuranceCreatedAtSnapshotCohortReader {
-    listCreatedAtRange(
-        query:
-            RiverCrmCreatedAtCohortQuery
-    ): Promise<
-        readonly {
-            readonly relationshipId:
-                string;
-        }[]
-    >;
-}
+export type InsuranceCreatedAtSnapshotCohortReader =
+    InsuranceCreatedAtCohortPageReader;
 
 
 export interface GetInsuranceCreatedAtAggregateSnapshotInput {
@@ -52,12 +52,19 @@ export interface GetInsuranceCreatedAtAggregateSnapshotInput {
 }
 
 
+export type InsuranceCreatedAtAggregateSnapshotResult =
+    InsuranceAcquisitionAggregateSnapshot & {
+        readonly cohort:
+            InsuranceCreatedAtReportCohortMetadata;
+    };
+
+
 export interface InsuranceCreatedAtAggregateSnapshotApplication {
     getCreatedAtSnapshot(
         input:
             GetInsuranceCreatedAtAggregateSnapshotInput
     ): Promise<
-        InsuranceAcquisitionAggregateSnapshot
+        InsuranceCreatedAtAggregateSnapshotResult
     >;
 }
 
@@ -72,27 +79,27 @@ export function createInsuranceCreatedAtAggregateSnapshotApplication(
         async getCreatedAtSnapshot(
             input
         ){
-            const cohortQuery:
-                RiverCrmCreatedAtCohortQuery = {
-                    createdAtFromInclusive:
-                        input.createdAtFromInclusive,
+            const cohort =
+                await resolveInsuranceCreatedAtReportCohort(
+                    cohortReader,
+                    {
+                        createdAtFromInclusive:
+                            input.createdAtFromInclusive,
 
-                    createdAtToExclusive:
-                        input.createdAtToExclusive,
+                        createdAtToExclusive:
+                            input.createdAtToExclusive,
 
-                    ...(input.limit !== undefined
-                        ? {
-                            limit:
-                                input.limit
-                        }
-                        : {})
-                };
+                        ...(input.limit !== undefined
+                            ? {
+                                limit:
+                                    input.limit
+                            }
+                            : {})
+                    }
+                );
 
             const relationships =
-                await cohortReader
-                    .listCreatedAtRange(
-                        cohortQuery
-                    );
+                cohort.relationships;
 
             const relationshipIds =
                 relationships.map(
@@ -102,12 +109,22 @@ export function createInsuranceCreatedAtAggregateSnapshotApplication(
                         )
                 );
 
-            return snapshotApplication
-                .getSnapshot({
-                    relationshipIds,
-                    dimensions:
-                        input.dimensions
-                });
+            const snapshot =
+                await snapshotApplication
+                    .getSnapshot({
+                        relationshipIds,
+                        dimensions:
+                            input.dimensions
+                    });
+
+            return {
+                ...snapshot,
+
+                cohort:
+                    projectInsuranceCreatedAtReportCohortMetadata(
+                        cohort
+                    )
+            };
         }
     };
 }

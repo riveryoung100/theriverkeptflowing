@@ -1,0 +1,36 @@
+{
+  "id": "INS-005G",
+  "title": "Specialized created-at report cohort integration",
+  "status": "implemented-by-this-slice",
+  "parent": "INS-005E",
+  "scope": [
+    "created-at acquisition aggregate snapshot",
+    "created-at acquisition outcome analytics",
+    "created-at acquisition cost per outcome",
+    "created-at multi-dimension outcome snapshot",
+    "created-at multi-dimension cost per outcome snapshot"
+  ],
+  "semantics": {
+    "omittedLimit": "resolve the complete requested created-at range through bounded keyset pages",
+    "explicitLimit": "resolve at most the requested newest-N relationships from one bounded keyset page",
+    "cohortMetadata": "return the canonical nested report cohort metadata projection",
+    "downstream": "preserve each specialized wrapper's existing downstream delegation and denominator semantics",
+    "d1Capacity": "INS-005E bounds concrete relationship-id persistence reads to chunks of at most 100"
+  },
+  "invariants": [
+    "public limit input remains optional and unchanged",
+    "canonical UTC created-at validation is owned by the shared report cohort resolver",
+    "complete cohort resolution finishes before downstream analytics delegation",
+    "legacy listCreatedAtRange is no longer owned directly by these five wrappers",
+    "generic RiverCrmPersistence remains unchanged",
+    "the four INS-005A primary reports remain unchanged",
+    "INS-005E batching remains unchanged",
+    "no schema or index mutation is introduced"
+  ],
+  "excluded": [
+    "migration execution",
+    "dashboard UI",
+    "deployment",
+    "telephony"
+  ]
+}

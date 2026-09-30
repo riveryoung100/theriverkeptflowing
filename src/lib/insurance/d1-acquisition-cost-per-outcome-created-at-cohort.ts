@@ -3,8 +3,17 @@ import {
 } from "../river-os/crm-actions";
 
 import type {
-    RiverCrmCreatedAtCohortQuery
-} from "../river-os/crm-workspace";
+    InsuranceCreatedAtCohortPageReader
+} from "./complete-created-at-cohort";
+
+import {
+    projectInsuranceCreatedAtReportCohortMetadata,
+    resolveInsuranceCreatedAtReportCohort
+} from "./created-at-report-cohort";
+
+import type {
+    InsuranceCreatedAtReportCohortMetadata
+} from "./created-at-report-cohort";
 
 import {
     createD1RiverCrmPersistence
@@ -39,17 +48,8 @@ import type {
 } from "./d1-acquisition-outcome-analytics";
 
 
-export interface InsuranceCreatedAtCostPerOutcomeCohortReader {
-    listCreatedAtRange(
-        query:
-            RiverCrmCreatedAtCohortQuery
-    ): Promise<
-        readonly {
-            readonly relationshipId:
-                string;
-        }[]
-    >;
-}
+export type InsuranceCreatedAtCostPerOutcomeCohortReader =
+    InsuranceCreatedAtCohortPageReader;
 
 
 export interface GetInsuranceCreatedAtCostPerOutcomeInput {
@@ -64,12 +64,19 @@ export interface GetInsuranceCreatedAtCostPerOutcomeInput {
 }
 
 
+export type InsuranceCreatedAtCostPerOutcomeResult =
+    InsuranceAcquisitionCostPerOutcome & {
+        readonly cohort:
+            InsuranceCreatedAtReportCohortMetadata;
+    };
+
+
 export interface InsuranceCreatedAtCostPerOutcomeApplication {
     getCreatedAtCostPerOutcome(
         input:
             GetInsuranceCreatedAtCostPerOutcomeInput
     ): Promise<
-        InsuranceAcquisitionCostPerOutcome
+        InsuranceCreatedAtCostPerOutcomeResult
     >;
 }
 
@@ -86,27 +93,27 @@ export function createInsuranceCreatedAtCostPerOutcomeApplication(
         async getCreatedAtCostPerOutcome(
             input
         ){
-            const cohortQuery:
-                RiverCrmCreatedAtCohortQuery = {
-                    createdAtFromInclusive:
-                        input.createdAtFromInclusive,
+            const cohort =
+                await resolveInsuranceCreatedAtReportCohort(
+                    cohortReader,
+                    {
+                        createdAtFromInclusive:
+                            input.createdAtFromInclusive,
 
-                    createdAtToExclusive:
-                        input.createdAtToExclusive,
+                        createdAtToExclusive:
+                            input.createdAtToExclusive,
 
-                    ...(input.limit !== undefined
-                        ? {
-                            limit:
-                                input.limit
-                        }
-                        : {})
-                };
+                        ...(input.limit !== undefined
+                            ? {
+                                limit:
+                                    input.limit
+                            }
+                            : {})
+                    }
+                );
 
             const relationships =
-                await cohortReader
-                    .listCreatedAtRange(
-                        cohortQuery
-                    );
+                cohort.relationships;
 
             const relationshipIds =
                 relationships.map(
@@ -132,11 +139,21 @@ export function createInsuranceCreatedAtCostPerOutcomeApplication(
                         })
                 ]);
 
-            return createInsuranceAcquisitionCostPerOutcome({
-                relationshipIds,
-                views,
-                outcomeAnalytics
-            });
+            const result =
+                createInsuranceAcquisitionCostPerOutcome({
+                    relationshipIds,
+                    views,
+                    outcomeAnalytics
+                });
+
+            return {
+                ...result,
+
+                cohort:
+                    projectInsuranceCreatedAtReportCohortMetadata(
+                        cohort
+                    )
+            };
         }
     };
 }

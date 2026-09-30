@@ -1,10 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import type {
-    RiverCrmCreatedAtCohortQuery
-} from "../river-os/crm-workspace";
-
 import {
     INSURANCE_ACQUISITION_OUTCOME_ANALYTICS_VERSION
 } from "./acquisition-outcome-analytics";
@@ -29,7 +25,7 @@ implements InsuranceCreatedAtOutcomeCohortReader {
         0;
 
     query:
-        RiverCrmCreatedAtCohortQuery | undefined;
+        unknown;
 
     constructor(
         private readonly relationships:
@@ -39,9 +35,13 @@ implements InsuranceCreatedAtOutcomeCohortReader {
             }[]
     ){}
 
-    async listCreatedAtRange(
+    async listCreatedAtRangePage(
         query:
-            RiverCrmCreatedAtCohortQuery
+            Parameters<
+                InsuranceCreatedAtOutcomeCohortReader[
+                    "listCreatedAtRangePage"
+                ]
+            >[0]
     ){
         this.calls +=
             1;
@@ -49,7 +49,41 @@ implements InsuranceCreatedAtOutcomeCohortReader {
         this.query =
             query;
 
-        return this.relationships;
+        const upperExclusive =
+            new Date(
+                query.createdAtToExclusive
+            ).getTime();
+
+        return {
+            relationships:
+                this.relationships.map(
+                    (
+                        relationship,
+                        index
+                    ) => ({
+                        relationshipId:
+                            relationship.relationshipId,
+
+                        createdAt:
+                            new Date(
+                                upperExclusive -
+                                (
+                                    index +
+                                    1
+                                )
+                            ).toISOString()
+                    })
+                ),
+
+            hasMore:
+                false
+        } as Awaited<
+            ReturnType<
+                InsuranceCreatedAtOutcomeCohortReader[
+                    "listCreatedAtRangePage"
+                ]
+            >
+        >;
     }
 }
 
@@ -149,7 +183,7 @@ test(
                 createdAtToExclusive:
                     "2026-10-01T00:00:00.000Z",
 
-                limit:
+                pageSize:
                     25
             }
         );
@@ -213,7 +247,10 @@ test(
                     "2026-09-01T00:00:00.000Z",
 
                 createdAtToExclusive:
-                    "2026-10-01T00:00:00.000Z"
+                    "2026-10-01T00:00:00.000Z",
+
+                pageSize:
+                    100
             }
         );
 
@@ -372,7 +409,7 @@ test(
 
 
 test(
-    "does not validate or rewrite created-at timestamps in insurance composition layer",
+    "uses canonical created-at timestamps through report cohort resolution",
     async () => {
         const cohortReader =
             new RecordingCreatedAtCohortReader(
@@ -391,20 +428,23 @@ test(
         await application
             .getCreatedAtAnalytics({
                 createdAtFromInclusive:
-                    "crm-owned-lower-bound",
+                    "2026-09-01T00:00:00.000Z",
 
                 createdAtToExclusive:
-                    "crm-owned-upper-bound"
+                    "2026-10-01T00:00:00.000Z"
             });
 
         assert.deepEqual(
             cohortReader.query,
             {
                 createdAtFromInclusive:
-                    "crm-owned-lower-bound",
+                    "2026-09-01T00:00:00.000Z",
 
                 createdAtToExclusive:
-                    "crm-owned-upper-bound"
+                    "2026-10-01T00:00:00.000Z",
+
+                pageSize:
+                    100
             }
         );
 
