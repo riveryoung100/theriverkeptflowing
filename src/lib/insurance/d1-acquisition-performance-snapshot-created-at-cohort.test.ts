@@ -907,3 +907,345 @@ test(
         );
     }
 );
+
+test(
+    "derives overall and dimension return efficiency without additional persistence reads",
+    async () => {
+        const cohortReader =
+            new RecordingCohortReader([
+                {
+                    relationshipId:
+                        "relationship:ins-004w-a"
+                },
+                {
+                    relationshipId:
+                        "relationship:ins-004w-b"
+                }
+            ]);
+
+        const viewsApplication =
+            new RecordingViewsApplication();
+
+        const outcomeReader =
+            new RecordingOutcomeReader();
+
+        const application =
+            createInsuranceAcquisitionPerformanceSnapshotApplication(
+                cohortReader,
+                viewsApplication,
+                outcomeReader
+            );
+
+        const result =
+            await application
+                .getCreatedAtSnapshot({
+                    createdAtFromInclusive:
+                        "2026-09-01T00:00:00.000Z",
+
+                    createdAtToExclusive:
+                        "2026-10-01T00:00:00.000Z",
+
+                    dimensions: [
+                        "campaign"
+                    ]
+                });
+
+        assert.equal(
+            cohortReader.calls,
+            1
+        );
+
+        assert.equal(
+            viewsApplication.calls,
+            1
+        );
+
+        assert.equal(
+            outcomeReader.calls,
+            1
+        );
+
+        assert.equal(
+            result.overall.returnEfficiency.currencies.length,
+            result.overall.currencies.length
+        );
+
+        for(
+            let index = 0;
+            index < result.overall.currencies.length;
+            index++
+        ){
+            const economicsCurrency =
+                result.overall.currencies[index];
+
+            const returnCurrency =
+                result.overall.returnEfficiency.currencies[index];
+
+            assert.ok(
+                economicsCurrency
+            );
+
+            assert.ok(
+                returnCurrency
+            );
+
+            assert.equal(
+                returnCurrency.currency,
+                economicsCurrency.currency
+            );
+
+            assert.equal(
+                returnCurrency.acquisitionCostMinorUnits,
+                economicsCurrency.acquisitionCostMinorUnits
+            );
+
+            assert.equal(
+                returnCurrency.realizedCommissionMinorUnits,
+                economicsCurrency.realizedCommissionMinorUnits
+            );
+
+            assert.equal(
+                returnCurrency.contributionMarginMinorUnits,
+                economicsCurrency.contributionMarginMinorUnits
+            );
+
+            if(economicsCurrency.acquisitionCostMinorUnits === 0){
+                assert.equal(
+                    "realizedCommissionToAcquisitionCost" in returnCurrency,
+                    false
+                );
+
+                assert.equal(
+                    "contributionToAcquisitionCost" in returnCurrency,
+                    false
+                );
+            }
+            else {
+                assert.deepEqual(
+                    returnCurrency.realizedCommissionToAcquisitionCost,
+                    {
+                        numeratorMinorUnits:
+                            economicsCurrency.realizedCommissionMinorUnits,
+
+                        denominatorMinorUnits:
+                            economicsCurrency.acquisitionCostMinorUnits
+                    }
+                );
+
+                assert.deepEqual(
+                    returnCurrency.contributionToAcquisitionCost,
+                    {
+                        numeratorMinorUnits:
+                            economicsCurrency.contributionMarginMinorUnits,
+
+                        denominatorMinorUnits:
+                            economicsCurrency.acquisitionCostMinorUnits
+                    }
+                );
+            }
+        }
+
+        const projection =
+            result.dimensions[0];
+
+        assert.ok(
+            projection
+        );
+
+        assert.equal(
+            projection.returnEfficiency.dimension,
+            projection.economics.dimension
+        );
+
+        assert.equal(
+            projection.returnEfficiency.relationshipCount,
+            projection.economics.relationshipCount
+        );
+
+        assert.equal(
+            projection.returnEfficiency.buckets.length,
+            projection.economics.buckets.length
+        );
+
+        for(
+            let bucketIndex = 0;
+            bucketIndex < projection.economics.buckets.length;
+            bucketIndex++
+        ){
+            const economicsBucket =
+                projection.economics.buckets[bucketIndex];
+
+            const returnBucket =
+                projection.returnEfficiency.buckets[bucketIndex];
+
+            assert.ok(
+                economicsBucket
+            );
+
+            assert.ok(
+                returnBucket
+            );
+
+            assert.equal(
+                returnBucket.dimensionValue,
+                economicsBucket.dimensionValue
+            );
+
+            assert.equal(
+                returnBucket.relationshipCount,
+                economicsBucket.relationshipCount
+            );
+
+            assert.equal(
+                returnBucket.currencies.length,
+                economicsBucket.currencies.length
+            );
+
+            for(
+                let currencyIndex = 0;
+                currencyIndex < economicsBucket.currencies.length;
+                currencyIndex++
+            ){
+                const economicsCurrency =
+                    economicsBucket.currencies[currencyIndex];
+
+                const returnCurrency =
+                    returnBucket.currencies[currencyIndex];
+
+                assert.ok(
+                    economicsCurrency
+                );
+
+                assert.ok(
+                    returnCurrency
+                );
+
+                assert.equal(
+                    returnCurrency.currency,
+                    economicsCurrency.currency
+                );
+
+                assert.equal(
+                    returnCurrency.acquisitionCostMinorUnits,
+                    economicsCurrency.acquisitionCostMinorUnits
+                );
+
+                assert.equal(
+                    returnCurrency.realizedCommissionMinorUnits,
+                    economicsCurrency.realizedCommissionMinorUnits
+                );
+
+                assert.equal(
+                    returnCurrency.contributionMarginMinorUnits,
+                    economicsCurrency.contributionMarginMinorUnits
+                );
+
+                if(economicsCurrency.acquisitionCostMinorUnits === 0){
+                    assert.equal(
+                        "realizedCommissionToAcquisitionCost" in returnCurrency,
+                        false
+                    );
+
+                    assert.equal(
+                        "contributionToAcquisitionCost" in returnCurrency,
+                        false
+                    );
+                }
+                else {
+                    assert.deepEqual(
+                        returnCurrency.realizedCommissionToAcquisitionCost,
+                        {
+                            numeratorMinorUnits:
+                                economicsCurrency.realizedCommissionMinorUnits,
+
+                            denominatorMinorUnits:
+                                economicsCurrency.acquisitionCostMinorUnits
+                        }
+                    );
+
+                    assert.deepEqual(
+                        returnCurrency.contributionToAcquisitionCost,
+                        {
+                            numeratorMinorUnits:
+                                economicsCurrency.contributionMarginMinorUnits,
+
+                            denominatorMinorUnits:
+                                economicsCurrency.acquisitionCostMinorUnits
+                        }
+                    );
+                }
+            }
+        }
+    }
+);
+
+
+test(
+    "empty created cohort inherits empty overall and dimension return efficiency without downstream reads",
+    async () => {
+        const cohortReader =
+            new RecordingCohortReader(
+                []
+            );
+
+        const viewsApplication =
+            new RecordingViewsApplication();
+
+        const outcomeReader =
+            new RecordingOutcomeReader();
+
+        const application =
+            createInsuranceAcquisitionPerformanceSnapshotApplication(
+                cohortReader,
+                viewsApplication,
+                outcomeReader
+            );
+
+        const result =
+            await application
+                .getCreatedAtSnapshot({
+                    createdAtFromInclusive:
+                        "2026-09-01T00:00:00.000Z",
+
+                    createdAtToExclusive:
+                        "2026-10-01T00:00:00.000Z",
+
+                    dimensions: [
+                        "state",
+                        "campaign"
+                    ]
+                });
+
+        assert.equal(
+            cohortReader.calls,
+            1
+        );
+
+        assert.equal(
+            viewsApplication.calls,
+            0
+        );
+
+        assert.equal(
+            outcomeReader.calls,
+            0
+        );
+
+        assert.deepEqual(
+            result.overall.returnEfficiency.currencies,
+            []
+        );
+
+        for(const projection of result.dimensions){
+            assert.equal(
+                projection.returnEfficiency.relationshipCount,
+                0
+            );
+
+            assert.equal(
+                projection.returnEfficiency.buckets.length,
+                projection.economics.buckets.length
+            );
+        }
+    }
+);

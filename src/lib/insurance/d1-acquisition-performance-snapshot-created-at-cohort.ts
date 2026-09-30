@@ -45,6 +45,14 @@ import type {
 } from "./acquisition-dimension-cost-per-outcome";
 
 import {
+    createInsuranceAcquisitionDimensionReturnEfficiency
+} from "./acquisition-dimension-return-efficiency";
+
+import type {
+    InsuranceAcquisitionDimensionReturnEfficiency
+} from "./acquisition-dimension-return-efficiency";
+
+import {
     createInsuranceAcquisitionDimensionOutcomeAnalytics
 } from "./acquisition-dimension-outcome-analytics";
 
@@ -127,6 +135,9 @@ export interface InsuranceAcquisitionPerformanceDimensionProjection {
 
     readonly costPerOutcome:
         InsuranceAcquisitionDimensionCostPerOutcome;
+
+    readonly returnEfficiency:
+        InsuranceAcquisitionDimensionReturnEfficiency;
 }
 
 
@@ -281,10 +292,16 @@ function projectDimension(
             outcomeFacts
         });
 
+    const returnEfficiency =
+        createInsuranceAcquisitionDimensionReturnEfficiency({
+            economics
+        });
+
     if(
         economics.dimension !== dimension ||
         outcomes.dimension !== dimension ||
-        costPerOutcome.dimension !== dimension
+        costPerOutcome.dimension !== dimension ||
+        returnEfficiency.dimension !== dimension
     ){
         throw new TypeError(
             "Insurance acquisition performance snapshot requires matching dimension identities across projections."
@@ -297,6 +314,8 @@ function projectDimension(
         outcomes.relationshipCount !==
             relationshipIds.length ||
         costPerOutcome.relationshipCount !==
+            relationshipIds.length ||
+        returnEfficiency.relationshipCount !==
             relationshipIds.length
     ){
         throw new RangeError(
@@ -308,7 +327,8 @@ function projectDimension(
         dimension,
         economics,
         outcomes,
-        costPerOutcome
+        costPerOutcome,
+        returnEfficiency
     };
 }
 

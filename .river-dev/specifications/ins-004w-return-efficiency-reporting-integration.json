@@ -1,0 +1,40 @@
+{
+  "id": "INS-004W",
+  "phase": "Return Efficiency Reporting Integration",
+  "parent": "INS-004",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-004J",
+    "INS-004T",
+    "INS-004U",
+    "INS-004V"
+  ],
+  "objective": "Expose canonical acquisition return efficiency on overall and dimension performance reporting by deriving exclusively from already-built canonical economics projections.",
+  "semantics": {
+    "overall": "overall.returnEfficiency is derived exactly once from overall.currencies",
+    "dimension": "each dimension return-efficiency bucket is derived exclusively from the matching canonical economics bucket currencies",
+    "inheritance": "lifetime, fixed-as-of, fixed conversion-window, and multi-window conversion-curve reporting inherit return efficiency through the existing shared overall and dimension projectors",
+    "persistence": "no persistence read or evidence acquisition count changes"
+  },
+  "rules": [
+    "Overall performance exposes InsuranceAcquisitionReturnEfficiency.",
+    "Overall performance calls createInsuranceAcquisitionReturnEfficiency exactly once using its already-built currencies.",
+    "A pure InsuranceAcquisitionDimensionReturnEfficiency owner accepts canonical InsuranceAcquisitionAggregateAnalytics.",
+    "The dimension owner preserves canonical dimension identity, total relationshipCount, bucket order, dimensionValue, and bucket relationshipCount.",
+    "Each canonical economics bucket invokes createInsuranceAcquisitionReturnEfficiency exactly once using only bucket.currencies.",
+    "The shared InsuranceAcquisitionPerformanceDimensionProjection exposes the dimension return-efficiency projection.",
+    "The shared projectDimension function derives return efficiency from the already-built economics object and performs no persistence access.",
+    "Zero acquisition cost continues to omit return ratios.",
+    "Signed realized commission and contribution numerators remain intact.",
+    "Premium is not River revenue and is never used as a return-efficiency numerator.",
+    "No floating-point division, percentages, implicit currency conversion, SQL, persistence mutation, schema change, migration execution, dashboard UI, deployment, or telephony activation occurs."
+  ],
+  "explicitlyDeferred": [
+    "display formatting of ratios as percentages or multiples",
+    "dashboard UI",
+    "complete-range pagination or truncation correction",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}

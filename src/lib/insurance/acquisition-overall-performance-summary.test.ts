@@ -800,3 +800,140 @@ test(
         );
     }
 );
+
+test(
+    "derives overall return efficiency exactly once from canonical overall currency totals",
+    () => {
+        const result =
+            createInsuranceAcquisitionOverallPerformanceSummary({
+                relationshipIds: [
+                    relationshipOne
+                ],
+
+                views: [
+                    view(
+                        relationshipOne,
+                        [
+                            {
+                                currency:
+                                    "USD",
+
+                                acquisitionCostMinorUnits:
+                                    100,
+
+                                quotedPremiumMinorUnits:
+                                    50000,
+
+                                writtenPremiumMinorUnits:
+                                    45000,
+
+                                renewalPremiumMinorUnits:
+                                    0,
+
+                                earnedCommissionMinorUnits:
+                                    200,
+
+                                paidCommissionMinorUnits:
+                                    150,
+
+                                chargebackMinorUnits:
+                                    0,
+
+                                adjustmentMinorUnits:
+                                    0,
+
+                                realizedCommissionMinorUnits:
+                                    150,
+
+                                contributionMarginMinorUnits:
+                                    50
+                            }
+                        ]
+                    )
+                ],
+
+                outcomeFacts:
+                    []
+            });
+
+        assert.deepEqual(
+            result.returnEfficiency,
+            {
+                projectionVersion:
+                    "insurance-acquisition-return-efficiency-v1",
+
+                currencies: [
+                    {
+                        currency:
+                            "USD",
+
+                        acquisitionCostMinorUnits:
+                            100,
+
+                        realizedCommissionMinorUnits:
+                            150,
+
+                        contributionMarginMinorUnits:
+                            50,
+
+                        realizedCommissionToAcquisitionCost: {
+                            numeratorMinorUnits:
+                                150,
+
+                            denominatorMinorUnits:
+                                100
+                        },
+
+                        contributionToAcquisitionCost: {
+                            numeratorMinorUnits:
+                                50,
+
+                            denominatorMinorUnits:
+                                100
+                        }
+                    }
+                ]
+            }
+        );
+
+        assert.equal(
+            result.currencies[0]?.quotedPremiumMinorUnits,
+            50000
+        );
+
+        assert.equal(
+            "quotedPremiumMinorUnits" in
+                result.returnEfficiency.currencies[0]!,
+            false
+        );
+    }
+);
+
+
+test(
+    "empty overall performance exposes empty return efficiency",
+    () => {
+        const result =
+            createInsuranceAcquisitionOverallPerformanceSummary({
+                relationshipIds:
+                    [],
+
+                views:
+                    [],
+
+                outcomeFacts:
+                    []
+            });
+
+        assert.deepEqual(
+            result.returnEfficiency,
+            {
+                projectionVersion:
+                    "insurance-acquisition-return-efficiency-v1",
+
+                currencies:
+                    []
+            }
+        );
+    }
+);

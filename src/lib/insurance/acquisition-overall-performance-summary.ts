@@ -23,6 +23,14 @@ import type {
 } from "./acquisition-cost-per-outcome";
 
 import {
+    createInsuranceAcquisitionReturnEfficiency
+} from "./acquisition-return-efficiency";
+
+import type {
+    InsuranceAcquisitionReturnEfficiency
+} from "./acquisition-return-efficiency";
+
+import {
     createInsuranceAcquisitionOutcomeAnalytics
 } from "./acquisition-outcome-analytics";
 
@@ -81,6 +89,9 @@ export interface InsuranceAcquisitionOverallPerformanceSummary {
 
     readonly costPerOutcome:
         InsuranceAcquisitionCostPerOutcome;
+
+    readonly returnEfficiency:
+        InsuranceAcquisitionReturnEfficiency;
 }
 
 
@@ -551,6 +562,11 @@ export function createInsuranceAcquisitionOverallPerformanceSummary(
                 outcomes
         });
 
+    const returnEfficiency =
+        createInsuranceAcquisitionReturnEfficiency({
+            currencies
+        });
+
     if(
         outcomes.relationshipCount !==
             relationshipIds.length ||
@@ -592,6 +608,8 @@ export function createInsuranceAcquisitionOverallPerformanceSummary(
 
         rates,
 
-        costPerOutcome
+        costPerOutcome,
+
+        returnEfficiency
     };
 }
