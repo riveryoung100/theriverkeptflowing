@@ -14,8 +14,9 @@
     "duration": "windowDays * 86400000 elapsed UTC milliseconds",
     "maturity": "relationship.createdAt + windowDays <= asOfExclusive",
     "denominator": "only relationships whose complete N-day window has elapsed by asOfExclusive",
+    "evidenceLowerBound": "relationship.createdAt <= fact.occurredAt",
     "evidenceUpperBound": "fact.occurredAt < min(asOfExclusive, relationshipWindowEndExclusive)",
-    "boundary": "upper-exclusive",
+    "boundary": "lower-inclusive and upper-exclusive",
     "effectiveAt": "metadata only; never controls conversion-window inclusion"
   },
   "rules": [
@@ -28,10 +29,10 @@
     "Immature relationships are excluded from the fixed-window denominator rather than treated as partially observed nonconversions.",
     "Every economics and durable outcome fact must belong to the supplied relationship cohort.",
     "Evidence for immature relationships is excluded.",
-    "Evidence for mature relationships is included only when occurredAt is earlier than both asOfExclusive and that relationship's windowEndExclusive.",
+    "Evidence for mature relationships is included only when relationship.createdAt <= occurredAt and occurredAt is earlier than both asOfExclusive and that relationship's windowEndExclusive.",
     "Facts occurring exactly at the relationship window end are excluded.",
     "Raw fact order and object identity are preserved.",
-    "No lower-bound occurredAt rule is introduced in this slice.",
+    "Evidence occurring before relationship.createdAt is excluded; evidence occurring exactly at relationship.createdAt is included.",
     "INS-004K remains unchanged as the global fixed-cutoff owner.",
     "No presentation reconstruction, aggregation, rate calculation, division, currency conversion, SQL, persistence access, mutation, schema change, migration execution, dashboard UI, deployment, or telephony activation occurs in this layer."
   ],

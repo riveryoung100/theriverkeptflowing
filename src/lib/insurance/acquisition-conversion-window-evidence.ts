@@ -413,6 +413,8 @@ function filterEvidence<
         }
 
         if(
+            occurredAt.milliseconds >=
+                relationship.createdAtMilliseconds &&
             occurredAt.milliseconds <
                 asOfMilliseconds &&
             occurredAt.milliseconds <

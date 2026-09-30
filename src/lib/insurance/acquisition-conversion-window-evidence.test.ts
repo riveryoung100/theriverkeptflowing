@@ -788,3 +788,290 @@ test(
         );
     }
 );
+
+test(
+    "excludes pre-creation evidence while including evidence exactly at relationship creation",
+    () => {
+        const createdAt =
+            "2026-09-01T00:00:00.000Z";
+
+        const beforeCreatedAt =
+            "2026-08-31T23:59:59.999Z";
+
+        const acquisitionCostBefore =
+            createInsuranceAcquisitionCostFact({
+                costId:
+                    "acquisition-cost:ins-004p-before",
+
+                relationshipId:
+                    relationshipOne,
+
+                category:
+                    "advertising",
+
+                money: {
+                    amountMinorUnits:
+                        100,
+
+                    currency:
+                        "USD"
+                },
+
+                occurredAt:
+                    beforeCreatedAt
+            });
+
+        const acquisitionCostAtCreation =
+            createInsuranceAcquisitionCostFact({
+                costId:
+                    "acquisition-cost:ins-004p-at",
+
+                relationshipId:
+                    relationshipOne,
+
+                category:
+                    "advertising",
+
+                money: {
+                    amountMinorUnits:
+                        200,
+
+                    currency:
+                        "USD"
+                },
+
+                occurredAt:
+                    createdAt
+            });
+
+        const premiumBefore =
+            createInsurancePremiumFact({
+                premiumFactId:
+                    "premium-fact:ins-004p-before",
+
+                relationshipId:
+                    relationshipOne,
+
+                kind:
+                    "quoted",
+
+                money: {
+                    amountMinorUnits:
+                        100000,
+
+                    currency:
+                        "USD"
+                },
+
+                occurredAt:
+                    beforeCreatedAt
+            });
+
+        const premiumAtCreation =
+            createInsurancePremiumFact({
+                premiumFactId:
+                    "premium-fact:ins-004p-at",
+
+                relationshipId:
+                    relationshipOne,
+
+                kind:
+                    "quoted",
+
+                money: {
+                    amountMinorUnits:
+                        110000,
+
+                    currency:
+                        "USD"
+                },
+
+                occurredAt:
+                    createdAt
+            });
+
+        const commissionBefore =
+            createInsuranceCommissionFact({
+                commissionFactId:
+                    "commission-fact:ins-004p-before",
+
+                relationshipId:
+                    relationshipOne,
+
+                kind:
+                    "earned",
+
+                money: {
+                    amountMinorUnits:
+                        10000,
+
+                    currency:
+                        "USD"
+                },
+
+                occurredAt:
+                    beforeCreatedAt
+            });
+
+        const commissionAtCreation =
+            createInsuranceCommissionFact({
+                commissionFactId:
+                    "commission-fact:ins-004p-at",
+
+                relationshipId:
+                    relationshipOne,
+
+                kind:
+                    "earned",
+
+                money: {
+                    amountMinorUnits:
+                        11000,
+
+                    currency:
+                        "USD"
+                },
+
+                occurredAt:
+                    createdAt
+            });
+
+        const renewalBefore =
+            createInsuranceRenewalFact({
+                renewalFactId:
+                    "renewal-fact:ins-004p-before",
+
+                relationshipId:
+                    relationshipOne,
+
+                kind:
+                    "due",
+
+                occurredAt:
+                    beforeCreatedAt
+            });
+
+        const renewalAtCreation =
+            createInsuranceRenewalFact({
+                renewalFactId:
+                    "renewal-fact:ins-004p-at",
+
+                relationshipId:
+                    relationshipOne,
+
+                kind:
+                    "due",
+
+                occurredAt:
+                    createdAt
+            });
+
+        const outcomeBefore =
+            createInsuranceAcquisitionOutcomeFact({
+                outcomeFactId:
+                    "outcome-fact:ins-004p-before",
+
+                relationshipId:
+                    relationshipOne,
+
+                kind:
+                    "quoted",
+
+                occurredAt:
+                    beforeCreatedAt
+            });
+
+        const outcomeAtCreation =
+            createInsuranceAcquisitionOutcomeFact({
+                outcomeFactId:
+                    "outcome-fact:ins-004p-at",
+
+                relationshipId:
+                    relationshipOne,
+
+                kind:
+                    "quoted",
+
+                occurredAt:
+                    createdAt
+            });
+
+        const result =
+            createInsuranceAcquisitionConversionWindowEvidence({
+                relationships: [
+                    {
+                        relationshipId:
+                            relationshipOne,
+
+                        createdAt
+                    }
+                ],
+
+                asOfExclusive:
+                    "2026-11-01T00:00:00.000Z",
+
+                windowDays:
+                    30,
+
+                acquisitionCosts: [
+                    acquisitionCostBefore,
+                    acquisitionCostAtCreation
+                ],
+
+                premiumFacts: [
+                    premiumBefore,
+                    premiumAtCreation
+                ],
+
+                commissionFacts: [
+                    commissionBefore,
+                    commissionAtCreation
+                ],
+
+                renewalFacts: [
+                    renewalBefore,
+                    renewalAtCreation
+                ],
+
+                outcomeFacts: [
+                    outcomeBefore,
+                    outcomeAtCreation
+                ]
+            });
+
+        assert.deepEqual(
+            result.acquisitionCosts,
+            [
+                acquisitionCostAtCreation
+            ]
+        );
+
+        assert.deepEqual(
+            result.premiumFacts,
+            [
+                premiumAtCreation
+            ]
+        );
+
+        assert.deepEqual(
+            result.commissionFacts,
+            [
+                commissionAtCreation
+            ]
+        );
+
+        assert.deepEqual(
+            result.renewalFacts,
+            [
+                renewalAtCreation
+            ]
+        );
+
+        assert.deepEqual(
+            result.outcomeFacts,
+            [
+                outcomeAtCreation
+            ]
+        );
+    }
+);

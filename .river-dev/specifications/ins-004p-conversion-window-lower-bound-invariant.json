@@ -1,0 +1,41 @@
+{
+  "id": "INS-004P",
+  "phase": "Conversion Window Lower-Bound Invariant",
+  "parent": "INS-004",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-004O"
+  ],
+  "objective": "Complete the fixed N-day conversion-window temporal contract by excluding economics and durable outcome evidence that occurred before the relationship itself was created.",
+  "projectionVersion": "insurance-acquisition-conversion-window-evidence-v1",
+  "semantics": {
+    "lowerBound": "relationship.createdAt <= fact.occurredAt",
+    "upperBound": "fact.occurredAt < relationshipWindowEndExclusive AND fact.occurredAt < asOfExclusive",
+    "boundary": "lower-inclusive and upper-exclusive",
+    "maturity": "unchanged from INS-004O"
+  },
+  "evidence": [
+    "Insurance fact constructors validate their own occurredAt but do not receive the CRM relationship createdAt.",
+    "D1 economics and outcome append paths do not read the CRM relationship createdAt before insertion.",
+    "Migrations 0006 and 0007 enforce relationship identity but no cross-table createdAt/occurredAt temporal invariant.",
+    "INS-004L validates requested-cohort ownership only.",
+    "Therefore INS-004O must own the lower-inclusive relationship-created boundary for fixed-window reporting."
+  ],
+  "rules": [
+    "Evidence occurring before relationship.createdAt is excluded from fixed-window reporting.",
+    "Evidence occurring exactly at relationship.createdAt is included.",
+    "Existing mature-denominator semantics remain unchanged.",
+    "Existing per-relationship upper-exclusive window semantics remain unchanged.",
+    "Existing reporting asOfExclusive upper bound remains unchanged.",
+    "The shared filter implementation applies the same lower-inclusive boundary to acquisition cost, premium, commission, renewal, and durable outcome facts.",
+    "No fact constructor, D1 persistence owner, migration, global as-of owner, aggregation owner, dashboard, deployment, or telephony behavior is changed."
+  ],
+  "explicitlyDeferred": [
+    "created-at N-day conversion performance snapshot",
+    "historical presentation reconstruction",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
