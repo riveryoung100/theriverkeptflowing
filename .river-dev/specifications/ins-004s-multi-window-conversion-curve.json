@@ -1,0 +1,56 @@
+{
+  "id": "INS-004S",
+  "phase": "Multi-Window Conversion Curve",
+  "parent": "INS-004",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-004J",
+    "INS-004L",
+    "INS-004O",
+    "INS-004P",
+    "INS-004Q"
+  ],
+  "objective": "Compare acquisition performance for one created-at cohort across multiple fixed observation windows while resolving the cohort and raw evidence only once.",
+  "projectionVersion": "insurance-acquisition-created-at-conversion-curve-v1",
+  "semantics": {
+    "createdAtCohort": "createdAtFromInclusive <= relationship.createdAt < createdAtToExclusive",
+    "windowValidation": "each windowDays value uses the canonical INS-004O positive-safe-integer validator",
+    "windowOrder": "deduplicate requested windowDays preserving first occurrence order",
+    "maturity": "evaluated independently for each requested window",
+    "evidenceWindow": "relationship.createdAt <= fact.occurredAt < min(relationshipWindowEndExclusive, asOfExclusive)",
+    "presentation": "current-state segmentation metadata only"
+  },
+  "composition": {
+    "dimensionValidation": "reuse canonical INS-004J dimension normalization",
+    "windowValidation": "reuse canonical INS-004O window-day validator before persistence access",
+    "cohort": "exactly one canonical CRM listCreatedAtRange read",
+    "rawEvidence": "exactly one INS-004L getEvidence call for the complete created-at cohort",
+    "perWindowEvidence": "reuse the same in-memory raw evidence and apply canonical INS-004O/P evidence semantics independently per window",
+    "perWindowEconomics": "build attributed economics entirely in memory for that window's mature relationships",
+    "perWindowPerformance": "reuse canonical INS-004J combined economics, durable outcome, exact outcome-rate, and cost-per-outcome projection"
+  },
+  "rules": [
+    "At least one observation window is required.",
+    "Requested windows are validated and deduplicated before any persistence access.",
+    "Requested dimensions are validated and deduplicated before any persistence access.",
+    "Window order in the result follows first occurrence order from the request.",
+    "The CRM created-at cohort is resolved exactly once.",
+    "Raw evidence is loaded exactly once for the complete created-at cohort.",
+    "No persistence access occurs inside the per-window loop.",
+    "Each window independently computes its mature relationship denominator.",
+    "Different windows may therefore have different matureRelationshipCount and immatureRelationshipCount values.",
+    "The same raw presentation and fact objects are reused in memory across all windows.",
+    "Current presentation metadata is restricted to the mature relationship identities for each window but is not historically reconstructed.",
+    "Dimension outcome buckets already expose exact quoteRate and bindRate fractions; no new rate projection is introduced.",
+    "No floating-point percentage calculation is introduced.",
+    "No new SQL, schema, persistence mutation, duplicate evidence read, dashboard UI, deployment, or telephony activation is introduced."
+  ],
+  "explicitlyDeferred": [
+    "historical presentation reconstruction",
+    "display percentage formatting",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}

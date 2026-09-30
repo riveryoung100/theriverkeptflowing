@@ -187,7 +187,7 @@ function requireCanonicalUtcTimestamp(
 }
 
 
-function requireWindowDays(
+export function requireInsuranceAcquisitionConversionWindowDays(
     value:
         number
 ): number {
@@ -441,7 +441,7 @@ export function createInsuranceAcquisitionConversionWindowEvidence(
         );
 
     const windowDays =
-        requireWindowDays(
+        requireInsuranceAcquisitionConversionWindowDays(
             input.windowDays
         );
 
