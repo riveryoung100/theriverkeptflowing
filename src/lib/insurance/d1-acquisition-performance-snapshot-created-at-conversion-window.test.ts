@@ -249,6 +249,11 @@ test(
         );
 
         assert.equal(
+            result.overall.relationshipCount,
+            2
+        );
+
+        assert.equal(
             result.dimensions[0]
                 ?.economics
                 .relationshipCount,
@@ -508,6 +513,50 @@ test(
 
         const projection =
             result.dimensions[0];
+
+        assert.equal(
+            result.overall.currencies[0]
+                ?.acquisitionCostMinorUnits,
+            1000
+        );
+
+        assert.equal(
+            result.overall.currencies[0]
+                ?.writtenPremiumMinorUnits,
+            180000
+        );
+
+        assert.equal(
+            result.overall.outcomes.quotedRelationshipCount,
+            1
+        );
+
+        assert.equal(
+            result.overall.outcomes.boundRelationshipCount,
+            0
+        );
+
+        assert.deepEqual(
+            result.overall.rates.quoteRate,
+            {
+                numerator:
+                    1,
+
+                denominator:
+                    1
+            }
+        );
+
+        assert.deepEqual(
+            result.overall.rates.bindRate,
+            {
+                numerator:
+                    0,
+
+                denominator:
+                    1
+            }
+        );
 
         assert.equal(
             projection
@@ -792,6 +841,16 @@ test(
         assert.equal(
             result.immatureRelationshipCount,
             0
+        );
+
+        assert.equal(
+            result.overall.relationshipCount,
+            0
+        );
+
+        assert.deepEqual(
+            result.overall.currencies,
+            []
         );
 
         assert.equal(

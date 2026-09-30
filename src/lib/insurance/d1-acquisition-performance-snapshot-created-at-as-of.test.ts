@@ -240,6 +240,11 @@ test(
             2
         );
 
+        assert.equal(
+            result.overall.relationshipCount,
+            2
+        );
+
         assert.deepEqual(
             result.dimensions.map(
                 projection =>
@@ -677,6 +682,21 @@ test(
 
         assert.equal(
             result.relationshipCount,
+            0
+        );
+
+        assert.equal(
+            result.overall.relationshipCount,
+            0
+        );
+
+        assert.deepEqual(
+            result.overall.currencies,
+            []
+        );
+
+        assert.equal(
+            result.overall.outcomes.relationshipCount,
             0
         );
 

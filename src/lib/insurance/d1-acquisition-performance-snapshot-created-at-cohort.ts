@@ -1,4 +1,12 @@
 import {
+    createInsuranceAcquisitionOverallPerformanceSummary
+} from "./acquisition-overall-performance-summary";
+
+import type {
+    InsuranceAcquisitionOverallPerformanceSummary
+} from "./acquisition-overall-performance-summary";
+
+import {
     requireRiverCrmRelationshipId
 } from "../river-os/crm-actions";
 
@@ -128,6 +136,9 @@ export interface InsuranceAcquisitionPerformanceSnapshot {
 
     readonly relationshipCount:
         number;
+
+    readonly overall:
+        InsuranceAcquisitionOverallPerformanceSummary;
 
     readonly dimensions:
         readonly InsuranceAcquisitionPerformanceDimensionProjection[];
@@ -376,6 +387,18 @@ export function createInsuranceAcquisitionPerformanceSnapshotApplication(
                     relationshipCount:
                         0,
 
+                    overall:
+                        createInsuranceAcquisitionOverallPerformanceSummary({
+                            relationshipIds:
+                                [],
+
+                            views:
+                                [],
+
+                            outcomeFacts:
+                                []
+                        }),
+
                     dimensions:
                         projectInsuranceAcquisitionPerformanceDimensions(
                             dimensions,
@@ -408,6 +431,13 @@ export function createInsuranceAcquisitionPerformanceSnapshotApplication(
 
                 relationshipCount:
                     relationshipIds.length,
+
+                overall:
+                    createInsuranceAcquisitionOverallPerformanceSummary({
+                        relationshipIds,
+                        views,
+                        outcomeFacts
+                    }),
 
                 dimensions:
                     projectInsuranceAcquisitionPerformanceDimensions(

@@ -1,4 +1,12 @@
 import {
+    createInsuranceAcquisitionOverallPerformanceSummary
+} from "./acquisition-overall-performance-summary";
+
+import type {
+    InsuranceAcquisitionOverallPerformanceSummary
+} from "./acquisition-overall-performance-summary";
+
+import {
     requireRiverCrmRelationshipId
 } from "../river-os/crm-actions";
 
@@ -107,6 +115,9 @@ export interface InsuranceAcquisitionCreatedAtConversionWindowPerformanceSnapsho
 
     readonly immatureRelationshipCount:
         number;
+
+    readonly overall:
+        InsuranceAcquisitionOverallPerformanceSummary;
 
     readonly dimensions:
         readonly InsuranceAcquisitionPerformanceDimensionProjection[];
@@ -273,6 +284,17 @@ export function createInsuranceAcquisitionCreatedAtConversionWindowPerformanceSn
 
                 immatureRelationshipCount:
                     conversionEvidence.immatureRelationshipCount,
+
+                overall:
+                    createInsuranceAcquisitionOverallPerformanceSummary({
+                        relationshipIds:
+                            conversionEvidence.relationshipIds,
+
+                        views,
+
+                        outcomeFacts:
+                            conversionEvidence.outcomeFacts
+                    }),
 
                 dimensions:
                     projectInsuranceAcquisitionPerformanceDimensions(

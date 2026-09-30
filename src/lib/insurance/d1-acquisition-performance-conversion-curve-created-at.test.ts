@@ -273,6 +273,17 @@ test(
         assert.deepEqual(
             result.windows.map(
                 window =>
+                    window.overall.relationshipCount
+            ),
+            [
+                1,
+                2
+            ]
+        );
+
+        assert.deepEqual(
+            result.windows.map(
+                window =>
                     window.dimensions.map(
                         dimension =>
                             dimension.dimension
@@ -508,6 +519,62 @@ test(
                         "acquisitionSource"
                     ]
                 });
+
+        assert.deepEqual(
+            result.windows[0]
+                ?.overall
+                .rates
+                .quoteRate,
+            {
+                numerator:
+                    2,
+
+                denominator:
+                    2
+            }
+        );
+
+        assert.deepEqual(
+            result.windows[0]
+                ?.overall
+                .rates
+                .bindRate,
+            {
+                numerator:
+                    0,
+
+                denominator:
+                    2
+            }
+        );
+
+        assert.deepEqual(
+            result.windows[1]
+                ?.overall
+                .rates
+                .quoteRate,
+            {
+                numerator:
+                    1,
+
+                denominator:
+                    1
+            }
+        );
+
+        assert.deepEqual(
+            result.windows[1]
+                ?.overall
+                .rates
+                .bindRate,
+            {
+                numerator:
+                    1,
+
+                denominator:
+                    1
+            }
+        );
 
         const sevenDayBucket =
             result.windows[0]
@@ -812,6 +879,16 @@ test(
             assert.equal(
                 window.immatureRelationshipCount,
                 0
+            );
+
+            assert.equal(
+                window.overall.relationshipCount,
+                0
+            );
+
+            assert.deepEqual(
+                window.overall.currencies,
+                []
             );
 
             assert.equal(

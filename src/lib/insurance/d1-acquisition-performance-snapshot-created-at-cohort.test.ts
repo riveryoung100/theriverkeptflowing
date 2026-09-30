@@ -347,6 +347,43 @@ test(
             2
         );
 
+        assert.equal(
+            result.overall.relationshipCount,
+            2
+        );
+
+        assert.equal(
+            result.overall.outcomes.quotedRelationshipCount,
+            2
+        );
+
+        assert.equal(
+            result.overall.outcomes.boundRelationshipCount,
+            1
+        );
+
+        assert.deepEqual(
+            result.overall.rates.quoteRate,
+            {
+                numerator:
+                    2,
+
+                denominator:
+                    2
+            }
+        );
+
+        assert.deepEqual(
+            result.overall.rates.bindRate,
+            {
+                numerator:
+                    1,
+
+                denominator:
+                    2
+            }
+        );
+
         assert.deepEqual(
             result.dimensions.map(
                 projection =>
@@ -544,6 +581,31 @@ test(
         assert.equal(
             result.relationshipCount,
             0
+        );
+
+        assert.equal(
+            result.overall.relationshipCount,
+            0
+        );
+
+        assert.deepEqual(
+            result.overall.currencies,
+            []
+        );
+
+        assert.equal(
+            result.overall.outcomes.relationshipCount,
+            0
+        );
+
+        assert.equal(
+            "quoteRate" in result.overall.rates,
+            false
+        );
+
+        assert.equal(
+            "bindRate" in result.overall.rates,
+            false
         );
 
         assert.deepEqual(

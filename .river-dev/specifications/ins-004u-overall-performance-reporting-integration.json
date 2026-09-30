@@ -1,0 +1,35 @@
+{
+  "id": "INS-004U",
+  "phase": "Overall Performance Reporting Integration",
+  "parent": "INS-004",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-004J",
+    "INS-004N",
+    "INS-004Q",
+    "INS-004S",
+    "INS-004T"
+  ],
+  "objective": "Expose the canonical non-dimensional overall acquisition performance summary on lifetime, fixed-as-of, single-window, and multi-window reporting surfaces without changing evidence acquisition.",
+  "semantics": {
+    "lifetimeDenominator": "overall.relationshipCount equals created-at cohort relationshipCount",
+    "asOfDenominator": "overall.relationshipCount equals created-at cohort relationshipCount",
+    "singleWindowDenominator": "overall.relationshipCount equals matureRelationshipCount",
+    "multiWindowDenominator": "each window overall.relationshipCount equals that window matureRelationshipCount",
+    "economics": "reuse the already-built attributed economics views",
+    "outcomes": "reuse the same durable outcome facts already supplied to the corresponding dimension projection"
+  },
+  "rules": [
+    "Lifetime reporting adds overall using its already-loaded relationshipIds, attributed views, and durable outcome facts.",
+    "Lifetime empty-cohort reporting invokes the canonical pure overall owner with empty relationshipIds, views, and outcomeFacts while preserving zero evidence reads.",
+    "Fixed-as-of reporting adds overall using its existing relationshipIds, as-of attributed views, and asOfEvidence.outcomeFacts.",
+    "Single-window reporting adds overall using only mature conversionEvidence.relationshipIds, mature attributed views, and conversionEvidence.outcomeFacts.",
+    "Each multi-window curve entry adds its own overall projection using that window's mature relationship IDs, attributed views, and filtered outcome facts.",
+    "Existing dimension projection behavior and ordering remain unchanged.",
+    "Existing persistence call counts remain unchanged.",
+    "No reporting surface rereads facts to build overall.",
+    "No overall total is reconstructed from dimension buckets.",
+    "Exact rates and acquisition cost per outcome remain owned by INS-004T and its canonical dependencies.",
+    "No SQL, schema, persistence mutation, migration execution, currency conversion, dashboard UI, deployment, or telephony activation is introduced."
+  ]
+}
