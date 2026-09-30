@@ -319,12 +319,153 @@ function requireCreatedAtCohortQuery(
 }
 
 
+function requireCreatedAtCohortPageQuery(
+    query:
+        D1RiverCrmCreatedAtCohortPageQuery
+): {
+    readonly createdAtFromInclusive:
+        string;
+
+    readonly createdAtToExclusive:
+        string;
+
+    readonly pageSize:
+        number;
+
+    readonly cursor?:
+        D1RiverCrmCreatedAtCohortCursor;
+} {
+    if(
+        typeof query !== "object" ||
+        query === null
+    ){
+        throw new TypeError(
+            "River CRM created-at cohort page requires a query."
+        );
+    }
+
+    const validatedRange =
+        requireCreatedAtCohortQuery({
+            createdAtFromInclusive:
+                query.createdAtFromInclusive,
+
+            createdAtToExclusive:
+                query.createdAtToExclusive,
+
+            limit:
+                query.pageSize ??
+                50
+        });
+
+    if(query.cursor === undefined){
+        return {
+            createdAtFromInclusive:
+                validatedRange.createdAtFromInclusive,
+
+            createdAtToExclusive:
+                validatedRange.createdAtToExclusive,
+
+            pageSize:
+                validatedRange.limit
+        };
+    }
+
+    if(
+        typeof query.cursor !== "object" ||
+        query.cursor === null
+    ){
+        throw new TypeError(
+            "River CRM created-at cohort page requires cursor to be an object when provided."
+        );
+    }
+
+    const createdAt =
+        requireCanonicalUtcTimestamp(
+            query.cursor.createdAt,
+            "cursor.createdAt"
+        );
+
+    requireRelationshipId(
+        query.cursor.relationshipId
+    );
+
+    if(
+        createdAt < validatedRange.createdAtFromInclusive ||
+        createdAt >= validatedRange.createdAtToExclusive
+    ){
+        throw new TypeError(
+            "River CRM created-at cohort page requires cursor.createdAt to fall inside the requested created-at range."
+        );
+    }
+
+    return {
+        createdAtFromInclusive:
+            validatedRange.createdAtFromInclusive,
+
+        createdAtToExclusive:
+            validatedRange.createdAtToExclusive,
+
+        pageSize:
+            validatedRange.limit,
+
+        cursor: {
+            createdAt,
+
+            relationshipId:
+                query.cursor.relationshipId
+        }
+    };
+}
+
+export interface D1RiverCrmCreatedAtCohortCursor {
+    readonly createdAt:
+        string;
+
+    readonly relationshipId:
+        string;
+}
+
+
+export interface D1RiverCrmCreatedAtCohortPageQuery {
+    readonly createdAtFromInclusive:
+        string;
+
+    readonly createdAtToExclusive:
+        string;
+
+    readonly pageSize?:
+        number;
+
+    readonly cursor?:
+        D1RiverCrmCreatedAtCohortCursor;
+}
+
+
+export interface D1RiverCrmCreatedAtCohortPage {
+    readonly relationships:
+        readonly RiverCrmRelationship[];
+
+    readonly hasMore:
+        boolean;
+
+    readonly nextCursor?:
+        D1RiverCrmCreatedAtCohortCursor;
+}
+
+
 export interface D1RiverCrmCreatedAtCohortPersistence {
     listCreatedAtRange(
         query:
             RiverCrmCreatedAtCohortQuery
     ): Promise<
         readonly RiverCrmRelationship[]
+    >;
+
+    listCreatedAtRangePage(
+        query:
+            D1RiverCrmCreatedAtCohortPageQuery
+    ): Promise<
+        D1RiverCrmCreatedAtCohortPage
     >;
 }
 
@@ -497,6 +638,117 @@ implements RiverCrmPersistence {
         return result.results.map(
             rowToRelationship
         );
+
+    }
+
+
+    public async listCreatedAtRangePage(
+        query:
+            D1RiverCrmCreatedAtCohortPageQuery
+    ): Promise<D1RiverCrmCreatedAtCohortPage> {
+
+        const validated =
+            requireCreatedAtCohortPageQuery(
+                query
+            );
+
+        const probeLimit =
+            validated.pageSize + 1;
+
+        const result =
+            validated.cursor === undefined
+                ? await this.database
+                    .prepare(
+                        `
+                            SELECT *
+                            FROM river_crm_relationships
+                            WHERE created_at >= ?1
+                              AND created_at < ?2
+                            ORDER BY created_at DESC, relationship_id ASC
+                            LIMIT ?3
+                        `
+                    )
+                    .bind(
+                        validated.createdAtFromInclusive,
+                        validated.createdAtToExclusive,
+                        probeLimit
+                    )
+                    .all<RiverCrmRelationshipRow>()
+                : await this.database
+                    .prepare(
+                        `
+                            SELECT *
+                            FROM river_crm_relationships
+                            WHERE created_at >= ?1
+                              AND created_at < ?2
+                              AND (
+                                  created_at < ?3
+                                  OR (
+                                      created_at = ?3
+                                      AND relationship_id > ?4
+                                  )
+                              )
+                            ORDER BY created_at DESC, relationship_id ASC
+                            LIMIT ?5
+                        `
+                    )
+                    .bind(
+                        validated.createdAtFromInclusive,
+                        validated.createdAtToExclusive,
+                        validated.cursor.createdAt,
+                        validated.cursor.relationshipId,
+                        probeLimit
+                    )
+                    .all<RiverCrmRelationshipRow>();
+
+        const pageRows =
+            result.results.slice(
+                0,
+                validated.pageSize
+            );
+
+        const relationships =
+            pageRows.map(
+                rowToRelationship
+            );
+
+        const hasMore =
+            result.results.length >
+            validated.pageSize;
+
+        if(!hasMore){
+            return {
+                relationships,
+                hasMore:
+                    false
+            };
+        }
+
+        const lastRelationship =
+            relationships[
+                relationships.length - 1
+            ];
+
+        if(lastRelationship === undefined){
+            throw new RangeError(
+                "River CRM created-at cohort page cannot derive a continuation cursor from an empty page."
+            );
+        }
+
+        return {
+            relationships,
+
+            hasMore:
+                true,
+
+            nextCursor: {
+                createdAt:
+                    lastRelationship.createdAt,
+
+                relationshipId:
+                    lastRelationship.relationshipId
+            }
+        };
 
     }
 

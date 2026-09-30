@@ -1,0 +1,51 @@
+{
+  "id": "INS-004X",
+  "phase": "Bounded Created-At Keyset Page Primitive",
+  "parent": "INS-004",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003O",
+    "INS-004W"
+  ],
+  "objective": "Introduce a bounded deterministic keyset-pagination primitive for River CRM created-at cohorts without changing legacy bounded callers or insurance reporting semantics yet.",
+  "ordering": [
+    "created_at DESC",
+    "relationship_id ASC"
+  ],
+  "cursor": {
+    "fields": [
+      "createdAt",
+      "relationshipId"
+    ],
+    "nextPagePredicate": "created_at < cursor.createdAt OR (created_at = cursor.createdAt AND relationship_id > cursor.relationshipId)"
+  },
+  "bounds": {
+    "defaultPageSize": 50,
+    "minimumPageSize": 1,
+    "maximumPageSize": 100,
+    "internalProbeRows": "pageSize + 1"
+  },
+  "rules": [
+    "Keep RiverCrmPersistence unchanged.",
+    "Keep legacy listCreatedAtRange behavior unchanged.",
+    "Add pagination only to D1RiverCrmCreatedAtCohortPersistence.",
+    "Validate range, page size, cursor timestamp, and cursor relationship identity before D1 access.",
+    "Return at most pageSize relationships.",
+    "Set hasMore only from the bounded pageSize plus one probe.",
+    "Emit nextCursor only when hasMore is true.",
+    "Derive nextCursor from the last relationship actually returned.",
+    "Never use OFFSET pagination.",
+    "Never issue an unbounded relationship query.",
+    "Do not migrate insurance reporting consumers in this slice.",
+    "Do not add or execute a schema migration in this slice."
+  ],
+  "explicitlyDeferred": [
+    "insurance reporting full-range page composition",
+    "explicit report completeness metadata",
+    "created_at plus relationship_id compound index",
+    "migration execution",
+    "dashboard UI",
+    "deployment",
+    "telephony activation"
+  ]
+}
