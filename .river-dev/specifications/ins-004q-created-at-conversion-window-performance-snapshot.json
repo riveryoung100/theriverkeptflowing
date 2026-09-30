@@ -1,0 +1,50 @@
+{
+  "id": "INS-004Q",
+  "phase": "Created-At N-Day Conversion Performance Snapshot",
+  "parent": "INS-004",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-004J",
+    "INS-004L",
+    "INS-004O",
+    "INS-004P"
+  ],
+  "objective": "Produce combined economics, durable outcome, and exact acquisition-cost-per-outcome performance for only fully mature relationships inside a created-at cohort and one fixed N-day observation window.",
+  "projectionVersion": "insurance-acquisition-created-at-conversion-window-performance-snapshot-v1",
+  "semantics": {
+    "createdAtCohort": "createdAtFromInclusive <= relationship.createdAt < createdAtToExclusive",
+    "matureDenominator": "relationship.createdAt + windowDays * 24h <= asOfExclusive",
+    "evidenceWindow": "relationship.createdAt <= fact.occurredAt < min(relationshipWindowEndExclusive, asOfExclusive)",
+    "presentation": "current-state segmentation metadata only",
+    "effectiveAt": "metadata only; never controls inclusion"
+  },
+  "composition": {
+    "dimensionValidation": "reuse canonical INS-004J dimension normalization",
+    "cohort": "exactly one canonical CRM listCreatedAtRange read",
+    "rawEvidence": "exactly one INS-004L getEvidence call for the full created-at cohort",
+    "conversionWindow": "exactly one INS-004O/INS-004P conversion-window evidence pass",
+    "attributedEconomics": "one in-memory canonical attributed economics build for mature relationships only",
+    "performanceProjection": "reuse canonical INS-004J combined economics/outcome/cost projection"
+  },
+  "rules": [
+    "Requested dimensions are validated and deduplicated before persistence access.",
+    "The CRM created-at cohort is resolved exactly once.",
+    "The raw evidence application is called exactly once with the full created-at cohort.",
+    "Relationship identity and createdAt are retained together until conversion-window maturity is evaluated.",
+    "Only mature relationships enter the N-day denominator.",
+    "Immature relationships are reported separately and do not enter economics, outcome, or cost-per-outcome projections.",
+    "Evidence before relationship creation is excluded.",
+    "Evidence exactly at relationship creation is eligible.",
+    "Evidence exactly at the N-day window end is excluded.",
+    "The same conversion-window-filtered economics and durable outcome facts feed all three projection families.",
+    "Current presentation metadata is filtered to mature relationship identity but is not historically reconstructed.",
+    "No second raw evidence load, second durable outcome read, second conversion-window pass, new SQL, schema change, persistence mutation, rate division, currency conversion, dashboard UI, deployment, or telephony activation is introduced."
+  ],
+  "explicitlyDeferred": [
+    "historical presentation reconstruction",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}

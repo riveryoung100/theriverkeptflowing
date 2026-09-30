@@ -65,3 +65,4 @@ export * from "./d1-acquisition-raw-evidence-batch";
 export * from "./d1-acquisition-as-of-attributed-economics-batch";
 export * from "./d1-acquisition-performance-snapshot-created-at-as-of";
 export * from "./acquisition-conversion-window-evidence";
+export * from "./d1-acquisition-performance-snapshot-created-at-conversion-window";
