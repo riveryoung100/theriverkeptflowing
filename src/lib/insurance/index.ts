@@ -68,3 +68,4 @@ export * from "./acquisition-conversion-window-evidence";
 export * from "./d1-acquisition-performance-snapshot-created-at-conversion-window";
 export * from "./d1-acquisition-performance-conversion-curve-created-at";
 export * from "./acquisition-overall-performance-summary";
+export * from "./acquisition-return-efficiency";

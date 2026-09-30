@@ -1,0 +1,43 @@
+{
+  "id": "INS-004V",
+  "phase": "Pure Acquisition Return Efficiency",
+  "parent": "INS-004",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003E",
+    "INS-003H",
+    "INS-004T"
+  ],
+  "objective": "Represent realized commission and contribution efficiency against acquisition cost as exact currency-isolated integer ratios without treating premium as revenue.",
+  "projectionVersion": "insurance-acquisition-return-efficiency-v1",
+  "semantics": {
+    "realizedCommissionToAcquisitionCost": "realizedCommissionMinorUnits / acquisitionCostMinorUnits represented as an exact signed integer numerator and positive integer denominator",
+    "contributionToAcquisitionCost": "contributionMarginMinorUnits / acquisitionCostMinorUnits represented as an exact signed integer numerator and positive integer denominator",
+    "zeroAcquisitionCost": "omit both ratios rather than divide by zero",
+    "currency": "each currency is evaluated independently with no implicit conversion",
+    "premium": "premium is not River revenue and is not used in either return-efficiency ratio"
+  },
+  "rules": [
+    "The pure owner accepts structural currency projections containing currency, acquisitionCostMinorUnits, realizedCommissionMinorUnits, and contributionMarginMinorUnits.",
+    "Currency must be a canonical uppercase three-letter code.",
+    "Duplicate currency entries are rejected rather than aggregated.",
+    "Acquisition cost must be a safe non-negative integer.",
+    "Realized commission and contribution margin must be safe signed integers.",
+    "A positive acquisition-cost denominator produces exact numeratorMinorUnits and denominatorMinorUnits pairs.",
+    "A zero acquisition-cost denominator omits both ratios.",
+    "Negative realized commission or contribution numerators remain valid and signed.",
+    "Output currency order is deterministic ascending lexical order.",
+    "The input collection is not mutated.",
+    "No premium-to-cost return metric is produced.",
+    "No floating-point division, percentage calculation, rounding, SQL, persistence access, persistence mutation, schema change, dashboard UI, deployment, or telephony activation occurs."
+  ],
+  "explicitlyDeferred": [
+    "integration into overall performance reporting",
+    "integration into dimension performance reporting",
+    "display percentage or multiple formatting",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
