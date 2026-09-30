@@ -1,0 +1,49 @@
+{
+  "id": "INS-004T",
+  "phase": "Pure Overall Acquisition Performance Summary",
+  "parent": "INS-004",
+  "status": "implementation",
+  "dependsOn": [
+    "INS-003E",
+    "INS-003V",
+    "INS-003Y",
+    "INS-004J"
+  ],
+  "objective": "Produce one canonical non-dimensional acquisition performance summary from an explicit relationship cohort, attributed relationship economics views, and durable outcome facts.",
+  "projectionVersion": "insurance-acquisition-overall-performance-summary-v1",
+  "semantics": {
+    "economics": "sum canonical relationship economics directly by currency",
+    "outcomes": "reuse canonical global durable outcome analytics",
+    "rates": "reuse canonical exact quote and bind fractions",
+    "costPerOutcome": "reuse canonical global acquisition cost per outcome",
+    "currency": "strictly isolated; no implicit conversion"
+  },
+  "rules": [
+    "Relationship identities are canonically validated and deduplicated preserving first occurrence order.",
+    "Exactly one attributed economics view is required for every canonical cohort relationship.",
+    "Views outside the explicit cohort are rejected.",
+    "Attributed view relationshipId must match its relationship analytics relationshipId.",
+    "Relationship analytics must carry the canonical acquisition analytics projection version.",
+    "Overall economics are totaled directly from canonical relationship currency projections rather than reconstructed from a dimension bucket.",
+    "Currency totals are sorted deterministically by currency.",
+    "Every economic amount remains an integer minor-unit value.",
+    "Signed commission and contribution values remain signed.",
+    "Safe-integer overflow is rejected.",
+    "Durable quote and bind attainment are computed only by the canonical outcome analytics owner.",
+    "Exact quote and bind rates are computed only by the canonical outcome rate owner.",
+    "Acquisition cost per quote and bind is computed only by the canonical cost-per-outcome owner.",
+    "One relationship denominator is cross-checked across overall economics, outcomes, rates, and cost-per-outcome.",
+    "No dimensional bucketing, SQL, persistence read, persistence mutation, rate division, floating-point percentage, currency conversion, dashboard UI, deployment, or telephony activation occurs in this layer."
+  ],
+  "explicitlyDeferred": [
+    "integration into lifetime created-at performance snapshot",
+    "integration into fixed-as-of performance snapshot",
+    "integration into single-window conversion snapshot",
+    "integration into multi-window conversion curve",
+    "display percentage formatting",
+    "dashboard UI",
+    "migration execution",
+    "deployment",
+    "telephony activation"
+  ]
+}
