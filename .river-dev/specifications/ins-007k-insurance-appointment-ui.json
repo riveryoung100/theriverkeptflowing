@@ -1,0 +1,44 @@
+{
+    "slice":  "INS-007K",
+    "title":  "Private insurance appointment controls in canonical River OS CRM",
+    "status":  "implementation",
+    "workspace":  "/river-os/crm",
+    "component":  "InsuranceAppointmentForm.astro",
+    "action":  "/river-os/actions/insurance-appointment",
+    "fields":  {
+                   "relationshipId":  "canonical hidden relationship identity",
+                   "operation":  [
+                                     "schedule",
+                                     "clear"
+                                 ],
+                   "appointmentAt":  "hidden absolute ISO timestamp for schedule only",
+                   "browserEditor":  "unnamed datetime-local input"
+               },
+    "display":  {
+                    "timezone":  "America/Chicago",
+                    "existingState":  "display current canonical appointment and initialize browser local editor",
+                    "emptyState":  "No appointment scheduled."
+                },
+    "order":  [
+                  "InsuranceOperatingStateForm",
+                  "InsuranceAppointmentForm",
+                  "InsuranceFollowUpForm",
+                  "generic CRM update form"
+              ],
+    "invariants":  [
+                       "render only for relationships with canonical insurance presentation context",
+                       "browser datetime-local input is never persisted directly",
+                       "submit absolute ISO appointmentAt",
+                       "clear uses explicit operation with no timestamp sentinel",
+                       "appointment control does not mutate stage",
+                       "appointment control does not mutate quote status",
+                       "appointment control does not mutate assigned producer",
+                       "appointment control does not mutate nextFollowUpAt",
+                       "appointment control does not create event identity",
+                       "appointment control does not activate calendar integration",
+                       "appointment control does not activate contact providers",
+                       "appointment control does not add routing scoring or a second CRM",
+                       "no migration",
+                       "no deployment"
+                   ]
+}

@@ -1,5 +1,6 @@
 ---
 import InsuranceOperatingStateForm from "./InsuranceOperatingStateForm.astro";
+import InsuranceAppointmentForm from "./InsuranceAppointmentForm.astro";
 import InsuranceFollowUpForm from "./InsuranceFollowUpForm.astro";
 import type {
     RiverCrmRelationship
@@ -348,6 +349,16 @@ function formatInsuranceDate(
                                                         relationship.relationshipId
                                                     )!.assignedProducer
                                                 }
+                                            />
+                                        )
+                                    }
+                                    {
+                                        insuranceByRelationshipId.has(
+                                            relationship.relationshipId
+                                        ) && (
+                                            <InsuranceAppointmentForm
+                                                relationshipId={relationship.relationshipId}
+                                                appointmentAt={relationship.appointmentAt}
                                             />
                                         )
                                     }

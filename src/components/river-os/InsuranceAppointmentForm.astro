@@ -1,0 +1,476 @@
+---
+interface Props {
+    readonly relationshipId:
+        string;
+
+    readonly appointmentAt?:
+        string;
+}
+
+
+const {
+    relationshipId,
+    appointmentAt
+} = Astro.props as Props;
+
+
+function formatCentralAppointment(
+    value:
+        string
+):
+    string {
+
+    return new Date(
+        value
+    ).toLocaleString(
+        "en-US",
+        {
+            timeZone:
+                "America/Chicago",
+
+            timeZoneName:
+                "short"
+        }
+    );
+}
+---
+
+<section
+    class="insurance-appointment"
+    aria-label={`Appointment controls for ${relationshipId}`}
+>
+    <div class="insurance-appointment-heading">
+        <div>
+            <strong>Appointment</strong>
+
+            {
+                appointmentAt === undefined
+                    ? (
+                        <p>
+                            No appointment scheduled.
+                        </p>
+                    )
+                    : (
+                        <p>
+                            Scheduled for
+                            {" "}
+                            <time datetime={appointmentAt}>
+                                {formatCentralAppointment(appointmentAt)}
+                            </time>
+                        </p>
+                    )
+            }
+        </div>
+    </div>
+
+    <form
+        class="insurance-appointment-schedule"
+        method="post"
+        action="/river-os/actions/insurance-appointment"
+        data-insurance-appointment-schedule
+        data-current-appointment={appointmentAt ?? ""}
+    >
+        <input
+            type="hidden"
+            name="relationshipId"
+            value={relationshipId}
+        />
+
+        <input
+            type="hidden"
+            name="operation"
+            value="schedule"
+        />
+
+        <input
+            type="hidden"
+            name="appointmentAt"
+            value=""
+            data-appointment-absolute
+        />
+
+        <label>
+            <span>Appointment time</span>
+
+            <input
+                type="datetime-local"
+                data-appointment-local
+                required
+            />
+        </label>
+
+        <div class="insurance-appointment-actions">
+            <span>
+                Enter the time in your browser&apos;s local time.
+            </span>
+
+            <button type="submit">
+                {
+                    appointmentAt === undefined
+                        ? "Schedule appointment"
+                        : "Reschedule appointment"
+                }
+            </button>
+        </div>
+    </form>
+
+    {
+        appointmentAt !== undefined && (
+            <form
+                class="insurance-appointment-clear"
+                method="post"
+                action="/river-os/actions/insurance-appointment"
+            >
+                <input
+                    type="hidden"
+                    name="relationshipId"
+                    value={relationshipId}
+                />
+
+                <input
+                    type="hidden"
+                    name="operation"
+                    value="clear"
+                />
+
+                <button
+                    type="submit"
+                    class="insurance-appointment-clear-button"
+                >
+                    Clear appointment
+                </button>
+            </form>
+        )
+    }
+</section>
+
+<script>
+    function localDateTimeValue(
+        absoluteValue:
+            string
+    ):
+        string {
+
+        const date =
+            new Date(
+                absoluteValue
+            );
+
+        if(
+            Number.isNaN(
+                date.getTime()
+            )
+        ){
+            return "";
+        }
+
+        const localMilliseconds =
+            date.getTime() -
+            (
+                date.getTimezoneOffset() *
+                60_000
+            );
+
+        return new Date(
+            localMilliseconds
+        )
+            .toISOString()
+            .slice(
+                0,
+                16
+            );
+    }
+
+
+    const scheduleForms =
+        document.querySelectorAll<HTMLFormElement>(
+            "[data-insurance-appointment-schedule]"
+        );
+
+
+    for(const form of scheduleForms){
+        const localInput =
+            form.querySelector<HTMLInputElement>(
+                "[data-appointment-local]"
+            );
+
+        const absoluteInput =
+            form.querySelector<HTMLInputElement>(
+                "[data-appointment-absolute]"
+            );
+
+        if(
+            localInput === null ||
+            absoluteInput === null
+        ){
+            continue;
+        }
+
+        const currentAppointment =
+            form.dataset
+                .currentAppointment ??
+            "";
+
+        if(
+            currentAppointment.length >
+                0 &&
+            localInput.value.length ===
+                0
+        ){
+            localInput.value =
+                localDateTimeValue(
+                    currentAppointment
+                );
+        }
+
+        localInput.addEventListener(
+            "input",
+            () => {
+                localInput.setCustomValidity(
+                    ""
+                );
+            }
+        );
+
+        form.addEventListener(
+            "submit",
+            event => {
+                const localValue =
+                    localInput.value
+                        .trim();
+
+                if(localValue.length === 0){
+                    event.preventDefault();
+
+                    localInput.setCustomValidity(
+                        "Choose a appointment date and time."
+                    );
+
+                    localInput.reportValidity();
+
+                    return;
+                }
+
+                const absoluteDate =
+                    new Date(
+                        localValue
+                    );
+
+                if(
+                    Number.isNaN(
+                        absoluteDate.getTime()
+                    )
+                ){
+                    event.preventDefault();
+
+                    localInput.setCustomValidity(
+                        "Choose a valid appointment date and time."
+                    );
+
+                    localInput.reportValidity();
+
+                    return;
+                }
+
+                localInput.setCustomValidity(
+                    ""
+                );
+
+                absoluteInput.value =
+                    absoluteDate
+                        .toISOString();
+            }
+        );
+    }
+</script>
+
+<style>
+    .insurance-appointment {
+        display:
+            grid;
+        gap:
+            14px;
+        margin:
+            18px 0;
+        padding:
+            16px;
+        border:
+            1px solid color-mix(
+                in srgb,
+                currentColor 14%,
+                transparent
+            );
+        border-radius:
+            12px;
+    }
+
+    .insurance-appointment-heading strong {
+        display:
+            block;
+        margin-bottom:
+            4px;
+    }
+
+    .insurance-appointment-heading p {
+        margin:
+            0;
+        max-width:
+            46rem;
+        font-size:
+            0.9rem;
+        line-height:
+            1.5;
+        opacity:
+            0.72;
+    }
+
+    .insurance-appointment-schedule {
+        display:
+            grid;
+        grid-template-columns:
+            minmax(
+                0,
+                1fr
+            )
+            auto;
+        align-items:
+            end;
+        gap:
+            12px;
+    }
+
+    .insurance-appointment-schedule label {
+        display:
+            grid;
+        gap:
+            6px;
+        min-width:
+            0;
+    }
+
+    .insurance-appointment-schedule label > span {
+        font-size:
+            0.78rem;
+        font-weight:
+            700;
+        letter-spacing:
+            0.02em;
+        opacity:
+            0.72;
+    }
+
+    .insurance-appointment-schedule input,
+    .insurance-appointment button {
+        font:
+            inherit;
+    }
+
+    .insurance-appointment-schedule input[type="datetime-local"] {
+        width:
+            100%;
+        min-width:
+            0;
+        box-sizing:
+            border-box;
+        border:
+            1px solid var(--river-line);
+        border-radius:
+            10px;
+        background:
+            var(--river-white);
+        color:
+            var(--river-text);
+        padding:
+            0.7rem 0.8rem;
+    }
+
+    .insurance-appointment-actions {
+        display:
+            grid;
+        justify-items:
+            end;
+        gap:
+            6px;
+    }
+
+    .insurance-appointment-actions > span {
+        color:
+            var(--river-text-muted);
+        font-size:
+            0.74rem;
+        font-weight:
+            700;
+        text-align:
+            right;
+    }
+
+    .insurance-appointment-actions button,
+    .insurance-appointment-clear-button {
+        border:
+            0;
+        border-radius:
+            999px;
+        cursor:
+            pointer;
+        font:
+            inherit;
+        font-weight:
+            800;
+        padding:
+            0.7rem 0.95rem;
+    }
+
+    .insurance-appointment-actions button {
+        background:
+            var(--river-water);
+        color:
+            var(--river-white);
+    }
+
+    .insurance-appointment-clear {
+        display:
+            flex;
+        justify-content:
+            flex-end;
+    }
+
+    .insurance-appointment-clear-button {
+        border:
+            1px solid var(--river-line);
+        background:
+            transparent;
+        color:
+            var(--river-text-soft);
+    }
+
+    @media (
+        max-width:
+            760px
+    ) {
+        .insurance-appointment-schedule {
+            grid-template-columns:
+                1fr;
+        }
+
+        .insurance-appointment-actions {
+            justify-items:
+                stretch;
+        }
+
+        .insurance-appointment-actions > span {
+            text-align:
+                left;
+        }
+
+        .insurance-appointment-clear {
+            justify-content:
+                stretch;
+        }
+
+        .insurance-appointment-actions button,
+        .insurance-appointment-clear-button {
+            width:
+                100%;
+        }
+    }
+</style>
