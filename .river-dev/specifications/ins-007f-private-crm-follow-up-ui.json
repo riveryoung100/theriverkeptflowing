@@ -1,0 +1,72 @@
+{
+  "id": "INS-007F",
+  "phase": "Private CRM Insurance Follow-Up UI",
+  "branch": "cif-001-canonical-content-source-record",
+  "status": "implemented",
+  "objective": "Expose the landed INS-007E schedule and clear action inside existing insurance relationship cards without changing generic CRM or insurance operating-state authority.",
+  "workspace": "/river-os/crm",
+  "component": "InsuranceFollowUpForm.astro",
+  "placement": {
+    "inside": "Existing insurance relationship card",
+    "after": "InsuranceOperatingStateForm",
+    "before": "Generic crm-update form"
+  },
+  "props": [
+    "relationshipId",
+    "nextFollowUpAt"
+  ],
+  "display": {
+    "currentFollowUpSource": "RiverCrmRelationship.nextFollowUpAt",
+    "serverDisplayTimeZone": "America/Chicago",
+    "emptyState": "No follow-up scheduled."
+  },
+  "scheduleTransport": {
+    "browserInput": "datetime-local",
+    "browserInputHasCanonicalFieldName": false,
+    "conversion": "new Date(localInput.value).toISOString()",
+    "canonicalHiddenField": "nextFollowUpAt",
+    "operation": "schedule",
+    "action": "/river-os/actions/insurance-follow-up"
+  },
+  "clearTransport": {
+    "operation": "clear",
+    "sentinelTimestamp": false,
+    "action": "/river-os/actions/insurance-follow-up",
+    "visibleOnlyWhenScheduled": true
+  },
+  "authority": {
+    "stageQuoteProducer": "InsuranceOperatingStateForm / INS-006V",
+    "followUpPersistence": "INS-007E -> INS-007D",
+    "followUpDueDerivation": "INS-006X",
+    "genericRelationshipEdit": "crm-update"
+  },
+  "scope": [
+    ".river-dev/specifications/ins-007f-private-crm-follow-up-ui.json",
+    "src/components/river-os/InsuranceFollowUpForm.astro",
+    "src/components/river-os/CrmRelationshipList.astro",
+    "src/lib/insurance/private-follow-up-ui-wiring.test.ts"
+  ],
+  "excluded": [
+    "crm.astro query-feedback changes",
+    "generic CRM parser changes",
+    "generic CRM persistence changes",
+    "follow-up action changes",
+    "follow-up domain changes",
+    "follow-up D1 executor changes",
+    "operating-state changes",
+    "triage changes",
+    "relationship events",
+    "contact attempts",
+    "provider execution",
+    "email",
+    "SMS",
+    "Telnyx",
+    "dialing",
+    "automatic routing",
+    "lead scoring",
+    "schema changes",
+    "migration changes",
+    "deployment",
+    "migration execution"
+  ]
+}

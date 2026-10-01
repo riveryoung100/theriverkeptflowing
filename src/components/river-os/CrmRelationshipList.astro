@@ -1,5 +1,6 @@
 ---
 import InsuranceOperatingStateForm from "./InsuranceOperatingStateForm.astro";
+import InsuranceFollowUpForm from "./InsuranceFollowUpForm.astro";
 import type {
     RiverCrmRelationship
 } from "../../lib/river-os/crm-workspace";
@@ -347,6 +348,16 @@ function formatInsuranceDate(
                                                         relationship.relationshipId
                                                     )!.assignedProducer
                                                 }
+                                            />
+                                        )
+                                    }
+                                    {
+                                        insuranceByRelationshipId.has(
+                                            relationship.relationshipId
+                                        ) && (
+                                            <InsuranceFollowUpForm
+                                                relationshipId={relationship.relationshipId}
+                                                nextFollowUpAt={relationship.nextFollowUpAt}
                                             />
                                         )
                                     }

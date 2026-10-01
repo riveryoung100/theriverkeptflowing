@@ -1,0 +1,476 @@
+---
+interface Props {
+    readonly relationshipId:
+        string;
+
+    readonly nextFollowUpAt?:
+        string;
+}
+
+
+const {
+    relationshipId,
+    nextFollowUpAt
+} = Astro.props as Props;
+
+
+function formatCentralFollowUp(
+    value:
+        string
+):
+    string {
+
+    return new Date(
+        value
+    ).toLocaleString(
+        "en-US",
+        {
+            timeZone:
+                "America/Chicago",
+
+            timeZoneName:
+                "short"
+        }
+    );
+}
+---
+
+<section
+    class="insurance-follow-up"
+    aria-label={`Follow-up controls for ${relationshipId}`}
+>
+    <div class="insurance-follow-up-heading">
+        <div>
+            <strong>Follow-up</strong>
+
+            {
+                nextFollowUpAt === undefined
+                    ? (
+                        <p>
+                            No follow-up scheduled.
+                        </p>
+                    )
+                    : (
+                        <p>
+                            Scheduled for
+                            {" "}
+                            <time datetime={nextFollowUpAt}>
+                                {formatCentralFollowUp(nextFollowUpAt)}
+                            </time>
+                        </p>
+                    )
+            }
+        </div>
+    </div>
+
+    <form
+        class="insurance-follow-up-schedule"
+        method="post"
+        action="/river-os/actions/insurance-follow-up"
+        data-insurance-follow-up-schedule
+        data-current-follow-up={nextFollowUpAt ?? ""}
+    >
+        <input
+            type="hidden"
+            name="relationshipId"
+            value={relationshipId}
+        />
+
+        <input
+            type="hidden"
+            name="operation"
+            value="schedule"
+        />
+
+        <input
+            type="hidden"
+            name="nextFollowUpAt"
+            value=""
+            data-follow-up-absolute
+        />
+
+        <label>
+            <span>Follow-up time</span>
+
+            <input
+                type="datetime-local"
+                data-follow-up-local
+                required
+            />
+        </label>
+
+        <div class="insurance-follow-up-actions">
+            <span>
+                Enter the time in your browser&apos;s local time.
+            </span>
+
+            <button type="submit">
+                {
+                    nextFollowUpAt === undefined
+                        ? "Schedule follow-up"
+                        : "Reschedule follow-up"
+                }
+            </button>
+        </div>
+    </form>
+
+    {
+        nextFollowUpAt !== undefined && (
+            <form
+                class="insurance-follow-up-clear"
+                method="post"
+                action="/river-os/actions/insurance-follow-up"
+            >
+                <input
+                    type="hidden"
+                    name="relationshipId"
+                    value={relationshipId}
+                />
+
+                <input
+                    type="hidden"
+                    name="operation"
+                    value="clear"
+                />
+
+                <button
+                    type="submit"
+                    class="insurance-follow-up-clear-button"
+                >
+                    Clear follow-up
+                </button>
+            </form>
+        )
+    }
+</section>
+
+<script>
+    function localDateTimeValue(
+        absoluteValue:
+            string
+    ):
+        string {
+
+        const date =
+            new Date(
+                absoluteValue
+            );
+
+        if(
+            Number.isNaN(
+                date.getTime()
+            )
+        ){
+            return "";
+        }
+
+        const localMilliseconds =
+            date.getTime() -
+            (
+                date.getTimezoneOffset() *
+                60_000
+            );
+
+        return new Date(
+            localMilliseconds
+        )
+            .toISOString()
+            .slice(
+                0,
+                16
+            );
+    }
+
+
+    const scheduleForms =
+        document.querySelectorAll<HTMLFormElement>(
+            "[data-insurance-follow-up-schedule]"
+        );
+
+
+    for(const form of scheduleForms){
+        const localInput =
+            form.querySelector<HTMLInputElement>(
+                "[data-follow-up-local]"
+            );
+
+        const absoluteInput =
+            form.querySelector<HTMLInputElement>(
+                "[data-follow-up-absolute]"
+            );
+
+        if(
+            localInput === null ||
+            absoluteInput === null
+        ){
+            continue;
+        }
+
+        const currentFollowUp =
+            form.dataset
+                .currentFollowUp ??
+            "";
+
+        if(
+            currentFollowUp.length >
+                0 &&
+            localInput.value.length ===
+                0
+        ){
+            localInput.value =
+                localDateTimeValue(
+                    currentFollowUp
+                );
+        }
+
+        localInput.addEventListener(
+            "input",
+            () => {
+                localInput.setCustomValidity(
+                    ""
+                );
+            }
+        );
+
+        form.addEventListener(
+            "submit",
+            event => {
+                const localValue =
+                    localInput.value
+                        .trim();
+
+                if(localValue.length === 0){
+                    event.preventDefault();
+
+                    localInput.setCustomValidity(
+                        "Choose a follow-up date and time."
+                    );
+
+                    localInput.reportValidity();
+
+                    return;
+                }
+
+                const absoluteDate =
+                    new Date(
+                        localValue
+                    );
+
+                if(
+                    Number.isNaN(
+                        absoluteDate.getTime()
+                    )
+                ){
+                    event.preventDefault();
+
+                    localInput.setCustomValidity(
+                        "Choose a valid follow-up date and time."
+                    );
+
+                    localInput.reportValidity();
+
+                    return;
+                }
+
+                localInput.setCustomValidity(
+                    ""
+                );
+
+                absoluteInput.value =
+                    absoluteDate
+                        .toISOString();
+            }
+        );
+    }
+</script>
+
+<style>
+    .insurance-follow-up {
+        display:
+            grid;
+        gap:
+            14px;
+        margin:
+            18px 0;
+        padding:
+            16px;
+        border:
+            1px solid color-mix(
+                in srgb,
+                currentColor 14%,
+                transparent
+            );
+        border-radius:
+            12px;
+    }
+
+    .insurance-follow-up-heading strong {
+        display:
+            block;
+        margin-bottom:
+            4px;
+    }
+
+    .insurance-follow-up-heading p {
+        margin:
+            0;
+        max-width:
+            46rem;
+        font-size:
+            0.9rem;
+        line-height:
+            1.5;
+        opacity:
+            0.72;
+    }
+
+    .insurance-follow-up-schedule {
+        display:
+            grid;
+        grid-template-columns:
+            minmax(
+                0,
+                1fr
+            )
+            auto;
+        align-items:
+            end;
+        gap:
+            12px;
+    }
+
+    .insurance-follow-up-schedule label {
+        display:
+            grid;
+        gap:
+            6px;
+        min-width:
+            0;
+    }
+
+    .insurance-follow-up-schedule label > span {
+        font-size:
+            0.78rem;
+        font-weight:
+            700;
+        letter-spacing:
+            0.02em;
+        opacity:
+            0.72;
+    }
+
+    .insurance-follow-up-schedule input,
+    .insurance-follow-up button {
+        font:
+            inherit;
+    }
+
+    .insurance-follow-up-schedule input[type="datetime-local"] {
+        width:
+            100%;
+        min-width:
+            0;
+        box-sizing:
+            border-box;
+        border:
+            1px solid var(--river-line);
+        border-radius:
+            10px;
+        background:
+            var(--river-white);
+        color:
+            var(--river-text);
+        padding:
+            0.7rem 0.8rem;
+    }
+
+    .insurance-follow-up-actions {
+        display:
+            grid;
+        justify-items:
+            end;
+        gap:
+            6px;
+    }
+
+    .insurance-follow-up-actions > span {
+        color:
+            var(--river-text-muted);
+        font-size:
+            0.74rem;
+        font-weight:
+            700;
+        text-align:
+            right;
+    }
+
+    .insurance-follow-up-actions button,
+    .insurance-follow-up-clear-button {
+        border:
+            0;
+        border-radius:
+            999px;
+        cursor:
+            pointer;
+        font:
+            inherit;
+        font-weight:
+            800;
+        padding:
+            0.7rem 0.95rem;
+    }
+
+    .insurance-follow-up-actions button {
+        background:
+            var(--river-water);
+        color:
+            var(--river-white);
+    }
+
+    .insurance-follow-up-clear {
+        display:
+            flex;
+        justify-content:
+            flex-end;
+    }
+
+    .insurance-follow-up-clear-button {
+        border:
+            1px solid var(--river-line);
+        background:
+            transparent;
+        color:
+            var(--river-text-soft);
+    }
+
+    @media (
+        max-width:
+            760px
+    ) {
+        .insurance-follow-up-schedule {
+            grid-template-columns:
+                1fr;
+        }
+
+        .insurance-follow-up-actions {
+            justify-items:
+                stretch;
+        }
+
+        .insurance-follow-up-actions > span {
+            text-align:
+                left;
+        }
+
+        .insurance-follow-up-clear {
+            justify-content:
+                stretch;
+        }
+
+        .insurance-follow-up-actions button,
+        .insurance-follow-up-clear-button {
+            width:
+                100%;
+        }
+    }
+</style>
