@@ -7,6 +7,8 @@ export * from "./d1-quote-request";
 export * from "./http/quote-request-api";
 export * from "./lead-presentation";
 export * from "./lead-triage";
+export * from "./lead-follow-up";
+export * from "./d1-lead-follow-up";
 export * from "./d1-lead-presentation";
 export * from "./integration-boundary";
 export * from "./contact-attempt";

@@ -1,0 +1,72 @@
+{
+  "id": "INS-007D",
+  "phase": "Insurance Lead Follow-Up Domain and D1 Executor",
+  "branch": "cif-001-canonical-content-source-record",
+  "status": "implemented",
+  "objective": "Create the canonical provider-neutral scheduling policy and narrow single-row persistence executor for insurance lead follow-up using RiverCrmRelationship.nextFollowUpAt.",
+  "identity": {
+    "root": "relationshipId",
+    "storage": "river_crm_relationships.next_follow_up_at",
+    "rule": "No second follow-up identity or store is introduced."
+  },
+  "operations": [
+    "schedule",
+    "clear",
+    "no-op"
+  ],
+  "schedule": {
+    "input": "absolute timestamp carrying Z or an explicit numeric UTC offset",
+    "normalization": "new Date(input).toISOString()",
+    "sentinelDates": false
+  },
+  "clear": {
+    "input": null,
+    "storage": "SQL NULL"
+  },
+  "timestamps": {
+    "updatedAt": "server supplied occurredAt normalized to UTC ISO",
+    "stalePolicy": "Changed follow-up state requires occurredAt to be strictly later than current relationship.updatedAt so the optimistic-concurrency token advances; no-op performs no write."
+  },
+  "persistence": {
+    "shape": "one narrow UPDATE against river_crm_relationships",
+    "columnsChanged": [
+      "next_follow_up_at",
+      "updated_at"
+    ],
+    "optimisticConcurrency": "WHERE relationship_id = ? AND updated_at = ?",
+    "noOpWrites": 0,
+    "expectedChangedRows": 1
+  },
+  "eventPolicy": {
+    "eventWritten": false,
+    "reason": "Existing callback-requested and appointment-set event types do not truthfully represent an internal producer-created follow-up reminder."
+  },
+  "scope": [
+    ".river-dev/specifications/ins-007d-insurance-lead-follow-up-domain-executor.json",
+    "src/lib/insurance/lead-follow-up.ts",
+    "src/lib/insurance/lead-follow-up.test.ts",
+    "src/lib/insurance/d1-lead-follow-up.ts",
+    "src/lib/insurance/d1-lead-follow-up.test.ts",
+    "src/lib/insurance/index.ts"
+  ],
+  "excluded": [
+    "private HTTP action",
+    "CRM UI",
+    "pipeline-stage changes",
+    "quote-status changes",
+    "producer-assignment changes",
+    "relationship events",
+    "contact attempts",
+    "insurance-contact activation",
+    "Telnyx",
+    "email",
+    "SMS",
+    "dialing",
+    "automatic routing",
+    "lead scoring",
+    "public quote-request changes",
+    "schema changes",
+    "deployment",
+    "migration execution"
+  ]
+}
