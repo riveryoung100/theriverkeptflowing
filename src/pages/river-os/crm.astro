@@ -27,6 +27,16 @@ import type {
     InsuranceLeadPresentation
 } from "../../lib/insurance/lead-presentation";
 
+import {
+    createInsuranceLeadTriageSnapshot,
+    INSURANCE_LEAD_TRIAGE_FILTERS,
+    selectInsuranceLeadTriageItems
+} from "../../lib/insurance/lead-triage";
+
+import type {
+    InsuranceLeadTriageFilter
+} from "../../lib/insurance/lead-triage";
+
 
 export const prerender =
     false;
@@ -126,6 +136,186 @@ const insuranceSummary = {
                 presentation.quoteStatus === "bound"
         ).length
 };
+
+const requestedInsuranceQueue =
+    Astro.url.searchParams
+        .get(
+            "insuranceQueue"
+        )
+        ?.trim() ??
+    "all";
+
+
+const selectedInsuranceQueue:
+    InsuranceLeadTriageFilter =
+        (
+            INSURANCE_LEAD_TRIAGE_FILTERS as
+                readonly string[]
+        ).includes(
+            requestedInsuranceQueue
+        )
+            ? requestedInsuranceQueue as
+                InsuranceLeadTriageFilter
+            : "all";
+
+
+const insuranceTriageSnapshot =
+    createInsuranceLeadTriageSnapshot({
+        relationships,
+
+        insurancePresentations,
+
+        now:
+            new Date()
+                .toISOString()
+    });
+
+
+const selectedInsuranceTriageItems =
+    selectedInsuranceQueue ===
+        "all"
+        ? insuranceTriageSnapshot.items
+        : selectInsuranceLeadTriageItems(
+            insuranceTriageSnapshot,
+            selectedInsuranceQueue
+        );
+
+
+const visibleRelationships:
+    readonly RiverCrmRelationship[] =
+        (
+            selectedInsuranceQueue ===
+                "all" ||
+            !insurancePresentationReadable
+        )
+            ? relationships
+            : selectedInsuranceTriageItems.map(
+                item =>
+                    item.relationship
+            );
+
+
+const insuranceQueueOptions:
+    readonly {
+        readonly value:
+            InsuranceLeadTriageFilter;
+
+        readonly label:
+            string;
+
+        readonly count:
+            number;
+    }[] = [
+        {
+            value:
+                "all",
+
+            label:
+                "All relationships",
+
+            count:
+                relationships.length
+        },
+        {
+            value:
+                "new",
+
+            label:
+                "New inbound",
+
+            count:
+                insuranceTriageSnapshot
+                    .summary
+                    .newInbound
+        },
+        {
+            value:
+                "requested",
+
+            label:
+                "Requested",
+
+            count:
+                insuranceTriageSnapshot
+                    .summary
+                    .requested
+        },
+        {
+            value:
+                "in-progress",
+
+            label:
+                "In progress",
+
+            count:
+                insuranceTriageSnapshot
+                    .summary
+                    .inProgress
+        },
+        {
+            value:
+                "quoted",
+
+            label:
+                "Quoted",
+
+            count:
+                insuranceTriageSnapshot
+                    .summary
+                    .quoted
+        },
+        {
+            value:
+                "unassigned",
+
+            label:
+                "Unassigned",
+
+            count:
+                insuranceTriageSnapshot
+                    .summary
+                    .unassigned
+        },
+        {
+            value:
+                "follow-up-due",
+
+            label:
+                "Follow-up due",
+
+            count:
+                insuranceTriageSnapshot
+                    .summary
+                    .followUpDue
+        },
+        {
+            value:
+                "suppressed",
+
+            label:
+                "Suppressed",
+
+            count:
+                insuranceTriageSnapshot
+                    .summary
+                    .suppressed
+        }
+    ];
+
+
+function insuranceQueueHref(
+    value:
+        InsuranceLeadTriageFilter
+):
+    string {
+
+    return value ===
+        "all"
+        ? "/river-os/crm"
+        : `/river-os/crm?insuranceQueue=${encodeURIComponent(
+            value
+        )}`;
+}
 ---
 
 <style>
@@ -313,6 +503,131 @@ const insuranceSummary = {
         gap:
             1rem;
     }
+    .insurance-triage {
+        display:
+            grid;
+        gap:
+            0.9rem;
+        margin:
+            1rem 0 1.5rem;
+        padding:
+            1rem;
+        border:
+            1px solid var(--river-line);
+        border-radius:
+            14px;
+        background:
+            var(--river-white);
+    }
+
+    .insurance-triage-heading {
+        display:
+            flex;
+        align-items:
+            baseline;
+        justify-content:
+            space-between;
+        gap:
+            1rem;
+        flex-wrap:
+            wrap;
+    }
+
+    .insurance-triage-heading h2,
+    .insurance-triage-heading p,
+    .insurance-triage-selection,
+    .insurance-triage-unavailable {
+        margin:
+            0;
+    }
+
+    .insurance-triage-heading h2 {
+        font-size:
+            1.15rem;
+    }
+
+    .insurance-triage-heading p,
+    .insurance-triage-selection,
+    .insurance-triage-unavailable {
+        color:
+            var(--river-text-muted);
+        font-size:
+            0.8rem;
+        line-height:
+            1.5;
+    }
+
+    .insurance-triage-filters {
+        display:
+            flex;
+        flex-wrap:
+            wrap;
+        gap:
+            0.55rem;
+    }
+
+    .insurance-triage-filter {
+        display:
+            inline-flex;
+        align-items:
+            center;
+        gap:
+            0.5rem;
+        min-height:
+            2.25rem;
+        padding:
+            0.45rem 0.7rem;
+        border:
+            1px solid var(--river-line);
+        border-radius:
+            999px;
+        color:
+            var(--river-text-soft);
+        text-decoration:
+            none;
+        font-size:
+            0.78rem;
+        font-weight:
+            700;
+    }
+
+    .insurance-triage-filter:hover,
+    .insurance-triage-filter:focus-visible,
+    .insurance-triage-filter.is-active {
+        border-color:
+            var(--river-water);
+        color:
+            var(--river-text);
+    }
+
+    .insurance-triage-filter.is-active {
+        background:
+            color-mix(
+                in srgb,
+                var(--river-water) 10%,
+                transparent
+            );
+    }
+
+    .insurance-triage-filter strong {
+        min-width:
+            1.35rem;
+        padding:
+            0.1rem 0.35rem;
+        border-radius:
+            999px;
+        background:
+            color-mix(
+                in srgb,
+                currentColor 8%,
+                transparent
+            );
+        text-align:
+            center;
+        font-size:
+            0.72rem;
+    }
+
     .workspace-grid {
         display:
             grid;
@@ -575,8 +890,94 @@ const insuranceSummary = {
         </div>
     </section>
 
+    <section
+        class="insurance-triage"
+        aria-labelledby="insurance-triage-heading"
+    >
+        <div class="insurance-triage-heading">
+            <h2 id="insurance-triage-heading">
+                Inbound insurance queue
+            </h2>
+
+            <p>
+                {
+                    insurancePresentationReadable
+                        ? "Transparent operational filters from canonical CRM and insurance state."
+                        : databaseReadable
+                            ? "Insurance queue context is temporarily unavailable."
+                            : "Available when CRM persistence is readable."
+                }
+            </p>
+        </div>
+
+        {
+            insurancePresentationReadable
+                ? (
+                    <nav
+                        class="insurance-triage-filters"
+                        aria-label="Insurance lead queue filters"
+                    >
+                        {
+                            insuranceQueueOptions.map(
+                                option => (
+                                    <a
+                                        class={
+                                            selectedInsuranceQueue ===
+                                                option.value
+                                                ? "insurance-triage-filter is-active"
+                                                : "insurance-triage-filter"
+                                        }
+                                        href={insuranceQueueHref(option.value)}
+                                        aria-current={
+                                            selectedInsuranceQueue ===
+                                                option.value
+                                                ? "page"
+                                                : undefined
+                                        }
+                                    >
+                                        <span>
+                                            {option.label}
+                                        </span>
+
+                                        <strong>
+                                            {option.count}
+                                        </strong>
+                                    </a>
+                                )
+                            )
+                        }
+                    </nav>
+                )
+                : (
+                    <p class="insurance-triage-unavailable">
+                        Generic CRM relationships remain visible while insurance
+                        enrichment is unavailable.
+                    </p>
+                )
+        }
+
+        {
+            selectedInsuranceQueue !== "all" &&
+            insurancePresentationReadable && (
+                <p class="insurance-triage-selection">
+                    Showing
+                    {" "}
+                    {visibleRelationships.length}
+                    {" "}
+                    {
+                        visibleRelationships.length === 1
+                            ? "relationship"
+                            : "relationships"
+                    }
+                    {" "}
+                    for this insurance queue.
+                </p>
+            )
+        }
+    </section>
+
     <CrmRelationshipList
-        relationships={relationships}
+        relationships={visibleRelationships}
         insurancePresentations={insurancePresentations}
     />
 

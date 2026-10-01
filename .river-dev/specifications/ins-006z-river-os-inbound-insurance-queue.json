@@ -1,0 +1,59 @@
+{
+  "id": "INS-006Z",
+  "phase": "River OS Inbound Insurance Queue",
+  "branch": "cif-001-canonical-content-source-record",
+  "status": "implemented",
+  "objective": "Surface explicit inbound insurance triage filters inside the existing private River OS CRM workspace using the canonical INS-006X read model.",
+  "workspace": {
+    "route": "/river-os/crm",
+    "queryParameter": "insuranceQueue",
+    "default": "all",
+    "invalidValuePolicy": "Fall back to all rather than inventing a filter."
+  },
+  "authority": {
+    "snapshot": "createInsuranceLeadTriageSnapshot",
+    "filter": "selectInsuranceLeadTriageItems",
+    "identity": "relationshipId",
+    "operatingStateMutation": "INS-006V remains the only insurance operating-state UI"
+  },
+  "filters": [
+    "all",
+    "new",
+    "requested",
+    "in-progress",
+    "quoted",
+    "unassigned",
+    "follow-up-due",
+    "suppressed"
+  ],
+  "rendering": {
+    "all": "Preserve the existing complete CRM relationship cohort and existing D1 list order.",
+    "insuranceFilter": "Render only relationships selected by the canonical triage domain, preserving INS-006X deterministic ordering.",
+    "insurancePresentation": "Continue passing the existing canonical insurance presentation collection to CrmRelationshipList.",
+    "counts": "Expose explicit operational counts from the triage summary; all uses the complete CRM relationship count."
+  },
+  "failureBehavior": {
+    "insuranceProjectionUnavailable": "Do not hide the generic CRM relationship cohort. The existing CRM remains usable."
+  },
+  "scope": [
+    ".river-dev/specifications/ins-006z-river-os-inbound-insurance-queue.json",
+    "src/pages/river-os/crm.astro",
+    "src/lib/insurance/private-triage-ui-wiring.test.ts"
+  ],
+  "excluded": [
+    "new dashboard",
+    "new CRM",
+    "new D1 query",
+    "lead scoring",
+    "automatic producer routing",
+    "operating-state mutation changes",
+    "generic CRM mutation changes",
+    "quote-request ingestion changes",
+    "contact-attempt changes",
+    "outbound email",
+    "outbound SMS",
+    "Telnyx",
+    "deployment",
+    "migration execution"
+  ]
+}
