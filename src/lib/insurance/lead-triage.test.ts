@@ -681,9 +681,102 @@ test(
                 followUpDue:
                     1,
 
+                appointments:
+                    0,
+
                 suppressed:
                     1
             }
+        );
+    }
+);
+
+
+test(
+    "triage appointments filter selects canonical insurance relationships with appointmentAt present",
+    () => {
+        const snapshot =
+            createInsuranceLeadTriageSnapshot({
+                relationships: [
+                    relationship(
+                        "relationship:triage:appointment",
+                        {
+                            appointmentAt:
+                                "2026-09-30T15:00:00.000Z"
+                        }
+                    ),
+                    relationship(
+                        "relationship:triage:no-appointment"
+                    )
+                ],
+
+                insurancePresentations: [
+                    presentation(
+                        "relationship:triage:appointment"
+                    ),
+                    presentation(
+                        "relationship:triage:no-appointment"
+                    )
+                ],
+
+                now:
+                    "2026-10-01T13:00:00.000Z"
+            });
+
+        assert.deepEqual(
+            selectInsuranceLeadTriageItems(
+                snapshot,
+                "appointments"
+            ).map(
+                item =>
+                    item.relationship
+                        .relationshipId
+            ),
+            [
+                "relationship:triage:appointment"
+            ]
+        );
+
+        assert.equal(
+            snapshot.summary
+                .appointments,
+            1
+        );
+    }
+);
+
+
+test(
+    "triage appointments filter does not invent upcoming overdue completion or attendance semantics",
+    () => {
+        const snapshot =
+            createInsuranceLeadTriageSnapshot({
+                relationships: [
+                    relationship(
+                        "relationship:triage:past-appointment",
+                        {
+                            appointmentAt:
+                                "2026-09-01T15:00:00.000Z"
+                        }
+                    )
+                ],
+
+                insurancePresentations: [
+                    presentation(
+                        "relationship:triage:past-appointment"
+                    )
+                ],
+
+                now:
+                    "2026-10-01T13:00:00.000Z"
+            });
+
+        assert.equal(
+            selectInsuranceLeadTriageItems(
+                snapshot,
+                "appointments"
+            ).length,
+            1
         );
     }
 );

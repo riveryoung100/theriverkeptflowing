@@ -23,6 +23,7 @@ export const INSURANCE_LEAD_TRIAGE_FILTERS = [
     "quoted",
     "unassigned",
     "follow-up-due",
+    "appointments",
     "suppressed"
 ] as const;
 
@@ -81,6 +82,9 @@ export interface InsuranceLeadTriageSummary {
         number;
 
     readonly followUpDue:
+        number;
+
+    readonly appointments:
         number;
 
     readonly suppressed:
@@ -287,6 +291,11 @@ function matchesFilter(
         case "follow-up-due":
             return item.flags
                 .followUpDue;
+
+        case "appointments":
+            return item.relationship
+                .appointmentAt !==
+                undefined;
 
         case "suppressed":
             return item.flags
@@ -509,6 +518,14 @@ export function createInsuranceLeadTriageSnapshot(
                 item =>
                     item.flags
                         .followUpDue
+            ).length,
+
+        appointments:
+            items.filter(
+                item =>
+                    item.relationship
+                        .appointmentAt !==
+                    undefined
             ).length,
 
         suppressed:

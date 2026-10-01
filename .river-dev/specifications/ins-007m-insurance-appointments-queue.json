@@ -1,0 +1,36 @@
+{
+    "slice":  "INS-007M",
+    "title":  "Insurance appointments queue",
+    "status":  "implementation",
+    "workspace":  "/river-os/crm",
+    "filter":  "appointments",
+    "label":  "Appointments",
+    "canonicalSemantics":  "insurance relationship has appointmentAt present",
+    "summaryField":  "appointments",
+    "behavior":  [
+                     "include only canonical insurance triage relationships",
+                     "select when relationship.appointmentAt is present",
+                     "count appointments from the same insurance triage cohort",
+                     "preserve existing triage ordering",
+                     "reuse existing insuranceQueue query parameter"
+                 ],
+    "nonSemantics":  [
+                         "does not mean upcoming",
+                         "does not mean overdue",
+                         "does not mean completed",
+                         "does not mean attended",
+                         "does not mean calendar synchronized"
+                     ],
+    "invariants":  [
+                       "read-only queue selection",
+                       "no appointment mutation authority",
+                       "no automatic stage mutation",
+                       "no provider activation",
+                       "no calendar integration",
+                       "no routing",
+                       "no scoring",
+                       "no second CRM",
+                       "no migration",
+                       "no deployment"
+                   ]
+}
