@@ -1,0 +1,35 @@
+{
+  "id": "INS-006H",
+  "phase": "D1 Idempotent Quote Persistence",
+  "branch": "cif-001-canonical-content-source-record",
+  "status": "implemented",
+  "objective": "Integrate the INS-006F quote-request submission identity contract into the existing D1 quote persistence owner without changing the HTTP ingress contract.",
+  "architecture": {
+    "canonicalCustomerIdentity": "relationshipId",
+    "submissionLedger": "river_crm_insurance_quote_request_submissions",
+    "legacyWrite": "createQuoteRequest remains supported unchanged at the public persistence interface",
+    "idempotentWrite": "createIdempotentQuoteRequest performs lookup, replay/conflict resolution, and first-write batching",
+    "firstWriteAtomicity": "relationship + submission ledger + acquisition + profile + consent + events remain inside one D1 batch",
+    "ledgerOrdering": "relationship INSERT precedes submission ledger INSERT to satisfy the ledger foreign key",
+    "replay": "existing key plus same fingerprint returns the stored relationship with zero write batch",
+    "conflict": "existing key plus different fingerprint throws InsuranceQuoteRequestIdempotencyConflictError",
+    "concurrentCollision": "batch failure triggers one ledger reread; same fingerprint becomes replay, different fingerprint becomes conflict, absent ledger propagates original failure"
+  },
+  "scope": [
+    ".river-dev/specifications/ins-006h-d1-idempotent-quote-persistence.json",
+    "src/lib/insurance/d1-quote-request.ts",
+    "src/lib/insurance/d1-quote-request.test.ts"
+  ],
+  "excluded": [
+    "HTTP Idempotency-Key enforcement",
+    "public response status changes",
+    "producer assignment or routing",
+    "form wiring",
+    "outbound email",
+    "outbound SMS",
+    "telephony",
+    "dashboard UI",
+    "deployment",
+    "migration execution"
+  ]
+}

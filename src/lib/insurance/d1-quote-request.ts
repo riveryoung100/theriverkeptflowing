@@ -1,6 +1,16 @@
-﻿import type {
+import type {
     InsuranceQuoteRequestRecords
 } from "./quote-request";
+
+import {
+    createInsuranceQuoteRequestIdempotencyKey,
+    requireInsuranceQuoteRequestFingerprint
+} from "./quote-request-idempotency";
+
+import type {
+    InsuranceQuoteRequestFingerprint,
+    InsuranceQuoteRequestIdempotencyKey
+} from "./quote-request-idempotency";
 
 
 export interface InsuranceQuoteRequestD1RunResult {
@@ -17,6 +27,12 @@ export interface InsuranceQuoteRequestD1Statement {
     bind(
         ...values: unknown[]
     ): InsuranceQuoteRequestD1Statement;
+
+    first<T>():
+        Promise<
+            T |
+            null
+        >;
 }
 
 export interface InsuranceQuoteRequestD1Database {
@@ -32,11 +48,69 @@ export interface InsuranceQuoteRequestD1Database {
     >;
 }
 
+export interface InsuranceQuoteRequestIdempotentCreateInput {
+    readonly idempotencyKey:
+        InsuranceQuoteRequestIdempotencyKey;
+
+    readonly requestFingerprint:
+        InsuranceQuoteRequestFingerprint;
+
+    readonly records:
+        InsuranceQuoteRequestRecords;
+}
+
+
+export type InsuranceQuoteRequestIdempotentCreateResult =
+    | {
+        readonly outcome:
+            "created";
+
+        readonly relationshipId:
+            string;
+    }
+    | {
+        readonly outcome:
+            "replayed";
+
+        readonly relationshipId:
+            string;
+    };
+
+
+export class InsuranceQuoteRequestIdempotencyConflictError
+extends Error {
+    public readonly idempotencyKey:
+        InsuranceQuoteRequestIdempotencyKey;
+
+    public constructor(
+        idempotencyKey:
+            InsuranceQuoteRequestIdempotencyKey
+    ){
+        super(
+            "Insurance quote request idempotency key was already used for different request content."
+        );
+
+        this.name =
+            "InsuranceQuoteRequestIdempotencyConflictError";
+
+        this.idempotencyKey =
+            idempotencyKey;
+    }
+}
+
+
 export interface D1InsuranceQuoteRequestPersistence {
     createQuoteRequest(
         records:
             InsuranceQuoteRequestRecords
     ): Promise<void>;
+
+    createIdempotentQuoteRequest(
+        input:
+            InsuranceQuoteRequestIdempotentCreateInput
+    ): Promise<
+        InsuranceQuoteRequestIdempotentCreateResult
+    >;
 }
 
 
@@ -340,6 +414,247 @@ function eventStatement(
         );
 }
 
+
+interface InsuranceQuoteRequestSubmissionRow {
+    readonly idempotency_key:
+        string;
+
+    readonly request_fingerprint:
+        string;
+
+    readonly relationship_id:
+        string;
+
+    readonly created_at:
+        string;
+}
+
+
+interface InsuranceQuoteRequestSubmission {
+    readonly idempotencyKey:
+        InsuranceQuoteRequestIdempotencyKey;
+
+    readonly requestFingerprint:
+        InsuranceQuoteRequestFingerprint;
+
+    readonly relationshipId:
+        string;
+}
+
+
+function requireStoredRelationshipId(
+    value:
+        unknown
+): string {
+    if(
+        typeof value !==
+            "string" ||
+        value.length === 0 ||
+        value.trim() !==
+            value
+    ){
+        throw new TypeError(
+            "Insurance quote request submission relationship ID is invalid."
+        );
+    }
+
+    return value;
+}
+
+
+function buildQuoteRequestStatements(
+    database:
+        InsuranceQuoteRequestD1Database,
+    records:
+        InsuranceQuoteRequestRecords
+):
+    InsuranceQuoteRequestD1Statement[] {
+
+    const statements:
+        InsuranceQuoteRequestD1Statement[] = [
+            relationshipStatement(
+                database,
+                records
+            ),
+            acquisitionStatement(
+                database,
+                records
+            ),
+            insuranceProfileStatement(
+                database,
+                records
+            )
+        ];
+
+    for(const consent of records.consents){
+        statements.push(
+            consentStatement(
+                database,
+                consent
+            )
+        );
+    }
+
+    for(const event of records.events){
+        statements.push(
+            eventStatement(
+                database,
+                event
+            )
+        );
+    }
+
+    return statements;
+}
+
+
+function submissionStatement(
+    database:
+        InsuranceQuoteRequestD1Database,
+    input:
+        InsuranceQuoteRequestIdempotentCreateInput
+): InsuranceQuoteRequestD1Statement {
+    return database
+        .prepare(`
+            INSERT INTO river_crm_insurance_quote_request_submissions (
+                idempotency_key,
+                request_fingerprint,
+                relationship_id,
+                created_at
+            )
+            VALUES (?, ?, ?, ?)
+        `)
+        .bind(
+            input.idempotencyKey,
+            input.requestFingerprint,
+            input.records
+                .relationship
+                .relationshipId,
+            input.records
+                .relationship
+                .createdAt
+        );
+}
+
+
+async function loadSubmission(
+    database:
+        InsuranceQuoteRequestD1Database,
+    idempotencyKey:
+        InsuranceQuoteRequestIdempotencyKey
+):
+    Promise<
+        InsuranceQuoteRequestSubmission |
+        undefined
+    > {
+
+    const row =
+        await database
+            .prepare(`
+                SELECT
+                    idempotency_key,
+                    request_fingerprint,
+                    relationship_id,
+                    created_at
+                FROM river_crm_insurance_quote_request_submissions
+                WHERE idempotency_key = ?1
+                LIMIT 1
+            `)
+            .bind(
+                idempotencyKey
+            )
+            .first<
+                InsuranceQuoteRequestSubmissionRow
+            >();
+
+    if(row === null){
+        return undefined;
+    }
+
+    return {
+        idempotencyKey:
+            createInsuranceQuoteRequestIdempotencyKey(
+                row.idempotency_key
+            ),
+
+        requestFingerprint:
+            requireInsuranceQuoteRequestFingerprint(
+                row.request_fingerprint
+            ),
+
+        relationshipId:
+            requireStoredRelationshipId(
+                row.relationship_id
+            )
+    };
+}
+
+
+function resolveExistingSubmission(
+    existing:
+        InsuranceQuoteRequestSubmission,
+    idempotencyKey:
+        InsuranceQuoteRequestIdempotencyKey,
+    requestFingerprint:
+        InsuranceQuoteRequestFingerprint
+):
+    InsuranceQuoteRequestIdempotentCreateResult {
+
+    if(
+        existing.requestFingerprint !==
+        requestFingerprint
+    ){
+        throw new InsuranceQuoteRequestIdempotencyConflictError(
+            idempotencyKey
+        );
+    }
+
+    return {
+        outcome:
+            "replayed",
+
+        relationshipId:
+            existing.relationshipId
+    };
+}
+
+
+function buildIdempotentQuoteRequestStatements(
+    database:
+        InsuranceQuoteRequestD1Database,
+    input:
+        InsuranceQuoteRequestIdempotentCreateInput
+):
+    InsuranceQuoteRequestD1Statement[] {
+
+    const quoteStatements =
+        buildQuoteRequestStatements(
+            database,
+            input.records
+        );
+
+    const relationship =
+        quoteStatements[0];
+
+    if(relationship === undefined){
+        throw new Error(
+            "Insurance quote request statement construction produced no relationship statement."
+        );
+    }
+
+    return [
+        relationship,
+        submissionStatement(
+            database,
+            input
+        ),
+        ...quoteStatements.slice(
+            1
+        )
+    ];
+}
+
+
 function assertBatchSucceeded(
     results:
         readonly InsuranceQuoteRequestD1RunResult[],
@@ -373,39 +688,11 @@ export function createD1InsuranceQuoteRequestPersistence(
                 records
             );
 
-            const statements:
-                InsuranceQuoteRequestD1Statement[] = [
-                    relationshipStatement(
-                        database,
-                        records
-                    ),
-                    acquisitionStatement(
-                        database,
-                        records
-                    ),
-                    insuranceProfileStatement(
-                        database,
-                        records
-                    )
-                ];
-
-            for(const consent of records.consents){
-                statements.push(
-                    consentStatement(
-                        database,
-                        consent
-                    )
+            const statements =
+                buildQuoteRequestStatements(
+                    database,
+                    records
                 );
-            }
-
-            for(const event of records.events){
-                statements.push(
-                    eventStatement(
-                        database,
-                        event
-                    )
-                );
-            }
 
             const results =
                 await database.batch(
@@ -416,6 +703,91 @@ export function createD1InsuranceQuoteRequestPersistence(
                 results,
                 statements.length
             );
+        },
+
+        async createIdempotentQuoteRequest(
+            input
+        ){
+            assertCanonicalRelationshipOwnership(
+                input.records
+            );
+
+            const idempotencyKey =
+                createInsuranceQuoteRequestIdempotencyKey(
+                    input.idempotencyKey
+                );
+
+            const requestFingerprint =
+                requireInsuranceQuoteRequestFingerprint(
+                    input.requestFingerprint
+                );
+
+            const canonicalInput = {
+                idempotencyKey,
+                requestFingerprint,
+                records:
+                    input.records
+            } satisfies
+                InsuranceQuoteRequestIdempotentCreateInput;
+
+            const existing =
+                await loadSubmission(
+                    database,
+                    idempotencyKey
+                );
+
+            if(existing !== undefined){
+                return resolveExistingSubmission(
+                    existing,
+                    idempotencyKey,
+                    requestFingerprint
+                );
+            }
+
+            const statements =
+                buildIdempotentQuoteRequestStatements(
+                    database,
+                    canonicalInput
+                );
+
+            try {
+                const results =
+                    await database.batch(
+                        statements
+                    );
+
+                assertBatchSucceeded(
+                    results,
+                    statements.length
+                );
+
+                return {
+                    outcome:
+                        "created",
+
+                    relationshipId:
+                        input.records
+                            .relationship
+                            .relationshipId
+                };
+            }
+            catch(error){
+                const raced =
+                    await loadSubmission(
+                        database,
+                        idempotencyKey
+                    );
+
+                if(raced === undefined){
+                    throw error;
+                }
+
+                return resolveExistingSubmission(
+                    raced,
+                    idempotencyKey,
+                    requestFingerprint
+                );
+            }
         }
     };
 }
