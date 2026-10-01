@@ -1,0 +1,34 @@
+{
+  "id": "INS-006I",
+  "phase": "HTTP Idempotent Quote Ingress",
+  "branch": "cif-001-canonical-content-source-record",
+  "status": "implemented",
+  "objective": "Make the existing public insurance quote-request HTTP application depend on the durable INS-006F/INS-006H idempotency contract while preserving its existing validation, origin, body-size, and stable-failure boundaries.",
+  "architecture": {
+    "transportIdentity": "Required HTTP Idempotency-Key header",
+    "canonicalCustomerIdentity": "relationshipId",
+    "fingerprint": "SHA-256 over canonical normalized logical quote-request records",
+    "createdResponse": "201 with canonical relationshipId",
+    "replayResponse": "200 with the originally stored relationshipId",
+    "conflictResponse": "409 idempotency-conflict",
+    "invalidIdempotencyKeyResponse": "400 invalid-idempotency-key",
+    "genericPersistenceFailure": "500 quote-request-failed",
+    "bodyContract": "Idempotency identity remains transport metadata and is not added to the public JSON body",
+    "pageRoute": "No page-route change is required because the route already injects createD1InsuranceQuoteRequestPersistence"
+  },
+  "scope": [
+    ".river-dev/specifications/ins-006i-http-idempotent-quote-ingress.json",
+    "src/lib/insurance/http/quote-request-api.ts",
+    "src/lib/insurance/http/quote-request-api.test.ts"
+  ],
+  "excluded": [
+    "producer assignment or routing",
+    "public form wiring",
+    "outbound email",
+    "outbound SMS",
+    "telephony",
+    "dashboard UI",
+    "deployment",
+    "migration execution"
+  ]
+}

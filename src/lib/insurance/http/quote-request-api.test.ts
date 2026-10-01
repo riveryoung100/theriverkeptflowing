@@ -1,8 +1,9 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
     createInsuranceQuoteRequestApi,
+    INSURANCE_QUOTE_REQUEST_IDEMPOTENCY_HEADER,
     INSURANCE_QUOTE_REQUEST_MAX_BODY_BYTES
 } from "./quote-request-api";
 
@@ -10,13 +11,33 @@ import type {
     InsuranceQuoteRequestRecords
 } from "../quote-request";
 
+import {
+    InsuranceQuoteRequestIdempotencyConflictError
+} from "../d1-quote-request";
+
+import type {
+    InsuranceQuoteRequestIdempotentCreateInput,
+    InsuranceQuoteRequestIdempotentCreateResult
+} from "../d1-quote-request";
+
+import {
+    createInsuranceQuoteRequestIdempotencyKey
+} from "../quote-request-idempotency";
+
 
 class FakePersistence {
     public readonly received:
         InsuranceQuoteRequestRecords[] = [];
 
+    public readonly idempotentReceived:
+        InsuranceQuoteRequestIdempotentCreateInput[] = [];
+
     public error:
         Error | undefined;
+
+    public result:
+        InsuranceQuoteRequestIdempotentCreateResult |
+        undefined;
 
     async createQuoteRequest(
         records:
@@ -30,7 +51,39 @@ class FakePersistence {
             records
         );
     }
+
+    async createIdempotentQuoteRequest(
+        input:
+            InsuranceQuoteRequestIdempotentCreateInput
+    ):
+        Promise<
+            InsuranceQuoteRequestIdempotentCreateResult
+        > {
+
+        if(this.error !== undefined){
+            throw this.error;
+        }
+
+        this.received.push(
+            input.records
+        );
+
+        this.idempotentReceived.push(
+            input
+        );
+
+        return this.result ?? {
+            outcome:
+                "created",
+
+            relationshipId:
+                input.records
+                    .relationship
+                    .relationshipId
+        };
+    }
 }
+
 
 function dependencies(){
     let sequence =
@@ -93,6 +146,9 @@ function request(
         readonly contentLength?:
             string | null;
 
+        readonly idempotencyKey?:
+            string | null;
+
         readonly url?:
             string;
     }
@@ -121,6 +177,14 @@ function request(
         headers.set(
             "content-length",
             options.contentLength
+        );
+    }
+
+    if(options?.idempotencyKey !== null){
+        headers.set(
+            INSURANCE_QUOTE_REQUEST_IDEMPOTENCY_HEADER,
+            options?.idempotencyKey ??
+                "quote:http-test"
         );
     }
 
@@ -638,6 +702,265 @@ test(
                     "cache-control"
                 ),
             "no-store"
+        );
+    }
+);
+
+test(
+    "quote request API rejects missing Idempotency-Key before persistence",
+    async () => {
+        const deps =
+            dependencies();
+
+        const api =
+            createInsuranceQuoteRequestApi(
+                deps
+            );
+
+        const response =
+            await api(
+                request(
+                    JSON.stringify(
+                        validBody()
+                    ),
+                    {
+                        idempotencyKey:
+                            null
+                    }
+                )
+            );
+
+        assert.equal(
+            response.status,
+            400
+        );
+
+        assert.deepEqual(
+            await body(response),
+            {
+                ok:
+                    false,
+
+                error:
+                    "invalid-idempotency-key"
+            }
+        );
+
+        assert.equal(
+            deps.persistence
+                .received.length,
+            0
+        );
+    }
+);
+
+
+test(
+    "quote request API rejects malformed Idempotency-Key before persistence",
+    async () => {
+        const deps =
+            dependencies();
+
+        const api =
+            createInsuranceQuoteRequestApi(
+                deps
+            );
+
+        const response =
+            await api(
+                request(
+                    JSON.stringify(
+                        validBody()
+                    ),
+                    {
+                        idempotencyKey:
+                            "contains space"
+                    }
+                )
+            );
+
+        assert.equal(
+            response.status,
+            400
+        );
+
+        assert.equal(
+            (
+                await body(response)
+            ).error,
+            "invalid-idempotency-key"
+        );
+
+        assert.equal(
+            deps.persistence
+                .received.length,
+            0
+        );
+    }
+);
+
+
+test(
+    "quote request API sends canonical idempotency key and SHA-256 fingerprint to persistence",
+    async () => {
+        const deps =
+            dependencies();
+
+        const api =
+            createInsuranceQuoteRequestApi(
+                deps
+            );
+
+        const response =
+            await api(
+                request(
+                    JSON.stringify(
+                        validBody()
+                    ),
+                    {
+                        idempotencyKey:
+                            "quote:http-contract"
+                    }
+                )
+            );
+
+        assert.equal(
+            response.status,
+            201
+        );
+
+        assert.equal(
+            deps.persistence
+                .idempotentReceived.length,
+            1
+        );
+
+        const received =
+            deps.persistence
+                .idempotentReceived[0];
+
+        assert.ok(
+            received
+        );
+
+        assert.equal(
+            received.idempotencyKey,
+            "quote:http-contract"
+        );
+
+        assert.match(
+            received.requestFingerprint,
+            /^[0-9a-f]{64}$/
+        );
+
+        assert.equal(
+            received.requestFingerprint.includes(
+                received.records
+                    .relationship
+                    .relationshipId
+            ),
+            false
+        );
+    }
+);
+
+
+test(
+    "quote request API returns 200 and original relationship for idempotent replay",
+    async () => {
+        const deps =
+            dependencies();
+
+        deps.persistence.result = {
+            outcome:
+                "replayed",
+
+            relationshipId:
+                "relationship:original"
+        };
+
+        const api =
+            createInsuranceQuoteRequestApi(
+                deps
+            );
+
+        const response =
+            await api(
+                request(
+                    JSON.stringify(
+                        validBody()
+                    ),
+                    {
+                        idempotencyKey:
+                            "quote:replay"
+                    }
+                )
+            );
+
+        assert.equal(
+            response.status,
+            200
+        );
+
+        assert.deepEqual(
+            await body(response),
+            {
+                ok:
+                    true,
+
+                relationshipId:
+                    "relationship:original"
+            }
+        );
+    }
+);
+
+
+test(
+    "quote request API returns deterministic 409 for idempotency key payload conflict",
+    async () => {
+        const deps =
+            dependencies();
+
+        deps.persistence.error =
+            new InsuranceQuoteRequestIdempotencyConflictError(
+                createInsuranceQuoteRequestIdempotencyKey(
+                    "quote:conflict"
+                )
+            );
+
+        const api =
+            createInsuranceQuoteRequestApi(
+                deps
+            );
+
+        const response =
+            await api(
+                request(
+                    JSON.stringify(
+                        validBody()
+                    ),
+                    {
+                        idempotencyKey:
+                            "quote:conflict"
+                    }
+                )
+            );
+
+        assert.equal(
+            response.status,
+            409
+        );
+
+        assert.deepEqual(
+            await body(response),
+            {
+                ok:
+                    false,
+
+                error:
+                    "idempotency-conflict"
+            }
         );
     }
 );

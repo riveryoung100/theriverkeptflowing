@@ -1,4 +1,4 @@
-﻿import {
+import {
     buildInsuranceQuoteRequestRecords
 } from "../quote-request";
 
@@ -6,13 +6,25 @@ import type {
     InsuranceQuoteRequestDependencies
 } from "../quote-request";
 
+import {
+    InsuranceQuoteRequestIdempotencyConflictError
+} from "../d1-quote-request";
+
 import type {
     D1InsuranceQuoteRequestPersistence
 } from "../d1-quote-request";
 
+import {
+    createInsuranceQuoteRequestFingerprint,
+    createInsuranceQuoteRequestIdempotencyKey
+} from "../quote-request-idempotency";
+
 
 export const INSURANCE_QUOTE_REQUEST_MAX_BODY_BYTES =
     16_384;
+
+export const INSURANCE_QUOTE_REQUEST_IDEMPOTENCY_HEADER =
+    "idempotency-key";
 
 export interface InsuranceQuoteRequestApiDependencies
 extends InsuranceQuoteRequestDependencies {
@@ -157,6 +169,32 @@ export function createInsuranceQuoteRequestApi(
             );
         }
 
+        let idempotencyKey:
+            ReturnType<
+                typeof createInsuranceQuoteRequestIdempotencyKey
+            >;
+
+        try {
+            idempotencyKey =
+                createInsuranceQuoteRequestIdempotencyKey(
+                    request.headers
+                        .get(
+                            INSURANCE_QUOTE_REQUEST_IDEMPOTENCY_HEADER
+                        )
+                );
+        }
+        catch {
+            return jsonResponse(
+                400,
+                {
+                    ok:
+                        false,
+                    error:
+                        "invalid-idempotency-key"
+                }
+            );
+        }
+
         if(declaredBodyTooLarge(request)){
             return jsonResponse(
                 413,
@@ -253,10 +291,16 @@ export function createInsuranceQuoteRequestApi(
             );
         }
 
+        let requestFingerprint:
+            Awaited<
+                ReturnType<
+                    typeof createInsuranceQuoteRequestFingerprint
+                >
+            >;
+
         try {
-            await dependencies
-                .persistence
-                .createQuoteRequest(
+            requestFingerprint =
+                await createInsuranceQuoteRequestFingerprint(
                     records
                 );
         }
@@ -272,13 +316,62 @@ export function createInsuranceQuoteRequestApi(
             );
         }
 
+        let persistenceResult:
+            Awaited<
+                ReturnType<
+                    D1InsuranceQuoteRequestPersistence[
+                        "createIdempotentQuoteRequest"
+                    ]
+                >
+            >;
+
+        try {
+            persistenceResult =
+                await dependencies
+                    .persistence
+                    .createIdempotentQuoteRequest({
+                        idempotencyKey,
+                        requestFingerprint,
+                        records
+                    });
+        }
+        catch(error){
+            if(
+                error instanceof
+                    InsuranceQuoteRequestIdempotencyConflictError
+            ){
+                return jsonResponse(
+                    409,
+                    {
+                        ok:
+                            false,
+                        error:
+                            "idempotency-conflict"
+                    }
+                );
+            }
+
+            return jsonResponse(
+                500,
+                {
+                    ok:
+                        false,
+                    error:
+                        "quote-request-failed"
+                }
+            );
+        }
+
         return jsonResponse(
-            201,
+            persistenceResult.outcome ===
+                "replayed"
+                ? 200
+                : 201,
             {
                 ok:
                     true,
                 relationshipId:
-                    records.relationship
+                    persistenceResult
                         .relationshipId
             }
         );
