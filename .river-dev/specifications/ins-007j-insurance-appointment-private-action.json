@@ -1,0 +1,51 @@
+{
+    "slice":  "INS-007J",
+    "title":  "Private insurance appointment request parser + POST action",
+    "status":  "implementation",
+    "route":  "/river-os/actions/insurance-appointment",
+    "request":  {
+                    "relationshipId":  "required canonical River CRM relationship id",
+                    "operation":  [
+                                      "schedule",
+                                      "clear"
+                                  ],
+                    "appointmentAt":  "required absolute timestamp for schedule; null for clear"
+                },
+    "serverOwned":  [
+                        "occurredAt",
+                        "crm-event identity for schedule transport",
+                        "eventSource river-os"
+                    ],
+    "outcomes":  [
+                     "scheduled",
+                     "rescheduled",
+                     "cleared",
+                     "no-op"
+                 ],
+    "responses":  {
+                      "forbidden":  403,
+                      "invalid":  400,
+                      "missingRelationship":  404,
+                      "conflict":  409,
+                      "infrastructureUnavailable":  503,
+                      "success":  "303 /river-os/crm?appointment=\u003coutcome\u003e"
+                  },
+    "invariants":  [
+                       "same-origin River OS write protection",
+                       "RIVER_CRM_DB only",
+                       "load canonical relationship before executor",
+                       "delegate appointment policy and persistence to INS-007I",
+                       "schedule transport receives server-owned crm-event identity and river-os source",
+                       "clear transport does not request appointment-set evidence",
+                       "route contains no direct CRM SQL",
+                       "no stage mutation",
+                       "no quote-status mutation",
+                       "no producer mutation",
+                       "no follow-up mutation",
+                       "no contact-provider activation",
+                       "no calendar integration",
+                       "no migration",
+                       "no UI",
+                       "no deployment"
+                   ]
+}
