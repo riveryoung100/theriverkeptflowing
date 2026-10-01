@@ -1,0 +1,31 @@
+{
+    "slice":  "INS-007N",
+    "title":  "Terminal insurance quote queues",
+    "status":  "implementation",
+    "workspace":  "/river-os/crm",
+    "filters":  [
+                    "bound",
+                    "declined",
+                    "lost"
+                ],
+    "canonicalSemantics":  "exact InsuranceLeadPresentation.quoteStatus equality",
+    "behavior":  [
+                     "add Bound Declined and Lost insuranceQueue filters",
+                     "count each status from the canonical insurance triage cohort",
+                     "preserve existing triage ordering",
+                     "keep terminal quote status independent from relationship pipeline stage"
+                 ],
+    "invariants":  [
+                       "read-only queue selection",
+                       "no automatic pipeline stage mutation",
+                       "no inferred quote outcome from relationship stage",
+                       "no appointment mutation",
+                       "no follow-up mutation",
+                       "no provider activation",
+                       "no routing",
+                       "no scoring",
+                       "no second CRM",
+                       "no migration",
+                       "no deployment"
+                   ]
+}

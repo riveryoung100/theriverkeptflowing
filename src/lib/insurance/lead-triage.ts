@@ -21,6 +21,9 @@ export const INSURANCE_LEAD_TRIAGE_FILTERS = [
     "requested",
     "in-progress",
     "quoted",
+    "bound",
+    "declined",
+    "lost",
     "unassigned",
     "follow-up-due",
     "appointments",
@@ -76,6 +79,15 @@ export interface InsuranceLeadTriageSummary {
         number;
 
     readonly quoted:
+        number;
+
+    readonly bound:
+        number;
+
+    readonly declined:
+        number;
+
+    readonly lost:
         number;
 
     readonly unassigned:
@@ -283,6 +295,21 @@ function matchesFilter(
             return item.insurance
                 .quoteStatus ===
                 "quoted";
+
+        case "bound":
+            return item.insurance
+                .quoteStatus ===
+                "bound";
+
+        case "declined":
+            return item.insurance
+                .quoteStatus ===
+                "declined";
+
+        case "lost":
+            return item.insurance
+                .quoteStatus ===
+                "lost";
 
         case "unassigned":
             return item.flags
@@ -504,6 +531,30 @@ export function createInsuranceLeadTriageSnapshot(
                     item.insurance
                         .quoteStatus ===
                         "quoted"
+            ).length,
+
+        bound:
+            items.filter(
+                item =>
+                    item.insurance
+                        .quoteStatus ===
+                        "bound"
+            ).length,
+
+        declined:
+            items.filter(
+                item =>
+                    item.insurance
+                        .quoteStatus ===
+                        "declined"
+            ).length,
+
+        lost:
+            items.filter(
+                item =>
+                    item.insurance
+                        .quoteStatus ===
+                        "lost"
             ).length,
 
         unassigned:

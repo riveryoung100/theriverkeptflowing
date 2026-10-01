@@ -675,6 +675,15 @@ test(
                 quoted:
                     1,
 
+                bound:
+                    0,
+
+                declined:
+                    0,
+
+                lost:
+                    0,
+
                 unassigned:
                     1,
 
@@ -775,6 +784,132 @@ test(
             selectInsuranceLeadTriageItems(
                 snapshot,
                 "appointments"
+            ).length,
+            1
+        );
+    }
+);
+
+
+test(
+    "triage exposes bound declined and lost as exact quote-status filters",
+    () => {
+        const statuses =
+            [
+                "bound",
+                "declined",
+                "lost"
+            ] as const;
+
+        const snapshot =
+            createInsuranceLeadTriageSnapshot({
+                relationships:
+                    statuses.map(
+                        (status,index) =>
+                            relationship(
+                                `relationship:triage:terminal:${status}`,
+                                {
+                                    stage:
+                                        index === 0
+                                            ? "new"
+                                            : index === 1
+                                                ? "proposal"
+                                                : "qualified"
+                                }
+                            )
+                    ),
+
+                insurancePresentations:
+                    statuses.map(
+                        status =>
+                            presentation(
+                                `relationship:triage:terminal:${status}`,
+                                {
+                                    quoteStatus:
+                                        status
+                                }
+                            )
+                    ),
+
+                now:
+                    "2026-10-01T13:00:00.000Z"
+            });
+
+        for(const status of statuses){
+            assert.deepEqual(
+                selectInsuranceLeadTriageItems(
+                    snapshot,
+                    status
+                ).map(
+                    item =>
+                        item.relationship
+                            .relationshipId
+                ),
+                [
+                    `relationship:triage:terminal:${status}`
+                ]
+            );
+        }
+
+        assert.equal(
+            snapshot.summary.bound,
+            1
+        );
+
+        assert.equal(
+            snapshot.summary.declined,
+            1
+        );
+
+        assert.equal(
+            snapshot.summary.lost,
+            1
+        );
+    }
+);
+
+
+test(
+    "terminal quote filters do not infer quote outcome from relationship pipeline stage",
+    () => {
+        const snapshot =
+            createInsuranceLeadTriageSnapshot({
+                relationships: [
+                    relationship(
+                        "relationship:triage:pipeline-lost",
+                        {
+                            stage:
+                                "lost"
+                        }
+                    )
+                ],
+
+                insurancePresentations: [
+                    presentation(
+                        "relationship:triage:pipeline-lost",
+                        {
+                            quoteStatus:
+                                "quoted"
+                        }
+                    )
+                ],
+
+                now:
+                    "2026-10-01T13:00:00.000Z"
+            });
+
+        assert.equal(
+            selectInsuranceLeadTriageItems(
+                snapshot,
+                "lost"
+            ).length,
+            0
+        );
+
+        assert.equal(
+            selectInsuranceLeadTriageItems(
+                snapshot,
+                "quoted"
             ).length,
             1
         );
