@@ -1,0 +1,38 @@
+{
+  "id": "INS-006F",
+  "phase": "Quote Request Idempotency Foundation",
+  "branch": "cif-001-canonical-content-source-record",
+  "status": "implemented",
+  "objective": "Define the durable submission identity and deterministic logical-request fingerprint contract required to make the existing public insurance quote-request ingress retry-safe without replacing relationshipId as canonical CRM identity.",
+  "architecture": {
+    "canonicalCustomerIdentity": "relationshipId",
+    "submissionIdentity": "HTTP Idempotency-Key, canonicalized independently from relationshipId",
+    "ledgerTable": "river_crm_insurance_quote_request_submissions",
+    "databaseAuthority": "idempotency_key is database-unique",
+    "fingerprintAlgorithm": "SHA-256",
+    "fingerprintInput": "Canonical normalized logical quote-request content derived from accepted records while excluding generated IDs, server timestamps, and unrelated server-owned lifecycle/routing state.",
+    "sameKeySameFingerprint": "Replay the originally created relationship in the later D1/API integration slice.",
+    "sameKeyDifferentFingerprint": "Return deterministic conflict semantics in the later D1/API integration slice.",
+    "contactIdentityPolicy": "Email and phone remain contact attributes and are not uniqueness keys.",
+    "routingPolicy": "Deferred to a separate slice.",
+    "productionPolicy": "Migration 0009 is authored only and must remain unexecuted."
+  },
+  "scope": [
+    ".river-dev/specifications/ins-006f-quote-request-idempotency-foundation.json",
+    "migrations/river-crm/0009_river_crm_insurance_quote_request_submissions.sql",
+    "src/lib/insurance/quote-request-idempotency.ts",
+    "src/lib/insurance/quote-request-idempotency.test.ts"
+  ],
+  "excluded": [
+    "D1 replay orchestration",
+    "HTTP Idempotency-Key enforcement",
+    "assignment or producer routing",
+    "public form wiring",
+    "outbound email",
+    "outbound SMS",
+    "telephony",
+    "dashboard UI",
+    "deployment",
+    "migration execution"
+  ]
+}
