@@ -1,0 +1,40 @@
+{
+  "slice": "INS-007Q",
+  "title": "Private CRM relationship search",
+  "workspace": "/river-os/crm",
+  "queryParameter": "search",
+  "persistence": {
+    "table": "river_crm_relationships",
+    "method": "searchRelationships",
+    "match": "case-insensitive substring",
+    "fields": [
+      "relationshipId",
+      "displayName",
+      "email",
+      "phone",
+      "owner",
+      "source"
+    ],
+    "ordering": [
+      "updatedAt DESC",
+      "relationshipId ASC"
+    ],
+    "maxResults": 100
+  },
+  "composition": {
+    "preservesInsuranceQueueParameter": true,
+    "queueAndSearchUseIntersection": true,
+    "allQueueSearchesCanonicalRelationshipsDirectly": true
+  },
+  "boundaries": [
+    "read-only",
+    "no fuzzy ranking",
+    "no lead scoring",
+    "no automatic routing",
+    "no automatic stage mutation",
+    "no provider activation",
+    "no second CRM",
+    "no migration",
+    "no deployment"
+  ]
+}

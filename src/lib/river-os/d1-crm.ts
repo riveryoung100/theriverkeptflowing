@@ -469,6 +469,64 @@ export interface D1RiverCrmCreatedAtCohortPersistence {
     >;
 }
 
+export interface D1RiverCrmSearchQuery {
+    readonly query:
+        string;
+
+    readonly limit?:
+        number;
+}
+
+
+export interface D1RiverCrmSearchPersistence {
+    searchRelationships(
+        query:
+            D1RiverCrmSearchQuery
+    ): Promise<readonly RiverCrmRelationship[]>;
+}
+
+
+function requireRelationshipSearchQuery(
+    value:
+        D1RiverCrmSearchQuery
+): {
+    readonly query: string;
+    readonly limit: number;
+} {
+    if (
+        typeof value !== "object" ||
+        value === null
+    ) {
+        throw new TypeError(
+            "River CRM relationship search requires a query object."
+        );
+    }
+
+    const query =
+        value.query.trim();
+
+    if (
+        query.length < 1 ||
+        query.length > 200
+    ) {
+        throw new RangeError(
+            "River CRM relationship search query must contain 1 through 200 characters after trimming."
+        );
+    }
+
+    const limit =
+        value.limit ?? 50;
+
+    requireLimit(
+        limit
+    );
+
+    return {
+        query,
+        limit
+    };
+}
+
 export class D1RiverCrmPersistence
 implements RiverCrmPersistence {
 
@@ -574,6 +632,44 @@ implements RiverCrmPersistence {
 
     }
 
+
+    public async searchRelationships(
+        query:
+            D1RiverCrmSearchQuery
+    ): Promise<readonly RiverCrmRelationship[]> {
+
+        const validated =
+            requireRelationshipSearchQuery(
+                query
+            );
+
+        const result =
+            await this.database
+                .prepare(
+                    `
+                        SELECT *
+                        FROM river_crm_relationships
+                        WHERE instr(lower(relationship_id), lower(?1)) > 0
+                           OR instr(lower(display_name), lower(?1)) > 0
+                           OR instr(lower(COALESCE(email, '')), lower(?1)) > 0
+                           OR instr(lower(COALESCE(phone, '')), lower(?1)) > 0
+                           OR instr(lower(COALESCE(owner, '')), lower(?1)) > 0
+                           OR instr(lower(source), lower(?1)) > 0
+                        ORDER BY updated_at DESC, relationship_id ASC
+                        LIMIT ?2
+                    `
+                )
+                .bind(
+                    validated.query,
+                    validated.limit
+                )
+                .all<RiverCrmRelationshipRow>();
+
+        return result.results.map(
+            rowToRelationship
+        );
+
+    }
 
     public async list(
         limit:
@@ -759,7 +855,8 @@ export function createD1RiverCrmPersistence(
     database:
         D1Database
 ): RiverCrmPersistence &
-    D1RiverCrmCreatedAtCohortPersistence {
+    D1RiverCrmCreatedAtCohortPersistence &
+    D1RiverCrmSearchPersistence {
 
     return new D1RiverCrmPersistence(
         database

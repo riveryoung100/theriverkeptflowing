@@ -65,12 +65,28 @@ const database =
 const databaseConnected =
     database !== undefined;
 
+const requestedSearch =
+    Astro.url.searchParams
+        .get(
+            "search"
+        )
+        ?.trim()
+        .slice(
+            0,
+            200
+        ) ??
+    "";
+
 let databaseReadable =
     false;
 
 let relationships:
     RiverCrmRelationship[] =
         [];
+
+let relationshipSearchResults:
+    RiverCrmRelationship[] | undefined;
+
 
 let insuranceQueueRelationships:
     RiverCrmRelationship[] =
@@ -85,13 +101,32 @@ let insurancePresentationReadable =
 
 if (database !== undefined) {
     try {
-        relationships =
-            [...await createD1RiverCrmPersistence(
+        const crmPersistence =
+            createD1RiverCrmPersistence(
                 database
-            ).list()];
+            );
+
+        relationships =
+            [...await crmPersistence.list()];
 
         databaseReadable =
             true;
+
+        if (requestedSearch !== "") {
+            try {
+                relationshipSearchResults =
+                    [...await crmPersistence.searchRelationships({
+                        query:
+                            requestedSearch,
+
+                        limit:
+                            100
+                    })];
+            } catch {
+                relationshipSearchResults =
+                    [];
+            }
+        }
 
         try {
             insuranceQueueRelationships =
@@ -206,6 +241,21 @@ const selectedInsuranceTriageItems =
         );
 
 
+const searchedRelationships:
+    readonly RiverCrmRelationship[] =
+        relationshipSearchResults ??
+        relationships;
+
+
+const searchedRelationshipIds =
+    new Set(
+        searchedRelationships.map(
+            relationship =>
+                relationship.relationshipId
+        )
+    );
+
+
 const visibleRelationships:
     readonly RiverCrmRelationship[] =
         (
@@ -213,12 +263,19 @@ const visibleRelationships:
                 "all" ||
             !insurancePresentationReadable
         )
-            ? relationships
-            : selectedInsuranceTriageItems.map(
-                item =>
-                    item.relationship
-            );
-
+            ? searchedRelationships
+            : selectedInsuranceTriageItems
+                .map(
+                    item =>
+                        item.relationship
+                )
+                .filter(
+                    relationship =>
+                        requestedSearch === "" ||
+                        searchedRelationshipIds.has(
+                            relationship.relationshipId
+                        )
+                );
 
 const insuranceQueueOptions:
     readonly {
@@ -485,17 +542,32 @@ const insuranceQueueOptions:
 
 
 function insuranceQueueHref(
-    value:
+    filter:
         InsuranceLeadTriageFilter
-):
-    string {
+): string {
+    const params =
+        new URLSearchParams();
 
-    return value ===
-        "all"
+    if (filter !== "all") {
+        params.set(
+            "insuranceQueue",
+            filter
+        );
+    }
+
+    if (requestedSearch !== "") {
+        params.set(
+            "search",
+            requestedSearch
+        );
+    }
+
+    const query =
+        params.toString();
+
+    return query === ""
         ? "/river-os/crm"
-        : `/river-os/crm?insuranceQueue=${encodeURIComponent(
-            value
-        )}`;
+        : `/river-os/crm?${query}`;
 }
 ---
 
@@ -1196,6 +1268,79 @@ function insuranceQueueHref(
                     }
                     {" "}
                     for this insurance queue.
+                </p>
+            )
+        }
+    </section>
+
+    <section
+        class="workspace-panel"
+        aria-label="CRM relationship search"
+    >
+        <form method="get" action="/river-os/crm">
+            {
+                selectedInsuranceQueue !== "all" && (
+                    <input
+                        type="hidden"
+                        name="insuranceQueue"
+                        value={selectedInsuranceQueue}
+                    />
+                )
+            }
+
+            <label for="crm-relationship-search">
+                Search relationships
+            </label>
+
+            <input
+                id="crm-relationship-search"
+                type="search"
+                name="search"
+                value={requestedSearch}
+                placeholder="Name, email, phone, relationship ID, owner, or source"
+                maxlength="200"
+                autocomplete="off"
+            />
+
+            <button type="submit">
+                Search
+            </button>
+
+            {
+                requestedSearch !== "" && (
+                    <a
+                        href={
+                            selectedInsuranceQueue === "all"
+                                ? "/river-os/crm"
+                                : `/river-os/crm?insuranceQueue=${encodeURIComponent(
+                                    selectedInsuranceQueue
+                                )}`
+                        }
+                    >
+                        Clear search
+                    </a>
+                )
+            }
+        </form>
+
+        {
+            requestedSearch !== "" && (
+                <p class="panel-note">
+                    Showing
+                    {" "}
+                    {visibleRelationships.length}
+                    {" "}
+                    matching
+                    {" "}
+                    {
+                        visibleRelationships.length === 1
+                            ? "relationship"
+                            : "relationships"
+                    }
+                    {" "}
+                    for
+                    {" "}
+                    <strong>{requestedSearch}</strong>.
                 </p>
             )
         }
