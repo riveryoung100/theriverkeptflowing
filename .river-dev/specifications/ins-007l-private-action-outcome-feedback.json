@@ -1,0 +1,43 @@
+{
+    "slice":  "INS-007L",
+    "title":  "Private insurance action outcome feedback",
+    "status":  "implementation",
+    "workspace":  "/river-os/crm",
+    "sourceParameters":  {
+                             "operatingState":  [
+                                                    "updated",
+                                                    "no-op"
+                                                ],
+                             "appointment":  [
+                                                 "scheduled",
+                                                 "rescheduled",
+                                                 "cleared",
+                                                 "no-op"
+                                             ],
+                             "followUp":  [
+                                              "scheduled",
+                                              "cleared",
+                                              "no-op"
+                                          ]
+                         },
+    "behavior":  [
+                     "recognize only canonical success outcomes",
+                     "ignore unknown empty or absent outcome values",
+                     "render one passive status notice beneath the CRM hero",
+                     "preserve insuranceQueue behavior independently",
+                     "render no user-controlled outcome text directly"
+                 ],
+    "invariants":  [
+                       "feedback is read-only",
+                       "no mutation authority",
+                       "no appointment scheduling ownership",
+                       "no follow-up scheduling ownership",
+                       "no operating-state ownership",
+                       "no automatic stage mutation",
+                       "no provider activation",
+                       "no routing or scoring",
+                       "no second CRM",
+                       "no migration",
+                       "no deployment"
+                   ]
+}
