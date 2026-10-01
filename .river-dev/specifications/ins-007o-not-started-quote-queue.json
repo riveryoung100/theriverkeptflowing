@@ -1,0 +1,31 @@
+{
+    "slice":  "INS-007O",
+    "title":  "Not-started insurance quote queue",
+    "status":  "implementation",
+    "workspace":  "/river-os/crm",
+    "filter":  "not-started",
+    "label":  "Not started",
+    "canonicalSemantics":  "exact InsuranceLeadPresentation.quoteStatus equality to not-started",
+    "summaryField":  "notStarted",
+    "behavior":  [
+                     "add Not started insuranceQueue filter",
+                     "count only canonical insurance triage presentations with quoteStatus not-started",
+                     "preserve existing triage ordering",
+                     "keep New inbound as a separate composite website/requested cohort",
+                     "keep public quote ingress requested semantics unchanged"
+                 ],
+    "invariants":  [
+                       "read-only queue selection",
+                       "no inference from relationship pipeline stage",
+                       "no public quote-ingress mutation",
+                       "no automatic pipeline stage mutation",
+                       "no appointment mutation",
+                       "no follow-up mutation",
+                       "no provider activation",
+                       "no routing",
+                       "no scoring",
+                       "no second CRM",
+                       "no migration",
+                       "no deployment"
+                   ]
+}

@@ -666,6 +666,9 @@ test(
                 newInbound:
                     1,
 
+                notStarted:
+                    0,
+
                 requested:
                     1,
 
@@ -912,6 +915,169 @@ test(
                 "quoted"
             ).length,
             1
+        );
+    }
+);
+
+
+test(
+    "triage exposes not-started as an exact canonical quote-status filter",
+    () => {
+        const snapshot =
+            createInsuranceLeadTriageSnapshot({
+                relationships: [
+                    relationship(
+                        "relationship:triage:not-started",
+                        {
+                            stage:
+                                "qualified"
+                        }
+                    ),
+                    relationship(
+                        "relationship:triage:requested-ingress"
+                    )
+                ],
+
+                insurancePresentations: [
+                    presentation(
+                        "relationship:triage:not-started",
+                        {
+                            quoteStatus:
+                                "not-started",
+
+                            acquisitionSource:
+                                undefined
+                        }
+                    ),
+                    presentation(
+                        "relationship:triage:requested-ingress",
+                        {
+                            quoteStatus:
+                                "requested",
+
+                            acquisitionSource:
+                                "website"
+                        }
+                    )
+                ],
+
+                now:
+                    "2026-10-01T13:00:00.000Z"
+            });
+
+        assert.deepEqual(
+            selectInsuranceLeadTriageItems(
+                snapshot,
+                "not-started"
+            ).map(
+                item =>
+                    item.relationship
+                        .relationshipId
+            ),
+            [
+                "relationship:triage:not-started"
+            ]
+        );
+
+        assert.equal(
+            snapshot.summary
+                .notStarted,
+            1
+        );
+    }
+);
+
+
+test(
+    "not-started queue does not absorb canonical requested website quote ingress",
+    () => {
+        const snapshot =
+            createInsuranceLeadTriageSnapshot({
+                relationships: [
+                    relationship(
+                        "relationship:triage:website-requested"
+                    )
+                ],
+
+                insurancePresentations: [
+                    presentation(
+                        "relationship:triage:website-requested",
+                        {
+                            quoteStatus:
+                                "requested",
+
+                            acquisitionSource:
+                                "website"
+                        }
+                    )
+                ],
+
+                now:
+                    "2026-10-01T13:00:00.000Z"
+            });
+
+        assert.equal(
+            selectInsuranceLeadTriageItems(
+                snapshot,
+                "not-started"
+            ).length,
+            0
+        );
+
+        assert.equal(
+            selectInsuranceLeadTriageItems(
+                snapshot,
+                "requested"
+            ).length,
+            1
+        );
+
+        assert.equal(
+            selectInsuranceLeadTriageItems(
+                snapshot,
+                "new"
+            ).length,
+            1
+        );
+    }
+);
+
+
+test(
+    "not-started quote filter does not infer status from relationship pipeline stage",
+    () => {
+        const snapshot =
+            createInsuranceLeadTriageSnapshot({
+                relationships: [
+                    relationship(
+                        "relationship:triage:new-but-requested",
+                        {
+                            stage:
+                                "new"
+                        }
+                    )
+                ],
+
+                insurancePresentations: [
+                    presentation(
+                        "relationship:triage:new-but-requested",
+                        {
+                            quoteStatus:
+                                "requested"
+                        }
+                    )
+                ],
+
+                now:
+                    "2026-10-01T13:00:00.000Z"
+            });
+
+        assert.equal(
+            selectInsuranceLeadTriageItems(
+                snapshot,
+                "not-started"
+            ).length,
+            0
         );
     }
 );

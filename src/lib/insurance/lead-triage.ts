@@ -18,6 +18,7 @@ import type {
 export const INSURANCE_LEAD_TRIAGE_FILTERS = [
     "all",
     "new",
+    "not-started",
     "requested",
     "in-progress",
     "quoted",
@@ -70,6 +71,9 @@ export interface InsuranceLeadTriageSummary {
         number;
 
     readonly newInbound:
+        number;
+
+    readonly notStarted:
         number;
 
     readonly requested:
@@ -280,6 +284,11 @@ function matchesFilter(
         case "new":
             return item.flags
                 .newInboundQuote;
+
+        case "not-started":
+            return item.insurance
+                .quoteStatus ===
+                "not-started";
 
         case "requested":
             return item.insurance
@@ -507,6 +516,14 @@ export function createInsuranceLeadTriageSnapshot(
                 item =>
                     item.flags
                         .newInboundQuote
+            ).length,
+
+        notStarted:
+            items.filter(
+                item =>
+                    item.insurance
+                        .quoteStatus ===
+                        "not-started"
             ).length,
 
         requested:
