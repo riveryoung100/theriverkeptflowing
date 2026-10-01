@@ -1,0 +1,117 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import QuoteRequestForm from "../../components/insurance/QuoteRequestForm.astro";
+---
+
+<MainLayout
+    title="Request an Insurance Quote | The River Kept Flowing"
+    description="Request help with an insurance quote through The River Kept Flowing. Share only the information needed to begin the conversation."
+    canonical="https://theriverkeptflowing.com/insurance/quote/"
+    bodyClass="insurance-quote-page"
+>
+    <main class="insurance-quote-page__main">
+
+        <section class="insurance-quote-hero">
+
+            <p class="insurance-quote-hero__eyebrow">
+                River Guides · Insurance
+            </p>
+
+            <h1>
+                Request an insurance quote
+            </h1>
+
+            <p class="insurance-quote-hero__lede">
+                Tell me what you are looking to protect and how you would like
+                to be contacted. Your request will be reviewed before any quote
+                is provided.
+            </p>
+
+        </section>
+
+        <QuoteRequestForm />
+
+        <section
+            class="insurance-quote-notice"
+            aria-labelledby="insurance-quote-notice-heading"
+        >
+            <h2 id="insurance-quote-notice-heading">
+                Before you submit
+            </h2>
+
+            <p>
+                A request does not bind, modify, or replace insurance coverage.
+                Product availability, eligibility, pricing, and underwriting
+                depend on the applicable carrier, state, and individual risk.
+            </p>
+
+            <p>
+                Do not send Social Security numbers, driver-license numbers,
+                payment-card information, bank information, passwords, or other
+                sensitive credentials through this form.
+            </p>
+        </section>
+
+    </main>
+</MainLayout>
+
+<style>
+    .insurance-quote-page__main {
+        width: min(1120px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: clamp(56px, 8vw, 112px) 0 96px;
+    }
+
+    .insurance-quote-hero {
+        max-width: 760px;
+        margin-bottom: 40px;
+    }
+
+    .insurance-quote-hero__eyebrow {
+        margin: 0 0 12px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        opacity: 0.68;
+    }
+
+    .insurance-quote-hero h1 {
+        max-width: 720px;
+        margin: 0;
+        font-size: clamp(2.5rem, 7vw, 5.4rem);
+        line-height: 0.98;
+        letter-spacing: -0.045em;
+    }
+
+    .insurance-quote-hero__lede {
+        max-width: 680px;
+        margin: 24px 0 0;
+        font-size: clamp(1.05rem, 2vw, 1.3rem);
+        line-height: 1.65;
+        opacity: 0.82;
+    }
+
+    .insurance-quote-notice {
+        max-width: 760px;
+        margin: 40px auto 0;
+        padding: 24px 0 0;
+        border-top: 1px solid color-mix(
+            in srgb,
+            currentColor 18%,
+            transparent
+        );
+    }
+
+    .insurance-quote-notice h2 {
+        margin: 0 0 12px;
+        font-size: 1rem;
+    }
+
+    .insurance-quote-notice p {
+        margin: 8px 0;
+        font-size: 0.92rem;
+        line-height: 1.65;
+        opacity: 0.68;
+    }
+</style>

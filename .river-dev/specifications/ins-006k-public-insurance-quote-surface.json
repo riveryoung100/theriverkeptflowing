@@ -1,0 +1,38 @@
+{
+  "id": "INS-006K",
+  "phase": "Public Insurance Quote Request Surface",
+  "branch": "cif-001-canonical-content-source-record",
+  "status": "implemented",
+  "objective": "Create one dedicated public insurance quote-request page that submits only canonical public quote fields into the retry-safe INS-006I HTTP ingress.",
+  "architecture": {
+    "publicRoute": "/insurance/quote/",
+    "apiRoute": "/api/insurance/quote-request",
+    "layoutOwner": "MainLayout",
+    "formOwner": "QuoteRequestForm.astro",
+    "submissionIdentity": "Opaque browser-generated Idempotency-Key",
+    "retrySemantics": "The same key is reused for network/server retries while the logical payload is unchanged.",
+    "editSemantics": "Any material form edit invalidates the active retry key so the next submission gets a new opaque key.",
+    "successSemantics": "HTTP 201 creation and 200 replay are both successful completion states.",
+    "conflictSemantics": "HTTP 409 blocks resubmission of the unchanged payload until the visitor materially edits the form.",
+    "privacy": "No quote payload is persisted to localStorage or sessionStorage.",
+    "attribution": "Landing pathname and recognized UTM parameters are submitted through existing canonical public fields.",
+    "customerIdentity": "relationshipId remains server-owned and is never submitted by the browser."
+  },
+  "scope": [
+    ".river-dev/specifications/ins-006k-public-insurance-quote-surface.json",
+    "src/pages/insurance/quote.astro",
+    "src/components/insurance/QuoteRequestForm.astro",
+    "src/lib/insurance/http/quote-request-public-surface.test.ts"
+  ],
+  "excluded": [
+    "global navigation changes",
+    "handbook CTA changes",
+    "producer assignment or routing",
+    "automated email",
+    "automated SMS",
+    "telephony",
+    "dashboard UI",
+    "deployment",
+    "migration execution"
+  ]
+}

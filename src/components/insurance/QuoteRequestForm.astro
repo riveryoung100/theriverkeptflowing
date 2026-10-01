@@ -1,0 +1,1115 @@
+---
+import {
+    INSURANCE_PRODUCT_INTERESTS
+} from "../../lib/insurance/lead-profile";
+
+const productLabels = {
+    auto: "Auto",
+    home: "Homeowners",
+    renters: "Renters",
+    landlord: "Landlord",
+    umbrella: "Umbrella",
+    life: "Life",
+    commercial: "Commercial",
+    other: "Other"
+} satisfies Record<
+    (typeof INSURANCE_PRODUCT_INTERESTS)[number],
+    string
+>;
+
+const stateCodes = [
+    "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA",
+    "HI","ID","IL","IN","IA","KS","KY","LA","ME","MD",
+    "MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ",
+    "NM","NY","NC","ND","OH","OK","OR","PA","RI","SC",
+    "SD","TN","TX","UT","VT","VA","WA","WV","WI","WY",
+    "DC"
+] as const;
+---
+
+<section
+    class="insurance-quote-card"
+    aria-labelledby="insurance-quote-form-heading"
+>
+    <div class="insurance-quote-card__intro">
+
+        <p class="insurance-quote-card__step">
+            Quote request
+        </p>
+
+        <h2 id="insurance-quote-form-heading">
+            Start with the basics
+        </h2>
+
+        <p>
+            No Social Security number, driver-license number, payment details,
+            or carrier credentials are requested here.
+        </p>
+
+    </div>
+
+    <form
+        class="insurance-quote-form"
+        data-insurance-quote-form
+    >
+
+        <fieldset>
+            <legend>
+                About you
+            </legend>
+
+            <div class="insurance-quote-form__grid insurance-quote-form__grid--two">
+
+                <label>
+                    <span>First name</span>
+                    <input
+                        name="firstName"
+                        type="text"
+                        autocomplete="given-name"
+                        maxlength="80"
+                        required
+                    />
+                </label>
+
+                <label>
+                    <span>Last name</span>
+                    <input
+                        name="lastName"
+                        type="text"
+                        autocomplete="family-name"
+                        maxlength="80"
+                        required
+                    />
+                </label>
+
+            </div>
+
+            <div class="insurance-quote-form__grid insurance-quote-form__grid--two">
+
+                <label>
+                    <span>Email</span>
+                    <input
+                        name="email"
+                        type="email"
+                        autocomplete="email"
+                        maxlength="254"
+                    />
+                </label>
+
+                <label>
+                    <span>Phone</span>
+                    <input
+                        name="phone"
+                        type="tel"
+                        autocomplete="tel"
+                        maxlength="32"
+                    />
+                </label>
+
+            </div>
+
+            <p class="insurance-quote-form__hint">
+                Provide at least one contact method below.
+            </p>
+        </fieldset>
+
+        <fieldset>
+            <legend>
+                What do you need help with?
+            </legend>
+
+            <div class="insurance-quote-form__grid insurance-quote-form__grid--three">
+
+                <label>
+                    <span>Insurance type</span>
+                    <select
+                        name="productInterest"
+                        required
+                    >
+                        <option value="">
+                            Select one
+                        </option>
+
+                        {
+                            INSURANCE_PRODUCT_INTERESTS.map(
+                                product => (
+                                    <option value={product}>
+                                        {productLabels[product]}
+                                    </option>
+                                )
+                            )
+                        }
+                    </select>
+                </label>
+
+                <label>
+                    <span>State</span>
+                    <select
+                        name="state"
+                        autocomplete="address-level1"
+                        required
+                    >
+                        <option value="">
+                            Select
+                        </option>
+
+                        {
+                            stateCodes.map(
+                                state => (
+                                    <option value={state}>
+                                        {state}
+                                    </option>
+                                )
+                            )
+                        }
+                    </select>
+                </label>
+
+                <label>
+                    <span>ZIP code</span>
+                    <input
+                        name="postalCode"
+                        type="text"
+                        inputmode="numeric"
+                        autocomplete="postal-code"
+                        pattern="[0-9]{5}"
+                        maxlength="5"
+                        required
+                    />
+                </label>
+
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>
+                Contact permission
+            </legend>
+
+            <p class="insurance-quote-form__consent-intro">
+                Choose the ways you permit contact about this insurance
+                request. At least one permitted channel is required.
+            </p>
+
+            <div class="insurance-quote-form__consents">
+
+                <label class="insurance-quote-consent">
+                    <input
+                        type="checkbox"
+                        data-consent-email
+                    />
+                    <span>
+                        You may contact me by email about this quote request.
+                    </span>
+                </label>
+
+                <label class="insurance-quote-consent">
+                    <input
+                        type="checkbox"
+                        data-consent-phone
+                    />
+                    <span>
+                        You may call me about this quote request.
+                    </span>
+                </label>
+
+                <label class="insurance-quote-consent">
+                    <input
+                        type="checkbox"
+                        data-consent-sms
+                    />
+                    <span>
+                        You may text me about this quote request. Message and
+                        data rates may apply.
+                    </span>
+                </label>
+
+            </div>
+
+            <p class="insurance-quote-form__fine-print">
+                Consent is recorded separately for each channel. Submitting
+                this form does not bind coverage or guarantee a quote.
+            </p>
+        </fieldset>
+
+        <div
+            class="insurance-quote-status"
+            data-insurance-quote-status
+            role="status"
+            aria-live="polite"
+            hidden
+        ></div>
+
+        <button
+            class="insurance-quote-form__submit"
+            type="submit"
+            data-insurance-quote-submit
+        >
+            Request my quote
+        </button>
+
+    </form>
+</section>
+
+<script>
+    const API_ENDPOINT =
+        "/api/insurance/quote-request";
+
+    const CONSENT_TEXT_VERSION =
+        "insurance-quote-v1";
+
+    type TerminalState =
+        "success" |
+        "conflict" |
+        null;
+
+    function textValue(
+        data:
+            FormData,
+        name:
+            string
+    ): string {
+        const value =
+            data.get(
+                name
+            );
+
+        return typeof value ===
+            "string"
+            ? value.trim()
+            : "";
+    }
+
+    function createSubmissionKey(): string {
+        return `quote:${globalThis.crypto.randomUUID()}`;
+    }
+
+    function addOptionalText(
+        payload:
+            Record<string, unknown>,
+        key:
+            string,
+        value:
+            string |
+            null
+    ): void {
+        const normalized =
+            value?.trim();
+
+        if(
+            normalized !==
+                undefined &&
+            normalized.length >
+                0
+        ){
+            payload[key] =
+                normalized;
+        }
+    }
+
+    function initializeInsuranceQuoteForm(
+        form:
+            HTMLFormElement
+    ): void {
+        if(
+            form.dataset.insuranceQuoteReady ===
+                "true"
+        ){
+            return;
+        }
+
+        form.dataset.insuranceQuoteReady =
+            "true";
+
+        const status =
+            form.querySelector<HTMLElement>(
+                "[data-insurance-quote-status]"
+            );
+
+        const submitButton =
+            form.querySelector<HTMLButtonElement>(
+                "[data-insurance-quote-submit]"
+            );
+
+        const emailInput =
+            form.elements.namedItem(
+                "email"
+            ) as
+                HTMLInputElement |
+                null;
+
+        const phoneInput =
+            form.elements.namedItem(
+                "phone"
+            ) as
+                HTMLInputElement |
+                null;
+
+        const emailConsent =
+            form.querySelector<HTMLInputElement>(
+                "[data-consent-email]"
+            );
+
+        const phoneConsent =
+            form.querySelector<HTMLInputElement>(
+                "[data-consent-phone]"
+            );
+
+        const smsConsent =
+            form.querySelector<HTMLInputElement>(
+                "[data-consent-sms]"
+            );
+
+        if(
+            !status ||
+            !submitButton ||
+            !emailInput ||
+            !phoneInput ||
+            !emailConsent ||
+            !phoneConsent ||
+            !smsConsent
+        ){
+            return;
+        }
+
+        let activeKey:
+            string |
+            null =
+                null;
+
+        let activePayload:
+            string |
+            null =
+                null;
+
+        let terminalPayload:
+            string |
+            null =
+                null;
+
+        let terminalState:
+            TerminalState =
+                null;
+
+        function announce(
+            message:
+                string,
+            kind:
+                "success" |
+                "error" |
+                "info"
+        ): void {
+            status.textContent =
+                message;
+
+            status.dataset.kind =
+                kind;
+
+            status.hidden =
+                false;
+        }
+
+        function clearAnnouncement(): void {
+            status.textContent =
+                "";
+
+            status.removeAttribute(
+                "data-kind"
+            );
+
+            status.hidden =
+                true;
+        }
+
+        function syncConsentAvailability(): void {
+            const hasEmail =
+                emailInput.value
+                    .trim()
+                    .length >
+                0;
+
+            const hasPhone =
+                phoneInput.value
+                    .trim()
+                    .length >
+                0;
+
+            emailConsent.disabled =
+                !hasEmail;
+
+            phoneConsent.disabled =
+                !hasPhone;
+
+            smsConsent.disabled =
+                !hasPhone;
+
+            if(!hasEmail){
+                emailConsent.checked =
+                    false;
+            }
+
+            if(!hasPhone){
+                phoneConsent.checked =
+                    false;
+
+                smsConsent.checked =
+                    false;
+            }
+        }
+
+        function markMaterialEdit(): void {
+            activeKey =
+                null;
+
+            activePayload =
+                null;
+
+            if(terminalState !== null){
+                terminalState =
+                    null;
+
+                terminalPayload =
+                    null;
+
+                submitButton.disabled =
+                    false;
+
+                submitButton.textContent =
+                    "Request my quote";
+
+                clearAnnouncement();
+            }
+
+            syncConsentAvailability();
+        }
+
+        function buildPayload():
+            Record<string, unknown> |
+            null {
+
+            if(!form.reportValidity()){
+                return null;
+            }
+
+            const data =
+                new FormData(
+                    form
+                );
+
+            const firstName =
+                textValue(
+                    data,
+                    "firstName"
+                );
+
+            const lastName =
+                textValue(
+                    data,
+                    "lastName"
+                );
+
+            const email =
+                textValue(
+                    data,
+                    "email"
+                );
+
+            const phone =
+                textValue(
+                    data,
+                    "phone"
+                );
+
+            const state =
+                textValue(
+                    data,
+                    "state"
+                );
+
+            const postalCode =
+                textValue(
+                    data,
+                    "postalCode"
+                );
+
+            const productInterest =
+                textValue(
+                    data,
+                    "productInterest"
+                );
+
+            if(
+                email.length ===
+                    0 &&
+                phone.length ===
+                    0
+            ){
+                announce(
+                    "Add an email address or phone number so the request can be reviewed.",
+                    "error"
+                );
+
+                return null;
+            }
+
+            const consent:
+                Record<string, unknown> = {
+                    textVersion:
+                        CONSENT_TEXT_VERSION
+                };
+
+            if(email.length > 0){
+                consent.email =
+                    emailConsent.checked;
+            }
+
+            if(phone.length > 0){
+                consent.phone =
+                    phoneConsent.checked;
+
+                consent.sms =
+                    smsConsent.checked;
+            }
+
+            const hasGrantedChannel =
+                (
+                    email.length >
+                        0 &&
+                    emailConsent.checked
+                ) ||
+                (
+                    phone.length >
+                        0 &&
+                    (
+                        phoneConsent.checked ||
+                        smsConsent.checked
+                    )
+                );
+
+            if(!hasGrantedChannel){
+                announce(
+                    "Choose at least one contact method you permit for this quote request.",
+                    "error"
+                );
+
+                return null;
+            }
+
+            const payload:
+                Record<string, unknown> = {
+                    firstName,
+                    lastName,
+                    state,
+                    postalCode,
+                    productInterest,
+                    consent,
+                    landingPage:
+                        globalThis.location
+                            .pathname
+                };
+
+            if(email.length > 0){
+                payload.email =
+                    email;
+            }
+
+            if(phone.length > 0){
+                payload.phone =
+                    phone;
+            }
+
+            const search =
+                new URLSearchParams(
+                    globalThis.location
+                        .search
+                );
+
+            addOptionalText(
+                payload,
+                "utmSource",
+                search.get(
+                    "utm_source"
+                )
+            );
+
+            addOptionalText(
+                payload,
+                "utmMedium",
+                search.get(
+                    "utm_medium"
+                )
+            );
+
+            addOptionalText(
+                payload,
+                "utmCampaign",
+                search.get(
+                    "utm_campaign"
+                )
+            );
+
+            addOptionalText(
+                payload,
+                "utmTerm",
+                search.get(
+                    "utm_term"
+                )
+            );
+
+            addOptionalText(
+                payload,
+                "utmContent",
+                search.get(
+                    "utm_content"
+                )
+            );
+
+            return payload;
+        }
+
+        form.addEventListener(
+            "input",
+            markMaterialEdit
+        );
+
+        form.addEventListener(
+            "change",
+            markMaterialEdit
+        );
+
+        form.addEventListener(
+            "submit",
+            event => {
+                event.preventDefault();
+
+                void submit();
+            }
+        );
+
+        async function submit(): Promise<void> {
+            const payload =
+                buildPayload();
+
+            if(payload === null){
+                return;
+            }
+
+            const serialized =
+                JSON.stringify(
+                    payload
+                );
+
+            if(
+                terminalPayload ===
+                    serialized &&
+                terminalState ===
+                    "success"
+            ){
+                announce(
+                    "This quote request has already been sent.",
+                    "success"
+                );
+
+                return;
+            }
+
+            if(
+                terminalPayload ===
+                    serialized &&
+                terminalState ===
+                    "conflict"
+            ){
+                announce(
+                    "Please review and change the request before submitting again.",
+                    "error"
+                );
+
+                return;
+            }
+
+            if(
+                activePayload !==
+                serialized
+            ){
+                activeKey =
+                    null;
+
+                activePayload =
+                    serialized;
+            }
+
+            if(activeKey === null){
+                activeKey =
+                    createSubmissionKey();
+            }
+
+            submitButton.disabled =
+                true;
+
+            submitButton.textContent =
+                "Sending…";
+
+            announce(
+                "Sending your quote request…",
+                "info"
+            );
+
+            let response:
+                Response;
+
+            try {
+                response =
+                    await fetch(
+                        API_ENDPOINT,
+                        {
+                            method:
+                                "POST",
+
+                            headers: {
+                                "content-type":
+                                    "application/json",
+
+                                "idempotency-key":
+                                    activeKey
+                            },
+
+                            body:
+                                serialized
+                        }
+                    );
+            }
+            catch {
+                submitButton.disabled =
+                    false;
+
+                submitButton.textContent =
+                    "Try again";
+
+                announce(
+                    "The request could not reach the server. You can retry without changing the form.",
+                    "error"
+                );
+
+                return;
+            }
+
+            if(
+                response.status ===
+                    200 ||
+                response.status ===
+                    201
+            ){
+                terminalPayload =
+                    serialized;
+
+                terminalState =
+                    "success";
+
+                activeKey =
+                    null;
+
+                activePayload =
+                    null;
+
+                submitButton.disabled =
+                    true;
+
+                submitButton.textContent =
+                    "Request sent";
+
+                announce(
+                    "Your quote request was received. The information you submitted can now be reviewed.",
+                    "success"
+                );
+
+                return;
+            }
+
+            if(response.status === 409){
+                terminalPayload =
+                    serialized;
+
+                terminalState =
+                    "conflict";
+
+                activeKey =
+                    null;
+
+                activePayload =
+                    null;
+
+                submitButton.disabled =
+                    true;
+
+                submitButton.textContent =
+                    "Review request";
+
+                announce(
+                    "This submission key was already used for different information. Change the form before submitting again.",
+                    "error"
+                );
+
+                return;
+            }
+
+            submitButton.disabled =
+                false;
+
+            submitButton.textContent =
+                "Try again";
+
+            if(response.status === 400){
+                announce(
+                    "Please review the information and contact permissions, then try again.",
+                    "error"
+                );
+
+                return;
+            }
+
+            if(response.status === 413){
+                announce(
+                    "The request was larger than allowed. Shorten the submitted information and try again.",
+                    "error"
+                );
+
+                return;
+            }
+
+            announce(
+                "The quote request could not be completed right now. You can retry without changing the form.",
+                "error"
+            );
+        }
+
+        syncConsentAvailability();
+    }
+
+    function initializeInsuranceQuoteForms(): void {
+        document
+            .querySelectorAll<HTMLFormElement>(
+                "[data-insurance-quote-form]"
+            )
+            .forEach(
+                initializeInsuranceQuoteForm
+            );
+    }
+
+    initializeInsuranceQuoteForms();
+
+    document.addEventListener(
+        "astro:page-load",
+        initializeInsuranceQuoteForms
+    );
+</script>
+
+<style>
+    .insurance-quote-card {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: clamp(24px, 5vw, 48px);
+        border: 1px solid color-mix(
+            in srgb,
+            currentColor 16%,
+            transparent
+        );
+        border-radius: 24px;
+        background: color-mix(
+            in srgb,
+            currentColor 3%,
+            transparent
+        );
+    }
+
+    .insurance-quote-card__intro {
+        max-width: 620px;
+        margin-bottom: 32px;
+    }
+
+    .insurance-quote-card__step {
+        margin: 0 0 8px;
+        font-size: 0.74rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        opacity: 0.62;
+    }
+
+    .insurance-quote-card__intro h2 {
+        margin: 0;
+        font-size: clamp(1.8rem, 4vw, 2.8rem);
+        letter-spacing: -0.03em;
+    }
+
+    .insurance-quote-card__intro p:last-child {
+        margin: 12px 0 0;
+        line-height: 1.6;
+        opacity: 0.72;
+    }
+
+    .insurance-quote-form {
+        display: grid;
+        gap: 32px;
+    }
+
+    .insurance-quote-form fieldset {
+        min-width: 0;
+        margin: 0;
+        padding: 0;
+        border: 0;
+    }
+
+    .insurance-quote-form legend {
+        margin-bottom: 16px;
+        font-size: 0.9rem;
+        font-weight: 700;
+    }
+
+    .insurance-quote-form__grid {
+        display: grid;
+        gap: 16px;
+    }
+
+    .insurance-quote-form__grid + .insurance-quote-form__grid {
+        margin-top: 16px;
+    }
+
+    .insurance-quote-form__grid--two {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+
+    .insurance-quote-form__grid--three {
+        grid-template-columns:
+            1.2fr 0.7fr 0.8fr;
+    }
+
+    .insurance-quote-form label:not(.insurance-quote-consent) {
+        display: grid;
+        gap: 8px;
+    }
+
+    .insurance-quote-form label > span {
+        font-size: 0.86rem;
+        font-weight: 650;
+    }
+
+    .insurance-quote-form input,
+    .insurance-quote-form select {
+        width: 100%;
+        min-height: 48px;
+        padding: 10px 12px;
+        border: 1px solid color-mix(
+            in srgb,
+            currentColor 22%,
+            transparent
+        );
+        border-radius: 10px;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+    }
+
+    .insurance-quote-form input:focus-visible,
+    .insurance-quote-form select:focus-visible,
+    .insurance-quote-form__submit:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 3px;
+    }
+
+    .insurance-quote-form__hint,
+    .insurance-quote-form__fine-print,
+    .insurance-quote-form__consent-intro {
+        margin: 12px 0 0;
+        font-size: 0.84rem;
+        line-height: 1.55;
+        opacity: 0.66;
+    }
+
+    .insurance-quote-form__consents {
+        display: grid;
+        gap: 12px;
+        margin-top: 16px;
+    }
+
+    .insurance-quote-consent {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: start;
+        gap: 10px;
+        padding: 14px;
+        border: 1px solid color-mix(
+            in srgb,
+            currentColor 14%,
+            transparent
+        );
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+    .insurance-quote-consent input {
+        width: 18px;
+        min-height: 18px;
+        margin: 2px 0 0;
+    }
+
+    .insurance-quote-consent:has(input:disabled) {
+        opacity: 0.45;
+        cursor: default;
+    }
+
+    .insurance-quote-status {
+        padding: 14px 16px;
+        border-radius: 10px;
+        line-height: 1.55;
+        border: 1px solid color-mix(
+            in srgb,
+            currentColor 18%,
+            transparent
+        );
+    }
+
+    .insurance-quote-status[data-kind="success"] {
+        font-weight: 650;
+    }
+
+    .insurance-quote-status[data-kind="error"] {
+        font-weight: 650;
+    }
+
+    .insurance-quote-form__submit {
+        width: fit-content;
+        min-height: 50px;
+        padding: 12px 22px;
+        border: 1px solid currentColor;
+        border-radius: 999px;
+        background: currentColor;
+        color: Canvas;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .insurance-quote-form__submit:disabled {
+        cursor: default;
+        opacity: 0.58;
+    }
+
+    @media (max-width: 760px) {
+        .insurance-quote-form__grid--two,
+        .insurance-quote-form__grid--three {
+            grid-template-columns: 1fr;
+        }
+
+        .insurance-quote-card {
+            border-radius: 18px;
+        }
+
+        .insurance-quote-form__submit {
+            width: 100%;
+        }
+    }
+</style>
