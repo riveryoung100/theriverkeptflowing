@@ -1,0 +1,56 @@
+{
+  "id": "INS-006U",
+  "phase": "Private Insurance Lead Operating-State Action",
+  "branch": "cif-001-canonical-content-source-record",
+  "status": "implemented",
+  "objective": "Expose the canonical insurance lead operating-state planner and atomic D1 executor through a private River OS POST action without adding UI controls yet.",
+  "request": {
+    "fields": [
+      "relationshipId",
+      "stage",
+      "quoteStatus",
+      "assignedProducer"
+    ],
+    "assignmentSemantics": "Blank or omitted assignedProducer means the complete target state is unassigned.",
+    "authority": "The request parser handles transport normalization only. Canonical operating-state validation remains in planInsuranceLeadOperatingState."
+  },
+  "action": {
+    "route": "/river-os/actions/insurance-operating-state",
+    "method": "POST",
+    "sameOrigin": true,
+    "databaseBinding": "RIVER_CRM_DB",
+    "readBeforeWrite": [
+      "canonical CRM relationship",
+      "insurance lead profile"
+    ],
+    "missingRecordPolicy": "Fail safely with 404; never manufacture a missing relationship or insurance profile.",
+    "eventIdentityPolicy": "Generate crm-event:<randomUUID> server-side only when requested stage differs from current stage.",
+    "eventSource": "river-os",
+    "success": "303 redirect to /river-os/crm?operatingState=<no-op|updated>"
+  },
+  "authority": {
+    "transitionValidation": "planInsuranceLeadOperatingState",
+    "atomicPersistence": "createD1InsuranceLeadOperatingStateExecutor"
+  },
+  "scope": [
+    ".river-dev/specifications/ins-006u-private-insurance-lead-operating-state-action.json",
+    "src/lib/insurance/private-operating-state-request.ts",
+    "src/lib/insurance/private-operating-state-request.test.ts",
+    "src/pages/river-os/actions/insurance-operating-state.ts",
+    "src/lib/insurance/private-operating-state-route-wiring.test.ts"
+  ],
+  "excluded": [
+    "CRM UI changes",
+    "automatic producer routing",
+    "generic CRM update action changes",
+    "generic CRM persistence changes",
+    "generic insurance-profile persistence changes",
+    "quote-request ingestion changes",
+    "contact-attempt changes",
+    "Telnyx changes",
+    "outbound email",
+    "outbound SMS",
+    "deployment",
+    "migration execution"
+  ]
+}
