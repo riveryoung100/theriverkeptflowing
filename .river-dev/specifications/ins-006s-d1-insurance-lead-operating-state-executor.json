@@ -1,0 +1,43 @@
+{
+  "id": "INS-006S",
+  "phase": "Atomic D1 Insurance Lead Operating-State Executor",
+  "branch": "cif-001-canonical-content-source-record",
+  "status": "implemented",
+  "objective": "Persist canonical insurance lead operating-state plans through one atomic D1 batch without duplicating transition policy in persistence.",
+  "authority": {
+    "planner": "planInsuranceLeadOperatingState",
+    "relationshipIdentity": "relationshipId",
+    "relationshipStage": "RiverCrmPipelineStage",
+    "insuranceQuoteStatus": "InsuranceQuoteStatus"
+  },
+  "writeShapes": {
+    "noOp": "Zero prepared statements and zero D1 batch calls.",
+    "profileOnly": "One insurance lead-profile upsert.",
+    "stageOnly": "One relationship upsert plus one immutable stage-changed relationship-event insert in the same D1 batch.",
+    "combined": "Relationship upsert, insurance lead-profile upsert, and immutable stage-changed event insert in the same D1 batch."
+  },
+  "atomicity": {
+    "mechanism": "Cloudflare D1 batch contract already used by quote-request persistence.",
+    "rule": "A stage change is never intentionally issued separately from its audit event.",
+    "concurrency": "INS-006S does not invent an optimistic-concurrency protocol that the existing relationship/profile persistence contracts do not atomically expose."
+  },
+  "scope": [
+    ".river-dev/specifications/ins-006s-d1-insurance-lead-operating-state-executor.json",
+    "src/lib/insurance/d1-lead-operating-state.ts",
+    "src/lib/insurance/d1-lead-operating-state.test.ts",
+    "src/lib/insurance/index.ts"
+  ],
+  "excluded": [
+    "generic CRM persistence changes",
+    "generic insurance-profile persistence changes",
+    "River OS action wiring",
+    "River OS UI changes",
+    "automatic producer routing",
+    "new relationship event types",
+    "contact-attempt changes",
+    "Telnyx changes",
+    "quote-request changes",
+    "deployment",
+    "migration execution"
+  ]
+}
