@@ -1,0 +1,49 @@
+{
+  "slice": "INS-007I",
+  "title": "Provider-neutral insurance appointment domain + D1 executor",
+  "status": "implementation",
+  "canonicalState": {
+    "relationshipField": "appointmentAt",
+    "databaseColumn": "appointment_at",
+    "eventType": "appointment-set",
+    "identity": "relationshipId"
+  },
+  "operations": [
+    "schedule",
+    "reschedule",
+    "clear",
+    "no-op"
+  ],
+  "domainRules": [
+    "appointment targets must be absolute timestamps and normalize to UTC ISO",
+    "clear maps appointmentAt to undefined in domain state and SQL NULL in persistence",
+    "equivalent targets are no-op and do not advance updatedAt",
+    "changed state requires occurredAt strictly later than relationship.updatedAt",
+    "schedule and reschedule append the existing appointment-set event",
+    "clear emits no fabricated appointment-set event",
+    "appointment mutation preserves stage, nextFollowUpAt, owner, contact fields, and relationship identity"
+  ],
+  "persistenceRules": [
+    "use optimistic compare-and-set on relationship_id plus previous updated_at",
+    "update only appointment_at and updated_at",
+    "schedule/reschedule insert immutable appointment-set evidence first under the pre-mutation concurrency token, then compare-and-set the relationship inside the same atomic D1 batch",
+    "clear performs only the narrow relationship update",
+    "no-op performs zero writes",
+    "zero relationship rows changed is an optimistic-concurrency conflict"
+  ],
+  "eventMetadata": {
+    "previousAppointmentAt": "previous canonical timestamp or null",
+    "appointmentAt": "new canonical timestamp"
+  },
+  "boundaries": [
+    "no route",
+    "no UI",
+    "no migration",
+    "no stage mutation",
+    "no quote-status mutation",
+    "no producer mutation",
+    "no follow-up mutation",
+    "no calendar/provider integration",
+    "no deployment"
+  ]
+}
