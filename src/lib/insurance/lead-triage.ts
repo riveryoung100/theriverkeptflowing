@@ -25,6 +25,14 @@ export const INSURANCE_LEAD_TRIAGE_FILTERS = [
     "bound",
     "declined",
     "lost",
+    "stage-new",
+    "stage-contacted",
+    "stage-qualified",
+    "stage-appointment-set",
+    "stage-proposal",
+    "stage-won",
+    "stage-lost",
+    "stage-nurture",
     "unassigned",
     "follow-up-due",
     "appointments",
@@ -92,6 +100,30 @@ export interface InsuranceLeadTriageSummary {
         number;
 
     readonly lost:
+        number;
+
+    readonly stageNew:
+        number;
+
+    readonly stageContacted:
+        number;
+
+    readonly stageQualified:
+        number;
+
+    readonly stageAppointmentSet:
+        number;
+
+    readonly stageProposal:
+        number;
+
+    readonly stageWon:
+        number;
+
+    readonly stageLost:
+        number;
+
+    readonly stageNurture:
         number;
 
     readonly unassigned:
@@ -319,6 +351,46 @@ function matchesFilter(
             return item.insurance
                 .quoteStatus ===
                 "lost";
+
+        case "stage-new":
+            return item.relationship
+                .stage ===
+                "new";
+
+        case "stage-contacted":
+            return item.relationship
+                .stage ===
+                "contacted";
+
+        case "stage-qualified":
+            return item.relationship
+                .stage ===
+                "qualified";
+
+        case "stage-appointment-set":
+            return item.relationship
+                .stage ===
+                "appointment-set";
+
+        case "stage-proposal":
+            return item.relationship
+                .stage ===
+                "proposal";
+
+        case "stage-won":
+            return item.relationship
+                .stage ===
+                "won";
+
+        case "stage-lost":
+            return item.relationship
+                .stage ===
+                "lost";
+
+        case "stage-nurture":
+            return item.relationship
+                .stage ===
+                "nurture";
 
         case "unassigned":
             return item.flags
@@ -572,6 +644,70 @@ export function createInsuranceLeadTriageSnapshot(
                     item.insurance
                         .quoteStatus ===
                         "lost"
+            ).length,
+
+        stageNew:
+            items.filter(
+                item =>
+                    item.relationship
+                        .stage ===
+                        "new"
+            ).length,
+
+        stageContacted:
+            items.filter(
+                item =>
+                    item.relationship
+                        .stage ===
+                        "contacted"
+            ).length,
+
+        stageQualified:
+            items.filter(
+                item =>
+                    item.relationship
+                        .stage ===
+                        "qualified"
+            ).length,
+
+        stageAppointmentSet:
+            items.filter(
+                item =>
+                    item.relationship
+                        .stage ===
+                        "appointment-set"
+            ).length,
+
+        stageProposal:
+            items.filter(
+                item =>
+                    item.relationship
+                        .stage ===
+                        "proposal"
+            ).length,
+
+        stageWon:
+            items.filter(
+                item =>
+                    item.relationship
+                        .stage ===
+                        "won"
+            ).length,
+
+        stageLost:
+            items.filter(
+                item =>
+                    item.relationship
+                        .stage ===
+                        "lost"
+            ).length,
+
+        stageNurture:
+            items.filter(
+                item =>
+                    item.relationship
+                        .stage ===
+                        "nurture"
             ).length,
 
         unassigned:

@@ -687,6 +687,30 @@ test(
                 lost:
                     0,
 
+                stageNew:
+                    3,
+
+                stageContacted:
+                    0,
+
+                stageQualified:
+                    0,
+
+                stageAppointmentSet:
+                    0,
+
+                stageProposal:
+                    0,
+
+                stageWon:
+                    0,
+
+                stageLost:
+                    0,
+
+                stageNurture:
+                    0,
+
                 unassigned:
                     1,
 
@@ -1078,6 +1102,217 @@ test(
                 "not-started"
             ).length,
             0
+        );
+    }
+);
+
+
+test(
+    "triage exposes every canonical pipeline stage through namespaced stage filters",
+    () => {
+        const stages =
+            [
+                ["new","stage-new"],
+                ["contacted","stage-contacted"],
+                ["qualified","stage-qualified"],
+                ["appointment-set","stage-appointment-set"],
+                ["proposal","stage-proposal"],
+                ["won","stage-won"],
+                ["lost","stage-lost"],
+                ["nurture","stage-nurture"]
+            ] as const;
+
+        const snapshot =
+            createInsuranceLeadTriageSnapshot({
+                relationships:
+                    stages.map(
+                        ([stage]) =>
+                            relationship(
+                                `relationship:triage:stage:${stage}`,
+                                {
+                                    stage
+                                }
+                            )
+                    ),
+
+                insurancePresentations:
+                    stages.map(
+                        ([stage]) =>
+                            presentation(
+                                `relationship:triage:stage:${stage}`,
+                                {
+                                    quoteStatus:
+                                        "requested"
+                                }
+                            )
+                    ),
+
+                now:
+                    "2026-10-01T13:00:00.000Z"
+            });
+
+        for(const [stage,filter] of stages){
+            assert.deepEqual(
+                selectInsuranceLeadTriageItems(
+                    snapshot,
+                    filter
+                ).map(
+                    item =>
+                        item.relationship
+                            .relationshipId
+                ),
+                [
+                    `relationship:triage:stage:${stage}`
+                ]
+            );
+        }
+
+        assert.equal(snapshot.summary.stageNew,1);
+        assert.equal(snapshot.summary.stageContacted,1);
+        assert.equal(snapshot.summary.stageQualified,1);
+        assert.equal(snapshot.summary.stageAppointmentSet,1);
+        assert.equal(snapshot.summary.stageProposal,1);
+        assert.equal(snapshot.summary.stageWon,1);
+        assert.equal(snapshot.summary.stageLost,1);
+        assert.equal(snapshot.summary.stageNurture,1);
+    }
+);
+
+
+test(
+    "pipeline stage lost remains independent from quote-status lost",
+    () => {
+        const snapshot =
+            createInsuranceLeadTriageSnapshot({
+                relationships: [
+                    relationship(
+                        "relationship:triage:stage-lost-only",
+                        {
+                            stage:
+                                "lost"
+                        }
+                    ),
+                    relationship(
+                        "relationship:triage:quote-lost-only",
+                        {
+                            stage:
+                                "qualified"
+                        }
+                    )
+                ],
+
+                insurancePresentations: [
+                    presentation(
+                        "relationship:triage:stage-lost-only",
+                        {
+                            quoteStatus:
+                                "quoted"
+                        }
+                    ),
+                    presentation(
+                        "relationship:triage:quote-lost-only",
+                        {
+                            quoteStatus:
+                                "lost"
+                        }
+                    )
+                ],
+
+                now:
+                    "2026-10-01T13:00:00.000Z"
+            });
+
+        assert.deepEqual(
+            selectInsuranceLeadTriageItems(
+                snapshot,
+                "stage-lost"
+            ).map(
+                item =>
+                    item.relationship.relationshipId
+            ),
+            [
+                "relationship:triage:stage-lost-only"
+            ]
+        );
+
+        assert.deepEqual(
+            selectInsuranceLeadTriageItems(
+                snapshot,
+                "lost"
+            ).map(
+                item =>
+                    item.relationship.relationshipId
+            ),
+            [
+                "relationship:triage:quote-lost-only"
+            ]
+        );
+    }
+);
+
+
+test(
+    "appointment-set stage remains independent from canonical appointmentAt presence",
+    () => {
+        const snapshot =
+            createInsuranceLeadTriageSnapshot({
+                relationships: [
+                    relationship(
+                        "relationship:triage:stage-appointment-only",
+                        {
+                            stage:
+                                "appointment-set"
+                        }
+                    ),
+                    relationship(
+                        "relationship:triage:appointment-at-only",
+                        {
+                            stage:
+                                "qualified",
+
+                            appointmentAt:
+                                "2026-10-02T15:00:00.000Z"
+                        }
+                    )
+                ],
+
+                insurancePresentations: [
+                    presentation(
+                        "relationship:triage:stage-appointment-only"
+                    ),
+                    presentation(
+                        "relationship:triage:appointment-at-only"
+                    )
+                ],
+
+                now:
+                    "2026-10-01T13:00:00.000Z"
+            });
+
+        assert.deepEqual(
+            selectInsuranceLeadTriageItems(
+                snapshot,
+                "stage-appointment-set"
+            ).map(
+                item =>
+                    item.relationship.relationshipId
+            ),
+            [
+                "relationship:triage:stage-appointment-only"
+            ]
+        );
+
+        assert.deepEqual(
+            selectInsuranceLeadTriageItems(
+                snapshot,
+                "appointments"
+            ).map(
+                item =>
+                    item.relationship.relationshipId
+            ),
+            [
+                "relationship:triage:appointment-at-only"
+            ]
         );
     }
 );

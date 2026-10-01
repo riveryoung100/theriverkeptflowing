@@ -1,0 +1,39 @@
+{
+    "slice":  "INS-007P",
+    "title":  "Insurance pipeline-stage queues",
+    "status":  "implementation",
+    "workspace":  "/river-os/crm",
+    "filters":  [
+                    "stage-new",
+                    "stage-contacted",
+                    "stage-qualified",
+                    "stage-appointment-set",
+                    "stage-proposal",
+                    "stage-won",
+                    "stage-lost",
+                    "stage-nurture"
+                ],
+    "canonicalSemantics":  "exact RiverCrmRelationship.stage equality within the canonical insurance triage cohort",
+    "behavior":  [
+                     "add namespaced read-only filters for every canonical CRM pipeline stage",
+                     "preserve existing New inbound composite semantics",
+                     "preserve existing quote-status Lost semantics",
+                     "preserve existing Appointments appointmentAt-presence semantics",
+                     "count stages only from canonical insurance triage relationships",
+                     "preserve existing triage ordering"
+                 ],
+    "invariants":  [
+                       "stage-lost is distinct from quote-status lost",
+                       "stage-appointment-set is distinct from appointmentAt presence",
+                       "no automatic stage mutation",
+                       "no quote-status mutation",
+                       "no appointment mutation",
+                       "no follow-up mutation",
+                       "no provider activation",
+                       "no routing",
+                       "no scoring",
+                       "no second CRM",
+                       "no migration",
+                       "no deployment"
+                   ]
+}
