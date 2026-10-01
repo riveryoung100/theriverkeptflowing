@@ -1,4 +1,5 @@
 export * from "./lead-profile";
+export * from "./lead-operating-state";
 export * from "./d1-lead-profile";
 export * from "./quote-request";
 export * from "./d1-quote-request";

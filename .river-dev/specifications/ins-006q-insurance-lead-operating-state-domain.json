@@ -1,0 +1,54 @@
+{
+  "id": "INS-006Q",
+  "phase": "Canonical Insurance Lead Operating-State Domain",
+  "branch": "cif-001-canonical-content-source-record",
+  "status": "implemented",
+  "objective": "Create one pure domain planner for manual insurance lead operating-state changes before adding any new persistence or River OS mutation surface.",
+  "identity": {
+    "canonical": "relationshipId",
+    "rule": "The relationship and insurance lead profile must reference the same canonical relationshipId."
+  },
+  "targetState": {
+    "relationshipStageAuthority": "RiverCrmPipelineStage",
+    "quoteStatusAuthority": "InsuranceQuoteStatus",
+    "assignedProducer": "Optional manual normalized text; null or omission means the target state is unassigned."
+  },
+  "transitionPolicy": {
+    "rule": "No new restrictive transition graph is invented in INS-006Q.",
+    "reason": "The existing CRM and insurance domains define valid state vocabularies but do not define a closed transition graph. INS-006Q validates complete target state through those canonical domain constructors."
+  },
+  "timePolicy": {
+    "rule": "A changed record receives occurredAt as updatedAt.",
+    "monotonicity": "occurredAt must not precede the current updatedAt of any record actually changed.",
+    "noOp": "No-op plans preserve the current records and do not manufacture an update timestamp."
+  },
+  "auditPolicy": {
+    "stageChanges": "A changed CRM pipeline stage requires an immutable stage-changed relationship event.",
+    "eventMetadata": [
+      "fromStage",
+      "toStage",
+      "quoteStatusBefore",
+      "quoteStatusAfter",
+      "assignedProducerBefore",
+      "assignedProducerAfter"
+    ],
+    "nonStageChanges": "Quote-status-only or producer-only changes do not misuse the stage-changed event type. A broader event type is deferred until explicitly modeled."
+  },
+  "scope": [
+    ".river-dev/specifications/ins-006q-insurance-lead-operating-state-domain.json",
+    "src/lib/insurance/lead-operating-state.ts",
+    "src/lib/insurance/lead-operating-state.test.ts",
+    "src/lib/insurance/index.ts"
+  ],
+  "excluded": [
+    "D1 operating-state executor",
+    "River OS form or route wiring",
+    "automatic producer routing",
+    "new relationship event types",
+    "contact attempt changes",
+    "Telnyx changes",
+    "quote-request ingestion changes",
+    "deployment",
+    "migration execution"
+  ]
+}
