@@ -1,0 +1,38 @@
+{
+  "id": "INS-006N",
+  "phase": "Contextual Insurance Quote Acquisition Entry Points",
+  "branch": "cif-001-canonical-content-source-record",
+  "status": "implemented",
+  "objective": "Make the existing public insurance quote request surface discoverable from high-intent insurance education contexts without turning the global editorial navigation into a sales funnel.",
+  "architecture": {
+    "canonicalQuoteSurface": "/insurance/quote/",
+    "entryPoints": [
+      "River Guides Insurance Education category",
+      "Insurance tributary card"
+    ],
+    "navigationPolicy": "No global Navbar quote CTA",
+    "guidePolicy": "No edits to individual insurance handbook body content or shared handbook renderer",
+    "conversionPolicy": "Education remains primary and quote acquisition remains additive.",
+    "stylePolicy": "Reuse existing guide-link and tributary-link styling; introduce no new page CSS.",
+    "formPolicy": "No second quote form is introduced"
+  },
+  "scope": [
+    ".river-dev/specifications/ins-006n-contextual-insurance-quote-entry-points.json",
+    "src/pages/river-guides.astro",
+    "src/pages/tributaries.astro",
+    "src/lib/insurance/http/quote-request-entry-points.test.ts"
+  ],
+  "excluded": [
+    "Navbar sales CTA",
+    "individual handbook edits",
+    "shared handbook renderer edits",
+    "new CTA CSS",
+    "producer assignment or routing",
+    "automated email",
+    "automated SMS",
+    "telephony",
+    "dashboard UI",
+    "deployment",
+    "migration execution"
+  ]
+}
