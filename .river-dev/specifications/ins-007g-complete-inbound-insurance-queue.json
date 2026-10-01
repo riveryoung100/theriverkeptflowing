@@ -1,0 +1,51 @@
+{
+  "id": "INS-007G",
+  "phase": "Complete Inbound Insurance Queue Read Path",
+  "branch": "cif-001-canonical-content-source-record",
+  "status": "implemented",
+  "objective": "Remove the generic 50-record relationship cohort as the completeness boundary for insurance operational triage while preserving the existing all-relationships CRM view.",
+  "architecture": {
+    "workspace": "/river-os/crm",
+    "genericAllView": "Existing createD1RiverCrmPersistence(database).list() semantics remain unchanged.",
+    "insuranceQueueRead": "Dedicated profile-backed relationship reader using immutable created_at keyset pagination.",
+    "presentationEnrichment": "Existing createD1InsuranceLeadPresentationPersistence(...).listForRelationships(...) batching.",
+    "triageAuthority": "INS-006X createInsuranceLeadTriageSnapshot and selectInsuranceLeadTriageItems.",
+    "finalOrdering": "INS-006X updatedAt DESC then relationshipId ASC."
+  },
+  "paging": {
+    "defaultPageSize": 100,
+    "maximumPageSize": 100,
+    "probe": "pageSize + 1",
+    "cursor": [
+      "createdAt",
+      "relationshipId"
+    ],
+    "order": [
+      "createdAt DESC",
+      "relationshipId ASC"
+    ],
+    "continuation": "created_at < cursor.createdAt OR created_at = cursor.createdAt AND relationship_id > cursor.relationshipId"
+  },
+  "dataBoundary": "Only relationships with a canonical river_crm_insurance_lead_profiles row are enumerated by the dedicated queue reader.",
+  "existingPerformanceIndex": "Migration 0008 defines created_at DESC, relationship_id ASC but remains unexecuted.",
+  "scope": [
+    ".river-dev/specifications/ins-007g-complete-inbound-insurance-queue.json",
+    "src/lib/insurance/d1-lead-queue.ts",
+    "src/lib/insurance/d1-lead-queue.test.ts",
+    "src/lib/insurance/private-triage-ui-wiring.test.ts",
+    "src/pages/river-os/crm.astro"
+  ],
+  "invariants": [
+    "Generic River CRM list() default 50 behavior is unchanged.",
+    "All relationships view continues to use the generic CRM cohort.",
+    "Insurance queue counts and filtered cohorts use the complete insurance queue cohort.",
+    "Pure INS-006X triage rules remain authoritative.",
+    "No triage business rule is duplicated in SQL.",
+    "No N+1 relationship reads are introduced.",
+    "No lead score or automatic producer routing is introduced.",
+    "No outbound provider is activated.",
+    "No schema or migration file is changed.",
+    "Migrations 0006 through 0009 remain unexecuted.",
+    "No deployment occurs."
+  ]
+}

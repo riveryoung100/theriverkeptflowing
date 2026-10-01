@@ -46,7 +46,22 @@ test(
 
         assert.match(
             page,
-            /createInsuranceLeadTriageSnapshot\(\{\s*relationships,\s*insurancePresentations,/s
+            /createD1InsuranceLeadQueuePersistence/
+        );
+
+        assert.match(
+            page,
+            /\.listComplete\(\)/
+        );
+
+        assert.match(
+            page,
+            /listForRelationships\(\s*insuranceQueueRelationships\.map/s
+        );
+
+        assert.match(
+            page,
+            /createInsuranceLeadTriageSnapshot\(\{\s*relationships:\s*insuranceQueueRelationships,\s*insurancePresentations,/s
         );
     }
 );
@@ -77,7 +92,7 @@ test(
 
 
 test(
-    "CRM all queue preserves complete relationship cohort while insurance filters use canonical selected items",
+    "CRM all view preserves the generic relationship cohort while insurance filters use complete canonical triage items",
     async () => {
         const page =
             await crmPage();

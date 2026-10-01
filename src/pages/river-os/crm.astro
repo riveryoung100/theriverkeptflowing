@@ -23,6 +23,10 @@ import {
     createD1InsuranceLeadPresentationPersistence
 } from "../../lib/insurance/d1-lead-presentation";
 
+import {
+    createD1InsuranceLeadQueuePersistence
+} from "../../lib/insurance/d1-lead-queue";
+
 import type {
     InsuranceLeadPresentation
 } from "../../lib/insurance/lead-presentation";
@@ -65,6 +69,10 @@ let relationships:
     RiverCrmRelationship[] =
         [];
 
+let insuranceQueueRelationships:
+    RiverCrmRelationship[] =
+        [];
+
 let insurancePresentations:
     InsuranceLeadPresentation[] =
         [];
@@ -83,11 +91,16 @@ if (database !== undefined) {
             true;
 
         try {
+            insuranceQueueRelationships =
+                [...await createD1InsuranceLeadQueuePersistence(
+                    database
+                ).listComplete()];
+
             insurancePresentations =
                 [...await createD1InsuranceLeadPresentationPersistence(
                     database
                 ).listForRelationships(
-                    relationships.map(
+                    insuranceQueueRelationships.map(
                         relationship =>
                             relationship.relationshipId
                     )
@@ -96,6 +109,9 @@ if (database !== undefined) {
             insurancePresentationReadable =
                 true;
         } catch {
+            insuranceQueueRelationships =
+                [];
+
             insurancePresentations =
                 [];
 
@@ -161,7 +177,8 @@ const selectedInsuranceQueue:
 
 const insuranceTriageSnapshot =
     createInsuranceLeadTriageSnapshot({
-        relationships,
+        relationships:
+            insuranceQueueRelationships,
 
         insurancePresentations,
 
