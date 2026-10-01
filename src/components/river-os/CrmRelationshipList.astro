@@ -1,4 +1,5 @@
-﻿---
+---
+import InsuranceOperatingStateForm from "./InsuranceOperatingStateForm.astro";
 import type {
     RiverCrmRelationship
 } from "../../lib/river-os/crm-workspace";
@@ -329,6 +330,26 @@ function formatInsuranceDate(
                                             </section>
                                         )
                                     }
+                                    {
+                                        insuranceByRelationshipId.has(
+                                            relationship.relationshipId
+                                        ) && (
+                                            <InsuranceOperatingStateForm
+                                                relationshipId={relationship.relationshipId}
+                                                stage={relationship.stage}
+                                                quoteStatus={
+                                                    insuranceByRelationshipId.get(
+                                                        relationship.relationshipId
+                                                    )!.quoteStatus
+                                                }
+                                                assignedProducer={
+                                                    insuranceByRelationshipId.get(
+                                                        relationship.relationshipId
+                                                    )!.assignedProducer
+                                                }
+                                            />
+                                        )
+                                    }
 <form
                                         class="crm-record-form"
                                         method="post"
@@ -386,7 +407,19 @@ function formatInsuranceDate(
                                             </select>
                                         </label>
 
-                                        <label>
+                                        {
+                                                insuranceByRelationshipId.has(
+                                                    relationship.relationshipId
+                                                )
+                                                    ? (
+                                                        <input
+                                                            type="hidden"
+                                                            name="stage"
+                                                            value={relationship.stage}
+                                                        />
+                                                    )
+                                                    : (
+<label>
                                             <span>Stage</span>
                                             <select
                                                 name="stage"
@@ -449,6 +482,8 @@ function formatInsuranceDate(
                                                 </option>
                                             </select>
                                         </label>
+                                                    )
+                                            }
 
                                         <label>
                                             <span>Source</span>

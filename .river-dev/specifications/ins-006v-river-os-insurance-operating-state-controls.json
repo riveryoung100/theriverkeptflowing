@@ -1,0 +1,57 @@
+{
+  "id": "INS-006V",
+  "phase": "River OS Insurance Operating-State Controls",
+  "branch": "cif-001-canonical-content-source-record",
+  "status": "implemented",
+  "objective": "Expose canonical insurance lead operating-state controls inside the existing private River OS CRM relationship workspace without creating a second CRM mutation path.",
+  "workspace": {
+    "route": "/river-os/crm",
+    "relationshipComponent": "src/components/river-os/CrmRelationshipList.astro",
+    "operatingStateAction": "/river-os/actions/insurance-operating-state"
+  },
+  "insuranceControls": {
+    "visibleOnlyWhen": "The canonical relationship has a matching InsuranceLeadPresentation.",
+    "editable": [
+      "relationship pipeline stage",
+      "insurance quote status",
+      "manual assigned producer"
+    ],
+    "readOnly": [
+      "product interest",
+      "state",
+      "postal code",
+      "acquisition attribution",
+      "consent",
+      "recent events"
+    ],
+    "assignment": "Blank assignedProducer explicitly targets unassigned state.",
+    "submit": "One explicit Save insurance operating state action; no automatic mutation."
+  },
+  "singleStageMutationPath": {
+    "insuranceRelationships": "Generic CRM update form submits current stage as a hidden value so it cannot independently mutate the stage.",
+    "nonInsuranceRelationships": "Existing generic CRM Stage selector remains unchanged.",
+    "authority": "Insurance stage mutation flows only through INS-006U -> INS-006S -> INS-006Q."
+  },
+  "scope": [
+    ".river-dev/specifications/ins-006v-river-os-insurance-operating-state-controls.json",
+    "src/components/river-os/InsuranceOperatingStateForm.astro",
+    "src/components/river-os/CrmRelationshipList.astro",
+    "src/lib/insurance/private-operating-state-ui-wiring.test.ts",
+    "src/lib/river-os/crm-route-wiring.test.ts"
+  ],
+  "excluded": [
+    "CRM page data-loading changes",
+    "public quote form changes",
+    "automatic producer routing",
+    "consent editing",
+    "product-interest editing",
+    "outbound email",
+    "outbound SMS",
+    "contact-attempt changes",
+    "Telnyx changes",
+    "generic CRM action changes",
+    "operating-state backend changes",
+    "deployment",
+    "migration execution"
+  ]
+}

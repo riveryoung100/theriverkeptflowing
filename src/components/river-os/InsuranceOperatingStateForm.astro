@@ -1,0 +1,260 @@
+---
+import {
+    INSURANCE_QUOTE_STATUSES
+} from "../../lib/insurance/lead-profile";
+
+import type {
+    InsuranceQuoteStatus
+} from "../../lib/insurance/lead-profile";
+
+import type {
+    RiverCrmPipelineStage
+} from "../../lib/river-os/crm-workspace";
+
+
+interface Props {
+    readonly relationshipId:
+        string;
+
+    readonly stage:
+        RiverCrmPipelineStage;
+
+    readonly quoteStatus:
+        InsuranceQuoteStatus;
+
+    readonly assignedProducer?:
+        string;
+}
+
+
+const {
+    relationshipId,
+    stage,
+    quoteStatus,
+    assignedProducer
+} = Astro.props;
+
+
+const PIPELINE_STAGES:
+    readonly RiverCrmPipelineStage[] = [
+        "new",
+        "contacted",
+        "qualified",
+        "appointment-set",
+        "proposal",
+        "won",
+        "lost",
+        "nurture"
+    ];
+
+
+function readableLabel(
+    value:
+        string
+):
+    string {
+
+    const words =
+        value
+            .split("-")
+            .join(" ");
+
+    return (
+        words.charAt(0)
+            .toUpperCase() +
+        words.slice(1)
+    );
+}
+---
+
+<form
+    class="insurance-operating-state-form"
+    method="post"
+    action="/river-os/actions/insurance-operating-state"
+>
+    <input
+        type="hidden"
+        name="relationshipId"
+        value={relationshipId}
+    />
+
+    <div class="insurance-operating-state-heading">
+        <div>
+            <strong>Operating state</strong>
+            <p>
+                Update this insurance lead&apos;s pipeline,
+                quote progress, and manual producer assignment.
+            </p>
+        </div>
+    </div>
+
+    <div class="insurance-operating-state-fields">
+        <label>
+            <span>Pipeline stage</span>
+
+            <select
+                name="stage"
+                required
+            >
+                {
+                    PIPELINE_STAGES.map(
+                        value => (
+                            <option
+                                value={value}
+                                selected={stage === value}
+                            >
+                                {readableLabel(value)}
+                            </option>
+                        )
+                    )
+                }
+            </select>
+        </label>
+
+        <label>
+            <span>Quote status</span>
+
+            <select
+                name="quoteStatus"
+                required
+            >
+                {
+                    INSURANCE_QUOTE_STATUSES.map(
+                        value => (
+                            <option
+                                value={value}
+                                selected={quoteStatus === value}
+                            >
+                                {readableLabel(value)}
+                            </option>
+                        )
+                    )
+                }
+            </select>
+        </label>
+
+        <label>
+            <span>Assigned producer</span>
+
+            <input
+                type="text"
+                name="assignedProducer"
+                value={assignedProducer ?? ""}
+                placeholder="Unassigned"
+                autocomplete="off"
+            />
+        </label>
+    </div>
+
+    <div class="insurance-operating-state-actions">
+        <span>
+            Changes apply only when you submit this form.
+        </span>
+
+        <button type="submit">
+            Save insurance operating state
+        </button>
+    </div>
+</form>
+
+<style>
+    .insurance-operating-state-form {
+        display: grid;
+        gap: 14px;
+        margin: 18px 0;
+        padding: 16px;
+        border: 1px solid color-mix(
+            in srgb,
+            currentColor 14%,
+            transparent
+        );
+        border-radius: 12px;
+    }
+
+    .insurance-operating-state-heading strong {
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .insurance-operating-state-heading p {
+        margin: 0;
+        max-width: 46rem;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        opacity: 0.72;
+    }
+
+    .insurance-operating-state-fields {
+        display: grid;
+        grid-template-columns:
+            repeat(
+                3,
+                minmax(0, 1fr)
+            );
+        gap: 12px;
+    }
+
+    label {
+        display: grid;
+        gap: 6px;
+        min-width: 0;
+    }
+
+    label > span {
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        opacity: 0.72;
+    }
+
+    select,
+    input,
+    button {
+        font: inherit;
+    }
+
+    select,
+    input {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        padding: 9px 10px;
+        border: 1px solid color-mix(
+            in srgb,
+            currentColor 18%,
+            transparent
+        );
+        border-radius: 8px;
+        background: transparent;
+        color: inherit;
+    }
+
+    .insurance-operating-state-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .insurance-operating-state-actions span {
+        font-size: 0.78rem;
+        line-height: 1.4;
+        opacity: 0.62;
+    }
+
+    button {
+        padding: 9px 13px;
+        border: 1px solid currentColor;
+        border-radius: 8px;
+        background: transparent;
+        color: inherit;
+        cursor: pointer;
+    }
+
+    @media (max-width: 760px) {
+        .insurance-operating-state-fields {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

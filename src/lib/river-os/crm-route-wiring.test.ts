@@ -111,7 +111,7 @@ test(
 );
 
 test(
-    "INS-001D relationship component keeps generic editor and adds optional read-only insurance context",
+    "INS-001D relationship component keeps generic editor and supports governed insurance operating controls",
     async () => {
         const {
             readFileSync:
@@ -164,9 +164,9 @@ test(
             /\/river-os\/actions\/crm-update/
         );
 
-        assert.doesNotMatch(
+        assert.match(
             component,
-            /name="quoteStatus"/
+            /InsuranceOperatingStateForm/
         );
 
         assert.doesNotMatch(
