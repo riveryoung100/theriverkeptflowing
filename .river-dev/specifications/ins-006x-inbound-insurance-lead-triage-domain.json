@@ -1,0 +1,73 @@
+{
+  "id": "INS-006X",
+  "phase": "Canonical Inbound Insurance Lead Triage Domain",
+  "branch": "cif-001-canonical-content-source-record",
+  "status": "implemented",
+  "objective": "Create a pure, transparent triage read model for insurance leads inside the existing River OS CRM without inventing a second lead identity, opaque score, routing policy, write path, or dashboard.",
+  "identity": {
+    "canonical": "relationshipId",
+    "join": "RiverCrmRelationship.relationshipId must match InsuranceLeadPresentation.relationshipId."
+  },
+  "origin": {
+    "newInboundQuote": [
+      "relationship.kind === lead",
+      "relationship.stage === new",
+      "relationship.source === website",
+      "insurance acquisitionSource === website",
+      "insurance quoteStatus === requested"
+    ],
+    "policy": "Classification is conservative. Missing acquisition origin does not get silently inferred as a website quote request."
+  },
+  "filters": [
+    "all",
+    "new",
+    "requested",
+    "in-progress",
+    "quoted",
+    "unassigned",
+    "follow-up-due",
+    "suppressed"
+  ],
+  "followUpDue": {
+    "requires": "nextFollowUpAt <= now",
+    "terminalQuoteStatusesExcluded": [
+      "bound",
+      "declined",
+      "lost"
+    ]
+  },
+  "ordering": {
+    "rule": "updatedAt descending, then relationshipId ascending",
+    "reason": "Explicit deterministic recency ordering; no opaque priority score is introduced."
+  },
+  "summary": [
+    "totalInsurance",
+    "newInbound",
+    "requested",
+    "inProgress",
+    "quoted",
+    "unassigned",
+    "followUpDue",
+    "suppressed"
+  ],
+  "scope": [
+    ".river-dev/specifications/ins-006x-inbound-insurance-lead-triage-domain.json",
+    "src/lib/insurance/lead-triage.ts",
+    "src/lib/insurance/lead-triage.test.ts",
+    "src/lib/insurance/index.ts"
+  ],
+  "excluded": [
+    "D1 triage query",
+    "CRM UI filters",
+    "new dashboard",
+    "automatic producer routing",
+    "lead scoring",
+    "contact-attempt mutation",
+    "outbound email",
+    "outbound SMS",
+    "Telnyx",
+    "quote-request changes",
+    "deployment",
+    "migration execution"
+  ]
+}
