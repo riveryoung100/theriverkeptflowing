@@ -1,0 +1,49 @@
+{
+  "id": "INS-007B",
+  "phase": "Inbound Quote-to-CRM Lifecycle Contract",
+  "branch": "cif-001-canonical-content-source-record",
+  "status": "implemented",
+  "objective": "Prove the existing insurance architecture forms one coherent inbound lifecycle from public quote-request domain records through private presentation, triage, and governed operating-state transitions without adding production abstractions.",
+  "chain": [
+    "buildInsuranceQuoteRequestRecords",
+    "createInsuranceLeadPresentation",
+    "createInsuranceLeadTriageSnapshot",
+    "selectInsuranceLeadTriageItems",
+    "planInsuranceLeadOperatingState"
+  ],
+  "identity": {
+    "root": "relationshipId",
+    "rule": "No identity translation or replacement is allowed across quote ingress, presentation, triage, or operating-state planning."
+  },
+  "proofs": [
+    "A canonical website quote request creates one lead in stage new with quote status requested.",
+    "The quote records create an InsuranceLeadPresentation with the same relationshipId.",
+    "The presentation enters both new and requested INS-006X triage cohorts.",
+    "A manual combined stage, quote-status, and producer transition preserves relationshipId.",
+    "A real stage transition creates one immutable stage-changed event for the same relationshipId.",
+    "The transitioned lead leaves the new cohort and enters the in-progress cohort.",
+    "A later quote-status-only transition preserves relationshipId and does not manufacture a stage event."
+  ],
+  "scope": [
+    ".river-dev/specifications/ins-007b-inbound-quote-to-crm-lifecycle-contract.json",
+    "src/lib/insurance/inbound-quote-lifecycle.test.ts"
+  ],
+  "excluded": [
+    "production source changes",
+    "new domain abstraction",
+    "new D1 query",
+    "schema changes",
+    "migration changes",
+    "quote-request idempotency changes",
+    "CRM UI changes",
+    "operating-state UI changes",
+    "automatic producer routing",
+    "lead scoring",
+    "contact attempts",
+    "outbound email",
+    "outbound SMS",
+    "Telnyx",
+    "deployment",
+    "migration execution"
+  ]
+}
