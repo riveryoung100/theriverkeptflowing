@@ -1,0 +1,72 @@
+{
+    "slice":  "INS-007T",
+    "title":  "Private contact orchestration composition boundary",
+    "workspace":  "/river-os/crm",
+    "purpose":  "Introduce the provider-neutral server-side composition seam required for the canonical private insurance contact route while preserving fail-closed behavior until an outbound provider is explicitly configured in a later authorized slice.",
+    "currentState":  {
+                         "route":  "src/pages/river-os/actions/insurance-contact.ts",
+                         "routeBehavior":  "POST-only, same-origin protected, validates canonical provider-neutral contact request, requires RIVER_CRM_DB, loads canonical relationship, then returns HTTP 503 because provider composition is intentionally unavailable.",
+                         "orchestration":  "src/lib/insurance/contact-orchestration.ts already owns relationship resolution, server-side destination resolution, current consent/suppression evaluation, durable queued and attempting contact-attempt persistence, provider invocation, canonical provider failure persistence, and idempotency.",
+                         "persistence":  [
+                                             "createD1RiverCrmPersistence(database)",
+                                             "createD1RiverCrmGrowthPersistence(database)",
+                                             "createD1InsuranceContactAttemptPersistence(database)"
+                                         ],
+                         "identity":  "Contact attempt IDs and idempotency keys remain canonical domain identities; server UUID generation may follow existing River OS crypto.randomUUID() precedent.",
+                         "providerState":  "No canonical outbound Telnyx runtime configuration contract exists; Telnyx provider activation remains outside this slice."
+                     },
+    "composition":  {
+                        "goal":  "Make route-level orchestration composition explicit and testable without activating any real outbound provider.",
+                        "requirements":  [
+                                             "Keep the route provider-agnostic: no Telnyx, Twilio, RingCentral, OpenPhone, Plivo, Vonage, fetch, axios, provider credentials, or provider-specific environment reads in insurance-contact.ts.",
+                                             "Reuse createInsuranceContactOrchestrationService rather than duplicating eligibility, consent, destination, persistence, provider-result, or idempotency policy in the route.",
+                                             "Reuse canonical River CRM, CRM-growth, and contact-attempt D1 persistence factories.",
+                                             "Keep outbound provider resolution behind one server-side composition boundary.",
+                                             "When no provider composition is available, fail closed before orchestration creates or mutates a contact attempt and preserve an explicit HTTP 503 response.",
+                                             "Do not accept destination, phone, email, provider, provider reference, credentials, attempt state, timestamps, or idempotency identity directly from browser form data.",
+                                             "A later explicitly authorized provider-activation slice may supply a concrete provider to this seam; INS-007T itself must not make network requests or activate Telnyx."
+                                         ]
+                    },
+    "routeContract":  {
+                          "input":  [
+                                        "relationshipId",
+                                        "channel",
+                                        "intent"
+                                    ],
+                          "serverOwned":  [
+                                              "integration context",
+                                              "attempt identity",
+                                              "idempotency identity",
+                                              "timestamps",
+                                              "destination",
+                                              "current consent",
+                                              "provider selection"
+                                          ],
+                          "failureMapping":  [
+                                                 "invalid request -\u003e 400",
+                                                 "missing CRM database -\u003e 503",
+                                                 "relationship not found -\u003e 404",
+                                                 "provider composition unavailable -\u003e 503 before contact-attempt persistence/provider invocation"
+                                             ],
+                          "note":  "Do not invent success redirects or UI controls in this slice until a provider is explicitly authorized."
+                      },
+    "tests":  [
+                  "Provider-unavailable composition returns fail-closed result without provider invocation or attempt write.",
+                  "Composition uses canonical D1 relationship, CRM-growth consent, and contact-attempt persistence dependencies.",
+                  "Route remains POST-only and same-origin protected.",
+                  "Route continues to reject browser-supplied destination/phone/email/provider data.",
+                  "Route contains no provider SDK, Telnyx-specific composition, direct fetch, or outbound credential access.",
+                  "Existing contact-orchestration domain tests remain authoritative for eligibility, suppression, provider-failure, persistence, and idempotency semantics."
+              ],
+    "boundaries":  [
+                       "No live phone call, SMS, or email.",
+                       "No Telnyx provider activation or credential configuration.",
+                       "No outbound environment-variable contract.",
+                       "No contact UI button or dialing controls.",
+                       "No migration creation or execution.",
+                       "No deployment.",
+                       "No routing, lead scoring, or automatic producer assignment.",
+                       "No second CRM.",
+                       "Do not weaken INS-007S read-only contact-attempt presentation or INS-007R view-context preservation."
+                   ]
+}

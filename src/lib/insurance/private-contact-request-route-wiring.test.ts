@@ -142,3 +142,12 @@ test(
         );
     }
 );
+
+test(
+    "INS-007T route uses provider-neutral composition seam",
+    () => {
+        assert.match(source,/createInsurancePrivateContactOrchestrationService/);
+        assert.match(source,/orchestration\s*===\s*undefined/s);
+        assert.doesNotMatch(source,/\.requestContact\s*\(/);
+    }
+);

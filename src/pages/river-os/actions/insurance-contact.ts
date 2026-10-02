@@ -1,4 +1,4 @@
-﻿import type {
+import type {
     APIRoute
 } from "astro";
 
@@ -17,6 +17,10 @@ import {
 import {
     buildInsurancePrivateContactRequestFromForm
 } from "../../../lib/insurance/private-contact-request";
+
+import {
+    createInsurancePrivateContactOrchestrationService
+} from "../../../lib/insurance/private-contact-orchestration";
 
 
 export const prerender =
@@ -116,6 +120,18 @@ async ({
         return noStoreResponse(
             "River CRM relationship was not found.",
             404
+        );
+    }
+
+    const orchestration =
+        createInsurancePrivateContactOrchestrationService(
+            database
+        );
+
+    if(orchestration === undefined){
+        return noStoreResponse(
+            "Insurance contact provider is not configured.",
+            503
         );
     }
 
