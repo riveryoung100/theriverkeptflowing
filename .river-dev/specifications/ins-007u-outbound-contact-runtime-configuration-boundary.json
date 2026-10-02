@@ -1,0 +1,47 @@
+﻿{
+    "slice":  "INS-007U",
+    "title":  "Outbound contact runtime configuration boundary",
+    "workspace":  "/river-os/crm",
+    "purpose":  "Define the canonical server-owned runtime configuration contract for outbound insurance contact while preserving fail-closed behavior and performing no provider activation or network execution.",
+    "currentState":  {
+                         "privateRoute":  "src/pages/river-os/actions/insurance-contact.ts remains fail closed and supplies no provider composition.",
+                         "compositionSeam":  "src/lib/insurance/private-contact-orchestration.ts accepts an optional provider composition.",
+                         "providerContract":  "InsuranceContactProvider remains provider-neutral.",
+                         "telnyxAdapter":  "Existing Telnyx adapter requires apiKey, connectionId, and fromNumber.",
+                         "runtime":  "No canonical outbound provider runtime configuration contract currently exists."
+                     },
+    "configuration":  {
+                          "enableGate":  "INSURANCE_OUTBOUND_CONTACT_ENABLED must equal true before any outbound provider may be considered enabled.",
+                          "providerSelector":  "INSURANCE_CONTACT_PROVIDER identifies the explicitly selected provider; initial supported configured value may be telnyx.",
+                          "telnyxSecrets":  [
+                                                "TELNYX_API_KEY",
+                                                "TELNYX_CONNECTION_ID",
+                                                "TELNYX_FROM_NUMBER"
+                                            ],
+                          "ownership":  "All configuration is server-owned and must never be accepted from browser form input.",
+                          "failClosed":  "Missing, malformed, partial, unsupported, or disabled configuration resolves to no outbound provider composition."
+                      },
+    "requirements":  [
+                         "Introduce a pure runtime-configuration parser/resolver boundary before any provider construction.",
+                         "Do not instantiate Telnyx or any concrete provider in INS-007U.",
+                         "Do not modify the private contact route to execute requestContact.",
+                         "Require both the explicit enable gate and provider selector before provider-specific configuration can be considered.",
+                         "Require complete provider-specific configuration; partial credentials must fail closed.",
+                         "Never expose secrets, provider references, destinations, credentials, timestamps, attempt state, or idempotency controls to browser input.",
+                         "Keep provider selection and credentials server-side only.",
+                         "Add focused tests for disabled, missing, partial, unsupported, and valid configuration parsing without performing network calls."
+                     ],
+    "boundaries":  [
+                       "No live call, SMS, or email.",
+                       "No provider activation.",
+                       "No Telnyx account configuration or purchase.",
+                       "No network transport.",
+                       "No private-route requestContact execution.",
+                       "No migration execution.",
+                       "No deployment.",
+                       "No routing, scoring, or automatic producer assignment.",
+                       "No second CRM.",
+                       "No Sesh changes."
+                   ],
+    "nextBoundary":  "A later explicitly authorized slice may compose a validated runtime configuration into a concrete provider and then separately authorize route execution."
+}
