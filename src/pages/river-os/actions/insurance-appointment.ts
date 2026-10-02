@@ -16,6 +16,11 @@ import {
 } from "../../../lib/insurance/private-appointment-request";
 
 import {
+    buildInsurancePrivateCrmActionRedirect,
+    buildInsurancePrivateCrmViewContextFromForm
+} from "../../../lib/insurance/private-crm-view-context";
+
+import {
     isSameOriginRiverCrmWriteRequest
 } from "../../../lib/river-os/crm-actions";
 
@@ -89,11 +94,20 @@ async ({
     }
 
     let target;
+    let viewContext;
 
     try {
+        const formData =
+            await request.formData();
+
         target =
             buildInsurancePrivateAppointmentRequestFromForm(
-                await request.formData()
+                formData
+            );
+
+        viewContext =
+            buildInsurancePrivateCrmViewContextFromForm(
+                formData
             );
     }
     catch {
@@ -156,7 +170,11 @@ async ({
             });
 
         return redirect(
-            `/river-os/crm?appointment=${result.outcome}`,
+            buildInsurancePrivateCrmActionRedirect(
+                "appointment",
+                result.outcome,
+                viewContext
+            ),
             303
         );
     }

@@ -99,7 +99,7 @@ test(
 
         assert.match(
             page,
-            /selectedInsuranceQueue\s*===\s*"all"[\s\S]*\?\s*relationships\s*:\s*selectedInsuranceTriageItems\.map/s
+            /selectedInsuranceQueue\s*===\s*"all"\s*\|\|\s*!insurancePresentationReadable[\s\S]*\?\s*searchedRelationships\s*:\s*selectedInsuranceTriageItems\s*\.map/s
         );
 
         assert.match(

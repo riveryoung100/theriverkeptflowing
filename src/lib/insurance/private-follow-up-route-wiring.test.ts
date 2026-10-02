@@ -225,7 +225,17 @@ test(
 
         assert.match(
             source,
-            /\/river-os\/crm\?followUp=\$\{result\.outcome\}/
+            /buildInsurancePrivateCrmActionRedirect/
+        );
+
+        assert.match(
+            source,
+            /"followUp"/
+        );
+
+        assert.match(
+            source,
+            /result\.outcome/
         );
 
         assert.match(

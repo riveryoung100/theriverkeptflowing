@@ -1020,7 +1020,7 @@ function insuranceQueueHref(
 >
     <section class="crm-hero">
         <p class="eyebrow">
-            River OS Â· CRM
+            River OS Ã‚Â· CRM
         </p>
 
         <h1>
@@ -1035,10 +1035,10 @@ function insuranceQueueHref(
         <span class="connection-state">
             {
                 databaseReadable
-                    ? "CRM database connected Â· schema ready"
+                    ? "CRM database connected Ã‚Â· schema ready"
                     : databaseConnected
-                        ? "CRM database connected Â· schema/read unavailable"
-                        : "CRM foundation ready Â· database not provisioned"
+                        ? "CRM database connected Ã‚Â· schema/read unavailable"
+                        : "CRM foundation ready Ã‚Â· database not provisioned"
             }
         </span>
     </section>
@@ -1349,6 +1349,8 @@ function insuranceQueueHref(
     <CrmRelationshipList
         relationships={visibleRelationships}
         insurancePresentations={insurancePresentations}
+        insuranceQueue={selectedInsuranceQueue}
+        search={requestedSearch}
     />
 
     <section
@@ -1362,7 +1364,7 @@ function insuranceQueueHref(
 
             <p>
                 The canonical people layer for leads, clients, recruits,
-                and partnersâ€”without forcing every relationship into the
+                and partnersÃ¢â‚¬â€without forcing every relationship into the
                 same sales process.
             </p>
 

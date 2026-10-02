@@ -24,6 +24,12 @@ interface Props {
 
     readonly assignedProducer?:
         string;
+
+    readonly insuranceQueue?:
+        string;
+
+    readonly search?:
+        string;
 }
 
 
@@ -31,7 +37,9 @@ const {
     relationshipId,
     stage,
     quoteStatus,
-    assignedProducer
+    assignedProducer,
+    insuranceQueue,
+    search
 } = Astro.props;
 
 
@@ -77,6 +85,26 @@ function readableLabel(
         name="relationshipId"
         value={relationshipId}
     />
+
+    {
+        insuranceQueue !== undefined && (
+            <input
+                type="hidden"
+                name="insuranceQueue"
+                value={insuranceQueue}
+            />
+        )
+    }
+
+    {
+        search !== undefined && (
+            <input
+                type="hidden"
+                name="search"
+                value={search}
+            />
+        )
+    }
 
     <div class="insurance-operating-state-heading">
         <div>

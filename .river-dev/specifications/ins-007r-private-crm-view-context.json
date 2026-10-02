@@ -1,0 +1,37 @@
+{
+    "slice":  "INS-007R",
+    "title":  "Preserve private CRM view context across insurance actions",
+    "workspace":  "/river-os/crm",
+    "viewContext":  {
+                        "parameters":  [
+                                           "insuranceQueue",
+                                           "search"
+                                       ],
+                        "insuranceQueue":  "canonical INSURANCE_LEAD_TRIAGE_FILTERS value; all and invalid values are omitted on redirect",
+                        "search":  "trimmed and bounded to 200 characters"
+                    },
+    "actions":  [
+                    "insurance-operating-state",
+                    "insurance-appointment",
+                    "insurance-follow-up"
+                ],
+    "behavior":  [
+                     "carry active insuranceQueue and search from the private CRM page through relationship controls",
+                     "submit only whitelisted CRM view context alongside each existing private insurance action",
+                     "validate queue and bound search independently from domain mutation request parsers",
+                     "reconstruct the canonical /river-os/crm redirect server-side with action feedback",
+                     "preserve schedule and clear context for appointment and follow-up actions"
+                 ],
+    "boundaries":  [
+                       "no generic returnTo or returnUrl redirect",
+                       "no open redirect",
+                       "no domain mutation semantics added to view-context parser",
+                       "no automatic stage mutation beyond the existing operating-state action",
+                       "no provider activation",
+                       "no routing",
+                       "no scoring",
+                       "no second CRM",
+                       "no migration",
+                       "no deployment"
+                   ]
+}

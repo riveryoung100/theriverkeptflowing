@@ -181,7 +181,17 @@ test(
 
         assert.match(
             source,
-            /\/river-os\/crm\?appointment=\$\{result\.outcome\}/
+            /buildInsurancePrivateCrmActionRedirect/
+        );
+
+        assert.match(
+            source,
+            /"appointment"/
+        );
+
+        assert.match(
+            source,
+            /result\.outcome/
         );
         assert.match(source,/303/);
     }

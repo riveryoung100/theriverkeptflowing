@@ -17,12 +17,20 @@ interface Props {
 
     readonly insurancePresentations?:
         readonly InsuranceLeadPresentation[];
+
+    readonly insuranceQueue?:
+        string;
+
+    readonly search?:
+        string;
 }
 
 
 const {
     relationships,
-    insurancePresentations = []
+    insurancePresentations = [],
+    insuranceQueue,
+    search
 } = Astro.props as Props;
 
 const insuranceByRelationshipId =
@@ -115,7 +123,7 @@ function formatInsuranceDate(
 
                                             <span>
                                                 {relationship.kind}
-                                                {" Â· "}
+                                                {" Ã‚Â· "}
                                                 {relationship.stage}
                                             </span>
                                         </div>
@@ -186,7 +194,7 @@ function formatInsuranceDate(
                                                                 insuranceByRelationshipId.get(
                                                                     relationship.relationshipId
                                                                 )!.acquisitionSource ??
-                                                                "—"
+                                                                "â€”"
                                                             }
                                                         </dd>
                                                     </div>
@@ -198,7 +206,7 @@ function formatInsuranceDate(
                                                                 insuranceByRelationshipId.get(
                                                                     relationship.relationshipId
                                                                 )!.campaign ??
-                                                                "—"
+                                                                "â€”"
                                                             }
                                                         </dd>
                                                     </div>
@@ -271,7 +279,7 @@ function formatInsuranceDate(
                                                                             consent => (
                                                                                 <span class="crm-consent-chip">
                                                                                     {readableLabel(consent.channel)}
-                                                                                    {" · "}
+                                                                                    {" Â· "}
                                                                                     {readableLabel(consent.status)}
                                                                                 </span>
                                                                             )
@@ -318,7 +326,7 @@ function formatInsuranceDate(
                                                                                                 event.occurredAt
                                                                                             )
                                                                                         }
-                                                                                        {" · "}
+                                                                                        {" Â· "}
                                                                                         {event.source}
                                                                                     </span>
                                                                                 </li>
@@ -349,6 +357,8 @@ function formatInsuranceDate(
                                                         relationship.relationshipId
                                                     )!.assignedProducer
                                                 }
+                                                insuranceQueue={insuranceQueue}
+                                                search={search}
                                             />
                                         )
                                     }
@@ -359,6 +369,8 @@ function formatInsuranceDate(
                                             <InsuranceAppointmentForm
                                                 relationshipId={relationship.relationshipId}
                                                 appointmentAt={relationship.appointmentAt}
+                                                insuranceQueue={insuranceQueue}
+                                                search={search}
                                             />
                                         )
                                     }
@@ -369,6 +381,8 @@ function formatInsuranceDate(
                                             <InsuranceFollowUpForm
                                                 relationshipId={relationship.relationshipId}
                                                 nextFollowUpAt={relationship.nextFollowUpAt}
+                                                insuranceQueue={insuranceQueue}
+                                                search={search}
                                             />
                                         )
                                     }

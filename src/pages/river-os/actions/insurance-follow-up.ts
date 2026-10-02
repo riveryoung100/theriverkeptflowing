@@ -16,6 +16,11 @@ import {
 } from "../../../lib/insurance/private-follow-up-request";
 
 import {
+    buildInsurancePrivateCrmActionRedirect,
+    buildInsurancePrivateCrmViewContextFromForm
+} from "../../../lib/insurance/private-crm-view-context";
+
+import {
     isSameOriginRiverCrmWriteRequest
 } from "../../../lib/river-os/crm-actions";
 
@@ -89,11 +94,20 @@ async ({
     }
 
     let target;
+    let viewContext;
 
     try {
+        const formData =
+            await request.formData();
+
         target =
             buildInsurancePrivateFollowUpRequestFromForm(
-                await request.formData()
+                formData
+            );
+
+        viewContext =
+            buildInsurancePrivateCrmViewContextFromForm(
+                formData
             );
     }
     catch {
@@ -143,7 +157,11 @@ async ({
             });
 
         return redirect(
-            `/river-os/crm?followUp=${result.outcome}`,
+            buildInsurancePrivateCrmActionRedirect(
+                "followUp",
+                result.outcome,
+                viewContext
+            ),
             303
         );
     }

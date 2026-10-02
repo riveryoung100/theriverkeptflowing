@@ -5,12 +5,20 @@ interface Props {
 
     readonly nextFollowUpAt?:
         string;
+
+    readonly insuranceQueue?:
+        string;
+
+    readonly search?:
+        string;
 }
 
 
 const {
     relationshipId,
-    nextFollowUpAt
+    nextFollowUpAt,
+    insuranceQueue,
+    search
 } = Astro.props as Props;
 
 
@@ -76,6 +84,26 @@ function formatCentralFollowUp(
             value={relationshipId}
         />
 
+        {
+            insuranceQueue !== undefined && (
+                <input
+                    type="hidden"
+                    name="insuranceQueue"
+                    value={insuranceQueue}
+                />
+            )
+        }
+
+        {
+            search !== undefined && (
+                <input
+                    type="hidden"
+                    name="search"
+                    value={search}
+                />
+            )
+        }
+
         <input
             type="hidden"
             name="operation"
@@ -126,6 +154,26 @@ function formatCentralFollowUp(
                     name="relationshipId"
                     value={relationshipId}
                 />
+
+                {
+                    insuranceQueue !== undefined && (
+                        <input
+                            type="hidden"
+                            name="insuranceQueue"
+                            value={insuranceQueue}
+                        />
+                    )
+                }
+
+                {
+                    search !== undefined && (
+                        <input
+                            type="hidden"
+                            name="search"
+                            value={search}
+                        />
+                    )
+                }
 
                 <input
                     type="hidden"

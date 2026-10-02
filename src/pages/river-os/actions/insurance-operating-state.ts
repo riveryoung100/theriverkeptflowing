@@ -19,6 +19,11 @@ import {
 } from "../../../lib/insurance/private-operating-state-request";
 
 import {
+    buildInsurancePrivateCrmActionRedirect,
+    buildInsurancePrivateCrmViewContextFromForm
+} from "../../../lib/insurance/private-crm-view-context";
+
+import {
     isSameOriginRiverCrmWriteRequest
 } from "../../../lib/river-os/crm-actions";
 
@@ -92,11 +97,20 @@ async ({
     }
 
     let target;
+    let viewContext;
 
     try {
+        const formData =
+            await request.formData();
+
         target =
             buildInsurancePrivateOperatingStateRequestFromForm(
-                await request.formData()
+                formData
+            );
+
+        viewContext =
+            buildInsurancePrivateCrmViewContextFromForm(
+                formData
             );
     }
     catch {
@@ -189,7 +203,11 @@ async ({
             });
 
         return redirect(
-            `/river-os/crm?operatingState=${result.outcome}`,
+            buildInsurancePrivateCrmActionRedirect(
+                "operatingState",
+                result.outcome,
+                viewContext
+            ),
             303
         );
     }
