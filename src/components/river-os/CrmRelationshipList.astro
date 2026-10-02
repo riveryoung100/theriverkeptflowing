@@ -10,6 +10,10 @@ import type {
     InsuranceLeadPresentation
 } from "../../lib/insurance/lead-presentation";
 
+import type {
+    InsuranceContactAttempt
+} from "../../lib/insurance/contact-attempt";
+
 
 interface Props {
     readonly relationships:
@@ -17,6 +21,12 @@ interface Props {
 
     readonly insurancePresentations?:
         readonly InsuranceLeadPresentation[];
+
+    readonly insuranceContactAttempts?:
+        readonly InsuranceContactAttempt[];
+
+    readonly insuranceContactAttemptsReadable?:
+        boolean;
 
     readonly insuranceQueue?:
         string;
@@ -29,6 +39,8 @@ interface Props {
 const {
     relationships,
     insurancePresentations = [],
+    insuranceContactAttempts = [],
+    insuranceContactAttemptsReadable = false,
     insuranceQueue,
     search
 } = Astro.props as Props;
@@ -42,6 +54,25 @@ const insuranceByRelationshipId =
             ]
         )
     );
+
+const contactAttemptsByRelationshipId =
+    new Map<string, InsuranceContactAttempt[]>();
+
+for(const attempt of insuranceContactAttempts){
+    const attempts =
+        contactAttemptsByRelationshipId.get(
+            attempt.relationshipId
+        ) ?? [];
+
+    attempts.push(
+        attempt
+    );
+
+    contactAttemptsByRelationshipId.set(
+        attempt.relationshipId,
+        attempts
+    );
+}
 
 function readableLabel(
     value:
@@ -337,6 +368,76 @@ function formatInsuranceDate(
                                                             )
                                                     }
                                                 </div>
+                                                <div class="crm-insurance-section">
+                                                    <div class="crm-insurance-section-heading">
+                                                        <span>Contact attempts</span>
+                                                    </div>
+
+                                                    {
+                                                        !insuranceContactAttemptsReadable
+                                                            ? (
+                                                                <p class="crm-insurance-empty">
+                                                                    Contact-attempt history is unavailable.
+                                                                </p>
+                                                            )
+                                                            : (
+                                                                contactAttemptsByRelationshipId.get(
+                                                                    relationship.relationshipId
+                                                                ) ?? []
+                                                            ).length === 0
+                                                                ? (
+                                                                    <p class="crm-insurance-empty">
+                                                                        No contact attempts recorded.
+                                                                    </p>
+                                                                )
+                                                                : (
+                                                                    <ol class="crm-event-list">
+                                                                        {
+                                                                            (
+                                                                                contactAttemptsByRelationshipId.get(
+                                                                                    relationship.relationshipId
+                                                                                ) ?? []
+                                                                            ).map(
+                                                                                attempt => (
+                                                                                    <li>
+                                                                                        <strong>
+                                                                                            {readableLabel(attempt.channel)}
+                                                                                            {" / "}
+                                                                                            {readableLabel(attempt.intent)}
+                                                                                        </strong>
+
+                                                                                        <span>
+                                                                                            {readableLabel(attempt.state)}
+                                                                                            {" / "}
+                                                                                            {formatInsuranceDate(attempt.requestedAt)}
+                                                                                        </span>
+
+                                                                                        {
+                                                                                            attempt.state === "failed" && (
+                                                                                                <>
+                                                                                                    <span>
+                                                                                                        Failure code: {attempt.failureCode ?? "Not recorded"}
+                                                                                                    </span>
+                                                                                                    <span>
+                                                                                                        Retryable: {attempt.retryable === true ? "Yes" : "No"}
+                                                                                                    </span>
+                                                                                                    {
+                                                                                                        attempt.failureMessage !== undefined && (
+                                                                                                            <span>{attempt.failureMessage}</span>
+                                                                                                        )
+                                                                                                    }
+                                                                                                </>
+                                                                                            )
+                                                                                        }
+                                                                                    </li>
+                                                                                )
+                                                                            )
+                                                                        }
+                                                                    </ol>
+                                                                )
+                                                    }
+                                                </div>
+
                                             </section>
                                         )
                                     }

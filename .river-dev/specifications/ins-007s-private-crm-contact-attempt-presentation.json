@@ -1,0 +1,45 @@
+{
+    "slice": "INS-007S",
+    "title": "Private CRM insurance contact-attempt presentation",
+    "workspace": "/river-os/crm",
+    "purpose": "Expose bounded read-only insurance contact-attempt history inside the existing canonical River OS CRM without activating the fail-closed insurance-contact action or any provider runtime.",
+    "readModel": {
+        "source": "river_crm_contact_attempts via createD1InsuranceContactAttemptPersistence",
+        "identity": "relationshipId remains canonical River CRM identity",
+        "batchMethod": "listAttemptsForRelationships",
+        "relationshipChunkSize": 100,
+        "attemptLimitPerRelationship": 5,
+        "ordering": [
+            "relationship_id ASC",
+            "requested_at DESC",
+            "attempt_id ASC"
+        ],
+        "perRelationshipBound": "ROW_NUMBER() OVER (PARTITION BY relationship_id ORDER BY requested_at DESC, attempt_id ASC)"
+    },
+    "presentation": [
+        "show contact channel, intent, canonical lifecycle state, and requested timestamp",
+        "show provider-neutral structured failure information when an attempt is failed",
+        "do not expose provider credentials, raw provider payloads, or provider transport controls",
+        "distinguish unreadable contact-attempt history from a readable relationship with no attempts"
+    ],
+    "behavior": [
+        "load attempts as a bounded cohort rather than one query per CRM card",
+        "deduplicate canonical relationship IDs before binding",
+        "perform no query for an empty relationship cohort",
+        "reuse canonical InsuranceContactAttempt reconstruction for every persisted row",
+        "keep contact-attempt presentation read-only"
+    ],
+    "boundaries": [
+        "no insurance-contact UI action",
+        "no provider activation",
+        "no Telnyx invocation",
+        "no email or SMS activation",
+        "no dialing",
+        "no routing",
+        "no scoring",
+        "no automatic producer assignment",
+        "no second CRM",
+        "no migration",
+        "no deployment"
+    ]
+}

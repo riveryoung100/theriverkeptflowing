@@ -23,6 +23,14 @@ import {
 } from "../../lib/river-os/d1-crm";
 
 import {
+    createD1InsuranceContactAttemptPersistence
+} from "../../lib/insurance/d1-contact-attempt";
+
+import type {
+    InsuranceContactAttempt
+} from "../../lib/insurance/contact-attempt";
+
+import {
     createD1InsuranceLeadPresentationPersistence
 } from "../../lib/insurance/d1-lead-presentation";
 
@@ -99,6 +107,13 @@ let insurancePresentations:
 let insurancePresentationReadable =
     false;
 
+let insuranceContactAttempts:
+    InsuranceContactAttempt[] =
+        [];
+
+let insuranceContactAttemptsReadable =
+    false;
+
 if (database !== undefined) {
     try {
         const crmPersistence =
@@ -146,6 +161,28 @@ if (database !== undefined) {
 
             insurancePresentationReadable =
                 true;
+
+            try {
+                insuranceContactAttempts =
+                    [...await createD1InsuranceContactAttemptPersistence(
+                        database
+                    ).listAttemptsForRelationships(
+                        insuranceQueueRelationships.map(
+                            relationship =>
+                                relationship.relationshipId
+                        ),
+                        5
+                    )];
+
+                insuranceContactAttemptsReadable =
+                    true;
+            } catch {
+                insuranceContactAttempts =
+                    [];
+
+                insuranceContactAttemptsReadable =
+                    false;
+            }
         } catch {
             insuranceQueueRelationships =
                 [];
@@ -154,6 +191,12 @@ if (database !== undefined) {
                 [];
 
             insurancePresentationReadable =
+                false;
+
+            insuranceContactAttempts =
+                [];
+
+            insuranceContactAttemptsReadable =
                 false;
         }
     } catch {
@@ -1349,6 +1392,8 @@ function insuranceQueueHref(
     <CrmRelationshipList
         relationships={visibleRelationships}
         insurancePresentations={insurancePresentations}
+        insuranceContactAttempts={insuranceContactAttempts}
+        insuranceContactAttemptsReadable={insuranceContactAttemptsReadable}
         insuranceQueue={selectedInsuranceQueue}
         search={requestedSearch}
     />

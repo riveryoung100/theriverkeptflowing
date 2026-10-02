@@ -1,4 +1,4 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
@@ -1055,6 +1055,180 @@ test(
                     " "
                 ),
             /provider_reference/
+        );
+
+        assert.equal(
+            database.recorded.length,
+            0
+        );
+    }
+);
+
+test(
+    "listAttemptsForRelationships performs no query for an empty cohort",
+    async () => {
+        const database =
+            new FakeDatabase();
+
+        const result =
+            await createD1InsuranceContactAttemptPersistence(
+                database
+            ).listAttemptsForRelationships([]);
+
+        assert.deepEqual(
+            result,
+            []
+        );
+
+        assert.equal(
+            database.recorded.length,
+            0
+        );
+    }
+);
+
+
+test(
+    "listAttemptsForRelationships deduplicates IDs and bounds newest attempts per relationship",
+    async () => {
+        const database =
+            new FakeDatabase();
+
+        database.allResults = [];
+
+        await createD1InsuranceContactAttemptPersistence(
+            database
+        ).listAttemptsForRelationships(
+            [
+                relationshipId,
+                relationshipId,
+                "relationship:ins-007s-two"
+            ],
+            5
+        );
+
+        assert.equal(
+            database.recorded.length,
+            1
+        );
+
+        const query =
+            database.recorded[0]!;
+
+        assert.deepEqual(
+            query.binds,
+            [
+                relationshipId,
+                "relationship:ins-007s-two"
+            ]
+        );
+
+        assert.match(
+            query.sql,
+            /WHERE relationship_id IN \(\?, \?\)/
+        );
+
+        assert.match(
+            query.sql,
+            /ROW_NUMBER\(\)\s+OVER/i
+        );
+
+        assert.match(
+            query.sql,
+            /PARTITION BY relationship_id/i
+        );
+
+        assert.match(
+            query.sql,
+            /river_attempt_rank\s*<=\s*5/i
+        );
+
+        assert.match(
+            query.sql,
+            /ORDER BY\s+relationship_id ASC,\s+requested_at DESC,\s+attempt_id ASC/i
+        );
+
+        assert.doesNotMatch(
+            query.sql,
+            /\b(?:INSERT|UPDATE|DELETE|REPLACE|UPSERT)\b/i
+        );
+    }
+);
+
+
+test(
+    "listAttemptsForRelationships chunks one hundred plus one relationships",
+    async () => {
+        const database =
+            new FakeDatabase();
+
+        database.allResults = [];
+
+        const relationshipIds =
+            Array.from(
+                {
+                    length:
+                        101
+                },
+                (
+                    _,
+                    index
+                ) =>
+                    `relationship:ins-007s-${String(
+                        index
+                    ).padStart(
+                        4,
+                        "0"
+                    )}`
+            );
+
+        await createD1InsuranceContactAttemptPersistence(
+            database
+        ).listAttemptsForRelationships(
+            relationshipIds,
+            3
+        );
+
+        assert.equal(
+            database.recorded.length,
+            2
+        );
+
+        assert.equal(
+            database.recorded[0]!
+                .binds.length,
+            100
+        );
+
+        assert.equal(
+            database.recorded[1]!
+                .binds.length,
+            1
+        );
+
+        for(const query of database.recorded){
+            assert.match(
+                query.sql,
+                /river_attempt_rank\s*<=\s*3/i
+            );
+        }
+    }
+);
+
+
+test(
+    "listAttemptsForRelationships rejects invalid relationship identity before querying",
+    async () => {
+        const database =
+            new FakeDatabase();
+
+        await assert.rejects(
+            createD1InsuranceContactAttemptPersistence(
+                database
+            ).listAttemptsForRelationships([
+                "not-a-relationship"
+            ]),
+            /canonical River CRM relationship identity/
         );
 
         assert.equal(

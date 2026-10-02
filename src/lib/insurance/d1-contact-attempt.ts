@@ -1,4 +1,4 @@
-﻿import type {
+import type {
     RiverCrmD1Database,
     RiverCrmD1RunResult
 } from "../river-os/d1-crm-growth";
@@ -142,6 +142,19 @@ export interface InsuranceContactAttemptPersistence {
         relationshipId:
             RiverCrmRelationshipId | string,
         limit?:
+            number
+    ):
+        Promise<
+            readonly InsuranceContactAttempt[]
+        >;
+
+    listAttemptsForRelationships(
+        relationshipIds:
+            readonly (
+                RiverCrmRelationshipId |
+                string
+            )[],
+        limitPerRelationship?:
             number
     ):
         Promise<
@@ -981,6 +994,164 @@ implements InsuranceContactAttemptPersistence {
         ).map(
             rowToAttempt
         );
+    }
+
+
+    public async listAttemptsForRelationships(
+        relationshipIds:
+            readonly (
+                RiverCrmRelationshipId |
+                string
+            )[],
+        limitPerRelationship:
+            number = 5
+    ):
+        Promise<
+            readonly InsuranceContactAttempt[]
+        > {
+
+        const canonicalLimit =
+            requireLimit(
+                limitPerRelationship
+            );
+
+        const canonicalRelationshipIds =
+            [
+                ...new Set(
+                    relationshipIds.map(
+                        relationshipId =>
+                            requireRelationshipId(
+                                relationshipId
+                            )
+                    )
+                )
+            ];
+
+        if(
+            canonicalRelationshipIds.length ===
+                0
+        ){
+            return [];
+        }
+
+        const attempts:
+            InsuranceContactAttempt[] =
+                [];
+
+        const relationshipChunkSize =
+            100;
+
+        for(
+            let offset = 0;
+            offset <
+                canonicalRelationshipIds.length;
+            offset +=
+                relationshipChunkSize
+        ){
+            const chunk =
+                canonicalRelationshipIds.slice(
+                    offset,
+                    offset +
+                        relationshipChunkSize
+                );
+
+            const parameterList =
+                chunk
+                    .map(
+                        () =>
+                            "?"
+                    )
+                    .join(
+                        ", "
+                    );
+
+            const result =
+                await this.database
+                    .prepare(
+                        `
+                            SELECT
+                                attempt_id,
+                                relationship_id,
+                                trigger_event_id,
+                                channel,
+                                intent,
+                                state,
+                                idempotency_key,
+                                provider,
+                                provider_reference,
+                                requested_at,
+                                attempted_at,
+                                connected_at,
+                                completed_at,
+                                failed_at,
+                                canceled_at,
+                                failure_code,
+                                failure_message,
+                                retryable,
+                                created_at,
+                                updated_at
+                        FROM (
+                                SELECT
+                                    attempt_id,
+                                    relationship_id,
+                                    trigger_event_id,
+                                    channel,
+                                    intent,
+                                    state,
+                                    idempotency_key,
+                                    provider,
+                                    provider_reference,
+                                    requested_at,
+                                  attempted_at,
+                                  connected_at,
+                                    completed_at,
+                                    failed_at,
+                                    canceled_at,
+                                    failure_code,
+                                    failure_message,
+                                    retryable,
+                                    created_at,
+                                    updated_at,
+                                    ROW_NUMBER() OVER (
+                                        PARTITION BY relationship_id
+                                        ORDER BY
+                                            requested_at DESC,
+                                            attempt_id ASC
+                                    ) AS river_attempt_rank
+                                FROM river_crm_contact_attempts
+                                WHERE relationship_id IN (${parameterList})
+                            )
+                            WHERE river_attempt_rank <= ${canonicalLimit}
+                            ORDER BY
+                                relationship_id ASC,
+                                requested_at DESC,
+                                attempt_id ASC
+                        `
+                    )
+                    .bind(
+                        ...chunk
+                    )
+                    .all<
+                        InsuranceContactAttemptRow
+                    >();
+
+            if(result.success === false){
+                throw new Error(
+                    "Insurance contact-attempt D1 cohort list failed."
+                );
+            }
+
+            attempts.push(
+                ...(
+                    result.results ??
+                    []
+                ).map(
+                    rowToAttempt
+                )
+            );
+        }
+
+        return attempts;
     }
 
 
