@@ -1,0 +1,38 @@
+﻿{
+    "slice":  "INS-007V",
+    "title":  "Outbound contact provider composition boundary",
+    "workspace":  "/river-os/crm",
+    "purpose":  "Compose an already-validated outbound contact runtime configuration into the canonical private contact provider composition without reading runtime environment directly, mutating the private route, or executing contact.",
+    "inputs":  [
+                   "InsuranceOutboundContactRuntimeConfiguration from INS-007U",
+                   "Injected TelnyxFetch transport dependency"
+               ],
+    "output":  "InsurancePrivateContactProviderComposition or undefined",
+    "requirements":  [
+                         "Reuse createTelnyxContactProvider for provider construction.",
+                         "Map the validated telnyx configuration fields apiKey, connectionId, and fromNumber directly into the existing adapter.",
+                         "Use providerName telnyx.",
+                         "Accept transport as an injected dependency so focused tests can use a fake transport and perform no live network request.",
+                         "Do not read cloudflare:workers, process.env, import.meta.env, or browser input in the composition module.",
+                         "Do not modify src/pages/river-os/actions/insurance-contact.ts in INS-007V.",
+                         "Do not call requestContact in INS-007V.",
+                         "Do not duplicate CRM persistence or orchestration construction; continue using the INS-007T seam."
+                     ],
+    "tests":  [
+                  "Validated telnyx configuration produces a provider-neutral private composition.",
+                  "Composition exposes providerName telnyx.",
+                  "Provider behavior can be exercised only through an injected fake transport.",
+                  "Composition source contains no runtime-environment reads and no private-route coupling."
+              ],
+    "boundaries":  [
+                       "No live call, SMS, or email.",
+                       "No provider account activation or configuration.",
+                       "No Cloudflare runtime binding changes.",
+                       "No private-route mutation.",
+                       "No requestContact execution.",
+                       "No migration execution.",
+                       "No deployment.",
+                       "No routing, scoring, automatic producer assignment, second CRM, or Sesh changes."
+                   ],
+    "nextBoundary":  "A later explicitly authorized slice may resolve server runtime environment and supply this composition to the private route; route execution remains separately gated."
+}
