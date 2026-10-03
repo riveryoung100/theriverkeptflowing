@@ -1,0 +1,38 @@
+﻿{
+    "slice":  "INS-007W",
+    "title":  "Outbound contact server runtime composition boundary",
+    "workspace":  "/river-os/crm",
+    "purpose":  "Resolve server-owned outbound contact runtime configuration and compose the canonical provider-neutral private contact provider composition without mutating the private route or executing contact.",
+    "inputs":  [
+                   "InsuranceOutboundContactRuntimeEnvironment-compatible server runtime record",
+                   "Injected TelnyxFetch transport dependency"
+               ],
+    "output":  "InsurancePrivateContactProviderComposition or undefined",
+    "requirements":  [
+                         "Reuse resolveInsuranceOutboundContactRuntimeConfiguration from INS-007U.",
+                         "Return undefined when outbound contact is disabled, missing, partial, malformed, or unsupported.",
+                         "When validated configuration exists, reuse createInsuranceOutboundContactProviderComposition from INS-007V.",
+                         "Accept transport as an injected dependency; do not obtain global fetch internally.",
+                         "Do not import cloudflare:workers in the resolver module.",
+                         "Do not read process.env or import.meta.env.",
+                         "Do not modify src/pages/river-os/actions/insurance-contact.ts in INS-007W.",
+                         "Do not call requestContact.",
+                         "Do not duplicate provider construction, CRM persistence, or orchestration logic."
+                     ],
+    "tests":  [
+                  "Disabled or incomplete runtime environment resolves to undefined without constructing usable composition.",
+                  "Complete enabled Telnyx runtime environment resolves to provider-neutral composition with providerName telnyx.",
+                  "Composition uses the injected fake transport if its provider is explicitly exercised in a focused test.",
+                  "Resolver source contains no cloudflare runtime import, global fetch acquisition, route coupling, or requestContact execution."
+              ],
+    "boundaries":  [
+                       "No private-route mutation.",
+                       "No Cloudflare binding or wrangler mutation.",
+                       "No live call, SMS, or email.",
+                       "No provider account activation or configuration.",
+                       "No migration execution.",
+                       "No deployment.",
+                       "No routing, scoring, automatic producer assignment, second CRM, or Sesh changes."
+                   ],
+    "nextBoundary":  "A later explicitly authorized slice may pass the private route\u0027s existing server runtime environment and a server transport into this resolver; actual requestContact execution remains a separate boundary."
+}
