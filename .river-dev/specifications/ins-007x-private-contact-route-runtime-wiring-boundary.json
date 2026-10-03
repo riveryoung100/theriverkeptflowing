@@ -1,0 +1,50 @@
+{
+    "slice": "INS-007X",
+    "title": "Private contact route runtime wiring boundary",
+    "workspace": "/river-os/crm",
+    "predecessor": "INS-007W",
+    "purpose": "Wire the private contact route's existing Cloudflare server environment and injected server transport through INS-007W into the existing provider-neutral orchestration composition seam without executing contact or changing the fail-closed response.",
+    "phase": "Specification only; implementation and test changes require a later explicit instruction.",
+    "allowedImplementationPaths": [
+        "src/pages/river-os/actions/insurance-contact.ts",
+        "src/lib/insurance/private-contact-request-route-wiring.test.ts"
+    ],
+    "inputs": [
+        "The private route's existing Cloudflare env-derived runtimeEnvironment record",
+        "A server-owned TelnyxFetch-compatible transport supplied explicitly to INS-007W; tests must use an injected fake transport",
+        "The existing RIVER_CRM_DB database binding"
+    ],
+    "output": "The existing no-store 503 response with body Insurance contact provider is not configured., whether composition is absent or successfully constructed.",
+    "requirements": [
+        "Preserve the POST-only, non-prerendered route, same-origin write guard, database availability check, canonical form parsing, and relationship lookup with their existing response behavior.",
+        "After the existing guards and successful relationship lookup, call resolveInsuranceOutboundContactServerRuntimeComposition with runtimeEnvironment and the explicitly supplied server transport.",
+        "Obtain only a server transport function reference at the route boundary and inject it into INS-007W; do not invoke fetch or any other network transport in the route.",
+        "Pass the resolver's InsurancePrivateContactProviderComposition or undefined unchanged as the optional second argument to createInsurancePrivateContactOrchestrationService(database, providerComposition).",
+        "Reuse INS-007W and the existing private orchestration seam; do not duplicate runtime validation, provider construction, CRM persistence, or orchestration logic.",
+        "Disabled, missing, partial, malformed, or unsupported runtime configuration must remain fail closed with undefined composition and the existing 503 response.",
+        "Successful provider and orchestration composition must also return the existing 503 response; constructing an orchestration service does not authorize or execute contact.",
+        "Do not call requestContact on the provider or orchestration service, and do not invoke any other orchestration operation.",
+        "Keep Cloudflare environment access in the existing route; do not add process.env, import.meta.env, client-side environment access, or Cloudflare imports to INS-007W.",
+        "Do not add provider SDKs, provider-specific configuration parsing, destinations, credentials, or runtime enablement settings to the route.",
+        "Do not change INS-007U, INS-007V, INS-007W, or the existing private orchestration implementation."
+    ],
+    "tests": [
+        "Route wiring passes the existing runtimeEnvironment and explicit server transport through INS-007W and passes its result unchanged into the existing private orchestration seam.",
+        "Existing route guard, request parsing, relationship lookup, POST-only, and non-prerendered checks remain valid.",
+        "Absent or invalid configuration yields undefined composition and the unchanged no-store 503 response without transport execution.",
+        "Complete enabled fake configuration constructs composition and orchestration but still returns the unchanged no-store 503 response with zero fake transport and requestContact calls.",
+        "Route source contains no requestContact invocation, direct network call, provider SDK, provider-specific configuration parsing, or client-side environment access. A transport function reference for dependency injection is permitted.",
+        "The INS-007U/V/W focused tests and relevant private contact regression tests continue to pass."
+    ],
+    "boundaries": [
+        "This phase creates this specification only; no implementation or test mutation.",
+        "No requestContact execution or direct network calls in the route.",
+        "No live call, SMS, or email.",
+        "No provider activation, account configuration, credential changes, or outbound-contact enablement.",
+        "No Cloudflare binding or wrangler configuration mutation.",
+        "No migration creation or execution, deployment, or billing changes.",
+        "No routing, scoring, automatic producer assignment, second CRM, or Sesh changes.",
+        "No unrelated file changes."
+    ],
+    "nextBoundary": "Actual contact execution and any replacement of the final 503 response require a separate specification and explicit authorization; INS-007X authorizes composition wiring only when its implementation is separately requested."
+}

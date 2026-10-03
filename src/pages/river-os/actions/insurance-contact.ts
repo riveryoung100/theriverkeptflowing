@@ -22,6 +22,9 @@ import {
     createInsurancePrivateContactOrchestrationService
 } from "../../../lib/insurance/private-contact-orchestration";
 
+import {
+    resolveInsuranceOutboundContactServerRuntimeComposition
+} from "../../../lib/insurance/outbound-contact-server-runtime-composition";
 
 export const prerender =
     false;
@@ -123,9 +126,16 @@ async ({
         );
     }
 
+    const providerComposition =
+        resolveInsuranceOutboundContactServerRuntimeComposition(
+            runtimeEnvironment,
+            globalThis.fetch
+        );
+
     const orchestration =
         createInsurancePrivateContactOrchestrationService(
-            database
+            database,
+            providerComposition
         );
 
     if(orchestration === undefined){
