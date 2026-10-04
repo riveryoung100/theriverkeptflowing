@@ -1,0 +1,48 @@
+{
+    "slice": "INS-008A",
+    "title": "Explicit private-contact submission identity derivation boundary",
+    "workspace": "/river-os/crm",
+    "predecessor": "INS-007Z",
+    "purpose": "Derive explicit canonical contact identities deterministically from an independently supplied opaque submission token without issuing tokens or authorizing execution.",
+    "phase": "Specification only; implementation and test changes require a later explicit instruction.",
+    "helper": "deriveInsurancePrivateContactSubmissionIdentities",
+    "allowedImplementationPaths": [
+        "src/lib/insurance/private-contact-submission-identity-derivation.ts",
+        "src/lib/insurance/private-contact-submission-identity-derivation.test.ts"
+    ],
+    "inputs": [
+        "An independently supplied opaque submissionToken value, accepted as unknown and validated as canonical nonempty string evidence"
+    ],
+    "output": "An object containing attemptId: InsuranceContactAttemptId and idempotencyKey: InsuranceContactIdempotencyKey; invalid token evidence throws without side effects.",
+    "requirements": [
+        "Implement a synchronous pure helper accepting only the independently supplied submission token.",
+        "Require typeof submissionToken to be string, require nonzero length, and require submissionToken.trim() === submissionToken. Reject missing, null, non-string, empty, blank, or normalization-changing evidence rather than repairing it.",
+        "Canonical token text in this slice means nonempty text with no leading or trailing whitespace. Treat its remaining content as opaque; introduce no UUID, character-set, case-folding, Unicode-normalization, or maximum-length rule in this slice.",
+        "Construct attemptId exactly as contact-attempt:<token> and validate it through createInsuranceContactAttemptId.",
+        "Construct idempotencyKey exactly as private-contact:<token> and validate it through createInsuranceContactIdempotencyKey.",
+        "Reuse existing InsuranceContactAttemptId and InsuranceContactIdempotencyKey types through type-only imports; do not duplicate identity grammars or substitute quote-request identity validation rules.",
+        "The same accepted token must deterministically produce the same identity pair, and distinct accepted tokens must produce distinct pairs. Preserve token content exactly in both identities.",
+        "Never generate a token, random value, timestamp, retry key, or fallback identity internally. Do not derive identity solely from relationship, channel, or intent, and do not accept those fields as inputs.",
+        "Do not mutate inputs, normalize accepted token content, or maintain process-local identity state.",
+        "This slice does not establish token provenance, browser/session retention, persistence, exactly-once delivery, or execution authorization. It does not guarantee that an external issuer supplies unique tokens or retains them across retries.",
+        "Accept no provider, database, transport, route runtime, persistence factory, or orchestration service. Do not call requestContact, read or write persistence, or perform network or filesystem operations.",
+        "Leave the private route, both existing provider-not-configured no-store 503 responses, INS-007Y/Z, contact orchestration, and existing identity validators unchanged."
+    ],
+    "tests": [
+        "A valid opaque token produces exactly contact-attempt:<token> and private-contact:<token> through the existing validators.",
+        "Repeated calls with the same token return equivalent pairs; distinct tokens, including case-distinct tokens, return distinct pairs.",
+        "Missing, undefined, null, non-string, empty, and whitespace-only token evidence rejects without generating fallback identities.",
+        "Leading/trailing whitespace token evidence rejects rather than being trimmed; accepted opaque content is preserved exactly.",
+        "Returned identities are compatible with createInsuranceContactAttemptId and createInsuranceContactIdempotencyKey and their existing branded types.",
+        "Frozen holder input containing a primitive token remains unchanged when its token is supplied; repeated calls remain deterministic without mutable state. Frozen object tokens themselves reject as non-string evidence.",
+        "Source isolation permits only local token validation, deterministic prefix construction, and existing identity validators; no runtime/provider dependency, contact execution, persistence, transport, random generation, timestamp generation, or relationship/channel/intent derivation."
+    ],
+    "boundaries": [
+        "This phase creates this specification only; no implementation or test mutation.",
+        "No route changes or replacement of either existing 503 response.",
+        "No persistence writes, token issuance, browser/session retention mechanism, or provider/runtime access.",
+        "No requestContact execution, live call, SMS, email, or provider activation.",
+        "No migrations, deployment, billing, routing, scoring, producer assignment, second CRM, Sesh, or unrelated changes."
+    ],
+    "nextBoundary": "Token provenance and issuance, retry retention and lifecycle, request binding, concurrency/recovery guarantees, route integration, and contact execution authorization remain separately defined and explicitly authorized work. Derived identities alone never enable live contact."
+}
