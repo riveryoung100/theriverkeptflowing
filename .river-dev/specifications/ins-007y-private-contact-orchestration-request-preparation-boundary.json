@@ -1,0 +1,55 @@
+{
+    "slice": "INS-007Y",
+    "title": "Private contact orchestration-request preparation boundary",
+    "workspace": "/river-os/crm",
+    "predecessor": "INS-007X",
+    "purpose": "Prepare the existing canonical orchestration-request shape from a parsed private contact request, independently supplied trusted integration context, and explicit identities without authorizing or executing contact.",
+    "phase": "Specification only; implementation and test changes require a later explicit instruction.",
+    "helper": "prepareInsurancePrivateContactOrchestrationRequest",
+    "allowedImplementationPaths": [
+        "src/lib/insurance/private-contact-orchestration-request-preparation.ts",
+        "src/lib/insurance/private-contact-orchestration-request-preparation.test.ts"
+    ],
+    "inputs": [
+        "An already parsed InsurancePrivateContactRequest",
+        "An independently supplied trusted InsuranceGrowthIntegrationContext",
+        "An explicitly supplied attemptId value validated through createInsuranceContactAttemptId",
+        "An explicitly supplied idempotencyKey value validated through createInsuranceContactIdempotencyKey"
+    ],
+    "output": "InsuranceContactOrchestrationRequest containing the supplied context, validated attemptId and idempotencyKey, and unchanged request channel and intent; invalid identity evidence throws without side effects.",
+    "requirements": [
+        "Implement a synchronous pure helper accepting only the four specified inputs; do not accept execution dependencies or derive context from route runtime or persistence.",
+        "Require the parsed request relationshipId and trusted context relationshipId to identify the same canonical CRM relationship; reject a mismatch before returning a prepared request.",
+        "Reuse requireRiverCrmRelationshipId for existing relationship identity validation; do not introduce a second identity grammar.",
+        "The trusted InsuranceGrowthIntegrationContext.relationshipId must already be canonical: validate it with requireRiverCrmRelationshipId and reject it if the validated value differs from the original supplied value. Continue validating the parsed request relationshipId and comparing the validated request identity with the validated context identity; preserve the supplied context unchanged.",
+        "Reuse createInsuranceContactAttemptId and createInsuranceContactIdempotencyKey for attempt and idempotency validation and normalization; do not duplicate or strengthen their existing rules.",
+        "Attempt IDs must follow the existing contact-attempt: prefix and nonempty suffix rule. Idempotency keys follow the existing nonempty trimmed text rule; do not invent an idempotency prefix requirement.",
+        "Require explicit attempt and idempotency identities; never generate random IDs, timestamps, retry identities, or keys from relationship, channel, or intent.",
+        "Preserve the supplied trusted context unchanged, preferably by returning the same context reference, including contactChannels, consent status, channel suppression, relationship doNotContact, and all remaining context fields.",
+        "Preserve the parsed request channel and intent exactly; do not infer, replace, or broaden them.",
+        "Do not mutate any input, manufacture consent, default missing suppression to false, or treat preparation as contact eligibility or execution authorization.",
+        "Suppressed, denied-consent, and empty-contactChannels context evidence must remain intact in the prepared request; preparation does not override or replace canonical execution-time eligibility checks.",
+        "Return the existing InsuranceContactOrchestrationRequest shape using a type-only import; do not create a second request contract or add trigger event issuance in this slice.",
+        "Do not accept or use a provider, database, transport, route runtime, persistence factory, or orchestration service.",
+        "Do not call requestContact, write persistence, perform network or filesystem operations, or invoke runtime composition or orchestration factories.",
+        "Leave the private route, both current provider-not-configured no-store 503 responses, INS-007U/V/W/X implementations, and canonical orchestration and eligibility logic unchanged."
+    ],
+    "tests": [
+        "Valid mapping returns the existing orchestration-request shape with canonical relationship consistency, validated explicit identities, and unchanged channel and intent.",
+        "A different relationshipId in the supplied context is rejected; invalid relationship identity evidence follows the existing validator rules.",
+        "Missing, non-string, blank, wrong-prefix, and prefix-only attempt IDs are rejected through existing attempt identity rules; surrounding whitespace follows existing normalization.",
+        "Missing, non-string, empty, and whitespace-only idempotency keys are rejected; arbitrary nonempty text remains valid and surrounding whitespace follows existing normalization.",
+        "Context reference and all context fields are preserved, including granted and denied consent evidence, channel doNotContact, relationship doNotContact, and empty contactChannels.",
+        "Frozen inputs are accepted without mutation and repeated calls with identical inputs produce equivalent prepared requests.",
+        "Helper source has no execution dependency, requestContact invocation, persistence write, environment access, identity generation, or direct side effect."
+    ],
+    "boundaries": [
+        "This phase creates this specification only; no implementation or test mutation.",
+        "No private-route mutation or replacement of either existing 503 response.",
+        "No contact execution, persistence writes, live call, SMS, or email.",
+        "No provider activation, configuration, credential changes, or outbound-contact enablement.",
+        "No Cloudflare binding changes, migrations, deployment, or billing changes.",
+        "No routing, scoring, automatic producer assignment, second CRM, Sesh, or unrelated changes."
+    ],
+    "nextBoundary": "Trusted context acquisition, retry-safe identity issuance, route integration, execution authorization, requestContact invocation, and execution response handling require separately defined and explicitly authorized work. A prepared request alone never authorizes those operations."
+}
