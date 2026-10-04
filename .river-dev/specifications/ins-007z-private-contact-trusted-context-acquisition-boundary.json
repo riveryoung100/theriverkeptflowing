@@ -1,0 +1,56 @@
+{
+    "slice": "INS-007Z",
+    "title": "Read-only private contact trusted-context acquisition boundary",
+    "workspace": "/river-os/crm",
+    "predecessor": "INS-007Y",
+    "purpose": "Acquire exactly one matching canonical insurance presentation through an injected read-only reader and map it into the existing integration context without authorizing or executing contact.",
+    "phase": "Specification only; implementation and test changes require a later explicit instruction.",
+    "helper": "acquireInsurancePrivateContactTrustedContext",
+    "allowedImplementationPaths": [
+        "src/lib/insurance/private-contact-trusted-context-acquisition.ts",
+        "src/lib/insurance/private-contact-trusted-context-acquisition.test.ts"
+    ],
+    "inputs": [
+        "An already parsed InsurancePrivateContactRequest",
+        "An injected read-only insurance presentation reader exposing listForRelationships with the existing D1InsuranceLeadPresentationPersistence read contract; reader provenance is supplied by the trusted server caller"
+    ],
+    "output": "Promise<InsuranceGrowthIntegrationContext>; absent, ambiguous, invalid, or failed acquisition rejects without fallback context or side effects beyond the requested read.",
+    "requirements": [
+        "Implement an async helper accepting only the parsed request and injected read-only reader. Reuse existing request, presentation, reader, relationship identity, and context types; use type-only imports for dependency contracts.",
+        "Validate the request relationshipId using requireRiverCrmRelationshipId and request presentations for only that validated relationship identity through one listForRelationships call.",
+        "Require an array containing exactly one presentation; reject missing, duplicate, extra, or mismatched results rather than choosing, deduplicating, or filtering a result into apparent validity.",
+        "Validate the returned presentation relationshipId using requireRiverCrmRelationshipId, reject it if validation changes the original supplied value, and require exact equality with the validated request identity.",
+        "Reject malformed presentation evidence before mapping, including null/non-object presentations, invalid identity values, missing or invalid required context-bearing fields, malformed consentChannels, invalid channel or consent status values, and non-boolean channel or relationship doNotContact values.",
+        "Use existing canonical domain rules where available for productInterest and quoteStatus; state and postalCode must satisfy existing presentation/profile rules. Optional acquisitionSource and campaign, when present, must be valid text. Do not silently coerce, fill, or repair malformed evidence.",
+        "All context-bearing presentation evidence consumed by createInsuranceGrowthIntegrationContext must already be canonical: reject relationship ID, state, ZIP, enum/text values, and consent entries if normalization would change any consumed value. Validate against existing domain rules without returning repaired evidence; preserve supplied boolean doNotContact values exactly and do not recompute relationship suppression.",
+        "Limit INS-007Z presentation validation to fields consumed by createInsuranceGrowthIntegrationContext: relationshipId, productInterest, quoteStatus, state, postalCode, optional acquisitionSource and campaign, consentChannels entries (channel, status, doNotContact), and relationship doNotContact. Do not validate ignored presentation fields such as recentEvents, assignedProducer, or sourceVendor in this slice.",
+        "Validate context-bearing evidence without reinterpreting its consent or suppression meaning. Do not add eligibility rules, recompute relationship doNotContact, require granted consent, discard denied or suppressed channels, or default absent suppression to false.",
+        "Map the accepted presentation only through createInsuranceGrowthIntegrationContext. Preserve the mapper's existing handling of all context fields, channel order, consent status, channel suppression, relationship suppression, empty consent channels, and optional acquisition metadata.",
+        "Do not mutate the parsed request, reader results, presentation, or consent array. Frozen valid evidence must remain usable.",
+        "Propagate reader failures as rejected acquisition; do not return a fabricated, cached, partial, or permissive fallback context.",
+        "The injected reader is a trusted-input precondition; structural validation does not establish reader provenance or authorize contact. The returned context is a read snapshot and does not replace canonical execution-time consent checks.",
+        "Perform no persistence writes and generate no attempt IDs, idempotency keys, random values, timestamps, or submission tokens.",
+        "Accept no provider, database, transport, route runtime, persistence factory, or orchestration service. Do not instantiate a D1 reader internally, invoke direct SQL, or call requestContact.",
+        "Leave the private route and both existing provider-not-configured no-store 503 responses unchanged; do not wire acquisition or preparation into the route in this slice.",
+        "Leave INS-007Y preparation, existing mapping and validation implementations, canonical orchestration, and persistence write paths unchanged."
+    ],
+    "tests": [
+        "Valid acquisition calls the fake read-only reader exactly once with only the validated requested relationship identity and returns the existing mapper's context shape.",
+        "Missing, duplicate, additional, and mismatched presentations reject without fallback context.",
+        "Invalid request and presentation identity evidence rejects; noncanonical presentation identities reject even when normalization would match the request.",
+        "Null/non-array results and malformed context-bearing presentation or consent evidence reject without manufacturing consent or suppression.",
+        "Reader rejection propagates without retries, fallback context, identity issuance, or writes.",
+        "Granted and denied consent, channel and relationship suppression, empty consent channels, channel order, and optional acquisition metadata match createInsuranceGrowthIntegrationContext exactly.",
+        "Frozen request and presentation evidence remain unchanged during acquisition.",
+        "Source isolation permits only the injected presentation read, existing evidence validation, and canonical context mapping; no contact execution, persistence write, provider/runtime dependency, direct transport, SQL, or identity generation."
+    ],
+    "boundaries": [
+        "This phase creates this specification only; no implementation or test mutation.",
+        "No route mutation or changes to either existing 503 response.",
+        "No requestContact execution, live call, SMS, or email.",
+        "No persistence writes or attempt/idempotency identity issuance.",
+        "No runtime/provider configuration, provider activation, credentials, or Cloudflare binding changes.",
+        "No migrations, deployment, billing, routing, scoring, producer assignment, second CRM, Sesh, or unrelated changes."
+    ],
+    "nextBoundary": "Retry-safe explicit identity issuance, route integration with INS-007Y, execution authorization, actual contact invocation, and response handling remain separately specified and explicitly authorized work. Trusted-context acquisition alone never enables live contact."
+}
