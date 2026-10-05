@@ -95,7 +95,7 @@ implements PrincipalSessionStore {
     null
   > {
     const raw =
-      this.#session.get(
+      await this.#session.get(
         AUTHENTICATED_PRINCIPAL_SESSION_KEY,
       );
 

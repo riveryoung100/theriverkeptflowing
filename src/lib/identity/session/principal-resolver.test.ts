@@ -1,5 +1,56 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { AstroPrincipalSessionStore } from "./astro-session-adapter";
+import { AUTHENTICATED_PRINCIPAL_SESSION_KEY } from "./model";
+import type { AstroSessionLike } from "./contracts";
+
+test("real adapter async reads preserve resolver failures, lookup identity and stale cleanup", async () => {
+  for (const scenario of ["valid", "missing-session", "malformed", "expired", "read-failure", "malformed-cleanup-failure", "expired-cleanup-failure", "missing-principal", "inactive-principal", "mismatched-principal", "destroy-failure", "async-destroy"] as const) {
+    const { principal, principals } = fixture();
+    const payload = canonicalSession(principal.principalId);
+    const events: string[] = [];
+    const session: AstroSessionLike = {
+      async get(key) {
+        events.push("get"); assert.equal(key, AUTHENTICATED_PRINCIPAL_SESSION_KEY);
+        await Promise.resolve();
+        if (scenario === "read-failure") throw new Error("read failure");
+        if (scenario === "missing-session") return undefined;
+        if (scenario === "malformed" || scenario === "malformed-cleanup-failure") return {};
+        return payload;
+      },
+      set() { throw new Error("unexpected set"); },
+      delete(key) {
+        assert.equal(key, AUTHENTICATED_PRINCIPAL_SESSION_KEY); events.push("delete");
+        if (scenario.endsWith("cleanup-failure")) throw new Error("delete failure");
+      },
+      async regenerate() { throw new Error("unexpected regenerate"); },
+      destroy() { events.push("destroy"); if (scenario === "destroy-failure") throw new Error("destroy failure"); },
+    };
+    if (scenario === "async-destroy") session.destroy = async () => { await Promise.resolve(); events.push("destroy"); };
+    const originalLookup = principals.getPrincipal.bind(principals);
+    principals.getPrincipal = async id => {
+      events.push("lookup"); assert.equal(id, principal.principalId);
+      if (scenario === "mismatched-principal") return { ok: true, value: { ...principal, principalId: createPrincipalId("other") } };
+      return originalLookup(id);
+    };
+    if (["missing-principal", "destroy-failure", "async-destroy"].includes(scenario)) principals.principals.clear();
+    if (scenario === "inactive-principal") principals.principals.set(principal.principalId, { ...principal, status: "disabled" });
+    const expired = scenario === "expired" || scenario === "expired-cleanup-failure";
+    const resolver = new DefaultSessionPrincipalResolver({ sessions: new AstroPrincipalSessionStore(session, () => new Date(expired ? payload.expiresAt : payload.authenticatedAt)), principals });
+    assert.deepEqual(events, []);
+    const resolved = await resolver.resolve();
+    if (scenario === "valid") {
+      assert.deepEqual(resolved, { ok: true, value: { principalId: principal.principalId } }); assert.deepEqual(events, ["get", "lookup"]);
+    } else {
+      assert(!resolved.ok);
+      const unavailable = ["read-failure", "malformed-cleanup-failure", "expired-cleanup-failure", "destroy-failure"].includes(scenario);
+      assert.equal(resolved.error.code, unavailable ? "unavailable" : "unauthenticated");
+      if (scenario === "read-failure" || scenario === "missing-session") assert.deepEqual(events, ["get"]);
+      else if (scenario === "malformed" || scenario.includes("cleanup-failure") || expired) assert.deepEqual(events, ["get", "delete"]);
+      else assert.deepEqual(events, ["get", "lookup", "destroy"]);
+    }
+  }
+});
 
 import {
   createPrincipalId,

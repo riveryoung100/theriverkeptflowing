@@ -31,7 +31,7 @@ export interface AstroSessionLike {
   get(
     key:
       string,
-  ): unknown;
+  ): unknown | Promise<unknown>;
 
   set(
     key:
@@ -50,5 +50,5 @@ export interface AstroSessionLike {
   ): void;
 
   destroy():
-  Promise<void>;
+  void | Promise<void>;
 }

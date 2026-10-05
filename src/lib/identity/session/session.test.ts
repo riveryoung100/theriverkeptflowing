@@ -1,6 +1,76 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+class AsyncAstroSession implements AstroSessionLike {
+  readonly values = new Map<string, unknown>();
+  readonly events: string[] = [];
+  readGate: Promise<void> = Promise.resolve();
+  failRead = false;
+  failDelete = false;
+  async get(key: string): Promise<unknown> {
+    this.events.push("get");
+    await this.readGate;
+    if (this.failRead) throw new Error("session read failed");
+    return this.values.get(key);
+  }
+  async regenerate(): Promise<void> { this.events.push("regenerate"); }
+  set(key: string, value: unknown, options?: { readonly ttl?: number }): void {
+    assert.equal(options?.ttl, AUTHENTICATED_PRINCIPAL_SESSION_TTL_SECONDS);
+    this.events.push("set"); this.values.set(key, value);
+  }
+  delete(key: string): void {
+    assert.equal(key, AUTHENTICATED_PRINCIPAL_SESSION_KEY);
+    this.events.push("delete");
+    if (this.failDelete) throw new Error("cleanup failed");
+    this.values.delete(key);
+  }
+  destroy(): void { this.events.push("destroy"); this.values.clear(); }
+}
+
+test("Astro-like construction is I/O-free and delayed valid reads are awaited", async () => {
+  const session = new AsyncAstroSession();
+  let clockCalls = 0;
+  const store = new AstroPrincipalSessionStore(session, () => { clockCalls++; return new Date("2026-10-05T12:00:00Z"); });
+  assert.deepEqual(session.events, []); assert.equal(clockCalls, 0);
+  const payload = await store.createSession(createPrincipalId("async-session"));
+  assert.deepEqual(session.events, ["regenerate", "set"]);
+  assert.equal(payload.version, AUTHENTICATED_PRINCIPAL_SESSION_VERSION);
+  assert.equal(Date.parse(payload.expiresAt) - Date.parse(payload.authenticatedAt), AUTHENTICATED_PRINCIPAL_SESSION_TTL_SECONDS * 1000);
+  session.events.length = 0;
+  let release!: () => void;
+  session.readGate = new Promise<void>(resolve => { release = resolve; });
+  let settled = false;
+  const pending = store.getSession().then(value => { settled = true; return value; });
+  await Promise.resolve(); assert.equal(settled, false); assert.deepEqual(session.events, ["get"]);
+  release(); assert.deepEqual(await pending, payload); assert.deepEqual(session.events, ["get"]);
+  await store.destroySession(); assert.deepEqual(session.events, ["get", "destroy"]);
+});
+
+test("async absence, malformed data, expiry boundary and cleanup failure preserve semantics", async () => {
+  const payload = { version: 1, principalId: createPrincipalId("async-session"), authenticatedAt: "2026-10-05T00:00:00Z", expiresAt: "2026-10-05T12:00:00Z" };
+  for (const raw of [undefined, null, {}, { ...payload, principalId: "noncanonical" }, payload]) {
+    const session = new AsyncAstroSession(); session.values.set(AUTHENTICATED_PRINCIPAL_SESSION_KEY, raw);
+    const store = new AstroPrincipalSessionStore(session, () => new Date(payload.expiresAt));
+    assert.equal(await store.getSession(), null);
+    assert.deepEqual(session.events, raw == null ? ["get"] : ["get", "delete"]);
+    if (raw != null) {
+      session.values.set(AUTHENTICATED_PRINCIPAL_SESSION_KEY, raw); session.failDelete = true;
+      await assert.rejects(store.getSession(), /cleanup failed/);
+    }
+  }
+  const session = new AsyncAstroSession(); session.values.set(AUTHENTICATED_PRINCIPAL_SESSION_KEY, payload);
+  assert.deepEqual(await new AstroPrincipalSessionStore(session, () => new Date(Date.parse(payload.expiresAt) - 1)).getSession(), payload);
+  assert.deepEqual(session.events, ["get"]);
+  const expired = new AstroPrincipalSessionStore(session, () => new Date(Date.parse(payload.expiresAt) + 1));
+  assert.equal(await expired.getSession(), null); assert.deepEqual(session.events, ["get", "get", "delete"]);
+});
+
+test("async read rejection propagates without malformed-session deletion", async () => {
+  const session = new AsyncAstroSession(); session.failRead = true;
+  await assert.rejects(new AstroPrincipalSessionStore(session).getSession(), /session read failed/);
+  assert.deepEqual(session.events, ["get"]);
+});
+
 import {
   createPrincipalId,
 } from "../identifiers";

@@ -1,0 +1,78 @@
+{
+    "version": "1.0.0",
+    "id": "IDENTITY-ASTRO-SESSION-API-COMPATIBILITY",
+    "name": "Shared identity Astro session API compatibility correction",
+    "phase": "Specification only; implementation requires separate explicit authorization",
+    "objective": "Make the shared identity session adapter compatible with asynchronous Astro session reads and synchronous destruction without changing authorization, validation, expiry or cleanup semantics.",
+    "allowedFutureModificationPaths": [
+        "src/lib/identity/session/contracts.ts",
+        "src/lib/identity/session/astro-session-adapter.ts",
+        "src/lib/identity/session/session.test.ts",
+        "src/lib/identity/session/principal-resolver.test.ts"
+    ],
+    "implementationScope": "Modify only these four existing files; add no implementation files or FOOD-specific logic.",
+    "discoveryEvidence": {
+        "installedSource": "node_modules/astro/dist/core/session/runtime.js",
+        "installedTypes": "node_modules/astro/dist/core/session/runtime.d.ts",
+        "observedContract": "Installed Astro get is asynchronous; set, delete and destroy are synchronous; regenerate is asynchronous.",
+        "rootCause": "AstroPrincipalSessionStore.getSession currently validates the immediate session.get return without awaiting it, so an actual Astro Promise can be mistaken for malformed session data. Existing synchronous fakes conceal the incompatibility."
+    },
+    "astroSessionLikeContract": {
+        "get": "get(key: string): unknown | Promise<unknown>",
+        "set": "Remain synchronous with existing arguments and void return.",
+        "delete": "Remain synchronous with existing key argument and void return.",
+        "regenerate": "Remain Promise<void>.",
+        "destroy": "Support void | Promise<void>; existing callers may continue to await destruction."
+    },
+    "adapterRequirements": [
+        "Await session.get(AUTHENTICATED_PRINCIPAL_SESSION_KEY) before absence checks or payload validation.",
+        "Keep awaited session acquisition outside the malformed-payload validation catch. A rejected asynchronous get is a storage/session-access failure, not a malformed payload.",
+        "Propagate read failures to DefaultSessionPrincipalResolver's existing unavailable path; do not delete session data or reach principal lookup after a rejected read.",
+        "Preserve existing synchronous set/delete behavior and existing awaiting of regenerate/destroy.",
+        "Keep PrincipalSessionStore's existing asynchronous public operations unchanged. DefaultSessionPrincipalResolver already awaits store reads/destruction and needs no implementation change.",
+        "Construction remains synchronous and I/O-free: no session read, session mutation, clock invocation or database access during construction."
+    ],
+    "preservedSemantics": [
+        "Missing resolved session data returns null without cleanup.",
+        "Malformed resolved session data deletes only the principal-session key through existing malformed-session cleanup.",
+        "Expired session data deletes the principal-session key; preserve the existing expiry boundary.",
+        "Malformed/expired cleanup exceptions fail closed and propagate to the resolver's existing unavailable path.",
+        "Missing, inactive or mismatched principals retain existing resolver destruction behavior, including unavailable on destruction failure.",
+        "Canonical principal and session validation, authenticated-principal session key, payload version, TTL and expiry rules remain unchanged.",
+        "Preserve fresh principal resolution and fail-closed authorization; do not introduce principal lookup on missing, malformed, expired or unreadable sessions.",
+        "Synchronous and asynchronous destruction are both supported; awaiting synchronous Astro destruction does not prove durable storage cleanup. Framework persistence remains outside this correction."
+    ],
+    "tests": [
+        "Add or adjust tests using a genuinely Astro-like fake with asynchronous get, synchronous set/delete/destroy and asynchronous regenerate.",
+        "A delayed valid asynchronous read is awaited, returns the validated session and never deletes it.",
+        "Missing asynchronous reads preserve null/unauthenticated behavior without cleanup or principal lookup.",
+        "Malformed asynchronous results trigger existing principal-key deletion and no principal lookup.",
+        "Expired asynchronous results trigger existing principal-key deletion; test the unchanged exact expiry boundary.",
+        "Rejected asynchronous get maps to resolver unavailable with zero deletion, zero destruction and zero principal lookup.",
+        "Malformed/expired deletion exceptions fail closed through resolver unavailable without principal lookup.",
+        "A valid asynchronously read session passes its exact canonical principal ID to principal lookup.",
+        "Missing/inactive/mismatched principals retain existing destruction behavior, including failure handling.",
+        "Synchronous destroy works, existing asynchronous destroy remains supported and existing synchronous read fakes remain valid regressions.",
+        "Construction performs zero session or database operations and does not invoke the clock.",
+        "Session creation preserves regeneration ordering, synchronous set arguments, key, validated payload and TTL."
+    ],
+    "requiredValidation": [
+        "Run identity session tests.",
+        "Run principal-resolver tests.",
+        "Run affected identity runtime regressions, including principal login/logout runtime tests.",
+        "Run affected Sesh runtime regressions without modifying Sesh source.",
+        "Run strict TypeScript checks for the modified identity/session files.",
+        "Run git diff --check.",
+        "Run the normal build; do not fix unrelated baseline failures within this correction."
+    ],
+    "excludedScope": [
+        "No FOOD-specific logic or FOOD source changes.",
+        "No production route/UI changes or Sesh source changes.",
+        "No changes to River OS authentication/access-key semantics.",
+        "No D1 schemas, migrations, database configuration or provisioning.",
+        "No deployment, migration execution, production access or production data changes.",
+        "No authorization redesign or unrelated subsystem changes."
+    ],
+    "currentTaskBoundary": "Create only this specification. Do not implement, modify existing files, stage, commit, deploy, migrate or touch production data.",
+    "nextStep": "Review this specification before separately authorizing the four-file shared identity compatibility correction; FOOD-001G remains deferred until compatibility correction and regressions pass."
+}
