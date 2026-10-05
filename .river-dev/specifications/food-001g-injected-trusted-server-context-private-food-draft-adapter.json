@@ -1,0 +1,106 @@
+{
+    "version": "1.0.0",
+    "id": "FOOD-001G",
+    "name": "Injected trusted server-context private food-draft adapter",
+    "predecessor": "FOOD-001F",
+    "phase": "Specification only; implementation requires separate explicit authorization",
+    "objective": "Construct a request-scoped shared identity resolver from supplied trusted environment and Astro-like session dependencies, then delegate private food runtime acquisition to FOOD-001F without routes, global acquisition or activation.",
+    "factory": "createPrivateFoodDraftRuntimeFromServerContext",
+    "allowedFutureImplementationPaths": [
+        "src/lib/food/private-draft-server-adapter.ts",
+        "src/lib/food/private-draft-server-adapter.test.ts"
+    ],
+    "unchangedAuthorities": [
+        "src/lib/food/draft-domain.ts",
+        "src/lib/food/draft-persistence.ts",
+        "src/lib/food/d1-draft-persistence.ts",
+        "src/lib/food/private-draft-service.ts",
+        "src/lib/food/private-draft-runtime-composition.ts",
+        "src/lib/food/private-draft-runtime-acquisition.ts",
+        "src/lib/identity/session/contracts.ts",
+        "src/lib/identity/session/astro-session-adapter.ts",
+        "src/lib/identity/session/principal-resolver.ts",
+        "src/lib/identity/cloudflare/d1-principal-repository.ts"
+    ],
+    "input": {
+        "shape": "One trusted input containing environment: FoodPrivateDraftRuntimeEnvironment & { readonly RIVER_IDENTITY_DB?: unknown }, session: AstroSessionLike, and optional now?: () => Date",
+        "requirements": [
+            "Accept generic supplied environment and request-appropriate Astro-like session dependencies only; no full Astro context, raw cookies, request bodies, redirects or response objects.",
+            "Do not import cloudflare:workers or acquire globals/environment directly.",
+            "Reuse FOOD-001A/B/C/D/E/F and the committed shared identity Astro session API compatibility correction unchanged."
+        ]
+    },
+    "environmentResponsibilities": [
+        "FOOD-001G validates only its adapter-owned identity dependency RIVER_IDENTITY_DB.",
+        "FOOD-001F exclusively validates RIVER_FOOD_DB and RIVER_FOOD_ADMIN_PRINCIPAL_ID. Do not duplicate, normalize, infer or prevalidate these food-specific keys.",
+        "Pass the exact original environment object unchanged to FOOD-001F. Do not clone, filter or reconstruct it or scan alternate database keys."
+    ],
+    "structuralValidation": [
+        "Require outer input, environment, session and RIVER_IDENTITY_DB to be non-null non-array objects; missing or malformed values fail closed.",
+        "Require callable session.get, session.set, session.delete, session.regenerate and session.destroy without invoking them.",
+        "Preserve shared contracts: get may resolve synchronously or asynchronously; set/delete remain synchronous; regenerate remains asynchronous; destroy may be synchronous or asynchronous.",
+        "Require callable identity database.prepare only. Do not require batch, probe prepared statements or require bind/first during construction.",
+        "Never fall back to another database, inferred identity or alternate authentication infrastructure.",
+        "An omitted or undefined now uses AstroPrincipalSessionStore's existing default clock; a callable now is injected exactly; explicit null or any noncallable value fails closed. Never invoke the clock during construction.",
+        "Catch throwing property access on all adapter-owned inputs and dependencies, including method/clock getters, without leaking exceptions or dependency values.",
+        "Validate all adapter-owned inputs before constructing downstream identity components or invoking FOOD-001F."
+    ],
+    "constructionFlow": [
+        "After adapter-owned structural validation succeeds, construct AstroPrincipalSessionStore with the exact session and optional clock.",
+        "Construct D1PrincipalRepository from the extracted RIVER_IDENTITY_DB.",
+        "Construct DefaultSessionPrincipalResolver with the newly constructed sessions and principals.",
+        "Call createPrivateFoodDraftRuntimeFromEnvironment with the exact original environment and newly constructed request-scoped callerResolver; return its result unchanged.",
+        "Construct a fresh session store, principal repository and resolver for every invocation; never cache across requests."
+    ],
+    "result": {
+        "success": "{ ok: true, value: FoodPrivateDraftService }",
+        "failure": "{ ok: false, error: { code: 'configuration-unavailable', message: 'Food draft runtime configuration is unavailable.' } }",
+        "failureCode": "configuration-unavailable",
+        "fixedFailureMessage": "Food draft runtime configuration is unavailable.",
+        "requirements": [
+            "Reuse FOOD-001E/F's service-only result exactly; introduce no adapter error vocabulary.",
+            "Expose no environment, session, identity database, principal repository, resolver, food database, administrator ID or repository internals.",
+            "Failures expose no dependency values, getter exceptions, SQL/D1 details, configuration internals or stack traces. Preserve FOOD-001F configuration failures unchanged."
+        ]
+    },
+    "constructionGuarantees": [
+        "Construction is synchronous and I/O-free, returning a result rather than a promise.",
+        "Do not call session methods, identity database.prepare, prepared statements, resolver.resolve, food database methods, repository/service operations, clock or schema/migration/session probes.",
+        "Structural success proves construction compatibility only, not a valid live session, identity or food database/schema availability, migration application, environment provenance, correct request scoping, principal activity or administrator authorization."
+    ],
+    "laterOperationSemantics": [
+        "Preserve awaited asynchronous Astro session reads and existing unauthenticated behavior for missing session data.",
+        "Malformed/expired sessions may delete the principal-session key; preserve expiry-boundary and cleanup failure behavior.",
+        "Rejected session reads follow the existing resolver unavailable path without malformed-session deletion or principal lookup.",
+        "Missing/inactive/mismatched principals preserve existing session-destruction behavior, including synchronous destruction and failure handling.",
+        "Principal lookup may legitimately call the identity database; denied food operations make zero food database calls.",
+        "FOOD-001D remains authorization authority, including fresh resolution on every operation. River OS boolean/access-key authentication is never a substitute.",
+        "FOOD-001F validates food environment keys, FOOD-001E composes the service, and FOOD-001C remains persistence/concurrency authority. Preserve exact arguments/outcomes and introduce no readiness or sale-authority projection."
+    ],
+    "tests": [
+        "Valid construction delegates with the exact original environment and a newly constructed resolver; returns FOOD-001F's result unchanged.",
+        "Fresh session store, principal repository and resolver per invocation; request isolation and no cross-request cache.",
+        "Service-only output exposes no dependency or internal bypass surface.",
+        "Zero construction-time session/database/prepared-statement/resolver/service/repository/clock calls.",
+        "Missing/null/array/non-object/malformed and throwing outer/environment/session/identity dependencies fail closed before identity construction or FOOD-001F invocation.",
+        "Test each of the five required session methods individually missing/noncallable/throwing.",
+        "Missing/malformed identity database and missing/noncallable/throwing prepare fail closed; batch is not required and prepared statements are not probed.",
+        "Omitted/undefined clocks accepted; callable clock preserved exactly; null/noncallable/throwing clocks rejected without invocation.",
+        "Exact fixed sanitized failures and unchanged FOOD-001F configuration failures; no food-key prevalidation or alternate database behavior.",
+        "Genuinely async Astro-like get, delayed valid reads, missing/malformed/expired sessions and exact expiry-boundary behavior.",
+        "Rejected reads and cleanup failures fail closed, preserving existing no-lookup behavior where applicable.",
+        "Exact canonical principal lookup and missing/inactive/mismatched principal behavior with synchronous destruction.",
+        "Fresh authorization after acquisition, wrong-administrator denial, and zero food database calls on denial even when identity lookup occurs.",
+        "Authorized food operations preserve exact arguments/outcomes through FOOD-001F/E/D/C; adapter tests do not replace FOOD-001C database-concurrency verification.",
+        "Source isolation from Cloudflare globals, routes/actions/UI, River OS boolean/access-key auth, Wrangler/config mutation, migrations, deployment and unrelated subsystem construction."
+    ],
+    "deferredScope": [
+        "Food routes/actions/UI and public product access.",
+        "Actual RIVER_FOOD_DB provisioning/configuration, generated food environment typing and concrete administrator principal value.",
+        "Migration execution, runtime global environment acquisition and production activation.",
+        "Commerce/checkout/Stripe, fulfillment/accounting/community/public counters.",
+        "Deployment, production data and unrelated insurance/Sesh/creator changes."
+    ],
+    "currentTaskBoundary": "Create only this specification. Do not implement, modify existing files, stage, commit, configure runtime access, access D1, migrate or deploy.",
+    "nextStep": "Review this specification before separately authorizing the two-file injected trusted server-context adapter implementation."
+}
