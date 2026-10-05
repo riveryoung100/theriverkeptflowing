@@ -1,0 +1,81 @@
+{
+    "version": "1.0.0",
+    "id": "FOOD-001E",
+    "name": "Injected private food-draft runtime composition boundary",
+    "predecessor": "FOOD-001D",
+    "phase": "Specification only; implementation requires separate explicit authorization",
+    "objective": "Define synchronous, I/O-free composition of injected food D1 access and trusted principal resolution into the existing single-admin service, without runtime acquisition or activation.",
+    "factory": "createPrivateFoodDraftRuntimeComposition",
+    "allowedFutureImplementationPaths": [
+        "src/lib/food/private-draft-runtime-composition.ts",
+        "src/lib/food/private-draft-runtime-composition.test.ts"
+    ],
+    "unchangedAuthorities": [
+        "src/lib/food/draft-domain.ts",
+        "src/lib/food/draft-persistence.ts",
+        "src/lib/food/d1-draft-persistence.ts",
+        "src/lib/food/private-draft-service.ts"
+    ],
+    "input": {
+        "shape": "One trusted composition input object containing database: FoodD1Database, callerResolver: SessionPrincipalResolver, administratorPrincipalId: PrincipalId",
+        "requirements": [
+            "All dependencies are injected only. Use existing FoodD1Database, SessionPrincipalResolver and PrincipalId/parsePrincipalId contracts.",
+            "Do not import cloudflare:workers, access globals/environment variables, inspect Wrangler bindings, construct session stores or identity repositories, or select a database.",
+            "RIVER_FOOD_DB remains an architectural target only; introduce no runtime/config key for it in FOOD-001E.",
+            "Do not trim, normalize, infer, default or hardcode the administrator identity. Concrete administrator configuration belongs to a later trusted boundary."
+        ]
+    },
+    "compositionResult": {
+        "success": "{ ok: true, value: FoodPrivateDraftService }",
+        "failure": "{ ok: false, error: { code: 'configuration-unavailable', message: 'Food draft runtime configuration is unavailable.' } }",
+        "failureCode": "configuration-unavailable",
+        "fixedFailureMessage": "Food draft runtime configuration is unavailable.",
+        "requirements": [
+            "The composition failure code is separate from FOOD-001D's five service-level error codes; do not modify the service result contract.",
+            "Expose only the authorized FOOD-001D service in the success value. Do not expose the repository or database through the composition result as an authorization bypass.",
+            "Every configuration failure returns the same fixed sanitized message without administrator values, database objects, resolver contents, thrown dependency-access exceptions, SQL/D1 details, stack traces or environment/config values."
+        ]
+    },
+    "structuralValidation": [
+        "Fail closed for missing input/dependency values, null dependencies and arrays where object dependencies are required. The outer input, database and callerResolver must be non-null non-array objects.",
+        "Require callable database.prepare and database.batch, and callable callerResolver.resolve, without invoking them.",
+        "Validate administratorPrincipalId through parsePrincipalId; malformed or noncanonical IDs fail closed without normalization.",
+        "Catch throwing dependency-property access, including outer input/dependency method getters, and return the fixed configuration failure.",
+        "Never fall back to memory persistence, commerce/CRM/insurance/Sesh/identity databases, alternate resolvers or anonymous access."
+    ],
+    "constructionBehavior": [
+        "The factory is synchronous and I/O-free, returning a composition result rather than a promise.",
+        "During construction never call database.prepare, database.batch, callerResolver.resolve, repository methods, service operations, D1/schema probes or session/identity lookups. Perform structural checks only.",
+        "On valid configuration construct D1FoodDraftRepository from the injected database, then SingleAdminFoodDraftService from that repository, injected callerResolver and canonical injected administratorPrincipalId; expose only the service.",
+        "Construction success establishes structural composition only. It does not prove database existence, applied migrations, primary consistency, expected schema or resolver trustworthiness. These remain responsibilities of the later trusted runtime caller/integration boundary.",
+        "Do not add readiness/approval/sale authority, ownership, audit metadata, timestamps, public access or production activation."
+    ],
+    "operationBehavior": [
+        "Preserve FOOD-001D authorization unchanged: resolve fresh on every service operation, authorize before operation validation and repository calls, and deny access without record-existence disclosure.",
+        "Denied/unavailable service operations cause zero database calls. Authorized operations reach the composed FOOD-001C repository using the injected database.",
+        "Preserve exact operation arguments and repository outcomes, including IDs/versions, recipe references, expected predecessors, optional argument omission, limits/cursors, created/already-present/conflict and found/not-found.",
+        "FOOD-001C remains database-semantics authority. Do not duplicate or reinterpret concurrency rules, generate versions, merge revisions, retarget evidence, substitute latest recipes or reinterpret completeness."
+    ],
+    "tests": [
+        "Valid construction returns synchronously with the authorized service and zero database.prepare, database.batch, callerResolver.resolve, repository or service-operation calls.",
+        "Missing/null/non-object/array outer inputs and dependencies, missing/non-callable prepare/batch/resolve methods, and every malformed/noncanonical administrator ID fail closed.",
+        "Throwing getters on input properties and dependency methods return the exact same fixed configuration failure without leaking exception details.",
+        "The success result exposes only the service, with no repository/database properties or bypass surface.",
+        "After composition authorization resolves independently on each operation, including success followed by denial or resolver failure; denied operations across all operation families make zero database calls.",
+        "Authorized operations reach the injected FOOD-001C adapter; recording dependencies verify exact arguments and unchanged repository outcomes without treating fakes as database-concurrency proof.",
+        "Configuration errors remain distinct from unchanged FOOD-001D service errors and use the exact fixed code/message with no sensitive values.",
+        "Source isolation excludes environment acquisition, Wrangler configuration, routes/actions/UI, River OS authentication booleans, session-store construction, migration execution and unrelated subsystem access."
+    ],
+    "sourceIsolation": [
+        "Use only existing food repository/service modules and shared identity types/parsePrincipalId. SessionPrincipalResolver is a contract only; no concrete resolver/session-store construction.",
+        "Do not import or reference Cloudflare environment acquisition, wrangler.jsonc, routes/actions/UI, River OS authentication booleans, session-store construction or migration execution.",
+        "No commerce/checkout/Stripe, fulfillment/accounting/community/public counters, deployment, insurance/Sesh/creator systems or other unrelated subsystem authority."
+    ],
+    "deferredScope": [
+        "RIVER_FOOD_DB binding/configuration, database provisioning, migration execution and runtime environment acquisition.",
+        "Concrete administrator ID configuration, request/session resolver construction, routes/UI, River OS action handlers and production activation.",
+        "Public product access, commerce/checkout/Stripe, fulfillment/accounting/community/public counters, deployment and production data; no unrelated subsystem changes."
+    ],
+    "currentTaskBoundary": "Create only this specification. Do not implement, modify existing files, stage, commit, configure runtime access, access D1, migrate or deploy.",
+    "nextStep": "Review this specification before separately authorizing the two-file injected composition implementation."
+}
