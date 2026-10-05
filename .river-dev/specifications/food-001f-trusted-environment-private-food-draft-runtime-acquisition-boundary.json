@@ -1,0 +1,102 @@
+{
+    "version": "1.0.0",
+    "id": "FOOD-001F",
+    "name": "Trusted environment private food-draft runtime acquisition boundary",
+    "predecessor": "FOOD-001E",
+    "phase": "Specification only; implementation requires separate explicit authorization",
+    "objective": "Translate supplied trusted server-environment configuration and an injected request-appropriate resolver into FOOD-001E inputs through synchronous, I/O-free structural acquisition only.",
+    "factory": "createPrivateFoodDraftRuntimeFromEnvironment",
+    "allowedFutureImplementationPaths": [
+        "src/lib/food/private-draft-runtime-acquisition.ts",
+        "src/lib/food/private-draft-runtime-acquisition.test.ts"
+    ],
+    "unchangedAuthorities": [
+        "src/lib/food/draft-domain.ts",
+        "src/lib/food/draft-persistence.ts",
+        "src/lib/food/d1-draft-persistence.ts",
+        "src/lib/food/private-draft-service.ts",
+        "src/lib/food/private-draft-runtime-composition.ts"
+    ],
+    "input": {
+        "shape": "One trusted input object containing environment and callerResolver: SessionPrincipalResolver",
+        "environmentShape": "Generic supplied server-environment object containing RIVER_FOOD_DB?: unknown and RIVER_FOOD_ADMIN_PRINCIPAL_ID?: unknown",
+        "contractKeys": ["RIVER_FOOD_DB", "RIVER_FOOD_ADMIN_PRINCIPAL_ID"],
+        "requirements": [
+            "Introduce only these contract names, without values, generated environment typing, Wrangler entries, provisioning, secrets/config deployment or production activation.",
+            "Do not import cloudflare:workers, access globals, inspect Wrangler bindings directly or construct the environment.",
+            "Require an already constructed request-appropriate trusted SessionPrincipalResolver. A later trusted server adapter is responsible for its construction and request scoping.",
+            "Do not construct session stores, DefaultSessionPrincipalResolver, identity repositories, principal databases or River OS authentication/access-key adapters."
+        ]
+    },
+    "environmentExtraction": [
+        "Read exactly RIVER_FOOD_DB and RIVER_FOOD_ADMIN_PRINCIPAL_ID from the supplied environment; do not scan alternate property names or select another database.",
+        "Require a non-null non-array object database exposing callable prepare and batch, and a non-null non-array object callerResolver exposing callable resolve, without invoking those methods.",
+        "Require a string administrator value accepted unchanged by parsePrincipalId as a canonical PrincipalId. Reject normalization-changing whitespace; never trim, normalize, infer, default or hardcode identity.",
+        "Never fall back to memory persistence, commerce/CRM/insurance/Sesh/identity databases, another resolver or anonymous access.",
+        "Validate all required acquisition inputs before invoking FOOD-001E. Invalid acquisition must not construct or invoke downstream composition."
+    ],
+    "structuralValidation": [
+        "Fail closed for missing/null/non-object/array input or environment, and throwing input/environment/property access.",
+        "Fail closed for missing/null/non-object/array/malformed RIVER_FOOD_DB or missing/non-callable prepare or batch.",
+        "Fail closed for missing/null/non-string/noncanonical administrator principal values, including surrounding whitespace.",
+        "Fail closed for missing/null/non-object/array/malformed callerResolver or missing/non-callable resolve.",
+        "Catch dependency-property access exceptions, including throwing method getters, without leaking their contents."
+    ],
+    "composition": [
+        "On valid structural configuration call createPrivateFoodDraftRuntimeComposition with exactly database: extracted RIVER_FOOD_DB, callerResolver: injected callerResolver, administratorPrincipalId: parsed canonical RIVER_FOOD_ADMIN_PRINCIPAL_ID.",
+        "Preserve the extracted database and injected resolver references; do not wrap, replace or reconstruct them.",
+        "Return FOOD-001E's result shape unchanged. Do not introduce another runtime-acquisition error vocabulary or expose raw composition internals."
+    ],
+    "compositionResult": {
+        "success": "{ ok: true, value: FoodPrivateDraftService }",
+        "failure": "{ ok: false, error: { code: 'configuration-unavailable', message: 'Food draft runtime configuration is unavailable.' } }",
+        "failureCode": "configuration-unavailable",
+        "fixedFailureMessage": "Food draft runtime configuration is unavailable.",
+        "requirements": [
+            "Return only FOOD-001E's service-only result; do not expose environment, database, administrator ID, resolver or repository.",
+            "Preserve the fixed sanitized failure without environment property values, administrator IDs, database/resolver objects, thrown getter exceptions, SQL/D1 details, stack traces or configuration internals.",
+            "Keep configuration failure separate from FOOD-001D's unchanged five service-level error codes."
+        ]
+    },
+    "acquisitionBehavior": [
+        "The factory is synchronous and I/O-free, returning a result rather than a promise.",
+        "During acquisition never call database.prepare, database.batch, callerResolver.resolve, repository operations, service operations, session/identity lookups or schema/migration probes.",
+        "Success proves only structural configuration, not database existence, correct database selection by the external caller, migration application, schema availability, primary consistency, resolver trustworthiness or valid live session state.",
+        "The factory trusts environment and resolver provenance supplied by a later trusted server adapter; FOOD-001F does not establish environment provenance or request scoping itself.",
+        "River OS boolean authentication/access-key state is not canonical principal identity or food-administrator authorization and must never substitute for them."
+    ],
+    "operationBehavior": [
+        "Preserve FOOD-001D fresh authorization on every operation, before validation and repository access. Denied/unavailable operations cause zero database calls and reveal no record existence.",
+        "Authorized operations preserve exact arguments and outcomes through FOOD-001E, including IDs/versions, exact historical recipe references, predecessors, optional argument omission, limits/cursors and repository created/already-present/conflict or found/not-found results.",
+        "FOOD-001A/B/C/D/E remain unchanged authorities. Do not reinterpret D1 concurrency, mutate history, generate versions, merge revisions, retarget evidence, substitute latest recipes, reinterpret completeness or introduce approval/readiness/sale authority."
+    ],
+    "tests": [
+        "Valid exact extraction delegates to FOOD-001E with the exact database/resolver references and unchanged canonical administrator ID, returning only its service result.",
+        "Acquisition is synchronous and makes zero database, resolver, repository, service, session/identity or probe calls.",
+        "Missing/null/non-object/array input and environment fail closed; throwing input/environment/property getters return the fixed sanitized failure.",
+        "Missing/null/non-object/array/malformed database and missing/non-callable prepare/batch fail closed, including throwing method getters.",
+        "Missing/null/non-string/noncanonical administrator IDs and surrounding-whitespace variants fail closed without normalization.",
+        "Missing/null/non-object/array/malformed resolver and missing/non-callable resolve fail closed, including throwing method getters.",
+        "Every invalid acquisition case never reaches FOOD-001E; verify downstream composition is not constructed or invoked.",
+        "Exact fixed sanitized failures leak no supplied values or internal exceptions; downstream configuration failures retain FOOD-001E's result shape.",
+        "Alternate keys and unrelated database/resolver candidates never enable fallback or administrator inference.",
+        "Success exposes no environment, database, administrator ID, resolver, repository or bypass surface.",
+        "Authorization resolves fresh after acquisition, including changes between operations; denied operations cause zero database calls.",
+        "Authorized operations preserve exact arguments and outcomes through FOOD-001E without treating adapter fakes as D1 concurrency proof.",
+        "Source isolation excludes cloudflare:workers, global/environment acquisition, routes/actions/UI, session/resolver construction, identity repository construction, River OS boolean/access-key adapters, Wrangler/config changes, migrations, deployment and unrelated subsystems."
+    ],
+    "sourceIsolation": [
+        "Use FOOD-001E composition/result contracts, FoodD1Database, SessionPrincipalResolver as a contract only, and PrincipalId/parsePrincipalId where needed; do not construct concrete authentication infrastructure.",
+        "No Cloudflare/global environment acquisition, Wrangler inspection or configuration edits, generated environment typing, runtime binding provisioning, migration execution, routes/actions/UI or production access.",
+        "No commerce/checkout/Stripe, fulfillment/accounting/community/public counters, insurance/Sesh/creator changes, deployment or unrelated subsystem authority."
+    ],
+    "deferredScope": [
+        "Actual RIVER_FOOD_DB binding creation/configuration and concrete administrator principal value.",
+        "Generated environment typings, wrangler.jsonc changes, database provisioning, secrets/config deployment and migration execution.",
+        "Request/session resolver construction and Cloudflare/server environment acquisition.",
+        "Routes/actions/UI, public product access, production activation, deployment and production data.",
+        "Commerce/checkout/Stripe, fulfillment/accounting/community/public counters and unrelated insurance/Sesh/creator systems."
+    ],
+    "currentTaskBoundary": "Create only this specification. Do not implement, modify existing files, stage, commit, configure runtime access, access D1, migrate or deploy.",
+    "nextStep": "Review this specification before separately authorizing the two-file trusted environment acquisition implementation."
+}
