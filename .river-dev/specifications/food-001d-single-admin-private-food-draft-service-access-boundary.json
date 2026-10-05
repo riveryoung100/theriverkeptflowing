@@ -1,0 +1,96 @@
+{
+    "version": "1.0.0",
+    "id": "FOOD-001D",
+    "name": "Single-admin private food-draft service/access boundary",
+    "predecessor": "FOOD-001C",
+    "phase": "Specification only; implementation requires separate explicit authorization",
+    "objective": "Define a dependency-injected single-admin private service over FOOD-001B/C, keeping access decisions outside ownership-neutral persistence and granting no public or sale authority.",
+    "unchangedAuthorities": [
+        "src/lib/food/draft-domain.ts",
+        "src/lib/food/draft-persistence.ts",
+        "src/lib/food/d1-draft-persistence.ts"
+    ],
+    "allowedFutureImplementationPaths": [
+        "src/lib/food/private-draft-service.ts",
+        "src/lib/food/private-draft-service.test.ts"
+    ],
+    "reusableIdentityAuthorities": [
+        "src/lib/identity/identifiers.ts: PrincipalId and parsePrincipalId",
+        "src/lib/identity/session/principal-resolver.ts: SessionPrincipalResolver contract and trusted principal-resolution pattern; no concrete session resolver construction or session wiring in this slice"
+    ],
+    "accessModel": [
+        "Explicitly single-admin only. Inject a repository, trusted caller resolver and exactly one permitted canonical administrator PrincipalId at service construction. Validate the injected administrator ID with parsePrincipalId; reject invalid configuration rather than defaulting or inferring it.",
+        "Do not hardcode River's ID. PrincipalId/parsePrincipalId are caller identity authority; names, food IDs, request payloads, River OS paths/session booleans and ownership claims are not authorization authority.",
+        "Possession of a food product/recipe ID never implies permission. The service adds no owner IDs to snapshots or repository contracts and no ownership registry.",
+        "Owner-scoped/multi-user access is deferred to a separately authorized tenant-isolation design. Caller identity is used only for the access decision."
+    ],
+    "authorizationOrder": [
+        "On every operation resolve and authorize the trusted caller before operation-payload validation and before any repository read, write or list call.",
+        "Resolve fresh on every operation; never cache a prior successful decision across operations.",
+        "Unauthenticated, forbidden or unavailable access reveals no record-existence information and performs zero repository calls.",
+        "Validate successful resolution shape and canonical principal identity at runtime using parsePrincipalId. Malformed/noncanonical identity or malformed resolver output fails closed as access-unavailable without repository access.",
+        "A resolver unauthenticated outcome maps to unauthenticated; its unavailable outcome or thrown failure maps to access-unavailable. A valid resolved principal unequal to the injected administrator maps to forbidden. Never repair or normalize malformed identities."
+    ],
+    "serviceOperations": [
+        "createInitialRecipe(snapshot)",
+        "appendRecipeRevision(snapshot, expectedPreviousVersion)",
+        "createInitialProduct(snapshot)",
+        "appendProductRevision(snapshot, expectedPreviousVersion)",
+        "getRecipe(id, version)",
+        "getProduct(id, version)",
+        "listRecipeVersions(id, options)",
+        "listProductVersions(id, options)",
+        "listLatestRecipes(options)",
+        "listLatestProducts(options)"
+    ],
+    "operationRequirements": [
+        "Wrap the existing FoodDraftRepository operations without changing their contract. Preserve supplied arguments exactly, including canonical IDs, versions, recipe references, expected predecessor, options, limits and cursors; preserve omitted optional arguments rather than fabricating replacements.",
+        "FOOD-001A remains domain-validation authority; FOOD-001B/C remain persistence/serialization authority. Delegate operation validation to those authorities after authorization, without normalization or repair.",
+        "Never generate identities/versions, merge revisions, retarget evidence, silently renumber, substitute latest recipe versions or reinterpret structural completeness.",
+        "Preserve detached frozen snapshots and unresolved/completeness semantics. Neither structural evidence nor reviewed findings grant approval, safety, eligibility, exemption, readiness or sale authority.",
+        "No direct D1 operations or binding selection; the injected repository may be the unchanged in-memory or D1 adapter."
+    ],
+    "resultModel": {
+        "success": "{ ok: true, value: repositoryResult }",
+        "failure": "{ ok: false, error: { code, message } }",
+        "errorCodes": ["unauthenticated", "forbidden", "access-unavailable", "invalid-input", "storage"],
+        "fixedMessages": {
+            "unauthenticated": "Authentication is required.",
+            "forbidden": "Food draft access is forbidden.",
+            "access-unavailable": "Food draft access is unavailable.",
+            "invalid-input": "Invalid food draft operation input.",
+            "storage": "Food draft storage is unavailable."
+        },
+        "requirements": [
+            "Repository append outcomes created, already-present and conflict remain successful service values. Exact-read found/not-found and listing pages likewise remain successful values.",
+            "Do not turn expected conflict/not-found into authorization or storage errors. Preserve repository outcomes and their values unchanged.",
+            "FoodDraftValidationError from operation validation maps to invalid-input. FoodDraftStorageError and any unexpected repository exception map to storage; do not classify arbitrary failures by message text or leak raw exceptions.",
+            "Access failures preserve their distinct codes using fixed service messages. Never expose raw SQL, D1 errors, private evidence, stack traces or internal repository details through service errors.",
+            "Do not infer success after a thrown uncertain repository write; return storage and leave retry semantics to FOOD-001B/C."
+        ]
+    },
+    "auditAndOwnership": [
+        "Durable audit/event storage is explicitly deferred. No actor IDs, timestamps, audit IDs, event records or audit writes in food snapshots or repositories.",
+        "No logging/event sink, clock, generated audit identity or other audit side effect is introduced. Caller identity exists only for access decisions."
+    ],
+    "tests": [
+        "Missing identity/unauthenticated resolution denies access; wrong canonical principal returns forbidden; malformed/noncanonical identity and malformed resolver outputs fail closed as access-unavailable.",
+        "Resolver unavailable outcomes and thrown failures map to access-unavailable using fixed sanitized messages.",
+        "For all ten operations, denied callers cause zero repository reads/writes/lists; authorization precedes payload validation and discloses no record existence.",
+        "Authorization is independently resolved on every operation, including a successful decision followed by revocation, denial or resolver failure.",
+        "Payload-supplied principal/admin/role-like fields cannot grant access or substitute the trusted caller. Authorized malformed payloads remain subject to unchanged domain/repository validation.",
+        "Authorized operations preserve exact arguments, IDs, versions, recipe references, expected predecessors, optional argument omission, limits/cursors and repository outcomes.",
+        "Created, conflict, already-present, found/not-found, listing results, validation failure, storage failure and all access failures remain distinguishable.",
+        "Frozen snapshots and unresolved/completeness semantics remain unchanged; no result field or operation adds approval/readiness/sale authority.",
+        "Fixed messages do not leak SQL, repository details, stack traces or private evidence from resolver/repository exceptions.",
+        "Invalid injected administrator configuration is rejected; no hardcoded principal or authorization inference exists.",
+        "Source isolation permits food domain/repository authority and shared identity contracts only; no runtime bindings, routes, session wiring, River OS UI, audit side effects, commerce access or unrelated subsystem authority."
+    ],
+    "deferredScope": [
+        "No River OS routes/UI integration, sessions/session wiring, runtime database binding selection, RIVER_FOOD_DB binding/configuration, database creation/provisioning or migration execution.",
+        "No public access/product exposure, commerce/checkout/Stripe, fulfillment, accounting, community/public counters, deployment or production data.",
+        "No insurance/Sesh/creator or unrelated subsystem changes. Reuse FOOD-001A/B/C unchanged and preserve existing additive directions and external readiness gates."
+    ],
+    "currentTaskBoundary": "Create only this specification; do not implement, modify existing source, stage, commit, migrate, configure runtime access or deploy.",
+    "nextStep": "Review this specification before separately authorizing the two-file private service/access implementation."
+}
