@@ -1,0 +1,187 @@
+{
+    "version": "1.0.0",
+    "id": "FOOD-001A",
+    "name": "Versioned food draft-domain and evidence completeness boundary",
+    "predecessor": "FOOD-001",
+    "phase": "Specification only; implementation requires a later explicit instruction",
+    "objective": "Model immutable versioned draft food products and recipes and assess structural draft-evidence completeness without granting approval or sale authority.",
+    "planningReferences": [
+        ".river-dev/specifications/food-001-additive-food-business-draft-domain-direction.json",
+        ".river-dev/plans/creation-food-001-additive-direction-plan.json",
+        "docs/architecture/creation-food-shared-foundations.md"
+    ],
+    "allowedImplementationPaths": [
+        "src/lib/food/draft-domain.ts",
+        "src/lib/food/draft-domain.test.ts"
+    ],
+    "identityAndVersioning": [
+        "Define separate branded food product and recipe identities with explicit food-specific prefixes food-product: and food-recipe: and canonical constructors/parsers accepting unknown evidence for validation.",
+        "Canonical local identities are nonempty strings without surrounding whitespace or colons. Reject noncanonical evidence rather than trimming or coercing it; do not issue random identities or timestamps.",
+        "Product and recipe versions are positive safe integers. Each product snapshot references exactly one recipe identity/version; validate exact correspondence with the supplied recipe snapshot.",
+        "Revision helpers preserve identity, require the next version to equal the previous version plus one without safe-integer overflow, and produce new detached snapshots without mutating old versions.",
+        "Adopting another recipe version requires a consecutive new product version. Do not alter prior product references or claim durable/global uniqueness or persisted historical retention."
+    ],
+    "ingredients": [
+        "Model ordered ingredients and exactly one explicit level of ordered purchased-component subingredients. Reject recursive subingredient trees.",
+        "Distinguish a simple ingredient from a purchased component and distinguish disclosed component composition from unknown/undisclosed composition.",
+        "Disclosed purchased components require a nonempty supplied subingredient list; unknown/undisclosed composition has no asserted complete list. Do not convert absent/unknown composition into an empty contains-nothing list.",
+        "Preserve canonical supplied names and order; quantities, costing, purchased inventory and recipe execution are outside this slice."
+    ],
+    "allergens": [
+        "Declared major allergens are separate from allergen-review lifecycle. Use only the FDA nine-major-allergen vocabulary recorded below; do not infer declarations from ingredient names.",
+        "Reject duplicate declared allergens. Preserve declaration order without normalizing case or inventing allergen findings.",
+        "An empty array in a reviewed declaration means only no major allergens declared in that reviewed record, never allergen-free. Unknown/pending review and incomplete composition remain distinguishable from a reviewed empty declaration.",
+        "No cross-contact, facility, allergen-free, nutritional or health claims are introduced.",
+        "Preserve fish species, crustacean-shellfish source and tree-nut type/detail text separately where needed, as canonical supplied detail associated with an existing category, without inventing additional top-level categories."
+    ],
+    "classifications": {
+        "temperatureControl": [
+            "unknown",
+            "ambient",
+            "refrigerated",
+            "frozen"
+        ],
+        "preservationProcess": [
+            "unknown",
+            "unprocessed",
+            "cooked",
+            "baked",
+            "dried",
+            "pickled",
+            "fermented",
+            "acidified",
+            "other"
+        ],
+        "requirements": [
+            "Classifications are descriptive supplied data only. They imply no shelf stability, validated safety, cottage eligibility or tax treatment.",
+            "Use a small closed vocabulary. Preservation other requires canonical nonempty descriptive text; other-description text is not applicable to other enum values. Unknown remains explicit.",
+            "Temperature and process are independent fields; do not derive one from the other or default unknown to ambient."
+        ]
+    },
+    "reviewLifecycle": {
+        "states": [
+            "unknown",
+            "pending",
+            "reviewed"
+        ],
+        "cottageReviewedConclusions": [
+            "eligible",
+            "ineligible",
+            "inconclusive"
+        ],
+        "salesTaxReviewedConclusions": [
+            "exempt",
+            "taxable",
+            "inconclusive"
+        ],
+        "requirements": [
+            "Use lifecycle-discriminated records. Unknown/pending contain no reviewed conclusion; reviewed requires the appropriate conclusion and matching version-bound evidence.",
+            "Allergen review uses the same lifecycle but does not introduce cottage/tax approval conclusions.",
+            "Reviewed ineligible, taxable or inconclusive findings remain structurally reviewed. Never convert reviewed or favorable findings into approval or sale permission."
+        ]
+    },
+    "evidence": [
+        "Evidence is supplied data only; no fetching, source authentication, independent authority verification, legal interpretation or freshness determination.",
+        "Every evidence record requires a nonempty canonical source/reference identifier, named requirement, exact subject type/ID/version, canonical review date and at least one nonempty canonical reviewer or issuer attribution field. Both are not required; reject blank or malformed supplied attribution fields and infer neither identities nor authority.",
+        "Evidence subject validation uses the explicit subject kind and corresponding food identity validator. Another product/recipe identity or version cannot satisfy the current draft.",
+        "Reject duplicate evidence for the same named requirement rather than selecting a preferred record or silently deduplicating.",
+        "Reject malformed unknown input, invalid dates, noncanonical text, unsupported enums, missing reviewed evidence and inconsistent lifecycle/conclusion combinations without repairing them.",
+        "Review dates are canonical YYYY-MM-DD date-only strings representing a real calendar date; reject impossible dates, timestamps, surrounding whitespace and normalization-changing input rather than repairing it.",
+        "Recipe requirements target the exact referenced recipe ID/version; product requirements target the exact supplied product ID/version. Reject the wrong subject type even if its local identity text or version matches."
+    ],
+    "draftEvidenceChecklist": [
+        "ingredient-composition-disclosure-status",
+        "allergen-review",
+        "preservation-process-classification",
+        "temperature-control-classification",
+        "cottage-eligibility-review",
+        "sales-tax-review"
+    ],
+    "completeness": {
+        "helper": "assessFoodDraftEvidenceCompleteness",
+        "outputFields": [
+            "requiredEvidencePresent",
+            "missingEvidenceRequirements",
+            "unresolvedReviews"
+        ],
+        "requirements": [
+            "Use only the fixed FOOD-001A draft checklist; business-level and community gates are not added to it.",
+            "Evaluate validated supplied snapshots/evidence deterministically, preserving explicit unknown/pending and returning named missing requirements and unresolved reviews in checklist order.",
+            "requiredEvidencePresent describes structural presence only. It never means approved, safe, tax-exempt, cottage-eligible, sellable, launch-ready or authorized for purchase.",
+            "No sale-readiness, approval, authorization, checkout-registration or dispatch field is returned. Reviewed unfavorable findings can have complete structural evidence without granting permission.",
+            "An explicitly recorded unknown classification is structurally present but unresolved. An explicitly recorded undisclosed purchased-component composition is structurally present as disclosure status but unresolved; it never represents complete ingredient knowledge.",
+            "An explicitly recorded lifecycle of unknown or pending is structurally present but unresolved. A reviewed inconclusive conclusion with matching evidence satisfies review-evidence presence but remains unresolved.",
+            "requiredEvidencePresent is true exactly when every named checklist item has its required structural record/evidence for the exact mapped subject/version. Missing records or required reviewed evidence cannot be filled by default unknown values.",
+            "Unknown/pending reviews require their explicit subject-bound lifecycle record, not fabricated completed-review evidence. Reviewed records require matching evidence and metadata. Disclosure and classification records are explicit and version-bound; any supplied evidence must obey the same subject mapping and metadata rules.",
+            "unresolvedReviews reports every unknown, pending, undisclosed or inconclusive condition independently of structural presence, in checklist order and ingredient order within composition; retain enough requirement/condition detail to distinguish multiple unresolved components.",
+            "requiredEvidencePresent may be true with nonempty unresolvedReviews. Neither result field, alone or together, implies legal eligibility, tax exemption, safety, approval, sale readiness or authorization."
+        ]
+    },
+    "revisionInvalidation": [
+        "Ingredient or purchased-component subingredient changes require fresh allergen review and invalidate carried-forward allergen-review evidence.",
+        "Recipe composition or process changes require fresh applicable recipe/process evidence. Do not automatically copy completed reviews into a changed subject version.",
+        "A new product version adopting a recipe version cannot use old product-version cottage/tax evidence. Only explicitly supplied new evidence targeting the new exact version can satisfy its reviews.",
+        "Revision helpers produce detached immutable snapshots, including nested arrays and evidence, and work with frozen inputs. Readonly types alone do not establish runtime immutability.",
+        "No history mutation, global registry, persistence, hidden cache, implicit review promotion or generated fallback evidence."
+    ],
+    "historicalLabelRelationship": [
+        "Only an optional immutable identity/version reference to a separately versioned label-review/artifact may be represented if an inspected architecture seam needs it; it contributes no checklist completion or sale authority.",
+        "No label generation, statutory wording implementation, QR generation, printing, public product pages or label-artifact storage."
+    ],
+    "externalGatesOutsideBoundary": [
+        "Water testing, equipment/cooling trials, banking, payment-provider approval, fulfillment capacity, refund policy, community-program readiness and checkout activation remain external business/program boundaries.",
+        "This slice records product-level review conclusions without deciding legal eligibility, exemption or safety. External review/activation gates remain intact.",
+        "Creator implementation does not block food work; neither direction supersedes the other. Existing insurance, Sesh, commerce, content, River OS and Cloudflare trajectories remain unchanged."
+    ],
+    "tests": [
+        "Canonical food-specific identities and positive safe-integer versions; reject malformed unknown inputs, wrong prefixes, coercion, invalid text and version overflow.",
+        "Exact product-to-recipe identity/version correspondence and consecutive revisions; new recipe adoption requires a new product version.",
+        "Ordered ingredients and exactly one subingredient level; disclosed versus unknown/absent composition distinctions; reject recursive trees and misleading empty disclosed lists.",
+        "Allergen lifecycle versus declaration semantics, reviewed empty declarations without allergen-free claims, and duplicate/unsupported allergen rejection.",
+        "Descriptive process/temperature enums, explicit unknown, other-text requirements and no inferred eligibility/safety/tax conclusions.",
+        "Lifecycle/conclusion separation, reviewed matching evidence, and structurally reviewed unfavorable/inconclusive findings without approval.",
+        "Source/subject/version/date metadata validation and duplicate named-requirement evidence rejection.",
+        "Checklist completeness, named missing requirements and unresolved reviews without any approval or sale-readiness result.",
+        "Composition/process/reference changes invalidate carried-forward reviews; explicitly supplied evidence must target the new exact version.",
+        "Frozen inputs, detached deeply immutable outputs, unchanged historical snapshots and repeated deterministic evaluation.",
+        "Source isolation excludes network/filesystem, persistence, providers, commerce registration, current-time/random generation and unrelated domain authority imports.",
+        "Exact nine-category allergen vocabulary and separately preserved fish/shellfish/tree-nut detail; reject invented categories.",
+        "Requirement-specific recipe/product mapping, real canonical date-only values, and reviewer-only or issuer-only attribution acceptance; reject neither attribution, blank attribution, invalid dates and wrong subject types.",
+        "Complete explicit unknown/pending/undisclosed records and evidenced inconclusive findings can produce requiredEvidencePresent true alongside all unresolved conditions; absent records remain missing and no approval fields appear."
+    ],
+    "boundaries": [
+        "This instruction creates only this specification; no implementation or test files and no existing-file edits.",
+        "Future implementation is limited to the two allowed implementation paths. Similar patterns do not authorize commerce, insurance or Sesh domain types as food authority.",
+        "No routes, D1/R2, persistence, migrations, commerce-catalog registration, checkout, Stripe/payment work, fulfillment, accounting, public counters, community activation, deployment or production records.",
+        "No changes to insurance, Sesh or creator code; no staging, commit or push under this specification-only instruction."
+    ],
+    "nextStep": "The three recorded allergen, evidence-metadata and structural-completeness ambiguities are resolved. Any implementation still requires a later explicit bounded instruction.",
+    "majorAllergenVocabulary": [
+        "milk",
+        "egg",
+        "fish",
+        "crustacean-shellfish",
+        "tree-nuts",
+        "peanuts",
+        "wheat",
+        "soybeans",
+        "sesame"
+    ],
+    "majorAllergenProvenance": {
+        "authority": "U.S. Food and Drug Administration",
+        "sourceTitle": "What is a major food allergen?",
+        "sourceUrl": "https://www.fda.gov/industry/fda-basics-industry/what-major-food-allergen",
+        "detailSourceUrl": "https://www.fda.gov/food/nutrition-food-labeling-and-critical-foods/food-allergies",
+        "checkedDate": "2026-10-05",
+        "definition": "FDA identifies nine major foods/food groups and ingredients containing protein derived from them; the closed vocabulary represents supplied declarations, not an automatic determination from ingredients.",
+        "boundary": "Specification provenance only. No runtime web access or independent verification of law, labeling compliance, exclusions or source authority by FOOD-001A."
+    },
+    "evidenceSubjectMapping": {
+        "ingredient-composition-disclosure-status": "recipe",
+        "allergen-review": "recipe",
+        "preservation-process-classification": "recipe",
+        "temperature-control-classification": "product",
+        "cottage-eligibility-review": "product",
+        "sales-tax-review": "product"
+    }
+}
