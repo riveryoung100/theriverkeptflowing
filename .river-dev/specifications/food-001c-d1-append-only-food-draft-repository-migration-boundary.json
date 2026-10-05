@@ -1,0 +1,155 @@
+{
+    "version": "1.0.0",
+    "id": "FOOD-001C",
+    "name": "D1-backed append-only food-draft repository and migration definition",
+    "predecessor": "FOOD-001B",
+    "phase": "Specification only; implementation requires separate explicit authorization",
+    "objective": "Define an injected D1 adapter preserving FOOD-001B exactly, plus an unapplied migration definition and real local SQL integration verification, without runtime activation or sale authority.",
+    "unchangedAuthorities": [
+        "src/lib/food/draft-domain.ts",
+        "src/lib/food/draft-persistence.ts"
+    ],
+    "allowedFutureImplementationPaths": [
+        "src/lib/food/d1-draft-persistence.ts",
+        "src/lib/food/d1-draft-persistence.test.ts",
+        "src/lib/food/d1-draft-persistence.integration.test.ts",
+        "migrations/food/0001_food_draft_snapshots.sql"
+    ],
+    "databasePlacement": [
+        "Use injected narrow D1 database access only; define the food-local database/result interface within the adapter.",
+        "Architecturally target a future dedicated RIVER_FOOD_DB. Do not create, provision, configure or bind it in this slice.",
+        "Do not reuse commerce, CRM, insurance, Sesh or identity databases merely because they exist.",
+        "Ownership and authorization remain outside the repository. Identity possession grants no access authority; no principals, sessions or permission integration."
+    ],
+    "schema": {
+        "food_recipe_draft_snapshots": {
+            "columns": ["recipe_id TEXT NOT NULL", "version INTEGER NOT NULL", "identity_order_key TEXT NOT NULL COLLATE BINARY", "serialization_format_version INTEGER NOT NULL", "payload_json TEXT NOT NULL"],
+            "primaryKey": ["recipe_id", "version"]
+        },
+        "food_product_draft_snapshots": {
+            "columns": ["product_id TEXT NOT NULL", "version INTEGER NOT NULL", "identity_order_key TEXT NOT NULL COLLATE BINARY", "recipe_id TEXT NOT NULL", "recipe_version INTEGER NOT NULL", "serialization_format_version INTEGER NOT NULL", "payload_json TEXT NOT NULL"],
+            "primaryKey": ["product_id", "version"],
+            "foreignKey": "(recipe_id, recipe_version) REFERENCES food_recipe_draft_snapshots(recipe_id, version), with no cascade deletion"
+        },
+        "constraintsAndIndexes": [
+            "Composite primary-key identity comparisons are binary, case-sensitive and exact; all primary-key columns explicitly NOT NULL.",
+            "CHECK typeof(version) = 'integer' AND version BETWEEN 1 AND 9007199254740991 on both tables; apply the same bounds to product recipe_version.",
+            "Require serialization_format_version to be the supported integer format version 1; application decoding independently rejects unsupported formats.",
+            "Index each table by identity_order_key COLLATE BINARY, canonical identity and version for deterministic latest listing; composite primary keys support exact reads and ascending history.",
+            "Index product recipe_id/recipe_version for reference lookup; verify query plans before adding further indexes.",
+            "Evidence remains inside the canonical subject-bound snapshot. No timestamps, ownership fields, completeness projections, approval fields or sale-readiness fields."
+        ]
+    },
+    "immutableHistory": [
+        "Migration-defined BEFORE UPDATE and BEFORE DELETE triggers reject mutation on both tables using RAISE(ABORT). No cascade deletion, replace, upsert-update, overwrite, renumbering, merging or evidence retargeting.",
+        "Applied migration history is immutable. Later corrections require forward migrations; include no destructive rollback SQL.",
+        "Migration definition belongs in this slice; database provisioning, configuration and execution against configured databases remain deferred."
+    ],
+    "unicodeOrdering": {
+        "algorithm": "For each canonical JavaScript identity string, iterate indexes 0 through length - 1 using charCodeAt (UTF-16 code units, not code points). Encode each unit as exactly four lowercase hexadecimal digits, then concatenate.",
+        "requirements": [
+            "The ordering key is derived metadata and never replaces the canonical identity or participates in domain snapshot equality.",
+            "Persist the same derived key for every version of an identity. Recompute and verify it on every returned row; mismatch fails closed.",
+            "Latest listing and afterId keyset predicates use the derived key with COLLATE BINARY, with canonical identity as a defensive deterministic tie-breaker. Convert the validated canonical afterId internally; expose only FOOD-001B identity cursors.",
+            "History is scoped to an exact identity and ordered by version ascending; its identity ordering key is constant and verified. Never reorder history by insertion order.",
+            "Test BMP, surrogate-pair supplementary characters, ASCII/non-ASCII mixtures, prefixes and case distinctions, including identities where SQLite text order diverges from JavaScript UTF-16 order."
+        ]
+    },
+    "sqlInvariants": [
+        "Enforce composite uniqueness, positive safe-integer version bounds, exact product-to-recipe composite foreign key and immutable history in SQL.",
+        "For a new initial insert, require version 1 and absence of any stored history for that identity inside the conditional INSERT statement.",
+        "For a new revision insert, check exact predecessor existence, next version = expectedPreviousVersion + 1 and maximum stored version = expectedPreviousVersion inside the conditional INSERT statement. Prior application reads alone do not establish concurrency safety.",
+        "Use targeted ON CONFLICT(identity, version) DO NOTHING, never broad INSERT OR IGNORE that could conceal other constraint failures.",
+        "A unique key alone does not prove initial/consecutive/latest-version rules, retry equality or valid domain history. Conditional-write invariants govern adapter writes; do not claim every arbitrary direct SQL insert is domain validated."
+    ],
+    "applicationInvariants": [
+        "Implement the existing FoodDraftRepository contract and reuse FOOD-001A validators/revision constructors and FOOD-001B canonical serialization/deserialization unchanged.",
+        "Validate canonical branded IDs, exact operation shape, expected predecessor, positive safe versions and overflow before retry interpretation. Initial versions must be 1; revisions exactly predecessor + 1.",
+        "Load and validate the exact immutable predecessor; for products validate both old and new exact recipe references using stored snapshots. Missing referenced recipe is a validation failure; missing predecessor/version conflict returns conflict as in FOOD-001B.",
+        "Preserve array order, fixed canonical object ordering, format version, evidence subject/version bindings, unknown/pending/undisclosed/unfavorable/inconclusive findings and historical label references.",
+        "Validate limits/cursors without coercion and verify ordering keys and all row/envelope/domain metadata, including recipe columns. Reject corrupt JSON, unsupported formats, stale evidence, missing references and noncanonical stored payloads rather than repairing them.",
+        "Return newly detached, recursively frozen snapshots and frozen result/page containers. No completeness or approval state is persisted or projected; requiredEvidencePresent remains independent of unresolvedReviews."
+    ],
+    "appendConcurrency": {
+        "outcomes": ["created", "already-present", "conflict"],
+        "atomicOperation": "Use one transactional D1 batch containing the conditional insert followed by the exact-key read needed to determine the outcome; validate batch result count, success and insert meta.changes.",
+        "interpretation": [
+            "Insert changes 1 plus a valid exact matching canonical stored payload means created.",
+            "Insert changes 0 plus a valid exact identical canonical stored payload means already-present.",
+            "Insert changes 0 plus a valid differing canonical stored payload means conflict.",
+            "Insert changes 0 plus no exact row means conflict.",
+            "Missing/unexpected metadata, malformed row, format/serialization mismatch, corrupt stored state, or changes 1 without the exact matching row means storage failure."
+        ],
+        "requirements": [
+            "Compare complete FOOD-001B canonical serialized envelopes byte-for-byte, not parsed partial fields, hashes alone, timestamps or derived projections.",
+            "Historical identical retries remain permissible after later versions exist, provided operation shape, exact predecessor and domain/reference validation pass. The conditional insert may do nothing because predecessor is no longer latest; the existing exact row still determines valid retry equality.",
+            "Two independent writers against one predecessor can create only one next identity/version. Others compare exact stored state and return conflict or already-present; never select another version silently.",
+            "Zero affected rows are not a SQL error and do not themselves distinguish retry from conflict. Foreign-key/trigger failures and unexpected batch results must not be recast as benign duplicate success.",
+            "Transport/batch uncertainty propagates as failure. Callers may retry the same canonical operation; never invent success after uncertain writes.",
+            "Use primary-consistent injected access for predecessor/reference reads and outcome interpretation; replica freshness cannot be assumed. No session/auth/runtime wiring is introduced.",
+            "Explicitly verify transactional batch visibility and rollback, conditional insertion, ON CONFLICT and affected-row behavior with the local integration harness. Local verification does not prove remote/production D1 behavior."
+        ]
+    },
+    "readsAndListings": {
+        "defaultLimit": 20,
+        "maximumLimit": 100,
+        "requirements": [
+            "Exact missing reads return not-found; malformed stored data throws FoodDraftStorageError. Invalid caller values use FoodDraftValidationError; retain FOOD-001B error/outcome distinctions.",
+            "Product reads preserve and validate the recorded exact historical recipe ID/version; never substitute latest. Recipes may exist without products.",
+            "History uses afterVersion and ascending versions. Latest uses afterId and the maximum stored version per identity ordered by verified UTF-16 key.",
+            "Reject invalid limits, unknown options, malformed/wrong-kind cursors without coercion or clamping. Use bounded LIMIT limit + 1 retrieval where needed, never load entire histories to paginate in JavaScript.",
+            "Return nextCursor only when more matching results exist, using the last returned version/identity. Empty pages have no cursor; pagination does not promise a cross-call consistent snapshot."
+        ]
+    },
+    "integrationHarnessInspection": {
+        "method": "Inspection of installed metadata/types/code and existing test sources, followed by isolated throwaway Miniflare worker-side SQL probes; no repository changes or configured/local project/remote database access.",
+        "installedMechanism": "Installed Miniflare 5.20260903.0-alpha with workerd 1.20260903.1, using convertV4MiniflareOptions, cf: false, d1Persist: false and a synthetic isolated D1 database identifier.",
+        "existingTestRunner": "node:test with tsx; inspected existing D1 adapter tests use fakes. No existing Miniflare SQL integration test was found in src/tools.",
+        "recommendation": "Define an inline test worker with the FOOD_TEST D1 binding and exercise D1 inside that worker. Bridge the repository's injected narrow D1 interface through dispatchFetch(), preserving each repository batch as one worker-side env.FOOD_TEST.batch() call.",
+        "accessRequirements": [
+            "Do not use Miniflare's Node-side getD1Database() proxy for FOOD-001C integration tests: it stalls in the current installed alpha environment.",
+            "Multiple bridge/repository instances in a test must share the same isolated Miniflare database to exercise competing writers.",
+            "Execute the actual FOOD-001C migration SQL only inside this isolated harness and dispose Miniflare after tests.",
+            "Use no Wrangler config, project binding, configured/local project database or remote database."
+        ],
+        "verifiedLocalCapabilities": [
+            "SQL execution through the inline worker-side D1 binding.",
+            "Composite foreign-key enforcement.",
+            "Trigger rejection, observed with an UPDATE rejection trigger.",
+            "Targeted ON CONFLICT DO NOTHING.",
+            "Per-statement meta.changes, including insert changes 1 and conflict suppression changes 0.",
+            "Insert-to-read visibility inside one D1 batch.",
+            "Failed-batch rollback, with the earlier insert absent after a later trigger failure."
+        ],
+        "remainingRequiredVerification": [
+            "The actual FOOD-001C tests must still verify both UPDATE and DELETE immutability triggers, revision concurrency, exact append outcomes, bounded listings, Unicode ordering, exact historical recipe references and malformed/corrupt row handling.",
+            "Observed generic harness capabilities do not replace any FOOD-001C unit or integration requirement."
+        ],
+        "assessment": "The worker-side access method is locally verified and uses installed tooling without adding a dependency or testing framework. Local Miniflare/workerd verification does not prove remote production behavior, replication consistency or production transport-failure behavior.",
+        "stopCondition": "Before implementation recheck installed harness availability. If it cannot meaningfully verify actual database semantics, record the blocker and STOP before implementation; do not introduce a new framework without separate approval or claim fake tests prove concurrency."
+    },
+    "tests": [
+        "Unit tests cover FOOD-001B contract parity, canonical retry equality, malformed inputs, errors, corruption, metadata disagreement, stale evidence, detached/frozen results and source isolation.",
+        "Actual local SQLite/D1-compatible integration tests exercise migration constraints and UPDATE/DELETE triggers, version bounds, composite foreign keys, conditional initial/revision inserts, targeted ON CONFLICT and affected-row metadata.",
+        "Verify transaction/batch insert-to-read visibility and full rollback on a later failing statement; validate missing/unexpected result metadata fails closed.",
+        "Use two independent repository instances on the same isolated local database for competing initial/revision appends: exactly one creation, appropriate identical/conflicting retries, no overwrite or renumbering.",
+        "Verify missing/skipped/stale predecessors, overflow, historical identical retries after later versions, and exact historical recipe references after newer recipes exist.",
+        "Verify canonical round trips and corruption failures, format/row/envelope/order-key/reference disagreement, unresolved/adverse findings and absence of persisted completeness or sale authority.",
+        "Verify Unicode ordering against FOOD-001B JavaScript ordering, deterministic latest selection/history, bounded limit + 1 SQL retrieval, 20/100 limits and implementation-neutral cursors.",
+        "Keep local harness evidence distinct from later remote/production verification; no production concurrency claim and no configured-database migration execution."
+    ],
+    "provenance": [
+        "FOOD-001A and FOOD-001B specifications and unchanged modules are semantic authorities.",
+        "https://developers.cloudflare.com/d1/worker-api/d1-database/ documents transactional batch behavior.",
+        "https://developers.cloudflare.com/d1/worker-api/return-object/ documents affected-row metadata.",
+        "https://developers.cloudflare.com/d1/sql-api/foreign-keys/ documents foreign-key enforcement.",
+        "https://developers.cloudflare.com/d1/reference/migrations/ documents numbered migration definitions and tracking; these references do not establish tested runtime behavior."
+    ],
+    "deferredScope": [
+        "No binding/config changes, database creation/provisioning, migration execution against any configured database, runtime wiring, River OS UI, routes or auth integration.",
+        "No commerce registration, checkout, Stripe/payment, fulfillment, accounting, public counters, community activation, deployment or production data.",
+        "No insurance, Sesh, creator or unrelated subsystem changes; preserve additive directions and external legal/tax/safety/water/payment/community readiness gates."
+    ],
+    "currentTaskBoundary": "Create only this specification. Do not implement, create migrations, execute/access D1, change configuration, stage, commit or push.",
+    "nextStep": "Review this specification and separately authorize implementation only if the existing local harness can meaningfully verify the required database semantics."
+}
