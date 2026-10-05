@@ -1,0 +1,112 @@
+{
+    "version": "1.0.0",
+    "id": "FOOD-001B",
+    "name": "Append-only food-draft repository contract and deterministic serialization",
+    "predecessor": "FOOD-001A",
+    "phase": "Specification only; implementation requires a later explicit instruction",
+    "objective": "Define ownership-neutral append-only storage semantics for versioned food drafts through deterministic serialization and an in-memory reference adapter, without production persistence or sale authority.",
+    "domainAuthority": "src/lib/food/draft-domain.ts",
+    "allowedImplementationPaths": [
+        "src/lib/food/draft-persistence.ts",
+        "src/lib/food/draft-persistence.test.ts"
+    ],
+    "scope": [
+        "Keep contract types, format constants, serialization/deserialization and the in-memory reference adapter in the bounded persistence module.",
+        "Reuse FOOD-001A validators, identities and revision constructors unchanged. Do not import unrelated subsystem domain authority or modify existing files.",
+        "Pure serialization and instance-local in-memory storage only; no external IO, global registry, background execution or generated identities."
+    ],
+    "versionSemantics": [
+        "Initial product and recipe creation accepts only version 1.",
+        "Append revision requires a supplied positive safe-integer expectedPreviousVersion, an existing exact predecessor, and next version exactly expectedPreviousVersion + 1 without overflow.",
+        "For a new append, expectedPreviousVersion must be the current maximum stored version for that identity. Reject skipped versions, regressions, missing predecessors and identity drift.",
+        "Validate revisions through the unchanged FOOD-001A revision constructors. No history overwrite, mutation, merge, version renumbering or evidence retargeting."
+    ],
+    "appendResults": {
+        "outcomes": ["created", "already-present", "conflict"],
+        "requirements": [
+            "created means one newly stored immutable identity/version snapshot.",
+            "already-present means the same identity/version already contains exactly the same canonical serialized snapshot, with no write. Differing canonical content is conflict.",
+            "Validate input and operation version shape before retry comparison. A valid identical historical retry may return already-present even after later versions exist; it must not require its predecessor to remain latest.",
+            "For revision retries, the specified predecessor must exist and satisfy the domain revision rules. Never allow retry equality to bypass validation or exact recipe-reference enforcement.",
+            "Malformed inputs, unsupported formats and invalid limits fail with explicit validation errors; missing reads return explicit not-found, distinct from corrupt-storage failure. Version/predecessor or competing-write failures return conflict with no mutation.",
+            "Conflicts do not overwrite, merge, silently generate a version, retarget evidence or fabricate success."
+        ]
+    },
+    "repositoryOperations": [
+        "createInitialRecipe(snapshot)",
+        "appendRecipeRevision(snapshot, expectedPreviousVersion)",
+        "createInitialProduct(snapshot)",
+        "appendProductRevision(snapshot, expectedPreviousVersion)",
+        "getRecipe(id, version)",
+        "getProduct(id, version)",
+        "listRecipeVersions(id, options)",
+        "listProductVersions(id, options)",
+        "listLatestRecipes(options)",
+        "listLatestProducts(options)"
+    ],
+    "repositoryRequirements": [
+        "Records are ownership-neutral. Possession of an identity does not authorize access; a later trusted service wrapper must provide user/owner/staff authorization.",
+        "No principal IDs, permissions, sessions, routes or UI are introduced. No update/delete operation is exposed.",
+        "A product may be stored only when its exact recipe ID/version exists in this repository. Resolve and validate against that stored recipe, not caller-supplied replacement content.",
+        "Recipes can exist without products. Product reads expose the unchanged exact recipe reference and never substitute latest.",
+        "Reads and listings validate stored format and metadata, and resolve exact product recipe references before returning FOOD-001A validated frozen snapshots."
+    ],
+    "serialization": {
+        "formatVersion": 1,
+        "envelopeFields": ["formatVersion", "recordType", "recordId", "recordVersion", "snapshot"],
+        "recordTypes": ["recipe", "product"],
+        "requirements": [
+            "Serialize only validated FOOD-001A snapshots in explicit version-1 envelopes. Metadata identity/version must exactly match the snapshot.",
+            "Use fixed envelope field order and recursively sorted object keys within the domain snapshot, comparing keys by JavaScript ordinal string order. Preserve all array order, canonical text and explicit unknown/pending/undisclosed/inconclusive data.",
+            "Canonical retry equality compares the resulting serialized envelope for the same record identity/version. No timestamps, process time, insertion metadata or derived state participate.",
+            "Deserialize JSON as unknown, reject unsupported format/record type, malformed envelopes, unknown envelope fields and metadata/payload disagreement, then use FOOD-001A validation to restore branded identities and detached frozen data.",
+            "Product serialization/deserialization requires an exact referenced recipe snapshot for domain validation; repository operations supply it from the stored exact recipe version. No latest substitution or fabricated missing recipe.",
+            "Fail closed on corrupt JSON, stale/mismatched evidence and missing exact recipe references. Do not normalize invalid domain values or upgrade formats automatically.",
+            "Do not store structural-completeness projections, sale-readiness, approval or authorization. Completeness may be recomputed using FOOD-001A without changing its unresolved-condition semantics."
+        ]
+    },
+    "listing": {
+        "defaultLimit": 20,
+        "maximumLimit": 100,
+        "historyCursor": "Optional afterVersion: positive safe integer; return versions strictly greater than it in ascending version order.",
+        "latestCursor": "Optional afterId: canonical food identity of the listed record type; return identities strictly greater than it in ordinal string order.",
+        "requirements": [
+            "Limits must be positive safe integers no greater than 100; reject invalid values without coercion or clamping. Omitted limit uses 20.",
+            "History listings are scoped to one validated identity and ordered by version ascending. Latest listings return the maximum stored version per identity in ordinal identity order, independent of insertion order.",
+            "Use transparent implementation-neutral cursor values, not SQL offsets or database-specific encoding. Reject malformed or wrong-kind cursors.",
+            "Return bounded items plus an optional next cursor only when additional matching items exist, using the last returned version/identity. Empty results have no next cursor.",
+            "Each list call observes current in-memory state; pagination does not promise a cross-call consistent snapshot while concurrent appends occur."
+        ]
+    },
+    "memoryGuarantees": [
+        "Store canonical serialized strings in repository-instance-local state; detach validation output from input and reconstruct detached frozen snapshots on every read/result.",
+        "Retained caller references cannot mutate stored or returned history, including nested ingredients, declarations, evidence and optional historical label references.",
+        "Perform validation, predecessor/reference checks, duplicate comparison and insertion atomically within one in-memory operation, without yielding between the conflict check and insert.",
+        "Competing differing appends against one predecessor produce one created result and conflicts; identical competing appends produce one created result and already-present results. Call order determines the winner; no silent renumbering.",
+        "The contract may use promises for future adapter compatibility, but memory mutations must not yield during their critical section. No durable storage or database concurrency guarantee is claimed."
+    ],
+    "deferredD1Boundary": [
+        "D1 adapter, SQL schema/migration, database binding selection, provisioning, migration execution, transactional/conditional-write implementation, production persistence and runtime wiring.",
+        "Later D1 work must prove database-level conflict, reference integrity and concurrency behavior. Passing memory/fake tests does not establish database guarantees."
+    ],
+    "tests": [
+        "Deterministic serialization across differing input object-key insertion order while preserving array order; exact domain round trips and repeated canonical serialization.",
+        "Corrupt JSON, unsupported format versions/types, unknown envelope fields and metadata/payload identity/version disagreement reject.",
+        "Initial version 1, consecutive revision, missing predecessors, skipped/regressed versions, identity drift and safe-integer overflow.",
+        "Identical same-key retry yields already-present; differing same-key retry conflicts; historical identical retry remains valid after later revisions without rewriting history.",
+        "Stored and returned snapshots are detached and frozen; mutation through input/result references cannot alter historical versions.",
+        "Product writes require an existing exact stored recipe; retrieval continues to use the recorded recipe version after newer recipes exist; orphaned/corrupt references fail closed.",
+        "Preserve stale-evidence rejection and FOOD-001A revision invalidation without manufacturing new subject-bound evidence.",
+        "Bounded history ascending by version and latest listings ascending by ordinal identity independent of insertion order; defaults/maxima, transparent cursors, empty pages and invalid limits/cursors.",
+        "Concurrent competing memory appends yield exactly one creation and appropriate conflicts/identical retries, never silently renumbered successes.",
+        "Unknown/pending/undisclosed/inconclusive data round-trips; requiredEvidencePresent and unresolvedReviews retain their independent meaning with no approval state persisted.",
+        "Source isolation permits only FOOD-001A domain imports and local serialization/instance state; no IO, runtime bindings, auth integration, unrelated domain authority, generated timestamps or production access."
+    ],
+    "boundaries": [
+        "Create only this specification now. No implementation files or existing-file modifications; no staging, commit or push.",
+        "Future implementation is limited to the two allowed implementation paths; reuse draft-domain.ts unchanged.",
+        "No routes, River OS UI, auth integration, D1/R2, migrations, commerce registration, checkout, Stripe/payment work, fulfillment, accounting, public counters, community activation, deployment or production data.",
+        "No changes to insurance, Sesh or creator systems; existing additive directions and external readiness gates remain unchanged."
+    ],
+    "nextStep": "Review this specification before separately authorizing the bounded contract, serialization and memory implementation."
+}
