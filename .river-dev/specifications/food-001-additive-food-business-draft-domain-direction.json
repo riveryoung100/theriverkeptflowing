@@ -1,0 +1,84 @@
+{
+    "version": "1.0.0",
+    "id": "FOOD-001",
+    "name": "Additive Food Business and Community Meals Direction",
+    "recordedDate": "2026-10-04",
+    "source": "Food Business and Community Meals Implementation Handoff supplied by River Young in this conversation",
+    "status": "Current additive product direction; planning only, no product implementation authorized",
+    "objective": "Plan a private, traceable food-business foundation for packaged meatless refrigerated/frozen reheat meals, with later reviewed personal fulfillment, accounting, and optional community meals.",
+    "relationship": "This direction and CREATION-001 are complementary. Neither handoff supersedes the other or replaces existing insurance, Sesh, commerce, content, Cloudflare, River OS, or development-agent work.",
+    "sharedPlan": ".river-dev/plans/creation-food-001-additive-direction-plan.json",
+    "architectureReference": "docs/architecture/creation-food-shared-foundations.md",
+    "currentState": [
+        "Commerce contains a digital-product catalog, Stripe checkout and verified-webhook boundaries, canonical orders, durable persistence, and digital fulfillment. These do not establish physical-food ordering or food-provider approval.",
+        "River OS provides a private workspace and CRM; principal identity, sessions, and Sesh ownership provide additional authorization patterns. Food staff roles and accounting are not established by these foundations.",
+        "The handoff reports training, cottage registration, and EIN obtained; these are user-supplied progress records, not newly verified agency evidence. Tax, banking, water, equipment, payment, operating policies, and partner readiness remain unresolved."
+    ],
+    "firstImplementationSlice": {
+        "status": "Proposed only; implementation requires a later bounded instruction",
+        "scope": "Pure draft-domain types and validation for versioned food product/recipe information and explicit review evidence, without side effects or sales enablement",
+        "proposedInformation": [
+            "Draft product and recipe version references, ingredients/component subingredients, declared allergens, preservation method, temperature-control classification, and historical label-review references.",
+            "Separate cottage eligibility, sales-tax classification, safety/process review, and payment/operational readiness evidence, including source and review date when supplied."
+        ],
+        "readinessSemantics": [
+            "Unknown and pending are explicit valid states. Absent evidence stays unknown; an unanswered review stays pending.",
+            "Do not default to eligible, exempt, safe, approved, or ready. Structural validation is never agency approval, recipe validation, or permission to sell.",
+            "The draft domain grants no sellable state, checkout registration, dispatch authority, or production activation."
+        ],
+        "acceptanceCriteria": [
+            "Pure validation preserves unknown/pending states, rejects malformed evidence without fabricating approvals, and leaves inputs unchanged.",
+            "Recipe/ingredient changes create distinct versions and require fresh label/allergen review without rewriting historical evidence.",
+            "No database, storage, provider, route, network, checkout, payment, publication, or fulfillment dependency exists in the slice."
+        ]
+    },
+    "externalReadinessGates": [
+        "Verify recipe-specific cottage eligibility, preservation requirements, authoritative label wording, and current applicable gross-sales threshold before encoding rules or enabling sales.",
+        "Resolve product-specific tax treatment and applicable obligations using authoritative guidance and the pending Comptroller response; cold/frozen or cottage status never implies blanket exemption.",
+        "Retain training/registration evidence privately and verify applicable current requirements. Do not invent an LLC, DBA, agency approval, expiry, or bank account.",
+        "Establish safe-water evidence, suitable equipment, measured cooling/storage/transport capacity, package and reheating trials, recipes/costs, and operational traceability. Do not interpret unknown water analytes or units.",
+        "Treat the FDA cooling benchmark as proposed operational best practice, not an invented cottage permit. Do not introduce homeowners insurance or an unsupported city food permit as opening requirements.",
+        "Confirm food-business payment-provider support, banking, identity documentation, fees/refunds, service radius, slots, capacity, delivery charges, and cancellation/missed-meetup policies before activation.",
+        "Verify lawful personal delivery and required pre-payment disclosures; no assumed nationwide shipping, third-party courier authorization, or equivalence of prepaid home pickup.",
+        "Community hot-meal preparation/distribution requires a separately verified lawful arrangement; donating finished home TCS meals to a partner does not itself establish compliance.",
+        "Choose a partner and define business contribution percentage/basis before promises. Outside contributions require separate lawful/provider setup; no nonprofit or tax-deductibility claim."
+    ],
+    "futureScope": [
+        "Reviewed small menu, inventory and slot reservations, manual outside-area approval before charging, hosted payment collection, verified payment before dispatch, personal fulfillment, and versioned labels.",
+        "Private batch/cooling, inventory, receipts, equipment, cash/payment/bank reconciliation and protected CPA exports; settlements and deposits must not duplicate sales, and separate businesses retain separate books.",
+        "Meal-information links, food videos through the shared content/media workflow, attribution, and the proposed 20-percent next-three-orders welcome offer only after terms and margin review; no implied recurring billing.",
+        "Partner-backed community records and reconciled public snapshots starting at zero; distinguish confirmed served meals, partner evidence, transfers, receipts, spending and commitments without double-counting.",
+        "Later reviewed anonymized education; no recipient identification, filming handoffs, required publicity/religious participation/purchase, or disclosure of private business evidence."
+    ],
+    "boundaries": [
+        "No routes, schemas, migrations, persistence, checkout, Stripe changes, media rendering, public counters, livestreaming, food catalog entries, production data, provider activation, contact execution, or deployment.",
+        "Keep private operating addresses, EIN/bank information, receipts and agency evidence out of public/static content and planning examples.",
+        "Do not invent menu items, radius, prices, equipment purchases, partners, contribution basis, approval evidence, or launch date."
+    ],
+    "nextStep": "Review a separately bounded pure draft-domain specification before implementation; operational and public capabilities remain later work.",
+    "sourceRecord": "docs/architecture/creation-food-shared-foundations.md#food-business-and-community-meals-handoff-sanitized-source",
+    "launchIntent": [
+        "Launch as River Young, individual sole proprietor, serving Big Spring and immediate surroundings through prepaid site orders and local personal delivery/meetup; radius and meetup locations remain undecided.",
+        "The chosen model seeks only products and sales methods with verified sales-tax exemption/favorable treatment; the exemption-only product model awaits authoritative confirmation. Sales-tax exemption does not remove income/self-employment tax obligations.",
+        "Creator implementation does not block food work. Community readiness applies only to community activation, not food-business launch.",
+        "A full accounting dashboard, paid advertising, advanced rewards, recipe publication and community fundraising are optional later capabilities, not prerequisites for an otherwise lawful launch with adequate interim records."
+    ],
+    "operationalAcceptance": [
+        "Compute prices, tax, discounts and totals server-side; unknown tax status must not imply exemption. Hosted payment collection/tokenization stores no card numbers or CVC.",
+        "Verify webhook signatures and safely handle repeated/out-of-order events without duplicate orders, revenue or rewards. A success-page visit is not proof of payment; confirm server-side before dispatch and never dispatch cancelled or unconfirmed payments.",
+        "Reserve inventory, slots and coupon uses transactionally; concurrent requests cannot oversell capacity or duplicate/overconsume benefits. Outside-area trips require approved fee/window before charging.",
+        "Model partial refunds and exceptions, cancellations, rescheduling and missed meetups. Record handoff/transport controls and use consent-based communications without automatic marketing-text subscription.",
+        "Keep test/production data separate and secrets outside source control. Maintain protected exports, server-side permissions, backup and rollback practices when persistence is separately authorized."
+    ],
+    "labelAccountingCommunityRequirements": [
+        "Preserve required physical and pre-payment label disclosures using current official wording and legible printing, including applicable preparation date and safe-handling text/font requirements; QR codes never replace disclosures.",
+        "The richer label standard includes full ingredients and purchased-component subingredients, clear Contains declaration, portion/net quantity where applicable, every-meal batch code, storage and tested reheating directions, River Young identity, registered identifier and website QR. Preserve historical recipe/label versions and complaint-to-order/batch traceability.",
+        "Monitor gross sales against a configurable, reviewed applicable annual limit; expenses do not reduce counted sales and the monitor is not a profit counter.",
+        "Distinguish sales, discounts, refunds, tax, delivery, fees, optional tips, settlements, cash/deposits, owner transfers, expenses and equipment. Trace expenses to dated receipts and business purpose; uncertain tax treatment goes to the CPA.",
+        "A dated CPA package includes reconciled transactions, reports with stated accounting basis, equipment, settlements/fees, sales-tax records, receipt index/files, owner transfers, community activity and unresolved questions. Check completeness before calling it CPA-ready; no autonomous tax filing or AI categorization treated as CPA approval.",
+        "First-order packages include QR/code cards for the chosen 20-percent next-three-orders offer after terms/margin review. Track one offer per customer, three actual qualifying redemptions, visible remaining uses, no unintended stacking, cancellation/refund restoration and originating-card/order attribution; prevent unlimited guest offers.",
+        "Business-funded giving precedes outside contributions. Define percentage/basis, refunds/discounts/tax/delivery treatment, transfer frequency and destination before promises; community gates apply to that program only.",
+        "Monthly public reporting uses period/cumulative totals, definitions, last reconciliation/publication date, reconciled funds/spending/remaining commitments and approved redacted evidence. Corrections are auditable; no fake totals or fabricated equivalents, and no borrowed campaign dollar-to-meal ratio or implied partnership.",
+        "Count confirmed meals rather than unique people unless independently evidenced, distinguish direct/partner channels and spending/distribution dates, and do not double-count transfers or meals. Donor names remain private unless opted in; recipient privacy and voluntary access remain firm."
+    ]
+}

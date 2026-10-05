@@ -1,0 +1,68 @@
+{
+    "version": "1.0.0",
+    "id": "CREATION-001",
+    "name": "Additive Creation Platform Direction and Stage A",
+    "recordedDate": "2026-10-04",
+    "source": "Creation Platform Workflow Handoff supplied by River Young in this conversation",
+    "status": "Current additive product direction; planning only, no product implementation authorized",
+    "objective": "Help people create and learn through personally meaningful projects, beginning with one constrained cooking-video workflow that reduces manual editing work.",
+    "relationship": "This direction and FOOD-001 are complementary. Neither handoff supersedes the other or replaces existing insurance, Sesh, commerce, content, Cloudflare, River OS, or development-agent work.",
+    "sharedPlan": ".river-dev/plans/creation-food-001-additive-direction-plan.json",
+    "architectureReference": "docs/architecture/creation-food-shared-foundations.md",
+    "currentState": [
+        "Repository contains content source/transcript ingestion, a content catalog, repurpose planning, semantic-provider boundaries, and deterministic orchestration foundations.",
+        "Sesh contains music projects, tracks, owner-authorized operations, private audio storage, and D1/R2 adapters. These are reuse candidates, not a complete video-production system.",
+        "Film and clip planning does not establish media rendering, export jobs, or a working cooking-video editor. No separate creator handoff file was found during reconciliation; the supplied handoff is the source."
+    ],
+    "stageA": {
+        "status": "Documentation milestone defined by this specification; technical feasibility decisions remain pending",
+        "scope": [
+            "Document existing obligations, source lineage, identity, project ownership, media/storage boundaries, and dependency seams before selecting adapters.",
+            "Define original footage plus recorded voiceover, creator-correctable clip roles, a reversible edit plan, and review before downloadable export.",
+            "Evaluate local processing versus a local companion worker or browser implementation against actual architecture and hardware; FFmpeg and whisper.cpp are candidates, not selected dependencies.",
+            "Record format, licensing, performance, source retention, music rights, cancellation, recovery, and privacy decisions as pending until evidenced."
+        ],
+        "acceptanceCriteria": [
+            "A linked reuse/dependency map distinguishes implemented foundations from proposed capabilities and preserves current work.",
+            "The next end-to-end milestone has explicit inputs, outputs, review points, failure behavior, and unresolved decisions, without claiming playable output exists.",
+            "No routes, dependencies, media operations, storage writes, or runtime changes are introduced by Stage A planning."
+        ]
+    },
+    "futureWorkflow": [
+        "Import real footage and recorded voiceover while preserving originals and reusable project versions.",
+        "Produce a reviewable main cooking video, editable captions, balanced voiceover/natural sound and optional cleared music, up to three coherent shorts, and authentic source-frame thumbnail options.",
+        "Use opening, preparation, cooking, finished-dish, and optional closing roles as a correctable preset; do not invent missing footage or force three shorts.",
+        "Support simple reversible revisions and visible cancellable export jobs with actionable errors. Initial scope ends at downloadable exports, with publishing separate.",
+        "Later recorded-video viewing may add a dismissible corner player with one media session, accessible controls, tested routing continuity, and audio coordination with Sesh/recording.",
+        "Improve automation from actual corrections; livestreaming, public creator expansion, learning paths, and community are separate optional later milestones."
+    ],
+    "boundaries": [
+        "No product implementation, media rendering, routes, schemas, migrations, persistence, checkout, Stripe changes, public counters, livestreaming, food products, production data, provider activation, contact execution, or deployment.",
+        "A web interface does not establish access to installed desktop tools; validate the worker seam before promising local processing.",
+        "AI outputs remain drafts. Preserve source authenticity, creator control, undo, and voluntarily supplied correctable preferences; no invasive profiling.",
+        "Music in Sesh is not automatically cleared for reuse. Track actual licensing, storage, bandwidth, hardware, and optional hosted-processing costs; no unlimited-free-processing promise.",
+        "Verify current target-platform export requirements during later implementation; preserve the preference for full LinkedIn reflection videos safely under 15 minutes.",
+        "Faith-related content should use following God/Jesus, faith, or walking with God rather than Christian/Christianity identity labels."
+    ],
+    "nextStep": "Review this documentation milestone and remaining decisions; any product implementation requires separately bounded scope.",
+    "sourceRecord": "docs/architecture/creation-food-shared-foundations.md#creation-platform-workflow-handoff-sanitized-source",
+    "platformVision": [
+        "River Guide helps clarify goals and manageable next steps using voluntarily shared, correctable information, without assigning a fixed identity or requiring an extensive questionnaire.",
+        "A personal workspace preserves projects, sources, outputs, progress and preferences. Learning happens through projects; sharing/community is optional and never requires public exposure.",
+        "Each tool remains usable independently. Cooking for family and making music for enjoyment are complete goals; starting a business is optional. Do not promise financial independence."
+    ],
+    "workflowAcceptance": [
+        "Complete Stage A before implementation, and deliver the first complete cooking-video workflow before general-purpose editor expansion or a public creator platform.",
+        "Add footage and real recorded voiceover, describe intent in plain language, receive a draft, review and request simple changes, then export approved results.",
+        "Real River footage must produce playable, reviewable and revisable main video, up to three supported shorts and authentic thumbnails; preserve originals, versions and undo, and recover from failures.",
+        "Export jobs show progress, cancellation and actionable errors. Measure hands-on time saved, not merely interface appearance; explicit revision controls are acceptable before reliable conversational editing."
+    ],
+    "viewingRequirements": [
+        "Later recorded viewing begins in an ordinary embedded player after deliberate playback; a playing video scrolling out of view may move to a corner player with one active media session.",
+        "Provide play/pause, return and accessible X. X stops playback and keeps the player closed until a deliberate restart; scrolling never reopens it. Returning preserves playback position.",
+        "Avoid overlapping navigation, forms, important actions, captions and mobile safe areas. Verify desktop/mobile labels, keyboard operation, visible focus and touch targets.",
+        "Pause competing media when recording or using Sesh. Test internal-navigation continuity; do not promise continuity across full reloads or unsupported providers.",
+        "The site corner player is distinct from optional later native browser picture-in-picture.",
+        "Optional later livestreams require deliberate joining without autoplay or automatic audio, offline/interrupted/ended states and provider-specific pause/resume behavior; recorded creation can continue indefinitely without livestreaming."
+    ]
+}

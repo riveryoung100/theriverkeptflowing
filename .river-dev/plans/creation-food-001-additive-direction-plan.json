@@ -1,0 +1,86 @@
+{
+    "version": "1.0.0",
+    "planId": "plan:creation-food-001",
+    "phase": "CREATION-001 / FOOD-001 planning",
+    "recordedDate": "2026-10-04",
+    "status": "Documentation only; not an executable implementation or publication authorization",
+    "objective": "Record complementary creator and food-business directions, shared reuse boundaries, and the smallest next milestones while preserving existing obligations.",
+    "specifications": [
+        ".river-dev/specifications/creation-001-additive-creation-platform-direction.json",
+        ".river-dev/specifications/food-001-additive-food-business-draft-domain-direction.json"
+    ],
+    "architectureReference": "docs/architecture/creation-food-shared-foundations.md",
+    "repositoryBaseline": {
+        "branch": "cif-001-canonical-content-source-record",
+        "head": "52144bbd3291a420487a8b9edd148ec1cffb14d4",
+        "meaning": "Historical inspection baseline, not a required future branch or reset target",
+        "insurance": "INS-008A committed and pushed; token provenance, retry retention, request binding, concurrency/recovery, route integration and execution authorization remain separately bounded unfinished work."
+    },
+    "allowedPaths": [
+        ".river-dev/specifications/creation-001-additive-creation-platform-direction.json",
+        ".river-dev/specifications/food-001-additive-food-business-draft-domain-direction.json",
+        ".river-dev/plans/creation-food-001-additive-direction-plan.json",
+        "docs/architecture/creation-food-shared-foundations.md"
+    ],
+    "preservedTrajectories": [
+        "Insurance consent, suppression, idempotency and execution authorization; both private contact provider-not-configured no-store 503 responses remain unchanged.",
+        "Sesh music projects, tracks, private audio, ownership and publication boundaries.",
+        "Existing digital commerce products, payment verification, order identity and digital fulfillment.",
+        "Canonical content/source/transcript lineage, knowledge and orchestration boundaries.",
+        "Cloudflare hosting and publishing workflow, River OS private workspace, and development-agent governance."
+    ],
+    "steps": [
+        {
+            "order": 1,
+            "type": "documentation",
+            "description": "Record both current additive directions and shared architecture; neither supersedes the other. This plan does not reorder or abandon existing obligations."
+        },
+        {
+            "order": 2,
+            "type": "planning",
+            "description": "Complete creator Stage A dependency/feasibility decisions and define the first real-footage acceptance scenario; no editor implementation or rendering in Stage A."
+        },
+        {
+            "order": 3,
+            "type": "planning",
+            "description": "Define a separately bounded FOOD draft-domain slice with explicit unknown/pending evidence and no sale authority. Implementation is proposed, not authorized here."
+        },
+        {
+            "order": 4,
+            "type": "future",
+            "description": "When separately scoped, develop the constrained creator workflow with reversible plans and downloadable exports; evaluate local worker integration before selecting dependencies."
+        },
+        {
+            "order": 5,
+            "type": "future",
+            "description": "When separately scoped and external readiness is resolved, add food operational persistence/access, then reviewed ordering/payments/personal fulfillment, then reconciliation and CPA exports."
+        },
+        {
+            "order": 6,
+            "type": "future",
+            "description": "Add retention/shared food content, then verified partner/community reporting, then anonymized education. Recorded-player improvements, automation and optional livestreaming have separate acceptance criteria."
+        }
+    ],
+    "acceptanceCriteria": [
+        "Both handoffs have explicit source, current direction status, current-versus-future distinction, and mutual non-supersession.",
+        "Shared infrastructure and missing capabilities are mapped without claiming production readiness or duplicating subsystem authority.",
+        "Creator Stage A and the proposed pure food draft slice have bounded completion criteria; external decisions remain unknown/pending rather than invented approvals.",
+        "Only the four planning files are created, JSON parses, Markdown structure/local links validate, and whitespace checks pass."
+    ],
+    "approvalBoundaries": [
+        "No product implementation, dependencies, routes, schemas, migrations, persistence, checkout, Stripe changes, rendering, public counters, livestreaming, food products or production data.",
+        "No deploy, provider activation, contact execution, secrets access, legal/tax approval inference, or external financial commitment.",
+        "Stop before staging, commit or push. Future implementation needs separately bounded instructions; this plan supplies no execution authority."
+    ],
+    "scopeExpansionAllowed": false,
+    "sourceRecords": [
+        "docs/architecture/creation-food-shared-foundations.md#creation-platform-workflow-handoff-sanitized-source",
+        "docs/architecture/creation-food-shared-foundations.md#food-business-and-community-meals-handoff-sanitized-source"
+    ],
+    "dependencyClarifications": [
+        "Step numbers organize the planning record, not mandatory cross-track dependencies: creator implementation does not block food planning, draft-domain work or an otherwise lawful food launch.",
+        "Creator Stage A precedes creator implementation; the complete cooking workflow precedes general editor/public-platform expansion.",
+        "Food legal/tax/water/safety/payment gates apply to food sales activation; community preparation, partner and contribution gates apply only to community activation.",
+        "Private draft planning can proceed while external responses are pending. Optional full accounting, advertising, advanced rewards, recipes and fundraising do not become launch prerequisites; adequate interim records remain necessary."
+    ]
+}
