@@ -1,0 +1,145 @@
+{
+  "version": "1.0.0",
+  "id": "FOOD-002N",
+  "name": "Trusted server/request adapter for private menu mutation transport",
+  "predecessors": ["FOOD-002M", "FOOD-002L"],
+  "phase": "Discovery and specification only; implementation requires separate explicit authorization",
+  "architecturalPurpose": "Adapt a standard trusted server-side Web Request to the existing lazy FOOD-002M envelope and invoke an injected mutation boundary, without acquiring runtime configuration, registering an endpoint or consuming the body before authorization.",
+  "startingState": {
+    "branch": "cif-001-canonical-content-source-record",
+    "head": "33f7a773752c22ba2956630a0aaaad8a199e738e",
+    "worktree": "Verified clean before discovery and specification"
+  },
+  "requestSource": "The supplied attachment ends at architecture question 4, expected-origin ownership. Remaining adapter decisions are explicitly recorded here using the stated bounded discovery/specification purpose and committed contracts; no omitted text is assumed to provide implementation or activation authorization.",
+  "references": [
+    ".river-dev/specifications/food-002m-private-menu-mutation-transport-request-boundary.json",
+    ".river-dev/specifications/food-002l-private-menu-operation-gate-runtime-capability-exposure-boundary.json",
+    ".river-dev/specifications/food-002j-trusted-server-context-private-menu-runtime-adapter-boundary.json",
+    ".river-dev/specifications/food-002k-authorized-private-menu-operation-gate-boundary.json",
+    ".river-dev/specifications/food-001j-private-food-draft-mutation-transport-request-policy-boundary.json",
+    ".river-dev/specifications/food-001k-trusted-private-food-runtime-capability-exposure-boundary.json",
+    "src/lib/food/private-menu-mutation-request.ts",
+    "src/lib/food/private-menu-mutation-request.test.ts",
+    "src/lib/food/private-menu-runtime-composition.ts",
+    "src/lib/food/private-menu-runtime-composition.test.ts",
+    "src/lib/food/private-menu-server-adapter.ts",
+    "src/lib/food/private-menu-server-adapter.test.ts",
+    "src/lib/food/private-menu-service.ts",
+    "src/lib/food/private-menu-service.test.ts",
+    "src/lib/food/private-draft-mutation-request.ts",
+    "src/lib/food/private-draft-mutation-request.test.ts",
+    "src/lib/food/private-draft-server-adapter.ts",
+    "src/lib/food/private-draft-server-adapter.test.ts",
+    "src/lib/food/private-draft-runtime-composition.ts",
+    "src/lib/food/private-draft-runtime-composition.test.ts",
+    "src/lib/sesh/http/creator-audio-upload-api.ts",
+    "src/lib/insurance/http/quote-request-api.ts",
+    "package.json"
+  ],
+  "discovery": {
+    "committedM": "M exports FoodMenuMutationRequestBoundary.submit(envelope): Promise<FoodMenuMutationRequestResult> and the metadata/lazy AsyncIterable<Uint8Array> envelope. It owns strict method/origin/content-type/length policy, encoded/decoded limits, duplicate-aware parsing, eight explicit mutation dispatches and result sanitation.",
+    "runtime": "L's createPrivateFoodMenuOperationRuntimeFromServerContext returns service/workspace/operationGate backed by the same service. J/L already own trusted environment/session runtime assembly. N must not reconstruct or independently configure this graph.",
+    "gate": "K owns fresh continuation authorization; normal menu operations authorize independently again. N must invoke M rather than call the gate, workspace or service itself.",
+    "standardInput": "Installed Astro 7.2.0 with @astrojs/cloudflare 14.2.0 uses standard Request for APIContext.request in node_modules/astro/dist/types/public/context.d.ts. Installed TypeScript lib.dom.d.ts defines Body.body as ReadableStream<Uint8Array> | null and Request extends Body. Full APIContext is unnecessary.",
+    "streamPrecedent": "sesh/http/creator-audio-upload-api.ts uses request.body.getReader(), read() and best-effort cancel() for bounded uploads. Reuse standard reader mechanics only; its authorization, size policy and buffered upload model are not menu authority.",
+    "bufferedPrecedent": "insurance/http/quote-request-api.ts uses Request/header metadata and request.text(). Its optional/normalized Origin policy and full-text buffering cannot replace M's mandatory exact Origin or authorization-before-stream-read requirements.",
+    "food001": "The FOOD-001 server adapter constructs identity/runtime dependencies from supplied environment/session; its mutation boundary uses a lazy framework-neutral body envelope. Discovery found no FOOD-001 request adapter following that transport in the food source directory. Do not invent an existing route precedent or couple N to FOOD-001 mutations.",
+    "runtimeTypingReferences": ["node_modules/astro/dist/types/public/context.d.ts", "node_modules/typescript/lib/lib.dom.d.ts"],
+    "verificationScope": "Source/type inspection only. No real request body, production HTTP request, configured database or runtime activation was used. Runtime reader behavior remains a mandatory implementation-test obligation."
+  },
+  "selectedArchitecture": {
+    "choice": "Adapt Request and invoke an already-created FOOD-002M boundary. Inject only that boundary, the smallest existing capability. Do not combine runtime creation with request adaptation.",
+    "factory": "createPrivateFoodMenuMutationRequestAdapter",
+    "inputType": "FoodMenuMutationRequestAdapterInput",
+    "inputDefinition": "export interface FoodMenuMutationRequestAdapterInput { readonly boundary: FoodMenuMutationRequestBoundary; }",
+    "adapterType": "FoodMenuMutationRequestAdapter",
+    "adapterDefinition": "export interface FoodMenuMutationRequestAdapter { submit(request: Request): Promise<FoodMenuMutationRequestResult>; }",
+    "factorySignature": "createPrivateFoodMenuMutationRequestAdapter(input: FoodMenuMutationRequestAdapterInput): Readonly<FoodMenuMutationRequestAdapter>",
+    "output": "Frozen submit-only adapter. Return the injected boundary's fulfilled result unchanged, with no response/status/redirect conversion or additional result vocabulary.",
+    "configuration": "Factory validates only non-null/non-array object input and boundary plus callable boundary.submit, catching throwing dependency-property access. Invalid construction throws TypeError with exactly Private food menu request adapter configuration is unavailable. It is a construction exception, not a seventh transport error or runtime configuration result. Capture the injected boundary without calling it; invoke submit with its boundary receiver intact.",
+    "originOwnership": "N receives no separate expectedOrigin. The trusted caller explicitly injects expectedOrigin when constructing M, then supplies that boundary to N. This preserves explicit trusted origin ownership without duplicate policy inputs. Never infer it from request.url, Host, Forwarded, Referer or submitted Origin. Do not introduce origin production configuration.",
+    "excludedInputs": ["APIContext", "Environment", "Database/repository", "Session or principal resolver", "Administrator config", "Full runtime bundle", "Direct workspace or gate", "Request-derived expected origin"]
+  },
+  "metadataAdaptation": {
+    "strategy": "Construct one FoodMenuMutationRequestEnvelope per submit using lazy metadata accessors. This lets M preserve its exact rejection order instead of N eagerly reading later headers before M rejects an earlier field.",
+    "mapping": {
+      "method": "Unchanged request.method",
+      "origin": "request.headers.get('Origin'), unchanged string or null",
+      "contentType": "request.headers.get('Content-Type'), unchanged string or null",
+      "contentLength": "request.headers.get('Content-Length'); translate only absence null to undefined, otherwise preserve the exact returned string",
+      "readBody": "A zero-argument function returning a lazy async generator over the request body stream"
+    },
+    "headers": "Do not trim, split, normalize, case-fold or select first/last header values. Standard Headers may already combine or normalize received header values; N preserves what Request exposes and cannot prove original wire multiplicity. M rejects exposed comma/multiple Origin or Content-Length values as appropriate. Do not claim N detects raw duplicate headers that the server has already discarded.",
+    "exceptions": "Malformed/throwing request metadata is evaluated inside M's metadata handling and returns its fixed invalid-request or policy failure. No pre-body inspection of request.body, bodyUsed, stream.locked, reader methods or payload is permitted.",
+    "policy": "M remains the only POST/exact Origin/media type/canonical Content-Length policy authority. Do not add a second CSRF strategy or duplicate those checks in N. N does not read request.url, cookies, body fields, arbitrary headers or environment."
+  },
+  "bodyAdaptation": [
+    "Calling envelope.readBody returns an async generator without touching Request body state. Access request.bodyUsed and request.body only when the generator first advances inside M's already-authorized callback.",
+    "If bodyUsed is true, fail the iterator with a fixed internal error, which M maps to body-unavailable. Do not clone or replay a consumed body. A locked body causes getReader failure and the same M body-unavailable outcome after authorization.",
+    "A null body produces an empty iterable without acquiring a reader. M then rejects the empty submission as its fixed invalid-request; do not fabricate a snapshot or interpret absence as successful mutation.",
+    "Acquire one default reader with body.getReader() and yield reader.read() values in order. Do not invoke text/json/formData/arrayBuffer/bytes, clone, tee, prebuffer, transform chunks or add a parallel decoder. M validates byte chunks, copies accepted data and owns actual bounds.",
+    "Reader acquisition/read rejection, errored/aborted stream or throwing lazy body getters propagate through the iterator to M's existing body-unavailable handling. No raw error text appears in returned feedback.",
+    "On natural completion release the owned reader lock and do not cancel. On early iterator return, reader error or M oversize/non-byte rejection, cancel the owned reader best-effort and release the lock in finally. Cancellation/release errors cannot override the original result or expose details. Never cancel or unlock someone else's reader.",
+    "Do not continue draining after M stops. At most one reader and one body consumption occur for each adapter submission. Do not retry, share body state between requests or retain a global Request registry. Resubmitting an already-consumed Request must fail after fresh authorization; a caller may retry using a new Request with the exact same operation/version/content/predecessor under existing repository semantics.",
+    "Guarantee zero adapter-driven body reads/acquisition/cancellation for denied or pre-policy-rejected requests. Underlying Web stream sources may enqueue/prefetch independently of the adapter; N cannot promise zero upstream network arrival or source pull activity. Tests must distinguish reader consumption from source prefetch."
+  ],
+  "executionOrder": [
+    "Trusted caller constructs request-scoped runtime through J/L, projects operationGate/workspace and explicitly injects trusted expectedOrigin into M; configuration failure is handled outside N.",
+    "Construct N with that M boundary; construction is synchronous and calls no dependency or request/body operation.",
+    "N.submit creates one lazy envelope and invokes boundary.submit exactly once, preserving method receiver and result identity.",
+    "M validates metadata before gate/body, K authorizes fresh, and only successful authorization advances N's body generator.",
+    "M enforces 32 MiB encoded / 24 MiB decoded limits, strict URL-form/JSON and explicit mutation selection. N neither parses nor dispatches.",
+    "M invokes the existing workspace mutation, which independently reauthorizes through E before repository access. N does not suppress the second authorization or issue tokens.",
+    "Return the exact fulfilled M result. Unexpected injected boundary throw/rejection maps only to frozen { ok: false, error: { code: 'callback-failed', message: 'Private food menu operation could not be completed.' } }, without leaking internals. No retry or invented success."
+  ],
+  "authorityAndCompatibility": [
+    "FOOD-002M owns policy, parser, limits, allowlist and mutation-result sanitation; its source and specification remain unchanged.",
+    "FOOD-002K owns continuation authorization; FOOD-002E owns independent service authorization; FOOD-002F owns presentation; FOOD-002D/G own persistence/concurrency. None change in N.",
+    "FOOD-002J/L own runtime acquisition/composition. N receives no binding name, config, database or administrator and performs no configured D1 access.",
+    "N does not reinterpret created/already-present/conflict or the six transport, five workspace/access and separate callback-failed errors. A stored published snapshot does not activate public exposure.",
+    "No new idempotency token, caching, merge, renumber, retry, latest reference substitution, public/purchase authority, logging or private payload retention.",
+    "Standard Request typing is sufficient; no generated Cloudflare environment typing, Wrangler or package change is required. No new dependency/framework is needed."
+  ],
+  "tests": [
+    "Frozen submit-only construction performs zero boundary/gate/resolver/request/body/database calls and exposes no injected internals; malformed/throwing construction inputs receive the one fixed TypeError.",
+    "Instrument injected boundary to verify exactly one invocation, correct receiver, exact metadata values, absent length becoming undefined, lazy getter ordering and unchanged fulfilled result identity for all result families.",
+    "Use standard locally constructed Request/Headers/ReadableStream and committed M with real K/service/workspace plus inert repositories where needed. No fetch, route, configured database or production request is used.",
+    "Invalid method/origin/content-type/length rejects before gate and reader/body getter access; verify M's existing exact policy without normalization/fallback. Combined multiple header values fail as M specifies, with no claim of detecting lost raw wire duplicates.",
+    "Unauthenticated/forbidden/access-unavailable/malformed principal invokes zero body getters/getReader/read/cancel calls. Tests use body-access guards and reader instrumentation; underlying stream prefetch must not be mistaken for adapter consumption.",
+    "Successful gate permits one reader acquisition, ordered byte yields and one read per chunk. Async delayed streams are awaited. Body state is not inspected before authorization, including already-used or locked bodies.",
+    "Natural completion releases the lock without cancel; early return and M overflow stop reads, cancel best-effort and release lock. Reader rejection, abort, non-byte chunks, throwing body getters and cancellation/release failure remain sanitized with original typed result preserved.",
+    "Null body yields M invalid-request; used/locked body yields body-unavailable only after gate success. No clone/tee or second-consumption fallback exists.",
+    "Actual streamed overflow remains payload-too-large despite missing or underreported length. Preserve M's 32 MiB/24 MiB inclusive limits without duplicating resource counters or weakening production constants in tests.",
+    "Authorized valid request reaches exactly one explicit M workspace mutation; service authorization resolves fresh a second time. Revocation/unavailability between gate and mutation prevents repository write, despite the body having been read.",
+    "Preserve all six transport failures, all access/workspace failures, callback-failed and created/already-present/conflict without echoing body or raw errors. Injected boundary rejection receives fixed callback-failed and no retry.",
+    "Concurrent submissions isolate generator/request/reader state. Historical retry uses a new Request with unchanged exact payload, not cached authorization or replayed stream.",
+    "Source isolation excludes Astro APIContext/route registration/Response/redirect/cookies/environment acquisition/runtime assembly/D1/migrations/deployment/commerce/payment and unrelated subsystem dependencies. Imports reuse only M contracts/messages needed for the adapter."
+  ],
+  "allowedFutureImplementationPaths": [
+    "src/lib/food/private-menu-mutation-request-adapter.ts",
+    "src/lib/food/private-menu-mutation-request-adapter.test.ts"
+  ],
+  "validation": [
+    "Focused FOOD-002N tests with synthetic local Request/stream inputs only",
+    "Relevant FOOD-002M/K/L/E/F and identity/session regressions; existing sources unchanged",
+    "Strict TypeScript checks for the new files and dependency graph using installed standard Web types",
+    "Specification JSON/reference checks, git diff --check and normal build; do not fix unrelated baseline failures"
+  ],
+  "strictExclusions": [
+    "Implementation, staging, commit or push in this slice",
+    "Actual route/endpoint/action/middleware registration, Astro context dependency, UI or navigation",
+    "Real request body reads, production HTTP requests, configured local/remote D1 access",
+    "Runtime acquisition/architecture changes, binding selection/configuration/provisioning, migrations or production activation",
+    "Concrete administrator/secret/origin production configuration, generated typing or Wrangler changes",
+    "Public menu, pricing/cart/order/payment/fulfillment/QR/ratings/demand/POS-lite/deployment/production data or unrelated subsystem changes"
+  ],
+  "acceptanceCriteria": [
+    "Only this specification is created; starting branch/HEAD/clean gates pass and nothing is staged.",
+    "API names and files are proposed explicitly; existing referenced types/functions/files are verified.",
+    "Request adaptation requires no full Astro context or further shared compatibility correction.",
+    "Authorization-before-body remains intact through lazy native reader adaptation and independent mutation authorization.",
+    "JSON/reference/whitespace and git diff --check pass with no tracked file changes or prohibited access."
+  ],
+  "remainingAmbiguities": "No implementation-blocking contract contradiction. The provided request is truncated after question 4; this specification states the selected remaining decisions explicitly for review. Trusted production origin/configuration and route registration remain later boundaries, and native stream lifecycle behavior requires implementation tests rather than a discovery-time claim of runtime verification.",
+  "nextSlice": "FOOD-002N implementation and validation of the two proposed files only. Actual route/server registration and configuration/provisioning/migration/activation remain separately scoped and authorized later."
+}
