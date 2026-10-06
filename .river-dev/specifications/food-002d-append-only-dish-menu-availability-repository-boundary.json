@@ -1,0 +1,155 @@
+{
+  "version": "1.0.0",
+  "id": "FOOD-002D",
+  "name": "Append-only dish/menu repository and exact-offer availability streams",
+  "phase": "Specification only; implementation requires separate authorization",
+  "boundary": "One combined asynchronous repository contract, deterministic canonical serialization and instance-local in-memory reference adapter. This precedes private management services/controllers; do not split persistence slices yet.",
+  "references": ["src/lib/food/draft-persistence.ts", "src/lib/food/dish-offer-domain.ts", "src/lib/food/menu-publication-domain.ts"],
+  "allowedFutureImplementationPaths": ["src/lib/food/menu-persistence.ts", "src/lib/food/menu-persistence.test.ts"],
+  "authority": [
+    "Keep FOOD-001 and FOOD-002B/C unchanged. Reuse FOOD-002B validators/revision helpers and FOOD-002C validation results rather than redefining domain semantics.",
+    "Authorization remains completely outside this repository. IDs never establish permission.",
+    "Stored published state is an immutable domain snapshot only; it does not activate routes, authorize exposure, prove readiness or enable ordering."
+  ],
+  "types": {
+    "FoodMenuReadDependencies": "Pick<FoodDraftRepository, 'getProduct' | 'getRecipe'>",
+    "FoodMenuRepositoryResult<T>": "Readonly<{ ok: true; value: T }> | Readonly<{ ok: false; error: Readonly<{ code: 'invalid-input' | 'storage'; message: string }> }>",
+    "FoodMenuAppendOutcome<T>": "Readonly<{ outcome: 'created' | 'already-present'; snapshot: T }> | Readonly<{ outcome: 'conflict'; reason: 'different-content' }>",
+    "FoodMenuReadOutcome<T>": "Readonly<{ outcome: 'found'; snapshot: T }> | Readonly<{ outcome: 'not-found' }>",
+    "FoodMenuPage<T, C>": "Readonly<{ items: readonly T[]; nextCursor?: C }>",
+    "FoodMenuHistoryOptions": "Readonly<{ limit?: number; afterVersion?: number }>",
+    "FoodAvailabilityHistoryOptions": "Readonly<{ limit?: number; afterRevision?: number }>",
+    "FoodMenuLatestOptions<Id>": "Readonly<{ limit?: number; afterId?: Id }>"
+  },
+  "repository": {
+    "interface": "FoodMenuRepository",
+    "adapter": "InMemoryFoodMenuRepository",
+    "constructor": "new InMemoryFoodMenuRepository(dependencies: FoodMenuReadDependencies)",
+    "construction": "Synchronous and I/O-free; require callable getProduct/getRecipe, rejecting malformed dependencies with a fixed TypeError. No dependency calls during construction; no memory/global fallback dependency.",
+    "methods": [
+      "createInitialPresentation(snapshot: FoodDishPresentation): Promise<FoodMenuRepositoryResult<FoodMenuAppendOutcome<FoodDishPresentation>>>",
+      "appendPresentationRevision(snapshot: FoodDishPresentation, expectedPreviousVersion: number): Promise<FoodMenuRepositoryResult<FoodMenuAppendOutcome<FoodDishPresentation>>>",
+      "getPresentation(dishId: FoodDishId, version: number): Promise<FoodMenuRepositoryResult<FoodMenuReadOutcome<FoodDishPresentation>>>",
+      "getLatestPresentation(dishId: FoodDishId): Promise<FoodMenuRepositoryResult<FoodMenuReadOutcome<FoodDishPresentation>>>",
+      "listPresentationVersions(dishId: FoodDishId, options?: FoodMenuHistoryOptions): Promise<FoodMenuRepositoryResult<FoodMenuPage<FoodDishPresentation, number>>>",
+      "listLatestPresentations(options?: FoodMenuLatestOptions<FoodDishId>): Promise<FoodMenuRepositoryResult<FoodMenuPage<FoodDishPresentation, FoodDishId>>>",
+      "createInitialOffer(snapshot: FoodServingOffer): Promise<FoodMenuRepositoryResult<FoodMenuAppendOutcome<FoodServingOffer>>>",
+      "appendOfferRevision(snapshot: FoodServingOffer, expectedPreviousVersion: number): Promise<FoodMenuRepositoryResult<FoodMenuAppendOutcome<FoodServingOffer>>>",
+      "getOffer(offerId: FoodServingOfferId, version: number): Promise<FoodMenuRepositoryResult<FoodMenuReadOutcome<FoodServingOffer>>>",
+      "getLatestOffer(offerId: FoodServingOfferId): Promise<FoodMenuRepositoryResult<FoodMenuReadOutcome<FoodServingOffer>>>",
+      "listOfferVersions(offerId: FoodServingOfferId, options?: FoodMenuHistoryOptions): Promise<FoodMenuRepositoryResult<FoodMenuPage<FoodServingOffer, number>>>",
+      "listLatestOffers(options?: FoodMenuLatestOptions<FoodServingOfferId>): Promise<FoodMenuRepositoryResult<FoodMenuPage<FoodServingOffer, FoodServingOfferId>>>",
+      "createInitialPublication(snapshot: FoodMenuPublication): Promise<FoodMenuRepositoryResult<FoodMenuAppendOutcome<FoodMenuPublication>>>",
+      "appendPublicationRevision(snapshot: FoodMenuPublication, expectedPreviousVersion: number): Promise<FoodMenuRepositoryResult<FoodMenuAppendOutcome<FoodMenuPublication>>>",
+      "getPublication(publicationId: FoodMenuPublicationId, version: number): Promise<FoodMenuRepositoryResult<FoodMenuReadOutcome<FoodMenuPublication>>>",
+      "getLatestPublication(publicationId: FoodMenuPublicationId): Promise<FoodMenuRepositoryResult<FoodMenuReadOutcome<FoodMenuPublication>>>",
+      "listPublicationVersions(publicationId: FoodMenuPublicationId, options?: FoodMenuHistoryOptions): Promise<FoodMenuRepositoryResult<FoodMenuPage<FoodMenuPublication, number>>>",
+      "listLatestPublications(options?: FoodMenuLatestOptions<FoodMenuPublicationId>): Promise<FoodMenuRepositoryResult<FoodMenuPage<FoodMenuPublication, FoodMenuPublicationId>>>",
+      "createInitialAvailability(snapshot: FoodServingOfferAvailability): Promise<FoodMenuRepositoryResult<FoodMenuAppendOutcome<FoodServingOfferAvailability>>>",
+      "appendAvailabilityRevision(snapshot: FoodServingOfferAvailability, expectedPreviousRevision: number): Promise<FoodMenuRepositoryResult<FoodMenuAppendOutcome<FoodServingOfferAvailability>>>",
+      "getAvailability(offerId: FoodServingOfferId, offerVersion: number, revision: number): Promise<FoodMenuRepositoryResult<FoodMenuReadOutcome<FoodServingOfferAvailability>>>",
+      "listAvailabilityRevisions(offerId: FoodServingOfferId, offerVersion: number, options?: FoodAvailabilityHistoryOptions): Promise<FoodMenuRepositoryResult<FoodMenuPage<FoodServingOfferAvailability, number>>>",
+      "getCurrentAvailability(offerId: FoodServingOfferId, offerVersion: number): Promise<FoodMenuRepositoryResult<FoodMenuReadOutcome<FoodServingOfferAvailability>>>"
+    ],
+    "runtimeValidation": "Strongly typed signatures do not bypass canonical runtime validation. Reject malformed IDs, unsafe versions/revisions, unknown option/input properties and coercion. No delete/update/overwrite/destructive reset/merge/renumber operation. Dish-filtered offer listing deferred."
+  },
+  "dependencyRules": [
+    "Use injected getProduct/getRecipe for exact historical reads only. No latest methods, writes, mutation or copying private snapshots/evidence into FOOD-002D storage.",
+    "Validate resolved snapshots and their exact requested ID/version, not just a found result. Exact product-to-recipe correspondence must pass FOOD-002B/FOOD-001A validation.",
+    "Missing required FOOD-001 dependency during append maps to invalid-input. A malformed/corrupt/mismatched dependency response or thrown/rejected dependency access maps to storage.",
+    "Missing/corrupt required dependency when reconstructing stored records maps to storage, including append-time reconstruction of an existing predecessor or exact retry record.",
+    "No implicit context retargeting; all contexts are transient validation inputs and excluded from stored canonical payloads."
+  ],
+  "appendAndRetryOrder": [
+    "First validate caller shape, canonical IDs/versions, exact dependency context and domain record sufficiently to construct canonical serialized content.",
+    "Initial methods require version/revision 1 even on retries. Revision methods require canonical positive-safe expected predecessor, no overflow, next exactly predecessor + 1 and an existing valid predecessor; run full domain revision validation before retry comparison.",
+    "Offer revision validation includes stable offer-to-dish association; an attempted move to another dish is invalid-input even if its key exists.",
+    "Then inspect the exact attempted identity/version/revision key. Reconstruct and verify any existing stored record. Identical canonical content returns successful already-present; different valid canonical content returns successful conflict with only reason different-content.",
+    "Historical identical retries remain already-present after newer records exist when predecessor/context is valid. Do not require predecessor to remain current before evaluating an existing key.",
+    "Only if key does not exist, enforce current-predecessor sequencing. Initial creation requires an empty identity/availability stream; revision creation requires greatest stored sequential version/revision equal expected predecessor.",
+    "Missing/skipped/wrong/noncurrent predecessors, initial not 1 and overflow are invalid-input failures, not conflict outcomes. Conflict is reserved for valid different canonical content at an existing exact key.",
+    "On successful new insertion return created. Never overwrite, renumber, merge, retarget evidence/references or retry automatically."
+  ],
+  "referentialIntegrity": {
+    "presentation": "Exact FOOD-001 product and recipe must exist; validateFoodDishPresentation enforces supplied refs and product-to-recipe correspondence. Revisions validate complete previous and next contexts with reviseFoodDishPresentation.",
+    "offer": "Exact referenced presentation must already exist in this repository and reconstruct successfully. ValidateFoodServingOffer uses its exact FOOD-001 context; reviseFoodServingOffer enforces same stable dish association. No latest presentation substitution.",
+    "publication": "Collect all exact presentation and offer references from snapshot; every referenced version must already exist. Build bounded exact context arrays for validateFoodMenuPublication/reviseFoodMenuPublication. De-duplicate context keys only when assembling contexts, never silently de-duplicate domain selections. FOOD-002C enforces compatibility, selections, ordering and uniqueness.",
+    "availability": "Exact offer ID/version must already exist and reconstruct successfully. ValidateFoodServingOfferAvailability enforces the immutable observation shape. No availability data is required to append an offer or publication.",
+    "missingReferences": "Absent newly submitted referenced presentation/offer maps to invalid-input. Corrupt/inconsistent already-stored records or missing dependencies of those records map to storage.",
+    "historical": "Exact historical reads and publication reconstruction resolve recorded old versions only. No deletion; historical references remain resolvable unless records/dependencies are corrupt. Latest methods never participate in exact reconstruction."
+  },
+  "availabilityAuthority": [
+    "Private append-only stream key is exact (offerId, offerVersion); observation revision is a distinct positive safe-integer sequencing dimension.",
+    "Initial revision 1; explicit consecutive predecessor/current enforcement and retry precedence apply exactly as for entity histories.",
+    "Current means greatest successfully stored sequential revision in that exact stream. No wall-clock/freshness assertion, caller-order selection, latest-offer substitution or mutable pointer.",
+    "A new offer version begins with no observation and getCurrentAvailability returns not-found until revision 1 is explicitly appended for that version. Never copy/inherit availability from an old version.",
+    "All historical observations, including retired, remain readable. Current streams for different offer versions are independent.",
+    "Changing availability never changes offer/publication history and never publishes/unpublishes anything. Preserve all six FOOD-002C states without readiness/order authority."
+  ],
+  "resultsAndFailures": {
+    "append": "Successful outcomes exactly created | already-present | conflict; conflict is not a repository failure.",
+    "read": "Successful exact/latest/current read outcomes exactly found | not-found. Missing stream/history produces not-found or successful empty history as appropriate; storage failure never becomes empty success.",
+    "invalid-input": "Fixed message: Food menu repository input could not be validated.",
+    "storage": "Fixed message: Food menu repository storage is unavailable.",
+    "constructorFailure": "TypeError with fixed message: Food menu repository dependencies are unavailable.",
+    "sanitization": "No source payload excerpts, private evidence, exception strings, stacks or SQL/storage/runtime internals in result text. Catch operational failures into bounded results. Authorization vocabulary is excluded."
+  },
+  "serialization": {
+    "constant": "FOOD_MENU_SERIALIZATION_VERSION = 1",
+    "envelope": "Fixed field order: formatVersion, recordType, recordId, recordVersion, observationRevision (availability only), snapshot. recordType exactly presentation | offer | publication | availability.",
+    "metadata": "recordId is dishId/offerId/publicationId respectively; recordVersion is snapshot.version for the first three families. Availability recordId is snapshot.offer.offerId, recordVersion is snapshot.offer.version, observationRevision is snapshot.revision. Require exact metadata/payload agreement.",
+    "canonicalization": "Validate domain first; recursively sort object keys using deterministic UTF-16 code-unit ordering; preserve all array order. Fixed envelope, no trimming/normalization/default inference. Equality depends only on domain snapshots, excluding contextual drafts/dependencies and timestamps.",
+    "apis": [
+      "serializeFoodDishPresentation(input: unknown, product: unknown, recipe: unknown): FoodMenuRepositoryResult<string>",
+      "deserializeFoodDishPresentation(serialized: unknown, product: unknown, recipe: unknown): FoodMenuRepositoryResult<FoodDishPresentation>",
+      "serializeFoodServingOffer(input: unknown, presentation: unknown, product: unknown, recipe: unknown): FoodMenuRepositoryResult<string>",
+      "deserializeFoodServingOffer(serialized: unknown, presentation: unknown, product: unknown, recipe: unknown): FoodMenuRepositoryResult<FoodServingOffer>",
+      "serializeFoodMenuPublication(input: unknown, presentations: unknown, offers: unknown): FoodMenuRepositoryResult<string>",
+      "deserializeFoodMenuPublication(serialized: unknown, presentations: unknown, offers: unknown): FoodMenuRepositoryResult<FoodMenuPublication>",
+      "serializeFoodServingOfferAvailability(input: unknown): FoodMenuRepositoryResult<string>",
+      "deserializeFoodServingOfferAvailability(serialized: unknown): FoodMenuRepositoryResult<FoodServingOfferAvailability>"
+    ],
+    "synchronous": "Serializer/deserializer functions are synchronous and I/O-free with explicitly supplied exact contexts; availability pure codec validates shape, while repository additionally enforces exact-offer existence.",
+    "decode": "Reject unsupported format, wrong discriminator, missing/unknown envelope properties, malformed JSON/payload, invalid domain, missing/mismatched exact context, metadata disagreement and canonical reserialization mismatch. Comparing exact input bytes to canonical reserialization also rejects duplicate keys/noncanonical lexical encodings.",
+    "failureMapping": "Standalone codec invalid input/context returns fixed invalid-input. Repository reconstruction of stored payload/key/context disagreement maps codec failure to fixed storage.",
+    "storedKeyCheck": "Reconstructed envelope/payload identities and all version dimensions must agree with private map key as well as each other. No silent repair."
+  },
+  "referenceAdapter": [
+    "Private instance-local maps store canonical serialized strings only. No shared mutable source snapshot references, global state, timestamps, random IDs or external I/O implementation.",
+    "Reconstruct and revalidate every read, verifying canonical payload and exact references. Outputs/results/pages/snapshots are detached and deeply frozen. Do not freeze or mutate caller inputs.",
+    "Capture submitted domain content into detached local data before awaited dependency resolution so caller-held references cannot change the attempted payload during an append. Validate captured data through unchanged domain authorities.",
+    "After asynchronous dependency resolution and predecessor reconstruction, final exact-key retry comparison/current-predecessor check/insertion must run synchronously with no intervening await. Recheck map state at this final linearization point.",
+    "Same-instance competing valid identical appends produce one created and the rest already-present; differing same-key content produces one created and remaining conflict outcomes, without renumbering.",
+    "This proves only same-instance reference-adapter semantics, not independent-adapter/database concurrency or durability."
+  ],
+  "paginationAndLatest": {
+    "defaultLimit": 20,
+    "maximumLimit": 100,
+    "validation": "Limits must be positive safe integers <= 100. Omitted/undefined limit uses 20; reject null/strings/fractional/unsafe/out-of-range without coercion. Reject malformed options/unknown properties. Version/revision cursors require canonical positive safe integers; identity cursors use each family's canonical parser. Omitted/undefined cursor means beginning.",
+    "histories": "Ascending numeric version/revision with exclusive afterVersion/afterRevision. Bound returned items and return nextCursor only when more items exist, using last returned item.",
+    "latestLists": "One greatest stored sequential version per stable identity; ascending JavaScript UTF-16 code-unit identity order, exclusive afterId. No locale sorting or insertion-order dependence.",
+    "latestMeaning": "Latest/current denotes only repository stream sequencing, never publication approval, public visibility, availability freshness or readiness.",
+    "deferred": "No dish-filtered offer listing in this slice."
+  },
+  "futureD1Considerations": [
+    "Composite identity/version primary or unique keys; exact offer-to-presentation foreign references; publication membership/reference integrity; availability key (offerId, offerVersion, revision).",
+    "Append-only UPDATE/DELETE rejection and no cascaded deletion. Atomic predecessor/current checks; unique key alone is insufficient for sequential concurrency.",
+    "Publication membership may require normalized reference tables. No SQL, migrations, configuration or D1 adapters created here."
+  ],
+  "requiredTests": [
+    "All 23 asynchronous methods; initial append, initial not 1, consecutive revision, gaps/missing/noncurrent predecessor, malformed versions and overflow.",
+    "Canonical identical retry, differing valid same-key conflict, historical identical retry after newer versions with correct predecessor/context, invalid retry predecessor rejection and exact retry precedence for every family.",
+    "Same-instance competing identical/conflicting appends; one created without renumbering; mutation of caller input during dependency await cannot alter stored attempt.",
+    "Exact historical/latest reads, ascending histories, deterministic latest listing, default/max/invalid limits and cursors, UTF-16 ordering including surrogate pairs and insertion-order independence.",
+    "Presentation exact FOOD-001 product/recipe correspondence, missing dependency invalid-input, thrown/corrupt/mismatched dependency storage and no FOOD-001 writes or private-context storage.",
+    "Offer dangling presentation rejection, exact historical reference and independent revisions, stable dish association and attempted dish move invalid-input; no latest substitution.",
+    "Publication dangling presentation/offer references and compatibility rejection; exact historical published/unpublished versions remain resolvable after newer records; stored publication grants no exposure.",
+    "Availability initial revision 1, consecutive/gap/overflow/dangling offer handling, independent exact-offer-version streams, current greatest sequential observation, new version starts not-found, old stream unchanged, retired history retained.",
+    "Every serializer/deserializer: key insertion order independent equality, meaningful array-order changes, format/discriminator/corrupt JSON/payload/metadata/key disagreement, exact context and canonical reserialization rejection.",
+    "Detached deeply frozen records/results/pages and frozen input compatibility; no shared mutable stored history or silent overwrite/delete/merge/repair APIs.",
+    "Fixed sanitized failures/conflict reason, failed reads/lists never become not-found/empty success; no payload/evidence/exception leakage; source isolation and no public activation/readiness semantics."
+  ],
+  "futureValidation": ["Focused FOOD-002D tests", "Relevant FOOD-002B/C and FOOD-001 regressions", "Strict TypeScript for future two files", "Whitespace checks", "git diff --check", "Normal build"],
+  "excludedScope": ["private services/controllers/authorization", "D1/schema/SQL/migrations/runtime composition/configuration", "routes/UI/public menu activation", "pricing/cart/orders/checkout/payments/fulfillment execution", "QR/ratings/analytics/demand/POS-lite/business contact values", "deployment/production data", "unrelated insurance/Sesh/creator changes"],
+  "currentTaskBoundary": "Create only this specification. Do not implement, stage, commit, create schema/migrations, configure infrastructure, access configured D1 or deploy."
+}
