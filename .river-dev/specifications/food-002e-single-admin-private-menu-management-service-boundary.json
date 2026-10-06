@@ -1,0 +1,99 @@
+{
+  "version": "1.0.0",
+  "id": "FOOD-002E",
+  "name": "Single-admin private menu management service boundary",
+  "predecessor": "FOOD-002D",
+  "phase": "Specification only; implementation requires separate explicit authorization",
+  "boundary": "Authorized private service only over FoodMenuRepository. Workspace/controller, aggregates, transport parsing, authorization callback gate, D1/runtime integration and routes/UI are separate later slices.",
+  "allowedFutureImplementationPaths": ["src/lib/food/private-menu-service.ts", "src/lib/food/private-menu-service.test.ts"],
+  "references": ["src/lib/food/menu-persistence.ts", "src/lib/food/dish-offer-domain.ts", "src/lib/food/menu-publication-domain.ts", "src/lib/identity/identifiers.ts", "src/lib/identity/session/principal-resolver.ts", "src/lib/food/private-draft-service.ts"],
+  "authority": [
+    "FOOD-001 and FOOD-002A-D remain unchanged; existing consumers remain source-compatible.",
+    "Reuse PrincipalId, parsePrincipalId and SessionPrincipalResolver contracts, not SingleAdminFoodDraftService or River OS boolean access-key authentication.",
+    "FOOD-002D remains authority for sequencing, exact reference integrity, retry/conflict, pagination and canonical storage. No duplicated domain validation is required here.",
+    "Possession of a food ID never grants permission. No email/name/session-field administrator inference, roles or ownership tables. Caller identity is used only for access decisions."
+  ],
+  "service": {
+    "interface": "FoodPrivateMenuService",
+    "implementation": "SingleAdminFoodMenuService",
+    "dependencies": "FoodPrivateMenuServiceDependencies = Readonly<{ repository: FoodMenuRepository; callerResolver: SessionPrincipalResolver; administratorPrincipalId: PrincipalId }>",
+    "constructor": "new SingleAdminFoodMenuService(dependencies: FoodPrivateMenuServiceDependencies)",
+    "construction": [
+      "Require non-null non-array object dependencies, repository and resolver; all 23 named repository methods and resolver.resolve must be callable. Validate administratorPrincipalId unchanged through parsePrincipalId.",
+      "Missing/malformed dependencies, noncanonical administrator and throwing dependency-property access cause only TypeError with message: Private food menu service configuration is unavailable. No raw values or exceptions escape.",
+      "Synchronous, structural and I/O-free: zero repository/resolver calls, database/session/schema probes or external I/O. Do not trim, normalize, infer, default or hardcode administrator identity. No fallback dependencies."
+    ],
+    "methodSignatures": "For every named method below preserve Parameters<FoodMenuRepository[K]> exactly. Return Promise<FoodMenuServiceResult<T>>, where T is the successful value inside Awaited<ReturnType<FoodMenuRepository[K]>>. Define explicit named methods, not generic pass-through or dynamic dispatch.",
+    "methods": [
+      "createInitialPresentation", "appendPresentationRevision", "getPresentation", "getLatestPresentation", "listPresentationVersions", "listLatestPresentations",
+      "createInitialOffer", "appendOfferRevision", "getOffer", "getLatestOffer", "listOfferVersions", "listLatestOffers",
+      "createInitialPublication", "appendPublicationRevision", "getPublication", "getLatestPublication", "listPublicationVersions", "listLatestPublications",
+      "createInitialAvailability", "appendAvailabilityRevision", "getAvailability", "listAvailabilityRevisions", "getCurrentAvailability"
+    ],
+    "methodCount": 23
+  },
+  "results": {
+    "FoodMenuServiceErrorCode": "unauthenticated | forbidden | access-unavailable | invalid-input | storage",
+    "FoodMenuServiceResult<T>": "Readonly<{ ok: true; value: T }> | Readonly<{ ok: false; error: Readonly<{ code: FoodMenuServiceErrorCode; message: string }> }>",
+    "fixedMessages": {
+      "unauthenticated": "Authentication is required.",
+      "forbidden": "Food menu access is forbidden.",
+      "access-unavailable": "Food menu access is unavailable.",
+      "invalid-input": "Invalid food menu operation input.",
+      "storage": "Food menu storage is unavailable."
+    },
+    "success": [
+      "Unwrap repository ok:true once; return its successful value directly, without nested repository envelopes. Preserve value structurally and preserve detached/frozen snapshots.",
+      "created, already-present and conflict remain distinct successful append outcomes. found and not-found remain successful reads. Pages retain deterministic items/order and continuation cursors.",
+      "Never reinterpret conflict as storage, already-present as failure or not-found as invalid-input. Failed lists never become successful empty lists. No automatic repair/retry."
+    ],
+    "repositoryEnvelopeValidation": [
+      "After authorization require non-null non-array result objects with exactly own ok/value for success or ok/error for failure, literal boolean ok, no extra own keys including symbols. Throwing property access fails closed.",
+      "Failure error has exactly code/message, string message and code invalid-input or storage. Replace repository messages with fixed service messages; unknown/malformed failures map storage.",
+      "Success values must match the operation family: append created/already-present plus snapshot, or conflict plus reason different-content; read found plus snapshot or not-found; page items array plus optional nextCursor. Reject unknown discriminants, missing fields or unexpected envelope fields. Snapshot must be a non-null non-array object. Defined page cursors must match the repository cursor type (positive safe integer or canonical family ID); undefined optional cursor is accepted. Do not duplicate snapshot domain validation or sequencing.",
+      "Unexpected repository throw/rejection, malformed/unrecognized envelopes or result-access failures map only fixed storage. Valid successful values are preserved unchanged."
+    ],
+    "sanitization": "Never expose repository error text, exception text, stacks, serialized/submitted payloads, FOOD-001 private evidence, principal/admin IDs or storage internals in errors. Do not retain or echo submitted records in failure results."
+  },
+  "authorization": [
+    "All 23 operations follow fresh resolve caller -> validate/authorize caller -> only then use operation input -> repository. Authorization precedes domain, ID/version, pagination, existence or conflict validation.",
+    "No cached caller/decision, reusable token or inherited permission. Revocation/change between operations is honored. Denied/unavailable callers cause zero repository calls and learn no ID validity, record existence, append conflict, availability existence or pagination validity.",
+    "Success resolution must have exactly own ok/value with ok true and value exactly principalId; non-null non-array records required. Validate canonical principal unchanged via parsePrincipalId. Equal injected administrator authorizes; canonical different principal maps forbidden.",
+    "Failure resolution must have exactly own ok/error with ok false; error exactly code/message and string message. unauthenticated maps unauthenticated; unavailable maps access-unavailable. Unknown codes, extra own keys including symbols, malformed/noncanonical results, throwing getters or resolver throw/rejection map access-unavailable.",
+    "Operation payload principal/admin/role-like values cannot grant access. Do not construct sessions or identity repositories here."
+  ],
+  "forwarding": [
+    "After authorization forward original arguments in original order, preserving optional undefined arguments, object identity and repository method receiver: IDs, exact versions/revisions/references, expected predecessors, options and cursors.",
+    "No normalization, regenerated IDs, generated versions, merge, retargeting, latest substitution for historical references, repair or automatic retry."
+  ],
+  "publication": "Stored FoodMenuPublication state published means only that the immutable private snapshot carries that state. No public route/data exposure, navigation, commerce activation, live/activated/publicly available feedback or legal/safety/tax/payment/fulfillment readiness is established.",
+  "availability": [
+    "Preserve exact offer ID/version streams: initial revision 1, next observation, exact observation, ordered history and greatest successfully stored sequential current observation within that stream.",
+    "Never inherit/carry availability between offer versions, automatically create observations, mutate old observations, convert absence to unavailable or treat availability as publication. Current not-found remains not-found."
+  ],
+  "pagination": [
+    "Forward FOOD-002D unchanged: default 20, maximum 100, exclusive cursors, ascending numeric version/revision histories and deterministic JavaScript UTF-16 canonical identity ordering for latest listings.",
+    "No dish-filtered offer listing. Filtering a bounded page cannot be presented as a complete dish-specific result set."
+  ],
+  "deferred": [
+    "No delete, overwrite, update-in-place, reset, history rewrite, renumber or merge. Corrections require new immutable versions/observations.",
+    "No runAuthorized, lazy authorization callback, body-read gate or reusable capability token. A separate gate may be considered later only for authorization before lazy transport body access.",
+    "Separate future workspace/controller delegates payload authority to this service and preserves exact history; stored published differs from actual activation, absence differs from observations, current differs from history, and offer-version streams stay separate.",
+    "Defer dish plus all offers, resolved publication plus exact dishes/offers, offer plus current availability and dashboards. Future aggregates use authorized calls, resolve exact recorded references, never substitute latest and fail closed on stored inconsistency."
+  ],
+  "requiredTests": [
+    "For all 23 methods: unauthenticated, forbidden, unavailable/thrown resolver and malformed/noncanonical resolution cause zero repository calls even with malformed operation arguments. Authorization precedes input handling.",
+    "Fresh resolution per operation, revocation between calls, no cache, canonical administrator required and payload identity/role spoofing cannot authorize.",
+    "Exact forwarding for each presentation/offer/publication/availability operation, argument identity, versions, references, expected predecessors, options/cursors and method receiver.",
+    "Preserve created/already-present/conflict, found/not-found and ordered pages/cursors without double wrapping, auto-retry or generated versions.",
+    "Repository invalid-input/storage sanitization; throws/rejections, malformed envelopes, unknown discriminants and throwing getters map storage; fixed messages leak no internals or submitted payloads.",
+    "Stored published does not activate exposure; absent availability remains not-found; exact offer-version streams remain independent and new offer versions inherit none.",
+    "No destructive, callback-gate, sale/order/payment authority operations; detached/frozen history remains unchanged.",
+    "Constructor missing/null/array/malformed dependencies, each noncallable repository method, malformed resolver/admin and throwing getters cause the fixed sanitized TypeError. Construction is synchronous with zero repository/resolver/I/O calls.",
+    "Source isolation from concrete draft-service authority, boolean River OS auth, routes/UI, environment/runtime acquisition, D1/config/schema/migrations, commerce/payment/deployment/unrelated systems; existing consumers remain compatible."
+  ],
+  "validation": ["Focused FOOD-002E tests for all 23 methods", "FOOD-002B/C/D and relevant shared identity/service regressions", "Strict TypeScript checks for the two planned files", "git diff --check", "Normal build; do not fix unrelated baseline failures"],
+  "laterSequence": ["Private service", "Separate private workspace/controller", "FOOD-002D D1 adapter and migration definition with isolated tests", "Injected runtime composition", "Trusted environment/server-context acquisition", "Separately approved infrastructure/migration/admin activation phases", "Private River OS menu-management UI", "Separate public read/projection boundary", "Pricing/cart/quote/fulfillment contracts", "Payment/order activation only after explicit readiness approvals"],
+  "scopeExclusions": ["Workspace/controller/aggregates", "Authorization callback gate/transport parsing", "D1/schema/migrations/runtime/environment composition", "Astro routes/pages/actions/components/public activation", "Pricing/cart/orders/checkout/payments/fulfillment execution", "QR/ratings/demand analytics/POS-lite/business contact values", "Configuration/provisioning/concrete administrator values", "Deployment/production data/unrelated insurance/Sesh/creator changes"],
+  "currentAuthorization": "Create specification only. Do not implement, stage, commit, configure infrastructure, access configured D1, migrate or deploy."
+}
