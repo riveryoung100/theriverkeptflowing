@@ -1,0 +1,205 @@
+{
+  "version": "1.0.0",
+  "id": "FOOD-002M",
+  "name": "Private menu mutation transport/request boundary",
+  "predecessors": ["FOOD-002D", "FOOD-002E", "FOOD-002F", "FOOD-002K", "FOOD-002L"],
+  "phase": "Discovery and specification only; implementation requires separate explicit authorization",
+  "architecturalPurpose": "Define bounded framework-neutral private menu mutation submissions whose bodies are consumed only after fresh gate authorization and whose mutations independently reauthorize through the existing workspace/service. No endpoint or runtime activation is created.",
+  "startingState": {
+    "branch": "cif-001-canonical-content-source-record",
+    "head": "ab40f63db9bd2c036c2b1703c979408b73433a2a",
+    "worktree": "Verified clean before discovery and specification"
+  },
+  "references": [
+    ".river-dev/specifications/food-002k-authorized-private-menu-operation-gate-boundary.json",
+    ".river-dev/specifications/food-002l-private-menu-operation-gate-runtime-capability-exposure-boundary.json",
+    ".river-dev/specifications/food-001d2-authorized-private-food-operation-gate-capability.json",
+    ".river-dev/specifications/food-001j-private-food-draft-mutation-transport-request-policy-boundary.json",
+    ".river-dev/specifications/food-001k-trusted-private-food-runtime-capability-exposure-boundary.json",
+    "src/lib/food/private-menu-service.ts",
+    "src/lib/food/private-menu-service.test.ts",
+    "src/lib/food/private-menu-runtime-composition.ts",
+    "src/lib/food/private-menu-runtime-composition.test.ts",
+    "src/lib/food/private-menu-server-adapter.ts",
+    "src/lib/food/private-menu-server-adapter.test.ts",
+    "src/lib/food/private-menu-workspace.ts",
+    "src/lib/food/menu-persistence.ts",
+    "src/lib/food/dish-offer-domain.ts",
+    "src/lib/food/menu-publication-domain.ts",
+    "src/lib/food/private-draft-service.ts",
+    "src/lib/food/private-draft-service.test.ts",
+    "src/lib/food/private-draft-mutation-request.ts",
+    "src/lib/food/private-draft-mutation-request.test.ts",
+    "src/lib/food/private-draft-runtime-composition.ts",
+    "src/lib/food/private-draft-runtime-composition.test.ts",
+    "src/lib/insurance/http/quote-request-api.ts"
+  ],
+  "discoveryFindings": {
+    "operationCounts": "FoodMenuRepository and FoodPrivateMenuService expose 23 operations: eight mutations and fifteen reads. FoodPrivateMenuWorkspaceController wraps those 23 and adds getOfferWorkspaceDetail, a read aggregate. Only the eight mutations belong in M.",
+    "gate": "FoodPrivateMenuOperationGate.runAuthorized<T>(callback: () => T | Promise<T>): Promise<FoodMenuAuthorizedCallbackResult<T>> authorizes fresh without repository access; callback values remain opaque and callback errors are sanitized.",
+    "runtime": "FOOD-002L supplies frozen FoodPrivateMenuOperationRuntimeCapabilities { service, workspace, operationGate }. service and operationGate are the same concrete instance and workspace wraps it. Existing narrow runtime factories remain intact.",
+    "domainValidation": "menu-persistence validates supplied snapshots and loads exact dependencies during append. Workspace delegates without input prevalidation; service authorizes before repository access. M therefore needs no pre-dispatch domain validators or exact-read lookup operations.",
+    "precedent": "FOOD-001J already uses a lazy AsyncIterable<Uint8Array> envelope, strict mandatory canonical Origin, POST, URL-form singleton JSON, bounded streaming and duplicate-aware JSON. Its helpers are module-private, not exported shared primitives. Reuse the design without modifying FOOD-001J or importing its four-operation transport as menu authority.",
+    "otherOriginPattern": "insurance/http/quote-request-api.ts accepts missing Origin and compares normalized URL origins. That policy is weaker than FOOD-001J and is not suitable for this mandatory private-menu Origin boundary.",
+    "capacity": "FOOD-002C permits 20 sections, 100 entries per section and 20 offer selections per entry: 2000 entries and 40000 selections. Each entry may select 20 media references. FOOD-002B media arrays and canonical IDs have no finite domain cardinality/length bound. FOOD-001J's 65536-byte/2048-value limits cannot describe the full menu topology; no finite transport can accommodate every domain-valid snapshot. M explicitly separates capacity rejection from domain invalidity."
+  },
+  "api": {
+    "factory": "createPrivateFoodMenuMutationRequestBoundary",
+    "inputType": "FoodMenuMutationRequestBoundaryInput",
+    "inputDefinition": "export interface FoodMenuMutationRequestBoundaryInput { readonly operationGate: FoodPrivateMenuOperationGate; readonly workspace: FoodPrivateMenuWorkspaceController; readonly expectedOrigin: string; }",
+    "boundaryType": "FoodMenuMutationRequestBoundary",
+    "boundaryDefinition": "export interface FoodMenuMutationRequestBoundary { submit(envelope: FoodMenuMutationRequestEnvelope): Promise<FoodMenuMutationRequestResult>; }",
+    "factorySignature": "createPrivateFoodMenuMutationRequestBoundary(input: FoodMenuMutationRequestBoundaryInput): Readonly<FoodMenuMutationRequestBoundary>",
+    "dependencyPolicy": "Inject only gate, workspace and trusted expectedOrigin. Do not accept the full runtime bundle, service, repository, database, environment, session, principal, administrator configuration or token. A later caller projects operationGate/workspace from the same L runtime.",
+    "construction": "Synchronous, I/O-free, frozen submit-only output. Capture trusted dependencies without invoking any gate/workspace/service/resolver/body/database/FOOD-001/network operation. Do not access request metadata until submit. Invalid expectedOrigin rejects submissions as origin-rejected before gate/body; introduce no configuration failure vocabulary."
+  },
+  "requestEnvelope": {
+    "type": "FoodMenuMutationRequestEnvelope",
+    "definition": "export interface FoodMenuMutationRequestEnvelope { readonly method: string; readonly origin: string | null; readonly contentType: string | null; readonly contentLength?: string; readonly readBody: () => AsyncIterable<Uint8Array>; }",
+    "preAuthorizationAccess": "Only method, origin, contentType and optional contentLength, plus the trusted expectedOrigin. Validate in that order. Do not inspect/access the readBody property, iterator or snapshot/operation fields before successful gate authorization. Throwing metadata access maps to invalid-request without gate/body work.",
+    "excluded": ["Complete Request or Astro context", "Raw cookies", "FormData", "Response or redirect targets", "Environment/global acquisition", "Expected-origin derivation from submitted/forwarded headers"]
+  },
+  "executionOrder": [
+    "Validate metadata policy without accessing the body reader; any failure returns immediately with zero gate/body calls.",
+    "Call operationGate.runAuthorized with a zero-argument lazy callback. Never duplicate administrator checks or perform a dummy repository read/write.",
+    "Only inside the authorized callback access/invoke readBody, consume bounded bytes once, decode URL-form, parse bounded duplicate-aware JSON and validate the transport envelope/discriminator/numeric lexical representation.",
+    "Use an explicit switch over the eight allowed operation literals and invoke exactly one existing workspace mutation with parsed snapshot and, for revisions, the explicit predecessor.",
+    "That workspace mutation calls FOOD-002E and authorizes fresh a second time before repository validation, dependency lookup or write. No gate decision is inherited.",
+    "The gate treats the nested transport/workspace result as opaque. On outer gate success unwrap that value; on outer failure map only the allowed access/callback codes to fixed messages. Never mistake a nested expected failure for failed gate authorization."
+  ],
+  "requestPolicy": {
+    "method": "Exactly POST; all other spellings/methods return method-not-allowed before gate/body access.",
+    "origin": "Require one canonical serialized HTTP(S) origin exactly equal to trusted expectedOrigin. new URL(value).origin must equal the original string; do not normalize the input. Reject missing, literal null, opaque, multiple, wildcard, suffix-match, cross-origin, credential-bearing, path/query/fragment, noncanonical case/port and unsupported-scheme values. No Referer, Host or Forwarded fallback.",
+    "contentType": "Accept only application/x-www-form-urlencoded with optional single charset=UTF-8, quoted or unquoted. Media-type/charset tokens are case-insensitive; permit surrounding HTTP parameter whitespace as FOOD-001J does. Reject all other parameters, repeated charset, multipart, JSON bodies and other encodings. Do not add decompression.",
+    "csrf": "Preserve FOOD-001J scope: no extra CSRF token. This relies on mandatory exact Origin, POST-only handling and authenticated fresh authorization, not session authentication alone. A later route must supply a separately trusted expectedOrigin and preserve this policy; weakening it requires separate CSRF review. M acquires no production origin configuration.",
+    "contentLength": "If present, require string spelling 0 or [1-9][0-9]* representing a nonnegative safe integer. Missing is permitted; explicit null, whitespace, signs, leading zero, exponent, fraction, multiple/comma values or unsafe numbers are invalid-request. A valid value above encodedBodyBytes is payload-too-large before gate/body. Smaller or absent declarations never replace actual stream enforcement. Do not require equality with actual byte count, matching FOOD-001J."
+  },
+  "wireFormat": {
+    "fields": ["operation", "snapshot", "expectedPreviousVersion", "expectedPreviousRevision"],
+    "maximumFieldsPerSubmission": 3,
+    "operation": "Exactly one decoded singleton string equal to one allowlisted existing method name. No aliases, case folding, fuzzy matching, prototype lookup or reflective method dispatch.",
+    "snapshot": "Exactly one singleton string containing a complete structured JSON object of the existing operation's snapshot type. No repository serialization wrapper, indexed fields, nested form syntax, partial update, checkbox inference or parallel model.",
+    "predecessor": "Initial operations forbid both predecessor fields. Presentation/offer/publication revisions require exactly expectedPreviousVersion and forbid expectedPreviousRevision. Availability revision requires exactly expectedPreviousRevision and forbids expectedPreviousVersion.",
+    "formParsing": "Strict UTF-8 body and percent-field decoding with plus-to-space URL-form decoding. Reject invalid UTF-8, malformed percent escapes, malformed/empty segments, missing required fields, unexpected fields and repeated decoded field names, including escaped-equivalent names. Do not trim/normalize values. Files/multipart are unsupported. Syntax/field-shape failures are invalid-request.",
+    "jsonParsing": "Use a bounded duplicate-aware parser/tokenizer, not JSON.parse alone or a reviver. Detect duplicate decoded keys at every object before insertion, including escaped equivalents. Reject __proto__, constructor and prototype at every level. Construct records without prototype setters. Reject malformed grammar, trailing content and non-object root as invalid-request. Preserve JSON array order, exact strings, omission and explicit null/unknown values; JSON grammar whitespace does not trim domain text."
+  },
+  "limits": {
+    "encodedBodyBytes": 33554432,
+    "decodedSnapshotUtf8Bytes": 25165824,
+    "decodedJsonStringUtf16CodeUnits": 65536,
+    "jsonContainerDepth": 12,
+    "arrayEntries": 40000,
+    "totalJsonValues": 1000000,
+    "formFields": 3,
+    "operationCharacters": 32,
+    "predecessorDecimalDigits": 16,
+    "counting": "Inclusive limits. Root container depth is 1. Count every object, array and scalar once; decoded property names count toward string limits but not value count. Bound both decoded property names and values. Count body bytes before decoding and decoded snapshot bytes as UTF-8. Every capacity violation maps to payload-too-large, never domain invalid-input.",
+    "rationale": "32 MiB encoded / 24 MiB decoded capacity avoids the 64 KiB draft-transport ceiling. Maximum publication topology with full media selection contains approximately 458000 JSON values, below 1000000; deepest publication container is depth 8, below 12; all domain-bounded individual arrays are at most 100. 40000 transport array entries also allows substantially larger unbounded presentation media arrays without asserting a new domain limit. IDs and presentation media cardinality remain unbounded in the domain. Large IDs, maximally long/media-rich publications or large form percent-encoding expansion can still exceed finite byte/string/node/array capacity. Such domain-valid snapshots receive payload-too-large and remain valid for other typed domain callers; never silently truncate, split, prune or reinterpret them as invalid-input. These are transport resource limits, not domain changes or a guarantee that every legal maximal snapshot fits.",
+    "memory": "Enforce bounds before unbounded allocation/recursive descent. Stop copying once stream overflow is known; reject arrays/nodes/depth/decoded strings as soon as limits are exceeded. Bound transport memory independently of declared length."
+  },
+  "streaming": [
+    "Access and invoke readBody at most once, inside authorized callback only. Obtain one async iterator and accept only Uint8Array chunks; copy accepted chunks to prevent caller mutation.",
+    "Reader/iterator construction or next() failure returns fixed body-unavailable. A non-byte chunk or malformed iterator result returns invalid-request. No raw getter/iterator exception leaks.",
+    "Count actual streamed bytes independently of Content-Length. On overflow return payload-too-large immediately, stop pulling/draining, and call iterator.return where available. Cleanup failure cannot replace the original typed failure.",
+    "Never retry consumption, parsing or dispatch. Unauthorized submissions access the reader zero times and consume zero bytes. Separate concurrent submissions retain only per-invocation parse/authorization state."
+  ],
+  "mutations": [
+    { "operation": "createInitialPresentation", "snapshotType": "FoodDishPresentation", "predecessorField": null, "dispatch": "workspace.createInitialPresentation(snapshot)" },
+    { "operation": "appendPresentationRevision", "snapshotType": "FoodDishPresentation", "predecessorField": "expectedPreviousVersion", "dispatch": "workspace.appendPresentationRevision(snapshot, expectedPreviousVersion)" },
+    { "operation": "createInitialOffer", "snapshotType": "FoodServingOffer", "predecessorField": null, "dispatch": "workspace.createInitialOffer(snapshot)" },
+    { "operation": "appendOfferRevision", "snapshotType": "FoodServingOffer", "predecessorField": "expectedPreviousVersion", "dispatch": "workspace.appendOfferRevision(snapshot, expectedPreviousVersion)" },
+    { "operation": "createInitialPublication", "snapshotType": "FoodMenuPublication", "predecessorField": null, "dispatch": "workspace.createInitialPublication(snapshot)" },
+    { "operation": "appendPublicationRevision", "snapshotType": "FoodMenuPublication", "predecessorField": "expectedPreviousVersion", "dispatch": "workspace.appendPublicationRevision(snapshot, expectedPreviousVersion)" },
+    { "operation": "createInitialAvailability", "snapshotType": "FoodServingOfferAvailability", "predecessorField": null, "dispatch": "workspace.createInitialAvailability(snapshot)" },
+    { "operation": "appendAvailabilityRevision", "snapshotType": "FoodServingOfferAvailability", "predecessorField": "expectedPreviousRevision", "dispatch": "workspace.appendAvailabilityRevision(snapshot, expectedPreviousRevision)" }
+  ],
+  "payloadMapping": {
+    "presentation": "Full existing FoodDishPresentation: dishId, version, product { id, version }, recipe { id, version }, name and optional shortDescription/longDescription/mediaReferences [{ reference }]. Exact FOOD-001 references are supplied unchanged; M performs no FOOD-001 lookup.",
+    "offer": "Full existing FoodServingOffer: offerId, version, presentation { dishId, version }, format, servingEstimate and optional packagingDescription/storageSummary/reheatingSummary. Preserve individual/family/catering/custom, catering pan details, explicit unknown/specification and omitted descriptor differences.",
+    "publication": "Full existing FoodMenuPublication: publicationId, version, state, title, ordered sections [{ key, title, entries [{ presentation { dishId, version }, selection { shortDescription, longDescription, mediaReferences }, offers [{ offer { offerId, version }, intent, selection { packagingDescription, storageSummary, reheatingSummary, availability } }] }] }]. Preserve exact references, all booleans and section/entry/offer/media order. No automatic selection or public projection.",
+    "availability": "Full existing FoodServingOfferAvailability: offer { offerId, version }, revision, state. Observation revision is independent from offer version; never retarget to current/latest offer.",
+    "numerics": "Every JSON property named version or revision must contain an unquoted [1-9][0-9]* numeric token that converts exactly to a positive safe integer. Apply the same lexical/representation rule to servingEstimate minimum/maximum. Reject numeric strings, zero, negative/sign forms, fractions, exponents and unsafe integers as invalid-request; do not round/coerce. Form predecessor uses the same canonical positive decimal spelling within 16 digits and converts exactly. Domain validators retain authority over positive/range/consecutive/current-predecessor semantics; no generated version or inferred relation.",
+    "domainBoundary": "M validates transport object-root/fields/duplicate safety/numeric lexical representation only. Forward nested content unchanged to the typed workspace operation; a localized untrusted-input type assertion may bridge parsed unknown to the existing parameter type but does not certify domain validity or grant authority. Do not construct a parallel domain abstraction or call domain validators before dispatch. Repository uses existing FOOD-002B/C validators and exact contexts after second authorization. Unknown/extra nested domain fields, noncanonical IDs, enums, disallowed nulls, missing domain fields, range errors and dangling references remain repository/service invalid-input or storage according to existing contracts. Extra outer form fields are transport invalid-request. Never normalize IDs, text, enums or references, fill defaults, merge omitted fields, substitute latest or add fields."
+  },
+  "doubleAuthorization": {
+    "first": "Gate authorization permits only this one callback/body continuation; it performs no repository access and issues no permission token.",
+    "second": "The selected workspace mutation always invokes normal FOOD-002E fresh authorization before any input use/validation or repository call. Transport must not bypass it through a direct repository/service implementation reference.",
+    "sessionChange": "After first success the body may have been read, but a changed/missing/revoked/unavailable caller on the second check prevents persistence and returns the normal fixed workspace access failure. No atomic request/session guarantee or inherited/cached authorization.",
+    "unsupported": "All fifteen service reads, getOfferWorkspaceDetail and arbitrary member names are invalid-request. M performs no helper read or aggregate; exact dependency resolution stays in the authorized repository append."
+  },
+  "results": {
+    "type": "FoodMenuMutationRequestResult",
+    "definition": "Union of Awaited<ReturnType<FoodPrivateMenuWorkspaceController['createInitialPresentation']>>, the equivalent createInitialOffer/createInitialPublication/createInitialAvailability results, and Readonly<{ ok: false; error: Readonly<{ code: FoodMenuMutationTransportErrorCode | 'callback-failed' | FoodMenuServiceErrorCode; message: string }> }>. Revisions use their corresponding identical snapshot result family. Export FoodMenuMutationTransportErrorCode as exactly the six transport-code literals below.",
+    "transportMessages": {
+      "method-not-allowed": "Private food menu mutations require POST.",
+      "origin-rejected": "Private food menu request origin is not permitted.",
+      "unsupported-content-type": "Private food menu request content type is not supported.",
+      "payload-too-large": "Private food menu request exceeds the permitted limits.",
+      "invalid-request": "The private food menu request is invalid.",
+      "body-unavailable": "Private food menu request body could not be read."
+    },
+    "messageConstant": "FOOD_MENU_MUTATION_TRANSPORT_MESSAGES, frozen",
+    "gateAccess": "Preserve unauthenticated, forbidden and access-unavailable distinctly; replace gate-supplied message text with existing FOOD_MENU_WORKSPACE_FEEDBACK for that code.",
+    "callbackFailure": "Preserve callback-failed distinctly with exactly Private food menu operation could not be completed. Expected parsing/capacity/body failures return typed nested failures inside the callback; unexpected callback throw/rejection is left to K's callback-failed sanitation. Unexpected gate throw/rejection or malformed outer gate envelope also fails closed as this fixed callback-failed, without a new error code.",
+    "workspaceFailures": "Preserve all five FOOD-002E/F codes distinctly with FOOD_MENU_WORKSPACE_FEEDBACK fixed messages: unauthenticated, forbidden, access-unavailable, invalid-input, storage. Do not preserve injected private error messages; malformed workspace mutation envelopes become fixed workspace storage.",
+    "mutationSuccess": "Preserve created, already-present and conflict as distinct successful workspace values. Created/retry include only the successful detached frozen snapshot and existing fixed feedback; conflict has only outcome and fixed feedback, no reason or submitted snapshot. Preserve existing publicationLabel exactly; published remains a snapshot label, not activation.",
+    "notFound": "No mutation result has found/not-found. A not-found injected mutation envelope is malformed and becomes storage, not a new successful empty/read result. Existing missing dependencies retain the repository's invalid-input/storage classification through the workspace.",
+    "shape": "Use the existing ok/value or ok/error envelopes, not HTTP Response/status/redirect/cookie artifacts. All returned envelopes and successful snapshots are detached/deeply frozen; failed results contain only fixed code/message, never submitted payloads or evidence. No raw SQL/JSON/exception/stack/internal reason is retained."
+  },
+  "retryAndPrivacy": [
+    "No additional persisted idempotency key/submission token, automatic retry or version generation. Preserve FOOD-002D/G canonical same identity/version/content retry as already-present and differing content as conflict, including historical retry after later versions.",
+    "An uncertain caller retry must preserve exact operation, snapshot identity/version/revision/content/references and expected predecessor; never silently renumber, merge, retarget or repair. Storage failure makes no success claim.",
+    "No logging, telemetry or retained request state for raw/decoded body, private evidence, cookies, principals/admin IDs, environment, DB identifiers, secrets or errors. Successful private mutation snapshots are intentional existing workspace values; failed feedback never echoes submissions.",
+    "No delete/overwrite/public activation/order/payment/sale authority operation. Publication and availability remain independent descriptive records, with no readiness or orderability inference."
+  ],
+  "futureIntegration": {
+    "runtime": "A later trusted server caller obtains createPrivateFoodMenuOperationRuntimeFromServerContext success, projects { operationGate: runtime.operationGate, workspace: runtime.workspace }, and supplies independently trusted expectedOrigin to the M factory. Do not modify L or construct another authorization graph.",
+    "request": "A later route adapts actual metadata and one lazy bounded byte iterator to FoodMenuMutationRequestEnvelope. M itself acquires no headers/environment/origin/session configuration and creates no route or response.",
+    "nextSlice": "FOOD-002M implementation and validation only; route/server-request adaptation remains a separately specified later slice."
+  },
+  "tests": [
+    "Frozen construction performs zero gate/auth/body/workspace/FOOD-001/DB/network calls; output exposes submit only and no injected internals.",
+    "Policy matrix: all non-POST methods, malformed/missing/cross/multiple/opaque/noncanonical origins, invalid media types/parameters and malformed/oversized Content-Length reject before gate/reader access. Throwing reader getter proves pre-auth isolation.",
+    "Unauthenticated, forbidden, access-unavailable and malformed principal through actual K invoke callback/reader/parser zero times. Keep resolver outcomes fresh and separate concurrent out-of-order requests without authorization-state sharing.",
+    "Successful authorization permits exactly one lazy reader; actual limits override absent/underreported length. Verify exact inclusive byte boundary, overflow cleanup, cleanup exceptions, invalid chunks/iterator envelopes, reader/next exceptions and no reread/drain/retry.",
+    "Strict form UTF-8/percent/plus semantics, escaped repeated names, missing/unexpected/empty fields, wrong predecessor field and extra form fields all fail deterministically without evidence/message leakage.",
+    "JSON malformed/trailing/non-object, nested decoded duplicate/escaped-equivalent keys and every prototype-sensitive key fail closed. Verify depth/string/array/node/decoded-byte boundary counting including multibyte/surrogate text, ordered arrays and omitted versus null/unknown values.",
+    "Numeric matrix for root/nested versions, availability revision, serving bounds and predecessors: canonical positive safe integers accepted; strings, signs, zero, fractions, exponents, leading zeros and overflow rejected with no coercion. Domain range/sequencing validation remains downstream.",
+    "Exercise all eight literal operations and exact snapshot/predecessor/reference forwarding. Reject every read/history/list/aggregate, constructor/prototype/member name and unknown alias without reflective dispatch. No helper read or transport domain validation occurs.",
+    "Use real SingleAdminFoodMenuService plus workspace with isolated in-memory repository/fakes to prove two distinct fresh resolutions for valid mutations and revocation/unavailable second authorization after body read causes zero persistence calls. No configured D1 is used.",
+    "Exercise all four snapshot families, unknown descriptors, exact historical references, ordered publication membership and independent exact-offer availability streams. Invalid nested domain shape/extra fields/dangling references retain existing invalid-input/storage authority.",
+    "Test a large domain-valid publication exceeding FOOD-001J's old byte/node limits, and maximum 20x100x20 topology within selected byte/string capacity. A domain-valid snapshot exceeding M capacity is payload-too-large rather than invalid-input; never truncate or change domain limits.",
+    "Preserve created/already-present/conflict, historical identical retry, conflicting retry, full-replacement revisions and all five fixed workspace errors. Failure contains no submitted snapshot; conflict strips reason; malformed mutation result/not-found maps to storage.",
+    "Expected nested transport failure remains opaque gate success and unwraps correctly; unexpected callback throw/rejection and malformed/throwing gate map to fixed callback-failed without leaked parser/SQL/stack/body text.",
+    "Success and failure outputs are deterministic/frozen/detached. No automatic retry/version inference, mutable authorization state, arbitrary method dispatch, readiness inference or runtime/configured DB access.",
+    "Source isolation excludes Astro/Request/Response/FormData/routes/UI/environment acquisition/runtime wiring/administrator sourcing/migration/configuration/commerce/payment/deployment and unrelated subsystems. Existing K/L/workspace/service/repository contracts remain unchanged."
+  ],
+  "allowedFutureImplementationPaths": [
+    "src/lib/food/private-menu-mutation-request.ts",
+    "src/lib/food/private-menu-mutation-request.test.ts"
+  ],
+  "futureValidation": [
+    "Focused FOOD-002M tests and relevant FOOD-002D/E/F/K/L plus FOOD-001J regressions",
+    "Strict TypeScript checks for the two new files",
+    "git diff --check and normal build; do not fix unrelated baseline failures",
+    "No configured database, real request body or runtime activation required"
+  ],
+  "strictExclusions": [
+    "Implementation in this discovery/specification slice; staging, commit or push",
+    "Actual body reads or production HTTP requests",
+    "Routes, endpoints, actions, pages, components, navigation or public menu activation",
+    "Changes to existing FOOD-001/002 domain/repository/service/workspace/gate/runtime contracts",
+    "D1 access/configuration/provisioning, production binding selection, migration definition/execution or schema changes",
+    "Wrangler/generated environment typing, real administrator values/secrets or expected-origin production configuration",
+    "Pricing, cart, order lifecycle, checkout/payment, fulfillment, QR, ratings, demand analytics, POS-lite or business contact configuration",
+    "Deployment, production data, insurance/Sesh/creator/accounting/community or unrelated changes"
+  ],
+  "acceptanceCriteria": [
+    "Only this specification is created and nothing is staged; initial branch/HEAD/clean gates pass.",
+    "Referenced existing types/functions/files and all eight workspace/service mutation names are verified against current code.",
+    "Implementation can satisfy metadata-before-gate, authorization-before-body and independent mutation authorization without changing existing authorities or activating infrastructure.",
+    "Wire/duplicate/numeric/resource/result rules are explicit and no domain-valid oversized input is silently reclassified as domain invalidity.",
+    "JSON parsing/reference/whitespace checks and git diff --check pass; no tracked file changes or database/body/config access occurs."
+  ],
+  "remainingAmbiguities": "None requiring a shared-contract correction. Finite transport capacity intentionally excludes some unbounded domain-valid content as payload-too-large; later route adaptation and trusted origin configuration remain deferred, not prerequisites for M implementation."
+}
