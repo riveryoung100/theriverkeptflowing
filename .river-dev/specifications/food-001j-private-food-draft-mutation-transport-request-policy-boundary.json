@@ -1,0 +1,150 @@
+{
+    "version": "1.0.0",
+    "id": "FOOD-001J",
+    "name": "Private food-draft mutation transport parser and request-policy boundary",
+    "predecessors": ["FOOD-001I", "FOOD-001D2"],
+    "phase": "Specification only; implementation requires separate explicit authorization",
+    "objective": "Parse bounded private mutation submissions only after authorization, preserving canonical domain semantics and fresh authorization for every subsequent service operation.",
+    "allowedFutureImplementationPaths": [
+        "src/lib/food/private-draft-mutation-request.ts",
+        "src/lib/food/private-draft-mutation-request.test.ts"
+    ],
+    "dependencies": ["Injected FoodPrivateDraftOperationGate", "Injected existing FOOD-001I workspace controller", "Separately injected trusted expectedOrigin"],
+    "scope": "Framework-neutral; expose only createInitialRecipe, appendRecipeRevision, createInitialProduct and appendProductRevision. Reuse FOOD-001A-I and D2 unchanged.",
+    "requestEnvelope": {
+        "method": "string",
+        "origin": "string | null",
+        "contentType": "string | null",
+        "contentLength": "optional string",
+        "readBody": "() => AsyncIterable<Uint8Array>",
+        "excluded": ["Complete Request", "Astro context", "Raw cookie API", "Redirect target", "Response object"],
+        "expectedOrigin": "Trusted server configuration only, never submitted fields, forwarded headers or body data. Require a canonical HTTP(S) serialized origin."
+    },
+    "executionOrder": [
+        "Request method/origin/content-type/header policy rejects before gate or body access.",
+        "Invoke FoodPrivateDraftOperationGate.runAuthorized with a zero-argument lazy callback.",
+        "Only inside the authorized callback read bounded body bytes, decode form, parse bounded duplicate-aware JSON, validate through FOOD-001A and invoke FOOD-001I mutation.",
+        "Denied authorization invokes reader and parser zero times. No duplicated administrator/principal checks, cached decision or authorization token.",
+        "The callback result remains opaque to D2. Explicitly unwrap the outer gate result: preserve access code/message or callback-failed; on gate success return the nested transport/controller result without reclassifying it as authorization.",
+        "Every eventual mutation reaches normal FOOD-001D and freshly authorizes again. Product exact-recipe lookup also authorizes independently; revocation between any stages is honored."
+    ],
+    "wireFormat": {
+        "mediaType": "application/x-www-form-urlencoded",
+        "parameters": "Only optional charset=UTF-8. Media-type and charset tokens are case-insensitive under HTTP token semantics; reject other parameters or duplicate charset parameters.",
+        "excluded": ["Multipart", "JSON request bodies", "Compressed request-body handling", "Other media types"],
+        "singletonStringFields": ["operation", "snapshot", "expectedPreviousVersion"],
+        "operations": ["createInitialRecipe", "appendRecipeRevision", "createInitialProduct", "appendProductRevision"],
+        "predecessor": "Required for both revision operations and forbidden for both initial-create operations.",
+        "fieldPolicy": "Reject missing required, repeated singleton, unexpected and non-string/file-like fields. Snapshot is one complete JSON object, not indexed fields or checkbox-derived domain values."
+    },
+    "limits": {
+        "encodedBodyBytes": 65536,
+        "decodedSnapshotUtf8Bytes": 49152,
+        "decodedJsonStringUtf16CodeUnits": 4096,
+        "jsonContainerDepth": 12,
+        "arrayEntries": 100,
+        "totalJsonValues": 2048,
+        "formFields": 3,
+        "operationCharacters": 32,
+        "predecessorDecimalDigits": 16,
+        "counting": "Limits are inclusive. Root JSON object has container depth 1. Count every object, array and scalar value once; property names count toward string limits but not value count. Decoded JSON string limit covers both property names and string values.",
+        "contentLength": "If supplied, require canonical nonnegative decimal 0 or [1-9][0-9]*, safe integer and at most encodedBodyBytes. Reject signs, whitespace, leading zeros, fractions, exponents and unsafe forms before body read. Malformed header is invalid-request; over-limit declared length is payload-too-large. A smaller declaration never proves actual bounds.",
+        "streaming": "Enforce actual consumed bytes independently of Content-Length. Stop immediately on overflow, perform iterator return/cleanup where supported, and do not continue draining. Overflow remains payload-too-large even if cleanup throws. Accept only Uint8Array chunks; malformed chunks are invalid-request. Invoke the lazy reader once and never retry."
+    },
+    "formDecoding": [
+        "Strict UTF-8 decoding of body and percent-encoded fields; reject invalid UTF-8, malformed percent escapes and malformed field encoding.",
+        "Use standard URL-encoded plus-to-space decoding; this wire decoding is not domain normalization.",
+        "Reject empty or malformed field segments, repeated decoded names, unknown names and missing fields. Preserve values without trimming, case folding, Unicode normalization, defaults or repairs."
+    ],
+    "snapshotJson": [
+        "Implement a bounded JSON parser/tokenizer; ordinary JSON.parse alone or a reviver cannot detect keys lost through overwrite.",
+        "Detect duplicate decoded property names at every object level before constructing the object. For example id and its escaped-equivalent name are duplicates.",
+        "Reject decoded property names __proto__, constructor and prototype at every level as the deterministic prototype-hazard rule; do not assign potentially dangerous properties to ordinary prototypes.",
+        "Reject invalid grammar, trailing content, non-object root and all depth/string/array/node/byte violations. JSON whitespace is permitted by grammar and does not trim domain values.",
+        "Preserve all array order exactly. Record numeric token spelling so every domain version field can be checked lexically before conversion."
+    ],
+    "canonicalVersions": [
+        "Every JSON version field, including evidence subjects, recipe references and historical label reference, must use positive decimal integer tokens [1-9][0-9]* and pass validateFoodVersion.",
+        "Form expectedPreviousVersion matches [1-9][0-9]* within its text limit and passes FOOD-001A validation after numeric conversion.",
+        "Reject zero, leading zeros, whitespace-changing values, signs, fractions, exponent notation and unsafe integers. Never normalize or generate versions."
+    ],
+    "domainAuthority": [
+        "Use FOOD-001A validators/constants, not copied or reinterpreted domain rules. Domain validation failures use fixed invalid-input; transport/form/JSON syntax failures use invalid-request.",
+        "Preserve canonical food IDs, exact case-sensitive enums, real canonical dates, evidence subject/type/ID/version and source/reference/reviewer/issuer attribution.",
+        "Preserve ingredient order, one level of purchased-component subingredients, allergen order and existing duplicate declaration/evidence rules.",
+        "Preserve omission separately from explicit unknown or undisclosed; exact historical recipe references and optional historical label references remain unchanged.",
+        "Never invent, normalize, repair or retarget domain values. Completeness is not approval, safety, allergen-free status or sale authority. B/C retain initial/consecutive/current-latest, immutable history and retry/conflict authority."
+    ],
+    "productValidation": [
+        "After authorized transport parsing, extract and canonically validate the exact recipe ID/version from the product reference using FOOD-001A before lookup.",
+        "Read that exact recipe through the injected FOOD-001I controller. Do not expose a transport read operation, bypass FOOD-001D or substitute latest.",
+        "Not-found exact recipe maps to fixed invalid-input. Preserve existing lookup access, invalid-input and storage failure codes with fixed workspace feedback.",
+        "Validate product only against the successfully retrieved exact recipe using FOOD-001A. Never fabricate a validation recipe.",
+        "Product mutation still invokes FOOD-001I/FOOD-001D and authorizes again. Typical product success involves gate authorization, separately authorized recipe lookup and separately authorized mutation. Repository independently enforces the exact stored recipe reference."
+    ],
+    "requestPolicy": [
+        "Require method exactly POST.",
+        "Require one valid HTTP(S) Origin in canonical serialized form exactly equal to trusted expectedOrigin.",
+        "Reject missing Origin, literal null, malformed/opaque/multiple origins, credentials, paths, queries, fragments, unsupported schemes and cross-origin values before gate/body access.",
+        "No Referer fallback and no expected-origin inference from arbitrary Host or Forwarded headers. Policy failures never masquerade as authentication failures."
+    ],
+    "csrf": [
+        "No separate session-bound CSRF token in J. This depends on the later route preserving POST-only behavior, mandatory fail-closed exact Origin verification, trusted expected origin and authenticated FOOD-001D authorization.",
+        "Session authentication alone is insufficient. Weakening Origin enforcement requires a separate CSRF design review; idempotency does not replace CSRF protection."
+    ],
+    "retry": [
+        "No persisted submission token or new idempotency key. Preserve B/C identical identity/version/canonical content retries as already-present and differing same-key content as conflict.",
+        "After uncertainty preserve exact identity, version, canonical content and predecessor. Never automatically retry, increment/generate versions, merge payloads or change predecessor."
+    ],
+    "resultModel": {
+        "success": "Preserve FOOD-001I mutation result shape and created | already-present | conflict distinctions.",
+        "serviceCodes": ["unauthenticated", "forbidden", "access-unavailable", "invalid-input", "storage"],
+        "transportCodes": ["method-not-allowed", "origin-rejected", "unsupported-content-type", "payload-too-large", "invalid-request", "body-unavailable"],
+        "gateCode": "callback-failed",
+        "transportMessages": {
+            "method-not-allowed": "Private food mutations require POST.",
+            "origin-rejected": "Private food request origin is not permitted.",
+            "unsupported-content-type": "Private food request content type is not supported.",
+            "payload-too-large": "Private food request exceeds the permitted limits.",
+            "invalid-request": "The private food request is invalid.",
+            "body-unavailable": "Private food request body could not be read."
+        },
+        "gateMessages": "Preserve exact existing D2 access messages and callback-failed message Private food operation could not be completed.",
+        "serviceMessages": "Preserve existing fixed FOOD-001I workspace feedback for controller failures and invalid-input domain failures; do not reuse untrusted result messages.",
+        "bodyFailures": "Reader invocation/iteration throw or rejection maps to body-unavailable. Invalid form/JSON maps to invalid-request. Any defined payload limit violation maps to payload-too-large. Unexpected callback exceptions remain D2 callback-failed.",
+        "sanitization": "Failure results retain no submitted snapshot, private evidence, parser excerpt, malformed field contents, exception/stack, SQL/D1 details or internal conflict reasons. No submitted payload echo or failure form-state retention."
+    },
+    "construction": "Synchronous and I/O-free. Invoke no gate, controller, reader, parser, service, repository or database during construction.",
+    "tests": [
+        "All four operations and exact identity/version/predecessor/reference forwarding.",
+        "Method, origin and content-type rejection before gate/body access; malformed/oversized Content-Length rejected before body access.",
+        "Denied gate causes zero body reads/parsing; callback result opacity and explicit outer unwrapping.",
+        "Revocation between stages, second fresh mutation authorization and independent product-read authorization.",
+        "Repeated/missing/unexpected fields, malformed percent encoding and invalid UTF-8.",
+        "Encoded/decoded byte, depth, string, array and value-count boundaries; overflow immediately stops consumption and closes iterator where possible.",
+        "Duplicate JSON keys including escaped equivalents, prototype-like names, invalid grammar, trailing content and non-object roots.",
+        "Canonical numeric lexical edge cases across all version fields and predecessor; malformed Content-Length variants.",
+        "Omission versus unknown/undisclosed, ingredient/subingredient/allergen/evidence order and existing domain constraints.",
+        "Exact product recipe read, not-found invalid-input, access/storage lookup failures and no latest substitution or fabricated recipe.",
+        "Identical/historical retries, conflict and uncertain storage without automatic retry/version generation.",
+        "All fixed transport/service/gate feedback, body throw/rejection distinction and no private payload retention.",
+        "No destructive or sale-authority operations, zero construction I/O and source isolation from Astro/routes/UI/runtime/global acquisition/config/migrations/commerce/payment/deployment/unrelated systems."
+    ],
+    "authorityBoundaries": {
+        "FOOD-001A": "Canonical domain validation",
+        "FOOD-001B/C": "Immutable persistence, retry and concurrency",
+        "FOOD-001D/D2": "Fresh authorization and opaque callback gate",
+        "FOOD-001I": "Workspace controller and presentation",
+        "FOOD-001E/F/G": "Unchanged runtime composition/acquisition/server adapter",
+        "FOOD-001H": "Unchanged activation runbook"
+    },
+    "deferredScope": [
+        "Actual Astro routes/actions/pages/components, navigation, HTTP status mapping, redirects and safe form-value retention.",
+        "Runtime exposure of D2 gate through E/F/G; no type assertion or alternate authorization bypass to acquire it.",
+        "RIVER_FOOD_DB provisioning/configuration, migrations, administrator configuration and runtime activation.",
+        "Public products, commerce/checkout/Stripe, fulfillment/accounting/community, deployment, production data and unrelated systems."
+    ],
+    "validationForCurrentTask": ["JSON parsing", "git diff --check", "New-file whitespace check"],
+    "currentTaskBoundary": "Create only this specification; no implementation or existing-file changes, staging, commit, runtime configuration, D1 access, migration or deployment.",
+    "nextStep": "Review the specification before separately authorizing the two-file implementation."
+}
