@@ -1,0 +1,123 @@
+{
+  "version": "1.0.0",
+  "id": "FOOD-002J",
+  "name": "Trusted server-context adapter for private menu runtime",
+  "predecessor": "FOOD-002I",
+  "phase": "Discovery and specification only; implementation requires separate explicit authorization",
+  "purpose": "Assemble the injected menu runtime from trusted server dependencies and a request-scoped Astro-like session, reusing identity components unchanged. Acquire no globals and expose no route or UI.",
+  "references": [
+    "src/lib/food/private-menu-runtime-acquisition.ts",
+    "src/lib/food/private-menu-runtime-acquisition.test.ts",
+    "src/lib/food/private-menu-runtime-composition.ts",
+    "src/lib/food/private-menu-runtime-composition.test.ts",
+    "src/lib/food/private-menu-service.ts",
+    "src/lib/food/private-menu-workspace.ts",
+    "src/lib/food/menu-persistence.ts",
+    "src/lib/food/private-draft-server-adapter.ts",
+    "src/lib/food/private-draft-server-adapter.test.ts",
+    "src/lib/identity/session/contracts.ts",
+    "src/lib/identity/session/astro-session-adapter.ts",
+    "src/lib/identity/session/principal-resolver.ts",
+    "src/lib/identity/cloudflare/d1-principal-repository.ts",
+    "src/lib/identity/cloudflare/types.ts",
+    ".river-dev/specifications/food-002h-injected-private-menu-runtime-composition-boundary.json",
+    ".river-dev/specifications/food-002i-trusted-menu-environment-acquisition-boundary.json"
+  ],
+  "discovery": [
+    "FOOD-002I synchronously extracts one named FoodD1Database and preserves exact identity; no composition or administrator/session acquisition.",
+    "FOOD-002H synchronously constructs one repository/service/workspace graph from database, readDependencies, callerResolver and administratorPrincipalId; constructor failures are fixed TypeErrors.",
+    "FOOD-001G precedent validates supplied session and RIVER_IDENTITY_DB, constructs fresh identity components and forwards the original environment. Its draft acquisition/composition functions must not be called for menu assembly.",
+    "AstroPrincipalSessionStore constructor stores session/clock without invoking either. getSession awaits async or sync get, preserves malformed/expired cleanup and propagates rejected reads to resolver unavailable.",
+    "D1PrincipalRepository and DefaultSessionPrincipalResolver construction perform no I/O. Principal lookup occurs only during later resolve. No additional shared compatibility correction is required."
+  ],
+  "factory": {
+    "name": "createPrivateFoodMenuRuntimeFromServerContext",
+    "signature": "createPrivateFoodMenuRuntimeFromServerContext(input: FoodPrivateMenuServerContextInput): FoodPrivateMenuServerContextResult",
+    "inputDefinition": "export interface FoodPrivateMenuServerContextInput { readonly environment: Readonly<Record<string, unknown>>; readonly bindingName: string; readonly session: AstroSessionLike; readonly readDependencies: FoodMenuReadDependencies; readonly administratorPrincipalId: PrincipalId; readonly now?: () => Date; }",
+    "resultDefinition": "export type FoodPrivateMenuServerContextResult = Readonly<{ ok: true; value: FoodPrivateMenuRuntimeCapabilities }> | Readonly<{ ok: false; error: Readonly<{ code: 'configuration-unavailable'; message: 'Food menu database configuration is unavailable.' }> }>;",
+    "success": "Object.freeze({ ok: true, value: capabilities }) where capabilities is exactly H's frozen service/workspace bundle, not a clone or alternate graph.",
+    "failure": "Object.freeze({ ok: false, error: Object.freeze({ code: 'configuration-unavailable', message: 'Food menu database configuration is unavailable.' }) }); use I's existing fixed configuration failure vocabulary/message without exposing dependency values or exception details.",
+    "trust": "All inputs are supplied by trusted integration, never body/query/cookie configuration. session is the request-appropriate session capability; not raw cookies or complete Astro context."
+  },
+  "ownership": [
+    "I remains sole validator of menu bindingName and selected database prepare/batch capability. J passes the exact original environment and bindingName without normalization or alternate lookup.",
+    "J validates only its own environment identity dependency RIVER_IDENTITY_DB and session/clock/read/admin construction dependencies. No production menu key is selected here.",
+    "H remains menu composition authority; E remains fresh single-admin authorization authority; G/D remain persistence/serialization/concurrency authorities; F remains workspace presentation authority.",
+    "readDependencies remain injected exact getProduct/getRecipe capabilities. Do not acquire a draft database, construct draft runtime/repository or perform FOOD-001 reads here.",
+    "administratorPrincipalId remains a trusted canonical injection, validated through parsePrincipalId unchanged. No environment administrator key, concrete value, inference or defaults."
+  ],
+  "structuralValidation": [
+    "Capture environment, bindingName, session, readDependencies, administratorPrincipalId and now once in that order from a non-null non-array outer object; reject throwing access with fixed failure.",
+    "Require environment, session, readDependencies and environment.RIVER_IDENTITY_DB to be non-null non-array objects. Read identity binding once; never scan alternates.",
+    "Require callable session get/set/delete/regenerate/destroy. Preserve get unknown | Promise<unknown>, synchronous set/delete, asynchronous regenerate and void | Promise<void> destroy; do not call methods to inspect behavior.",
+    "Require identity database.prepare callable only; batch is not required. Do not acquire/probe prepared statements during construction; later principal reads use bind/first through the unchanged identity repository.",
+    "Require callable readDependencies.getProduct/getRecipe without invocation; require canonical administrator through parsePrincipalId without trimming/normalization/coercion.",
+    "Omitted/undefined now uses AstroPrincipalSessionStore's default; callable now is forwarded exactly; explicit null/noncallable or throwing clock getter fails. Never invoke the clock during construction.",
+    "Validate all J-owned dependencies before invoking I or constructing identity components. Catch all malformed/throwing dependencies; no fallback, cached graphs or partial output."
+  ],
+  "constructionFlow": [
+    "Validate J-owned dependencies structurally and canonically.",
+    "Invoke acquirePrivateFoodMenuDatabaseFromEnvironment({ environment: originalEnvironment, bindingName: originalBindingName }). On failure return that exact I result unchanged and construct no identity/menu components.",
+    "On acquisition success construct one fresh AstroPrincipalSessionStore(session, now), one D1PrincipalRepository(identityDatabase), and one DefaultSessionPrincipalResolver({ sessions, principals }).",
+    "Invoke createPrivateFoodMenuRuntimeComposition({ database: acquired.value, readDependencies: originalReadDependencies, callerResolver: newResolver, administratorPrincipalId: canonicalInjectedAdministrator }).",
+    "Return frozen success with exact H capabilities. Catch H or identity constructor failures into the fixed configuration failure; never modify H's own behavior or error contract.",
+    "Repeat this graph construction per invocation; supplied dependencies may be shared intentionally, but no module-level resolver/service/repository/session cache."
+  ],
+  "constructionPurity": [
+    "Synchronous and I/O-free. Zero session methods, clock calls, identity/menu prepare/batch/statement calls, principal resolution, FOOD-001 reads, service/workspace/repository operations, schema probes or migrations.",
+    "No cloudflare:workers, globals, process.env, import.meta.env, Astro locals acquisition, raw request/cookies/body, redirects, Response construction or runtime binding discovery.",
+    "Structural success proves no environment provenance, live database/schema/migration availability, consistency, active session, principal activity, authorization, public publication or sale readiness."
+  ],
+  "laterOperations": [
+    "E resolves fresh for every service operation and before input validation/repository access. Workspace aggregate retains two distinct authorization resolutions.",
+    "Async Astro reads are awaited. Missing session yields unauthenticated; malformed/expired resolved session retains deletion and expiry boundary rules. Rejected reads yield access-unavailable without malformed cleanup or principal lookup.",
+    "Missing/inactive/mismatched principal preserves session destruction behavior; cleanup/storage failures fail closed. Sync and async destruction remain supported.",
+    "Identity database queries may legitimately occur during later authorization, but denied menu operations perform zero menu database or FOOD-001 dependency calls.",
+    "Exact identities/versions/predecessors/cursors/references/outcomes pass through unchanged; no latest substitution, retry, activation or interpretation of published state as public access."
+  ],
+  "privacy": [
+    "Expose only service/workspace through H capabilities. No database, environment, bindingName, identity repository, session, resolver, admin/principal, read dependencies or permission token fields.",
+    "Fixed configuration failures reveal no key/ID/config values, thrown getter messages, SQL details or stack traces. Later operation failures retain existing E/F fixed messages and codes.",
+    "Freeze result containers only; do not deep-freeze injected dependencies or concrete class instances. Preserve H/F existing immutability."
+  ],
+  "proposedImplementationPaths": [
+    "src/lib/food/private-menu-server-adapter.ts",
+    "src/lib/food/private-menu-server-adapter.test.ts"
+  ],
+  "tests": [
+    "Valid synchronous service/workspace-only result; zero construction calls including clock, sessions, identity/menu DB, FOOD-001 and resolver operations.",
+    "Instrument constructor/delegation seams following existing G/H tests: exact original environment/bindingName to I; exact acquired database/read/admin and new resolver to H; exact H output preserved; one fresh identity/menu graph each invocation.",
+    "Every malformed/null/array/throwing outer/session/identity/read dependency, each required noncallable session method and noncanonical administrator fails before I/identity construction. Identity batch not required.",
+    "Omitted/undefined/callable clocks preserve semantics; explicit null/noncallable/throwing clock rejected without invocation.",
+    "I failure unchanged and no downstream identity/H construction; H constructor failures sanitized; no fallback or alternate binding/key validation duplicated in J.",
+    "Genuinely async session fake: delayed valid reads, missing/malformed/expired/boundary cases, rejected reads with no cleanup/lookup, cleanup exceptions, exact canonical principal lookup, inactive/missing/mismatched principal and synchronous/asynchronous destruction.",
+    "Request isolation, fresh authorization/revocation and wrong-admin denial; identity lookup allowed but denied operations make zero menu DB/FOOD-001 calls.",
+    "Authorized exact operation arguments/outcomes and frozen workspace presentation preserved; no implicit public activation.",
+    "Source isolation: no globals/HTTP/routes/UI/session recreation/identity schema/runtime config/gate/transport/payment or unrelated subsystems; no configured database is used in tests."
+  ],
+  "futureValidation": [
+    "Focused J tests, I/H regressions, E/F and relevant food regressions",
+    "Shared identity session/resolver regressions without source changes",
+    "Strict TypeScript for two new files, JSON/reference/whitespace checks, git diff --check and normal build",
+    "Existing database integration regressions only in isolated harness; never configured D1"
+  ],
+  "deferredPrerequisites": [
+    "Canonical production menu binding name and target remain unresolved. Injected bindingName is not a configuration declaration; resolve target/consistency and binding selection separately before real integration.",
+    "Actual trusted environment/request-session sourcing, exact FOOD-001 read-capability acquisition and canonical administrator sourcing remain trusted integration responsibilities.",
+    "Provisioning/configuration/generated typing/migration/admin values and private routes/UI/public activation/deployment require separate scope and approval."
+  ],
+  "strictExclusions": [
+    "Implementation in this slice; changes to existing FOOD or shared identity source",
+    "Wrangler/generated typing/config edits, real binding/admin values, provisioning, configured D1 access or migration execution",
+    "Menu authorization gate/HTTP transport/Origin/CSRF/request parsing/routes/UI/navigation/public projection or activation",
+    "Pricing/cart/quote/order/payment/fulfillment/QR/ratings/demand/POS-lite/business contact",
+    "Deployment/production data/unrelated insurance/Sesh/creator changes"
+  ],
+  "acceptanceCriteria": [
+    "Only this specification created now; references/JSON/whitespace valid and no staged or tracked changes.",
+    "Future implementation preserves I/H/E/F/G authority boundaries, same-instance graph wiring and construction purity.",
+    "Existing async-session correction suffices; no shared change or concrete production configuration required for injected synthetic tests.",
+    "No material code-contract blocker identified; future activation prerequisites remain explicitly unresolved."
+  ],
+  "currentTaskBoundary": "Discovery and one specification only. Stop before implementation, staging, commit, push or activation."
+}
