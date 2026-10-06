@@ -1,0 +1,147 @@
+{
+  "version": "1.0.0",
+  "id": "FOOD-002P",
+  "name": "Injected private menu mutation server-handler boundary",
+  "phase": "Discovery and specification only; implementation requires separate authorization",
+  "predecessors": ["FOOD-002N", "FOOD-002O", "FOOD-002L"],
+  "purpose": "Compose an already-created native Request adapter and the existing response mapper into one route-independent handler, without runtime acquisition, policy duplication or production activation.",
+  "startingState": {
+    "branch": "cif-001-canonical-content-source-record",
+    "head": "a5f12ccdc43e36c1a2fe5998e7979c38ff266493",
+    "worktree": "Verified clean before discovery"
+  },
+  "references": [
+    ".river-dev/specifications/food-002m-private-menu-mutation-transport-request-boundary.json",
+    ".river-dev/specifications/food-002n-trusted-server-request-private-menu-mutation-adapter-boundary.json",
+    ".river-dev/specifications/food-002o-private-menu-http-response-route-adaptation-boundary.json",
+    ".river-dev/specifications/food-002l-private-menu-operation-gate-runtime-capability-exposure-boundary.json",
+    ".river-dev/specifications/food-002k-authorized-private-menu-operation-gate-boundary.json",
+    ".river-dev/specifications/food-002j-trusted-server-context-private-menu-runtime-adapter-boundary.json",
+    ".river-dev/specifications/food-002i-trusted-menu-environment-acquisition-boundary.json",
+    "src/lib/food/private-menu-mutation-request.ts",
+    "src/lib/food/private-menu-mutation-request.test.ts",
+    "src/lib/food/private-menu-mutation-request-adapter.ts",
+    "src/lib/food/private-menu-mutation-request-adapter.test.ts",
+    "src/lib/food/private-menu-mutation-response.ts",
+    "src/lib/food/private-menu-mutation-response.test.ts",
+    "src/lib/food/private-menu-runtime-composition.ts",
+    "src/lib/food/private-menu-runtime-composition.test.ts",
+    "src/lib/food/private-menu-runtime-acquisition.ts",
+    "src/lib/food/private-menu-runtime-acquisition.test.ts",
+    "src/lib/food/private-menu-server-adapter.ts",
+    "src/lib/food/private-menu-server-adapter.test.ts",
+    "src/lib/food/private-menu-service.ts",
+    "src/lib/food/private-menu-service.test.ts",
+    "src/lib/food/private-menu-workspace.ts",
+    "src/lib/food/menu-persistence.ts",
+    "src/lib/food/draft-persistence.ts",
+    "src/lib/food/d1-draft-persistence.ts",
+    "src/lib/food/private-draft-service.ts",
+    "src/lib/food/private-draft-runtime-composition.ts",
+    "src/lib/insurance/http/quote-request-api.ts",
+    "src/lib/sesh/http/project-api.ts",
+    "src/pages/api/insurance/quote-request.ts",
+    "src/pages/river-os/actions/insurance-contact.ts"
+  ],
+  "discovery": {
+    "M": "FoodMenuMutationRequestBoundary.submit(envelope): Promise<FoodMenuMutationRequestResult>. createPrivateFoodMenuMutationRequestBoundary takes operationGate/workspace/expectedOrigin. It alone owns metadata policy, gate-before-body, bounded parsing, eight mutations and downstream workspace dispatch.",
+    "N": "FoodMenuMutationRequestAdapter.submit(request: Request): Promise<FoodMenuMutationRequestResult>. createPrivateFoodMenuMutationRequestAdapter({ boundary }) synchronously returns a frozen adapter, captures boundary.submit with its receiver, returns fulfilled results by identity and sanitizes unexpected boundary failures. Body access is deferred until the authorized async generator advances.",
+    "O": "createPrivateFoodMenuMutationResponse(result: FoodMenuMutationRequestResult): Response is synchronous. It owns all fifteen status mappings, fixed JSON projection and headers, and guards malformed results without accessing snapshot contents.",
+    "LJ": "createPrivateFoodMenuOperationRuntimeFromServerContext accepts FoodPrivateMenuServerContextInput and returns FoodPrivateMenuOperationServerContextResult. Its success bundle is service/workspace/operationGate, with gate and service the same instance. Construction is request-scoped and I/O-free; later resolution reads sessions/identity. P must not repeat it.",
+    "I": "acquirePrivateFoodMenuDatabaseFromEnvironment accepts generic environment and explicit canonical bindingName, structurally checks the chosen prepare/batch capability and returns it unchanged. Missing/malformed configuration uses configuration-unavailable with Food menu database configuration is unavailable. This is not an M/N mutation result.",
+    "K": "FoodPrivateMenuOperationGate.runAuthorized authorizes fresh without repository calls, invokes the callback only if authorized, and sanitizes callback failure. The normal service mutation independently authorizes again. P delegates rather than introducing another gate.",
+    "precedents": "createInsuranceQuoteRequestApi returns a route-independent async Request-to-Response function. Sesh HTTP handlers also use standard Request/Response. Insurance Astro endpoints use prerender=false and assemble trusted dependencies per invocation. Frozen submit/handle-style object capabilities match current food adapter/workspace conventions; P selects a frozen handle-only object to align with N while retaining Web-only execution.",
+    "food001": "Food source inspection found no FOOD-001 Request-to-Response server-handler factory to reuse. D1FoodDraftRepository already implements the raw exact getProduct/getRecipe contract. FOOD-001 runtime composition deliberately exposes its authorized service rather than that repository. No production menu read-dependency assembly was found.",
+    "verificationScope": "Committed source, types, specifications and test inspection only; no Request body read, Response construction, database operation or runtime activation performed during discovery. Runtime claims below are implementation test obligations."
+  },
+  "selectedArchitecture": {
+    "choice": "A: inject an already-created FoodMenuMutationRequestAdapter; delegate Request to N and materialized result to O.",
+    "alternatives": {
+      "B": "Not selected: accepting M and constructing N is pure but repeats the existing explicit N assembly step and enlarges P's construction responsibility without a new required capability.",
+      "C": "Not selected: accepting gate/workspace/origin absorbs M construction and exposes policy dependencies P does not need.",
+      "D": "Not selected: server-context/runtime assembly introduces unrelated configuration, session and identity dependencies and unresolved production sources.",
+      "E": "A returned callable would match the insurance precedent, but the selected frozen handle-only object matches established food capability surfaces. No second callable alias is added."
+    },
+    "factory": "createPrivateFoodMenuMutationServerHandler",
+    "inputType": "FoodMenuMutationServerHandlerInput",
+    "inputDefinition": "export interface FoodMenuMutationServerHandlerInput { readonly adapter: FoodMenuMutationRequestAdapter; }",
+    "handlerType": "FoodMenuMutationServerHandler",
+    "handlerDefinition": "export interface FoodMenuMutationServerHandler { handle(request: Request): Promise<Response>; }",
+    "factorySignature": "createPrivateFoodMenuMutationServerHandler(input: FoodMenuMutationServerHandlerInput): Readonly<FoodMenuMutationServerHandler>",
+    "imports": "Reuse FoodMenuMutationRequestAdapter from ./private-menu-mutation-request-adapter and FoodMenuMutationRequestResult from ./private-menu-mutation-request as types; import createPrivateFoodMenuMutationResponse directly from ./private-menu-mutation-response. No injected mapper, alternate adapter abstraction or additional runtime dependency.",
+    "excludedInputs": "No boundary, gate, workspace, runtime bundle, environment, database, repository, session, resolver, administrator, origin, HTTP configuration or full Astro context."
+  },
+  "construction": {
+    "validation": "Require non-null/non-array object input and adapter and callable adapter.submit. Capture input.adapter and adapter.submit once, catching throwing property access. Invalid construction throws TypeError with exactly Private food menu mutation server handler configuration is unavailable. No new result/error code or HTTP response is produced during construction.",
+    "purity": "Synchronous structural checks only. Zero adapter submissions, authorization, caller resolution, session/clock/DB/FOOD-001/network/environment operations, request inspection or Response creation.",
+    "output": "Object.freeze({ handle }) with only the handle property. Do not expose the adapter or captured dependencies. Do not mutate/freeze caller-owned dependencies. Retain the captured submit method and invoke with its original adapter receiver, so method replacement after construction does not retarget the handler."
+  },
+  "execution": [
+    "handle(request) passes the exact original Request object unchanged to the captured adapter.submit.call(adapter, request) exactly once and awaits it.",
+    "Do not inspect any Request property, including method/headers/url/body/bodyUsed/signal. Do not parse, buffer, clone, tee, prevalidate, consume or retry it. N/M retain their full existing ordering.",
+    "Pass the exact fulfilled result by identity directly to createPrivateFoodMenuMutationResponse exactly once, without cloning, projecting, inspecting or retaining its payload. O alone validates and maps malformed results.",
+    "Return the exact Response instance returned by O unchanged. Do not rebuild, clone, serialize, inspect or change its body/status/headers. P has no status/header/JSON mapping table.",
+    "Catch only unexpected synchronous throw or async rejection from the captured adapter submission. Map it to a frozen materialized M-compatible { ok: false, error: { code: 'callback-failed', message: 'Private food menu operation could not be completed.' } } and pass that to O. No exception text or new taxonomy; no retry.",
+    "Do not put O invocation inside the adapter-failure catch. Standard Web Response availability is a server-runtime prerequisite; unexpected platform/mapper invocation failure propagates without retry or competing serializer. O already guards malformed input.",
+    "No logging, telemetry, private payload retention, reusable authorization token or configuration-unavailable mapping. Runtime configuration failures must be handled upstream in a separately specified assembly layer."
+  ],
+  "bodyLaziness": "M rejects metadata before gate/body. K denies before invoking the lazy body callback. N owns reader creation and consumption only after authorization. P touches no body state. Tests must verify zero reader acquisition/read/cancel and no body/bodyUsed access for method/origin and all three denied access paths, while distinguishing independent source prefetch from handler-driven consumption. Normal workspace mutations still reauthorize through FOOD-002E after the gate; P supplies no inherited permission.",
+  "concurrency": "All request, result and Response state is invocation-local. One handler may process concurrent independent Requests without shared readers, payloads, result slots or authorization decisions. This does not make a request-scoped J/L session resolver safe to share across different users: trusted upstream assembly must create separate runtime/M/N/P graphs per request/session. A shared synthetic or otherwise concurrency-safe injected N adapter may be tested with independent Requests; P adds no broader identity-lifetime guarantee.",
+  "authority": {
+    "N": "Sole native Request adaptation authority; P receives N rather than constructing it.",
+    "M": "Sole transport policy/parser/limits/dispatch/expectedOrigin authority. P neither sees expectedOrigin nor selects it.",
+    "O": "Sole HTTP Response projection/status/header/cache/CORS authority. Its Response is returned unchanged.",
+    "KService": "Gate and service own fresh authorization. No authorization behavior changes.",
+    "runtime": "L/J/I remain upstream runtime/composition/acquisition authorities. BindingName/admin/readDependencies/configuration-unavailable stay outside P.",
+    "framework": "Standard Web Request/Response only; no Astro APIContext/APIRoute, cloudflare:workers, globals, route exports or generated typing required."
+  },
+  "futureRoute": {
+    "candidatePath": "src/pages/river-os/actions/food-menu.ts",
+    "status": "Documentary only; do not create or register this path in P.",
+    "shape": "A later separately approved thin APIRoute with prerender=false assembles trusted FoodPrivateMenuServerContextInput per request, calls createPrivateFoodMenuOperationRuntimeFromServerContext, handles configuration-unavailable outside P/O, constructs M from runtime.operationGate/runtime.workspace plus trusted expectedOrigin, constructs N({ boundary }), constructs P({ adapter }), and returns await handler.handle(context.request).",
+    "methods": "Prefer an all-method Astro adapter so M remains POST rejection authority, rather than assuming a POST-only export verifies all methods. Actual framework routing, HEAD wire-body suppression, OPTIONS behavior, middleware and configuration-failure HTTP mapping require later integration tests/specification; none is implemented or claimed here.",
+    "sessionLifetime": "Do not globally cache J/L request session/resolver graphs. River OS boolean authentication is not menu authorization."
+  },
+  "productionPrerequisites": {
+    "PImplementation": "None of the production blockers below is required for P implementation; local tests use already-built synthetic/in-memory capabilities and no configured DB.",
+    "registrationVsActivation": "A generic injected handler or unregistered route-source template can be written without live values. Faithful production route registration requires a settled trusted assembly contract for all inputs and configuration-failure handling. Actual concrete values, provisioning, schema application and live readiness must be verified before production activation. Source compilation alone proves none of these.",
+    "items": [
+      { "item": "Menu D1 binding/target", "beforeP": false, "beforeProductionRouteRegistration": "Select/document trusted bindingName and environment sourcing contract without inventing it in P", "beforeActivation": "Provision/configure the approved target and independently verify it", "existingArchitecture": "I/J already accept an explicit bindingName; no acquisition architecture correction is needed" },
+      { "item": "FOOD-001 exact read dependencies", "beforeP": false, "beforeProductionRouteRegistration": "Resolve and build/review trusted exact-read composition and failure/access translation", "beforeActivation": "Configure and verify its historical source/database/schema readiness", "existingArchitecture": "Menu contracts already accept FoodMenuReadDependencies; production assembly is absent" },
+      { "item": "Administrator", "beforeP": false, "beforeProductionRouteRegistration": "Define trusted canonical principal sourcing/configuration contract", "beforeActivation": "Verify the real principal and configure its approved value separately", "existingArchitecture": "J already takes administratorPrincipalId explicitly and validates it canonically" },
+      { "item": "Expected origin", "beforeP": false, "beforeProductionRouteRegistration": "Define trusted value sourcing independently of incoming Request URL/Host/Origin/Forwarded", "beforeActivation": "Configure and verify the approved canonical origin and session/cookie behavior", "existingArchitecture": "M already accepts expectedOrigin; N/P require no origin input" },
+      { "item": "Environment/session/identity", "beforeP": false, "beforeProductionRouteRegistration": "Choose the trusted request-scoped environment/session acquisition integration", "beforeActivation": "Verify identity DB, session capability and deployment behavior", "existingArchitecture": "J already constructs AstroPrincipalSessionStore, D1PrincipalRepository and DefaultSessionPrincipalResolver from injected inputs" },
+      { "item": "Provisioning/migrations/deployment", "beforeP": false, "beforeProductionRouteRegistration": "Document separate approval and target-verification gates; execution not required merely to author generic source", "beforeActivation": "Explicit approvals, correct-target migration execution, recovery checks and separate deployment/activation authorization", "existingArchitecture": "Existing schema/activation records remain authoritative; P grants no activation permission" }
+    ]
+  },
+  "exactReadDependencyGap": {
+    "requiredType": "FoodMenuReadDependencies = Pick<FoodDraftRepository, 'getProduct' | 'getRecipe'> from ./menu-persistence",
+    "requiredResults": "Promise<FoodDraftReadResult<FoodProductDraft>> and Promise<FoodDraftReadResult<FoodRecipeDraft>>, each raw found/not-found with exact requested ID/version and detached frozen snapshots; repository failures throw rather than service-envelope success.",
+    "available": "D1FoodDraftRepository has compatible raw exact reads and can supply bound narrow methods when constructed by a trusted internal caller. No new storage primitive is missing. FOOD-001 runtime instead exposes FoodPrivateDraftService or service/gate; its exact reads return FoodDraftServiceResult wrapping those raw results.",
+    "missing": "No production assembly currently selects/configures the FOOD-001 historical source and supplies its exact reads to J/L. The authorized FOOD-001 service is not directly assignable because of its ok/value/error envelope. A future dependency-composition specification must decide trusted repository-based internal reads versus authorized-service adaptation, explicitly preserve access failures/fail-closed behavior, bind receivers and avoid exposing raw repositories as public authorization bypasses. Do not silently unwrap failures into not-found, use latest reads or expose database/repository through P.",
+    "scope": "P cannot and must not resolve that policy/source decision. It is a prerequisite graph question, not another HTTP mapping layer."
+  },
+  "routeReadinessAfterP": "BLOCKED for faithful production route registration/activation because trusted assembly/source contracts remain unresolved. The route-independent Web handler will be ready after its own implementation tests. Generic injected source feasibility is not fully READY production route status.",
+  "allowedFutureImplementationPaths": [
+    "src/lib/food/private-menu-mutation-server-handler.ts",
+    "src/lib/food/private-menu-mutation-server-handler.test.ts"
+  ],
+  "tests": [
+    "Synchronous frozen handle-only construction; zero submission/authorization/body/database/FOOD-001/network/Response calls and no exposed dependency internals",
+    "Reject missing/null/array/malformed outer or adapter dependencies, noncallable submit and throwing getters with the exact fixed construction TypeError; capture adapter and method once, preserve receiver, and do not retarget after dependency method replacement",
+    "Exact original Request reaches N exactly once; exact fulfilled result identity reaches O exactly once; exact O Response instance returns unchanged. Use isolated module instrumentation if necessary, without adding production mapper injection",
+    "All fifteen result variants retain O's exact mappings/JSON/headers including conflict ok:true at 409, no-store, Allow POST only for method rejection and no CORS; P has no competing response mapper",
+    "Real N/M composition rejects invalid method/origin before gate and consumes zero body bytes; unauthenticated/forbidden/access-unavailable acquire/read/cancel zero readers and access no body/bodyUsed properties",
+    "Valid native form submission flows real N to M to in-memory workspace/service and O; normal mutation reauthorizes independently and retains exact identity/version/content/predecessor semantics",
+    "Unexpected injected adapter sync throw/async rejection becomes only fixed callback-failed through O; no raw exception leaks, no retry. Malformed fulfilled results go unchanged to O's guard. O invocation failures propagate without adapter retry or response remapping",
+    "Concurrent independent requests keep invocation-local result/body state with out-of-order completion and distinct responses; no globally cached request session or authorization decision is introduced",
+    "Poison Request body shortcuts/clone/tee/property getters prove P itself never inspects or consumes Request; N alone may access permitted metadata/body after its own ordering",
+    "Source isolation: only N/M type contracts and O runtime mapping import; no Astro context, runtime/acquisition, database, sessions, origin/config lookup, routes, logging, parsing, response serialization or new error taxonomy. No configured D1 or migration harness used",
+    "Route registration, deployment, real target readiness, HEAD suppression and production configuration-failure handling remain later tests, not P verification claims"
+  ],
+  "futureValidation": ["Focused P tests", "N/O/M, L/J/I/K and relevant food/identity regressions excluding configured DB/migration execution", "Strict TypeScript for P dependency graph", "Specification JSON/reference/whitespace checks and git diff --check", "Normal build without fixing unrelated baseline issues"],
+  "strictExclusions": ["Implementation, staging, commit or push during discovery", "Changes to earlier food/identity/service/workspace/domain/persistence contracts", "Astro routes/actions/endpoint registration/middleware/UI", "Runtime construction, parser or response-policy duplication", "Production binding/target/admin/origin selection or values, Wrangler/generated typing/config changes", "D1 access/provisioning/migration execution, deployment/activation/production data", "Public menu/pricing/cart/orders/payment/fulfillment/QR/ratings/demand/POS-lite or unrelated subsystems"],
+  "acceptanceCriteria": ["Starting branch/HEAD/clean gates pass", "Exactly this new specification; no implementation or tracked/staged changes", "Selected minimal API and all construction/execution/failure/test decisions are explicit", "Production readiness distinguishes source contracts from live provisioning/configuration/activation and identifies the raw-read/service-envelope gap", "Referenced committed contracts match; JSON/whitespace/reference checks and git diff --check pass"],
+  "remainingAmbiguities": "None blocking P implementation. Trusted production assembly contracts, exact-read access adaptation, target selection and live configuration remain explicitly deferred; no production readiness is inferred from P.",
+  "nextSlice": "Implement and validate FOOD-002P only after separate authorization. Afterwards perform a bounded trusted production-prerequisite and FOOD-001 exact-read dependency-composition discovery/specification slice: resolve source/access/envelope adaptation and administrator/origin sourcing contracts before any route registration. Do not add another abstract HTTP layer or execute provisioning/migrations as a substitute for resolving these contracts."
+}
