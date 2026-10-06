@@ -1,0 +1,150 @@
+{
+  "version": "1.0.0",
+  "id": "FOOD-002G",
+  "name": "Injected D1 append-only menu repository adapter and migration definition",
+  "predecessor": "FOOD-002F",
+  "phase": "Specification only; implementation requires separate explicit authorization",
+  "boundary": "One injected D1 adapter implementing all 23 existing FoodMenuRepository operations, one migration definition, unit/fake-D1 tests and isolated Miniflare/workerd integration tests. No FOOD-002D interface correction or change is required or allowed.",
+  "allowedFutureImplementationPaths": ["src/lib/food/d1-menu-persistence.ts", "src/lib/food/d1-menu-persistence.test.ts", "src/lib/food/d1-menu-persistence.integration.test.ts", "migrations/food/0002_food_menu_snapshots.sql"],
+  "references": ["src/lib/food/menu-persistence.ts", "src/lib/food/dish-offer-domain.ts", "src/lib/food/menu-publication-domain.ts", "src/lib/food/d1-draft-persistence.ts", "src/lib/food/d1-draft-persistence.integration.test.ts", "migrations/food/0001_food_draft_snapshots.sql", "docs/architecture/food-private-runtime-activation.md"],
+  "adapter": {
+    "name": "D1FoodMenuRepository",
+    "interface": "FoodMenuRepository",
+    "constructor": "new D1FoodMenuRepository(database: FoodD1Database, dependencies: FoodMenuReadDependencies)",
+    "databaseContract": "Reuse the FOOD-001C narrow FoodD1Database/FoodD1Statement/FoodD1Result style: prepare, bind, all and transactional batch only. Injected access must contractually provide primary-consistent read-after-write behavior sufficient for repository guarantees. Do not select bindings, acquire environments or configure consistency here.",
+    "construction": "Synchronous, structural and I/O-free; zero database and FOOD-001 dependency calls. Validate callable prepare/batch and getProduct/getRecipe, reject malformed/throwing dependencies with fixed TypeError: Food menu repository dependencies are unavailable. No fallback or probes.",
+    "methods": [
+      "createInitialPresentation", "appendPresentationRevision", "getPresentation", "getLatestPresentation", "listPresentationVersions", "listLatestPresentations",
+      "createInitialOffer", "appendOfferRevision", "getOffer", "getLatestOffer", "listOfferVersions", "listLatestOffers",
+      "createInitialPublication", "appendPublicationRevision", "getPublication", "getLatestPublication", "listPublicationVersions", "listLatestPublications",
+      "createInitialAvailability", "appendAvailabilityRevision", "getAvailability", "listAvailabilityRevisions", "getCurrentAvailability"
+    ],
+    "operationCount": 23,
+    "signatures": "Preserve FOOD-002D signatures, promise-based methods, successful append/read/page values and fixed invalid-input/storage errors unchanged. No new operations."
+  },
+  "food001Dependencies": [
+    "Use injected FoodMenuReadDependencies exact getProduct/getRecipe only; no latest reads, writes or duplicated private records/evidence.",
+    "No physical SQL FKs from FOOD-002 to FOOD-001. Do not assume co-location; cross-database/co-location is a separate future architecture decision.",
+    "Preserve FOOD-002D exact dependency validation and error mapping: missing required append dependency is invalid-input; corrupt/mismatched/failed dependency or missing stored-record dependency is storage. Validate exact product-to-recipe correspondence."
+  ],
+  "tables": {
+    "food_dish_presentation_snapshots": {
+      "primaryKey": ["dish_id", "version"],
+      "columns": ["dish_id", "version", "identity_order_key", "serialization_format_version", "payload_json", "product_id", "product_version", "recipe_id", "recipe_version"],
+      "references": "Exact FOOD-001 coordinates are metadata verified through injected reads, not SQL foreign keys."
+    },
+    "food_serving_offer_snapshots": {
+      "primaryKey": ["offer_id", "version"],
+      "columns": ["offer_id", "version", "identity_order_key", "serialization_format_version", "payload_json", "dish_id", "presentation_version"],
+      "unique": [["offer_id", "version", "dish_id", "presentation_version"]],
+      "foreignKey": "(dish_id, presentation_version) -> food_dish_presentation_snapshots(dish_id, version)",
+      "stableAssociation": "Insert-time SQL trigger rejects an offer_id whose stored history contains a different dish_id. Complement FOOD-002B/D validation; never permit same-key retry or concurrent initial writers to move the stable offer to another dish."
+    },
+    "food_menu_publication_snapshots": {
+      "primaryKey": ["publication_id", "version"],
+      "columns": ["publication_id", "version", "identity_order_key", "serialization_format_version", "payload_json"],
+      "references": "Exact reference sets additionally enforced by trigger-derived immutable membership tables."
+    },
+    "food_offer_availability_observations": {
+      "primaryKey": ["offer_id", "offer_version", "revision"],
+      "columns": ["offer_id", "offer_version", "revision", "serialization_format_version", "payload_json"],
+      "foreignKey": "(offer_id, offer_version) -> food_serving_offer_snapshots(offer_id, version)"
+    },
+    "food_menu_publication_presentation_memberships": {
+      "primaryKey": ["publication_id", "publication_version", "dish_id", "presentation_version"],
+      "foreignKeys": ["(publication_id, publication_version) -> food_menu_publication_snapshots(publication_id, version)", "(dish_id, presentation_version) -> food_dish_presentation_snapshots(dish_id, version)"]
+    },
+    "food_menu_publication_offer_memberships": {
+      "primaryKey": ["publication_id", "publication_version", "offer_id", "offer_version"],
+      "additionalColumns": ["dish_id", "presentation_version"],
+      "foreignKeys": ["(publication_id, publication_version) -> food_menu_publication_snapshots(publication_id, version)", "(offer_id, offer_version, dish_id, presentation_version) -> food_serving_offer_snapshots(offer_id, version, dish_id, presentation_version)", "(publication_id, publication_version, dish_id, presentation_version) -> food_menu_publication_presentation_memberships(publication_id, publication_version, dish_id, presentation_version)"]
+    }
+  },
+  "sqlConstraints": [
+    "All identity/reference columns are non-null binary-collated text. All version/revision columns, including membership references, enforce typeof(value) = integer and range 1..9007199254740991; no coercion in adapter validation.",
+    "Serialization-format metadata must equal supported FOOD-002D format version. Store canonical serialized payload as text unchanged; no alternative canonicalization.",
+    "Every one of six tables has BEFORE UPDATE and BEFORE DELETE rejection triggers. No cascading FK actions, INSERT OR REPLACE, overwrite, in-place mutation or history repair.",
+    "Entity identity_order_key binary indexes support deterministic latest listings; composite primary keys support exact/history/current reads. Add reference indexes as appropriate without new query APIs.",
+    "No timestamps, ownership, activation, readiness, payment or public-routing fields. Stored published state grants no public exposure or sale authority."
+  ],
+  "publicationMembership": [
+    "Lock AFTER INSERT parent trigger derivation from canonical publication payload_json: expand snapshot.sections, entries and selected offers with SQLite/D1 JSON functions; insert deduplicated exact presentation and offer sets.",
+    "Insert presentation memberships before offer memberships; enforce exact parent, presentation and offer-context FKs. Invalid reference causes parent statement failure and rollback of all trigger writes.",
+    "Do not duplicate section/entry/offer/media ordering in membership rows; ordering lives exclusively in canonical payload.",
+    "No separate adapter membership writes. Existing conflicting/identical parent retries do not fire insertion derivation or enrich/repair historical membership.",
+    "Actual migration and real publication insert must prove JSON trigger syntax in installed isolated harness. If unsupported, STOP and report rather than silently redesigning."
+  ],
+  "appendOrder": [
+    "Capture detached caller input before first await; validate canonical coordinates, candidate domain, exact dependencies and operation requirements using FOOD-002D authorities unchanged.",
+    "Initial methods require sequence 1. Revision methods require positive safe expected predecessor, no overflow, candidate = predecessor + 1, existing valid predecessor and family revision validation before target retry handling. Preserve stable offer association checks.",
+    "Reconstruct/inspect existing exact target before canonical retry comparison. Identical payload is already-present; different payload is conflict with reason different-content. Corrupt target is storage. Historical retry remains valid after later versions exist.",
+    "Only absent target creation is subject to current-predecessor rule. SQL conditional INSERT atomically requires empty stream and sequence 1, or existing predecessor, consecutive candidate and current maximum equal expected predecessor. Unique key alone is insufficient.",
+    "Apply independently to dish, offer and publication histories and to each exact offer-version availability stream. Concurrent independent adapters yield one created next row, identical retry already-present or differing retry conflict; never renumber/overwrite/merge."
+  ],
+  "creationWitness": [
+    "Use conditional INSERT ... ON CONFLICT(exact primary key) DO NOTHING ... RETURNING as unambiguous parent creation witness, plus exact target-row inspection in the same transactional D1 batch.",
+    "One returning row must exactly identify candidate and canonical content; zero returning rows is legitimate only for no insertion and requires exact-row inspection to distinguish retry/conflict from failed sequencing. Missing/malformed results or multiple witness rows fail storage.",
+    "Do not rely on meta.changes alone, particularly with publication trigger writes. Require affected-row metadata and consistency with witnessed behavior under the accounting convention actually verified in the installed harness; never assume publication changes is only 0 or 1.",
+    "Harness must prove INSERT RETURNING with trigger writes, exact-row visibility and metadata. If no unambiguous witness is available, STOP for redesign; do not invent success."
+  ],
+  "transaction": [
+    "One database.batch contains conditional insertion with RETURNING and exact-row inspection. Publication memberships are part of parent trigger execution, not separately committed calls.",
+    "Membership JSON/trigger/FK failure rolls back parent and every membership. Failed later batch statement must also roll back prior insertion/trigger effects.",
+    "Verify result count/order, success, rows, witness, exact payload and metadata. Transport/batch uncertainty is fixed storage even if write may have committed. No automatic retry/new version; identical caller retry can reconcile via normal canonical retry semantics."
+  ],
+  "resultMapping": {
+    "created": "Witnessed new exact canonical row with consistent exact inspection.",
+    "already-present": "Existing same-key identical canonical payload, including historical retries.",
+    "conflict": "Existing same-key differing canonical payload; preserve bounded reason different-content and FOOD-002D stable-association validation precedence.",
+    "invalid-input": "Domain/operation invalidity or absent target due to rejected sequencing/current-predecessor condition.",
+    "storage": "Corrupt/mismatched state, unsupported metadata, inconsistent/missing witness or metadata, dependency failure, backend capacity failure or uncertain transport.",
+    "fixedErrors": {"invalid-input": "Food menu repository input could not be validated.", "storage": "Food menu repository storage is unavailable."},
+    "reads": "found | not-found unchanged; pages unchanged. Never leak SQL/driver/exception/private payload details."
+  },
+  "availability": [
+    "Stream is exact (offer_id, offer_version); observation identity adds revision. Initial revision 1 and consecutive current-predecessor conditions apply only within that stream.",
+    "Current means greatest successfully stored sequential revision within exact stream. Historical and retired observations remain readable; new offer version starts with zero observations.",
+    "No inherited availability, automatic revision 1, publication mutation or conversion of absence into another state."
+  ],
+  "readIntegrity": [
+    "Reconstruct and validate every returned stored record through unchanged FOOD-002D serializers/deserializers with exact required dependencies; return detached deeply frozen values.",
+    "Verify primary-key coordinates against payload metadata, supported format and table discriminator, exact reference metadata, canonical reserialization equality and recomputed ordering key.",
+    "Required FOOD-001 exact dependencies and FOOD-002 historical references must resolve. Missing/invalid stored dependency is storage, never latest substitution.",
+    "Publication membership must exactly equal payload-derived deduplicated reference sets including offer-to-presentation coordinates; extra/missing/mismatched membership fails storage without repair.",
+    "Validate D1 row/result shapes, expected coordinate agreement, row counts and ordered query results. No corrupt result or partial successful aggregate."
+  ],
+  "orderingAndPagination": [
+    "Reuse proven FOOD-001C four-lowercase-hex-digit encoding per JavaScript UTF-16 code unit; concatenate units and sort using binary collation. Derived key never replaces canonical identity. Recompute on entity reads.",
+    "Preserve default 20, maximum 100, invalid-limit rejection without coercion, exclusive cursors, numeric ascending histories and UTF-16 canonical identity ordering for latest entity listings.",
+    "Availability history uses afterRevision; entity histories afterVersion; latest lists afterId. Lookahead may establish nextCursor without changing semantics. No dish-filtered offer listing."
+  ],
+  "capacity": [
+    "Do not lower FOOD-002B/C domain limits to fit D1. Valid payload exceeding backend row/string/request/execution capacity maps fixed storage, not invalid-input.",
+    "No truncation or transparent splitting of canonical snapshot. Validate domain before classifying backend capacity failure. Preserve domain validity and immutable retry content.",
+    "Test realistically large publication and trigger membership expansion plus boundary/capacity cases where feasible. Report demonstrated capacity only; do not claim larger support or weaken domain bounds."
+  ],
+  "harness": {
+    "method": "Installed Miniflare/workerd using convertV4MiniflareOptions, cf:false, d1Persist:false, synthetic isolated FOOD_TEST, inline worker env.FOOD_TEST.batch and dispatchFetch bridge. Independent adapters share isolated database; dispose after tests.",
+    "migration": "Execute actual 0002 migration only inside isolated test database. No FOOD-001 SQL migration/co-location is required for injected exact-read dependencies; use controlled exact-read fixtures/reference adapter as appropriate.",
+    "forbidden": "No stalled getD1Database proxy, configured project/local/remote database, Wrangler configuration or new database/test dependency.",
+    "limitations": "Local behavior does not prove remote production transport, replication consistency or later acquisition of primary-consistent access."
+  },
+  "unitTests": ["Malformed D1 envelopes and result counts", "Missing/inconsistent creation witness or metadata", "Exact-row disagreement", "Transport throws/rejections and sanitized storage", "No invented created or automatic retry", "Exact bound arguments/canonical payload", "Constructor zero database/dependency I/O", "Source isolation"],
+  "integrationTests": [
+    "All 23 operations and parity with FOOD-002D reference semantics; actual migration and schema/index constraints.",
+    "All six tables UPDATE and DELETE triggers, no cascades, all positive-safe version/revision bounds.",
+    "Exact offer/presentation and availability/offer FKs, stable offer/dish enforcement including independent competing writers.",
+    "Real JSON AFTER INSERT trigger, deduplicated membership and exact offer context; FK/trigger/failed-batch rollback leaves no parent or partial memberships.",
+    "INSERT RETURNING creation witness, zero-row retry witness, trigger meta.changes accounting and insert-to-read batch visibility.",
+    "Atomic sequential conditional insertion, initial/revision gaps/overflow/stale predecessor, historical identical retries, different same-key conflict and concurrent independent repositories against one predecessor.",
+    "Historical publication references, independent availability streams/current selection/no inheritance/retired history.",
+    "Deterministic default/max/invalid limits, exclusive cursor pagination and UTF-16 parity: ASCII, supplementary surrogate pairs and ordering different from naive SQLite UTF-8 text.",
+    "Canonical decode/reencode, metadata/reference/ordering corruption, missing/extra/mismatched membership and missing exact dependencies fail storage; no repair.",
+    "Large publication/membership expansion and feasible capacity boundaries; local exact primary read-after-write behavior without claims about production."
+  ],
+  "validation": ["Focused FOOD-002G unit and isolated integration tests", "FOOD-002D/B/C and relevant E/F regressions", "Strict TypeScript for planned files", "SQL migration sanity checks inside isolated harness", "Whitespace and git diff --check", "Normal build; do not fix unrelated baseline errors"],
+  "stopConditions": ["Required JSON trigger syntax unsupported", "Unambiguous RETURNING creation witness/metadata cannot be verified", "Required rollback/concurrency semantics cannot be established; never silently weaken contract or replace integration tests with fakes"],
+  "futureActivation": "Separate explicit approvals required for target selection, provisioning, binding declaration, migration execution, primary-consistency acquisition/configuration, administrator/runtime composition, routes/UI/public activation and deployment. This specification authorizes none.",
+  "scopeExclusions": ["Wrangler/config/generated worker typing changes", "Configured local/remote database access or migration execution", "Provisioning", "Runtime/environment composition/server acquisition", "Authorization changes", "Routes/UI/public activation", "Pricing/cart/order/checkout/payment/fulfillment execution", "QR/ratings/demand/POS-lite/business contact", "Deployment/production data/unrelated systems"],
+  "currentAuthorization": "Create only this specification. Do not implement, create migration SQL, stage, commit, access configured D1, migrate, configure infrastructure or deploy."
+}
