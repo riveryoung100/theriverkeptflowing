@@ -1,0 +1,397 @@
+{
+    "version": "1.0.0",
+    "id": "FOOD-002A",
+    "name": "Additive public menu, serving offers, ordering, demand intelligence, and POS-lite architecture direction",
+    "phase": "Architecture direction only; no implementation or activation authorized",
+    "foundation": "FOOD-001A-K remains the private versioned draft/evidence/compliance foundation. FOOD-002 is additive and never replaces it.",
+    "planningReferences": [
+        ".river-dev/specifications/food-001-additive-food-business-draft-domain-direction.json",
+        "docs/architecture/creation-food-shared-foundations.md"
+    ],
+    "canonicalDish": [
+        "One stable FoodDishId identifies a customer-recognizable dish.",
+        "Versioned public dish presentations reference exact FOOD-001 product and recipe versions.",
+        "Do not duplicate a dish merely because it is offered at another serving scale."
+    ],
+    "servingOffers": {
+        "model": "Versioned commercially distinct serving offers beneath one dish; serving format describes style/scale, while the offer represents the eventual purchasable choice only after independent readiness and authorization.",
+        "formats": [
+            "individual",
+            "family",
+            "catering",
+            "half-pan",
+            "full-pan",
+            "future custom serving tiers",
+            "future bundles"
+        ],
+        "variableInformation": [
+            "price",
+            "serving estimate",
+            "packaging",
+            "reheating/storage instructions",
+            "lead time",
+            "cutoff",
+            "minimum quantity",
+            "fulfillment constraints",
+            "availability",
+            "capacity consumption"
+        ],
+        "rules": [
+            "Unknown values remain explicitly unresolved, never guessed.",
+            "Do not infer family/catering servings by multiplying individual portions.",
+            "Future bundles reference component offers rather than disconnected duplicate dishes."
+        ]
+    },
+    "futureRecordFamilies": [
+        "dish presentation/version",
+        "serving offer/version",
+        "menu publication/version",
+        "availability state",
+        "business contact publication",
+        "cart/quote",
+        "food order",
+        "fulfillment plan",
+        "public QR alias",
+        "verified feedback",
+        "demand observation",
+        "demand assessment"
+    ],
+    "recordStatus": "All FOOD-002 record families are proposed future additive concepts, not existing implemented records.",
+    "independentBoundaries": [
+        "private draft/evidence",
+        "explicit public publication",
+        "legal/safety/tax/payment/fulfillment readiness",
+        "current offer availability",
+        "actual order/payment authorization"
+    ],
+    "readinessRules": [
+        "Draft existence, structural completeness or reviewed state never automatically publishes or enables ordering.",
+        "One reviewed serving format does not establish review or permission for every format.",
+        "Code and publication are not legal/safety/tax/payment/fulfillment approval; no cottage-food, catering or hot-food permission is assumed."
+    ],
+    "publicProjection": [
+        "Public publication exposes only an explicit allowlisted projection.",
+        "Never automatically serialize private evidence, reviewer identities, internal operating addresses or entire private drafts.",
+        "An informational published page can exist with ordering disabled."
+    ],
+    "menuAuthority": {
+        "model": "Data-driven menu, not hard-coded pages; sections reference ordered dish/offer entries; featured state is explicit editorial configuration.",
+        "availabilityConsumers": [
+            "menu cards",
+            "dish detail",
+            "cart validation",
+            "private operations board"
+        ],
+        "unavailableReasons": [
+            "sold out",
+            "temporarily paused",
+            "outside ordering window",
+            "format unavailable",
+            "retired"
+        ],
+        "rules": [
+            "One authoritative availability source eventually drives every surface.",
+            "Display/cache projections are never authoritative for accepting orders; revalidate before charging.",
+            "Availability updates propagate through projections rather than manual edits across pages."
+        ]
+    },
+    "browsingContexts": {
+        "contexts": [
+            "standard/individual",
+            "Family Style / Dinner for Everyone",
+            "catering"
+        ],
+        "rules": [
+            "Family ordering is first-class, not multiple individual meals.",
+            "Catering may initially remain inquiry-only.",
+            "Catering-compatible offers may show pan size, estimated servings, minimum, lead time, event notes and fulfillment restrictions.",
+            "Keep customer interaction simple despite richer operational rules."
+        ]
+    },
+    "customerJourney": [
+        "Menu",
+        "Dish",
+        "Serving Format",
+        "Cart",
+        "Fulfillment",
+        "Checkout",
+        "Confirmation",
+        "Status",
+        "Reorder/Feedback"
+    ],
+    "cartAndQuotation": [
+        "Persistent cart state is convenience only.",
+        "Server quotations revalidate exact offer versions, availability, price, tax treatment, discounts, fees and fulfillment.",
+        "Never silently substitute recipe, format, price or fulfillment option.",
+        "Confirmation-page navigation is not proof of payment."
+    ],
+    "orderLifecycle": {
+        "operationalFlow": [
+            "New",
+            "Confirmed",
+            "Preparing",
+            "Ready",
+            "Completed"
+        ],
+        "separation": "Operational state is separate from payment state. Cancellation, failure, rescheduling and refund flows are separately modeled.",
+        "immutablePurchasedSnapshot": [
+            "dish version",
+            "serving-offer version",
+            "private product/recipe references",
+            "quantity",
+            "pricing calculations",
+            "disclosures",
+            "fulfillment agreement"
+        ]
+    },
+    "fulfillment": [
+        "Order initiated on site before fulfillment; local service.",
+        "Delivery/meetup/pickup only where reviewed and operationally supported.",
+        "Farther requests may require manual approval of fee/window before charge.",
+        "No shipping assumption and no hard-coded radius, fees, hours or address."
+    ],
+    "businessContactPublication": {
+        "independentlyOptional": [
+            "business name",
+            "website",
+            "dedicated business phone",
+            "click-to-call",
+            "hours",
+            "service area",
+            "pickup/meeting instructions",
+            "optional public address",
+            "map/directions link",
+            "business-profile link"
+        ],
+        "rules": [
+            "A Google Voice-style number can fit the model, but no provider is selected.",
+            "Missing configuration hides capabilities; never fall back to private/personal data.",
+            "No real telephone, location, address, hours or business listing is assumed."
+        ]
+    },
+    "qrArchitecture": {
+        "identity": "Stable opaque public aliases, not private IDs or authorization-bearing tokens.",
+        "destinations": [
+            "exact dish/offer page",
+            "ingredients/allergens",
+            "reheating/storage guidance",
+            "reorder same format",
+            "change to family/catering",
+            "feedback/rating",
+            "broader menu"
+        ],
+        "rules": [
+            "Support packaging, labels, thank-you cards, first-order/reward cards and catering materials without generating assets now.",
+            "Separate current dish/reorder destinations from exact historical package information; old packages must not silently show changed recipe details.",
+            "QR supplements, never replaces, required physical/pre-payment disclosures."
+        ]
+    },
+    "reorder": [
+        "Reconstruct a proposed cart from historical offers and revalidate current eligibility, availability, pricing and fulfillment.",
+        "Never auto-charge, guarantee old price/availability or silently substitute changed configuration."
+    ],
+    "feedback": {
+        "separation": "Private operational feedback is separate from optional public social proof.",
+        "verification": "Prefer verified completed-order linkage and purchased serving format. Account creation is not required solely to verify order-linked feedback.",
+        "rawFields": [
+            "star rating",
+            "would order again",
+            "optional short comment",
+            "serving-format-specific observations"
+        ],
+        "publicPolicy": [
+            "separate enablement/publication policy",
+            "configurable sample/confidence thresholds",
+            "moderation/privacy rules",
+            "preserved numerator",
+            "denominator",
+            "calculation period",
+            "calculation version"
+        ],
+        "presentationOptions": [
+            "star average with verified-rating count",
+            "customer-favorite / would-order-again percentage"
+        ],
+        "rules": [
+            "Keep raw verified feedback so presentation can change later.",
+            "Insufficient evidence means no public rating claim. Public stars are never automatic."
+        ]
+    },
+    "demandObservations": {
+        "signals": [
+            "menu views",
+            "dish detail views",
+            "serving-format selection",
+            "add-to-cart",
+            "unavailable encounters",
+            "completed orders",
+            "reorders",
+            "cancellations/refunds",
+            "verified feedback",
+            "requests for rotated/unavailable dishes"
+        ],
+        "policies": [
+            "deduplication",
+            "bot filtering",
+            "retention",
+            "consent/privacy"
+        ],
+        "rules": [
+            "Separate raw observations from derived metrics and client engagement from authoritative server order/payment events.",
+            "No addresses, contact information or feedback text in general analytics events.",
+            "Abandonment is derived rather than directly proven.",
+            "Sell-through needs actual inventory denominators; repeat-customer rates need defensible customer linkage."
+        ]
+    },
+    "demandAssessments": {
+        "requiredMetadata": [
+            "windows",
+            "denominators",
+            "provenance",
+            "algorithm versions"
+        ],
+        "recommendations": [
+            "permanent",
+            "rotating",
+            "returning",
+            "family-style",
+            "catering",
+            "retirement",
+            "trial"
+        ],
+        "publicLabels": [
+            "Popular This Week",
+            "Customer Favorite",
+            "Back by Demand",
+            "Seasonal",
+            "Limited Batch",
+            "You Asked, We Brought It Back"
+        ],
+        "rules": [
+            "Preserve unavailable periods, serving-format differences and seasonality/time/day-of-week context.",
+            "Recommendations are advisory; River retains final publishing/menu control.",
+            "Labels require documented evidence rules or explicitly editorial treatment; editorial treatment cannot fabricate factual demand/popularity/scarcity claims.",
+            "Never fabricate demand, scarcity, popularity, ratings or order counts. Limited Batch requires a real batch/capacity basis."
+        ]
+    },
+    "posLite": {
+        "privateCapabilities": [
+            "today's orders",
+            "order detail",
+            "item format/quantity",
+            "payment state",
+            "requested/promised time",
+            "notes",
+            "customer/contact information",
+            "fulfillment method",
+            "preparation transitions",
+            "sold-out control",
+            "pause ordering",
+            "capacity/slot controls",
+            "ticket/print view",
+            "permitted refund requests",
+            "sales summaries"
+        ],
+        "financialDistinctions": [
+            "orders",
+            "payments",
+            "refunds",
+            "fees",
+            "settlements"
+        ],
+        "rules": [
+            "Authorized private workspace only; deposits/settlements are not additional sales.",
+            "No terminal hardware, cash drawers, payroll, employee scheduling or enterprise restaurant functionality."
+        ]
+    },
+    "customerIdentity": [
+        "Browsing and first ordering do not require accounts; collect only transaction/fulfillment necessities.",
+        "Later customer identity supports history, favorites, saved preferences, reorder and rewards.",
+        "Public dish IDs, QR aliases and guessed order IDs never grant private authorization.",
+        "CRM linkage is explicit and consent-aware; ordering never automatically enrolls customers in marketing."
+    ],
+    "reuseCandidates": [
+        "FOOD-001A-K: domain, immutable persistence, authorization, controller, transport and runtime capability patterns",
+        "src/lib/commerce/product-catalog.ts: canonical product and integer-cent pricing patterns, not digital checkout/delivery authority",
+        "src/lib/commerce/payment-event.ts and src/lib/commerce/d1-order-persistence.ts: verified event and durable replay patterns, requiring deliberate physical-order adaptation",
+        "src/lib/commerce/product-price-availability-presentation.ts: independent publication decisions",
+        "River OS CRM consent/attribution patterns; shared identity/session foundations",
+        "Raw-versus-derived analytics patterns, without insurance domain authority",
+        "src/components/commerce/ProductCard.astro",
+        "src/components/content/ContentCard.astro",
+        "src/components/shared/SectionHeader.astro",
+        "src/layouts/MainLayout.astro",
+        "src/layouts/RiverOsLayout.astro",
+        "Existing reader/browser persistence patterns, not an existing food cart"
+    ],
+    "reuseRules": [
+        "Do not import digital-commerce checkout/delivery assumptions or insurance/Sesh authority into food.",
+        "Use shared content/media foundations with explicit approved media references; do not create a duplicate food media system.",
+        "Existing digital commerce does not establish physical-food ordering, provider support or legal readiness."
+    ],
+    "designDirection": [
+        "mobile-first",
+        "polished visual hierarchy",
+        "responsive optimized imagery",
+        "accessible descriptions",
+        "lazy loading below the fold",
+        "modest initial payload",
+        "clear price/serving information",
+        "keyboard-accessible format choices",
+        "graceful unavailable states",
+        "fast dish-to-cart flow and minimal checkout steps when separately activated",
+        "tasteful persistent cart/Order Now capability gated by ordering activation"
+    ],
+    "noInventedContent": "No invented dishes, photography, prices, phone number, address, hours or launch details.",
+    "implementationSequence": [
+        "FOOD-002A architecture direction",
+        "FOOD-002B pure canonical dish + versioned serving-offer domain",
+        "Pure menu-publication + availability projection",
+        "Private injected services/controllers",
+        "Separately reviewed public read-only menu",
+        "Pure cart/quote/fulfillment-request contracts",
+        "Reservation/concurrency/order lifecycle",
+        "Payment integration only after external readiness and explicit approval",
+        "Private POS-lite order board",
+        "QR/reorder, verified feedback and demand observations as separate slices",
+        "Derived recommendations and optional public social proof"
+    ],
+    "futureScopeRule": "Every persistence, route, configuration, activation, payment and public-exposure step requires separately bounded approval/scope; this direction authorizes none.",
+    "food002B": {
+        "objective": "Pure canonical dish and versioned serving-offer domain linked to exact FOOD-001 references; no publication, commerce registration or sale enablement.",
+        "specificationDecisions": [
+            "identity prefixes and canonical validators",
+            "offer/version revision rules",
+            "exact dish/product/recipe bindings",
+            "serving-estimate representation",
+            "explicit unknown/optional fields",
+            "money/currency representation if included",
+            "initial format vocabulary and future custom/bundle extension boundaries"
+        ],
+        "status": "Sufficiently bounded for specification; exact type/validator/invariant decisions must be settled there before implementation."
+    },
+    "deferred": [
+        "routes/UI/navigation",
+        "schemas/migrations",
+        "public menu activation",
+        "business contact values",
+        "QR assets",
+        "analytics collection",
+        "payment integration/checkout activation",
+        "runtime/infrastructure configuration",
+        "D1 migration execution",
+        "administrator configuration",
+        "deployment",
+        "production data",
+        "cottage-food/catering/hot-food legality assumptions",
+        "tax treatment assumptions",
+        "payment support assumptions"
+    ],
+    "additiveRelationship": "Existing creator, insurance, Sesh, content, commerce and community trajectories remain intact; neither replaces the other. Community activation remains separately gated.",
+    "validation": [
+        "JSON parsing",
+        "new-file whitespace checks",
+        "git diff --check"
+    ],
+    "currentTaskBoundary": "Create only this architecture-direction specification. Do not implement, stage, commit, create routes/UI/schema/migrations, configure payment/runtime infrastructure or deploy."
+}
