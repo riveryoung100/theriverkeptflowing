@@ -1,0 +1,177 @@
+{
+    "version": "1.0.0",
+    "id": "FOOD-002B",
+    "name": "Pure canonical dish presentation and versioned serving-offer domain boundary",
+    "phase": "Specification only; implementation requires separate explicit authorization",
+    "directionReference": ".river-dev/specifications/food-002a-public-menu-serving-offers-ordering-demand-pos-lite-architecture-direction.json",
+    "scope": "Only immutable versioned dish presentations and serving offers. No separate mutable dish registry. Existing FOOD-001 and untracked FOOD-002A remain unchanged.",
+    "allowedFutureImplementationPaths": [
+        "src/lib/food/dish-offer-domain.ts",
+        "src/lib/food/dish-offer-domain.test.ts"
+    ],
+    "identity": {
+        "brands": {
+            "FoodDishId": "food-dish:",
+            "FoodServingOfferId": "food-serving-offer:"
+        },
+        "apis": [
+            "createFoodDishId(local)",
+            "parseFoodDishId(input)",
+            "createFoodServingOfferId(local)",
+            "parseFoodServingOfferId(input)"
+        ],
+        "rules": [
+            "Supplied explicitly; nonempty canonical string/local component with no surrounding whitespace or additional colon.",
+            "Match FOOD-001 local-ID semantics, preserving internal canonical text rather than adding unrelated identity restrictions.",
+            "Reject rather than trim, normalize, infer or generate. Stable dish ID contains no changing product/recipe reference."
+        ]
+    },
+    "recordTypes": {
+        "FoodDishPresentation": "Readonly<{ dishId: FoodDishId; version: number; product: Readonly<{ id: FoodProductId; version: number }>; recipe: Readonly<{ id: FoodRecipeId; version: number }>; name: string; shortDescription?: string; longDescription?: string; mediaReferences?: readonly Readonly<{ reference: string }>[] }>",
+        "FoodServingOffer": "Readonly<{ offerId: FoodServingOfferId; version: number; presentation: Readonly<{ dishId: FoodDishId; version: number }>; format: FoodServingFormat; servingEstimate: FoodServingEstimate; packagingDescription?: FoodUnresolvedText; storageSummary?: FoodUnresolvedText; reheatingSummary?: FoodUnresolvedText }>",
+        "FoodServingFormat": "Readonly<{ kind: 'individual' }> | Readonly<{ kind: 'family' }> | Readonly<{ kind: 'catering'; panSize: 'unknown' | 'half-pan' | 'full-pan' | 'other'; panDescription?: string }> | Readonly<{ kind: 'custom'; code: string; label: string }>",
+        "FoodServingEstimate": "Readonly<{ state: 'unknown' }> | Readonly<{ state: 'specified'; minimum: number; maximum: number; explanation?: string }>",
+        "FoodUnresolvedText": "Readonly<{ state: 'unknown' }> | Readonly<{ state: 'specified'; text: string }>"
+    },
+    "contextValidation": [
+        "validateFoodDishPresentation validates actual supplied product/recipe through FOOD-001A unchanged.",
+        "Presentation product ID/version and recipe ID/version exactly match validated contextual snapshots; product itself references that exact recipe.",
+        "Offer validation validates supplied presentation and its contextual product/recipe, then matches exact presentation dish ID/version.",
+        "Output retains references only, never private snapshots/evidence/reviewer/operating data.",
+        "No latest/floating references, implicit lookup or latest substitution. Runtime validation does not trust branded types alone."
+    ],
+    "textRules": {
+        "canonical": "Every supplied text field is a nonempty string when present; reject surrounding whitespace, malformed values and over-limit values without trimming, case folding, Unicode normalization or defaults.",
+        "lengthUnit": "UTF-16 code units; inclusive maxima",
+        "maxima": {
+            "name": 160,
+            "shortDescription": 500,
+            "longDescription": 4000,
+            "mediaReference": 512,
+            "customCode": 128,
+            "customLabel": 160,
+            "panDescription": 500,
+            "servingExplanation": 500,
+            "descriptorText": 2000
+        },
+        "customCode": "Canonical supplied nonempty local identifier, no surrounding whitespace or colon, maximum 128 code units; preserve case and internal supplied characters under FOOD-001 local-ID style.",
+        "identityLimits": "No new length limit on dish/offer IDs beyond existing FOOD-001-style canonical identity semantics.",
+        "claims": "Text validation is structural only, never semantic censorship, truth/rights/safety/publication/legal verification. Candidate descriptions are not approved public facts."
+    },
+    "media": [
+        "Optional ordered opaque shared-media references containing only reference; canonical bounded text, duplicate exact references rejected.",
+        "Absent mediaReferences means not recorded; explicit empty array records no references. Preserve order.",
+        "Reference is opaque, not a URL. Reject URI-like references matching a leading scheme followed by colon and protocol-relative references beginning //; do not invent media ownership or resolve references.",
+        "No URL fields, upload, ownership flags, render configuration, approval booleans or second media subsystem."
+    ],
+    "formatRules": [
+        "Half-pan/full-pan are catering panSize values, never competing top-level kinds.",
+        "Catering panSize other requires bounded canonical panDescription; description forbidden for all other panSize values.",
+        "Individual/family have only kind; custom has only kind/code/label.",
+        "No generated custom codes, extension bags or bundle kind."
+    ],
+    "servingEstimates": [
+        "Unknown variant has only state.",
+        "Specified minimum/maximum are positive safe integers; minimum <= maximum, equal bounds valid.",
+        "Optional explanation must be bounded nonempty canonical text.",
+        "Never derive/multiply estimates from individual portions or fabricate them."
+    ],
+    "unresolvedSemantics": [
+        "Omitted optional descriptor means not recorded.",
+        "Present state unknown means explicitly unresolved; specified text means supplied descriptive information only.",
+        "Reject null as unknown substitute, empty strings, inferred/default values and malformed/extra variant fields.",
+        "Specified never implies reviewed, tested or approved."
+    ],
+    "offerRevisions": [
+        "Offers revise independently while retaining an exact presentation reference.",
+        "Adopting another presentation requires an explicit new offer revision.",
+        "Same FoodServingOfferId remains associated with the same FoodDishId; moving it to another dish is invalid.",
+        "Do not duplicate product/recipe references on offers; provenance is through the exact presentation."
+    ],
+    "descriptiveScope": [
+        "Only packagingDescription, storageSummary and reheatingSummary on offer.",
+        "No minimum purchase quantity, lead time, cutoffs, capacity weight, fulfillment restrictions, availability or readiness; defer to later operational/publication boundaries."
+    ],
+    "deferredPrice": "No money/currency/price/tax/discount/fee/payment semantics. Later pricing may use safe integer minor units with explicit currency.",
+    "deferredOrganization": "No tags, menu categories, featured state, badges or structured dietary/health/legal/compliance claims. Menu organization and claim review are later publication concerns; free-text validation does not verify claims.",
+    "deferredBundles": "Future separate bundle records reference exact component offer versions and explicit quantities. No bundle format, custom extension metadata or duplicated dishes.",
+    "versionRules": [
+        "Reuse FOOD-001A validateFoodVersion: positive safe integer, no coercion.",
+        "Standalone validators accept any valid historical positive version.",
+        "Revision helpers require same stable identity and next version exactly previous.version + 1; reject MAX_SAFE_INTEGER overflow.",
+        "Initial version 1 enforcement, latest/current enforcement, conflicts/retries/durable sequencing/append history belong to later repositories."
+    ],
+    "apis": [
+        "validateFoodDishPresentation(input, product, recipe)",
+        "validateFoodServingFormat(input)",
+        "validateFoodServingEstimate(input)",
+        "validateFoodUnresolvedText(input)",
+        "validateFoodServingOffer(input, presentation, product, recipe)",
+        "reviseFoodDishPresentation(previous, next, previousProduct, previousRecipe, nextProduct, nextRecipe)",
+        "reviseFoodServingOffer(previous, next, previousPresentation, nextPresentation, previousProduct, previousRecipe, nextProduct, nextRecipe)"
+    ],
+    "validationRules": [
+        "All public validators accept unknown runtime inputs; reject malformed variants, unknown properties, mismatched IDs/versions, invalid nested shapes and references.",
+        "Optional properties omitted/undefined follow FOOD-001 conventions; supplied null or malformed values reject.",
+        "Reject unsupported own fields instead of silently retaining or repairing them.",
+        "Reuse only FOOD-001A domain authority; commerce/insurance/Sesh patterns are not food semantics."
+    ],
+    "revisionRules": [
+        "Validate complete previous record/context and complete next record/context.",
+        "Require exact predecessor+1 and unchanged stable ID; offer revisions also enforce stable dish association.",
+        "Full replacement only: never merge or silently copy omitted optional fields.",
+        "No generated versions, implicit historical lookup or I/O."
+    ],
+    "immutability": [
+        "Every successful object output is detached and recursively frozen, including arrays, nested references and value objects.",
+        "Accept frozen valid inputs and leave all caller inputs/history untouched.",
+        "Deterministic results; no timestamps, random/generated IDs, caches, framework state or I/O."
+    ],
+    "forbiddenSemantics": [
+        "publication approval/public visibility",
+        "current availability/sold-out state",
+        "legal eligibility/safety approval",
+        "tax status/payment readiness/checkout readiness/orderability",
+        "fulfillment authorization",
+        "demand/popularity score/ratings",
+        "customer identity/QR alias/business contact state"
+    ],
+    "tests": [
+        "Canonical and malformed dish/offer IDs; reject wrong prefixes, blank local components, surrounding whitespace, extra colons and coercion.",
+        "Positive safe historical versions, invalid versions and revision overflow.",
+        "Exact product mismatch, recipe mismatch and product-to-recipe mismatch; no latest/floating references.",
+        "Valid presentation and revision; no private data retained.",
+        "Valid offer, independent revision, explicit presentation adoption, stable dish association and attempted dish move rejection.",
+        "Individual/family/catering unknown/half-pan/full-pan/other; required/forbidden panDescription combinations.",
+        "Custom canonical code/label, unsupported format/bundle/extension rejection.",
+        "Unknown estimate, specified range, equal bounds, invalid/unsafe/fractional/reversed bounds.",
+        "Omitted descriptor versus unknown versus specified; null/empty/malformed variant rejection.",
+        "Canonical text length boundaries and no normalization/claims-verification overclaims.",
+        "Opaque ordered media, absent/empty distinctions, duplicates and URL-like reference rejection.",
+        "Unknown fields at every nested shape; reject publication/availability/pricing/readiness/rating/customer/QR/extension fields.",
+        "Detached recursively frozen output, frozen inputs, no history mutation, full-replacement revisions and deterministic behavior.",
+        "Source isolation: FOOD-001A authority only, no persistence/framework/runtime/network/filesystem/time/randomness or unrelated subsystem imports."
+    ],
+    "futureValidation": [
+        "Focused FOOD-002B tests",
+        "FOOD-001A and relevant food regressions",
+        "Strict TypeScript checks for new files",
+        "git diff --check",
+        "Normal build"
+    ],
+    "excludedScope": [
+        "persistence/repositories/D1/schema/migrations",
+        "publication/menu sections/availability/prices",
+        "cart/order/checkout/fulfillment execution/payment integration",
+        "QR/ratings/demand collection/POS-lite",
+        "routes/UI/contact configuration",
+        "deployment/production data/unrelated insurance/Sesh/creator changes"
+    ],
+    "validationForCurrentTask": [
+        "JSON parsing",
+        "New-file whitespace checks",
+        "git diff --check"
+    ],
+    "currentTaskBoundary": "Create only this specification, keeping existing FOOD-002A untouched. Do not implement, stage, commit or push.",
+    "nextStep": "Review specification before separately authorizing the two-file pure domain implementation."
+}
