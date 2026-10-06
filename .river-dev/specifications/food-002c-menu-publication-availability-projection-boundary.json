@@ -1,0 +1,144 @@
+{
+  "version": "1.0.0",
+  "id": "FOOD-002C",
+  "name": "Pure versioned menu publication and separate offer-availability projection boundary",
+  "phase": "Specification only; implementation requires separate authorization",
+  "references": [
+    ".river-dev/specifications/food-002a-public-menu-serving-offers-ordering-demand-pos-lite-architecture-direction.json",
+    ".river-dev/specifications/food-002b-canonical-dish-versioned-serving-offer-domain-boundary.json"
+  ],
+  "allowedFutureImplementationPaths": ["src/lib/food/menu-publication-domain.ts", "src/lib/food/menu-publication-domain.test.ts"],
+  "authority": [
+    "Reuse FOOD-002B validators and FOOD-001A version validation unchanged. No shared-source correction or new FOOD-001 semantics.",
+    "Publication state is an explicitly supplied domain decision, not proof that the caller is authorized to publish. A later trusted service owns publication authorization.",
+    "Publication, current availability, legal/safety/tax/payment/fulfillment readiness and actual order authorization remain independent.",
+    "Never derive publication or readiness from FOOD-001 structural completeness, reviewed findings or unresolved conditions."
+  ],
+  "identity": {
+    "brand": "FoodMenuPublicationId",
+    "prefix": "food-menu-publication:",
+    "rules": "Explicit canonical supplied string with nonempty local component, no surrounding whitespace or extra local colon; match existing food-ID rules. Reject rather than normalize, infer or generate. No new publication-ID length limit.",
+    "sectionKey": "Supplied canonical local key: nonempty string, no surrounding whitespace or colon; preserve case/internal text. Unique within publication. Never generated or normalized."
+  },
+  "types": {
+    "FoodMenuPublication": "Readonly<{ publicationId: FoodMenuPublicationId; version: number; state: 'unpublished' | 'published'; title: string; sections: readonly FoodMenuSection[] }>",
+    "FoodMenuSection": "Readonly<{ key: string; title: string; entries: readonly FoodMenuEntry[] }>",
+    "FoodMenuEntry": "Readonly<{ presentation: Readonly<{ dishId: FoodDishId; version: number }>; selection: FoodDishPublicSelection; offers: readonly FoodMenuOfferSelection[] }>",
+    "FoodDishPublicSelection": "Readonly<{ shortDescription: boolean; longDescription: boolean; mediaReferences: readonly string[] }>",
+    "FoodMenuOfferSelection": "Readonly<{ offer: Readonly<{ offerId: FoodServingOfferId; version: number }>; intent: 'informational' | 'inquiry-only'; selection: FoodOfferPublicSelection }>",
+    "FoodOfferPublicSelection": "Readonly<{ packagingDescription: boolean; storageSummary: boolean; reheatingSummary: boolean; availability: boolean }>",
+    "FoodServingOfferAvailability": "Readonly<{ offer: Readonly<{ offerId: FoodServingOfferId; version: number }>; revision: number; state: 'available' | 'sold-out' | 'temporarily-paused' | 'outside-ordering-window' | 'unavailable' | 'retired' }>",
+    "FoodDishPresentationContext": "Readonly<{ presentation: FoodDishPresentation; product: FoodProductDraft; recipe: FoodRecipeDraft }>",
+    "FoodPublicMenuProjection": "Readonly<{ publicationId: FoodMenuPublicationId; version: number; title: string; sections: readonly FoodPublicMenuSection[] }>",
+    "FoodPublicMenuSection": "Readonly<{ key: string; title: string; entries: readonly FoodPublicMenuEntry[] }>",
+    "FoodPublicMenuEntry": "Readonly<{ dishId: FoodDishId; presentationVersion: number; name: string; shortDescription?: string; longDescription?: string; mediaReferences: readonly Readonly<{ reference: string }>[]; offers: readonly FoodPublicMenuOffer[] }>",
+    "FoodPublicMenuOffer": "Readonly<{ offerId: FoodServingOfferId; version: number; presentation: Readonly<{ dishId: FoodDishId; version: number }>; intent: 'informational' | 'inquiry-only'; format: FoodServingFormat; servingEstimate: FoodServingEstimate; packagingDescription?: FoodUnresolvedText; storageSummary?: FoodUnresolvedText; reheatingSummary?: FoodUnresolvedText; availability?: FoodServingOfferAvailability }>",
+    "FoodMenuValidationResult<T>": "Readonly<{ ok: true; value: T }> | Readonly<{ ok: false; error: Readonly<{ code: 'invalid-input'; message: 'Food menu input could not be validated.' }> }>",
+    "FoodPublicMenuResult": "Readonly<{ ok: true; value: Readonly<{ state: 'unpublished' }> | Readonly<{ state: 'published'; menu: FoodPublicMenuProjection }> }> | Readonly<{ ok: false; error: Readonly<{ code: 'invalid-input'; message: 'Food menu input could not be validated.' }> }>"
+  },
+  "contextContract": [
+    "The presentations parameter is an explicit array of FoodDishPresentationContext wrappers, not naked branded snapshots. These wrappers provide the exact FOOD-001 product/recipe context required by unchanged FOOD-002B validation; they never enter outputs.",
+    "Validate each contextual presentation with validateFoodDishPresentation(presentation, product, recipe); this validates exact product/recipe correspondence through FOOD-001A.",
+    "The offers parameter is an explicit array of FoodServingOffer snapshots. Validate each against its exact matching contextual presentation/product/recipe through validateFoodServingOffer.",
+    "All API validation inputs are unknown at runtime, including context collections. Reject malformed wrappers, unknown fields, duplicate identity/version context keys and missing/incompatible references. Never trust branded types alone.",
+    "Unused valid contexts are allowed but must still validate and never leak. Building deterministic in-memory indexes over supplied arrays is permitted; external lookup, persistence and latest resolution are forbidden."
+  ],
+  "publicationRules": [
+    "Positive safe-integer versions reuse FOOD-001A validation. Standalone historical versions allowed; initial version 1/current sequencing/durable history belong to later repositories.",
+    "Ordered sections, entries, offers and selected media preserve supplied order, never sort or deduplicate silently.",
+    "Reject duplicate section keys, duplicate dish IDs within a section and duplicate offer IDs within an entry, including selecting multiple versions of that offer ID in one entry.",
+    "A dish may appear in different sections, but every appearance in one publication must use the same exact presentation version. Reject multiple versions for one FoodDishId.",
+    "Each selected offer must reference the entry's exact dish ID/presentation version. No duplicated product/recipe references on menu selections.",
+    "A dish may have zero selected offers for informational presentation. Any explicit individual/family/catering/custom subset is valid, including family-only or catering-only, without new dish identities.",
+    "Publication has no inferred format restriction from section key/title. Compatible means exact presentation reference, not guessed meaning of editorial text.",
+    "All selection booleans are required literal booleans; no coercion/defaults. Selected optional source fields must exist or validation fails, rather than silently dropping a requested selection.",
+    "Empty section/entry collections are valid explicit content. Revisions may explicitly replace content with empty arrays."
+  ],
+  "projectionRules": [
+    "Validate publication and all supplied context before returning either published or unpublished success; unpublished is distinct from invalid context.",
+    "Valid unpublished publication returns only { state: 'unpublished' }, irrespective of internally available observations. No menu content escapes.",
+    "Valid published publication returns { state: 'published', menu } constructed field-by-field using only the declared public types. Never spread whole FOOD-002B/FOOD-001 source records.",
+    "Name, dish identity/version, selected offer identity/version, exact public presentation reference, format and serving estimate are baseline candidates explicitly authorized by inclusion. Optional fields require their own selection.",
+    "Never output FOOD-001 product/recipe references, private snapshots/evidence, reviewer/issuer identities, operating metadata, administrator/runtime data or future internal fields.",
+    "No selected description means omit that field even when present on the source. Unknown serving estimates remain { state: 'unknown' }.",
+    "Selected unknown packaging/storage/reheating descriptors remain explicit { state: 'unknown' }; unselected descriptors are omitted. Selected specified descriptors preserve supplied values, without independently verifying safety or correctness.",
+    "No blank substitution, fabricated values, readiness aggregation, implicit orderability, purchase permission or checkout claims."
+  ],
+  "mediaRules": [
+    "Required media selection array is an explicit ordered subset of the exact source presentation's opaque media references; empty array means none selected.",
+    "Reject duplicate selected references, malformed/oversize references, URL-like values under FOOD-002B rules and references absent from the exact source presentation.",
+    "Preserve selected order independently of attachment order. Output only { reference } objects.",
+    "Attachment does not imply public suitability. Selection does not establish ownership/rights or resolve/render/upload/store media. No second media subsystem."
+  ],
+  "availabilityRules": [
+    "Immutable exact-offer observations with positive safe-integer offer version and observation revision. All six states are valid supplied observations.",
+    "No timestamp, implicit latest selection, freshness guarantee, current-state persistence or observation-revision constructor. Later authoritative adapters select current observations.",
+    "availabilities is an explicit array; at most one observation per exact offer ID/version. Multiple revisions for the same exact offer are ambiguous and rejected, never resolved to latest.",
+    "Each supplied observation must reference an exact supplied validated offer snapshot; mismatched/missing offer contexts fail closed. No observation retargeting.",
+    "Offer availability selection true permits display of its supplied exact observation, if any. If missing, output omits availability; true does not fabricate a state or require an observation.",
+    "Selection false withholds availability even if a valid observation is supplied. No availability selected/missing/withheld stays absent, never converted to available/unavailable/sold-out.",
+    "Repeated appearances of the same offer use the same supplied observation but may independently withhold its display.",
+    "Publication does not imply availability; availability does not imply publication. Published available/unavailable/informational-only and unpublished internally available combinations remain representable.",
+    "Retired observations may accompany published informational or inquiry-only content without erasing history or creating order authority."
+  ],
+  "intentAndEditorial": [
+    "Intent is explicit per selected offer: informational or inquiry-only only. Dish entries with no offers remain informational content.",
+    "Catering may be visible with inquiry-only intent without checkout, payment readiness, endpoint activation or contact data.",
+    "Featured is section placement only; Seasonal may be represented by supplied section title. No additional structured editorial badges/label fields in this first version.",
+    "Reject structured Popular, Customer Favorite, Back by Demand, Limited Batch, new and equivalent social-proof/scarcity fields. Later evidence/capacity contracts must define them.",
+    "Arbitrary section titles are supplied editorial text, not verified factual claims. Structural validation does not semantically censor or verify free text."
+  ],
+  "limits": {
+    "unit": "UTF-16 code units; inclusive maxima; reject rather than truncate",
+    "publicationTitle": 160,
+    "sectionTitle": 160,
+    "sectionKey": 128,
+    "sectionsPerPublication": 20,
+    "entriesPerSection": 100,
+    "offersPerEntry": 20,
+    "selectedMediaPerEntry": 20,
+    "presentationContexts": 2000,
+    "offerContexts": 40000,
+    "availabilityObservations": 40000,
+    "sourceFields": "Reuse unchanged FOOD-002B constraints including media reference maximum 512. All supplied text must be nonempty canonical text without surrounding whitespace; no trimming or Unicode/case normalization."
+  },
+  "apis": [
+    "createFoodMenuPublicationId(local: unknown): FoodMenuPublicationId; invalid identity throws TypeError with fixed message 'Invalid food menu publication identity.'",
+    "parseFoodMenuPublicationId(input: unknown): FoodMenuPublicationId; invalid identity throws the same fixed TypeError",
+    "validateFoodServingOfferAvailability(input: unknown): FoodMenuValidationResult<FoodServingOfferAvailability>",
+    "validateFoodMenuPublication(input: unknown, presentations: unknown, offers: unknown): FoodMenuValidationResult<FoodMenuPublication>",
+    "reviseFoodMenuPublication(previous: unknown, next: unknown, previousPresentations: unknown, previousOffers: unknown, nextPresentations: unknown, nextOffers: unknown): FoodMenuValidationResult<FoodMenuPublication>",
+    "projectFoodPublicMenu(publication: unknown, presentations: unknown, offers: unknown, availabilities: unknown): FoodPublicMenuResult"
+  ],
+  "revisionRules": [
+    "Validate full previous/next publication and their distinct exact contexts.",
+    "Same publicationId and exactly previous.version + 1; reject MAX_SAFE_INTEGER overflow. State may explicitly change between unpublished and published.",
+    "Full replacement only; never merge/copy omitted sections, selections, media or fields. Missing required fields fail validation.",
+    "No version generation, lookup, implicit latest, durable append/conflict policy or mutation of previous content."
+  ],
+  "validationAndImmutability": [
+    "Reject unknown own properties at every declared record/variant shape, including unsupported symbol fields; reject arrays/null as records and malformed/sparse collection members.",
+    "Catch malformed input and dependency-property access failures inside result-returning APIs and return only fixed invalid-input failure. No payload excerpts, source exception messages, stack traces or runtime/private information.",
+    "Successful records/results/projections are reconstructed detached and recursively frozen, including references, arrays, formats, estimates, descriptors and observations. Frozen valid inputs remain accepted; caller objects remain unchanged.",
+    "Deterministic synchronous pure TypeScript; no timestamps, randomness, generated IDs, caches, framework state, environment acquisition or I/O."
+  ],
+  "requiredTests": [
+    "Canonical/malformed publication IDs; reject coercion/normalization; safe historical versions and malformed versions.",
+    "Same-identity consecutive publication revisions, identity drift/skipped versions/overflow rejection, full replacement, explicit state changes and history unchanged.",
+    "Valid unpublished versus published result; invalid context remains failure even when unpublished; no silent dropping.",
+    "Publication does not imply availability; availability does not imply publication; all six states; retired historical informational content; missing/withheld availability absent.",
+    "Exact availability offer/version bindings; duplicate/ambiguous observations and missing contexts rejected; no latest/freshness inference.",
+    "Informational/inquiry-only intent, catering inquiry-only, family-only/catering-only and multiple format subsets; zero-offer informational dish.",
+    "One dish across different sections; duplicate dish within section/offer within entry/section key rejection; multiple presentation versions for one dish rejection.",
+    "Section/entry/offer/media order; exact presentation/offer matching; incompatible or malformed contexts rejected; unused valid contexts do not leak.",
+    "Explicit description/descriptor selection; selected absent source field rejection; unknown descriptor omission and explicitly selected unknown preservation; no blank/default values.",
+    "Media subset membership, duplicate selection, reference bounds and opaque-only rules; selected order preserved; attachment never automatically published.",
+    "Public allowlist excludes private product/recipe references/evidence/reviewer/admin/runtime metadata. No whole-source spread or future internal metadata leakage.",
+    "Unsupported structured popularity/scarcity/social proof/new fields and price/orderable/readiness/bundle fields rejected; section titles confer no authority.",
+    "All collection/text maxima inclusive and oversize rejection; missing/null/unknown properties/nonboolean selections/malformed variants/throwing getters yield fixed sanitized failure.",
+    "Deterministic detached deeply frozen records/results/projections, frozen inputs, no indirect history mutation, source isolation."
+  ],
+  "futureValidation": ["Focused FOOD-002C tests", "FOOD-002B and relevant FOOD-001 regressions", "Strict TypeScript checks for future two files", "Whitespace checks", "git diff --check", "Normal build"],
+  "excludedScope": ["persistence/repositories/D1/schema/migrations", "routes/UI/navigation", "pricing/currency/tax/discounts/processors/external price display", "cart/orders/checkout/payment/fulfillment execution", "customer identity/QR/ratings/demand analytics/POS-lite", "business contact values/inquiry endpoints", "runtime configuration/provisioning/administrator values", "deployment/production data", "unrelated insurance/Sesh/creator changes"],
+  "currentTaskBoundary": "Create only this specification. Do not implement, stage, commit, migrate, configure infrastructure or deploy."
+}
