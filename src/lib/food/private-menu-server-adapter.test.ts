@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { runInNewContext } from "node:vm";
 import ts from "typescript";
-import { createPrivateFoodMenuRuntimeFromServerContext as create } from "./private-menu-server-adapter";
+import { createPrivateFoodMenuRuntimeFromServerContext as create, createPrivateFoodMenuOperationRuntimeFromServerContext as createOperation } from "./private-menu-server-adapter";
 import { parsePrincipalId } from "../identity/identifiers";
 import type { AstroSessionLike } from "../identity/session/contracts";
 import type { IdentityD1DatabaseLike, IdentityD1PreparedStatementLike } from "../identity/cloudflare/types";
@@ -104,4 +104,65 @@ test("source delegates menu acquisition/composition and excludes globals, HTTP a
     for (const banned of ["cloudflare:workers", "globalThis", "process.env", "import.meta", "wrangler", "FormData", "Response", "cookies", "redirect", "runAuthorized", "RIVER_FOOD", "TEST_MENU", "Date.now", "fetch(", "new D1FoodMenuRepository", "new SingleAdminFoodMenuService", "createPrivateFoodMenuWorkspaceController"]) assert.equal(source.includes(banned), false, banned);
     assert.equal((source.match(/environment\.RIVER_IDENTITY_DB/g) ?? []).length, 1);
     assert.equal((source.match(/acquirePrivateFoodMenuDatabaseFromEnvironment\(/g) ?? []).length, 1); assert.equal((source.match(/createPrivateFoodMenuRuntimeComposition\(/g) ?? []).length, 1);
+});
+
+test("FOOD-002L J: frozen exact companion output, fresh graphs and zero dependency calls", () => {
+    const f = fixture(); const a = createOperation(f.input), b = createOperation(f.input); assert(a.ok && b.ok);
+    assert.deepEqual(Object.keys(a), ["ok", "value"]); assert.deepEqual(Object.keys(a.value), ["service", "workspace", "operationGate"]);
+    assert(Object.isFrozen(a)); assert(Object.isFrozen(a.value)); assert(Object.isFrozen(a.value.workspace)); assert(Object.is(a.value.service, a.value.operationGate));
+    assert(!Object.isFrozen(a.value.service)); assert.deepEqual(Object.keys(a.value.service), []); assert.notEqual(a.value.service, b.value.service); assert.notEqual(a.value.workspace, b.value.workspace);
+    assert(!Object.isFrozen(f.input.session)); assert(!Object.isFrozen(f.input.environment)); assert.deepEqual(f.state.events, []);
+    const old = create(f.input); assert(old.ok); assert.deepEqual(Object.keys(old.value), ["service", "workspace"]);
+    const { now: _unused, ...withoutClock } = f.input; assert(createOperation(withoutClock).ok); assert(createOperation({ ...f.input, now: undefined }).ok); assert.deepEqual(f.state.events, []);
+});
+
+test("FOOD-002L J: companion failures preserve exact fixed configuration result with no fallback", () => {
+    for (const input of invalidInputs()) { const result = createOperation(input as never); assert.deepEqual(result, failure); assert(Object.isFrozen(result)); assert(!result.ok && Object.isFrozen(result.error)); }
+    const f = fixture(); for (const bindingName of [undefined, "bad-key", " TEST_MENU"]) assert.deepEqual(createOperation({ ...f.input, bindingName } as never), failure);
+    assert.deepEqual(createOperation({ ...f.input, environment: { RIVER_IDENTITY_DB: f.input.environment.RIVER_IDENTITY_DB } }), failure); assert.deepEqual(f.state.events, []);
+});
+
+test("FOOD-002L J: only companion H receives exact references and one fresh identity graph", () => {
+    const f = fixture(); const constructed: { kind: string; args: unknown[]; instance: object }[] = []; const acquisitions: { environment: unknown; bindingName: unknown }[] = [];
+    const compositions: { database: unknown; readDependencies: unknown; callerResolver: unknown; administratorPrincipalId: unknown }[] = [];
+    const stub = (kind: string) => class { constructor(...args: unknown[]) { constructed.push({ kind, args, instance: this }); } };
+    const service = {}; const capabilities = Object.freeze({ service, workspace: {}, operationGate: service }); let acquired: unknown = { ok: true, value: f.input.environment.TEST_MENU }; let throwComposition = false;
+    const exports: Record<string, typeof createOperation> = {};
+    runInNewContext(ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText, { exports, Object, require(name: string) {
+        if (name === "../identity/identifiers") return { parsePrincipalId };
+        if (name === "../identity/session/astro-session-adapter") return { AstroPrincipalSessionStore: stub("sessions") };
+        if (name === "../identity/cloudflare/d1-principal-repository") return { D1PrincipalRepository: stub("principals") };
+        if (name === "../identity/session/principal-resolver") return { DefaultSessionPrincipalResolver: stub("resolver") };
+        if (name === "./private-menu-runtime-acquisition") return { acquirePrivateFoodMenuDatabaseFromEnvironment(input: typeof acquisitions[number]) { acquisitions.push(input); return acquired; } };
+        if (name === "./private-menu-runtime-composition") return { createPrivateFoodMenuRuntimeComposition() { assert.fail("Narrow H called for companion"); }, createPrivateFoodMenuOperationRuntimeComposition(input: typeof compositions[number]) { compositions.push(input); if (throwComposition) throw new Error("private H"); return capabilities; } };
+        assert.fail(name);
+    } });
+    const factory = exports.createPrivateFoodMenuOperationRuntimeFromServerContext;
+    for (const bad of invalidInputs()) assert.equal(JSON.stringify(factory(bad as never)), JSON.stringify(failure)); assert.equal(acquisitions.length, 0); assert.equal(constructed.length, 0);
+    for (let i = 0; i < 2; i++) {
+        const result = factory(f.input); assert(result.ok && result.value === capabilities); assert(Object.isFrozen(result));
+        assert.equal(acquisitions[i].environment, f.input.environment); assert.equal(acquisitions[i].bindingName, f.input.bindingName);
+        const offset = i * 3; assert.equal(constructed[offset].args[0], f.input.session); assert.equal(constructed[offset].args[1], f.input.now); assert.equal(constructed[offset + 1].args[0], f.input.environment.RIVER_IDENTITY_DB);
+        assert.equal(compositions[i].callerResolver, constructed[offset + 2].instance); assert.equal(compositions[i].database, f.input.environment.TEST_MENU); assert.equal(compositions[i].readDependencies, f.input.readDependencies); assert.equal(compositions[i].administratorPrincipalId, admin);
+    }
+    assert.deepEqual(constructed.map(c => c.kind), ["sessions", "principals", "resolver", "sessions", "principals", "resolver"]); assert.notEqual(compositions[0].callerResolver, compositions[1].callerResolver);
+    const unavailable = Object.freeze(failure); acquired = unavailable; assert.equal(factory(f.input), unavailable); assert.equal(constructed.length, 6); assert.equal(compositions.length, 2);
+    acquired = { ok: true, value: f.input.environment.TEST_MENU }; throwComposition = true; assert.equal(JSON.stringify(factory(f.input)), JSON.stringify(failure)); assert.deepEqual(f.state.events, []);
+});
+
+test("FOOD-002L J: delayed async gate and workspace retain separate authorization with exact operation arguments", async () => {
+    const f = fixture(); const result = createOperation(f.input); assert(result.ok); const runtime = result.value; let callbacks = 0;
+    let release!: () => void; f.state.gate = new Promise<void>(done => { release = done; });
+    const pending = runtime.operationGate.runAuthorized(() => { callbacks++; return "authorized"; }); await Promise.resolve(); assert.deepEqual(f.state.events, ["get"]); assert.equal(callbacks, 0);
+    release(); assert.deepEqual(await pending, { ok: true, value: "authorized" }); assert.deepEqual(f.state.identityArgs, [admin]); assert.equal(callbacks, 1); assert(!f.state.events.includes("menu"));
+    f.state.principal = { ...f.state.principal, principal_id: "principal:other" };
+    const unavailable = await runtime.operationGate.runAuthorized(() => { callbacks++; }); assert(!unavailable.ok && unavailable.error.code === "access-unavailable"); assert.equal(callbacks, 1);
+    f.state.principal = { ...f.state.principal, principal_id: admin };
+    const revoked = await runtime.operationGate.runAuthorized(() => { f.state.raw = undefined; return runtime.workspace.getOffer("food-serving-offer:exact" as never, 7); });
+    assert(revoked.ok && !revoked.value.ok && revoked.value.error.code === "unauthenticated"); assert(!f.state.events.includes("menu"));
+    f.state.raw = { version: 1, principalId: admin, authenticatedAt: "2026-10-05T00:00:00Z", expiresAt: "2026-10-06T00:00:00Z" };
+    const before = f.state.events.filter(e => e === "get").length;
+    const found = await runtime.operationGate.runAuthorized(() => runtime.workspace.getOffer("food-serving-offer:exact" as never, 7));
+    assert(found.ok && found.value.ok && found.value.value.outcome === "not-found"); assert.equal(f.state.events.filter(e => e === "get").length, before + 2); assert.deepEqual(f.state.menuArgs, ["food-serving-offer:exact", 7]);
+    const wrong = createOperation({ ...f.input, administratorPrincipalId: parsePrincipalId("principal:other-admin") }); assert(wrong.ok); const denial = await wrong.value.operationGate.runAuthorized(() => assert.fail("Wrong administrator callback")); assert(!denial.ok && denial.error.code === "forbidden");
 });

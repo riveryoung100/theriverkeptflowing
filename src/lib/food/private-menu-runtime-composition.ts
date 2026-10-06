@@ -3,7 +3,7 @@ import type { SessionPrincipalResolver } from "../identity/session/principal-res
 import type { FoodD1Database } from "./d1-draft-persistence";
 import type { FoodMenuReadDependencies } from "./menu-persistence";
 import { D1FoodMenuRepository } from "./d1-menu-persistence";
-import { SingleAdminFoodMenuService, type FoodPrivateMenuService } from "./private-menu-service";
+import { SingleAdminFoodMenuService, type FoodPrivateMenuService, type FoodPrivateMenuOperationGate } from "./private-menu-service";
 import { createPrivateFoodMenuWorkspaceController, type FoodPrivateMenuWorkspaceController } from "./private-menu-workspace";
 
 export interface FoodPrivateMenuRuntimeCompositionInput {
@@ -17,9 +17,12 @@ export interface FoodPrivateMenuRuntimeCapabilities {
     readonly service: FoodPrivateMenuService;
     readonly workspace: FoodPrivateMenuWorkspaceController;
 }
+export interface FoodPrivateMenuOperationRuntimeCapabilities extends FoodPrivateMenuRuntimeCapabilities {
+    readonly operationGate: FoodPrivateMenuOperationGate;
+}
 
 /** Structural assembly only; dependency trust and database consistency belong to the caller. */
-export function createPrivateFoodMenuRuntimeComposition(input: FoodPrivateMenuRuntimeCompositionInput): FoodPrivateMenuRuntimeCapabilities {
+function construct(input: FoodPrivateMenuRuntimeCompositionInput): { service: SingleAdminFoodMenuService; workspace: FoodPrivateMenuWorkspaceController } {
     let database: FoodD1Database;
     let readDependencies: FoodMenuReadDependencies;
     let callerResolver: SessionPrincipalResolver;
@@ -36,5 +39,13 @@ export function createPrivateFoodMenuRuntimeComposition(input: FoodPrivateMenuRu
     const repository = new D1FoodMenuRepository(database, readDependencies);
     const service = new SingleAdminFoodMenuService({ repository, callerResolver, administratorPrincipalId });
     const workspace = createPrivateFoodMenuWorkspaceController(service);
+    return { service, workspace };
+}
+export function createPrivateFoodMenuRuntimeComposition(input: FoodPrivateMenuRuntimeCompositionInput): FoodPrivateMenuRuntimeCapabilities {
+    const { service, workspace } = construct(input);
     return Object.freeze({ service, workspace });
+}
+export function createPrivateFoodMenuOperationRuntimeComposition(input: FoodPrivateMenuRuntimeCompositionInput): FoodPrivateMenuOperationRuntimeCapabilities {
+    const { service, workspace } = construct(input);
+    return Object.freeze({ service, workspace, operationGate: service });
 }

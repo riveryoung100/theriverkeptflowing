@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { runInNewContext } from "node:vm";
 import ts from "typescript";
-import { createPrivateFoodMenuRuntimeComposition, type FoodPrivateMenuRuntimeCompositionInput } from "./private-menu-runtime-composition";
+import { createPrivateFoodMenuRuntimeComposition, createPrivateFoodMenuOperationRuntimeComposition, type FoodPrivateMenuRuntimeCompositionInput, type FoodPrivateMenuOperationRuntimeCapabilities } from "./private-menu-runtime-composition";
 import { SingleAdminFoodMenuService } from "./private-menu-service";
 import { parsePrincipalId } from "../identity/identifiers";
 import { foodDraftIdentityOrderKey, type FoodD1Database, type FoodD1Result, type FoodD1Statement } from "./d1-draft-persistence";
@@ -13,6 +13,8 @@ import { createFoodMenuPublicationId } from "./menu-publication-domain";
 import { createFoodProductId, createFoodRecipeId } from "./draft-domain";
 
 const administrator = parsePrincipalId("principal:menu-composition-test");
+const narrowHasGate: "runAuthorized" extends keyof FoodPrivateMenuOperationRuntimeCapabilities["service"] ? true : false = false;
+const gateHasOperation: "runAuthorized" extends keyof FoodPrivateMenuOperationRuntimeCapabilities["operationGate"] ? true : false = true;
 const source = readFileSync(new URL("./private-menu-runtime-composition.ts", import.meta.url), "utf8");
 const result = (rows: readonly unknown[] = [], changes = 0): FoodD1Result => ({ success: true, results: rows, meta: { changes } });
 function fixture() {
@@ -158,4 +160,56 @@ test("source has only composition imports and no acquisition, activation or requ
     const runtimeImports = [...source.matchAll(/^import (?!type).*from "([^"]+)";/gm)].map(match => match[1]);
     assert.deepEqual(runtimeImports, ["./d1-menu-persistence", "./private-menu-service", "./private-menu-workspace"]);
     for (const banned of ["import.meta.env", "process.env", "cloudflare:workers", "wrangler", "RIVER_", "runAuthorized", "FormData", "fetch(", "Date.now", "Math.random", "private-draft-runtime-acquisition", "private-draft-server-adapter"]) assert.equal(source.includes(banned), false, banned);
+});
+
+test("FOOD-002L H: exact frozen companion capability, static narrow surfaces and zero construction I/O", () => {
+    const f = fixture(); const a = createPrivateFoodMenuOperationRuntimeComposition(f.input), b = createPrivateFoodMenuOperationRuntimeComposition(f.input);
+    assert.equal(narrowHasGate, false); assert.equal(gateHasOperation, true);
+    assert.deepEqual(Object.keys(a), ["service", "workspace", "operationGate"]); assert(Object.isFrozen(a)); assert(Object.isFrozen(a.workspace));
+    assert(Object.is(a.service, a.operationGate)); assert(!Object.isFrozen(a.service)); assert.deepEqual(Object.keys(a.service), []);
+    assert.notEqual(a.service, b.service); assert.notEqual(a.workspace, b.workspace); assert.notEqual(a.operationGate, b.operationGate);
+    for (const v of [f.input, f.input.database, f.input.readDependencies, f.input.callerResolver]) assert(!Object.isFrozen(v));
+    assert.deepEqual([f.state.prepares, f.state.batches, f.state.reads.length, f.state.resolutions], [0, 0, 0, 0]);
+    assert.deepEqual(Object.keys(createPrivateFoodMenuRuntimeComposition(f.input)), ["service", "workspace"]);
+});
+
+test("FOOD-002L H: one graph, same service for gate/workspace, exact references and capture order", () => {
+    const f = fixture(); const trace: string[] = []; const repositories: object[] = [], services: object[] = [], workspaces: object[] = [];
+    const input = Object.fromEntries(Object.keys(f.input).map(key => [key, undefined]));
+    for (const key of Object.keys(f.input)) Object.defineProperty(input, key, { get() { trace.push(key); return f.input[key as keyof typeof f.input]; } });
+    Object.defineProperty(input, "unrelated", { get() { assert.fail("Unrelated property"); } });
+    class Repository { constructor(database: unknown, dependencies: unknown) { trace.push("repository"); assert.equal(database, f.input.database); assert.equal(dependencies, f.input.readDependencies); repositories.push(this); } }
+    class Service { constructor(config: { repository: unknown; callerResolver: unknown; administratorPrincipalId: unknown }) { trace.push("service"); assert.equal(config.repository, repositories.at(-1)); assert.equal(config.callerResolver, f.input.callerResolver); assert.equal(config.administratorPrincipalId, administrator); services.push(this); } }
+    const exports: Record<string, (input: unknown) => { service: object; workspace: object; operationGate: object }> = {};
+    runInNewContext(ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText, { exports, Object, require(name: string) {
+        if (name === "./d1-menu-persistence") return { D1FoodMenuRepository: Repository };
+        if (name === "./private-menu-service") return { SingleAdminFoodMenuService: Service };
+        if (name === "./private-menu-workspace") return { createPrivateFoodMenuWorkspaceController(service: unknown) { trace.push("workspace"); assert.equal(service, services.at(-1)); const workspace = Object.freeze({}); workspaces.push(workspace); return workspace; } };
+        assert.fail(name);
+    } });
+    for (let i = 0; i < 2; i++) { const result = exports.createPrivateFoodMenuOperationRuntimeComposition(input); assert.equal(result.service, services[i]); assert.equal(result.operationGate, services[i]); assert.equal(result.workspace, workspaces[i]); assert(Object.isFrozen(result)); }
+    assert.equal(repositories.length, 2); assert.equal(services.length, 2); assert.equal(workspaces.length, 2);
+    assert.deepEqual(trace, Array(2).fill(["database", "readDependencies", "callerResolver", "administratorPrincipalId", "repository", "service", "workspace"]).flat());
+});
+
+test("FOOD-002L H: companion retains structural failures and sanitized constructor ordering", () => {
+    const f = fixture();
+    const cases: unknown[] = [undefined, null, [], {}, ...Object.keys(f.input).map(key => Object.defineProperty({ ...f.input }, key, { get() { throw new Error("private"); } })), { ...f.input, database: null }, { ...f.input, database: { prepare: 1, batch() {} } }, { ...f.input, readDependencies: null }, { ...f.input, callerResolver: { resolve: 1 } }, { ...f.input, administratorPrincipalId: " principal:admin" }];
+    for (const input of cases) {
+        let expected: unknown; try { createPrivateFoodMenuRuntimeComposition(input as never); assert.fail("Invalid input accepted"); } catch (e) { expected = e; }
+        assert(expected instanceof TypeError); assert.throws(() => createPrivateFoodMenuOperationRuntimeComposition(input as never), { name: expected.name, message: expected.message });
+    }
+    assert.deepEqual([f.state.prepares, f.state.batches, f.state.reads.length, f.state.resolutions], [0, 0, 0, 0]);
+});
+
+test("FOOD-002L H: exposed gate remains fresh and workspace reauthorizes exact operations", async () => {
+    const f = fixture(); const { operationGate, workspace } = createPrivateFoodMenuOperationRuntimeComposition(f.input); let callbacks = 0;
+    f.state.principal = "principal:other"; const denied = await operationGate.runAuthorized(() => { callbacks++; }); assert(!denied.ok && denied.error.code === "forbidden");
+    assert.equal(callbacks, 0); assert.equal(f.state.prepares + f.state.batches + f.state.reads.length, 0);
+    f.state.principal = administrator;
+    const revoked = await operationGate.runAuthorized(() => { callbacks++; f.state.principal = "principal:revoked"; return workspace.getPresentation(f.presentation.dishId, 1); });
+    assert(revoked.ok && !revoked.value.ok && revoked.value.error.code === "forbidden"); assert.equal(f.state.resolutions, 3); assert.equal(f.state.prepares, 0);
+    f.state.principal = administrator; const success = await operationGate.runAuthorized(() => workspace.getPresentation(f.presentation.dishId, 1));
+    assert(success.ok && success.value.ok && success.value.value.outcome === "not-found"); assert.equal(f.state.resolutions, 5); assert.deepEqual(f.state.queries.at(-1)?.values, [f.presentation.dishId, 1]);
+    const opaque = { ok: false }; const result = await operationGate.runAuthorized(async () => opaque); assert(result.ok && result.value === opaque); assert(!Object.isFrozen(opaque));
 });

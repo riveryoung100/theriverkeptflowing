@@ -6,7 +6,7 @@ import { D1PrincipalRepository } from "../identity/cloudflare/d1-principal-repos
 import type { IdentityD1DatabaseLike } from "../identity/cloudflare/types";
 import type { FoodMenuReadDependencies } from "./menu-persistence";
 import { acquirePrivateFoodMenuDatabaseFromEnvironment } from "./private-menu-runtime-acquisition";
-import { createPrivateFoodMenuRuntimeComposition, type FoodPrivateMenuRuntimeCapabilities } from "./private-menu-runtime-composition";
+import { createPrivateFoodMenuRuntimeComposition, createPrivateFoodMenuOperationRuntimeComposition, type FoodPrivateMenuRuntimeCapabilities, type FoodPrivateMenuOperationRuntimeCapabilities, type FoodPrivateMenuRuntimeCompositionInput } from "./private-menu-runtime-composition";
 
 export interface FoodPrivateMenuServerContextInput {
     readonly environment: Readonly<Record<string, unknown>>;
@@ -20,13 +20,17 @@ export type FoodPrivateMenuServerContextResult = Readonly<
     { ok: true; value: FoodPrivateMenuRuntimeCapabilities } |
     { ok: false; error: Readonly<{ code: "configuration-unavailable"; message: "Food menu database configuration is unavailable." }> }
 >;
+export type FoodPrivateMenuOperationServerContextResult = Readonly<
+    { ok: true; value: FoodPrivateMenuOperationRuntimeCapabilities } |
+    { ok: false; error: Readonly<{ code: "configuration-unavailable"; message: "Food menu database configuration is unavailable." }> }
+>;
 function object(value: unknown): Record<string, unknown> {
     if (!value || typeof value !== "object" || Array.isArray(value)) throw new TypeError();
     return value as Record<string, unknown>;
 }
 
 /** Trusted inputs are supplied by the caller; assembly does not authenticate or probe storage. */
-export function createPrivateFoodMenuRuntimeFromServerContext(input: FoodPrivateMenuServerContextInput): FoodPrivateMenuServerContextResult {
+function fromContext<T extends FoodPrivateMenuRuntimeCapabilities>(input: FoodPrivateMenuServerContextInput, compose: (input: FoodPrivateMenuRuntimeCompositionInput) => T): Readonly<{ ok: true; value: T } | { ok: false; error: Readonly<{ code: "configuration-unavailable"; message: "Food menu database configuration is unavailable." }> }> {
     try {
         const supplied = object(input);
         const environmentValue = supplied.environment;
@@ -49,9 +53,15 @@ export function createPrivateFoodMenuRuntimeFromServerContext(input: FoodPrivate
         const sessions = new AstroPrincipalSessionStore(session as unknown as AstroSessionLike, now as (() => Date) | undefined);
         const principals = new D1PrincipalRepository(identityDatabase as unknown as IdentityD1DatabaseLike);
         const callerResolver = new DefaultSessionPrincipalResolver({ sessions, principals });
-        const capabilities = createPrivateFoodMenuRuntimeComposition({ database: acquired.value, readDependencies: readDependencies as unknown as FoodMenuReadDependencies, callerResolver, administratorPrincipalId });
+        const capabilities = compose({ database: acquired.value, readDependencies: readDependencies as unknown as FoodMenuReadDependencies, callerResolver, administratorPrincipalId });
         return Object.freeze({ ok: true, value: capabilities });
     } catch {
         return Object.freeze({ ok: false, error: Object.freeze({ code: "configuration-unavailable", message: "Food menu database configuration is unavailable." }) });
     }
+}
+export function createPrivateFoodMenuRuntimeFromServerContext(input: FoodPrivateMenuServerContextInput): FoodPrivateMenuServerContextResult {
+    return fromContext(input, configuration => createPrivateFoodMenuRuntimeComposition(configuration));
+}
+export function createPrivateFoodMenuOperationRuntimeFromServerContext(input: FoodPrivateMenuServerContextInput): FoodPrivateMenuOperationServerContextResult {
+    return fromContext(input, configuration => createPrivateFoodMenuOperationRuntimeComposition(configuration));
 }

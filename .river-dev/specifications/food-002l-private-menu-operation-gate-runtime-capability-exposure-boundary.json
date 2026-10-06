@@ -1,0 +1,157 @@
+{
+  "version": "1.0.0",
+  "id": "FOOD-002L",
+  "name": "Private menu operation-gate runtime capability exposure",
+  "predecessors": ["FOOD-002H", "FOOD-002J", "FOOD-002K"],
+  "phase": "Discovery and specification only; implementation requires separate explicit authorization",
+  "architecturalPurpose": "Expose the existing menu service, workspace and authorization-before-continuation gate through additive trusted runtime factories backed by one concrete service, preserving existing narrow factory contracts without creating transport or activating infrastructure.",
+  "startingState": {
+    "branch": "cif-001-canonical-content-source-record",
+    "head": "be5a21f3a740e8264ff8ad2cc436e63cf4bbed23",
+    "worktree": "Clean before this specification"
+  },
+  "references": [
+    ".river-dev/specifications/food-002k-authorized-private-menu-operation-gate-boundary.json",
+    ".river-dev/specifications/food-002h-injected-private-menu-runtime-composition-boundary.json",
+    ".river-dev/specifications/food-002j-trusted-server-context-private-menu-runtime-adapter-boundary.json",
+    ".river-dev/specifications/food-002i-trusted-menu-environment-acquisition-boundary.json",
+    ".river-dev/specifications/food-002f-private-menu-workspace-controller-boundary.json",
+    ".river-dev/specifications/food-002e-single-admin-private-menu-management-service-boundary.json",
+    ".river-dev/specifications/food-001d2-authorized-private-food-operation-gate-capability.json",
+    ".river-dev/specifications/food-001j-private-food-draft-mutation-transport-request-policy-boundary.json",
+    ".river-dev/specifications/food-001k-trusted-private-food-runtime-capability-exposure-boundary.json",
+    "src/lib/food/private-menu-service.ts",
+    "src/lib/food/private-menu-service.test.ts",
+    "src/lib/food/private-menu-runtime-composition.ts",
+    "src/lib/food/private-menu-runtime-composition.test.ts",
+    "src/lib/food/private-menu-server-adapter.ts",
+    "src/lib/food/private-menu-server-adapter.test.ts",
+    "src/lib/food/private-menu-runtime-acquisition.ts",
+    "src/lib/food/private-menu-runtime-acquisition.test.ts",
+    "src/lib/food/private-menu-workspace.ts",
+    "src/lib/food/private-menu-workspace.test.ts",
+    "src/lib/food/private-draft-service.ts",
+    "src/lib/food/private-draft-service.test.ts",
+    "src/lib/food/private-draft-mutation-request.ts",
+    "src/lib/food/private-draft-mutation-request.test.ts",
+    "src/lib/food/private-draft-runtime-composition.ts",
+    "src/lib/food/private-draft-runtime-composition.test.ts"
+  ],
+  "currentContracts": {
+    "H": "createPrivateFoodMenuRuntimeComposition(input: FoodPrivateMenuRuntimeCompositionInput): FoodPrivateMenuRuntimeCapabilities returns exactly frozen { service, workspace }; service: FoodPrivateMenuService and workspace: FoodPrivateMenuWorkspaceController.",
+    "J": "createPrivateFoodMenuRuntimeFromServerContext(input: FoodPrivateMenuServerContextInput): FoodPrivateMenuServerContextResult returns frozen { ok: true, value: exactHBundle } or fixed configuration-unavailable. Its success type refers to FoodPrivateMenuRuntimeCapabilities, not a duplicated structural bundle.",
+    "K": "SingleAdminFoodMenuService implements both FoodPrivateMenuService and FoodPrivateMenuOperationGate. runAuthorized<T>(callback: () => T | Promise<T>): Promise<FoodMenuAuthorizedCallbackResult<T>> is separate from the unchanged 23-operation FoodPrivateMenuService type.",
+    "I": "acquirePrivateFoodMenuDatabaseFromEnvironment validates environment plus injected bindingName and returns only FoodD1Database or fixed configuration failure; it neither constructs nor returns menu runtime capabilities.",
+    "staticVisibility": "FoodPrivateMenuService has no runAuthorized member. Neither current H nor J declares a gate field, so future transport cannot obtain FoodPrivateMenuOperationGate through their static contracts without an unsafe cast/probe/concrete implementation dependency.",
+    "implementationRequired": true,
+    "compatibilityEvidence": "H/J specs and tests explicitly require exactly service/workspace keys. Adding a mandatory operationGate to the existing interface/output would alter those contracts and typed fakes, even though consumers merely destructuring the two old properties could still work. FOOD-002K already calls for preserving existing narrow runtime factories."
+  },
+  "selectedArchitecture": {
+    "decision": "Add companion H and J factories with a new extended capability type; keep existing two-field factories and types intact. Construct one concrete service and expose two narrow interface views of it, plus the existing workspace. No I change is required.",
+    "propertyName": "operationGate",
+    "namingRationale": "FOOD-001K uses gate for a distinct capability. Use operationGate in the new menu bundle to identify FoodPrivateMenuOperationGate explicitly, as proposed by this direction; do not add a second alias named gate.",
+    "capabilityType": "FoodPrivateMenuOperationRuntimeCapabilities",
+    "capabilityDefinition": "export interface FoodPrivateMenuOperationRuntimeCapabilities extends FoodPrivateMenuRuntimeCapabilities { readonly operationGate: FoodPrivateMenuOperationGate; }",
+    "bundle": "Object.freeze({ service, workspace, operationGate: service }) with service statically known as SingleAdminFoodMenuService during construction, and workspace constructed from that exact instance.",
+    "compositionSignature": "createPrivateFoodMenuOperationRuntimeComposition(input: FoodPrivateMenuRuntimeCompositionInput): FoodPrivateMenuOperationRuntimeCapabilities",
+    "serverSignature": "createPrivateFoodMenuOperationRuntimeFromServerContext(input: FoodPrivateMenuServerContextInput): FoodPrivateMenuOperationServerContextResult",
+    "serverResultDefinition": "export type FoodPrivateMenuOperationServerContextResult = Readonly<{ ok: true; value: FoodPrivateMenuOperationRuntimeCapabilities } | { ok: false; error: Readonly<{ code: 'configuration-unavailable'; message: 'Food menu database configuration is unavailable.' }> }>;",
+    "newInputs": "None. Reuse the exact existing H and J input types. No new binding name, administrator, resolver, expectedOrigin or request input.",
+    "rejectedAlternatives": [
+      "No-change conclusion is invalid because the declared static contracts hide the gate.",
+      "Do not widen FoodPrivateMenuService or add runAuthorized to the workspace.",
+      "Do not alter the old bundle shape or require existing consumers/fakes to provide a gate.",
+      "Do not cast/downcast narrow service into a gate, use instanceof or probe runAuthorized to obtain it, construct a second service, or configure a second authorization policy."
+    ]
+  },
+  "sameInstanceRequirements": [
+    "Exactly one D1FoodMenuRepository, one SingleAdminFoodMenuService and one workspace per successful companion composition call; workspace captures that concrete service.",
+    "operationGate === concreteService and service === concreteService are required where the concrete local type is known. Object.is(capabilities.service, capabilities.operationGate) must be true; these are two interface views of one object, not a forwarding wrapper or clone.",
+    "Public narrow service and gate types have disjoint method sets; direct service === operationGate expressions may trigger TypeScript's no-overlap comparison diagnostic. Use Object.is in consumer tests without casting or widening either exported interface.",
+    "Do not invoke both old and companion factories to assemble one result. Each invocation produces one fresh graph; separate calls intentionally yield independent graphs.",
+    "J companion creates exactly one fresh AstroPrincipalSessionStore, D1PrincipalRepository and DefaultSessionPrincipalResolver, then invokes the H companion exactly once. No duplicated resolver, repository, administrator input or policy."
+  ],
+  "requiredHChanges": [
+    "Add a type-only FoodPrivateMenuOperationGate import, the new extended capability interface and companion factory in private-menu-runtime-composition.ts.",
+    "A private construction helper may share existing input capture/validation and one repository/service/workspace construction between old and companion factories. It must retain the concrete service type internally so gate assignment is checked statically without capability casts.",
+    "Preserve capture order database/readDependencies/callerResolver/administratorPrincipalId, exact injected references, receiver behavior, constructor order and existing fixed TypeErrors. Old factory returns exactly frozen service/workspace; companion includes operationGate before freezing.",
+    "No success/failure envelope or promise is added to H. Preserve outer-input, repository, service and workspace constructor error handling unchanged; structural failure creates no partial output or fallback graph."
+  ],
+  "requiredJChanges": [
+    "Add companion factory and result type in private-menu-server-adapter.ts, importing the H companion and new capability type. Existing J function/input/result remain intact.",
+    "Share existing structural validation, single property capture, I acquisition and request-scoped identity construction in a private helper if needed. Do not change validation ordering, administrator parsing, optional now behavior, exact environment/binding/read references or failure handling.",
+    "Old J delegates to old H and returns its exact two-field bundle. Companion J delegates to companion H and returns that exact three-field bundle in frozen success without reconstruction or cloning.",
+    "On I failure both return the exact I failure unchanged and construct no identity/H graph. Thrown dependency/identity/H construction remains fixed sanitized configuration-unavailable with existing message. No new error vocabulary or fallback.",
+    "No I source or typing change: its result is a database, not a bundle. Existing I callers and tests continue unchanged."
+  ],
+  "compatibility": [
+    "Preserve FoodPrivateMenuRuntimeCapabilities, FoodPrivateMenuServerContextResult, both existing factory names/signatures and exact old output key sets. New extended capability is structurally usable where the old capability is accepted, but the old type does not claim a gate.",
+    "Keep all 23 FoodPrivateMenuService operations, FoodPrivateMenuOperationGate, FoodMenuAuthorizedCallbackResult, FoodPrivateMenuWorkspaceController and their semantics unchanged. No service/workspace/identity/persistence changes.",
+    "Existing narrow H/J tests remain valid, including exact shape, constructor instrumentation, fixed errors, purity and delegation. Add companion cases rather than weakening old assertions.",
+    "Earlier H no-gate exclusions remain true for its old factory. L permits only the distinct companion exposure; no transport, authorization redesign or widening of old APIs.",
+    "FOOD-001K precedent applies to separate narrow interfaces, same concrete instance, frozen bundle and companion APIs preserving old factories. Do not copy draft-specific acquisition keys, errors or controller exclusion; menu H already owns its workspace."
+  ],
+  "purityAndAuthorization": [
+    "Both old and companion constructions remain synchronous, structural and I/O-free: zero session methods/clock calls, resolver calls, gate callbacks, authorization, database prepare/batch/statements, FOOD-001 reads, repository/service/workspace operations or request-body/network access.",
+    "Do not acquire globals, cloudflare:workers, request data, environment values beyond existing I/J validation, or production configuration. Structural assembly proves no session trust, live authorization, database/schema/migration readiness, primary consistency or menu activation.",
+    "Later operationGate.runAuthorized inherits K's fresh authorization, zero denied callbacks, exactly-once awaited opaque success and fixed callback-failed semantics. Every normal operation through service/workspace authorizes independently again, honoring revocation after gate success.",
+    "No authorization cache, token, inherited permission or authorization-once-per-request claim. Construction merely exposes existing capabilities, never executes them."
+  ],
+  "immutabilityAndExposure": [
+    "Freeze the three-field companion capability bundle before returning it and freeze J result envelopes. Keep existing workspace frozen; do not deep-freeze service/repository/session/resolver/environment or injected dependencies.",
+    "service is typed only FoodPrivateMenuService, workspace only FoodPrivateMenuWorkspaceController and operationGate only FoodPrivateMenuOperationGate. Static narrow surfaces do not erase other methods on the shared concrete object; this is not a runtime facade or security sandbox claim.",
+    "Expose no repository/database/read dependencies/environment/session/principal repository/resolver/administrator/principal/token fields. Internal class private fields remain private.",
+    "Configuration failures remain separate from access errors, callback-failed, workspace feedback and repository outcomes. Do not reinterpret or merge them."
+  ],
+  "futureTransportPrerequisite": [
+    "Transport may receive capabilities.operationGate and capabilities.workspace, or the narrow service if its later contract selects that surface. It need not know or instantiate the concrete service class.",
+    "Future flow: companion J runtime -> operationGate fresh authorization -> lazy continuation -> body read/parse -> normal workspace/service mutation -> another fresh E authorization. Denied gate means no body access.",
+    "Transport request schema/routing, policy checks, Origin/CSRF, body limits and feedback remain a separate discovery/specification slice. expectedOrigin and its trusted sourcing remain entirely outside L.",
+    "Implementation and validation of L's companion exposure are required before transport integrates through trusted runtime; specification alone does not make the gate available."
+  ],
+  "allowedFutureModificationPaths": [
+    "src/lib/food/private-menu-runtime-composition.ts",
+    "src/lib/food/private-menu-runtime-composition.test.ts",
+    "src/lib/food/private-menu-server-adapter.ts",
+    "src/lib/food/private-menu-server-adapter.test.ts"
+  ],
+  "proposedImplementationFiles": ["src/lib/food/private-menu-runtime-composition.ts", "src/lib/food/private-menu-server-adapter.ts"],
+  "proposedTestFiles": ["src/lib/food/private-menu-runtime-composition.test.ts", "src/lib/food/private-menu-server-adapter.test.ts"],
+  "testObligations": [
+    "Old H/J still expose exactly service/workspace with unchanged signatures, failure shapes/messages and behavior; existing consumers and typed fakes compile without adding a gate.",
+    "Companion H exposes exactly service/workspace/operationGate, shallow-frozen and not a promise; J companion returns exact H companion bundle in frozen success. Static gate consumption requires no casts or concrete class knowledge.",
+    "Instrument constructors/factory as existing H/J tests do: exactly one repository/service/workspace, workspace's service receiver same as gate/service, original read/database/admin/resolver arguments preserved. Object.is(service, operationGate) true.",
+    "Zero composition-time authorization/session/clock/database/FOOD-001/body operations for old and new paths. Repeated construction yields independent graphs with unchanged/unfrozen injected dependencies.",
+    "Companion J preserves exact environment/bindingName to I, exact I database/read/admin/new resolver to companion H and exact returned bundle; one fresh identity graph per invocation with no cache. I failure unchanged with zero downstream constructors.",
+    "Malformed/missing/null/array/throwing dependencies, noncanonical administrator and clock cases retain existing H/J failure ordering and sanitized results; no fallback or internal leakage.",
+    "Gate denial invokes callback zero times and causes zero menu database/FOOD-001 calls; callback execution resolves fresh each time. Authorized gate then revoked mutation through workspace performs a second resolution and zero mutation persistence calls.",
+    "Authorized gate then successful normal service/workspace operation performs two distinct resolutions with exact original operation arguments/outcomes preserved. Async gate and Astro-session semantics remain unchanged.",
+    "No exposed repository/database/session/environment/read/resolver/principal/admin/token internals; gate surface has only runAuthorized statically and workspace remains unchanged.",
+    "Source isolation excludes request/body/HTTP/Origin/CSRF/routes/UI/configuration/migrations/deployment. No configured D1 is used; injected fakes suffice for this composition slice. Preserve existing service/workspace/persistence tests."
+  ],
+  "futureImplementationValidation": [
+    "Focused L companion tests and all existing H/J tests",
+    "FOOD-002E/F/I/K regressions and relevant FOOD-001K composition and shared identity session/resolver regressions",
+    "Strict TypeScript for the four modified files and dependency graph; verify old interfaces unchanged and new static gate assignment without casts",
+    "Specification unchanged and valid JSON; whitespace and git diff --check; normal build, reporting unrelated baseline failures without fixes"
+  ],
+  "strictExclusions": [
+    "Implementation or modification of existing files in this discovery task; staging/commit/push",
+    "Authorization/K/service/workspace/identity/persistence semantic changes",
+    "Mutation transport, HTTP/body/JSON/form parsing, Origin/CSRF changes, routes/Astro endpoints/UI/navigation",
+    "D1 operations/access/provisioning/configuration, migrations, production binding selection or administrator sourcing",
+    "Private/public activation, pricing/cart/orders/checkout/payment/fulfillment, QR/ratings/demand/POS-lite",
+    "Deployment/production data/unrelated insurance/Sesh/creator/accounting/community work"
+  ],
+  "acceptanceCriteria": [
+    "Create only this specification now, with no tracked/staged changes or database/body access.",
+    "State current static gate absence and necessity for additive runtime code change; preserve exact old bundle/API contracts.",
+    "Define companion H/J signatures and three-field bundle, shared concrete identity and workspace wiring, no duplicate policy/objects or capability casts.",
+    "Specify zero construction I/O, narrow public capabilities, frozen outer containers and unchanged authorization/failure semantics.",
+    "Future implementation is exactly four existing files; I/service/workspace remain unchanged; validate before proceeding to transport."
+  ],
+  "remainingMaterialAmbiguities": [],
+  "blockers": [],
+  "nextRecommendedSlice": "Separately authorize implementation and validation of FOOD-002L's four-file additive H/J companion exposure, then close it before beginning private menu mutation transport/request-boundary discovery and specification.",
+  "currentTaskBoundary": "Create only this specification; validate JSON, existing references/contracts, whitespace/diff and exactly one untracked path. Do not implement, stage, commit, push, read bodies, access databases, configure/provision/migrate or activate anything."
+}
