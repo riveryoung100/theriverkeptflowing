@@ -1,0 +1,109 @@
+{
+  "version": "1.0.0",
+  "id": "FOOD-002F",
+  "name": "Framework-neutral private menu management workspace/controller boundary",
+  "predecessor": "FOOD-002E",
+  "phase": "Specification only; implementation requires separate explicit authorization",
+  "boundary": "Inject only FoodPrivateMenuService; wrap all 23 existing operations and add exactly one bounded exact-offer/current-availability aggregate. Existing authority files remain unchanged.",
+  "allowedFutureImplementationPaths": ["src/lib/food/private-menu-workspace.ts", "src/lib/food/private-menu-workspace.test.ts"],
+  "references": ["src/lib/food/private-menu-service.ts", "src/lib/food/dish-offer-domain.ts", "src/lib/food/menu-publication-domain.ts", "src/lib/food/private-draft-workspace.ts"],
+  "factory": {
+    "signature": "createPrivateFoodMenuWorkspaceController(service: FoodPrivateMenuService): FoodPrivateMenuWorkspaceController",
+    "construction": "Synchronous, I/O-free, zero service calls; return a frozen controller. No repository, resolver, administrator, database, environment or HTTP/request dependency is injected or exposed.",
+    "inputValidation": "Structural service validation only: require a non-null non-array object with all 23 required callable methods. Missing/malformed service or throwing property access causes TypeError with fixed message: Private food menu workspace configuration is unavailable. Never invoke methods during construction."
+  },
+  "controller": {
+    "wrapperSignatures": "Preserve Parameters<FoodPrivateMenuService[K]> exactly for each explicitly named wrapper. Inputs are already-typed domain/service values; no narrower parsing wrappers or renamed tasks.",
+    "methods": [
+      "createInitialPresentation", "appendPresentationRevision", "getPresentation", "getLatestPresentation", "listPresentationVersions", "listLatestPresentations",
+      "createInitialOffer", "appendOfferRevision", "getOffer", "getLatestOffer", "listOfferVersions", "listLatestOffers",
+      "createInitialPublication", "appendPublicationRevision", "getPublication", "getLatestPublication", "listPublicationVersions", "listLatestPublications",
+      "createInitialAvailability", "appendAvailabilityRevision", "getAvailability", "listAvailabilityRevisions", "getCurrentAvailability"
+    ],
+    "aggregate": "getOfferWorkspaceDetail(offerId: FoodServingOfferId, offerVersion: number)",
+    "operationCount": 24,
+    "authorization": [
+      "Controller call -> FOOD-002E service -> fresh authorization -> repository/domain behavior. FOOD-002E is sole authorization authority.",
+      "No payload prevalidation, ID parsing, version normalization, mutation-input inspection for feedback before success, duplicate principal/admin checks, cached authorization or permission inheritance.",
+      "Forward original argument references/order and optional undefined arguments; preserve service method receiver. No trim, normalization, generated IDs/versions/observation revisions, merging or automatic retries.",
+      "Unauthorized callers receive no extra validation/existence information from controller behavior."
+    ]
+  },
+  "resultTypes": {
+    "FoodMenuWorkspaceResult<T>": "Readonly<{ ok: true; value: T }> | Readonly<{ ok: false; error: Readonly<{ code: FoodMenuServiceErrorCode; message: string }> }>",
+    "FoodMenuWorkspaceMutation<T>": "Readonly<{ outcome: 'created' | 'already-present'; snapshot: T; message: string; publicationLabel?: string }> | Readonly<{ outcome: 'conflict'; message: string }>",
+    "FoodMenuWorkspaceRead<T>": "Readonly<{ outcome: 'found'; snapshot: T; message: string; publicationLabel?: string }> | Readonly<{ outcome: 'not-found'; message: string }>",
+    "FoodMenuWorkspacePage<T, C>": "Readonly<{ items: readonly T[]; nextCursor?: C; message?: 'No snapshots returned.' }>",
+    "FoodMenuWorkspaceOfferDetail": "Readonly<{ outcome: 'not-found'; message: 'No snapshot recorded.' }> | Readonly<{ outcome: 'found'; snapshot: FoodServingOffer; message: 'Snapshot found.'; availability: Readonly<{ state: 'not-recorded' }> | Readonly<{ state: 'recorded'; observation: FoodServingOfferAvailability }> }>",
+    "publicationLabelHelper": "Export pure getFoodMenuPublicationWorkspaceLabel(state: FoodMenuPublication['state']) returning exactly 'Publication snapshot: unpublished' or 'Publication snapshot: published'. Use only on successful returned snapshots; never on submission before service authorization. No state normalization. This helper allows labels for page snapshots without a second summary schema."
+  },
+  "feedback": {
+    "unauthenticated": "Authentication is required.",
+    "forbidden": "Food menu access is denied.",
+    "access-unavailable": "Food menu access could not be checked.",
+    "invalid-input": "The food menu operation input is invalid.",
+    "storage": "Food menu storage is unavailable. Reconcile the result before retrying.",
+    "created": "Snapshot recorded.",
+    "already-present": "Identical snapshot already recorded.",
+    "conflict": "A different version already exists. Refresh and reconcile before retrying.",
+    "found": "Snapshot found.",
+    "not-found": "No snapshot recorded.",
+    "emptyPage": "No snapshots returned."
+  },
+  "presentationRules": [
+    "Preserve all five FOOD-002E failure codes; replace messages with fixed workspace feedback. Service throws/rejections, malformed result/presentation failures map fixed storage. Never expose service/repository messages, exceptions, stacks, serialized payloads, principal/admin IDs or private FOOD-001 evidence in errors.",
+    "Preserve created/already-present/conflict; remove internal conflict reason. Success snapshot comes only from service result, never submitted input. No submitted payload is retained or echoed in failures or conflict feedback.",
+    "Preserve found/not-found and exact snapshots. No deletion implication. Direct availability reads preserve not-found rather than inventing a state.",
+    "Pages preserve exact ordered typed snapshots, cursor and omitted optional fields. Empty successful page gets fixed empty feedback; nonempty page omits message. Failed lists never become successful empty lists. Do not add a second summary/domain schema.",
+    "Successful publication mutation/read with snapshot adds publicationLabel from that snapshot's exact state. Page items remain unchanged snapshots; future UI can use the pure label helper. Underlying unpublished/published remains unchanged.",
+    "Publication labels never mean live, activated, publicly available, orderable, route existence, public visibility, active checkout or legal/safety/tax/payment/fulfillment readiness.",
+    "Availability keeps exact offer ID/version, observation revision and domain state. No inheritance, synthesis or conversion of absence into unavailable/sold-out/paused."
+  ],
+  "serviceResultValidation": [
+    "Validate returned envelopes only after calling the service. Require non-null non-array objects with exactly own ok/value (literal true) or ok/error (literal false); reject unexpected keys including symbols and throwing access.",
+    "Failure error has exactly code/message, recognized one of five service codes and string message; replace message. Unknown/malformed error is storage.",
+    "Validate operation-family success envelope: created/already-present with non-null non-array snapshot; conflict with reason different-content; found with snapshot; not-found without snapshot; page items array and optional correctly typed cursor. Reject unexpected/missing envelope fields and unknown discriminants. Do not rerun domain validation or parse operation input.",
+    "Returned numeric cursors must be positive safe integers; identity cursors must be strings. FOOD-002E remains canonical cursor validation authority; F does not parse IDs. Page items must be non-null non-array objects. Publication presentation accepts only returned unpublished/published state; other states map storage.",
+    "All unexpected result/access/clone errors fail closed as fixed storage; return no malformed or partial payload."
+  ],
+  "offerWorkspaceDetail": [
+    "First service.getOffer(offerId, offerVersion) with unchanged inputs. Map service failure; not-found returns successful not-found with neutral feedback and zero availability calls.",
+    "For found offer, verify snapshot.offerId and snapshot.version strictly equal requested coordinates. Mismatch maps fixed storage with zero availability calls. No canonical input parsing before service.",
+    "Then service.getCurrentAvailability(offerId, offerVersion), a separate freshly authorized operation. No reused decision, token or cache.",
+    "Second-call failure fails entire aggregate with no partial offer detail. not-found gives availability { state: 'not-recorded' }.",
+    "Found observation must have observation.offer.offerId and observation.offer.version strictly equal requested coordinates; mismatch maps fixed storage. Return availability { state: 'recorded', observation } preserving exact revision/state.",
+    "Never substitute latest offer, another offer version or another availability stream.",
+    "This is not an atomic database snapshot: the two authorized reads may observe different moments. Revocation between calls must be honored; this sequential consistency model is accepted for this slice."
+  ],
+  "immutability": [
+    "All successful result envelopes, snapshots, mutation/read/page/aggregate presentation, observations and feedback objects are recursively detached and deeply frozen; controller and failure envelopes are frozen too.",
+    "No caller-owned mutable input or service-returned reference is retained in returned state. Source mutation after return cannot affect workspace output.",
+    "Deterministic cloning preserves array order, omitted optional fields, explicit undefined optional properties, unknown values and exact historical references. No timestamps/random IDs/global state or external I/O."
+  ],
+  "deferred": [
+    "Publication preview: projectFoodPublicMenu needs exact FOOD-001 product/recipe contextual snapshots not exposed by FoodPrivateMenuService. A later authorized resolution boundary must bound/deduplicate exact historical reads, define availability selection and remain private/non-live. No borrowed unauthorized draft dependencies.",
+    "Dish plus all offers: FOOD-002D/E lack complete dish-filtered enumeration. Never filter one bounded general page and claim completeness. A future explicit repository/service query is required if needed.",
+    "Menu-specific gate/transport, runtime acquisition, infrastructure/admin activation and route/UI integration remain separate later slices."
+  ],
+  "sourceIsolation": [
+    "No direct FoodMenuRepository, FOOD-001 repository, SessionPrincipalResolver, administrator principal or database/runtime configuration import/use. Authority is behind injected FoodPrivateMenuService.",
+    "No Request, FormData, URLSearchParams, cookies, headers, redirects, Astro context or HTTP/body parsing.",
+    "No delete/overwrite/update-in-place/reset/history rewrite/publish-live/activate-menu/make-orderable/checkout/payment/refund operations. Corrections are new versions/observations through FOOD-002E."
+  ],
+  "requiredTests": [
+    "Construction synchronous, zero service calls, frozen controller; malformed/noncallable/throwing service configuration gives fixed sanitized TypeError.",
+    "All 23 wrappers forward exact arguments and receiver, no validation/normalization/generation before service; poisoned unauthorized payloads remain untouched.",
+    "created/already-present/conflict fixed feedback, conflict reason removed, success snapshot from service; found/not-found neutral feedback; empty/nonempty ordered pages and cursor preservation.",
+    "All five failure mappings, throws/rejections/malformed envelopes/throwing getters to storage; no internal message leakage, submitted payload retention or successful empty-list fallback.",
+    "Both publication labels exact, underlying states preserved, never live/activated/orderable; page label helper requires no second summary schema.",
+    "Direct exact observation/current not-found, absence remains absence, independent offer-version streams, no inheritance.",
+    "Aggregate exact offer plus observation, offer plus not-recorded, not-found/first failure/mismatched offer zero second calls, second failure no partial result, mismatched observation storage, no latest substitution.",
+    "Two service operations authorize freshly; real FOOD-002E revocation between reads honored with zero second repository access.",
+    "All returned nested results detached/deeply frozen; mutable service-returned source changes cannot change output; order/unknown/optional/reference semantics preserved.",
+    "Exactly 23 wrappers plus one aggregate; no destructive/public/payment authority, direct repository/resolver/admin access or excluded source dependency."
+  ],
+  "validation": ["Focused FOOD-002F tests", "FOOD-002E regressions", "FOOD-002B/C/D regressions", "Relevant FOOD-001I controller and identity regressions", "Strict TypeScript checks for planned files", "Whitespace checks", "git diff --check", "Normal build"],
+  "laterSequence": ["FOOD-002F workspace/controller", "FOOD-002D D1 adapter and migration definition with isolated integration tests", "Injected runtime composition", "Trusted environment/server-context acquisition", "Menu-specific gate and mutation transport if private HTTP bodies must remain unread before authorization", "Separately approved infrastructure/migration/admin activation phases", "Private River OS menu-management UI", "Separate public read/projection boundary", "Pricing/cart/quote/fulfillment contracts"],
+  "scopeExclusions": ["D1/schema/migrations", "Runtime/environment composition", "Authorization callback gate", "HTTP/request parsing", "Astro routes/pages/actions/components", "Publication preview", "Dish plus all offers aggregate", "Public activation", "Pricing/cart/order/checkout/payment", "Fulfillment execution", "QR/ratings/demand analytics/POS-lite/business contact values", "Deployment/production data/unrelated systems"],
+  "currentAuthorization": "Create only this specification. Do not implement, stage, commit, configure infrastructure, access configured D1, migrate or deploy."
+}
