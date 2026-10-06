@@ -1,0 +1,161 @@
+{
+  "version": "1.0.0",
+  "id": "FOOD-002K",
+  "name": "Authorized private menu operation gate",
+  "predecessors": ["FOOD-002E", "FOOD-002J"],
+  "phase": "Discovery and specification only; implementation requires separate explicit authorization",
+  "architecturalPurpose": "Add a separately typed lazy continuation gate to the existing single-admin menu service so future transport can establish authorization before reading private request bodies, without granting reusable permission or changing the 23-operation service contract.",
+  "startingState": {
+    "branch": "cif-001-canonical-content-source-record",
+    "head": "b343297bed2f290c2c1e2ea1b684dabfac75b7a9",
+    "worktree": "Clean before creation of this specification"
+  },
+  "references": [
+    ".river-dev/specifications/food-002e-single-admin-private-menu-management-service-boundary.json",
+    ".river-dev/specifications/food-002f-private-menu-workspace-controller-boundary.json",
+    ".river-dev/specifications/food-002h-injected-private-menu-runtime-composition-boundary.json",
+    ".river-dev/specifications/food-002j-trusted-server-context-private-menu-runtime-adapter-boundary.json",
+    ".river-dev/specifications/food-001d2-authorized-private-food-operation-gate-capability.json",
+    ".river-dev/specifications/food-001j-private-food-draft-mutation-transport-request-policy-boundary.json",
+    ".river-dev/specifications/food-001k-trusted-private-food-runtime-capability-exposure-boundary.json",
+    "src/lib/food/private-menu-service.ts",
+    "src/lib/food/private-menu-service.test.ts",
+    "src/lib/food/private-menu-workspace.ts",
+    "src/lib/food/private-menu-workspace.test.ts",
+    "src/lib/food/private-menu-runtime-composition.ts",
+    "src/lib/food/private-menu-runtime-composition.test.ts",
+    "src/lib/food/private-menu-server-adapter.ts",
+    "src/lib/food/private-menu-server-adapter.test.ts",
+    "src/lib/food/private-draft-service.ts",
+    "src/lib/food/private-draft-service.test.ts",
+    "src/lib/food/private-draft-mutation-request.ts",
+    "src/lib/food/private-draft-mutation-request.test.ts",
+    "src/lib/food/private-draft-runtime-composition.ts",
+    "src/lib/food/private-draft-runtime-composition.test.ts",
+    "src/lib/identity/identifiers.ts",
+    "src/lib/identity/session/contracts.ts",
+    "src/lib/identity/session/astro-session-adapter.ts",
+    "src/lib/identity/session/principal-resolver.ts"
+  ],
+  "discovery": [
+    "FoodPrivateMenuService maps exactly the 23 FoodMenuRepository operations. It exposes no authorization-only operation; a dummy read/write would invoke persistence and is not a valid gate.",
+    "SingleAdminFoodMenuService already owns a private #authorize method shared by all operations through #run. This method awaits the injected resolver, validates exact resolution envelopes and canonical principal, and compares only the injected administrator.",
+    "FOOD-001D2 implements a separate FoodPrivateDraftOperationGate on SingleAdminFoodDraftService, calling the same private authorization method, awaiting an opaque callback and sanitizing callback exceptions. This responsibility transfers without importing draft-service authority.",
+    "FOOD-001J policy rejects before its gate; the body reader runs only in the authorized callback. Its controller operations still authorize independently. FOOD-001K exposes service and gate from the same concrete service, not a cast of a narrow service.",
+    "Menu H returns exactly service/workspace and J returns that same bundle. Neither currently exposes a typed gate. Runtime capability exposure is a separate prerequisite before real transport assembly, not permission to change H/J in K.",
+    "The E test currently requires exactly 23 concrete prototype methods and bans runAuthorized in source. Those two assertions must be adjusted for this explicit additive capability; existing 23-operation interface, behavior and all other isolation checks stay unchanged."
+  ],
+  "selectedArchitecture": {
+    "decision": "Follow FOOD-001D2: add a separate menu gate interface implemented by the existing SingleAdminFoodMenuService, reusing #authorize directly. Do not introduce an independent resolver/admin policy, companion service or repository bypass.",
+    "gateInterface": "FoodPrivateMenuOperationGate",
+    "resultType": "FoodMenuAuthorizedCallbackResult<T>",
+    "signature": "runAuthorized<T>(callback: () => T | Promise<T>): Promise<FoodMenuAuthorizedCallbackResult<T>>",
+    "classDeclaration": "SingleAdminFoodMenuService implements FoodPrivateMenuService, FoodPrivateMenuOperationGate",
+    "input": "One trusted zero-argument callback per gate invocation. No new constructor arguments: retain FoodPrivateMenuServiceDependencies { repository: FoodMenuRepository; callerResolver: SessionPrincipalResolver; administratorPrincipalId: PrincipalId } unchanged.",
+    "publicSurface": "FoodPrivateMenuOperationGate exposes only runAuthorized. FoodPrivateMenuService remains the unchanged 23-operation type. The concrete class implements both separately; the gate type does not expose management operations or internal dependencies.",
+    "rejectedAlternatives": [
+      "A gate built from a merely narrow FoodPrivateMenuService cannot authorize without dummy repository operations or unsafe casts.",
+      "A second resolver/administrator gate duplicates policy and can diverge from the service.",
+      "An authorized mutation seam would bypass the required fresh operation authorization and is unnecessary."
+    ]
+  },
+  "construction": [
+    "Keep the existing constructor and structural checks unchanged. Construction remains synchronous and I/O-free with zero resolver/authorization/repository/database/FOOD-001/body/network calls.",
+    "Administrator remains injected and validated canonically through parsePrincipalId, with no normalization, inference, defaults or hardcoded value. Existing fixed constructor TypeError remains unchanged.",
+    "No additional gate factory or new configuration dependency. No sessions, principal repositories or runtime dependencies are constructed here."
+  ],
+  "execution": [
+    "Every runAuthorized invocation awaits the existing private #authorize method exactly once, fresh, before checking callback callability or invoking it.",
+    "Preserve E's own-key checks including symbols, canonical principal validation and all resolver failure mappings. Unauthenticated maps unauthenticated; canonical non-admin maps forbidden; unavailable, thrown/rejected resolver, malformed/noncanonical resolution or throwing resolution access maps access-unavailable.",
+    "Authorization-only execution makes zero menu repository/database/FOOD-001 read calls. Existing trusted resolver may perform session/identity I/O during execution; this is not a zero-identity-I/O claim.",
+    "On any access failure, invoke callback zero times. Denied callers cannot distinguish a callable callback from malformed input or learn record/payload validity or existence.",
+    "After successful authorization check typeof callback === function, then invoke exactly once with zero arguments and await its returned value. Never pass principal/admin/role, service/repository, request context or token to the callback.",
+    "No callback retry, cached caller/decision, shared mutable authorization state or permission token. Possession of an ID never grants permission."
+  ],
+  "resultModel": {
+    "definition": "export type FoodMenuAuthorizedCallbackResult<T> = Readonly<{ ok: true; value: T } | { ok: false; error: Readonly<{ code: 'unauthenticated' | 'forbidden' | 'access-unavailable'; message: string }> } | { ok: false; error: Readonly<{ code: 'callback-failed'; message: 'Private food menu operation could not be completed.' }> }>;",
+    "fixedMessages": {
+      "unauthenticated": "Authentication is required.",
+      "forbidden": "Food menu access is forbidden.",
+      "access-unavailable": "Food menu access is unavailable.",
+      "callback-failed": "Private food menu operation could not be completed."
+    },
+    "success": "Return Object.freeze({ ok: true, value: awaitedCallbackValue }). Preserve the exact fulfilled value/reference without inspection, validation, cloning, freezing or reinterpretation. A callback's own { ok: false, ... } remains an opaque successful value in the outer success.",
+    "failure": "Freeze the outer failure and its error object. Access failures use existing fixed E messages; callback throw/rejection/noncallable after successful authorization maps only to fixed callback-failed.",
+    "errorIsolation": "Do not add callback-failed to FoodMenuServiceErrorCode or alter FoodMenuServiceResult. Gate does not return invalid-input, storage or configuration-unavailable as its own failure codes; such callback results remain opaque values.",
+    "exceptions": "Resolver/identity infrastructure failure is handled by existing authorization as access-unavailable. Catch callback synchronous throws, asynchronous rejections and await/thenable failures as callback-failed; do not propagate raw exceptions or silently invent successful completion."
+  },
+  "freshMutationAuthorization": [
+    "Gate authorization protects continuation entry, not a later persistence operation. Any mutation inside or after the continuation must call the normal FOOD-002F/FOOD-002E path, whose #run independently invokes #authorize again.",
+    "The two authorization resolutions are deliberate distinct checks, as in FOOD-001D2/J: first before private body access, second before operation input use/persistence. Do not optimize either away or claim authorization once for a request.",
+    "Revocation between gate and mutation denies the mutation with zero mutation repository calls. Any additional service reads or aggregate calls retain their own fresh authorization.",
+    "Do not expose an already-authorized service or unchecked operation seam, pass an inherited decision, or retarget operation arguments. All 23 direct operations remain independently safe without using the gate."
+  ],
+  "concurrencyAndImmutability": [
+    "Overlapping gate calls each retain their own local authorization result and callback; resolve separately, invoke only the corresponding permitted callback, and do not serialize or share decisions between calls. Safety assumes the trusted injected resolver supplies the correct request-scoped identity; K does not claim to repair a wrongly shared resolver.",
+    "Follow D2/H precedent: do not freeze or clone the concrete service instance, its prototype or injected dependencies. The gate is a separately typed capability on that same class, not a separately frozen gate object. Result containers are frozen; opaque callback values are not frozen.",
+    "A future capability bundle may be frozen/read-only with service and gate referencing that same concrete instance. That exposure is deferred; no bundle field or runtime return type changes in K."
+  ],
+  "securityAndPrivacy": [
+    "Keep private repository/resolver/administrator fields private. Expose no database, environment, session store, principal repository, principal/admin IDs, raw resolution or reusable authorization token.",
+    "Fixed failures must reveal no exception text, stack, config value, SQL/D1 details, submitted payload or private evidence. Do not retain callbacks or payloads after execution beyond normal promise completion.",
+    "Callbacks are trusted injected code and own their successful result contract. Opaque return preservation is not an automatic sanitization guarantee for arbitrary successful callback values.",
+    "K has no Request/FormData/body/parser/Origin/CSRF dependency. A future body-reading callback is not invoked until authorization succeeds. No body is read in K or this specification task."
+  ],
+  "compatibilityAndFutureExposure": [
+    "Future K implementation requires a narrow additive seam in E's concrete class and tests only. Keep FoodPrivateMenuService, FoodPrivateMenuServiceDependencies, all 23 methods, five service error codes, forwarding, repository envelope validation, sequencing and E/F consumers/fakes source-compatible.",
+    "E's original no-gate exclusion applied to E's initial slice; K explicitly permits only this separate capability and related tests. Preserve all other exclusions, including no transport implementation.",
+    "Do not modify H/I/J factories, input/output types or behavior. A trusted caller constructing SingleAdminFoodMenuService directly can use it as both service and gate without assertions or a second service.",
+    "Preferred future runtime integration follows FOOD-001K: separately approved additive capability exposure through H/J using the same already-constructed concrete service for service and gate and retaining the existing workspace. Existing narrow runtime factories remain unchanged. Do not cast current H/J narrow output into a gate or create an independently configured second service.",
+    "Runtime gate exposure is a deferred integration prerequisite, not an implementation blocker for the two-file K extension. No further shared identity fix or domain/persistence correction is required."
+  ],
+  "futureTransportContract": [
+    "Next expected functional slice is a separate private menu mutation transport/request boundary analogous to FOOD-001J. Specify any additive runtime exposure prerequisite separately before assembling it through H/J.",
+    "Future transport may reject method/origin/content-type/declared-size policy before body read. It then invokes runAuthorized with a lazy zero-argument continuation, reads/parses only inside that authorized continuation and dispatches normal workspace/service operations.",
+    "Denied gate means zero reader/parser invocations. Transport unwraps outer access/callback failures distinctly from opaque nested transport/domain results and provides sanitized feedback without payload echo.",
+    "Keep expected origin acquisition, CSRF decisions, payload formats/limits, parsing and HTTP feedback in the later transport specification; K neither defines nor implements those policies."
+  ],
+  "allowedFutureModificationPaths": [
+    "src/lib/food/private-menu-service.ts",
+    "src/lib/food/private-menu-service.test.ts"
+  ],
+  "proposedImplementationFile": "src/lib/food/private-menu-service.ts",
+  "proposedTestFile": "src/lib/food/private-menu-service.test.ts",
+  "testObligations": [
+    "Existing constructor is synchronous with zero resolver/repository/FOOD-001/body/network calls. New gate types expose only runAuthorized, not internal dependencies.",
+    "Unauthenticated/non-admin/unavailable/thrown resolver/malformed/noncanonical/extra-own-key/symbol/throwing resolution cases invoke callback zero times and repository zero times. Noncallable callback under denied authorization returns the same access failure.",
+    "Fresh resolver once per gate invocation; revocation between calls denies without cached permission. Concurrent deferred resolver results completed out of order do not leak success between calls or invoke denied callbacks.",
+    "Authorized sync and genuinely delayed async callbacks invoke exactly once with no arguments; async completion is awaited; values including undefined and nested failure results preserve exact reference and remain unfrozen.",
+    "Sync throw, async rejection, rejected thenable and noncallable callback after authorization yield exact frozen callback-failed with no exception/payload/internal leakage and no retry.",
+    "Gate-only authorization performs zero repository/database/FOOD-001 reads; callback-specific operations are counted separately from gate work.",
+    "Gate success followed by denied mutation performs a second resolution and zero mutation repository calls; successful mutation performs two resolutions and only the expected normal repository operation. Gate outer success does not reinterpret a denied mutation result.",
+    "Preserve every existing 23-operation authorization/poison-input/forwarding/outcome/error-envelope/pagination/immutability/publication/availability test. FoodPrivateMenuService and existing fakes remain source-compatible; callback-failed is absent from operation error vocabulary.",
+    "Adjust only obsolete concrete prototype/no-runAuthorized assertions to allow the separate gate, keeping management interface at 23 operations. Preserve all other source isolation checks; no draft-service import, body parsing, runtime acquisition or extra authority.",
+    "Use real DefaultSessionPrincipalResolver and AstroPrincipalSessionStore with injected async Astro-like session fake: delayed valid read gates callback, missing/malformed/expired/boundary sessions preserve cleanup, rejected reads yield access-unavailable with zero deletion/lookup/callback, cleanup failure fails closed. Keep existing sync/async destroy behavior and principal lookup/destruction regressions unchanged; no actual database is required.",
+    "Gate no internal enumerable exposure, no request/parser argument, no reusable token, no cached state. Existing H/J service/workspace outputs and construction purity stay identical."
+  ],
+  "futureImplementationValidation": [
+    "Focused K and existing E tests in private-menu-service.test.ts",
+    "FOOD-002F/H/I/J service-consumer regressions with injected dependencies; no configured D1 access",
+    "FOOD-001D2/J/K precedent regressions and shared identity session/principal-resolver regressions without source changes",
+    "Strict TypeScript for the two modified files, git diff --check and normal build; report unrelated baseline failures without fixing them"
+  ],
+  "strictExclusions": [
+    "Changes to H/I/J, workspace, shared identity or FOOD-001 source",
+    "HTTP/FormData/URL-form/JSON/body parsing, Request/Response, Origin/CSRF implementation, routes/actions/pages/UI/navigation",
+    "Repository/domain/concurrency changes, database operations or FOOD-001 reads merely to gate",
+    "D1 configuration/access/provisioning, migrations, production binding selection or administrator sourcing, runtime activation",
+    "Public menu activation, pricing/cart/order/payment/fulfillment, QR/ratings/demand/POS-lite",
+    "Deployment, production data and unrelated insurance/Sesh/creator/accounting/community changes"
+  ],
+  "acceptanceCriteria": [
+    "Exactly this specification is created now; implementation is deferred and no existing file is changed/staged.",
+    "Future K adds exactly the separate menu gate/result types and runAuthorized on the existing concrete service using its private authorization primitive; no duplicate policy or unchecked mutation seam.",
+    "Fresh authorization before callback, zero denied callbacks/repository calls, exactly-once successful continuation, sanitized bounded failures and opaque awaited success are proven.",
+    "All direct operations retain separate fresh authorization and unchanged 23-operation interface; concurrent gate invocations do not share decisions.",
+    "Runtime capability exposure and transport remain deferred; body-read ordering is explicit without premature activation or request policy implementation."
+  ],
+  "remainingMaterialAmbiguities": [],
+  "blockers": [],
+  "currentTaskBoundary": "Create only this specification. Validate JSON, reference existence/contracts, whitespace and diff. Do not implement, stage, commit, push, read bodies, access databases, configure/provision/migrate/deploy or activate anything."
+}

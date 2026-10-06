@@ -1,7 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { SingleAdminFoodMenuService, type FoodPrivateMenuService, type FoodMenuServiceErrorCode } from "./private-menu-service";
+import { SingleAdminFoodMenuService, type FoodPrivateMenuService, type FoodMenuServiceErrorCode, type FoodPrivateMenuOperationGate, type FoodMenuAuthorizedCallbackResult } from "./private-menu-service";
+import { AstroPrincipalSessionStore } from "../identity/session/astro-session-adapter";
+import { DefaultSessionPrincipalResolver } from "../identity/session/principal-resolver";
+import type { AstroSessionLike } from "../identity/session/contracts";
+import type { PrincipalRepository } from "../identity/repository";
+import { AUTHENTICATED_PRINCIPAL_SESSION_KEY } from "../identity/session/model";
 import type { FoodMenuRepository } from "./menu-persistence";
 import { InMemoryFoodMenuRepository } from "./menu-persistence";
 import { InMemoryFoodDraftRepository } from "./draft-persistence";
@@ -88,7 +93,123 @@ test("real immutable repository preserves publication, history, retry and indepe
     assert.deepEqual(await service.listLatestOffers({ limit: 101 }), failure("invalid-input"));
 });
 test("explicit service surface and source isolation", () => {
-    const h = harness(); assert.deepEqual(Object.getOwnPropertyNames(Object.getPrototypeOf(h.service)).filter(k => k !== "constructor").sort(), [...methods].sort());
+    const h = harness(); assert.deepEqual(Object.getOwnPropertyNames(Object.getPrototypeOf(h.service)).filter(k => k !== "constructor").sort(), [...methods, "runAuthorized"].sort());
+    assert.equal(methods.length, 23); assert.deepEqual(Object.keys(h.service), []);
     const source = readFileSync(new URL("./private-menu-service.ts", import.meta.url), "utf8");
-    for (const forbidden of ["SingleAdminFoodDraftService", "runAuthorized", "cloudflare:workers", "FormData", "wrangler", "process.env", "fetch(", "Date.now", "Math.random", "../river-os", "stripe"]) assert.equal(source.includes(forbidden), false, forbidden);
+    for (const forbidden of ["SingleAdminFoodDraftService", "cloudflare:workers", "FormData", "wrangler", "process.env", "fetch(", "Date.now", "Math.random", "../river-os", "stripe", "Request", "Response", "URLSearchParams", "JSON.parse", "isAuthorized", "authorizationToken"]) assert.equal(source.includes(forbidden), false, forbidden);
+});
+
+const callbackFailure = { ok: false, error: { code: "callback-failed", message: "Private food menu operation could not be completed." } };
+function deferred<T>() { let resolve!: (value: T) => void; const promise = new Promise<T>(done => { resolve = done; }); return { promise, resolve }; }
+
+test("FOOD-002K: denied and malformed callers never inspect/invoke callbacks or access repository", async () => {
+    const h = harness(); let callbacks = 0;
+    const poison = new Proxy(function () { callbacks++; }, { get() { assert.fail("Callback inspected"); }, apply() { assert.fail("Callback invoked"); } });
+    const malformed: unknown[] = [undefined, null, [], {}, { ok: 1 }, { ok: true, value: null }, { ok: true, value: { principalId: "principal:a:b" } }, { ok: true, value: { principalId: " principal:river" } }, { ok: true, value: { principalId: "principal:river " } }, { ok: true, value: { principalId: 1 } }, { ok: true, value: { principalId: admin, role: "admin" } }, { ok: true, value: { principalId: admin }, [Symbol()]: true }, { ok: false, error: { code: "unavailable", message: 1 } }, { get ok() { throw new Error("private resolution"); } }, new Error("private resolver")];
+    const cases: [unknown, FoodMenuServiceErrorCode][] = [
+        [{ ok: false, error: { code: "unauthenticated", message: "private" } }, "unauthenticated"],
+        [{ ok: true, value: { principalId: "principal:other" } }, "forbidden"],
+        [{ ok: false, error: { code: "unavailable", message: "private" } }, "access-unavailable"],
+        ...malformed.map(value => [value, "access-unavailable"] as [unknown, FoodMenuServiceErrorCode]),
+    ];
+    for (const [resolution, code] of cases) {
+        h.setResolution(resolution);
+        for (const callback of [poison, null, {}]) {
+            const result = await h.service.runAuthorized(callback as never);
+            assert.deepEqual(result, failure(code)); assert(Object.isFrozen(result)); assert(!result.ok && Object.isFrozen(result.error));
+        }
+    }
+    assert.equal(callbacks, 0); assert.equal(h.count(), cases.length * 3); assert.equal(h.calls.length, 0);
+});
+
+test("FOOD-002K: fresh gate preserves opaque sync/async values, zero arguments and construction purity", async () => {
+    const h = harness(); const gate: FoodPrivateMenuOperationGate = h.service; const narrow: FoodPrivateMenuService = h.service;
+    assert.equal(narrow, h.service); assert.equal(h.count(), 0); assert.equal(h.calls.length, 0);
+    const opaque = { ok: false, error: { code: "domain-result", message: "opaque" } }; let calls = 0;
+    const sync: FoodMenuAuthorizedCallbackResult<typeof opaque> = await gate.runAuthorized(function (...args: unknown[]) { assert.deepEqual(args, []); calls++; return opaque; });
+    assert(sync.ok); assert.equal(sync.value, opaque); assert(Object.isFrozen(sync)); assert(!Object.isFrozen(opaque));
+    const wait = deferred<void>(); const started = deferred<void>(); let settled = false;
+    const pending = gate.runAuthorized(async function (...args: unknown[]) { assert.deepEqual(args, []); calls++; started.resolve(); await wait.promise; return opaque; }).then(r => { settled = true; return r; });
+    await started.promise; assert.equal(settled, false); wait.resolve(); const asyncResult = await pending;
+    assert(asyncResult.ok); assert.equal(asyncResult.value, opaque); assert(!Object.isFrozen(opaque)); assert.equal(calls, 2);
+    assert.deepEqual(await gate.runAuthorized(() => undefined), { ok: true, value: undefined });
+    h.setResolution({ ok: true, value: { principalId: "principal:revoked" } });
+    assert.deepEqual(await gate.runAuthorized(() => { calls++; }), failure("forbidden"));
+    assert.equal(calls, 2); assert.equal(h.count(), 4); assert.equal(h.calls.length, 0);
+});
+
+test("FOOD-002K: callback exceptions, rejected thenables and noncallables are sanitized without retry", async () => {
+    const h = harness(); let calls = 0;
+    for (const callback of [() => { calls++; throw new Error("SQL evidence secret stack"); }, async () => { calls++; throw { privatePayload: "secret" }; }, () => { calls++; return { then(_resolve: unknown, reject: (reason: unknown) => void) { reject("private rejected value"); } }; }]) {
+        const result = await h.service.runAuthorized(callback as () => unknown);
+        assert.deepEqual(result, callbackFailure); assert(Object.isFrozen(result)); assert(!result.ok && Object.isFrozen(result.error));
+    }
+    for (const bad of [undefined, null, [], {}, 1, "callback"]) assert.deepEqual(await h.service.runAuthorized(bad as never), callbackFailure);
+    assert.equal(calls, 3); assert.equal(h.count(), 9); assert.equal(h.calls.length, 0);
+    h.setResult({ ok: false, error: { code: "callback-failed", message: "private" } });
+    assert.deepEqual(await h.service.getLatestOffer("bad" as never), failure("storage"));
+});
+
+test("FOOD-002K: concurrent out-of-order resolutions never share authorization decisions", async () => {
+    const h = harness(); const resolutions = [deferred<Awaited<ReturnType<SessionPrincipalResolver["resolve"]>>>(), deferred<Awaited<ReturnType<SessionPrincipalResolver["resolve"]>>>()]; let resolveCalls = 0; const callbacks: string[] = [];
+    h.resolver.resolve = () => resolutions[resolveCalls++].promise;
+    const first = h.service.runAuthorized(() => { callbacks.push("first"); return "first"; });
+    const second = h.service.runAuthorized(() => { callbacks.push("second"); return "second"; });
+    assert.equal(resolveCalls, 2); assert.deepEqual(callbacks, []);
+    resolutions[1].resolve(allowed as never); assert.deepEqual(await second, { ok: true, value: "second" });
+    resolutions[0].resolve({ ok: true, value: { principalId: parsePrincipalId("principal:other") } });
+    assert.deepEqual(await first, failure("forbidden")); assert.deepEqual(callbacks, ["second"]); assert.equal(h.calls.length, 0);
+});
+
+test("FOOD-002K: gate does not transfer permission to any of the 23 independently authorized operations", async () => {
+    for (const method of methods) {
+        const h = harness(); const args = [{} as never, 7, undefined];
+        const denied = await h.service.runAuthorized(() => { h.setResolution({ ok: false, error: { code: "unauthenticated", message: "revoked" } }); return invoke(h.service, method, args); });
+        assert(denied.ok); assert.deepEqual(denied.value, failure("unauthenticated")); assert.equal(h.count(), 2); assert.equal(h.calls.length, 0);
+        h.setResolution(allowed);
+        const value = method.startsWith("list") ? { items: [] } : method.startsWith("get") ? { outcome: "not-found" } : { outcome: "created", snapshot: {} };
+        h.setResult({ ok: true, value });
+        const result = await h.service.runAuthorized(() => invoke(h.service, method, args));
+        assert(result.ok); assert.deepEqual(result.value, { ok: true, value }); assert.equal(h.count(), 4); assert.equal(h.calls.length, 1); assert.equal(h.calls[0].method, method); assert.equal(h.calls[0].receiver, h.repo);
+        args.forEach((arg, i) => assert.equal(h.calls[0].args[i], arg));
+    }
+});
+
+function asyncSessionGate() {
+    const h = harness(); const events: string[] = []; let raw: unknown = { version: 1, principalId: admin, authenticatedAt: "2026-10-05T00:00:00Z", expiresAt: "2026-10-06T00:00:00Z" };
+    let now = new Date("2026-10-05T12:00:00Z"); let readFailure = false; let cleanupFailure = false; let destroyFailure = false; let principalMode = "active";
+    let wait = Promise.resolve(); const started = deferred<void>();
+    const session: AstroSessionLike = {
+        async get(key) { assert.equal(key, AUTHENTICATED_PRINCIPAL_SESSION_KEY); events.push("get"); started.resolve(); await wait; if (readFailure) throw new Error("private read"); return raw; },
+        set() { events.push("set"); }, delete(key) { assert.equal(key, AUTHENTICATED_PRINCIPAL_SESSION_KEY); events.push("delete"); if (cleanupFailure) throw new Error("private cleanup"); },
+        async regenerate() { events.push("regenerate"); }, destroy() { events.push("destroy"); if (destroyFailure) throw new Error("private destruction"); },
+    };
+    const principals = { async getPrincipal(id: unknown) { assert.equal(id, admin); events.push("lookup"); if (principalMode === "missing") return { ok: false, error: { code: "not-found", message: "missing" } }; return { ok: true, value: { principalId: principalMode === "mismatched" ? parsePrincipalId("principal:other") : admin, status: principalMode === "disabled" ? "disabled" : "active" } }; } } as unknown as PrincipalRepository;
+    const resolver = new DefaultSessionPrincipalResolver({ sessions: new AstroPrincipalSessionStore(session, () => now), principals });
+    const service = new SingleAdminFoodMenuService({ repository: h.repo, callerResolver: resolver, administratorPrincipalId: admin });
+    return { service, session, events, started, calls: h.calls, raw(v: unknown) { raw = v; }, now(v: string) { now = new Date(v); }, wait(v: Promise<void>) { wait = v; }, rejectRead() { readFailure = true; }, failCleanup() { cleanupFailure = true; }, principal(v: string) { principalMode = v; }, failDestroy() { destroyFailure = true; } };
+}
+
+test("FOOD-002K: real resolver awaits delayed Astro-like reads before continuation, without construction I/O", async () => {
+    const f = asyncSessionGate(); assert.deepEqual(f.events, []); const wait = deferred<void>(); f.wait(wait.promise); let callbacks = 0;
+    const pending = f.service.runAuthorized(() => { callbacks++; return "done"; });
+    await f.started.promise; assert.deepEqual(f.events, ["get"]); assert.equal(callbacks, 0);
+    wait.resolve(); assert.deepEqual(await pending, { ok: true, value: "done" }); assert.deepEqual(f.events, ["get", "lookup"]); assert.equal(callbacks, 1); assert.equal(f.calls.length, 0);
+});
+
+test("FOOD-002K: inherited async-session cleanup, expiry, rejected reads and principal destruction fail closed", async () => {
+    for (const mode of ["missing", "null", "malformed", "expired", "boundary", "rejected", "cleanup-malformed", "cleanup-expired", "missing-principal", "disabled", "mismatched", "async-destroy", "destroy-failure"]) {
+        const f = asyncSessionGate();
+        if (mode === "missing") f.raw(undefined); if (mode === "null") f.raw(null); if (mode.includes("malformed")) f.raw({});
+        if (mode.includes("expired")) f.now("2026-10-06T00:00:01Z"); if (mode === "boundary") f.now("2026-10-06T00:00:00Z");
+        if (mode === "rejected") f.rejectRead(); if (mode.startsWith("cleanup")) f.failCleanup();
+        if (["missing-principal", "async-destroy", "destroy-failure"].includes(mode)) f.principal("missing"); if (["disabled", "mismatched"].includes(mode)) f.principal(mode);
+        if (mode === "async-destroy") { const destroy = f.session.destroy; f.session.destroy = async () => { destroy(); }; }
+        if (mode === "destroy-failure") f.failDestroy();
+        const unavailable = mode === "rejected" || mode.startsWith("cleanup") || mode === "destroy-failure";
+        assert.deepEqual(await f.service.runAuthorized(() => assert.fail("Denied callback invoked")), failure(unavailable ? "access-unavailable" : "unauthenticated"), mode);
+        assert.equal(f.calls.length, 0); assert.equal(f.events.includes("delete"), ["malformed", "expired", "boundary", "cleanup-malformed", "cleanup-expired"].includes(mode), mode);
+        assert.equal(f.events.includes("lookup"), ["missing-principal", "disabled", "mismatched", "async-destroy", "destroy-failure"].includes(mode), mode);
+        assert.equal(f.events.includes("destroy"), f.events.includes("lookup"), mode);
+    }
 });

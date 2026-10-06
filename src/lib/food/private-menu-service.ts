@@ -6,6 +6,14 @@ import { parseFoodMenuPublicationId } from "./menu-publication-domain";
 
 export type FoodMenuServiceErrorCode = "unauthenticated" | "forbidden" | "access-unavailable" | "invalid-input" | "storage";
 export type FoodMenuServiceResult<T> = Readonly<{ ok: true; value: T } | { ok: false; error: Readonly<{ code: FoodMenuServiceErrorCode; message: string }> }>;
+export type FoodMenuAuthorizedCallbackResult<T> = Readonly<
+    { ok: true; value: T } |
+    { ok: false; error: Readonly<{ code: "unauthenticated" | "forbidden" | "access-unavailable"; message: string }> } |
+    { ok: false; error: Readonly<{ code: "callback-failed"; message: "Private food menu operation could not be completed." }> }
+>;
+export interface FoodPrivateMenuOperationGate {
+    runAuthorized<T>(callback: () => T | Promise<T>): Promise<FoodMenuAuthorizedCallbackResult<T>>;
+}
 type Value<R> = R extends { readonly ok: true; readonly value: infer T } ? T : never;
 export type FoodPrivateMenuService = { [K in keyof FoodMenuRepository]: (...args: Parameters<FoodMenuRepository[K]>) => Promise<FoodMenuServiceResult<Value<Awaited<ReturnType<FoodMenuRepository[K]>>>>> };
 export interface FoodPrivateMenuServiceDependencies { readonly repository: FoodMenuRepository; readonly callerResolver: SessionPrincipalResolver; readonly administratorPrincipalId: PrincipalId }
@@ -31,7 +39,7 @@ function validateValue(value: unknown, shape: Shape): void {
         }
     }
 }
-export class SingleAdminFoodMenuService implements FoodPrivateMenuService {
+export class SingleAdminFoodMenuService implements FoodPrivateMenuService, FoodPrivateMenuOperationGate {
     readonly #repository: FoodMenuRepository;
     readonly #resolver: SessionPrincipalResolver;
     readonly #administrator: PrincipalId;
@@ -61,6 +69,16 @@ export class SingleAdminFoodMenuService implements FoodPrivateMenuService {
             if (r.ok !== true) return failure("storage"); keys(r, ["ok", "value"]); validateValue(r.value, shape);
             return Object.freeze({ ok: true, value: r.value as T });
         } catch { return failure("storage"); }
+    }
+    async runAuthorized<T>(callback: () => T | Promise<T>): Promise<FoodMenuAuthorizedCallbackResult<T>> {
+        const denied = await this.#authorize();
+        if (denied !== undefined) return Object.freeze({ ok: false, error: Object.freeze({ code: denied, message: messages[denied] }) });
+        try {
+            if (typeof callback !== "function") throw new TypeError();
+            return Object.freeze({ ok: true, value: await callback() });
+        } catch {
+            return Object.freeze({ ok: false, error: Object.freeze({ code: "callback-failed", message: "Private food menu operation could not be completed." }) });
+        }
     }
     createInitialPresentation(...args: Parameters<FoodMenuRepository["createInitialPresentation"]>): ReturnType<FoodPrivateMenuService["createInitialPresentation"]> { return this.#run(() => this.#repository.createInitialPresentation(...args), "append"); }
     appendPresentationRevision(...args: Parameters<FoodMenuRepository["appendPresentationRevision"]>): ReturnType<FoodPrivateMenuService["appendPresentationRevision"]> { return this.#run(() => this.#repository.appendPresentationRevision(...args), "append"); }
