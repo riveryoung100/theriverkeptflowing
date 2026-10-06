@@ -1,0 +1,81 @@
+{
+    "version": "1.0.0",
+    "id": "FOOD-001H",
+    "name": "Private food runtime configuration declaration and activation runbook",
+    "predecessor": "FOOD-001G",
+    "phase": "Inert planning/documentation only",
+    "objective": "Record future dedicated food infrastructure contracts and separately authorized operational phases without changing active configuration or activating infrastructure or product access.",
+    "allowedPaths": [
+        ".river-dev/specifications/food-001h-private-food-runtime-configuration-activation-runbook-boundary.json",
+        "docs/architecture/food-private-runtime-activation.md"
+    ],
+    "runbook": "docs/architecture/food-private-runtime-activation.md",
+    "futureDatabaseContract": {
+        "binding": "RIVER_FOOD_DB",
+        "migrationsDirectory": "migrations/food",
+        "migration": "migrations/food/0001_food_draft_snapshots.sql",
+        "databaseName": "undecided",
+        "account": "undecided",
+        "environment": "undecided",
+        "location": "undecided",
+        "assignedDatabaseId": "undecided",
+        "requirements": [
+            "Use a dedicated food database; never reuse commerce, CRM, insurance, Sesh or identity databases.",
+            "The eventual Wrangler declaration contains binding RIVER_FOOD_DB, selected dedicated database_name, verified assigned database_id and migrations_dir migrations/food.",
+            "Do not place placeholder IDs into active configuration. Preserve all unrelated database declarations and migration-directory conventions."
+        ]
+    },
+    "administratorContract": {
+        "key": "RIVER_FOOD_ADMIN_PRINCIPAL_ID",
+        "concreteValue": "unknown and not approved",
+        "recommendation": "Use an environment-specific Wrangler secret/environment-secret mechanism for the concrete production value rather than committing it to Git.",
+        "requirements": [
+            "PrincipalId is privileged configuration, not an authentication credential; secrecy never replaces session/principal authorization.",
+            "A separately authorized identity-verification step must use the existing authenticated principal/session system, resolve the intended administrator through canonical identity records, verify the principal is active in the intended environment and capture the exact canonical PrincipalId.",
+            "Never derive identity from display name, email/name guesses, River OS access keys, Sesh identities, test fixtures, food IDs or login success alone."
+        ]
+    },
+    "futurePhases": [
+        { "phase": "A", "name": "Target selection", "authorization": "Explicit separate authorization required", "work": "Choose account/environment/database name/location, dedicated local/dev isolation and recovery/backup policy." },
+        { "phase": "B", "name": "Database provisioning", "authorization": "Explicit separate authorization required", "work": "Create dedicated food D1 database, capture and verify assigned ID; no migration yet." },
+        { "phase": "C", "name": "Repository configuration declaration", "authorization": "Explicit separate authorization required", "work": "Add verified binding and migration directory, regenerate Cloudflare typing using normal Wrangler workflow, validate configuration before deployment." },
+        { "phase": "D", "name": "Migration application", "authorization": "Explicit separate authorization required; remote execution requires user approval immediately before execution", "work": "Inspect target and migration inventory, apply the existing food migration only to the approved target, then verify tables, foreign keys, immutable UPDATE/DELETE triggers and migration state." },
+        { "phase": "E", "name": "Administrator identity verification/configuration", "authorization": "Explicit separate authorization required", "work": "Verify intended active canonical principal and configure the administrator key for that exact environment." },
+        { "phase": "F", "name": "Private route/UI activation", "authorization": "Explicit separate design and approval required", "work": "Design and approve the first River OS private food route/UI; infrastructure activation never implies route activation." }
+    ],
+    "operationalGates": [
+        "No phase silently authorizes the next; FOOD-001H authorizes none of these operational phases.",
+        "Future local/dev verification requires separate nonproduction configuration, dedicated local persistence/state directory, synthetic/nonproduction identities where practical and explicit local target verification before migration.",
+        "Never let default project configuration accidentally point tests/dev work at remote production resources.",
+        "Before remote migration verify Cloudflare account, exact configuration/environment, binding/name/ID, migration inventory and backup/recovery plan; obtain explicit user approval immediately before execution.",
+        "Future command examples are manual approval steps only and contain no real IDs or secrets.",
+        "Regenerate generated Cloudflare typing only after separately approved actual binding declaration; FOOD-001F/G structural typing remains valid until then."
+    ],
+    "recovery": [
+        "Database changes are durable outside Git; reverting code/config does not undo an applied migration.",
+        "Append-only triggers intentionally restrict ordinary repair. Prefer forward corrective migrations and disabling access over destructive rollback.",
+        "Establish recovery policy before remote activation. Destructive rollback is outside FOOD-001H.",
+        "Production consistency/transport verification remains separate from FOOD-001C's isolated local Miniflare evidence."
+    ],
+    "authorityBoundaries": {
+        "FOOD-001C": "Schema/persistence authority",
+        "FOOD-001F": "Food environment-key validation authority",
+        "FOOD-001G": "Trusted server-context adapter authority",
+        "FOOD-001H": "Activation planning/runbook only"
+    },
+    "excludedAndDeferredScope": [
+        "No FOOD-001A-G source changes or unrelated insurance/Sesh/creator changes.",
+        "No wrangler.jsonc edits, active binding changes, placeholder active database IDs or worker-configuration.d.ts modification/regeneration.",
+        "No .dev.vars or .dev.vars.example creation.",
+        "No database provisioning, migration execution, administrator lookup, secret creation or runtime access configuration.",
+        "No routes/actions/UI, public food products, checkout/Stripe/commerce, fulfillment/accounting/community/public counters.",
+        "No deployment, production activation, configured local/remote D1 access or production data."
+    ],
+    "validation": [
+        "Parse JSON.",
+        "Check Markdown structure and repository links.",
+        "Check sanitization: no concrete secrets, database IDs or principal values recorded.",
+        "Run git diff --check and whitespace checks for new files."
+    ],
+    "currentTaskBoundary": "Create only the specification and architecture runbook; stop before staging, commit or push."
+}
