@@ -1,0 +1,135 @@
+{
+  "version": "1.0.0",
+  "id": "FOOD-002O",
+  "name": "Private menu HTTP response and route-adaptation boundary",
+  "phase": "Discovery and specification only; implementation requires separate authorization",
+  "predecessors": ["FOOD-002M", "FOOD-002N", "FOOD-002L"],
+  "purpose": "Define a minimal Web Response mapper for existing private menu mutation results and document the deferred route assembly prerequisites, without registering or activating any endpoint.",
+  "startingState": { "branch": "cif-001-canonical-content-source-record", "head": "a9adac762e666852c7a3f7bdcd293cf8aac6aa40", "worktree": "Verified clean" },
+  "references": [
+    ".river-dev/specifications/food-002m-private-menu-mutation-transport-request-boundary.json",
+    ".river-dev/specifications/food-002n-trusted-server-request-private-menu-mutation-adapter-boundary.json",
+    ".river-dev/specifications/food-002l-private-menu-operation-gate-runtime-capability-exposure-boundary.json",
+    ".river-dev/specifications/food-002j-trusted-server-context-private-menu-runtime-adapter-boundary.json",
+    "src/lib/food/private-menu-mutation-request.ts",
+    "src/lib/food/private-menu-mutation-request.test.ts",
+    "src/lib/food/private-menu-mutation-request-adapter.ts",
+    "src/lib/food/private-menu-mutation-request-adapter.test.ts",
+    "src/lib/food/private-menu-runtime-acquisition.ts",
+    "src/lib/food/private-menu-server-adapter.ts",
+    "src/lib/food/private-menu-runtime-composition.ts",
+    "src/lib/food/private-menu-service.ts",
+    "src/lib/food/private-menu-workspace.ts",
+    "src/lib/insurance/http/quote-request-api.ts",
+    "src/lib/sesh/http/project-api.ts",
+    "src/lib/sesh/http/creator-profile-api.ts",
+    "src/pages/api/sesh/creator/profile.ts",
+    "src/pages/api/insurance/quote-request.ts",
+    "src/pages/river-os/actions/insurance-contact.ts",
+    "src/lib/river-os/crm-actions.ts",
+    "src/middleware.ts"
+  ],
+  "discovery": {
+    "results": "M exports FoodMenuMutationRequestResult, a union of four workspace mutation snapshot families and fixed failure envelopes. N returns each fulfilled result by identity unchanged, and only maps unexpected boundary throw/rejection to callback-failed. No HTTP status or Response exists in M/N.",
+    "taxonomy": "Three successful mutation outcomes created/already-present/conflict; six transport failures; five service/workspace failures (three access failures plus invalid-input/storage); separate callback-failed. found/not-found, lists, configuration-unavailable and public projections are not M/N mutation result variants.",
+    "precedents": "Insurance quote-request API uses 201 for creation, 200 for replay, 409 for content conflict, 400 for unreadable request input, 405/403/413/415 for policy failures and 500 for unexpected processing failure. Sesh project/profile APIs map unauthenticated to 401, forbidden to 403, invalid-input to 400 and unavailable infrastructure to 503. Their JSON helpers use application/json; charset=utf-8 and no-store. O follows these specific semantics, not a universal mapping inferred solely from convention.",
+    "routes": "Existing src/pages/api subsystem modules and src/pages/river-os/actions private mutation modules use APIRoute, prerender=false and injected library handlers/runtime assembly. Existing server endpoints acquire env from cloudflare:workers. FOOD-002J/L instead take trusted structural inputs and require explicit bindingName/admin/readDependencies; there is no production menu binding or administrator/origin sourcing contract selected.",
+    "middleware": "River OS middleware applies a separate operator-session boolean and no-store, with login redirects. This is not canonical menu administrator authorization and must never replace E/K. It establishes no global JSON CSP/frame/referrer policy. Existing nosniff use is associated with Sesh audio responses; O does not copy binary-response security headers into a new application security policy.",
+    "food001": "Food source inspection found no post-FOOD-001J/K registered food HTTP response/route layer to reuse. FOOD-002N remains the current standard Request adaptation authority."
+  },
+  "selectedArchitecture": {
+    "choice": "A: standalone Web HTTP response mapper only; no handler/request factory or actual route in O implementation.",
+    "comparison": {
+      "A": "Selected: can be implemented entirely from materialized M/N results without resolving production configuration.",
+      "B": "A handler wrapping already-created N plus this mapper is feasible later, but request invocation is already N's responsibility and combining it now adds unnecessary scope.",
+      "C": "Defer: runtime plus M/N assembly needs trusted configuration decisions and a separate composition specification.",
+      "D": "Do not create an Astro route now: production prerequisites are unresolved and this slice forbids registration.",
+      "E": "Active route wiring is blocked pending explicit configuration/activation approval; this does not block the independent response mapper."
+    },
+    "function": "createPrivateFoodMenuMutationResponse",
+    "signature": "createPrivateFoodMenuMutationResponse(result: FoodMenuMutationRequestResult): Response",
+    "inputs": "Only the materialized existing FoodMenuMutationRequestResult. No Request, runtime, resolver, gate, controller, session, database, environment or origin input.",
+    "constructionAndPurity": "A synchronous function, not a configurable factory. Build a new standard Web Response from field-by-field projected JSON. Zero authorization, caller resolution, request/body reads, domain validation, DB/FOOD-001/network/environment access or side effects other than constructing the returned Response.",
+    "sourceAuthority": "Use M's FOOD_MENU_MUTATION_TRANSPORT_MESSAGES and FoodMenuMutationRequestResult plus FOOD_MENU_WORKSPACE_FEEDBACK. Derive fixed outcome feedback as specified below; never trust submitted message text or serialize the original result wholesale."
+  },
+  "httpMapping": [
+    { "source": "created", "kind": "outcome", "status": 201, "message": "Snapshot recorded." },
+    { "source": "already-present", "kind": "outcome", "status": 200, "message": "Identical snapshot already recorded." },
+    { "source": "conflict", "kind": "outcome", "status": 409, "message": "A different version already exists. Refresh and reconcile before retrying." },
+    { "source": "method-not-allowed", "kind": "error", "status": 405, "messageAuthority": "FOOD_MENU_MUTATION_TRANSPORT_MESSAGES" },
+    { "source": "origin-rejected", "kind": "error", "status": 403, "messageAuthority": "FOOD_MENU_MUTATION_TRANSPORT_MESSAGES" },
+    { "source": "unsupported-content-type", "kind": "error", "status": 415, "messageAuthority": "FOOD_MENU_MUTATION_TRANSPORT_MESSAGES" },
+    { "source": "payload-too-large", "kind": "error", "status": 413, "messageAuthority": "FOOD_MENU_MUTATION_TRANSPORT_MESSAGES" },
+    { "source": "invalid-request", "kind": "error", "status": 400, "messageAuthority": "FOOD_MENU_MUTATION_TRANSPORT_MESSAGES" },
+    { "source": "body-unavailable", "kind": "error", "status": 400, "messageAuthority": "FOOD_MENU_MUTATION_TRANSPORT_MESSAGES", "reason": "Request body could not be read, matching insurance input-read failure rather than assuming a storage outage" },
+    { "source": "unauthenticated", "kind": "error", "status": 401, "messageAuthority": "FOOD_MENU_WORKSPACE_FEEDBACK" },
+    { "source": "forbidden", "kind": "error", "status": 403, "messageAuthority": "FOOD_MENU_WORKSPACE_FEEDBACK" },
+    { "source": "access-unavailable", "kind": "error", "status": 503, "messageAuthority": "FOOD_MENU_WORKSPACE_FEEDBACK" },
+    { "source": "invalid-input", "kind": "error", "status": 400, "messageAuthority": "FOOD_MENU_WORKSPACE_FEEDBACK" },
+    { "source": "storage", "kind": "error", "status": 503, "messageAuthority": "FOOD_MENU_WORKSPACE_FEEDBACK", "reason": "Existing menu storage-unavailable semantics align with Sesh infrastructure-unavailable responses" },
+    { "source": "callback-failed", "kind": "error", "status": 500, "message": "Private food menu operation could not be completed." }
+  ],
+  "jsonContract": {
+    "outcomes": "Exactly { ok: true, value: { outcome, message } }, including conflict at HTTP 409. Do not change the existing logical successful conflict outcome into a service error merely because HTTP indicates reconciliation is required.",
+    "failures": "Exactly { ok: false, error: { code, message } } using only the fixed authority message for each recognized code.",
+    "projection": "Do not include snapshot, IDs, versions, recipe/product references, evidence, publicationLabel, internal conflict reason, submitted body, session/principal/admin data, environment, bindings or arbitrary extra input properties. Outcomes/messages are sufficient for a future private admin to distinguish creation, identical retry and conflict; later authorized reads retrieve any required detail.",
+    "encoding": "JSON.stringify the new projection with insertion order ok then value/error, nested outcome/code then message. No pretty printing, trailing newline or BOM. Standard Response encodes the string as UTF-8. M/N's object identity passthrough ends at O serialization; source objects remain unchanged.",
+    "runtimeGuard": "Fail closed on non-object/null/array inputs, nonboolean ok, missing required top-level envelope, unsupported outcome/code, incompatible outcome shape or throwing property access. Validate own keys: success top level exactly ok/value; failure exactly ok/error; error exactly code/message; created/retry value outcome/snapshot/message with optional publicationLabel; conflict value outcome/message only. Require string messages but replace them with fixed values. Created/retry snapshot must be an own property, but never access/traverse/serialize snapshot or publicationLabel contents. No duplicate domain validation. Unknown/malformed input produces fixed callback-failed HTTP 500; introduce no new error code and leak no internal text."
+  },
+  "headers": {
+    "allResponses": { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" },
+    "methodNotAllowedOnly": { "Allow": "POST" },
+    "security": "No O-added CSP/frame/referrer policy, nosniff or other application security headers. Reuse existing no-store/JSON precedent and let later application security integration own broader policy; do not claim middleware already installs protections it does not contain.",
+    "cors": "No Access-Control-Allow-Origin, reflection, wildcard, credentials or other CORS headers. Same-origin private usage requires no CORS/preflight layer.",
+    "other": "No Location, Retry-After, Set-Cookie, WWW-Authenticate scheme invention or automatic redirects. Only the explicitly specified headers; no inferred retry safety."
+  },
+  "methodAndCsrfOwnership": {
+    "methods": "M remains POST authority. A later route should pass non-POST methods through N/M using a thin all-method adapter rather than duplicate policy. OPTIONS receives method-not-allowed/405/Allow POST, not a preflight success. No GET read behavior is added. O has no Request and cannot special-case HEAD; eventual framework/server handles HEAD wire-body suppression and must be verified in the later route slice.",
+    "csrf": "Preserve mandatory canonical exact Origin, trusted injected expectedOrigin, authenticated gate and independently authorized mutation. No extra CSRF token is introduced by O. Session authentication alone is insufficient. Actual activation must verify the route preserves M's policy and the deployment's session/cookie behavior; weakening Origin requires a separately reviewed CSRF design. River OS operator boolean is never menu permission."
+  },
+  "futureRoute": {
+    "likelySourcePath": "src/pages/river-os/actions/food-menu.ts",
+    "pathStatus": "Documentary candidate based on existing private River OS actions; no file is created and path/route registration requires later approval.",
+    "flow": [
+      "Later thin APIRoute with prerender=false receives context.request and context.session; trusted server environment acquisition follows existing server env precedent through a separately approved adapter, not request-derived configuration.",
+      "Supply complete FoodPrivateMenuServerContextInput: environment, explicitly selected bindingName, session, trusted exact FoodMenuReadDependencies, canonical administratorPrincipalId and optional clock.",
+      "Invoke createPrivateFoodMenuOperationRuntimeFromServerContext through J/L. Handle its fixed configuration-unavailable outside O; it is not a M result and must not be added to O's taxonomy. A later handler specification must define its exact HTTP envelope/status, with 503 infrastructure precedent available.",
+      "Create M with runtime.operationGate/runtime.workspace and separately trusted expectedOrigin; create N with that M boundary.",
+      "Await N.submit(context.request); call createPrivateFoodMenuMutationResponse on its result; return Response. No body parsing or administrator comparison in route code.",
+      "A separately specified injected handler factory can encapsulate this assembly and keep the later route thin, without mixing production acquisition into O."
+    ],
+    "lifetime": "Construct the J/L graph and M/N per request with its session/resolver. Do not globally cache a request-scoped resolver, authorization decision or reader. O mapping itself is stateless and reusable.",
+    "ui": "A later private River OS menu workspace can inspect ok plus outcome or error.code, including HTTP 409 with logical conflict outcome. No UI, navigation or public endpoint is created."
+  },
+  "readiness": {
+    "responseMapper": "READY for separate implementation and validation with synthetic result fixtures; no production configuration required.",
+    "route": "BLOCKED: faithfully wiring the active production route requires unresolved trusted configuration sources, not merely a compilable Request/Response adapter.",
+    "prerequisites": [
+      "Explicit production menu D1 binding name/target selection, separate provisioning and configuration approval; no name is invented here",
+      "Exact FOOD-001 product/recipe read dependency composition and configured sources, preserving historical references",
+      "Verified canonical administrator principal and separately approved trusted sourcing/configuration mechanism, with no hardcoding/inference",
+      "Trusted expectedOrigin source/value independent of incoming request URL/Host/Origin/Forwarded",
+      "Trusted environment/session request acquisition and existing identity DB readiness",
+      "Separately authorized migration application, target verification/recovery and route/deployment activation checks"
+    ],
+    "separation": "Route source existence/compilation is not production configuration, migration completion, administrator/origin verification, deployment or activation. No O decision silently authorizes any of these phases.",
+    "deferredSelection": "Production binding, administrator source/value and expected-origin configuration remain unselected. No Wrangler/generated typing or concrete config value is introduced."
+  },
+  "logging": "No logging/telemetry or retention of raw body, cookies, session, principal/admin identity, environment, binding names, evidence, parser/storage exceptions or stack traces. O emits only field-by-field fixed JSON feedback.",
+  "allowedFutureImplementationPaths": ["src/lib/food/private-menu-mutation-response.ts", "src/lib/food/private-menu-mutation-response.test.ts"],
+  "tests": [
+    "Table-test all fifteen unique source variants for exact status, JSON bytes/key order, content-type/no-store and Allow POST only for 405",
+    "Created/retry/conflict remain distinct; conflict JSON retains ok:true/outcome:conflict at 409, with fixed message and no reason/snapshot",
+    "Every failure replaces supplied private message with the exact M/workspace/callback constant; no source payload/internal/configuration data appears",
+    "Frozen source results are not mutated; successful private snapshot/publicationLabel content is never accessed, traversed, toJSON-called or serialized, including throwing getters/cyclic private data",
+    "Malformed/null/array/unknown codes/outcomes/extra keys/throwing feedback property access safely produce fixed callback-failed 500; no domain/readiness validation is duplicated",
+    "No authorization, resolver, Request/body, database, environment/runtime acquisition or network calls are possible from the mapper input/API",
+    "No Response is created during discovery; implementation tests may construct local standard Response only and verify UTF-8 decoding plus absent CORS/cookies/redirect/security-policy additions",
+    "Source isolation and unchanged M/N/K/L/J/workspace/service/repository/identity contracts; no route registration or configured DB in tests"
+  ],
+  "futureValidation": ["Focused response mapper tests", "Relevant M/N and food/identity regressions without configured DB or migrations", "Strict TypeScript checks", "JSON/reference checks, git diff --check and normal build; do not fix unrelated baseline failures"],
+  "strictExclusions": ["Implementation/Response construction/staging/commit/push in this discovery slice", "Routes/endpoints/middleware/UI or live activation", "Changes to M/N/L/J/K, authorization, body, domain or persistence behavior", "Binding/admin/origin configuration selection, D1 access/provisioning, migrations, generated typing/Wrangler changes", "Deployment, production data, public menu, pricing/cart/orders/payment/fulfillment/QR/ratings/demand/POS-lite or unrelated subsystem changes"],
+  "acceptanceCriteria": ["Exactly this new specification and no tracked/staged changes", "Complete one-row-per-source M taxonomy with deterministic response projection", "Response mapper implementation is independent of blocked production route prerequisites", "All references/types/mapping/JSON/whitespace checks and git diff --check pass", "No Response/route/database/configuration/implementation activity in discovery"],
+  "remainingAmbiguities": "None blocking the response mapper. Production route prerequisites and its configuration-failure/HEAD/framework integration remain explicitly deferred to a later specification, not requirements to guess during O implementation.",
+  "nextSlice": "FOOD-002O implementation and validation: response mapper only. Afterwards evaluate a separately injected server handler/route-adaptation slice, with actual registration/activation still gated by trusted configuration decisions."
+}
