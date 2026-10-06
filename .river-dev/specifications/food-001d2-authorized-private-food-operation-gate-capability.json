@@ -1,0 +1,81 @@
+{
+    "version": "1.0.0",
+    "id": "FOOD-001D2",
+    "name": "Authorized private food operation gate capability",
+    "extends": "FOOD-001D",
+    "phase": "Specification only; implementation requires separate explicit authorization",
+    "objective": "Add an independently typed lazy callback gate owned by the existing single-admin service without changing its ten-operation contract or granting reusable authorization.",
+    "allowedFutureModificationPaths": [
+        "src/lib/food/private-draft-service.ts",
+        "src/lib/food/private-draft-service.test.ts"
+    ],
+    "compatibility": [
+        "Keep FoodPrivateDraftService unchanged; existing FOOD-001D consumers and fakes remain source-compatible.",
+        "Add separate FoodPrivateDraftOperationGate capability implemented on existing SingleAdminFoodDraftService.",
+        "Add no new implementation files; preserve existing ten operations, five operation-error codes and authorization semantics."
+    ],
+    "gateApi": {
+        "interface": "FoodPrivateDraftOperationGate",
+        "signature": "runAuthorized<T>(callback: () => T | Promise<T>): Promise<FoodAuthorizedCallbackResult<T>>",
+        "callbackArguments": "None",
+        "prohibitedArguments": ["principal ID", "administrator ID", "roles", "repository", "service", "authorization token", "reusable capability token", "request context"]
+    },
+    "authorization": [
+        "Reuse FOOD-001D's existing private authorization logic directly; administrator identity remains injected and canonical.",
+        "Resolve authorization fresh on every runAuthorized invocation. No repository call is required merely to authorize; possession of a food ID is never permission.",
+        "Never cache an authorization decision, issue reusable permission or authorize once for an entire request.",
+        "Preserve unauthenticated, forbidden, unavailable, malformed/noncanonical resolved principal and resolver-failure semantics.",
+        "Denied/unavailable callers invoke the callback zero times and cannot learn whether it is callable."
+    ],
+    "callbackBehavior": [
+        "Check callability only after authorization succeeds. A noncallable callback then returns fixed callback-failed, with no separate validation vocabulary.",
+        "Invoke an authorized callable exactly once with no arguments; support synchronous values and asynchronous callbacks and await completion.",
+        "Never automatically retry a callback.",
+        "Treat fulfilled callback values as opaque. A returned object such as { ok: false, ... } is a successful callback value nested inside the outer gate success.",
+        "Do not reinterpret parser, transport or domain result values as authorization or repository failures.",
+        "Catch synchronous throws and asynchronous rejection and return only fixed callback-failed feedback; expose no exception text, stack traces, submitted payloads, private evidence or repository/SQL/D1 details.",
+        "Successful opaque values are not transformed into authorization tokens; the callback remains trusted injected code responsible for its own bounded result contract."
+    ],
+    "resultModel": {
+        "type": "FoodAuthorizedCallbackResult<T>",
+        "success": "{ ok: true, value: T }",
+        "authorizationFailure": "{ ok: false, error: { code: 'unauthenticated' | 'forbidden' | 'access-unavailable', message: existing fixed sanitized message } }",
+        "callbackFailure": "{ ok: false, error: { code: 'callback-failed', message: 'Private food operation could not be completed.' } }",
+        "fixedMessages": {
+            "unauthenticated": "Authentication is required.",
+            "forbidden": "Food draft access is forbidden.",
+            "access-unavailable": "Food draft access is unavailable.",
+            "callback-failed": "Private food operation could not be completed."
+        },
+        "errorIsolation": "callback-failed belongs only to the gate capability; do not add it to FOOD-001D's five existing operation-error codes."
+    },
+    "freshMutationAuthorization": [
+        "An eventual mutation inside or after the callback still invokes a normal FOOD-001D operation, which performs its own fresh authorization.",
+        "Never reuse the gate decision for mutation. Honor revocation or caller changes between gate and operation.",
+        "No repository bypass, authorization token, role flag or principal argument is supplied to the callback."
+    ],
+    "tests": [
+        "Unauthenticated/forbidden/unavailable gates invoke callbacks zero times and make zero repository calls.",
+        "Thrown resolver failures and malformed/noncanonical principal resolutions deny with zero callback/repository calls.",
+        "Every gate invocation resolves fresh; revocation between consecutive calls is honored without caching.",
+        "Synchronous and asynchronous callback successes preserve opaque values and invoke the callback exactly once with zero arguments.",
+        "A callback returning an arbitrary nested failure result remains an outer success; preserve its value without reinterpretation.",
+        "Synchronous throws and asynchronous rejections return exact sanitized callback-failed results without sensitive information.",
+        "Noncallable callbacks are checked only after authorization; denied callers receive only the access failure.",
+        "Authorized gate followed by denied mutation performs a second fresh resolution and zero mutation repository calls.",
+        "Authorized gate followed by successful mutation performs two distinct authorization resolutions and the normal repository operation.",
+        "No reusable token/caching or mutation bypass is introduced; all ten existing FOOD-001D operations and source compatibility remain unchanged."
+    ],
+    "deferredRuntimeExposure": [
+        "FOOD-001E/F/G expose narrower FoodPrivateDraftService and remain unchanged.",
+        "A later explicitly authorized boundary decides how trusted runtime code obtains FoodPrivateDraftOperationGate."
+    ],
+    "excludedScope": [
+        "No FOOD-001J implementation, body/request parsing or Origin/CSRF handling.",
+        "No routes/UI, session/runtime changes, D1 changes or migrations.",
+        "No commerce/payment, deployment, production data or unrelated subsystem changes."
+    ],
+    "validationForCurrentTask": ["JSON parsing", "git diff --check and new-file whitespace check"],
+    "currentTaskBoundary": "Create only this specification. Do not implement, modify existing files, stage, commit, migrate, configure runtime access or deploy.",
+    "nextStep": "Review this specification before separately authorizing the two-file FOOD-001D gate extension."
+}

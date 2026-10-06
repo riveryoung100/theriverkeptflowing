@@ -7,6 +7,14 @@ export type FoodDraftServiceResult<T> = Readonly<{ ok: true; value: T } | { ok: 
 export type FoodPrivateDraftService = {
     [K in keyof FoodDraftRepository]: (...args: Parameters<FoodDraftRepository[K]>) => Promise<FoodDraftServiceResult<Awaited<ReturnType<FoodDraftRepository[K]>>>>;
 };
+export type FoodAuthorizedCallbackResult<T> = Readonly<
+    { ok: true; value: T } |
+    { ok: false; error: Readonly<{ code: "unauthenticated" | "forbidden" | "access-unavailable"; message: string }> } |
+    { ok: false; error: Readonly<{ code: "callback-failed"; message: "Private food operation could not be completed." }> }
+>;
+export interface FoodPrivateDraftOperationGate {
+    runAuthorized<T>(callback: () => T | Promise<T>): Promise<FoodAuthorizedCallbackResult<T>>;
+}
 export interface FoodPrivateDraftServiceDependencies {
     readonly repository: FoodDraftRepository;
     readonly callerResolver: SessionPrincipalResolver;
@@ -32,7 +40,7 @@ function exactKeys(value: Record<string, unknown>, expected: readonly string[]):
 }
 
 /** Trusted resolver and policy are injected by a later private composition boundary. */
-export class SingleAdminFoodDraftService implements FoodPrivateDraftService {
+export class SingleAdminFoodDraftService implements FoodPrivateDraftService, FoodPrivateDraftOperationGate {
     readonly #repository: FoodDraftRepository;
     readonly #resolver: SessionPrincipalResolver;
     readonly #administrator: PrincipalId;
@@ -41,7 +49,7 @@ export class SingleAdminFoodDraftService implements FoodPrivateDraftService {
         this.#repository = dependencies.repository;
         this.#resolver = dependencies.callerResolver;
     }
-    async #authorize(): Promise<FoodDraftServiceErrorCode | undefined> {
+    async #authorize(): Promise<"unauthenticated" | "forbidden" | "access-unavailable" | undefined> {
         try {
             const resolution = record(await this.#resolver.resolve());
             if (resolution.ok === false) {
@@ -61,6 +69,16 @@ export class SingleAdminFoodDraftService implements FoodPrivateDraftService {
         if (denied !== undefined) return failure(denied);
         try { return Object.freeze({ ok: true, value: await operation() }); }
         catch (error) { return failure(error instanceof FoodDraftValidationError ? "invalid-input" : "storage"); }
+    }
+    async runAuthorized<T>(callback: () => T | Promise<T>): Promise<FoodAuthorizedCallbackResult<T>> {
+        const denied = await this.#authorize();
+        if (denied !== undefined) return Object.freeze({ ok: false, error: Object.freeze({ code: denied, message: messages[denied] }) });
+        try {
+            if (typeof callback !== "function") throw new TypeError("Invalid callback");
+            return Object.freeze({ ok: true, value: await callback() });
+        } catch {
+            return Object.freeze({ ok: false, error: Object.freeze({ code: "callback-failed", message: "Private food operation could not be completed." }) });
+        }
     }
     createInitialRecipe(...args: Parameters<FoodDraftRepository["createInitialRecipe"]>) { return this.#run(() => this.#repository.createInitialRecipe(...args)); }
     appendRecipeRevision(...args: Parameters<FoodDraftRepository["appendRecipeRevision"]>) { return this.#run(() => this.#repository.appendRecipeRevision(...args)); }

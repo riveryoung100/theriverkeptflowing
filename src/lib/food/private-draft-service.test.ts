@@ -1,5 +1,60 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import type { FoodPrivateDraftService, FoodPrivateDraftOperationGate } from "./private-draft-service";
+
+test("gate denies every unavailable/malformed caller without callback or repository access", async () => {
+    const cases: [unknown, FoodDraftServiceErrorCode][] = [
+        [{ ok: false, error: { code: "unauthenticated", message: "private" } }, "unauthenticated"],
+        [{ ok: true, value: { principalId: "principal:other" } }, "forbidden"],
+        [{ ok: false, error: { code: "unavailable", message: "private" } }, "access-unavailable"],
+        ...[undefined, null, [], {}, { ok: true, value: { principalId: " principal:test-admin" } }, { ok: true, value: { principalId: "principal:test-admin " } }, { ok: true, value: { principalId: "principal:a:b" } }, { ok: true, value: { principalId: 1 } }, { ok: true, value: { principalId: administrator, role: "admin" } }].map(value => [value, "access-unavailable"] as [unknown, FoodDraftServiceErrorCode]),
+    ];
+    for (const [resolution, code] of cases) {
+        const { service, state } = setup(resolution); let calls = 0;
+        assert.deepEqual(await service.runAuthorized(() => { calls++; throw new Error("private evidence"); }), expected(code));
+        assert.deepEqual(await service.runAuthorized(null as never), expected(code));
+        assert.equal(calls, 0); assert.equal(state.resolverCalls, 2); assert.deepEqual(state.calls, []);
+    }
+    const { service, state } = setup(); state.reject = true; state.thrown = new Error("SQL private stack");
+    assert.deepEqual(await service.runAuthorized(() => assert.fail("callback invoked")), expected("access-unavailable")); assert.deepEqual(state.calls, []);
+});
+
+test("gate resolves fresh, preserves opaque sync/async values and invokes once with no arguments", async () => {
+    const { service, state } = setup(); const gate: FoodPrivateDraftOperationGate = service; const existing: FoodPrivateDraftService = service;
+    assert.equal(existing, service); assert.equal(state.resolverCalls, 0);
+    const value = { ok: false, error: { code: "parser-result", message: "opaque" } }; let calls = 0;
+    const sync = await gate.runAuthorized(function (...args: unknown[]) { assert.deepEqual(args, []); calls++; return value; });
+    assert(sync.ok); assert.equal(sync.value, value); assert(!Object.isFrozen(value));
+    let release!: () => void; const wait = new Promise<void>(resolve => { release = resolve; }); let settled = false;
+    const pending = gate.runAuthorized(async function (...args: unknown[]) { assert.deepEqual(args, []); calls++; await wait; return value; }).then(result => { settled = true; return result; });
+    await Promise.resolve(); await Promise.resolve(); assert.equal(settled, false); release();
+    const asyncResult = await pending; assert(asyncResult.ok); assert.equal(asyncResult.value, value); assert.equal(calls, 2); assert.equal(state.resolverCalls, 2); assert.deepEqual(state.calls, []);
+    state.resolution = { ok: true, value: { principalId: "principal:revoked" } };
+    assert.deepEqual(await gate.runAuthorized(() => { calls++; return value; }), expected("forbidden")); assert.equal(calls, 2); assert.equal(state.resolverCalls, 3);
+});
+
+test("gate sanitizes throws, rejections and noncallable callbacks without retry or expanding operation errors", async () => {
+    const { service, state } = setup(); let calls = 0;
+    const callbackFailure = { ok: false, error: { code: "callback-failed", message: "Private food operation could not be completed." } };
+    for (const callback of [() => { calls++; throw new Error("SQL private payload stack"); }, async () => { calls++; throw new FoodDraftValidationError("private evidence"); }]) assert.deepEqual(await service.runAuthorized(callback), callbackFailure);
+    assert.equal(calls, 2);
+    for (const bad of [undefined, null, {}, [], 1, "callback"]) assert.deepEqual(await service.runAuthorized(bad as never), callbackFailure);
+    assert.equal(state.resolverCalls, 8); assert.deepEqual(state.calls, []);
+    state.thrown = new FoodDraftValidationError("private"); assert.deepEqual(await service.createInitialRecipe({}), expected("invalid-input"));
+    state.thrown = new Error("private"); assert.deepEqual(await service.createInitialRecipe({}), expected("storage"));
+});
+
+test("gate never transfers permission to a mutation: successful and revoked writes authorize again", async () => {
+    const { service, state } = setup();
+    const revoked = await service.runAuthorized(async () => {
+        state.resolution = { ok: true, value: { principalId: "principal:revoked" } };
+        return service.createInitialRecipe(recipe());
+    });
+    assert(revoked.ok); assert.deepEqual(revoked.value, expected("forbidden")); assert.equal(state.resolverCalls, 2); assert.deepEqual(state.calls, []);
+    state.resolution = authorized;
+    const success = await service.runAuthorized(() => service.createInitialRecipe(recipe()));
+    assert(success.ok && success.value.ok); assert.equal(success.value.value, state.outcome); assert.equal(state.resolverCalls, 4); assert.equal(state.calls.length, 1);
+});
 import { readFile } from "node:fs/promises";
 import ts from "typescript";
 import { SingleAdminFoodDraftService, type FoodDraftServiceErrorCode } from "./private-draft-service";
