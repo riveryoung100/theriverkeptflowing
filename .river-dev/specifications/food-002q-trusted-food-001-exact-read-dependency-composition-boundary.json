@@ -1,0 +1,131 @@
+{
+  "version": "1.0.0",
+  "id": "FOOD-002Q",
+  "name": "Trusted FOOD-001 exact-read dependency composition for private menu runtime",
+  "phase": "Discovery and specification only; implementation requires separate authorization",
+  "purpose": "Provide an explicit frozen two-method infrastructure projection of an already-injected FOOD-001 repository for menu exact-reference verification, without changing private services or selecting production storage.",
+  "startingState": { "branch": "cif-001-canonical-content-source-record", "head": "daa4e2dfcb642eb774482add1744bae02ea85626", "worktree": "Verified clean before discovery" },
+  "references": [
+    "src/lib/food/menu-persistence.ts",
+    "src/lib/food/menu-persistence.test.ts",
+    "src/lib/food/d1-menu-persistence.ts",
+    "src/lib/food/d1-menu-persistence.test.ts",
+    "src/lib/food/private-menu-runtime-composition.ts",
+    "src/lib/food/private-menu-runtime-composition.test.ts",
+    "src/lib/food/private-menu-server-adapter.ts",
+    "src/lib/food/private-menu-server-adapter.test.ts",
+    "src/lib/food/draft-domain.ts",
+    "src/lib/food/draft-domain.test.ts",
+    "src/lib/food/draft-persistence.ts",
+    "src/lib/food/draft-persistence.test.ts",
+    "src/lib/food/d1-draft-persistence.ts",
+    "src/lib/food/d1-draft-persistence.test.ts",
+    "src/lib/food/private-draft-service.ts",
+    "src/lib/food/private-draft-service.test.ts",
+    "src/lib/food/private-draft-runtime-composition.ts",
+    "src/lib/food/private-draft-runtime-composition.test.ts",
+    "src/lib/food/private-draft-runtime-acquisition.ts",
+    "src/lib/food/private-draft-runtime-acquisition.test.ts",
+    "src/lib/food/private-draft-server-adapter.ts",
+    "src/lib/food/private-draft-server-adapter.test.ts",
+    ".river-dev/specifications/food-001a-versioned-food-draft-domain-evidence-completeness-boundary.json",
+    ".river-dev/specifications/food-001b-append-only-food-draft-repository-serialization-boundary.json",
+    ".river-dev/specifications/food-001c-d1-append-only-food-draft-repository-migration-boundary.json",
+    ".river-dev/specifications/food-001d-single-admin-private-food-draft-service-access-boundary.json",
+    ".river-dev/specifications/food-001e-injected-private-food-draft-runtime-composition-boundary.json",
+    ".river-dev/specifications/food-001f-trusted-environment-private-food-draft-runtime-acquisition-boundary.json",
+    ".river-dev/specifications/food-001g-injected-trusted-server-context-private-food-draft-adapter.json",
+    ".river-dev/specifications/food-001k-trusted-private-food-runtime-capability-exposure-boundary.json",
+    ".river-dev/specifications/food-002g-d1-append-only-menu-repository-migration-boundary.json",
+    ".river-dev/specifications/food-002h-injected-private-menu-runtime-composition-boundary.json",
+    ".river-dev/specifications/food-002j-trusted-server-context-private-menu-runtime-adapter-boundary.json",
+    ".river-dev/specifications/food-002l-private-menu-operation-gate-runtime-capability-exposure-boundary.json",
+    ".river-dev/specifications/food-002o-private-menu-http-response-route-adaptation-boundary.json",
+    ".river-dev/specifications/food-002p-injected-private-menu-mutation-server-handler-boundary.json"
+  ],
+  "currentContracts": {
+    "dependencyType": "export type FoodMenuReadDependencies = Pick<FoodDraftRepository, 'getProduct' | 'getRecipe'>; defined in ./menu-persistence",
+    "product": "getProduct(id: unknown, version: unknown): Promise<FoodDraftReadResult<FoodProductDraft>>",
+    "recipe": "getRecipe(id: unknown, version: unknown): Promise<FoodDraftReadResult<FoodRecipeDraft>>",
+    "readResult": "FoodDraftReadResult<T> = Readonly<{ outcome: 'found'; snapshot: T } | { outcome: 'not-found' }>; no null and no ok/value/error wrapper",
+    "repository": "Both methods are on the same FoodDraftRepository interface and are implemented by InMemoryFoodDraftRepository and D1FoodDraftRepository. They validate canonical identity and positive safe-integer version, query exact coordinates, and never substitute latest or mutate records. Invalid coordinates throw/reject FoodDraftValidationError; storage/decoding failures throw/reject FoodDraftStorageError. Successful snapshots are detached and recursively frozen by FOOD-001 validation/deserialization.",
+    "productInternalReads": "One getProduct delegation may cause the FOOD-001 repository to read its recorded exact recipe for decoding/validation. Q promises one intended repository-method invocation, not one SQL query or zero nested recipe reads. This inherited behavior must remain intact.",
+    "serviceMismatch": "FoodPrivateDraftService maps each repository operation to Promise<FoodDraftServiceResult<rawResult>>, where FoodDraftServiceResult is ok:true/value or ok:false/error with five service codes. It freshly authorizes first and sanitizes repository failures as invalid-input/storage. It preserves exact versions but is neither statically nor semantically the raw dependency contract. The mismatch includes access decisions and failure channels, not merely an object wrapper.",
+    "constructors": "D1FoodDraftRepository(database: FoodD1Database) is already an injected synchronous constructor and performs no I/O at construction. No additional repository factory or persistence implementation is needed. FoodD1Database exposes prepare and batch; Q neither accepts nor acquires it.",
+    "runtimeExposure": "FOOD-001E/F/G expose authorized service results, and K adds service/gate from the same service instance. They deliberately hide repositories. Q must not reach into those objects or widen their surfaces."
+  },
+  "consumerEvidence": {
+    "callSites": "Both InMemoryFoodMenuRepository and D1FoodMenuRepository capture/bind getProduct/getRecipe in their constructors. Their #draftContext calls getProduct(exact product ID/version) then getRecipe(exact recipe ID/version); throws/rejections map to menu storage. Presentation validation calls #draftContext; offer/publication/availability validation transitively traverses exact presentations. No other direct calls to the two dependency methods occur in these adapters.",
+    "found": "Consumers verify envelope shape, domain validity, returned identity/version, evidence bindings and product-to-recipe correspondence. A valid found result supplies context; malformed/corrupt or metadata-disagreeing data maps to storage. They reconstruct validated snapshots rather than granting sale authority.",
+    "missing": "Missing dependency for a proposed new presentation is invalid-input. Missing dependency while verifying existing stored history is storage. This distinction belongs to the existing menu repository and must not be changed by Q.",
+    "mismatch": "A structurally valid product referencing another recipe than the proposed context yields invalid-input for new content and storage for stored content. Returned coordinate disagreement or invalid domain snapshots yields storage.",
+    "tests": "menu-persistence.test.ts proves exact dependency coordinates, missing/new versus missing/stored classification, thrown storage and corrupt data handling. draft-persistence.test.ts proves historical product-to-recipe versions and detached frozen reads; d1-draft-persistence.test.ts proves exact metadata/canonical payload failure handling with fake D1. Runtime tests verify injected references and method receivers. This discovery inspects tests; it does not execute a database or claim new runtime verification."
+  },
+  "authorizationAndTrust": {
+    "conclusion": "These are infrastructure validation reads owned by the repository contract, not independent user-facing FOOD-001 private-service operations. FOOD-002D/G explicitly contain no authorization; FOOD-002E freshly authorizes before repository invocation. Requiring user resolution inside each referential read would couple persistence to request authorization and reinterpret existing storage failure channels. Q introduces no such authorization.",
+    "boundary": "Q is an exported server-library infrastructure composition helper, usable only by trusted internal composition. Possession of a food ID is never permission. The capability itself is privileged because it can read private snapshots: do not expose it to routes as an alternate user API, clients, public runtime bundles or request payloads. User operations continue through the private menu service/gate and authorized FOOD-001 service unchanged.",
+    "structuralTrust": "Structural checks cannot prove provenance or permissions. Trusted callers must supply a real approved repository capability; Q accepts no principals/roles/tokens/auth booleans and performs no identity lookup. No reusable authorization decision is issued or cached.",
+    "evidence": "This conclusion follows the existing repository no-access-decision comments, raw Pick contract and service-before-repository authorization. It does not authorize deploying an unguarded repository API or bypassing an existing private-service method."
+  },
+  "architectureComparison": {
+    "A": "Selected: project an already-injected raw repository's exact methods using the existing FoodMenuReadDependencies type.",
+    "B": "Do not add a duplicate exact-read interface: FoodMenuReadDependencies already expresses exactly the required capability and static signatures.",
+    "C": "Do not widen FOOD-001K service/gate bundles; raw infrastructure reads and user authorization capabilities have different purposes. A trusted later composition may share a known repository instance without changing K now.",
+    "D": "Selected only as a small pure projection wrapper, not a new repository or database adapter. It constructs no persistence or runtime graph.",
+    "E": "Reject service casts, private-field access and guessed envelope/error unwrapping. Using the authorized service would introduce extra access/failure semantics not present in the dependency contract.",
+    "F": "Existing direct bound-method wiring is already possible and tested. Q adds only a named reviewed frozen projection seam to constrain exposure and preserve receivers; it does not claim a missing storage abstraction or build another domain model."
+  },
+  "selectedArchitecture": {
+    "factory": "createFoodMenuReadDependencies",
+    "inputType": "FoodMenuReadDependenciesCompositionInput",
+    "inputDefinition": "export interface FoodMenuReadDependenciesCompositionInput { readonly repository: FoodMenuReadDependencies; }",
+    "signature": "createFoodMenuReadDependencies(input: FoodMenuReadDependenciesCompositionInput): Readonly<FoodMenuReadDependencies>",
+    "typeReuse": "Import FoodMenuReadDependencies as a type from ./menu-persistence. Accept the already-narrow structural input; an actual FoodDraftRepository satisfies it without a cast. Do not create a second read-result type, service type or interface alias.",
+    "output": "Object.freeze({ getProduct, getRecipe }) only. No repository/database/environment/service/mutation/list/history/latest/auth capability or additional properties exposed. Do not freeze or mutate caller-owned repository or its results.",
+    "configurationFailure": "Invalid construction throws TypeError with exactly Food menu exact-read dependency configuration is unavailable. This is a synchronous construction exception, not a new repository/service/result error vocabulary."
+  },
+  "construction": {
+    "checks": "Require non-null/non-array object input and repository, callable getProduct and callable getRecipe. Capture input.repository and each method exactly once; catch throwing dependency-property access and return the fixed construction TypeError. Inspect no unrelated property/method and do not probe record existence.",
+    "purity": "Synchronous and I/O-free. Zero repository reads/writes, DB prepare/batch, authorization, resolver, environment, network, migration, provisioning or clock calls. No fallback repository/source and no constructor invocation.",
+    "identity": "Both captured functions must be invoked with the same exact supplied repository as receiver. Retain that object; do not copy/reconstruct it or create a second repository. Subsequent replacement of its method properties must not retarget captured methods. No requirement to share with an opaque existing K bundle: its repository is unavailable by design. Where a trusted future caller already owns the repository, reuse that same instance for projection and any separately constructed draft service; do not extract it from a private service or create duplicates merely for Q."
+  },
+  "readExecution": [
+    "getProduct(id, version) invokes the captured repository.getProduct.call(repository, id, version) once; getRecipe does the same for its method. Preserve all values/references exactly, including invalid/noncanonical inputs for the underlying authority to reject.",
+    "Return the exact underlying Promise unchanged; wrappers need not be async. No added await/result cloning/domain validation/envelope projection/snapshot freezing. Repository remains the raw-read/domain authority and menu consumers remain verification authority.",
+    "A synchronous dependency throw propagates unchanged; async rejection propagates unchanged, including error identity/type. Do not catch, sanitize, log or interpret read failures in Q. Q is internal and never a user feedback boundary; existing menu/service layers sanitize failures.",
+    "Valid found and not-found results remain unchanged by identity. Malformed fulfilled results from a broken/injected dependency also pass unchanged to existing menu fail-closed verification; Q must not fabricate not-found or duplicate domain validation.",
+    "No latest substitution, normalization, automatic retry, evidence retargeting, missing-reference repair, readiness interpretation, merging or mutation. Detached/frozen history is inherited from the repository; Q does not guarantee arbitrary faulty providers are domain-valid.",
+    "Concurrent reads use invocation-local arguments and return values; no request/result/auth cache or mutable global state. Q does not add an atomic product-plus-recipe snapshot guarantee."
+  ],
+  "databaseTopology": "Current code permits FOOD-001 and FOOD-002 repositories to use the same injected database with separate table families, or separately selected databases through independent dependencies. FOOD-002G does not impose physical cross-database FOOD-001 foreign keys; it verifies references through injected reads. Production topology remains unresolved. Q construction/testing requires neither topology selection nor database access and establishes no cross-database consistency guarantee.",
+  "futureWiring": "A separately approved trusted server composition obtains/constructs the approved FOOD-001 repository, projects createFoodMenuReadDependencies({ repository }), and supplies that result as readDependencies to createPrivateFoodMenuRuntimeComposition/createPrivateFoodMenuOperationRuntimeComposition or createPrivateFoodMenuOperationRuntimeFromServerContext. H/J/L accept it already; no interface changes or casts needed. That caller owns menu database/bindingName, session/admin configuration and source lifecycle. Q acquires none of them and does not expose the underlying repository through any runtime result.",
+  "blockerReclassification": {
+    "exactReadArchitecture": "After Q implementation/validation the narrow raw-read projection seam is resolved; no service-envelope adapter is needed. Existing contracts already support it statically.",
+    "exactReadProductionIntegration": "Still unresolved until trusted upstream composition selects the FOOD-001 historical source, constructs or reuses its repository and supplies the projection. Q alone does not completely remove O/P's production exact-read composition blocker or make routes ready.",
+    "priorityOrder": [
+      "Trusted production assembly specification: FOOD-001 source/topology and repository lifecycle, menu binding/target selection contract, administrator/origin sourcing contracts; define decisions without inventing concrete values or provisioning",
+      "Separately authorize/build the trusted assembly seam using Q and existing J/L; keep source acquisition and user-facing authorization distinct",
+      "Verify/configure approved administrator and expected origin plus request-scoped environment/session/identity readiness under separate gates",
+      "Separately approve binding provisioning/configuration and correct-target migrations/recovery verification",
+      "Only then authorize faithful route registration/integration verification, deployment and separate private activation"
+    ],
+    "status": "P HTTP composition is complete. Production route readiness remains BLOCKED. Q removes no production approval gate and does not select any binding/target/principal/origin."
+  },
+  "allowedFutureImplementationPaths": ["src/lib/food/menu-read-dependencies.ts", "src/lib/food/menu-read-dependencies.test.ts"],
+  "tests": [
+    "Synchronous frozen two-method output, zero construction reads/auth/database/network calls, no caller-owned mutation/freezing or exposed repository/database internals",
+    "Malformed/null/array/missing outer/repository input, each noncallable method and throwing input/method getters produce the exact fixed construction TypeError; only required properties inspected once",
+    "Exact product/recipe argument identity and explicit historical version reach the correct captured method exactly once with original repository receiver; method replacement does not retarget; no unrelated method invoked",
+    "Return the exact original Promise and preserve found/not-found result identity. Preserve sync throw and rejection error identity; do not convert storage/validation failures to not-found",
+    "Real in-memory FOOD-001 historical product and recipe reads preserve exact version, recorded recipe reference, detached/deeply frozen snapshots and no latest substitution after revisions",
+    "Malformed fulfilled dependency results reach real menu repository verification unchanged and become storage; missing dependency is invalid-input for new content and storage for existing stored records; thrown errors remain sanitized only by existing menu/service authorities",
+    "Two independent concurrent reads share no mutable invocation state; no authorization cache/token exists; denied menu service operations invoke the projected dependencies zero times",
+    "Static assignments to FoodMenuReadDependencies and existing H/J/L readDependencies inputs compile without consumer casts; no new parallel exact-read abstraction",
+    "No mutations/list/history/latest methods reachable from result and no runtime/D1/environment/session/HTTP/route/global/logging imports or operations; no configured DB used"
+  ],
+  "futureValidation": ["Focused Q tests", "Relevant FOOD-001 repository/domain/service and FOOD-002 menu/runtime regressions without configured DB or migration execution", "Strict TypeScript including consumer compatibility", "JSON/reference/whitespace checks and git diff --check", "Normal build without unrelated baseline fixes"],
+  "strictExclusions": ["Implementation, staging, commit or push in discovery", "Modifying FOOD-001 services/runtime/K or FOOD-002 consumers/interfaces", "HTTP/Request/Response layers/routes/UI", "Binding/target/admin/origin production selection or configuration, Wrangler/generated typing changes", "Provisioning, database access, migrations, deployment, activation or production data", "Public menu/pricing/cart/orders/payment/fulfillment/QR/ratings/demand/POS-lite or unrelated systems"],
+  "acceptanceCriteria": ["Starting branch/HEAD/clean gates pass", "Exactly this new specification and no staged/tracked changes", "Raw-read signatures, receiver/promise/error semantics and trusted infrastructure scope are explicit", "Existing type and persistence reused; no user-service bypass or duplicate repository implemented", "Q architecture resolution distinguished from remaining production source/wiring readiness", "JSON, committed-reference, whitespace and git diff --check pass"],
+  "remainingAmbiguities": "None blocking the narrow Q projection. Production source/topology/lifecycle and configuration/activation remain separately scoped decisions, not implementation defaults.",
+  "nextSlice": "FOOD-002Q implementation and validation of the two proposed files only after separate authorization. Afterwards specify trusted production assembly/source and configuration contracts, prioritizing the remaining FOOD-001 repository-source/lifecycle wiring rather than adding another HTTP abstraction."
+}
