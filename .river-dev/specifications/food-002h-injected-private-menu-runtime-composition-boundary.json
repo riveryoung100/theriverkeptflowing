@@ -1,0 +1,144 @@
+{
+  "version": "1.0.0",
+  "id": "FOOD-002H",
+  "name": "Injected private menu runtime composition",
+  "predecessor": "FOOD-002G",
+  "phase": "Discovery and specification only; implementation requires separate explicit authorization",
+  "scope": "One pure injected composition factory assembling the existing menu D1 repository, single-admin service and framework-neutral workspace. No environment or server-context acquisition.",
+  "architecturalPurpose": "Provide trusted integration callers with authorized menu operations and workspace presentation over one object graph, before separately scoped environment acquisition, server-context acquisition, menu authorization transport and activation gates.",
+  "inspectedContracts": {
+    "menu": [
+      "src/lib/food/menu-persistence.ts",
+      "src/lib/food/menu-persistence.test.ts",
+      "src/lib/food/d1-menu-persistence.ts",
+      "src/lib/food/d1-menu-persistence.test.ts",
+      "src/lib/food/d1-menu-persistence.integration.test.ts",
+      "src/lib/food/private-menu-service.ts",
+      "src/lib/food/private-menu-service.test.ts",
+      "src/lib/food/private-menu-workspace.ts",
+      "src/lib/food/private-menu-workspace.test.ts"
+    ],
+    "precedent": [
+      "src/lib/food/private-draft-service.ts",
+      "src/lib/food/private-draft-runtime-composition.ts",
+      "src/lib/food/private-draft-runtime-composition.test.ts",
+      "src/lib/food/private-draft-runtime-acquisition.ts",
+      "src/lib/food/private-draft-runtime-acquisition.test.ts",
+      "src/lib/food/private-draft-server-adapter.ts",
+      "src/lib/food/private-draft-server-adapter.test.ts",
+      "src/lib/identity/identifiers.ts",
+      "src/lib/identity/session/principal-resolver.ts",
+      "src/lib/identity/session/contracts.ts"
+    ],
+    "specifications": [
+      ".river-dev/specifications/food-002d-append-only-dish-menu-availability-repository-boundary.json",
+      ".river-dev/specifications/food-002e-single-admin-private-menu-management-service-boundary.json",
+      ".river-dev/specifications/food-002f-private-menu-workspace-controller-boundary.json",
+      ".river-dev/specifications/food-002g-d1-append-only-menu-repository-migration-boundary.json",
+      ".river-dev/specifications/food-001d-single-admin-private-food-draft-service-access-boundary.json",
+      ".river-dev/specifications/food-001e-injected-private-food-draft-runtime-composition-boundary.json",
+      ".river-dev/specifications/food-001f-trusted-environment-private-food-draft-runtime-acquisition-boundary.json",
+      ".river-dev/specifications/food-001g-injected-trusted-server-context-private-food-draft-adapter.json",
+      ".river-dev/specifications/food-001k-trusted-private-food-runtime-capability-exposure-boundary.json"
+    ],
+    "conclusions": [
+      "D1FoodMenuRepository(database, dependencies) structurally checks prepare/batch and exact getProduct/getRecipe without invoking them; binds read methods to their original dependency receiver.",
+      "SingleAdminFoodMenuService accepts repository, callerResolver and administratorPrincipalId, validates structurally and canonically, and performs fresh authorization only during operations.",
+      "createPrivateFoodMenuWorkspaceController(service) structurally checks all service methods and returns a frozen controller with 23 wrappers and getOfferWorkspaceDetail; no construction-time service calls.",
+      "No existing private menu runtime factory exists. FOOD-001E/K demonstrate private repository exposure and frozen capability containers, but their configuration-unavailable result and draft gate are not imposed on this menu boundary."
+    ]
+  },
+  "factory": {
+    "name": "createPrivateFoodMenuRuntimeComposition",
+    "signature": "createPrivateFoodMenuRuntimeComposition(input: FoodPrivateMenuRuntimeCompositionInput): FoodPrivateMenuRuntimeCapabilities",
+    "inputDefinition": "export interface FoodPrivateMenuRuntimeCompositionInput { readonly database: FoodD1Database; readonly readDependencies: FoodMenuReadDependencies; readonly callerResolver: SessionPrincipalResolver; readonly administratorPrincipalId: PrincipalId; }",
+    "outputDefinition": "export interface FoodPrivateMenuRuntimeCapabilities { readonly service: FoodPrivateMenuService; readonly workspace: FoodPrivateMenuWorkspaceController; }",
+    "output": "Return exactly Object.freeze({ service, workspace }); no success/failure result envelope and no promise.",
+    "exposure": "Only authorized service and workspace. Keep repository, database, read dependencies, resolver, administrator, session, principal and tokens private. Repository exposure would bypass FOOD-002E authorization and is unnecessary.",
+    "workspaceDecision": "Include the existing FOOD-002F controller because this composition explicitly assembles persistence/service/workspace. Unlike FOOD-001K, there is no gate capability to expose or HTTP transport to assemble."
+  },
+  "constructionFlow": [
+    "Capture the four required input properties once in order: database, readDependencies, callerResolver, administratorPrincipalId. Require the outer input to be a non-null non-array object; do not inspect unrelated properties or normalize values.",
+    "Construct exactly one D1FoodMenuRepository(database, readDependencies). Pass the exact injected objects; preserve the repository's original receiver binding of getProduct/getRecipe.",
+    "Construct exactly one SingleAdminFoodMenuService({ repository, callerResolver, administratorPrincipalId }) using that repository and the exact injected resolver and principal value.",
+    "Construct exactly one workspace through createPrivateFoodMenuWorkspaceController(service) using that exact service instance.",
+    "Return a shallow-frozen two-field capability bundle. Do not deep-freeze or clone injected dependencies, repository or service instances; preserve existing workspace freezing and snapshot immutability.",
+    "Each successful invocation creates a fresh repository, service and workspace. Sharing injected database/read dependencies between invocations is permitted; no module/global object graph or authorization cache."
+  ],
+  "constructionPurity": [
+    "Synchronous and I/O-free; structural property checks and constructors only. No prepare, batch, prepared-statement operations, getProduct/getRecipe, resolve, workspace/service/repository operations or clock calls.",
+    "No environment/global/runtime acquisition, import.meta.env, process.env, cloudflare:workers, Astro locals, request context or binding lookup.",
+    "Do not probe schema, migrations, sessions, principals, database existence or consistency. No configured database access or migration execution.",
+    "Assembly is deterministic in structure and wiring from injected dependencies; fresh instance identities are expected. Property getters may be read for structural checks, but throwing access fails construction without internal leakage."
+  ],
+  "authorizationPreservation": [
+    "FOOD-002E remains sole menu authorization authority: canonical injected administrator, fresh resolver call before input validation/use and repository access on every operation.",
+    "Denied/unavailable callers perform zero repository, food database or FOOD-001 dependency operations. Possession of an identity is never permission.",
+    "No hardcoded/inferred/defaulted/trimmed administrator, duplicate authorization checks, authorization cache, reusable token, inherited permission or menu D2-style callback gate.",
+    "Workspace aggregate retains separate fresh service authorization for exact offer and exact-version availability calls; no atomic aggregate or authorization-once claim."
+  ],
+  "persistencePreservation": [
+    "FOOD-002D/G remain repository/canonical serialization/concurrency authorities. Preserve all 23 promise-based operations and exact arguments, outcomes, pages, cursors and error semantics.",
+    "FoodMenuReadDependencies is Pick<FoodDraftRepository, 'getProduct' | 'getRecipe'>. Inject only these exact-read capabilities; composition performs no lookups and constructs no FOOD-001 repository/service/runtime.",
+    "No latest FOOD-001 reads, physical cross-database foreign-key assumption, co-location requirement, version generation, overwrite, renumbering, merging, automatic retry or evidence retargeting.",
+    "Injected D1 must meet FOOD-002G's primary-consistent access contract; construction cannot verify this. Exact historical references and independent exact-offer-version availability streams remain unchanged."
+  ],
+  "failureSemantics": {
+    "outerInputFailure": "Missing/null/array/non-object outer input or throwing access while capturing its four properties throws TypeError('Private food menu runtime composition input is unavailable.'). No values or original exceptions escape.",
+    "repositoryConstructionFailure": "Preserve TypeError('Food menu repository dependencies are unavailable.') from D1FoodMenuRepository for invalid database/read dependencies, including throwing property access.",
+    "serviceConstructionFailure": "Preserve TypeError('Private food menu service configuration is unavailable.') for malformed resolver or noncanonical administrator, including throwing property access.",
+    "workspaceConstructionFailure": "Preserve TypeError('Private food menu workspace configuration is unavailable.') if existing workspace structural checks fail; valid freshly constructed service should satisfy them.",
+    "ordering": "Capture input properties, then repository, service, workspace in that order. A later constructor failure may leave an unexposed allocated object, but never I/O or a partial returned bundle. Do not catch constructor failures into a new result vocabulary or default/fallback graph.",
+    "operations": "Preserve FOOD-002E's five service codes and FOOD-002F's fixed feedback unchanged. Construction TypeErrors are separate from later operation results; no domain/runtime result failure is introduced by H."
+  },
+  "activationBoundary": [
+    "Successful construction proves only structural assembly, not configured D1 existence, schema/migration application, binding acquisition, administrator acquisition, dependency trust, valid session or live authorization.",
+    "No assertion of primary consistency, public menu activation, live publication, availability freshness, ordering enablement, readiness or sale authority.",
+    "A stored published snapshot remains only that snapshot state. Later environment/server acquisition, configuration/provisioning/migrations and route/public activation require separate explicit scope and approval gates."
+  ],
+  "compatibility": [
+    "Do not change FOOD-002D/E/F/G contracts, constructors, factories, tests or source; H is two new implementation/test files only when separately authorized.",
+    "Keep createPrivateFoodMenuWorkspaceController and existing narrow direct constructors available unchanged. There is no existing menu narrow runtime factory to replace or broaden, so do not invent a redundant companion factory.",
+    "All FOOD-001 narrow/capability factories remain unchanged. H does not expose or construct a gate, nor copy FOOD-001E's configuration result contract."
+  ],
+  "allowedFutureImplementationPaths": [
+    "src/lib/food/private-menu-runtime-composition.ts",
+    "src/lib/food/private-menu-runtime-composition.test.ts"
+  ],
+  "testObligations": [
+    "Valid synchronous construction returns exactly service/workspace, a shallow-frozen read-only bundle; workspace retains its existing frozen surface. No repository/database/read-dependency/resolver/admin/session/principal/token exposure.",
+    "Counters/poison methods prove zero database prepare/batch/statement, FOOD-001 getProduct/getRecipe, resolver, service and workspace calls during construction; no configured D1 is used.",
+    "Instrument imported constructors/factory using the existing FOOD-001 composition-test approach to prove one repository, one service and one workspace; exact database/readDependencies forwarded; exact repository in service input; exact service in workspace input; exact resolver/admin preserved.",
+    "Repeated construction yields independent graphs with no cache while shared injected dependencies remain unchanged and unfrozen. Bundle freezes no class/dependency transitively.",
+    "Malformed outer inputs and throwing outer property getters produce the exact fixed input TypeError. Malformed database/read dependencies, resolver/admin and their throwing method getters preserve the applicable existing constructor TypeError; no raw exceptions leak and zero I/O occurs.",
+    "Canonical administrator rejected without normalization/defaulting; missing dependency never selects memory persistence or another database/resolver.",
+    "Denied operations through service and workspace perform fresh resolution and zero D1/FOOD-001 reads; revocation between calls is respected.",
+    "Authorized representative exact reads/list/mutations reach injected D1 and exact-read dependencies with unchanged IDs, versions, predecessor, cursors and receiver semantics; outcomes/conflict/sanitized failures retain E/F behavior.",
+    "Workspace exact-offer detail retains exact availability stream and second fresh authorization, not-found short circuit and fail-closed second-call behavior. No latest substitution or activation semantics.",
+    "Source isolation excludes environment/binding acquisition, server/session construction, HTTP/request parsing, gates, routes/UI, migration execution and unrelated subsystems. Existing D/E/F/G and FOOD-001 composition consumers remain unchanged."
+  ],
+  "futureImplementationValidation": [
+    "Focused FOOD-002H composition tests using injected fakes and constructor instrumentation; no new database harness required for composition.",
+    "FOOD-002D/E/F/G regressions; any G integration regression executes only in its existing isolated Miniflare harness.",
+    "Relevant FOOD-001 composition and identity contract regressions if affected; no shared source changes.",
+    "Strict TypeScript for the two new files, git diff --check and normal build; do not fix unrelated baseline issues."
+  ],
+  "strictExclusions": [
+    "Trusted environment acquisition, Astro/server-context acquisition, D1 binding lookup, globals or request context",
+    "Wrangler/worker/generated environment configuration changes, provisioning, migration execution or configured local/remote D1 access",
+    "Authorization redesign, menu operation gate, HTTP mutation parsing, Origin/CSRF work",
+    "Routes/actions/pages/UI/navigation, public projection route or menu activation",
+    "Pricing/cart/quoting/order lifecycle/payment/fulfillment execution",
+    "QR/ratings/demand analytics/POS-lite/business phone/address configuration",
+    "Concrete administrator configuration, deployment, production data or unrelated insurance/Sesh/creator changes"
+  ],
+  "acceptanceCriteria": [
+    "Exact injected four-field input and two-field authorized output defined; repository remains private.",
+    "One fresh repository/service/workspace graph, exact instance wiring, shallow-frozen bundle and zero construction I/O proven.",
+    "Existing constructor failure semantics and all D/E/F/G authorization/persistence/presentation semantics preserved without a new operation error vocabulary.",
+    "No activation/configuration/acquisition/gate/HTTP or unrelated scope introduced.",
+    "Only the two proposed implementation/test paths may be added after separate authorization; all required validation passes or unrelated baseline failures are reported."
+  ],
+  "remainingMaterialAmbiguities": [],
+  "currentTaskBoundary": "Create only this specification after read-only discovery. Validate JSON, references, whitespace and diff; do not implement, stage, commit, push, access databases, migrate or activate anything."
+}
