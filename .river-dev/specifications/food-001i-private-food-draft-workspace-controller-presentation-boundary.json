@@ -1,0 +1,113 @@
+{
+    "version": "1.0.0",
+    "id": "FOOD-001I",
+    "name": "Injected private food-draft workspace controller and presentation boundary",
+    "predecessor": "FOOD-001H",
+    "phase": "Specification only; implementation requires separate explicit authorization",
+    "objective": "Translate an injected FOOD-001D service into bounded framework-neutral private-workspace results without runtime activation, transport parsing or UI construction.",
+    "factory": "createPrivateFoodDraftWorkspaceController",
+    "allowedFutureImplementationPaths": [
+        "src/lib/food/private-draft-workspace.ts",
+        "src/lib/food/private-draft-workspace.test.ts"
+    ],
+    "unchangedAuthorities": "Reuse FOOD-001A/B/C/D/E/F/G/H unchanged: A domain semantics, B/C immutable persistence and retry/concurrency semantics, D authorization/service, E/F/G runtime composition/acquisition/server adapter, H activation runbook.",
+    "input": {
+        "dependency": "Inject only an existing FoodPrivateDraftService.",
+        "construction": "Synchronous and I/O-free; invoke no service operation during construction.",
+        "operationInputs": "Mutation operations accept already-typed FOOD-001A domain inputs, explicit versions and expected predecessors. No string/JSON body/FormData/checkbox/select/HTTP parsing.",
+        "authorization": "Forward mutation inputs directly to FOOD-001D without controller-side domain validation first. Preserve authorization-before-validation; unauthorized callers must not learn whether submitted data or IDs are valid."
+    },
+    "controllerOperations": [
+        "Latest recipe drafts",
+        "Latest product drafts",
+        "Exact recipe detail",
+        "Exact product detail with automatic exact referenced recipe retrieval",
+        "Recipe version history",
+        "Product version history",
+        "Create initial recipe draft",
+        "Append recipe revision",
+        "Create initial product draft",
+        "Append product revision"
+    ],
+    "presentationModels": [
+        "Latest-list results preserve exact service snapshots, deterministic service order and unchanged continuation cursors.",
+        "Exact recipe detail distinguishes found and not-found explicitly; never invent whole-product completeness for recipe-only detail.",
+        "Recipe/product histories preserve immutable snapshots in service/repository order and unchanged continuation cursors.",
+        "Mutation feedback distinguishes created, already-present and conflict; conflict is a successful mutation outcome, not a service failure.",
+        "Failed lists remain failures, never successful empty lists.",
+        "Return only bounded outcome/feedback state. Do not retain, echo or serialize submitted payloads in failure results; later HTTP/UI form-state retention is separate.",
+        "Do not mutate returned snapshots or historical arrays. New presentation objects must be detached/frozen where appropriate so callers cannot mutate domain history indirectly."
+    ],
+    "productDetailAggregate": [
+        "Read the exact product through FOOD-001D. If not-found, return product not-found with zero recipe lookup.",
+        "If found, perform a separately authorized FOOD-001D exact recipe read using exactly the recorded recipe ID/version. Never substitute latest or bypass authorization for the second read.",
+        "If the referenced exact recipe is not retrievable or the second service call fails, fail closed for aggregate detail; do not expose misleading partial complete detail.",
+        "For successful product plus exact recipe aggregation, call assessFoodDraftEvidenceCompleteness unchanged."
+    ],
+    "completenessPresentation": {
+        "fields": ["requiredEvidencePresent", "missingEvidenceRequirements", "unresolvedReviews"],
+        "structuralLabel": "Required draft records present",
+        "requirements": [
+            "Display structural presence separately from unknown, pending, undisclosed or inconclusive conditions; true requiredEvidencePresent may coexist with unresolved reviews.",
+            "Never translate completeness into approved, safe, cottage eligible, tax exempt, sellable, launch ready or ready to sell.",
+            "Empty reviewed allergen declarations never create allergen-free wording or claims.",
+            "Preserve unfavorable and inconclusive reviewed findings without approval interpretation."
+        ]
+    },
+    "domainFieldPresentation": [
+        "Preserve ingredients and one explicit level of purchased-component subingredients; disclosed versus undisclosed composition remains distinct.",
+        "Preserve declared allergens and existing detail/source fields, allergen review lifecycle, process/preservation classification and temperature classification.",
+        "Preserve cottage and tax review lifecycle separately from conclusions.",
+        "Preserve exact evidence subject type/ID/version, source/reference, review date and reviewer/issuer attribution.",
+        "Preserve optional historical label reference exactly; no label generation.",
+        "Preserve omitted fields versus explicit unknown states. Introduce no display names, pricing, quantities, yield, marketing text or new domain fields.",
+        "Human-readable recipe/product names require a separate FOOD-001A-compatible domain decision."
+    ],
+    "revisionAndRetry": [
+        "Revision operations are explicit appends with intended version, expected predecessor, exact recipe ID/version references and immutable historical versions.",
+        "Never mutate prior versions, silently renumber, merge revisions, retarget evidence, substitute latest recipe or retry using a newly generated version.",
+        "Changing the referenced recipe version remains a new product revision.",
+        "Introduce no persisted idempotency system. Preserve B/C identical canonical identity/version/content retry as already-present and differing same-key content as conflict.",
+        "Never automatically retry after uncertainty. Later HTTP integration must preserve submitted identity/version/content when reconciling an uncertain result.",
+        "Expose no delete, overwrite, destructive repair or sale-activation operations."
+    ],
+    "failurePresentation": {
+        "codePreservation": "Preserve the underlying FOOD-001D failure code and use fixed private-workspace feedback, never raw service or exception text.",
+        "messages": {
+            "unauthenticated": "Authentication is required.",
+            "forbidden": "Food draft access is denied.",
+            "access-unavailable": "Food draft access could not be checked.",
+            "invalid-input": "The food draft submission is invalid.",
+            "storage": "Food draft storage is unavailable. Reconcile the result before retrying."
+        },
+        "conflictMessage": "A different version already exists. Refresh and reconcile before retrying.",
+        "sanitization": "Expose no SQL/D1 messages, exception text, stack traces, private evidence values through errors or internal repository conflict reasons. Already-present remains distinct from conflict."
+    },
+    "tests": [
+        "All ten controller operation families forward exact arguments, versions, recipe references, expected predecessors, optional arguments and limits/cursors.",
+        "Latest-list cursor/order preservation; failures do not become empty successes.",
+        "Exact recipe found/not-found and exact product found/not-found.",
+        "Product detail retrieves the exact historical recipe automatically, skips recipe lookup on product not-found and never substitutes latest.",
+        "Second-read access/storage failures and missing exact recipe fail closed for aggregate detail without partial private snapshots.",
+        "Histories preserve ascending immutable versions; created/already-present/conflict remain distinct.",
+        "All five failure codes retain fixed sanitized feedback without submitted payload retention or internal conflict reasons.",
+        "Authorization-first preservation, including invalid typed inputs passed at runtime and denied callers learning no validity information.",
+        "requiredEvidencePresent remains independent from unresolved conditions; cover unfavorable/inconclusive reviewed findings, explicit unknown states and undisclosed purchased components.",
+        "Empty reviewed allergen declarations confer no allergen-free claim; historical label references are preserved exactly.",
+        "Immutable/frozen/detached presentation state cannot alter domain history or service-returned arrays.",
+        "Identical retry versus conflicting retry, no automatic retry or version generation, no destructive operations and no readiness/sale-authority projection.",
+        "Constructor performs no service operations.",
+        "Source isolation from Astro/HTTP/FormData/routes/runtime acquisition/D1 configuration/migrations/commerce/payment/deployment/unrelated systems."
+    ],
+    "excludedAndDeferredScope": [
+        "Astro routes/pages/actions, HTTP/string/JSON body/FormData parsing, cookies, redirects, response or HTML rendering.",
+        "CSRF/same-origin and POST enforcement belong to later HTTP integration; repository retry semantics do not replace these protections.",
+        "Astro components, navigation changes and safe form-value retention.",
+        "Runtime acquisition/activation, RIVER_FOOD_DB provisioning/configuration, migration execution and administrator secret configuration.",
+        "Public food product pages, commerce/checkout/Stripe, fulfillment/accounting/community counters.",
+        "Deployment, production data and unrelated insurance/Sesh/creator changes."
+    ],
+    "validationForCurrentTask": ["JSON parsing", "git diff --check and new-file whitespace check"],
+    "currentTaskBoundary": "Create only this specification. Do not implement, modify existing files, stage, commit, configure runtime access, migrate, access D1 or deploy.",
+    "nextStep": "Review this specification before separately authorizing the two-file framework-neutral workspace controller implementation."
+}
