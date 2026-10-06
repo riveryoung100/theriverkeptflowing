@@ -3,7 +3,7 @@ import test from "node:test";
 import { readFile } from "node:fs/promises";
 import { runInNewContext } from "node:vm";
 import ts from "typescript";
-import { createPrivateFoodDraftRuntimeFromEnvironment } from "./private-draft-runtime-acquisition";
+import { createPrivateFoodDraftRuntimeFromEnvironment, createPrivateFoodDraftRuntimeCapabilitiesFromEnvironment } from "./private-draft-runtime-acquisition";
 import { parsePrincipalId } from "../identity/identifiers";
 import type { SessionPrincipalResolver } from "../identity/session/principal-resolver";
 import { foodDraftIdentityOrderKey, type FoodD1Database, type FoodD1Result, type FoodD1Statement } from "./d1-draft-persistence";
@@ -11,6 +11,33 @@ import { serializeFoodRecipeDraft } from "./draft-persistence";
 
 const admin = parsePrincipalId("principal:acquisition-test");
 const failure = { ok: false, error: { code: "configuration-unavailable", message: "Food draft runtime configuration is unavailable." } };
+test("capability acquisition shares validation and returns only same-instance frozen capabilities", async () => {
+    const { input, state } = fixture(); const acquired = createPrivateFoodDraftRuntimeCapabilitiesFromEnvironment(input); assert(acquired.ok);
+    assert.equal(acquired.value.service, acquired.value.gate); assert(Object.isFrozen(acquired.value)); assert.deepEqual(Object.keys(acquired.value), ["service", "gate"]);
+    assert.deepEqual(Object.keys(acquired.value.service), []); assert.deepEqual([state.resolutions, state.prepares, state.batches, state.reads], [0, 0, 0, 0]);
+    for (const bad of invalidInputs()) assert.deepEqual(createPrivateFoodDraftRuntimeCapabilitiesFromEnvironment(bad as never), failure);
+    const gated = await acquired.value.gate.runAuthorized(() => 17); assert.deepEqual(gated, { ok: true, value: 17 }); assert.equal(state.prepares, 0);
+    state.unavailable = true; const denied = await acquired.value.service.getRecipe(recipe().id, 1); assert(!denied.ok && denied.error.code === "access-unavailable"); assert.equal(state.resolutions, 2);
+});
+
+test("capability acquisition validates before companion delegation with exact dependencies and only food keys", async () => {
+    const source = await readFile(new URL("./private-draft-runtime-acquisition.ts", import.meta.url), "utf8");
+    const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
+    const calls: unknown[] = []; const downstream = { ok: true, value: { service: {}, gate: {} } }; const exports: Record<string, (input: unknown) => unknown> = {};
+    runInNewContext(compiled, { exports, require(name: string) {
+        if (name === "../identity/identifiers") return { parsePrincipalId };
+        if (name === "./private-draft-runtime-composition") return { createPrivateFoodDraftRuntimeCapabilitiesComposition(value: unknown) { calls.push(value); return downstream; }, createPrivateFoodDraftRuntimeComposition() { assert.fail("wrong delegation"); } };
+        assert.fail(name);
+    } });
+    const factory = exports.createPrivateFoodDraftRuntimeCapabilitiesFromEnvironment;
+    for (const bad of invalidInputs()) assert.equal(JSON.stringify(factory(bad)), JSON.stringify(failure)); assert.equal(calls.length, 0);
+    const { input } = fixture(); const reads: PropertyKey[] = [];
+    const environment = new Proxy(input.environment, { get(target, key, receiver) { reads.push(key); return Reflect.get(target, key, receiver); } });
+    assert.equal(factory({ ...input, environment }), downstream);
+    assert.deepEqual(reads, ["RIVER_FOOD_DB", "RIVER_FOOD_ADMIN_PRINCIPAL_ID"]);
+    const forwarded = calls[0] as { database: unknown; callerResolver: unknown; administratorPrincipalId: unknown };
+    assert.equal(forwarded.database, input.environment.RIVER_FOOD_DB); assert.equal(forwarded.callerResolver, input.callerResolver); assert.equal(forwarded.administratorPrincipalId, admin);
+});
 const recipe = (version = 1) => ({ id: "food-recipe:acquisition", version, evidence: [] });
 const row = (version = 1) => ({ recipe_id: recipe().id, version, identity_order_key: foodDraftIdentityOrderKey(recipe().id), serialization_format_version: 1, payload_json: serializeFoodRecipeDraft(recipe(version)) });
 const result = (results: unknown[] = [], changes = 0): FoodD1Result => ({ success: true, results, meta: { changes } });

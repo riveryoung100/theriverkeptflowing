@@ -3,7 +3,7 @@ import test from "node:test";
 import { readFile } from "node:fs/promises";
 import { runInNewContext } from "node:vm";
 import ts from "typescript";
-import { createPrivateFoodDraftRuntimeFromServerContext } from "./private-draft-server-adapter";
+import { createPrivateFoodDraftRuntimeFromServerContext, createPrivateFoodDraftRuntimeCapabilitiesFromServerContext } from "./private-draft-server-adapter";
 import type { AstroSessionLike } from "../identity/session/contracts";
 import type { IdentityD1DatabaseLike, IdentityD1PreparedStatementLike } from "../identity/cloudflare/types";
 import { AUTHENTICATED_PRINCIPAL_SESSION_KEY } from "../identity/session/model";
@@ -14,6 +14,41 @@ const failure = { ok: false, error: { code: "configuration-unavailable", message
 const admin = "principal:server-test";
 const payload = () => ({ version: 1, principalId: admin, authenticatedAt: "2026-10-05T00:00:00Z", expiresAt: "2026-10-05T12:00:00Z" });
 const recipe = (version = 1) => ({ id: "food-recipe:server-test", version, evidence: [] });
+test("capability server construction is inert, request-isolated and preserves fresh async authorization", async () => {
+    const first = fixture(), second = fixture(); second.state.raw = undefined;
+    const a = createPrivateFoodDraftRuntimeCapabilitiesFromServerContext(first.input), b = createPrivateFoodDraftRuntimeCapabilitiesFromServerContext(second.input); assert(a.ok && b.ok);
+    assert.equal(a.value.service, a.value.gate); assert.notEqual(a.value.service, b.value.service); assert(Object.isFrozen(a.value)); assert.deepEqual(Object.keys(a.value), ["service", "gate"]); assert.deepEqual(Object.keys(a.value.service), []);
+    assert.deepEqual(first.state.events, []); assert.deepEqual(second.state.events, []);
+    const denied = await b.value.gate.runAuthorized(() => assert.fail("denied callback")); assert(!denied.ok && denied.error.code === "unauthenticated"); assert.equal(second.state.foodStatements.length, 0);
+    const allowed = await a.value.gate.runAuthorized(() => "opaque"); assert.deepEqual(allowed, { ok: true, value: "opaque" }); assert.equal(first.state.foodStatements.length, 0);
+    first.state.raw = undefined;
+    const revoked = await a.value.service.getRecipe(recipe().id, 1); assert(!revoked.ok && revoked.error.code === "unauthenticated"); assert.equal(first.state.foodStatements.length, 0);
+    for (const bad of invalidInputs()) assert.deepEqual(createPrivateFoodDraftRuntimeCapabilitiesFromServerContext(bad as never), failure);
+});
+
+test("capability server companion forwards original environment and fresh identity instances through F companion", async () => {
+    const source = await readFile(new URL("./private-draft-server-adapter.ts", import.meta.url), "utf8");
+    const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
+    const constructed: { kind: string; args: unknown[]; instance: object }[] = [], calls: { environment: unknown; callerResolver: unknown }[] = [];
+    const stub = (kind: string) => class { constructor(...args: unknown[]) { constructed.push({ kind, args, instance: this }); } };
+    const downstream = { ok: true, value: { service: {}, gate: {} } }; const exports: Record<string, (input: unknown) => unknown> = {};
+    const modules: Record<string, unknown> = {
+        "../identity/session/astro-session-adapter": { AstroPrincipalSessionStore: stub("sessions") },
+        "../identity/cloudflare/d1-principal-repository": { D1PrincipalRepository: stub("principals") },
+        "../identity/session/principal-resolver": { DefaultSessionPrincipalResolver: stub("resolver") },
+        "./private-draft-runtime-acquisition": { createPrivateFoodDraftRuntimeCapabilitiesFromEnvironment(value: { environment: unknown; callerResolver: unknown }) { calls.push(value); return downstream; }, createPrivateFoodDraftRuntimeFromEnvironment() { assert.fail("wrong delegation"); } },
+    };
+    runInNewContext(compiled, { exports, require(name: string) { assert(name in modules); return modules[name]; } });
+    const factory = exports.createPrivateFoodDraftRuntimeCapabilitiesFromServerContext;
+    for (const bad of invalidInputs()) assert.equal(JSON.stringify(factory(bad)), JSON.stringify(failure)); assert.equal(constructed.length, 0); assert.equal(calls.length, 0);
+    const { input, state } = fixture();
+    const environment = new Proxy(input.environment, { get(target, key, receiver) { assert.equal(key, "RIVER_IDENTITY_DB"); return Reflect.get(target, key, receiver); } });
+    assert.equal(factory({ ...input, environment }), downstream); assert.equal(factory({ ...input, environment }), downstream);
+    assert.deepEqual(constructed.map(item => item.kind), ["sessions", "principals", "resolver", "sessions", "principals", "resolver"]);
+    assert.equal(constructed[0].args[0], input.session); assert.equal(constructed[0].args[1], input.now); assert.equal(constructed[1].args[0], input.environment.RIVER_IDENTITY_DB);
+    assert.equal(calls[0].environment, environment); assert.equal(calls[1].environment, environment); assert.equal(calls[0].callerResolver, constructed[2].instance); assert.equal(calls[1].callerResolver, constructed[5].instance); assert.notEqual(calls[0].callerResolver, calls[1].callerResolver);
+    assert.deepEqual(state.events, []);
+});
 const row = (version = 1) => ({ recipe_id: recipe().id, version, identity_order_key: foodDraftIdentityOrderKey(recipe().id), serialization_format_version: 1, payload_json: serializeFoodRecipeDraft(recipe(version)) });
 const result = (results: unknown[] = [], changes = 0): FoodD1Result => ({ success: true, results, meta: { changes } });
 

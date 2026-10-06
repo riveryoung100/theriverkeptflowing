@@ -1,0 +1,127 @@
+{
+    "version": "1.0.0",
+    "id": "FOOD-001K",
+    "name": "Additive trusted private food runtime capability exposure",
+    "predecessors": ["FOOD-001D2", "FOOD-001E", "FOOD-001F", "FOOD-001G", "FOOD-001I", "FOOD-001J"],
+    "phase": "Specification only; implementation requires separate explicit authorization",
+    "objective": "Expose the existing authorized service and separate operation gate from one concrete service instance through additive runtime factories without changing existing consumers or activating infrastructure.",
+    "preservedContracts": [
+        "FoodPrivateDraftService remains unchanged.",
+        "Existing FOOD-001E/F/G factory names, input types, narrow return types, failure shapes/messages and consumers remain unchanged and source-compatible.",
+        "All existing narrow factory validation, ordering, delegation and behavior remain intact; K is strictly additive.",
+        "FOOD-001D/D2 authorization and FOOD-001J parsing semantics remain unchanged."
+    ],
+    "capabilityBundle": {
+        "interface": "FoodPrivateDraftRuntimeCapabilities",
+        "definition": "export interface FoodPrivateDraftRuntimeCapabilities { readonly service: FoodPrivateDraftService; readonly gate: FoodPrivateDraftOperationGate; }",
+        "resultType": "FoodPrivateDraftRuntimeCapabilitiesResult",
+        "resultDefinition": "export type FoodPrivateDraftRuntimeCapabilitiesResult = Readonly<{ ok: true; value: Readonly<FoodPrivateDraftRuntimeCapabilities> }> | Readonly<{ ok: false; error: Readonly<{ code: 'configuration-unavailable'; message: 'Food draft runtime configuration is unavailable.' }> }>;",
+        "exposure": "Only service and gate; no database, repository, session, resolver, principal, administrator or token fields. The capability object is frozen/read-only.",
+        "controller": "Keep FOOD-001I controller separate; do not include or construct it in K."
+    },
+    "companionFactories": [
+        {
+            "name": "createPrivateFoodDraftRuntimeCapabilitiesComposition",
+            "input": "FoodPrivateDraftRuntimeCompositionInput",
+            "returnType": "FoodPrivateDraftRuntimeCapabilitiesResult",
+            "module": "src/lib/food/private-draft-runtime-composition.ts"
+        },
+        {
+            "name": "createPrivateFoodDraftRuntimeCapabilitiesFromEnvironment",
+            "input": "FoodPrivateDraftRuntimeAcquisitionInput",
+            "returnType": "FoodPrivateDraftRuntimeCapabilitiesResult",
+            "module": "src/lib/food/private-draft-runtime-acquisition.ts"
+        },
+        {
+            "name": "createPrivateFoodDraftRuntimeCapabilitiesFromServerContext",
+            "input": "FoodPrivateDraftServerContextInput",
+            "returnType": "FoodPrivateDraftRuntimeCapabilitiesResult",
+            "module": "src/lib/food/private-draft-server-adapter.ts"
+        }
+    ],
+    "sameInstanceGuarantee": [
+        "Exactly one SingleAdminFoodDraftService instance per successful capability-factory invocation; exactly one repository per successful E composition.",
+        "bundle.service and bundle.gate reference the same concrete instance: bundle.service === bundle.gate.",
+        "The concrete service is statically known to implement both interfaces. Never cast a merely narrow FoodPrivateDraftService into a gate.",
+        "No second service, second administrator input, duplicated caller resolver configuration or duplicated authorization policy.",
+        "Return a frozen capability object equivalent to Object.freeze({ service, gate: service })."
+    ],
+    "compositionE": [
+        "Permit a private internal validated construction helper shared by the existing narrow factory and new capability factory.",
+        "The helper constructs one D1FoodDraftRepository and one SingleAdminFoodDraftService from existing injected dependencies.",
+        "Existing narrow composition returns only its existing narrow service contract; new composition returns the service/gate bundle.",
+        "Preserve all structural input validation, canonical administrator validation, throwing-getter handling, fixed configuration failure and synchronous zero-I/O construction."
+    ],
+    "acquisitionF": [
+        "Share existing trusted environment validation between narrow and capability entry points.",
+        "F exclusively validates exactly RIVER_FOOD_DB and RIVER_FOOD_ADMIN_PRINCIPAL_ID. No alternate or fallback keys, administrator trimming/normalization/defaults/inference, or expected-origin configuration.",
+        "Preserve existing validation ordering, exact original environment forwarding where required and fixed configuration-unavailable semantics.",
+        "The narrow factory retains its current composition delegation; the companion delegates through the new capability composition path."
+    ],
+    "serverContextG": [
+        "Share existing identity-dependency validation and request-scoped resolver construction between narrow and capability entry points.",
+        "Preserve RIVER_IDENTITY_DB validation, existing session shape validation, optional now semantics and exact original environment forwarding.",
+        "Every invocation constructs fresh AstroPrincipalSessionStore, D1PrincipalRepository and DefaultSessionPrincipalResolver instances.",
+        "The narrow server-context factory retains current behavior exactly; the companion delegates through the new F capability acquisition path.",
+        "Perform zero construction-time session, identity/food database or service calls. Do not probe prepared statements or clocks."
+    ],
+    "construction": [
+        "Existing and companion factories are synchronous and I/O-free; structural checks only.",
+        "Do not invoke session reads/writes, principal resolution, clocks, prepared statements, repository operations, service operations, gate callbacks, controller operations or J parser/body readers during construction.",
+        "Structural success is not authentication, authorization, database/schema readiness, migration readiness, sellability or sale readiness.",
+        "Never cache or transfer an authorization decision. Subsequent service and gate calls retain fresh D/D2 authorization and revocation behavior."
+    ],
+    "laterAssembly": {
+        "status": "Architectural compatibility only; not implemented by K",
+        "controller": "const controller = createPrivateFoodDraftWorkspaceController(capabilities.service);",
+        "transport": "const transport = createPrivateFoodDraftMutationRequestBoundary({ gate: capabilities.gate, controller, expectedOrigin: trustedExpectedOrigin });",
+        "expectedOrigin": "Later trusted HTTP/route integration owns acquisition. Add no expectedOrigin to the bundle, E inputs, F acquisition or G adapter.",
+        "isolation": "K constructs neither I nor J and knows no method, Origin header, request body, content type, cookies, redirect URL or HTTP response semantics."
+    },
+    "failureSeparation": [
+        "Capability composition/acquisition failures use only configuration-unavailable and exactly Food draft runtime configuration is unavailable.",
+        "Keep construction failures separate from D access failures, D2 callback-failed, J transport failures and repository/storage failures; never merge or reinterpret them.",
+        "Fixed sanitized configuration failures expose no dependency values, administrator values, exceptions, stack traces or internals."
+    ],
+    "allowedFutureModificationPaths": [
+        "src/lib/food/private-draft-runtime-composition.ts",
+        "src/lib/food/private-draft-runtime-composition.test.ts",
+        "src/lib/food/private-draft-runtime-acquisition.ts",
+        "src/lib/food/private-draft-runtime-acquisition.test.ts",
+        "src/lib/food/private-draft-server-adapter.ts",
+        "src/lib/food/private-draft-server-adapter.test.ts"
+    ],
+    "implementationScope": "Six existing files only. Current design requires no additional implementation module; any necessity for another module must first be demonstrated through specification validation and resolved before implementation.",
+    "requiredTests": [
+        "Success through all three capability factories; frozen/read-only bundle with service === gate.",
+        "Instrument construction to prove exactly one concrete service and one E repository, with one administrator and caller-resolver configuration.",
+        "Existing narrow outputs, failure shapes/messages, validation ordering and delegation behavior remain identical; existing consumers remain source-compatible.",
+        "No database/repository/session/resolver/principal/admin/token internals exposed.",
+        "Malformed structural dependencies and throwing getters retain fixed sanitized configuration-unavailable behavior.",
+        "Exact environment reference/forwarding and existing key-validation ownership preserved.",
+        "Fresh request-scoped identity components per G invocation with no cross-request authorization cache.",
+        "Zero construction-time I/O, clock calls, gate callback execution, controller calls or parser/body-reader calls.",
+        "Fresh D/D2 authorization and revocation remain intact; gate success never supplies reusable mutation permission.",
+        "Trusted manual I/J assembly preserves authorization-before-body-read and subsequent fresh mutation authorization.",
+        "Source isolation: no HTTP parsing/request handling, configuration mutation, configured D1 access, infrastructure activation or unrelated subsystem changes."
+    ],
+    "futureImplementationValidation": [
+        "Focused FOOD-001K tests",
+        "Existing FOOD-001E/F/G regressions",
+        "FOOD-001D2/I/J regressions",
+        "Relevant full food test suite",
+        "Strict TypeScript checks for modified files",
+        "git diff --check",
+        "Normal build"
+    ],
+    "excludedScope": [
+        "Routes/actions/pages/components, navigation, HTTP status mapping, redirects and request parsing.",
+        "Origin acquisition/configuration, CSRF changes and FOOD-001J semantic changes.",
+        "RIVER_FOOD_DB provisioning/configuration, migration execution, real administrator configuration, Wrangler changes and runtime activation.",
+        "Public product pages, commerce/checkout/Stripe, fulfillment/accounting/community features.",
+        "Deployment, production data and insurance/Sesh/creator or unrelated changes."
+    ],
+    "validationForCurrentTask": ["JSON parsing", "git diff --check", "New-file whitespace check"],
+    "currentTaskBoundary": "Create only this specification. Do not implement, stage, commit, configure infrastructure, migrate, access configured D1 or deploy.",
+    "nextStep": "Review the specification before separately authorizing the six-file additive capability exposure implementation."
+}

@@ -3,8 +3,8 @@ import { DefaultSessionPrincipalResolver } from "../identity/session/principal-r
 import type { AstroSessionLike } from "../identity/session/contracts";
 import { D1PrincipalRepository } from "../identity/cloudflare/d1-principal-repository";
 import type { IdentityD1DatabaseLike } from "../identity/cloudflare/types";
-import { createPrivateFoodDraftRuntimeFromEnvironment, type FoodPrivateDraftRuntimeEnvironment } from "./private-draft-runtime-acquisition";
-import type { FoodPrivateDraftRuntimeCompositionResult } from "./private-draft-runtime-composition";
+import { createPrivateFoodDraftRuntimeFromEnvironment, createPrivateFoodDraftRuntimeCapabilitiesFromEnvironment, type FoodPrivateDraftRuntimeEnvironment, type FoodPrivateDraftRuntimeAcquisitionInput } from "./private-draft-runtime-acquisition";
+import type { FoodPrivateDraftRuntimeCompositionResult, FoodPrivateDraftRuntimeCapabilitiesResult } from "./private-draft-runtime-composition";
 
 export interface FoodPrivateDraftServerContextInput {
     readonly environment: FoodPrivateDraftRuntimeEnvironment & { readonly RIVER_IDENTITY_DB?: unknown };
@@ -18,8 +18,7 @@ function object(value: unknown): Record<string, unknown> {
 }
 
 /** The caller supplies trusted environment provenance and the request's session; construction performs structural checks only. */
-export function createPrivateFoodDraftRuntimeFromServerContext(input: FoodPrivateDraftServerContextInput): FoodPrivateDraftRuntimeCompositionResult {
-    try {
+function acquire(input: FoodPrivateDraftServerContextInput): FoodPrivateDraftRuntimeAcquisitionInput {
         const supplied = object(input);
         const environment = object(supplied.environment);
         const session = object(supplied.session);
@@ -32,7 +31,18 @@ export function createPrivateFoodDraftRuntimeFromServerContext(input: FoodPrivat
         const sessions = new AstroPrincipalSessionStore(session as unknown as AstroSessionLike, now as (() => Date) | undefined);
         const principals = new D1PrincipalRepository(database as unknown as IdentityD1DatabaseLike);
         const callerResolver = new DefaultSessionPrincipalResolver({ sessions, principals });
-        return createPrivateFoodDraftRuntimeFromEnvironment({ environment, callerResolver });
+        return { environment, callerResolver };
+}
+export function createPrivateFoodDraftRuntimeFromServerContext(input: FoodPrivateDraftServerContextInput): FoodPrivateDraftRuntimeCompositionResult {
+    try {
+        return createPrivateFoodDraftRuntimeFromEnvironment(acquire(input));
+    } catch {
+        return Object.freeze({ ok: false, error: Object.freeze({ code: "configuration-unavailable", message: "Food draft runtime configuration is unavailable." }) });
+    }
+}
+export function createPrivateFoodDraftRuntimeCapabilitiesFromServerContext(input: FoodPrivateDraftServerContextInput): FoodPrivateDraftRuntimeCapabilitiesResult {
+    try {
+        return createPrivateFoodDraftRuntimeCapabilitiesFromEnvironment(acquire(input));
     } catch {
         return Object.freeze({ ok: false, error: Object.freeze({ code: "configuration-unavailable", message: "Food draft runtime configuration is unavailable." }) });
     }
