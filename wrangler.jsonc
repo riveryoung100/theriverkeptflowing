@@ -33,6 +33,12 @@
       "database_name": "river-identity",
       "database_id": "4587d908-1466-4556-b868-1d60321f0970",
       "migrations_dir": "migrations/identity"
+    },
+    {
+      "binding": "RIVER_FOOD_DB",
+      "database_name": "river-food",
+      "database_id": "3dae5997-161e-454b-8d5c-dada476d5185",
+      "migrations_dir": "migrations/food"
     }
 	],
 	"r2_buckets": [
