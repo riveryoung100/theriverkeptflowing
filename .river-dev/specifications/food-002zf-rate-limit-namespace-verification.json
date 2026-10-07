@@ -1,0 +1,73 @@
+{
+  "id": "FOOD-002ZF",
+  "title": "Read-only Cloudflare rate-limit namespace collision verification and final namespace selection",
+  "baseline": {
+    "branch": "cif-001-canonical-content-source-record",
+    "head": "d20727b72fcc45d7ebe933787c81ac3f620c86f3",
+    "state": "Clean worktree; empty index verified before artifact creation"
+  },
+  "account": {
+    "name": "Riveryoung100@gmail.com's Account",
+    "id": "8401a673cced362e27f162662ce629ae",
+    "verification": "Previously verified through existing authenticated Wrangler whoami; exactly one account reported. No credentials retained in artifact."
+  },
+  "inspection": {
+    "provenance": "Accumulated authorized live read-only evidence from preceding ZF attempts; no further Cloudflare calls in this completion step.",
+    "ordinaryMethods": [
+      "GET /accounts/{account_id}/workers/scripts",
+      "GET /accounts/{account_id}/workers/services",
+      "GET /accounts/{account_id}/workers/scripts/theriverkeptflowing-site/settings",
+      "GET /accounts/{account_id}/workers/services/theriverkeptflowing-site/environments/production/settings",
+      "GET /accounts/{account_id}/pages/projects"
+    ],
+    "workerCount": 1,
+    "worker": "theriverkeptflowing-site",
+    "serviceCount": 1,
+    "environments": ["production"],
+    "settingsViewsInspected": 2,
+    "distinctOrdinaryDeployedConfigurations": 1,
+    "ordinaryRateLimitBindings": 0,
+    "pagesProjects": 0,
+    "coverage": "Worker list and service inventory identify one Worker/service and one production environment; both script and environment settings contain zero Rate Limit bindings. Service pagination reported total_count 1 and total_pages 1; Pages pagination reported total_count 0. Two settings views represent the same ordinary deployed configuration, not two independent Workers."
+  },
+  "dispatchSurface": {
+    "method": "Installed Wrangler 4.129.0: dispatch-namespace list --config wrangler.jsonc; direct installed CLI invocation equivalent to repository launcher",
+    "endpoint": "GET /accounts/{account_id}/workers/dispatch/namespaces",
+    "apiErrorCode": 10121,
+    "sanitizedMessage": "You do not have access to dispatch namespaces. You can purchase it within the Cloudflare dashboard; if you are an Enterprise customer please contact your account team.",
+    "conclusion": "Workers for Platforms/dispatch access is not provisioned for this account in its current state.",
+    "exclusionRationale": "Owner explicitly directed treating the specific product-access error 10121 and purchase/account-team message as authoritative accumulated live evidence of current product unavailability. This excludes the unavailable dispatch surface from the current collision set; exclusion is not inferred from the earlier generic HTTP 403 alone.",
+    "scriptsInspected": 0,
+    "qualification": "No dispatch script enumeration succeeded; no assertion of a successful empty dispatch list. Account entitlement inspection was inconclusive and is not used as exclusion proof; subscriptions were not inspected because existing OAuth lacked Billing Read. Future product provisioning invalidates this surface exclusion."
+  },
+  "namespaceSelection": {
+    "semantics": "Developer-selected positive integers encoded as strings; account-wide namespace reuse shares counters for the same key. Distinct dimensions require distinct IDs; no separate namespace provisioning required by documented model.",
+    "documentation": "https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/",
+    "usedNamespaceIds": [],
+    "ipNamespaceId": "1001",
+    "sharedNamespaceId": "1002",
+    "positiveIntegerStrings": true,
+    "distinct": true,
+    "collisionFreeAtInspection": true,
+    "coverageConclusion": "Complete current collision surface under the accumulated inventory and explicitly established dispatch-product exclusion: no deployed Rate Limit namespace IDs in use; 1001 and 1002 are unused.",
+    "selectionRule": "Simple deterministic values independent of account/database/email/principal/secrets.",
+    "temporalLimit": "Selection is not a live reservation or global lock. Coordinate these assignments with account operators and revalidate if account Worker configuration or Workers for Platforms provisioning changes before application. No future collision freedom claimed."
+  },
+  "resolvedFuturePreview": {
+    "vars": {"RIVER_IDENTITY_REGISTRATION_ENABLED": "false"},
+    "ratelimits": [
+      {"name": "RIVER_IDENTITY_REGISTRATION_IP_LIMITER", "namespace_id": "1001", "simple": {"limit": 5, "period": 60}},
+      {"name": "RIVER_IDENTITY_REGISTRATION_SHARED_LIMITER", "namespace_id": "1002", "simple": {"limit": 30, "period": 60}}
+    ]
+  },
+  "configurationStatus": {
+    "applied": false,
+    "cloudflareConfigurationChanged": false,
+    "deploymentOccurred": false,
+    "activation": "Future preview remains exact string false; current registration variable remains absent. Only exact string true enables committed C1. No enablement performed.",
+    "qualification": "Preview is additive documentary content, not replacement of existing configuration. Existing ZE/ZD, Wrangler, generated types, source, identity/FOOD bindings and all unrelated files remain unchanged."
+  },
+  "validation": "JSON parsing, selected string lexical positivity/distinctness/absence from used set, installed Wrangler limiter schema shape and period support, exact policies 5/60 and30/60, false string activation, internal consistency and whitespace checks. No live verification repeated in completion step.",
+  "nextSlice": "FOOD-002ZG — apply disabled registration configuration locally to wrangler.jsonc and regenerate worker types only",
+  "exclusions": "No additional Cloudflare calls, resource/configuration/credential mutation, D1 access, HIBP request, account/password handling, deployment/activation, existing file edit, staging/commit/push or destructive Git action. This artifact neither configures namespaces nor authorizes deployment, HIBP use, registration activation or FOOD administrator assignment."
+}
