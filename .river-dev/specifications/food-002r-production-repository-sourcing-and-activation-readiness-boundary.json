@@ -1,0 +1,169 @@
+{
+  "version": "1.0.0",
+  "id": "FOOD-002R",
+  "name": "Trusted production repository sourcing, database topology, and activation-readiness boundary",
+  "phase": "Discovery and specification only; no implementation or activation authorized",
+  "purpose": "Record committed production-capable repository sources and the remaining target/configuration/approval decisions without introducing another generic transport or composition abstraction.",
+  "startingState": { "branch": "cif-001-canonical-content-source-record", "head": "f4cbb8ff577b268459e16dffbe8250778fcd7390", "worktree": "Verified clean" },
+  "references": [
+    "src/lib/food/draft-domain.ts",
+    "src/lib/food/draft-persistence.ts",
+    "src/lib/food/d1-draft-persistence.ts",
+    "src/lib/food/d1-draft-persistence.integration.test.ts",
+    "src/lib/food/private-draft-service.ts",
+    "src/lib/food/private-draft-runtime-composition.ts",
+    "src/lib/food/private-draft-runtime-acquisition.ts",
+    "src/lib/food/private-draft-server-adapter.ts",
+    "src/lib/food/menu-persistence.ts",
+    "src/lib/food/d1-menu-persistence.ts",
+    "src/lib/food/d1-menu-persistence.integration.test.ts",
+    "src/lib/food/menu-read-dependencies.ts",
+    "src/lib/food/menu-read-dependencies.test.ts",
+    "src/lib/food/private-menu-service.ts",
+    "src/lib/food/private-menu-workspace.ts",
+    "src/lib/food/private-menu-runtime-composition.ts",
+    "src/lib/food/private-menu-runtime-acquisition.ts",
+    "src/lib/food/private-menu-server-adapter.ts",
+    "src/lib/food/private-menu-mutation-request.ts",
+    "src/lib/food/private-menu-mutation-request-adapter.ts",
+    "src/lib/food/private-menu-mutation-response.ts",
+    "src/lib/food/private-menu-mutation-server-handler.ts",
+    "src/lib/identity/session/contracts.ts",
+    "src/lib/identity/session/astro-session-adapter.ts",
+    "src/lib/identity/session/principal-resolver.ts",
+    "src/lib/identity/cloudflare/d1-principal-repository.ts",
+    "src/lib/identity/cloudflare/types.ts",
+    "src/lib/identity/identifiers.ts",
+    "src/pages/api/sesh/creator/profile.ts",
+    "src/pages/api/insurance/quote-request.ts",
+    "src/pages/river-os/actions/insurance-contact.ts",
+    "src/lib/river-os/crm-actions.ts",
+    "src/middleware.ts",
+    "wrangler.jsonc",
+    "worker-configuration.d.ts",
+    "astro.config.mjs",
+    "package.json",
+    ".dev.vars.example",
+    ".env.example",
+    "migrations/food/0001_food_draft_snapshots.sql",
+    "migrations/food/0002_food_menu_snapshots.sql",
+    "docs/architecture/food-private-runtime-activation.md",
+    ".river-dev/specifications/food-002q-trusted-food-001-exact-read-dependency-composition-boundary.json",
+    ".river-dev/specifications/food-002p-injected-private-menu-mutation-server-handler-boundary.json"
+  ],
+  "repositorySources": {
+    "food001": {
+      "constructor": "new D1FoodDraftRepository(database: FoodD1Database)",
+      "output": "FoodDraftRepository",
+      "capability": "prepare(sql) returning bind/all statements; batch(statements) returning FoodD1Result envelopes",
+      "construction": "Synchronous and I/O-free; raw constructor retains the trusted injected database, not an authorization service.",
+      "exactReadProjection": "createFoodMenuReadDependencies({ repository }) captures receiver-bound getProduct/getRecipe, preserving raw found/not-found results, promises and failures. No extra repository adapter is needed. Do not project FOOD-001 private-service result envelopes instead."
+    },
+    "food002": {
+      "constructor": "new D1FoodMenuRepository(database: FoodD1Database, dependencies: FoodMenuReadDependencies)",
+      "output": "FoodMenuRepository",
+      "readDependencies": "Pick<FoodDraftRepository, getProduct | getRecipe>; exact historical reads only",
+      "construction": "Synchronous structural checks; no database or dependency operation during construction. H/L construct this repository internally."
+    }
+  },
+  "topology": {
+    "supported": "Either shared dedicated food database or separate dedicated food databases through injection; neither is required by domain contracts.",
+    "selected": false,
+    "shared": "The same FoodD1Database capability can serve both repositories; table names do not collide. FOOD-001 product-to-recipe SQL foreign keys and FOOD-002 internal menu SQL foreign keys remain local to their respective table families.",
+    "separate": "Acquire trusted FOOD-001 database, construct its repository and Q reads; inject those reads into H/J/L with independently acquired menu database. Existing input types already support this graph.",
+    "crossDatabase": "FOOD-002 presentation product/recipe coordinates have no physical SQL foreign keys into FOOD-001 tables. Logical exact reads validate dependencies even on shared storage; sharing does not make cross-repository operations an atomic snapshot.",
+    "acquisitionScope": "acquirePrivateFoodMenuDatabaseFromEnvironment({ environment, bindingName }) acquires one explicitly selected database capability. J uses it for menu storage, not implicitly for all food persistence. A future trusted caller must also acquire the FOOD-001 source; the existing structural acquisition helper can be reused with an approved key without a new abstraction or fallback."
+  },
+  "committedConfiguration": {
+    "bindings": [
+      { "key": "RIVER_COMMERCE_DB", "type": "D1Database", "owner": "commerce", "migrationsDirectory": "../../migrations" },
+      { "key": "RIVER_CRM_DB", "type": "D1Database", "owner": "River CRM/insurance", "migrationsDirectory": "migrations/river-crm" },
+      { "key": "SESH_DB", "type": "D1Database", "owner": "Sesh", "migrationsDirectory": "migrations/sesh" },
+      { "key": "RIVER_IDENTITY_DB", "type": "D1Database", "owner": "shared identity", "migrationsDirectory": "migrations/identity" }
+    ],
+    "targetEvidence": "Existing bindings contain concrete production-like target declarations, not food placeholders. Declaration does not prove provisioning, schema state or availability; identifiers and account values are deliberately omitted and no target was queried.",
+    "foodBinding": "No FOOD-001 or FOOD-002 D1 binding is declared. RIVER_FOOD_DB is a FOOD-001F contract/documentary target only.",
+    "menuBindingNameReadiness": "UNRESOLVED: I/J accept a trusted bindingName, but no production menu value or topology has been selected.",
+    "foodDatabaseTargetReadiness": "UNRESOLVED: no dedicated food target is declared; actual existence/provisioning is not verified.",
+    "administratorKey": "RIVER_FOOD_ADMIN_PRINCIPAL_ID is a canonical PrincipalId string contract in FOOD-001F and the activation runbook; absent from committed Wrangler configuration, generated environment declarations and example key sets inspected.",
+    "typing": "worker-configuration.d.ts is generated by wrangler types and declares the four existing D1 bindings. Food keys are absent. Structural injection suffices for current code; regenerate only after separately approved actual binding/config declaration. Do not manually pretend generated types provision resources.",
+    "environmentSeparation": "No food-specific local/dev/production target separation is declared. Separate target configuration and isolated local state must be selected before use.",
+    "scripts": "package.json deploy runs wrangler deploy; publish builds then deploys. No dedicated food migration application script/configuration is present. Existing per-binding migrations_dir declarations support multiple streams but do not select a food stream."
+  },
+  "migrations": {
+    "schemaSourceReadiness": "code-complete for FOOD-001 exact reads and FOOD-002 menu repository; excludes future ordering/payment schemas",
+    "inventory": [
+      { "path": "migrations/food/0001_food_draft_snapshots.sql", "order": 1, "tables": ["food_recipe_draft_snapshots", "food_product_draft_snapshots"], "constraints": "Exact composite product-to-recipe FK, safe integer version bounds, ordering/reference indexes, UPDATE and DELETE rejection triggers; no cascade deletion." },
+      { "path": "migrations/food/0002_food_menu_snapshots.sql", "order": 2, "tables": ["food_dish_presentation_snapshots", "food_serving_offer_snapshots", "food_menu_publication_snapshots", "food_offer_availability_observations", "food_menu_publication_presentation_memberships", "food_menu_publication_offer_memberships"], "constraints": "Internal exact composite FKs, safe integer versions/revisions, UTF-16 ordering indexes, stable offer-to-dish trigger, trigger-generated publication memberships, UPDATE and DELETE rejection for all six tables; no cascade deletion." }
+    ],
+    "sharedOrder": "Apply existing 0001 then 0002 in migrations/food after explicit target verification and migration approval. No renaming required. 0002 has no SQL dependency on 0001 tables, but usable menu exact-reference verification requires FOOD-001 schema and records.",
+    "separateOrder": "FOOD-001 and menu migration streams can be independent. Existing files share one directory, so selecting separate targets requires an approved stream/application plan; do not blindly point both targets at the whole directory or silently move/rename migrations.",
+    "verification": "Committed isolated Miniflare integration tests exercise actual respective migration SQL through convertV4MiniflareOptions, cf:false, d1Persist:false and dispatchFetch worker-side D1 batch. Prior validation reported PASS; this discovery does not rerun SQL or query configured databases.",
+    "configuredLocalApplied": "Not established by inspected repository evidence",
+    "remoteProductionApplied": "Not established by inspected repository evidence",
+    "limits": "Local tests do not establish remote replication consistency, production transport behavior or production migration application. SQL presence and test success are distinct from activation."
+  },
+  "futureAssembly": {
+    "foodSource": "Approved trusted environment/key -> acquirePrivateFoodMenuDatabaseFromEnvironment -> new D1FoodDraftRepository(foodDatabase) -> createFoodMenuReadDependencies({ repository })",
+    "menuRuntime": "createPrivateFoodMenuOperationRuntimeFromServerContext({ environment, bindingName: approvedMenuKey, session: requestSession, readDependencies: qReads, administratorPrincipalId: trustedCanonicalAdministrator, now?: trustedClock })",
+    "internalGraph": "J -> I menu acquisition + new AstroPrincipalSessionStore(session, now) + new D1PrincipalRepository(environment.RIVER_IDENTITY_DB) + new DefaultSessionPrincipalResolver({ sessions, principals }) -> L createPrivateFoodMenuOperationRuntimeComposition -> one D1FoodMenuRepository(menuDatabase, qReads) -> one SingleAdminFoodMenuService -> workspace plus operationGate from that same service",
+    "transportGraph": "createPrivateFoodMenuMutationRequestBoundary({ operationGate: capabilities.operationGate, workspace: capabilities.workspace, expectedOrigin: trustedApprovedOrigin }) -> createPrivateFoodMenuMutationRequestAdapter({ boundary }) -> createPrivateFoodMenuMutationServerHandler({ adapter }) -> handler.handle(context.request); P calls createPrivateFoodMenuMutationResponse for N results.",
+    "authorization": "Trusted Q raw reads remain hidden infrastructure. User-facing operations pass through menu authorization; method/origin policy precedes lazy body read, gate authorization precedes parsing, normal mutation resolves authorization again. No token, duplicate administrator policy or FOOD-001 user service is needed for Q.",
+    "construction": "All assembly is synchronous and I/O-free. Structural success does not prove target existence/schema/session trust. Actual I/O begins during handle/service operations.",
+    "lifecycle": "Prefer per-request/server-context assembly, matching J and endpoint precedents. Repositories retain database/dependency capabilities, not caller session state, and need no invented pooling; raw repository reuse is technically possible but unnecessary here. Never cache request-scoped session/resolver/service/gate/handler state across requests. Sharing one injected D1 object is compatible with both repositories."
+  },
+  "trustedSources": {
+    "administrator": "Architecture exists but no food wiring: H documents environment-specific RIVER_FOOD_ADMIN_PRINCIPAL_ID with secret handling recommended for privileged configuration. J accepts an already canonical PrincipalId and does not read that key itself. A future trusted caller must select/configure and parse the value unchanged; compile-time constants, request-supplied roles and River OS boolean auth are not substitutes.",
+    "principalVerification": "After separate owner approval, verify the intended active principal through the existing identity repository/system against the approved identity target. Do not infer from email, operator cookies, test fixtures or display names. No concrete principal was inspected or selected here.",
+    "origin": "astro.config.mjs site supplies a committed trusted canonical-site candidate; existing CRM same-origin helper compares Origin with request.url, which is not a selected FOOD-002M expectedOrigin source. Choose an explicit trusted per-environment mapping, never incoming Host/Origin/request URL. No food expected-origin production configuration exists.",
+    "session": "ALREADY RESOLVED plumbing: Astro APIRoute context.session is request-scoped and reusable as AstroSessionLike. Shared adapter awaits async-or-sync get, preserves synchronous set/delete, asynchronous regenerate and sync-or-async destroy, canonical validation, expiry and fail-closed cleanup.",
+    "identity": "ALREADY RESOLVED construction contract and binding declaration: J constructs D1PrincipalRepository from RIVER_IDENTITY_DB.prepare and DefaultSessionPrincipalResolver itself. J readDependencies are FOOD-001 exact reads, not identity dependencies. Schema/live identity availability remains a deployment prerequisite, not a construction guarantee.",
+    "environment": "ALREADY RESOLVED acquisition precedent: committed endpoints import env from cloudflare:workers and inject it into structural runtime adapters. A later route can follow that precedent without changing current pure FOOD modules. No real secret files or remote services were inspected."
+  },
+  "remainingBlockers": [
+    { "item": "Shared versus separate dedicated food topology, menu binding key and per-environment targets", "classification": ["CONFIGURATION SELECTION REQUIRED", "USER/OWNER APPROVAL REQUIRED"] },
+    { "item": "Dedicated food database target creation if absent", "classification": ["INFRASTRUCTURE/PROVISIONING REQUIRED", "USER/OWNER APPROVAL REQUIRED"] },
+    { "item": "Approved Wrangler binding/migration-directory declaration and generated typing", "classification": ["CODE REQUIRED", "CONFIGURATION SELECTION REQUIRED", "USER/OWNER APPROVAL REQUIRED"] },
+    { "item": "Verified target, migration stream, backup/recovery and actual schema application", "classification": ["MIGRATION/APPLICATION REQUIRED", "USER/OWNER APPROVAL REQUIRED"] },
+    { "item": "Canonical active administrator verification and trusted environment configuration", "classification": ["CONFIGURATION SELECTION REQUIRED", "USER/OWNER APPROVAL REQUIRED"] },
+    { "item": "Canonical expected origin and local/dev/production separation", "classification": ["CONFIGURATION SELECTION REQUIRED", "USER/OWNER APPROVAL REQUIRED"] },
+    { "item": "Thin route assembly and sanitized unavailable-configuration response", "classification": ["CODE REQUIRED", "USER/OWNER APPROVAL REQUIRED"] },
+    { "item": "Deployment and private route activation", "classification": ["USER/OWNER APPROVAL REQUIRED"] },
+    { "item": "Repository constructors, Q projection, H/J/L capabilities, M/N/O/P handler, session/identity/environment plumbing", "classification": ["ALREADY RESOLVED"] }
+  ],
+  "routeReadiness": {
+    "source": "Not yet authorized/registered; technically composable using existing contracts once trusted configuration-source decisions are documented. Likely future path src/pages/river-os/actions/food-menu.ts, APIRoute with prerender=false, trusted acquisition/assembly then handler.handle(context.request).",
+    "registration": "Astro src/pages automatically registers endpoint source in the next build. Unconfigured source can return sanitized 503 but is not an activation switch; deployment exposes the endpoint even when unavailable. Route addition therefore needs explicit approval separately from deployment/activation; missing configuration does not silently authorize registration.",
+    "unavailablePolicy": "Recommend fixed sanitized JSON 503 with no-store at the future route assembly boundary, following Sesh creator profile and private CRM infrastructure precedents. Existing endpoints are not uniformly identical. configuration-unavailable is not a FOOD-002M request result and must not be forced through P as callback-failed. This policy is documentary and requires a separately approved route implementation.",
+    "activation": "NOT READY: food targets/configuration/migration application/admin/origin and private activation approval remain unresolved. Route presence or published snapshot state does not authorize public exposure, checkout or sale."
+  },
+  "approvalGates": [
+    "Select environment/account/region/topology and exact targets; no phase authorizes the next.",
+    "Provision dedicated targets only after explicit approval; do not reuse unrelated domain databases.",
+    "Declare bindings/migration configuration and regenerate types only with explicit repository configuration approval.",
+    "Verify remote target and recovery plan, then apply approved migrations only with migration approval.",
+    "Verify/configure administrator and select trusted expected origin with owner approval.",
+    "Approve private route registration independently of deployment.",
+    "Approve deployment and production/private activation separately; preserve FOOD-001H gates."
+  ],
+  "ownerDecisions": [
+    { "decision": "Food database topology", "options": ["One dedicated food database: existing migrations/food stream and shared capability", "Separate dedicated food databases: independent operational isolation and explicit split-stream plan"], "recommendation": "Shared dedicated food database is the simplest documentary default supported by FOOD-001H and the current migration directory; owner must choose, and this specification selects neither." },
+    { "decision": "Binding keys and environment targets", "options": ["Shared menu acquisition uses the intended RIVER_FOOD_DB key", "Separate menu key explicitly selected alongside the FOOD-001 key"], "consequence": "Keys and real D1 targets are distinct decisions; no concrete names/IDs/account values are supplied here." },
+    { "decision": "Administrator and origin sources", "options": ["Owner-verified canonical active PrincipalId through protected environment configuration; canonical site mapped to approved environment", "Another explicit trusted server configuration source reviewed before wiring"], "recommendation": "Reuse H protected admin configuration guidance and committed site as a candidate, with explicit environment approval and no request-derived trust." },
+    { "decision": "Route timing", "options": ["Keep route absent until prerequisites are approved", "Separately approve source registration with fail-closed 503 before live prerequisites, while withholding deployment/activation"], "recommendation": "Keep route absent during this slice; registration and activation are separate approvals." }
+  ],
+  "nextSlice": {
+    "conclusion": "NO ADDITIONAL COMPOSITION ABSTRACTION REQUIRED",
+    "recommendation": "Owner-reviewed food target/configuration and assembly decision slice, documentary only until topology, binding keys, administrator/origin source and activation sequence are approved. Then separately authorize concrete configuration/provisioning/migration and thin route integration phases; do not invent FOOD-002S implementation solely to wrap existing factories.",
+    "pureCodeOpportunity": "Existing constructors and Q/J/L/M/N/P can be assembled inline in a later thin trusted route; a route-independent assembly test may be useful during that authorized integration, but no unresolved repository-result semantics or mandatory new adapter remains."
+  },
+  "strictExclusions": ["Implementation", "Staging/commit/push", "Configuration or generated typing changes", "Real administrator/database/account/secret values", "Real secret-file inspection", "Configured local or remote database access", "Provisioning/migration execution", "Routes/UI/navigation", "Runtime activation/deployment", "Public products/pricing/cart/order/checkout/payment", "Fulfillment/QR/ratings/demand analytics/POS-lite/business contact/accounting/community", "Insurance/Sesh/creator or unrelated source changes", "Production data"],
+  "acceptanceCriteria": [
+    "Exactly this specification is created; no tracked file changes and nothing staged.",
+    "Every referenced file and existing factory signature is checked against committed state; migration and binding inventories match committed source.",
+    "Topology support is distinguished from owner selection and target provisioning; no applied-schema claims without evidence.",
+    "Q semantic projection is resolved, complete existing assembly is documented, and no unnecessary abstraction is required.",
+    "Configuration failure, authorization failure, route registration, deployment and activation remain distinct.",
+    "JSON parses, reference checks pass, whitespace checks and git diff --check pass; exact git status is returned."
+  ]
+}
