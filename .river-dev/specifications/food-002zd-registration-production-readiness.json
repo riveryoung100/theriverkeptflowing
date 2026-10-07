@@ -1,0 +1,187 @@
+{
+  "id": "FOOD-002ZD",
+  "title": "Canonical identity registration production-readiness and activation boundary",
+  "scope": "Read-only discovery and specification only; no operational approval is conferred by this artifact.",
+  "baseline": {
+    "branch": "cif-001-canonical-content-source-record",
+    "head": "28842951da58f99a8e7c5cf0a8b072cbeae21ab0",
+    "startingState": "Clean worktree and empty index verified before discovery.",
+    "sourceComplete": ["ZB registration service and atomic persistence", "ZC A transport and injected runtime", "ZC B compromised-password and abuse-control adapters", "ZC C1 trusted server wiring and registration API", "ZC C2 registration and login browser surfaces"],
+    "qualification": "Source-complete does not establish deployed state, live infrastructure, browser behavior, account existence or activation readiness. Previous isolated validation is inherited, not rerun or represented as production proof."
+  },
+  "sourcePaths": [
+    ".river-dev/specifications/food-002zb-canonical-identity-registration-prerequisite.json",
+    ".river-dev/specifications/food-002zc-identity-registration-transport-security-browser-boundary.json",
+    ".river-dev/specifications/food-002y-production-food-admin-origin-readiness-boundary.json",
+    "src/lib/identity/authentication/registration-service.ts",
+    "src/lib/identity/authentication/registration-service.test.ts",
+    "src/lib/identity/cloudflare/d1-registration-repository.ts",
+    "src/lib/identity/cloudflare/d1-registration-repository.test.ts",
+    "src/lib/identity/cloudflare/d1-registration-repository.integration.test.ts",
+    "src/lib/identity/http/principal-registration-api.ts",
+    "src/lib/identity/runtime/principal-registration-api.ts",
+    "src/lib/identity/credentials/pwned-passwords-checker.ts",
+    "src/lib/identity/cloudflare/registration-abuse-control.ts",
+    "src/lib/identity/runtime/principal-registration-server.ts",
+    "src/pages/api/identity/register.ts",
+    "src/pages/api/identity/login.ts",
+    "src/pages/register.astro",
+    "src/pages/login.astro",
+    "src/lib/identity/http/principal-account-pages.test.ts",
+    "src/lib/identity/session/astro-session-adapter.ts",
+    "src/lib/identity/session/contracts.ts",
+    "src/lib/identity/credentials/argon2id.ts",
+    "src/lib/identity/identifiers.ts",
+    "wrangler.jsonc",
+    "worker-configuration.d.ts",
+    "astro.config.mjs",
+    "package.json",
+    ".github/workflows/ci.yml",
+    "scripts/verify-production.ps1",
+    "migrations/identity/0001_river_identity.sql",
+    "migrations/identity/0002_principal_sesh_creator_mapping.sql",
+    "node_modules/wrangler/config-schema.json",
+    "node_modules/wrangler/wrangler-dist/cli.js",
+    "node_modules/@astrojs/cloudflare/dist/index.js"
+  ],
+  "currentConfiguration": {
+    "RIVER_IDENTITY_DB": {"status": "already configured; generated type present", "resource": "river-identity", "databaseId": "4587d908-1466-4556-b868-1d60321f0970", "migrationDirectory": "migrations/identity", "type": "D1Database", "qualification": "Committed relationship only; account, remote existence, schema and deployed binding not queried."},
+    "RIVER_IDENTITY_REGISTRATION_ENABLED": {"status": "absent in Wrangler and generated Env; runtime-only contract", "accepted": "exact string true", "rejected": "missing, false string, boolean true, whitespace, other malformed values or throwing access all fail closed as fixed unavailable; production route additionally requires import.meta.env.PROD === true"},
+    "RIVER_IDENTITY_REGISTRATION_IP_LIMITER": {"status": "absent in Wrangler and generated Env; runtime-only proposal"},
+    "RIVER_IDENTITY_REGISTRATION_SHARED_LIMITER": {"status": "absent in Wrangler and generated Env; runtime-only proposal"},
+    "accountSelection": "No account_id is declared in root Wrangler configuration; authenticated account must be explicitly verified before any future operation.",
+    "environmentSelection": "Root configuration has no named environment declarations. Do not invent an --env production target; inspect the effective generated deployment configuration and selected account. Keep isolated test values separate."
+  },
+  "identityReadiness": {
+    "sourceReady": true,
+    "requiredMigrationHistory": ["0001_river_identity.sql", "0002_principal_sesh_creator_mapping.sql"],
+    "schema": "0001 defines principals principal_id TEXT PRIMARY KEY NOT NULL, status, nullable display_name, created_at, updated_at; principal_password_credentials principal_id TEXT PRIMARY KEY NOT NULL, email_normalized TEXT NOT NULL UNIQUE, password_hash, created_at, updated_at. No credential foreign key exists in this migration: do not invent one. 0002 defines the independent principal/Sesh mapping table and creator unique index; ZB does not use it, but complete migration history must be reconciled.",
+    "persistence": "One D1 batch inserts principal and credential and reads their joined exact identity. Requires success on all three results and changes 1/1/0, exact metadata/readback and transactional rollback on unique conflict. Remote compatibility remains unverified.",
+    "laterReadOnlyCommands": [
+      "npx wrangler whoami",
+      "npx wrangler d1 info river-identity --config wrangler.jsonc",
+      "npx wrangler d1 migrations list RIVER_IDENTITY_DB --remote --config wrangler.jsonc",
+      "npx wrangler d1 execute RIVER_IDENTITY_DB --remote --config wrangler.jsonc --command \"SELECT name FROM d1_migrations ORDER BY id;\"",
+      "npx wrangler d1 execute RIVER_IDENTITY_DB --remote --config wrangler.jsonc --command \"SELECT type,name,tbl_name,sql FROM sqlite_schema WHERE tbl_name IN ('principals','principal_password_credentials','principal_sesh_creator_mappings') ORDER BY type,name;\"",
+      "npx wrangler d1 execute RIVER_IDENTITY_DB --remote --config wrangler.jsonc --command \"PRAGMA table_info(principals); PRAGMA table_info(principal_password_credentials); PRAGMA index_list(principal_password_credentials);\""
+    ],
+    "checks": "Under separate read-only approval, verify whoami account against owner-approved target, info database UUID against committed ID, applied migration names against both files, no unexpected pending migrations, exact column/null/PK/unique constraints and unique-index columns via PRAGMA index_info for returned index names. Missing migration-history table or disagreement stops activation; do not repair/migrate in a read-only slice.",
+    "ownerRaceGate": "Immediately before signup, separately repeat exact normalized-email credential count and joined principal lookup for the owner-selected email. Expected zero before registration. If any account appears, do not register again; verify existing identity through the canonical login/owner process. Prior reports of absence are not current remote proof."
+  },
+  "trustedOrigin": {
+    "site": "https://theriverkeptflowing.com",
+    "conclusion": "NO ORIGIN CONFIGURATION CHANGE REQUIRED",
+    "derivation": "astro.config.mjs site supplies import.meta.env.SITE. C1 validates root HTTPS URL in production and passes new URL(site).origin to A. A requires exact Origin equality; absent/null/alternate origins fail. Canonical SITE, adapter/build settings and existing sitemap exclusions remain unchanged."
+  },
+  "trustedIngress": {
+    "status": "LIVE INFRASTRUCTURE VERIFICATION REQUIRED",
+    "evidenceLimit": "Cloudflare Astro adapter, cloudflare:workers env and Wrangler Worker name indicate intended Workers architecture. Repository files do not prove deployed DNS, routes, account, proxy configuration or absence of alternate origins.",
+    "laterReadOnlyChecklist": [
+      "Verify canonical zone/account, DNS records and proxy status in trusted Cloudflare dashboard/API; TLS and canonical domain route must terminate at the intended Worker.",
+      "Verify active Worker deployment/version, custom domain/routes, effective bindings and canonical path ownership; verify workers.dev and preview URL exposure policies explicitly.",
+      "Inventory any external origin/load balancer/tunnel and alternate domains; prove an origin cannot accept a caller-supplied CF-Connecting-IP and forward it as trusted identity. No external origin is established by repository evidence.",
+      "Review same-zone Worker subrequests and header rewrite rules: platform-controlled ingress alone must not silently authorize attacker-controlled header forwarding.",
+      "With registration disabled, inspect canonical endpoint headers/status and infrastructure metadata without credential bodies. Obtain platform configuration evidence that external supplied CF-Connecting-IP is overwritten/controlled; do not treat a 503 or CF-Ray alone as proof.",
+      "Confirm missing/noncanonical IP remains fail closed; activation switch asserts separately verified provenance rather than verifying it itself."
+    ]
+  },
+  "limiterConfiguration": {
+    "installedWrangler": "4.129.0",
+    "evidence": "Installed config-schema.json ratelimits items require name:string, namespace_id:string, simple:{limit:number,period:10|60}, no extra properties. Installed validateRateLimitBinding agrees. Thus 5/60 and 30/60 are expressible; no threshold contract correction needed.",
+    "proposedPatchTemplate": {
+      "ratelimits": [
+        {"name": "RIVER_IDENTITY_REGISTRATION_IP_LIMITER", "namespace_id": "<OWNER_VERIFIED_DISTINCT_IP_NAMESPACE_ID>", "simple": {"limit": 5, "period": 60}},
+        {"name": "RIVER_IDENTITY_REGISTRATION_SHARED_LIMITER", "namespace_id": "<OWNER_VERIFIED_DISTINCT_SHARED_NAMESPACE_ID>", "simple": {"limit": 30, "period": 60}}
+      ],
+      "vars": {"RIVER_IDENTITY_REGISTRATION_ENABLED": "false"}
+    },
+    "templateOnly": "Not an executable approved patch: namespace placeholders must be replaced by separately reviewed distinct account-scoped namespace identifiers after collision/resource checks. No identifiers allocated here. Merge keys into existing configuration rather than replacing unrelated vars/bindings. Installed schema proves shape/period, not live namespace validity or account entitlement. Named environments, if later introduced, need explicit ratelimits declarations because they are not inherited.",
+    "types": "After approved declarations, separately regenerate with npx wrangler types --config=wrangler.jsonc and inspect generated diff; never hand-edit worker-configuration.d.ts. Expect limiter bindings and switch representation; root current generated Env lacks all three. Existing C1 safely uses unknown structural acquisition and builds without these types.",
+    "semantics": "IP limiter runs before shared limiter; shared uses registration:shared within each location. Counters are not a globally consistent quota. Local two-slot protection is per isolate, not fleet-wide. Strict Origin does not prevent automated clients supplying it; HIBP screens passwords, not humans. These controls are proportionate candidates for a bounded initial window, conditional on owner acceptance of residual distributed-abuse risk and verified capacity. They do not establish safety for indefinite open signup."
+  },
+  "activation": {
+    "representation": "Nonsecret ordinary Cloudflare Worker var, preferably repository-reviewed vars string false for disabled-first deployment. Only exact string true enables. Missing also disables; never boolean true or a secret for this nonsecret flag.",
+    "separation": "Limiter declaration and regenerated typing may share a reviewed configuration slice while switch stays false/absent. Changing it to true is a separate explicit activation slice and deployment/version review. Committing configuration alone does not update live env.",
+    "lifecycle": "UNRESOLVED OWNER PRODUCT DECISION: temporary controlled owner-registration window versus continued public registration. Recommend proposing a temporary window, but do not silently adopt it. Temporary policy requires explicit later disablement/deployment; continued public policy accepts ongoing abuse, capacity and external dependency exposure.",
+    "disablement": "Set exact string false in the authoritative configuration source and deploy the reviewed disabled version under approval, or use a separately approved supported live configuration rollout with repository reconciliation. Verify new requests yield fixed 503 before body/security/database calls. Disabling does not cancel already in-flight operations, erase accounts or invalidate existing login sessions."
+  },
+  "pwnedPasswords": {
+    "implementation": "Complete injected adapter; production route injects ordinary runtime fetch and crypto.subtle. No additional outbound binding appears required by source; network policy/reachability still needs live verification.",
+    "endpoint": "https://api.pwnedpasswords.com/range/<FIVE_UPPERCASE_SHA1_HEX_CHARACTERS>",
+    "disclosure": "GET sends only five uppercase SHA-1 prefix characters derived server-side, Add-Padding:true, credentials:omit, redirect:error, cache:no-store. No plaintext, full hash, suffix or account email is sent by implementation. Service still observes server network/request metadata; partial hash disclosure is not zero disclosure. SHA-1 is range lookup only; stored credentials use Argon2id.",
+    "approval": "LIVE USE NOT APPROVED. Separate owner privacy/external-service approval required before any real request or enabled signup.",
+    "laterSafeVerification": "After explicit approval, request one documented synthetic five-character range from the intended deployed runtime through an approved isolated diagnostic, no real password/email, no identity write; verify HTTPS success, redirect rejection, streamed bounds, padding-compatible grammar and timeout behavior. Do not add a public diagnostic endpoint. Ordinary local network success would not prove deployed-runtime access."
+  },
+  "capacity": {
+    "requestBody": "8192 streamed bytes; canonical declared Content-Length checked; 5000ms body deadline; flat exact email/password JSON, malformed UTF-8/duplicates rejected.",
+    "hibp": "3000ms total checker deadline including digest/fetch/read; 1048576 response bytes; at most 25000 lines; 35-character uppercase suffix and 1-20 digit counts; malformed/uncertain results unavailable.",
+    "password": "15-128 Unicode scalars, at most 1024 UTF-8 bytes; original password unchanged.",
+    "hash": "Argon2id v19, memory 19456KiB, iterations2, parallelism1, salt16bytes, output32bytes; JavaScript noble implementation performs synchronous derivation inside async methods.",
+    "concurrency": "Two registration slots per isolate, immediate rejection without queue; release once. Not a global concurrency limit and not a login concurrency limiter.",
+    "remainingChecks": "Verify intended Workers plan CPU/wall-time/memory/subrequest limits and Argon2 behavior under actual runtime, two simultaneous jobs plus session/login workload, outbound latency, limiter behavior, D1 batch compatibility and neutral-response timing. Use separately approved isolated deployed performance harness with synthetic data, not production identity writes. Existing unit tests and local workerd do not prove plan capacity. Do not claim a total registration deadline: hashing/database work has no additional overall deadline in source."
+  },
+  "sessionReadiness": {
+    "evidence": "astro.config.mjs has no explicit session driver. Installed @astrojs/cloudflare enables default Cloudflare KV session driver and generated deployment configuration represents SESSION. Root Wrangler/generated root Env alone does not demonstrate its deployed persistence.",
+    "gate": "Verify effective generated config, SESSION resource/environment isolation, deployed driver, cookie secure/HttpOnly/SameSite/path/expiry behavior, async Astro get compatibility and login persistence across requests. Missing runtime session infrastructure may make login unavailable despite successful registration. No new session configuration or provisioning authorized here."
+  },
+  "deployment": {
+    "commandsOnly": ["npm run build", "npm run deploy"],
+    "evidence": "package.json build runs astro build then search:index; deploy runs wrangler deploy; publish combines them. release also runs lint/typecheck and verify:production; existing PowerShell verification checks general public endpoints, not registration-specific readiness. CI validates main pull requests/pushes with npm run check; it is not an automatic production deployment workflow.",
+    "preflight": "Explicit account/Worker target approval; inspect .wrangler/deploy/config.json redirect and generated dist/server/wrangler.json after build, effective SESSION and other bindings, disabled activation and artifact version. No deployment command ran here. Do not blindly use release as a harmless check because it deploys.",
+    "postflight": "Verify exact deployed version/custom-domain association; register/login headers/rendering, disabled registration 503/no writes or outbound checks, sitemap exclusions, ingress and session resources. Public endpoint verification alone does not prove all bindings/schema."
+  },
+  "browserMatrix": [
+    "Before activation: deployed /register and /login render, labels/focus/keyboard/status region work, no analytics/third-party resources, expected CSP console/network behavior and no secret-bearing telemetry.",
+    "JS disabled and intentional script failure: disabled unnamed fields prevent credential native fallback/GET; no credentials in query/fragment/navigation, autocomplete/new-password/current-password and password-manager behavior verified with synthetic values.",
+    "Disabled registration: synthetic valid-looking submission receives fixed503, exact same-origin POST JSON, credentials:same-origin/redirect:error/no-store, password cleared, no duplicate pending submission; prove server disabled before submitting.",
+    "Intercept synthetic responses locally or through approved browser interception to verify202/error/uncertain UX without enabling registration or writing accounts; do not treat intercepted202 as real persistence proof.",
+    "No production test identity required merely to test render/fallback/fetch/feedback. Successful real login cookie/session cannot be proved without an account: defer to owner login after registration or separately approve an existing test-safe identity path, never create one automatically.",
+    "After separate activation/owner registration: owner verifies normal login on canonical origin, session cookie attributes and subsequent authenticated session behavior without revealing password to agent; no FOOD entitlement or redirect implied."
+  ],
+  "ownerProcedure": {
+    "preconditions": "All approved configuration/schema/ingress/privacy/capacity/deployment/browser gates passed, activation policy selected and explicitly enabled; repeat exact-email absence gate immediately before signup.",
+    "steps": "Owner opens https://theriverkeptflowing.com/register, enters riveryoung100@gmail.com and owner-selected password directly in deployed browser, submits once, treats neutral acknowledgement as processing rather than proof of account creation, proceeds to /login and authenticates normally. Uncertain registration: try normal sign-in before retrying; no automatic retry. Existing account gate stops new registration.",
+    "passwordBoundary": "Real password only entered by owner in deployed browser; never supplied to Codex/ChatGPT, Git, shell/history, logs, config or screenshots shared with agent."
+  },
+  "postRegistration": {
+    "readOnlyQueryTemplate": "SELECT c.principal_id,p.status FROM principal_password_credentials c LEFT JOIN principals p ON p.principal_id=c.principal_id WHERE c.email_normalized='<OWNER_APPROVED_EXACT_NORMALIZED_EMAIL>';",
+    "verification": "Under separate narrow identity-read approval, exact normalized owner email yields exactly one credential joined to exactly one active canonical principal; parsePrincipalId accepts unchanged ID. Inspect counts and orphan/mismatch conditions without selecting password_hash. Unique email/PK constraints plus atomic registration prevent duplicates in supported schema; do not infer historical unrelated principal ownership from email alone. Owner confirms canonical login/session corresponds to same ID. Any missing/inactive/mismatch/uncertainty stops handoff, no manual repair or guessed principal.",
+    "privacy": "Restrict identifying output to protected review, not generic production config or new public endpoints. Email in this procedural specification is owner intent, not an injected configuration value."
+  },
+  "foodHandoff": "After verified canonical active principal, separate explicit owner approval configures RIVER_FOOD_ADMIN_PRINCIPAL_ID via per-environment Cloudflare secret/protected configuration per FOOD-002Y. Principal ID is identifying privileged configuration, not a bearer credential; possession alone grants nothing. Never infer/default/manufacture it or put owner email into generic vars. Registration/login confers no FOOD permission. No FOOD admin configuration here.",
+  "rollback": "Prefer disable switch and verify fixed503, then review approved Worker version rollback if required. Preserve accounts and schema; no reset/rebase/delete/database rollback. Disabling registration preserves login and existing identities; consider in-flight uncertainty before retry. Fail closed on missing dependencies/external failures. Keep audit evidence of approved versions/configuration without secrets or passwords.",
+  "ownerApprovals": [
+    "Target/account and narrow live read-only identity/schema/ingress/session verification scope",
+    "Limiter namespace selection/configuration and generated type patch, activation kept disabled",
+    "HIBP prefix disclosure/live synthetic outbound verification and eventual signup use",
+    "Registration lifecycle and residual per-location abuse/capacity acceptance",
+    "Disabled deployment and real-browser verification scope; successful synthetic production account creation is not included",
+    "Separate activation configuration/deployment",
+    "Owner manual registration and later narrow principal verification",
+    "Temporary-window disablement if selected, then separate FOOD administrator configuration"
+  ],
+  "remainingSlicesInOrder": [
+    {"step": 1, "class": "repo configuration patch", "work": "Reviewed preview, then separately authorized limiter declarations with verified distinct namespace IDs; false activation var and type regeneration. Preview does not authorize applying."},
+    {"step": 2, "class": "live read-only verification", "work": "Account/identity target/migrations/schema, ingress routes/provenance, session resource and deployment-plan limits; no writes."},
+    {"step": 3, "class": "deployment", "work": "Approve HIBP live-use boundary and capacity diagnostic scope; deploy reviewed source with registration false/absent, verify effective runtime/config and synthetic isolated capacity/outbound checks only under their explicit approval."},
+    {"step": 4, "class": "real-browser verification", "work": "Disabled-first matrix with synthetic values/intercepted results, no account write; record unresolved successful-login proof."},
+    {"step": 5, "class": "activation configuration", "work": "Owner selects lifecycle and approves exact true rollout only after all gates; verify active version/config without synthetic production registration."},
+    {"step": 6, "class": "live read-only verification", "work": "Repeat exact owner-email absence lookup immediately before owner signup; stop new signup if account exists."},
+    {"step": 7, "class": "owner browser action", "work": "Owner manually registers once and signs in, real password never handled by agent."},
+    {"step": 8, "class": "read-only identity verification", "work": "Verify unique active canonical principal and owner successful session/login, no hash disclosure."},
+    {"step": 9, "class": "activation configuration", "work": "If temporary policy selected, approved disable rollout and503 check; no identity destruction."},
+    {"step": 10, "class": "FOOD admin configuration", "work": "Separate owner approval for verified principal protected configuration; FOOD activation remains independent."}
+  ],
+  "readiness": {
+    "source": "Complete through C2; no additional registration feature required by this discovery.",
+    "committedConfiguration": "Identity D1 declared/type present; switch and limiters absent. Registration intentionally fail closed.",
+    "infrastructure": "Unverified live target/schema/ingress/session/capacity/outbound; no remote observation in ZD.",
+    "deployment": "Not approved or performed; source presence/normal push is not deployment.",
+    "browser": "Outstanding actual browser proof; synthetic source/VM/Astro rendering is insufficient.",
+    "identity": "Owner account not established in this workflow; current absence must be freshly verified under separate read approval.",
+    "homeCottageAdmin": "Unverified/unconfigured; separate principal verification and FOOD admin approval required."
+  },
+  "nextSlice": "FOOD-002ZE: Verified registration limiter configuration patch preview and disabled activation-variable representation only; no application, provisioning, deployment or activation.",
+  "remainingDecisions": ["Owner temporary versus continued-public registration policy", "Account-approved distinct limiter namespace IDs and entitlement", "Live schema/ingress/SESSION/capacity facts", "HIBP privacy/live-use approval and safe runtime diagnostic mechanism"],
+  "strictExclusions": "Only this new JSON artifact. No edits to existing source/spec/config/types, limiter or switch configuration, provisioning, live HIBP/network probes, D1 query/write/migration, account/password handling, real production browser test, FOOD admin setting, deployment/activation, staging/commit/push or destructive Git operations. Later commands are documentary only; no phase authorizes the next."
+}
