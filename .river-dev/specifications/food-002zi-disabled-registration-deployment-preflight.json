@@ -1,0 +1,139 @@
+{
+  "id": "FOOD-002ZI",
+  "title": "Disabled production registration deployment plan and local preflight",
+  "baseline": {"branch": "cif-001-canonical-content-source-record", "head": "f9a62037ca264b91d2aa2b768466552f013ac57d", "startingState": "Clean worktree and empty index verified"},
+  "scope": "Planning and local validation only. No deployment, live production access, activation, configured database access or source/configuration change authorized or performed.",
+  "authoritativeInputs": [
+    ".river-dev/specifications/food-002zd-registration-production-readiness.json",
+    ".river-dev/specifications/food-002ze-registration-configuration-preview.json",
+    ".river-dev/specifications/food-002zf-rate-limit-namespace-verification.json",
+    ".river-dev/specifications/food-002zh-production-identity-readiness-verification.json",
+    "wrangler.jsonc", "worker-configuration.d.ts", "package.json", "astro.config.mjs",
+    "src/lib/identity/authentication/registration-service.ts",
+    "src/lib/identity/cloudflare/d1-registration-repository.ts",
+    "src/lib/identity/cloudflare/registration-abuse-control.ts",
+    "src/lib/identity/credentials/pwned-passwords-checker.ts",
+    "src/lib/identity/http/principal-registration-api.ts",
+    "src/lib/identity/runtime/principal-registration-api.ts",
+    "src/lib/identity/runtime/principal-registration-server.ts",
+    "src/pages/api/identity/register.ts", "src/pages/api/identity/login.ts",
+    "src/lib/identity/runtime/principal-login-api.ts", "src/lib/identity/session/astro-session-adapter.ts",
+    "src/pages/register.astro", "src/pages/login.astro", ".github/workflows/ci.yml", "scripts/verify-production.ps1"
+  ],
+  "closedZhBasis": {
+    "identityTarget": "VERIFIED", "identitySchema": "READY", "sessionInfrastructure": "READY for disabled deployment; authenticated browser/cookie behavior deferred",
+    "canonicalIngress": "VERIFIED", "directOrigin": "SAFE within inspected strict-Origin scope; DNS/header provenance review remains an activation gate",
+    "overall": "READY FOR DISABLED DEPLOYMENT",
+    "qualification": "Inherited closed observational evidence, not a new live inspection or deployment approval. ZH did not record an active deployment/version identifier."
+  },
+  "configurationPreflight": {
+    "result": "PASS", "activation": "false",
+    "limiters": [
+      {"name": "RIVER_IDENTITY_REGISTRATION_IP_LIMITER", "namespace_id": "1001", "simple": {"limit": 5, "period": 60}},
+      {"name": "RIVER_IDENTITY_REGISTRATION_SHARED_LIMITER", "namespace_id": "1002", "simple": {"limit": 30, "period": 60}}
+    ],
+    "namespaceIdsDistinct": true,
+    "identityBinding": {"name": "RIVER_IDENTITY_DB", "databaseName": "river-identity", "databaseId": "4587d908-1466-4556-b868-1d60321f0970"},
+    "foodBinding": {"name": "RIVER_FOOD_DB", "databaseName": "river-food", "databaseId": "3dae5997-161e-454b-8d5c-dada476d5185"},
+    "preservation": "All five D1 bindings match the generated configuration by exact database ID. Existing R2 bindings remain present; no tracked configuration changes. Root configuration has no named environments; do not use --env production.",
+    "site": "https://theriverkeptflowing.com",
+    "types": "Generated Env retains activation literal false and both RateLimit declarations; focused TypeScript passes.",
+    "activationQualification": "Runtime source necessarily contains exact true comparisons; no configuration activation value true is introduced."
+  },
+  "failClosedSourceReview": {
+    "result": "PASS",
+    "ordering": "Registration ALL route requires PROD true and exact environment activation string true before accessing request headers, constructing runtime or touching the body. Current false returns fixed503 immediately. Server factory independently requires exact true before dependency construction.",
+    "disabledEffects": "Zero registration body reads, principal/credential creation, D1 registration calls, limiter consumption, HIBP calls, principal ID generation or session creation. Module initialization creates only the synchronous local work-slot closure.",
+    "evidence": "principal-registration-route-wiring.test.ts disabled-switch cases use throwing header access and assert unused body, empty calls and zero runtime construction; server tests assert false configuration is unavailable without dependency calls.",
+    "separation": "Registration service writes only a canonical principal and password credential atomically; it does not create a session or assign FOOD authority. Existing login explicitly creates Astro session only after successful authentication."
+  },
+  "localValidation": {
+    "tests": {"command": "node node_modules/tsx/dist/cli.mjs --test \"src/lib/identity/**/*.test.ts\"", "passed": 571, "failed": 0, "skipped": 0, "scope": "All identity regressions, including registration service, isolated Miniflare D1 integration, transport/security, runtime/server/route wiring, account pages and login/session. Synthetic injected or disposable isolated resources only; no configured D1 or live HIBP.", "runnerQualification": "Initial sandbox os.userInfo ENOMEM prevented launch; identical suite passed outside that sandbox. No source corrections."},
+    "focusedTypeScript": {"result": "PASS", "options": "--noEmit --strict --target ES2022 --module ESNext --moduleResolution Bundler --skipLibCheck --types node,astro/client", "files": ["worker-configuration.d.ts", "src/lib/identity/authentication/registration-service.ts", "src/lib/identity/cloudflare/d1-registration-repository.ts", "src/lib/identity/cloudflare/registration-abuse-control.ts", "src/lib/identity/credentials/pwned-passwords-checker.ts", "src/lib/identity/runtime/principal-registration-api.ts", "src/lib/identity/runtime/principal-registration-server.ts", "src/lib/identity/http/principal-registration-api.ts", "src/lib/identity/runtime/principal-login-api.ts", "src/lib/identity/session/astro-session-adapter.ts", "src/pages/api/identity/register.ts", "src/pages/api/identity/login.ts"]},
+    "repositoryTypecheck": "NON-GATING HISTORICAL REPOSITORY TYPECHECK FAILURE inherited from accepted ZG evidence; not rerun, not fixed. No registration-attributable error found in focused strict checks.",
+    "build": {"command": "npm run build", "result": "PASS", "scope": "Astro production build and Pagefind search index, 160 indexed pages", "qualification": "Sandbox denied Wrangler diagnostic log-file write outside workspace; build exited0 and completed. This is not a deployment or runtime proof."},
+    "whitespace": "git diff --check PASS; final artifact JSON/reference/state validation required before completion"
+  },
+  "deploymentArtifacts": {
+    "redirect": ".wrangler/deploy/config.json points to dist/server/wrangler.json; auxiliaryWorkers empty",
+    "effectiveConfiguration": "Generated server config names theriverkeptflowing-site, entry.mjs, no_bundle true, assets ../client with ASSETS binding, root false activation, exact limiter policies, all existing D1/R2 bindings, and default SESSION KV declaration without an explicit namespace ID.",
+    "sessionGate": "Immediately before deployment verify how installed Wrangler resolves the generated SESSION declaration to the existing ZH namespace. Do not silently provision/replace session KV or publish if effective resource mapping cannot be preserved.",
+    "dryRun": "NOT RUN",
+    "dryRunReason": "Local deploy help advertises --dry-run as compiling/checking without upload. No dry-run executed because no Cloudflare contact is permitted and resource/account resolution or generated missing SESSION ID behavior must not be assumed entirely offline. No temporary dry-run output created."
+  },
+  "deploymentMechanism": {
+    "installedWrangler": "4.129.0",
+    "repositoryScripts": "deploy = wrangler deploy; publish = npm run build && npm run deploy; release includes lint/typecheck/publish/live verify. CI validates only and does not deploy.",
+    "futureBuildCommand": "npm run build",
+    "exactFutureDeploymentCommand": "npm run deploy",
+    "equivalentInstalledCommand": "node node_modules/wrangler/wrangler-dist/cli.js deploy",
+    "target": "Root repository deployment redirect/effective generated config, theriverkeptflowing-site, owner-verified account. No invented --env production, --var true, --keep-vars or dashboard override.",
+    "qualification": "Commands documentary only. Do not run release as a harmless validation or bypass historical typecheck decisions silently. Account selection and preservation of existing remote vars/secrets/routes/bindings must be reconciled before deployment; Wrangler help warns normal deploy replaces ordinary vars with configured vars, while secrets are retained."
+  },
+  "deploymentScope": {
+    "classification": "REQUIRES LIVE PRE-DEPLOYMENT PROVENANCE RECHECK",
+    "requiredGate": "LIVE PRE-DEPLOYMENT PROVENANCE RECHECK REQUIRED",
+    "reviewedRange": "fae23e4d..f9a62037ca264b91d2aa2b768466552f013ac57d (ZB through ZH): 29 paths, 2969 insertions and1 deletion. Registration service/repository/security/transport/runtime/API, register/login pages, sitemap exclusions, disabled Wrangler/types and documentary specifications. No unrelated source changes within this reviewed range.",
+    "unknownBaseline": "ZH provides no active version ID or trustworthy deployed Git revision mapping. Earlier FOOD, identity or unrelated committed source/config/assets may also be absent live and therefore included. Do not equate production with HEAD or constrain deployment to these29 paths.",
+    "blastRadius": "This publishes the full generated Worker and complete static asset/search/site bundle at the authorized commit, not a registration-only patch. Inspect full baseline-to-candidate diff, effective metadata and representative existing SSR/static behavior after mapping the live version. Unknown/unreviewed material changes require owner scope decision before proceeding."
+  },
+  "mandatoryPreDeploymentSnapshot": [
+    "Separate direct owner authorization identifies exact candidate commit, account/Worker, deployment and emergency rollback scope; verify branch/HEAD/clean worktree and rebuilt artifact provenance.",
+    "Read-only capture active Worker/service/environment, deployment ID, every active version ID and traffic percentage, status, version metadata/source revision or deployment records. Resolve source mapping and review full change range; do not guess. Preserve a supported deployable rollback version and associated configuration/assets.",
+    "Verify account and Worker against closed ZH target; inspect current identity D1 and SESSION namespace metadata/bindings without contents, other production bindings/vars/secret names without values, custom-domain/routes and workers.dev exposure. Revalidate namespace collision snapshot if account changes occurred.",
+    "Compare freshly generated deployment config including false activation, exact1001/5/60 and1002/30/60, existing resources, SESSION reuse, root environment and SITE. Resolve resource/ordinary-var preservation before authorizing the actual upload.",
+    "Record canonical homepage and a small existing-route baseline: /river-guides/, /library/guides/auto-insurance-handbook/, /robots.txt and sitemap documents. Capture minimal noncredential login/session infrastructure and existing public page/API status without authenticating or creating sessions.",
+    "Under explicit read-only database approval capture aggregate principal/credential counts and schema/binding invariants only. ZH zero counts are historical, not a current account absence guarantee. Record observation times and concurrent-write limitations. No migrations or credential reads."
+  ],
+  "futureExecutionSequence": [
+    "Obtain deployment and conditional emergency rollback authorization; pass Git and live snapshot/provenance gates above.",
+    "Record rollback-ready live version/deployment, baseline site health and exact production account/target; reconcile full bundle scope and final effective configuration.",
+    "Run rebuilt reviewed npm run deploy only after all gates pass. Capture new version/deployment identifiers and actual traffic/configuration.",
+    "Verify false activation, both limiter bindings/policies, all existing identity/SESSION/unrelated bindings and canonical health immediately.",
+    "Perform the single disabled synthetic API check and safe account-page browser verification, then compare public-route and identity aggregate invariants.",
+    "Invoke separately authorized emergency rollback on critical failure; otherwise STOP with registration false. No activation, account creation or FOOD admin configuration is part of execution."
+  ],
+  "disabledPostDeploymentVerification": {
+    "site": "Homepage and small recorded existing-route set must match acceptable baseline status/content, plus /login and /register load200 after deployment. No broad crawl.",
+    "syntheticRequest": {"method": "POST", "url": "https://theriverkeptflowing.com/api/identity/register", "headers": {"Origin": "https://theriverkeptflowing.com", "Content-Type": "application/json"}, "body": "not-json", "rationale": "Intentionally invalid inert body contains no credentials or personal data; fixed503 rather than parser400 is consistent with disabled gate before parsing. Source/tests establish zero reads; an HTTP response alone cannot prove lack of hidden calls.", "expectedStatus": 503, "expectedBody": {"ok": false, "error": {"code": "unavailable", "message": "Registration is temporarily unavailable."}}, "expectedHeaders": {"Cache-Control": "no-store", "Content-Type": "application/json; charset=utf-8", "X-Content-Type-Options": "nosniff"}, "cookies": "No new session cookie expected; inspect presence/attributes only, never record values"},
+    "sideEffectProof": "Compare before/after aggregate principal and password-credential counts; unchanged counts corroborate no account creation but cannot independently prove no UPDATE, transient write, HIBP request or limiter call. Use exact deployed false configuration, matched source/version and existing zero-call tests plus available approved sanitized telemetry. Do not probe limiters by calling limit or add diagnostics. If telemetry absent, classify those runtime negative claims as source-backed rather than directly observed. Investigate unrelated concurrent writes before assigning causality; no repair/delete.",
+    "sessionLogin": "Verify SESSION binding/resource preserved and login page/runtime starts without infrastructure errors. No suitable existing identity is established by ZH; defer authenticated cookie/persistence/logout proof to separately authorized manual browser verification. Do not create a test account or invent credentials merely for deployment."
+  },
+  "browserVerificationPlan": [
+    "After separately authorized disabled deployment open canonical register/login pages, check accessible labels/focus/responsive rendering, hydration and disabled controls before JS initialization.",
+    "Verify named credentials cannot be submitted by native fallback: fields are unnamed, disabled initially; JS prevention is installed before enabling controls. Check password never enters URL/query or logs and is cleared after submission.",
+    "Use only separately approved synthetic nonsecret browser input if interaction is needed; registration returns sanitized unavailable feedback and makes no account. Inspect requests without storing credential payloads, cookies or password values.",
+    "Check no analytics/unintended credential capture on standalone pages, fixed feedback, duplicate-pending prevention, no automatic retries, exact same-origin fetch/redirect:error/no-store, and sitemap exclusion of all four credential-page path forms.",
+    "Real owner login/session persistence and password-manager checks remain manual/separately approved; no production browser automation or password use occurs in ZI."
+  ],
+  "rollback": {
+    "status": "IDENTIFIED",
+    "localEvidence": "Installed Wrangler rollback --help accepts [version-id], --name, --config, --message and --yes. versions deploy --help accepts <version-id>@<percentage> specs for traffic restoration.",
+    "exactFutureCommandTemplate": "node node_modules/wrangler/wrangler-dist/cli.js rollback <PRE_DEPLOYMENT_WORKER_VERSION_ID> --name theriverkeptflowing-site --config wrangler.jsonc --message \"Rollback disabled registration deployment after failed verification\"",
+    "qualification": "Use a Worker VERSION ID, not deployment ID. Record both before upload. Do not use implicit latest/previous selection. Verify prior version is deployable and captures intended assets/bindings; for an existing traffic split record all versions/weights and approve exact versions deploy restoration instead. Do not assume rollback restores DNS, separate configuration changes, KV/D1 data, secrets or deleted resources. No data/schema changes belong in this deployment. Recheck effective vars/bindings and site health after rollback.",
+    "authorization": "Future owner approval must explicitly include conditional emergency rollback to recorded baseline. If omitted or supported recovery/version scope is uncertain, STOP before deployment. No rollback authority is inferred from ZI.",
+    "triggers": ["Canonical site unavailable", "Material existing route regression", "Login/session infrastructure breakage", "Registration operational while false", "Unexpected identity write", "Unexpected configuration/binding loss", "Worker fails to start", "Severe deployment-attributable runtime errors"],
+    "recovery": "Rollback and preserve sanitized evidence; do not delete accounts, reset databases, execute migrations or silently activate/repair. Escalate unsupported rollback/resource discrepancies to owner."
+  },
+  "activationFirewall": {
+    "rule": "DISABLED DEPLOYMENT IS NOT REGISTRATION ACTIVATION. Stop after verification with exact false. Only exact true enables, under a separate explicit owner authorization and reviewed rollout.",
+    "remainingGates": ["Verified disabled deployment and browser surfaces", "ZH DNS/header provenance and same-zone forwarding review", "HIBP privacy/live-use approval and deployed runtime capacity/outbound checks", "Activation-specific preflight and owner temporary-window versus continued-public policy", "Separate owner activation authorization"]
+  },
+  "ownerAndFoodSeparation": [
+    "Deploy disabled and verify; separately approve prerequisites and activation.",
+    "Owner manually enters their own password directly in production browser; agent never handles it. Repeat separately approved owner-account absence check before signup; do not duplicate an existing account.",
+    "After creation/login, separately authorized read-only verification obtains active canonical principal ID; optionally disable registration again under approval.",
+    "Only separate FOOD authorization sets RIVER_FOOD_ADMIN_PRINCIPAL_ID; private menu administration can then use canonical identity. Deployment never grants FOOD roles or infers administrator identity."
+  ],
+  "preservedBusinessTrajectory": {
+    "philosophy": "Chef-driven, satisfying food designed around strong overall dietary balance rather than tiny restrictive diet meals.",
+    "laterWork": ["Private owner menu administration", "Real menu capture", "Recipe/dish records", "Nutrition-oriented meal design", "Ingredient/allergen records", "Portion quantities", "Food costing", "Pricing", "Packaging", "Inventory/availability", "Ordering", "Pickup/delivery selection", "Payments", "Order lifecycle", "Fulfillment", "Customer-facing menu", "Eventual charity-meal tracking/reporting"],
+    "qualification": "Trajectory only; no domain expansion, legal/readiness claim or business feature implementation in ZI."
+  },
+  "overallReadiness": "READY FOR SEPARATELY AUTHORIZED DISABLED DEPLOYMENT",
+  "localBlockers": [],
+  "remainingLiveExecutionGates": "Owner deployment/rollback approval; active version/source scope snapshot, target/account and baseline health recheck; effective configuration/resource/SESSION and ordinary-var preservation. Unknown live provenance is an explicit execution gate, not a failed local preflight.",
+  "nextSlice": "FOOD-002ZJ — disabled production registration deployment execution",
+  "nextSliceAuthorization": "Separate direct owner authorization required because ZJ mutates production; must begin with documented live provenance/snapshot gates. Do not begin ZJ here.",
+  "activity": "Local help/source/config/history reads, isolated tests, focused TypeScript and production build only. No Cloudflare calls, upload/deploy, configured D1 access/writes/migrations, HIBP request, account/password handling, activation or FOOD admin changes. Only this new artifact; nothing staged/committed/pushed."
+}
