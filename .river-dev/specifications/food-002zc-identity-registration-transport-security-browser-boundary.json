@@ -1,0 +1,138 @@
+{
+  "version": "1.0.0",
+  "id": "FOOD-002ZC",
+  "name": "Canonical identity registration transport, security, runtime, and browser-signup boundary",
+  "phase": "Discovery and specification only; implementation and activation separately gated",
+  "startingState": { "branch": "cif-001-canonical-content-source-record", "head": "1051824d0c78bffe1a46a7fc1df876ce08d336ac", "worktree": "Clean; nothing staged" },
+  "purpose": "Prepare generic secure browser registration using unchanged ZB. No FOOD privileges, account creation, live data access or activation in this slice.",
+  "references": [
+    ".river-dev/specifications/food-002zb-canonical-identity-registration-prerequisite.json",
+    "src/lib/identity/authentication/registration-service.ts",
+    "src/lib/identity/authentication/registration-service.test.ts",
+    "src/lib/identity/cloudflare/d1-registration-repository.ts",
+    "src/lib/identity/cloudflare/d1-registration-repository.test.ts",
+    "src/lib/identity/cloudflare/d1-registration-repository.integration.test.ts",
+    "src/lib/identity/credentials/argon2id.ts",
+    "src/lib/identity/credentials/validation.ts",
+    "src/lib/identity/identifiers.ts",
+    "src/lib/identity/http/principal-login-api.ts",
+    "src/lib/identity/http/principal-login-api.test.ts",
+    "src/lib/identity/runtime/principal-login-api.ts",
+    "src/lib/identity/session/astro-session-adapter.ts",
+    "src/pages/api/identity/login.ts",
+    "src/pages/sesh/studio/index.astro",
+    "src/pages/river-os/login.astro",
+    "src/lib/food/private-menu-mutation-request.ts",
+    "src/middleware.ts",
+    "astro.config.mjs",
+    "wrangler.jsonc",
+    "package.json",
+    "migrations/identity/0001_river_identity.sql",
+    "node_modules/astro/client.d.ts",
+    "node_modules/astro/dist/core/create-vite.js"
+  ],
+  "sourceEvidence": {
+    "ZB": "register(input: unknown): Promise<IdentityRegistrationResult>; success {ok:true,value:{principalId}}; failures invalid-input, conflict, unavailable with fixed messages. ZB owns normalization, scalar password policy, Argon2 hashing and atomic persistence; no session. Existing tests proved isolated rollback/concurrency and login compatibility.",
+    "identityHttp": "Login JSON parser accepts exactly email/password; no-store JSON responses. isSameOriginIdentityWriteRequest compares parsed incoming Origin with request URL, so it cannot establish independently configured trust for registration. Do not reuse that trust source or change login in ZC.",
+    "browser": "Sesh studio uses email/password form plus fetch to existing identity login API. River OS login uses an access-key boolean and is not canonical principal login. No generic signup or generic principal-login page exists.",
+    "SITE": "Installed Astro client.d.ts declares SITE; create-vite.js defines import.meta.env.SITE from settings.config.site. astro.config.mjs site is the owner-approved https://theriverkeptflowing.com. This is trusted build configuration, not incoming Host/URL.",
+    "security": "No committed Turnstile, compromised-password checker/denylist, application rate limiter, or registration concurrency control found. No deployed WAF or other external controls are assumed. Existing middleware guards River OS only, not registration. Package dependencies provide @noble/hashes and platform primitives but no configured checker or limiter."
+  },
+  "externalDocumentation": [
+    { "url": "https://haveibeenpwned.com/API/v3", "finding": "Pwned Passwords range queries use first five SHA-1 hash characters; response suffix/count pairs allow local matching; Add-Padding requests padded results. This is documentation inspection only, no password query occurred." },
+    { "url": "https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/", "finding": "Workers rate limiting uses configured bindings and counters per key per Cloudflare location. It is not a global exact quota or distributed concurrency lock. No such binding currently exists here." }
+  ],
+  "transport": {
+    "route": "POST /api/identity/register, thin future Astro APIRoute, prerender=false; no route created now",
+    "handler": "createIdentityRegistrationRequestHandler(input) returns an async (request: Request) => Promise<Response>. Input contains registration: IdentityRegistrationService, expectedOrigin: string, compromisedPasswords: RegistrationPasswordChecker, abuseControl: RegistrationAbuseControl, acquireWorkSlot: () => (() => void) | null, and scheduleTimeout: (callback: () => void, milliseconds: number) => (() => void). The scheduler returns timer cancellation; callbacks/timers run only during submit. Define new checker/abuse/input types in the handler file. No optional allow-all dependencies.",
+    "construction": "Synchronous structural dependency validation only; no database, hasher, checker, limiter, generator, clock or service invocation. Missing/malformed/throwing configuration yields a handler returning fixed unavailable 503 without reading the body. No dependency internals exposed.",
+    "ordering": "Method -> exact Origin -> Content-Type/Content-Length policy -> abuse control -> local work-slot acquisition -> bounded body read -> duplicate-aware JSON parsing -> existing normalizeCredentialEmail and isValidRegistrationPassword precheck -> compromised check -> unchanged ZB register -> sanitized response. Release work slot in finally on every completion. There is no authentication gate: signup is unauthenticated. Do not call a resolver/session or imitate FOOD gate semantics.",
+    "method": "Reject non-POST before any other dependency/body call: 405, Allow: POST.",
+    "origin": "Route validates trusted import.meta.env.SITE as an absolute HTTP(S) URL without credentials/query/fragment, takes its .origin, then passes canonical origin to handler. Production HTTPS required. Handler requires expectedOrigin and incoming Origin to be canonical strings exactly equal to their URL.origin and to each other; reject whitespace, paths, null origin, multiple values, credentials, missing/malformed/wrong Origin with 403. Never derive trust from request URL, Host, Referer or forwarded headers. No CORS allow-origin response.",
+    "localPreview": "One explicit trusted SITE per build/deployment. Local HTTP localhost with exact port allowed only by separately configured local build using isolated test database/security fakes; never added to production trust. Preview uses its own reviewed HTTPS SITE and isolated identity target. Existing production SITE does not silently allow localhost or arbitrary preview hosts.",
+    "contentType": "Accept application/json only, case-insensitive media type, optionally one charset=UTF-8 (quoted or unquoted); reject extra parameters, non-UTF-8, multipart/form-urlencoded and missing type with 415.",
+    "bodyLimitBytes": 8192,
+    "body": "Validate present Content-Length as canonical unsigned decimal safe integer without sign/whitespace/repetition; oversized declaration 413, malformed 400. Count actual streamed Uint8Array bytes regardless of header; >8192 cancels stream and yields 413. If declared length is present require exact actual match. Reject unsupported non-identity Content-Encoding with 400. Read failure 503; missing/empty body 400. UTF-8 fatal decoder; reject BOM and malformed encoding. No request.json() unbounded buffering.",
+    "json": "One object with exactly email and password own string-valued keys. Reject duplicates after decoding escaped property names, prototype-sensitive keys, arrays, nested objects, extra/trailing values, malformed strings and numeric/nonstring field values. A bounded top-level JSON scanner must detect duplicates before materialization; depth maximum 1 for the root object, exactly two members, no arrays. Input remains at most 8192 bytes; field strings preserve original values. No generic FOOD JSON import. Existing helpers are conceptual precedent only; do not modify FOOD modules.",
+    "validation": "Reuse normalizeCredentialEmail and isValidRegistrationPassword for precheck before network/hash; do not add independent normalization or alter password. Pass original parsed email/password to ZB, which revalidates and remains domain authority. Password checker sees exact unchanged valid password; no principal/admin/status/hash/metadata accepted.",
+    "csrf": "Strict trusted Origin plus no permissive CORS selected; no additional CSRF token or session required for signup. Same-origin XSS remains outside this protection. Any future authentication/session behavior requires its own review.",
+    "writes": "Only ZB service/repository writes. No email-existence prelookup, principal creation in handler, compensating delete, automatic retry, or session creation. Uncertain response instructs user to try normal login first; never invent another account ID."
+  },
+  "publicResults": {
+    "headers": "Every response: Cache-Control: no-store, Content-Type: application/json; charset=utf-8, X-Content-Type-Options: nosniff. No cookies or auth tokens. 405 also Allow: POST; 429 Retry-After: 60.",
+    "acknowledgement": { "status": 202, "body": { "ok": true, "message": "Registration request processed. Continue to sign in." } },
+    "ZBMapping": { "created": "202 exact acknowledgement; discard principalId", "conflict": "202 identical body/headers; never reveal existing account", "invalid-input": "400 fixed invalid-input", "unavailable": "503 fixed unavailable", "throwOrMalformedResult": "503 fixed unavailable; never echo result" },
+    "errors": {
+      "method-not-allowed": { "status": 405, "message": "Registration requires POST." },
+      "origin-rejected": { "status": 403, "message": "Registration request was rejected." },
+      "unsupported-content-type": { "status": 415, "message": "Registration requires JSON." },
+      "payload-too-large": { "status": 413, "message": "Registration request is too large." },
+      "invalid-input": { "status": 400, "message": "Registration input is invalid." },
+      "password-rejected": { "status": 400, "message": "Choose a different password." },
+      "rate-limited": { "status": 429, "message": "Registration is temporarily limited. Try again later." },
+      "unavailable": { "status": 503, "message": "Registration is temporarily unavailable." }
+    },
+    "errorShape": "{ok:false,error:{code,message}} with exactly selected fixed values; no input/exception/principal/hash in any response",
+    "enumeration": "Created/conflict have identical responses; ZB hashes once before persistence even for duplicates. Do not add early duplicate checks. Exact timing equalization is not claimed or selected: database/cache/network timing can differ. Abuse controls bound probing; deployment review measures both paths for gross differences, with no claim of eliminating every timing channel. A 202 acknowledgement proves neither creation nor email ownership."
+  },
+  "compromisedPasswords": {
+    "interface": "RegistrationPasswordChecker.check(password: string): Promise<allowed | rejected | unavailable>; exceptions/malformed outcomes map to unavailable. Mandatory injected control, not a change to ZB or login.",
+    "selected": "Separate future Pwned Passwords k-anonymity adapter using injected fetch and Web Crypto SHA-1 solely for screening. Hash exact UTF-8 password locally, send uppercase first five hex characters only to fixed https://api.pwnedpasswords.com/range/{prefix}, GET with Add-Padding:true, no email/cookies/auth/full hash/plaintext. Compare uppercase suffix locally, count>0 rejects; padding count0 ignored. No lookup on keystrokes.",
+    "bounds": "Abort at 3000ms, response streamed maximum 1048576 bytes, HTTP200 required, fatal UTF-8 and strict 35-uppercase-hex:nonnegative-integer lines, malformed/oversized/failed response unavailable. No redirect, retry, fallback or caching of passwords/digests. No request/response logging. Inject network and timers for inert deterministic tests.",
+    "privacy": "Remote service sees password hash prefix and server network metadata/time; prefix constrains candidate passwords and is not zero-disclosure. Plaintext/full hash stay local. SHA-1 here is a lookup protocol, never credential storage; ZB still uses Argon2id.",
+    "alternatives": "Tiny hand-written denylist is insufficient compromised-password coverage; full local corpus requires distribution/storage/update design absent here. Select range service as smallest adapter, subject to separate owner approval for outbound dependency/privacy and operational verification. No live range query in discovery.",
+    "failurePolicy": "Fail closed 503 before ZB hashing/writes on timeout/unavailable/malformed result; no default allow or external-network fallback."
+  },
+  "abuseControls": {
+    "interface": "RegistrationAbuseControl.check(request: Request): Promise<allowed | denied | unavailable>; no body read, email inspection, resolver or database calls; exceptions/malformed output fail closed 503. Inject trusted production adapter later, fakes only in next slice.",
+    "selected": "Future two Cloudflare Workers rate-limit bindings: RIVER_IDENTITY_REGISTRATION_IP_LIMITER configured 5 attempts per 60 seconds, and RIVER_IDENTITY_REGISTRATION_SHARED_LIMITER configured 30 attempts per 60 seconds. Use registration:ip:{trusted-client-IP} and registration:shared respectively. Check IP then shared; denial stops further work and returns429. Missing/unavailable binding fails closed503. Binding declarations/namespaces belong to a separately reviewed configuration activation patch; no binding exists or is configured by this record.",
+    "keyTrust": "Only server adapter in verified Cloudflare ingress may take CF-Connecting-IP; no X-Forwarded-For, request-body/email key, or arbitrary caller header accepted as trusted. Direct/local ingress uses explicit isolated test metadata only; production missing/unverifiable client metadata fails closed. Verify header provenance including same-zone worker subrequest behavior before activation. No IP/email logging or persistent application counters.",
+    "concurrency": "Add process-local capacity of two in-flight registration operations via injected acquireWorkSlot returning idempotent release or null. Full slots -> fixed 503, release in finally. Holder spans bounded body read, checker and ZB. Stream read deadline 5000ms via injected testable abort/timer control. No waiter queue. This is per-isolate protection, not a global distributed lock/quota. Worker CPU budget and measured Argon2 throughput/memory plus edge rate controls must be verified before public deployment.",
+    "limitsAndApproval": "Per-location counters are approximate/eventually consistent abuse mitigation, not exact globally enforced quotas. New bindings/namespaces and trusted ingress configuration need separate owner/config approval; no currently installed/deployed limiter capability is asserted. If runtime capacity cannot safely handle selected limits, STOP activation rather than bypass control.",
+    "Turnstile": "Not currently configured; not selected for first boundary. No site key/secret/challenge field is introduced. Escalating bot abuse may justify a separate reviewed challenge slice, not silent activation now."
+  },
+  "runtime": {
+    "factory": "createIdentityRegistrationRuntime(input) with injected database: IdentityRegistrationD1Database, expectedOrigin, compromisedPasswords, abuseControl, acquireWorkSlot, generatePrincipalId, now and testable body-read timing control. Success exposes only handler; failure fixed unavailable. No env/global imports in pure runtime module.",
+    "assembly": "Structural validation first; then one D1IdentityRegistrationRepository, one existing Argon2idPasswordHasher, one DefaultIdentityRegistrationService and handler. Retain injected generators/clock without calling during construction. No DB probes or network/password operations. Future thin Astro route imports env, acquires only RIVER_IDENTITY_DB, uses trusted SITE, platform crypto.randomUUID wrapped with createPrincipalId and Date clock, then passes mandatory reviewed security adapters. No session-store construction, principal resolver or FOOD database.",
+    "configuration": "Existing identity database binding sufficient. No identity schema migration; no FOOD/admin/origin configuration change. New limiter bindings require separate declaration/provisioning/typing review. Compromised service does not require an API secret. Local fakes never become production fallback."
+  },
+  "browser": {
+    "signupPath": "/register, generic future Astro page; no owner email hardcoded/prefilled",
+    "fields": "Email type=email autocomplete=email required; password type=password autocomplete=new-password required, password policy explained in visible help text. Do not use HTML minlength/maxlength as authoritative scalar counts because UTF-16 semantics differ; server is authority. No confirm-password field or visibility toggle in first surface; no extra personal data.",
+    "interaction": "Follow existing Sesh identity JSON fetch convention: scoped submit script sends exactly {email,password} to same-origin /api/identity/register, disables submit while pending, clears password field/references after attempt, no local/session storage, analytics or echoed server body. Fixed messages via textContent in aria-live region; associated labels/error description and keyboard focus. JavaScript required for this JSON-only slice, explicitly shown in noscript; no fake native fallback sending plaintext form navigation/query. Page must prevent default submission and must not submit secret-bearing form to a GET URL if scripts fail (safe inert form structure to be verified by browser test).",
+    "login": "202 displays neutral acknowledgement with link to new generic /login page. /login uses existing /api/identity/login JSON flow; login issues canonical session through existing handler, no login source change. Do not route generic signup into River OS access-key login or Sesh creator provisioning. Fixed local post-login destination reviewed separately, no untrusted redirect target; first generic login confirmation can remain on page.",
+    "headers": "Signup/login pages no-store, Referrer-Policy:no-referrer, X-Content-Type-Options:nosniff; no indexing and exclude from sitemap in later UI patch. No third-party analytics/scripts on secret-entry pages. Current MainLayout/ReadingLayout analytics must not be reused there. Review existing app headers before adding CSP; no CSP claim without browser verification.",
+    "privacy": "No real passwords in Codex/chat, tests, source or telemetry. Logging excludes normalized/raw email, body, hashes/prefix/suffix, IP, tokens/cookies/session IDs. Minimal aggregate operational code counts only, no credential details. Inbox ownership unverified; no implicit administrator entitlement."
+  },
+  "implementationSlices": [
+    "A: pure injected registration request handler and runtime with mandatory security interfaces, inert checker/limiter/slot fakes; no route, external adapter/config, UI or production call.",
+    "B: separately reviewed bounded Pwned Passwords adapter and trusted Cloudflare abuse/slot adapters, synthetic tests only; separate owner external-service/config approval remains required.",
+    "C: thin Astro /api/identity/register route and generic /register plus /login browser surfaces with local isolated tests; no automatic production activation.",
+    "D: separately approve security bindings/ingress, performance verification, target/schema verification and deployment. Source route presence alone is not authorization to deploy.",
+    "E: owner independently enters password through approved browser flow; separate exact principal verification and owner approval precede protected FOOD administrator configuration."
+  ],
+  "proposedNextSliceFiles": [
+    "src/lib/identity/http/principal-registration-api.ts",
+    "src/lib/identity/http/principal-registration-api.test.ts",
+    "src/lib/identity/runtime/principal-registration-api.ts",
+    "src/lib/identity/runtime/principal-registration-api.test.ts"
+  ],
+  "testObligations": [
+    "Method/Allow, canonical Origin variations/local isolated config, content type, declared/streamed size and length mismatch, stream error/deadline, invalid UTF-8, BOM, duplicate escaped keys/prototype keys, nesting/arrays/extra fields rejected before service.",
+    "Policy failures zero body/security/service calls as ordered; limiter denial before body, unavailable fail closed; slot full/release once on all outcomes; constructors zero dependency I/O.",
+    "Existing email/scalar password policy precheck, unchanged password checker and service input; no check/hash/write on invalid input; synthetic credentials only.",
+    "Compromised rejection400, unavailable503, no fallback; future checker prefix-only network contract, padding/suffix bounds, timeout/abort, malformed response handling using injected fake fetch only.",
+    "Created/conflict exactly identical202 status/body/headers, no principal/hash/email/password leakage; all other ZB codes, throws and malformed envelopes sanitized503/400 as specified; no session, cookies, token, retry or direct writes.",
+    "Runtime structural malformed/throwing inputs, one service/repository, trusted injection, no environment acquisition; isolated existing ZB integration retains atomicity/concurrent uniqueness and login compatibility.",
+    "Later browser test verifies JS-disabled/script-failed behavior cannot GET-submit password, accessibility, pending submit, password clearing, neutral duplicate UX, /login API session issuance; no third-party analytics or automatic FOOD assignment.",
+    "Identity regressions, strict TypeScript for new modules, JSON/reference/whitespace checks, git diff --check and normal build. No configured/live identity database or real compromised-password network calls in tests."
+  ],
+  "blockersBeforeActivation": [
+    "Owner approval for Pwned Passwords prefix disclosure/outbound dependency; actual bounded adapter verification.",
+    "Reviewed concrete IP/shared rate-limit bindings, trusted ingress metadata, capacity/performance and neutral response-timing review; no controls currently configured.",
+    "Separately approved route/UI implementation, isolated browser tests, production identity target/schema verification and deployment. No owner account or administrator assignment authorized by this specification."
+  ],
+  "exclusions": "No implementation files, source/config changes, secrets, migrations, live identity/FOOD data access or mutation, external password query, real password handling, route/UI creation, account creation, stage/commit/push, deployment or activation in ZC discovery.",
+  "nextSlice": "Slice A: injected registration transport/security contracts and pure runtime implementation plus inert validation, exactly four proposed files. Production adapters, configuration, route/UI and activation remain separately gated.",
+  "ambiguities": "No blocker for injected Slice A. Concrete Cloudflare limiter declaration and ingress guarantees must be reviewed in Slice B/config activation, not assumed from documentation. No change to ZB, login, sessions or FOOD authorities."
+}
