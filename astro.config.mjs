@@ -18,6 +18,9 @@ export default defineConfig({
             filter: (page) =>
                 !page.startsWith(
                     "https://theriverkeptflowing.com/sesh/studio/"
+                ) &&
+                !["/register", "/register/", "/login", "/login/"].includes(
+                    new URL(page).pathname
                 )
         })
     ],
