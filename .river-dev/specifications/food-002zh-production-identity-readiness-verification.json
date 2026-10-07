@@ -1,0 +1,74 @@
+{
+  "id": "FOOD-002ZH",
+  "title": "Read-only production identity target/schema, ingress, and SESSION readiness verification",
+  "baseline": {"branch": "cif-001-canonical-content-source-record", "head": "5156090a9b8b9a0c3886adfc63e5723059353b78", "worktree": "Clean and empty index before live inspection"},
+  "accountId": "8401a673cced362e27f162662ce629ae",
+  "inspection": "Existing authenticated tooling; GET-only Cloudflare metadata and public HEAD checks, plus Wrangler remote d1 execute containing exclusively SELECT statements. D1 transport uses its query API but SQL was observational only. No credential values recorded.",
+  "identityTarget": {
+    "status": "VERIFIED",
+    "binding": "RIVER_IDENTITY_DB",
+    "databaseName": "river-identity",
+    "databaseId": "4587d908-1466-4556-b868-1d60321f0970",
+    "migrationDirectory": "migrations/identity",
+    "evidence": "Account-scoped D1 database GET returned exact name/UUID. Deployed Worker settings contain d1 binding RIVER_IDENTITY_DB with this same ID. Both match committed Wrangler configuration; no target ambiguity."
+  },
+  "identitySchema": {
+    "status": "READY",
+    "method": "SELECT type,name,sql FROM sqlite_schema filtered to required tables; SELECT name FROM d1_migrations ORDER BY id; aggregate principal/credential counts only.",
+    "migrations": ["0001_river_identity.sql", "0002_principal_sesh_creator_mapping.sql"],
+    "tables": {
+      "principals": "principal_id TEXT PRIMARY KEY NOT NULL; status TEXT NOT NULL; display_name TEXT nullable; created_at/updated_at TEXT NOT NULL",
+      "principal_password_credentials": "principal_id TEXT PRIMARY KEY NOT NULL; email_normalized TEXT NOT NULL UNIQUE; password_hash/created_at/updated_at TEXT NOT NULL",
+      "principal_sesh_creator_mappings": "principal_id TEXT PRIMARY KEY NOT NULL; sesh_creator_id TEXT NOT NULL UNIQUE; created_at TEXT NOT NULL"
+    },
+    "indexes": "Live sqlite autoindexes exist for principal and credential primary keys and unique normalized email, mapping primary/creator keys; explicit unique idx_principal_sesh_creator_mappings_creator matches migration. Live CREATE definitions match committed constraints; credential FK is not present or required by committed schema.",
+    "runtimeCompatibility": "D1PrincipalRepository and D1PasswordCredentialRepository read these exact columns; registration inserts principal/credential and joined readback via batch. No further schema migration needed for these paths. Observational schema proof does not exercise production insert/batch rollback or password authentication.",
+    "sanity": {"principalCount": 0, "credentialCount": 0, "queriesSuccessful": true, "changes": 0, "rowsWritten": 0, "changedDatabase": false},
+    "privacy": "No owner-email lookup, individual principal/email/password-hash/token retrieval. Aggregate zero counts are not a future account absence guarantee."
+  },
+  "deployedWorker": {
+    "service": "theriverkeptflowing-site",
+    "environment": "production",
+    "identityBinding": "PRESENT: d1, exact verified database ID",
+    "registrationConfig": "New ZG activation variable and two rate-limit bindings absent in inspected live settings; expected because ZG has not been deployed. Local committed configuration is false with namespaces1001/1002 and policies5/60,30/60. Activation remains undeployed; no live true value observed for this flag.",
+    "site": "Committed Astro site https://theriverkeptflowing.com is compile-time import.meta.env.SITE; not a required live env binding. No origin configuration change required."
+  },
+  "sessionInfrastructure": {
+    "status": "READY",
+    "source": ["src/lib/identity/runtime/principal-login-api.ts", "src/pages/api/identity/login.ts", "src/lib/identity/session/astro-session-adapter.ts", "node_modules/@astrojs/cloudflare/dist/index.js", "node_modules/@astrojs/cloudflare/dist/wrangler.js", "node_modules/astro/dist/core/session/runtime.js"],
+    "requirements": [
+      {"name": "SESSION", "type": "kv_namespace", "status": "PRESENT", "namespaceId": "1b34a684fcb74f6fb1e298adda5a0df9", "evidence": "Deployed Worker settings namespace_id and account KV namespace metadata inventory match exactly; one matching resource. No KV values read."},
+      {"name": "separate identity session signing/encryption secret", "status": "NOT APPLICABLE", "evidence": "Current identity runtime consumes Astro session and D1 only. Installed default Astro Cloudflare driver uses SESSION KV with opaque session IDs; no extra application secret binding required by this inspected composition."},
+      {"name": "identity D1 session table", "status": "NOT APPLICABLE", "evidence": "AstroPrincipalSessionStore delegates to Astro get/set/delete/regenerate/destroy, not a D1 session repository."}
+    ],
+    "qualification": "READY means required resource/binding configuration sufficiently present for disabled deployment. Actual login, secure cookie attributes, session persistence/expiry and password-manager behavior remain real-browser verification gates; no session created or cookie value retrieved."
+  },
+  "ingress": {
+    "status": "VERIFIED",
+    "canonicalOrigin": "https://theriverkeptflowing.com",
+    "customDomain": "Cloudflare account workers/domains maps theriverkeptflowing.com to theriverkeptflowing-site production, zone44b502fe6ccfb1a92484dc15633e40b5.",
+    "zoneWorkerRoutes": "Zone workers/routes GET returned no route entries; canonical mapping is the Worker custom-domain association.",
+    "http": "HEAD canonical / returned200 over HTTPS, Server:cloudflare and CF-RAY; no credentials or request body sent.",
+    "dnsLimitation": "Canonical DNS-record API inspection returned403. DNS proxy record details were not verified; successful HTTPS and authoritative Worker custom-domain mapping establish the intended canonical Worker ingress for this disabled-deployment scope. No arbitrary origin-IP or unrelated hostname probes performed."
+  },
+  "directOriginSecurity": {
+    "status": "SAFE",
+    "scope": "Inspected canonical and known alternate Cloudflare Worker endpoint against committed strict-Origin registration design; not a general network penetration-test or global ingress-header provenance certification.",
+    "workersDev": "Enabled; previews_enabled true. Account subdomain riveryoung100; known endpoint https://theriverkeptflowing-site.riveryoung100.workers.dev/ returned200 to HEAD with Cloudflare metadata.",
+    "interpretation": "Alternate workers.dev endpoint is still Cloudflare Worker ingress. Committed C1 takes trusted Origin from fixed SITE, not Host or forwarded headers; A requires exact https://theriverkeptflowing.com Origin regardless of incoming hostname. Browser requests from alternate origin cannot acquire canonical-origin permission through hostname substitution. Strict Origin is not authentication and automated clients can supply it; limiters/CF-Connecting-IP provenance remain separate activation protections.",
+    "remainingActivationChecks": "No external origin established by inspected custom-domain/Worker metadata. DNS-record denial and uninspected same-zone subrequest/header rewrite paths must not be treated as comprehensive proof of CF-Connecting-IP provenance. Reconcile these in activation preflight; disabled configuration does not reach IP/limiter/registration operations."
+  },
+  "liveRouteState": {
+    "register": "HEAD /register returned404",
+    "login": "HEAD /login returned404",
+    "classification": "EXPECTED PRE-DEPLOYMENT STATE",
+    "explanation": "Both pages exist committed but their implementation and ZG configuration have not been deployed in this workflow. No registration API POST or login attempt performed."
+  },
+  "overallReadiness": "READY FOR DISABLED DEPLOYMENT",
+  "readinessScope": "Verified exact identity database/schema, deployed SESSION KV resource and binding, canonical Worker ingress, and no alternate-host Origin bypass identified. This is readiness for separately approved false activation deployment, not approval to deploy or activate. No operational HIBP/limiter/account write occurs while disabled. No missing inspected infrastructure prerequisite identified.",
+  "disabledDeploymentBlockers": [],
+  "remainingGates": ["Disabled deployment planning, effective generated config/version/target preflight and explicit owner deployment approval", "Live HIBP privacy/outbound approval and runtime capacity checks before activation", "Complete activation ingress/header provenance review including DNS API access limitation", "Real-browser session/cookie/UX validation", "Separate activation policy/approval, repeated owner-account absence gate, owner manual registration/login and principal verification", "Separate FOOD administrator configuration approval"],
+  "productionActivity": "All live activity read-only; no schema/data mutation, KV contents/session writes, deployment, Cloudflare configuration/DNS/secret changes, HIBP requests, accounts or passwords. All D1 SELECT results report zero rows written and unchanged database.",
+  "nextSlice": "FOOD-002ZI — disabled production registration deployment plan and preflight",
+  "exclusions": "Only this new artifact; no existing source/config/spec/type change, staging/commit/push or destructive Git action. READY classification is not deployment authorization."
+}
