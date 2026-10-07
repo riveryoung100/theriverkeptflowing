@@ -1,0 +1,91 @@
+{
+  "version": "1.0.0",
+  "id": "FOOD-002V",
+  "name": "Verified RIVER_FOOD_DB binding patch review",
+  "phase": "Review/preview only; no target patch applied",
+  "startingState": { "branch": "cif-001-canonical-content-source-record", "head": "ec8aff6b5556aa4aa350f824b862997678d38f45", "worktree": "Verified clean" },
+  "references": [
+    ".river-dev/specifications/food-002r-production-repository-sourcing-and-activation-readiness-boundary.json",
+    ".river-dev/specifications/food-002s-production-food-target-owner-decision-packet.json",
+    ".river-dev/specifications/food-002t-production-food-configuration-patch-preview.json",
+    "wrangler.jsonc",
+    "worker-configuration.d.ts",
+    "package.json",
+    "src/lib/food/private-menu-runtime-acquisition.ts",
+    "src/lib/food/private-menu-server-adapter.ts",
+    "migrations/food/0001_food_draft_snapshots.sql",
+    "migrations/food/0002_food_menu_snapshots.sql"
+  ],
+  "verifiedResource": {
+    "name": "river-food",
+    "databaseId": "3dae5997-161e-454b-8d5c-dada476d5185",
+    "accountContext": "Same authenticated project account verified during FOOD-002U",
+    "region": "WNAM reported at creation; list does not report region",
+    "verificationCommand": "node node_modules/wrangler/bin/wrangler.js d1 list --config wrangler.jsonc --json",
+    "verificationResult": "Exactly one river-food entry with matching UUID, num_tables:0 and file_size:8192. Metadata only; no SQL executed.",
+    "binding": "RIVER_FOOD_DB",
+    "automaticSuggestion": "Wrangler suggested river_food during creation; not applied and not the approved binding.",
+    "migrationState": "No migrations applied by this workflow; metadata still reports zero tables. No configured schema SQL inspection was performed."
+  },
+  "approvedIntent": "Dedicated shared FOOD-001/FOOD-002 storage, RIVER_FOOD_DB binding, river-food resource, migrations/food with 0001 then 0002, existing session/identity reuse. Administrator and trusted origin remain separate unresolved settings.",
+  "currentConfiguration": {
+    "d1Bindings": ["RIVER_COMMERCE_DB", "RIVER_CRM_DB", "SESH_DB", "RIVER_IDENTITY_DB"],
+    "foodBindingAbsent": true,
+    "verifiedFoodIdNotPreviouslyCommitted": true,
+    "resourceNameNoCommittedCollision": true,
+    "insertion": "Fifth top-level d1_databases entry immediately after RIVER_IDENTITY_DB and before closing d1_databases array; r2_buckets and other bindings unchanged."
+  },
+  "patchPreview": {
+    "path": "wrangler.jsonc",
+    "style": "Exact before/after structural tail fragment using current identity entry's two-space indentation and tab-indented array closure",
+    "before": "      \"migrations_dir\": \"migrations/identity\"\n    }\n\t],\n\t\"r2_buckets\": [",
+    "after": "      \"migrations_dir\": \"migrations/identity\"\n    },\n    {\n      \"binding\": \"RIVER_FOOD_DB\",\n      \"database_name\": \"river-food\",\n      \"database_id\": \"3dae5997-161e-454b-8d5c-dada476d5185\",\n      \"migrations_dir\": \"migrations/food\"\n    }\n\t],\n\t\"r2_buckets\": [",
+    "addition": { "binding": "RIVER_FOOD_DB", "database_name": "river-food", "database_id": "3dae5997-161e-454b-8d5c-dada476d5185", "migrations_dir": "migrations/food" },
+    "scope": "Real resource ID is non-secret authorized metadata. Preserve every existing target and configuration value. No preview_database_id, administrator vars, origin vars or named-environment changes included."
+  },
+  "typingReview": {
+    "path": "worker-configuration.d.ts",
+    "command": "node node_modules/wrangler/bin/wrangler.js types worker-configuration.d.ts --config wrangler.jsonc",
+    "expectedAddition": "RIVER_FOOD_DB: D1Database; in generated __BaseEnv_Env; Env and Cloudflare.Env inherit it",
+    "workflow": "Generated header confirms wrangler types. Installed CLI supports explicit output path, include-env/include-runtime and --check. No package script dedicated to generation is required.",
+    "writeScope": "Generator writes the requested declaration output; does not apply bindings, migrate or deploy. Generated header/hash/runtime boilerplate may also differ within this file under installed tooling. Logs/cache may be produced outside tracked source; inspect git status and STOP on unexpected tracked/untracked changes. Do not assert the resulting diff is only one line without reviewing it.",
+    "checkCommand": "node node_modules/wrangler/bin/wrangler.js types worker-configuration.d.ts --config wrangler.jsonc --check",
+    "restrictions": "No modifying generator or hand edit ran in V. Do not inspect or disclose secret-file values; later generation must not embed administrator values."
+  },
+  "runtimeReview": {
+    "existingInputs": "FoodPrivateMenuEnvironmentAcquisitionInput accepts environment and bindingName; FoodPrivateMenuServerContextInput accepts environment, bindingName, session, readDependencies, administratorPrincipalId and optional now.",
+    "supplyPoint": "Future separately approved thin src/pages/river-os/actions/food-menu.ts call site supplies bindingName: RIVER_FOOD_DB to acquirePrivateFoodMenuDatabaseFromEnvironment and createPrivateFoodMenuOperationRuntimeFromServerContext.",
+    "fragment": "acquirePrivateFoodMenuDatabaseFromEnvironment({ environment, bindingName: \"RIVER_FOOD_DB\" });\ncreatePrivateFoodMenuOperationRuntimeFromServerContext({ environment, bindingName: \"RIVER_FOOD_DB\", session, readDependencies, administratorPrincipalId });",
+    "scope": "No generic I/J changes, hardcoded database selection, runtime wiring or route work in the binding application slice. No additional composition abstraction required."
+  },
+  "explicitExclusions": {
+    "administrator": "RIVER_FOOD_ADMIN_PRINCIPAL_ID remains recommended protected trusted configuration only; actual active canonical principal unselected/unverified. No value or secret change.",
+    "origin": "Owner-verified explicit canonical-site configuration remains required; no value set or request-derived trust.",
+    "migrations": "Binding declaration does not authorize 0001_food_draft_snapshots.sql or 0002_food_menu_snapshots.sql application, SQL, migration records or data writes. Separate approval required.",
+    "routes": "No src/pages/river-os/actions/food-menu.ts or other route registered. No runtime activation, deployment or public exposure.",
+    "other": "No provisioning, identity/session/FOOD source changes, account/environment changes or unrelated subsystem work."
+  },
+  "minimalFuturePatchFiles": ["wrangler.jsonc", "worker-configuration.d.ts"],
+  "futureApplicationSequence": [
+    "Obtain explicit approval to apply this exact binding patch and generate types; verify then-current branch/HEAD/clean worktree.",
+    "Reverify metadata-only name/UUID match and target account; STOP on mismatch or collision.",
+    "Apply patchPreview to wrangler.jsonc without changing any existing binding/target.",
+    "Run typingReview.command using installed project Wrangler, then inspect exact diff and status. No migration or deployment commands.",
+    "Validate JSONC structure through installed toolchain, generated type freshness, static/type/build results and git diff --check. Stop on unexpected file changes; do not fix unrelated baseline failures.",
+    "Verify exactly the two intended files changed, no administrator/origin/route/schema activation, and report exact diff/results/status. Stop before staging/commit/push pending that slice's instructions."
+  ],
+  "futureValidationCommands": [
+    "node node_modules/wrangler/bin/wrangler.js types worker-configuration.d.ts --config wrangler.jsonc --check",
+    "npm run typecheck",
+    "npm run build",
+    "git diff --check",
+    "git diff --stat",
+    "git diff --name-status",
+    "git status"
+  ],
+  "recovery": "If application validation fails, review and restore only that slice's uncommitted config/type changes with owner awareness, preserving unrelated changes if any. Leave already-created empty river-food resource untouched. No database deletion, schema rollback, destructive cleanup or history rewrite; code rollback never implies database rollback.",
+  "approvalBoundary": "V authorizes this review artifact and metadata lookup only. Real binding patch/type regeneration need a separate explicit application instruction. Migration, protected administrator, origin, route registration, deployment and activation each remain separate approvals.",
+  "nextAction": "Owner reviews patchPreview and separately authorizes the two-file binding patch application plus type regeneration; do not apply automatically.",
+  "executionRecord": "No target configuration changed; no types generated, migrations/SQL/data writes, routes, deployment or activation. Only metadata listing and read-only source/help inspection occurred.",
+  "acceptanceCriteria": ["JSON and committed reference/symbol checks pass", "Before fragment matches actual config; food binding/name/ID previously absent", "Metadata name/ID matches exactly one database", "Only this artifact is new and nothing staged", "Whitespace checks and git diff --check pass"]
+}
