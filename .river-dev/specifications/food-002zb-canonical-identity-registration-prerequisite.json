@@ -1,0 +1,122 @@
+{
+  "version": "1.0.0",
+  "id": "FOOD-002ZB",
+  "name": "Canonical identity account-registration prerequisite",
+  "phase": "Discovery and specification only",
+  "purpose": "Define generic email/password account registration; the FOOD tracking identifier confers no FOOD privileges. No account is created by this record.",
+  "startingState": { "branch": "cif-001-canonical-content-source-record", "head": "fae23e4d04f58ebaf0ea2b448a899b467fa7cc7b", "worktree": "Clean; nothing staged" },
+  "references": [
+    "src/lib/identity/identifiers.ts",
+    "src/lib/identity/model.ts",
+    "src/lib/identity/validation.ts",
+    "src/lib/identity/repository.ts",
+    "src/lib/identity/identity.test.ts",
+    "src/lib/identity/credentials/model.ts",
+    "src/lib/identity/credentials/contracts.ts",
+    "src/lib/identity/credentials/repository.ts",
+    "src/lib/identity/credentials/validation.ts",
+    "src/lib/identity/credentials/argon2id.ts",
+    "src/lib/identity/credentials/password-credentials.test.ts",
+    "src/lib/identity/cloudflare/types.ts",
+    "src/lib/identity/cloudflare/d1-principal-repository.ts",
+    "src/lib/identity/cloudflare/d1-principal-repository.test.ts",
+    "src/lib/identity/cloudflare/d1-password-credential-repository.ts",
+    "src/lib/identity/cloudflare/d1-password-credential-repository.test.ts",
+    "src/lib/identity/authentication/password-authentication-service.ts",
+    "src/lib/identity/authentication/password-authentication-service.test.ts",
+    "src/lib/identity/http/principal-login-api.ts",
+    "src/lib/identity/http/principal-login-api.test.ts",
+    "src/lib/identity/runtime/principal-login-api.ts",
+    "src/lib/identity/runtime/principal-login-api.test.ts",
+    "src/lib/identity/session/astro-session-adapter.ts",
+    "src/lib/identity/session/session.test.ts",
+    "src/lib/identity/session/principal-resolver.ts",
+    "src/pages/api/identity/login.ts",
+    "src/pages/river-os/login.astro",
+    "migrations/identity/0001_river_identity.sql",
+    "migrations/identity/0002_principal_sesh_creator_mapping.sql",
+    "src/lib/food/d1-draft-persistence.integration.test.ts"
+  ],
+  "discovery": {
+    "currentCapability": "Password login only; no signup service, route, secure bootstrap, or atomic principal/credential creation orchestration. River OS access-key boolean and Sesh mappings are not substitutes for principal identity.",
+    "email": "Reuse normalizeCredentialEmail: trim and lowercase; reject nonstrings, empty or over-320-code-unit normalized strings, whitespace, and missing/multiple/terminal @. This is the existing limited syntax policy, not inbox validation. validatePasswordCredential requires already-normalized email. SQLite UNIQUE(email_normalized) is case-sensitive; canonical application normalization makes application-managed email uniqueness case-insensitive. Fail closed on corrupt/noncanonical stored rows; never adopt a second normalization policy.",
+    "password": "Argon2idPasswordHasher currently requires a nonempty string of at most 1024 UTF-8 bytes; there is no account-registration strength policy.",
+    "hashing": "Reuse PasswordHasher.hashPassword through injected PasswordHasher with production Argon2idPasswordHasher: Argon2id v19, memory 19456 KiB, iterations 2, parallelism 1, random 16-byte salt, 32-byte output, encoded PHC representation. Service owns invocation; route never hashes. Existing verifyPassword accepts this output.",
+    "principalPersistence": "PrincipalRepository.savePrincipal(unknown) validates supplied principalId, active/disabled status and timestamps; D1PrincipalRepository uses an upsert, not a registration-only insert. It generates neither ID nor timestamps and does not select a default active state.",
+    "credentialPersistence": "PasswordCredentialRepository.saveCredential requires principalId, emailNormalized, passwordHash, createdAt, updatedAt. D1 adapter checks immutable identity/createdAt and conflicting email ownership, then upserts. It does not atomically create a principal. Schema has principal primary key and unique normalized email but no credential-to-principal foreign key.",
+    "atomicityGap": "IdentityD1DatabaseLike exposes prepare only and run results expose optional success only. Existing two save calls cannot guarantee account atomicity; do not extend or reinterpret them as registration transactions.",
+    "emailVerification": "No inbox verification capability exists. Registration establishes a login identifier plus password, not verified ownership of an email inbox. Administrator ownership approval remains separate.",
+    "abuse": "No committed identity login rate limiter/attempt limiter was found. No external Cloudflare protection is assumed or verified."
+  },
+  "selectedArchitecture": {
+    "service": "IdentityRegistrationService and DefaultIdentityRegistrationService in a generic identity module; register(input: unknown) returns Promise<IdentityRegistrationResult>. Input is exactly an object with email and password strings, no caller-supplied principal/status/hash/timestamps/roles.",
+    "dependencies": "Inject atomic IdentityRegistrationRepository, PasswordHasher, generatePrincipalId: () => PrincipalId and now: () => Date. Construction synchronous and I/O-free. Trusted future runtime uses cryptographically random identifiers and existing createPrincipalId/parsePrincipalId; never derive ID from email or hardcode it. Validate generator and clock output; no retry on collision.",
+    "passwordPolicy": "Explicit new registration design decision: 15 through 128 Unicode scalar values, at most 1024 UTF-8 bytes, reject unpaired surrogates. Preserve password exactly; no trim, normalization, truncation, composition rules or forced password changes. This policy applies to registration only and does not change existing login acceptance. A compromised/common-password rejection control remains a public-exposure prerequisite to specify in the later security/transport slice, not a second hashing algorithm.",
+    "flow": "Validate envelope, normalize email through normalizeCredentialEmail, validate new password policy, hash exactly once, generate and parse canonical ID, obtain one valid ISO timestamp for both records, construct active principal and matching credential, validate using existing validators, submit both to atomic repository. No plaintext reaches persistence. No automatic session; normal login remains required afterward.",
+    "repository": "Dedicated IdentityRegistrationRepository.createAccount(principal, credential), accepting validated AuthenticatedPrincipal and PasswordCredential with exactly matching principalId and creation/update timestamps. Internal result: created or conflict, or sanitized storage failure. No raw repository methods exposed to public route.",
+    "result": {
+      "success": "{ ok: true, value: { principalId: PrincipalId } }",
+      "failure": "{ ok: false, error: { code: invalid-input | conflict | unavailable, message: fixed sanitized string } }",
+      "messages": { "invalid-input": "Registration input is invalid.", "conflict": "Registration could not be completed.", "unavailable": "Registration is temporarily unavailable." },
+      "privacy": "No principal object, hash, credential row, email, password, SQL, exception, stack or conflict reason in results. Existing account never returns its principal or is modified. Internal conflict must not become public account-existence disclosure."
+    }
+  },
+  "atomicity": {
+    "adapter": "D1IdentityRegistrationRepository with a dedicated injected narrow registration database interface exposing prepare/bind and batch with per-statement success, results and meta.changes. Keep existing IdentityD1DatabaseLike unchanged; no Food imports or use of FoodD1Database as identity authority.",
+    "sqlStrategy": "One D1 transactional batch with plain INSERT into principals followed by plain INSERT into principal_password_credentials, then exact readback by generated principal ID for metadata validation. No upsert, ON CONFLICT DO NOTHING, overwrite, or preliminary lookup treated as concurrency authority. Unique constraints cause competing canonical-email inserts to fail and roll back the entire losing batch, including its principal insertion. Principal ID collisions also conflict; never regenerate silently.",
+    "outcomes": "Require both inserts success and meta.changes exactly 1, and matching canonical readback within the batch. A proven uniqueness violation maps to conflict. Other errors, malformed metadata, uncertain transport or unexpected readback map to unavailable; do not infer rollback from transport failure. Failures after commit can be uncertain: never automatically retry, delete or repair; later exact read-only verification is required.",
+    "verification": "Actual isolated Miniflare worker-side D1 batch tests must prove rollback on second insert, rollback on first failure, read visibility, affected-row metadata, and concurrent duplicate registration with exactly one account. Existing FOOD harness provides demonstrated local transactional precedent, not verification of this future identity adapter or remote production behavior. Stop implementation validation if required semantics cannot be exercised."
+  },
+  "schemaReadiness": {
+    "decision": "NO IDENTITY SCHEMA MIGRATION REQUIRED",
+    "basis": "Committed 0001 tables and uniqueness constraints suffice for atomic insert-only registration; adapter enforces principal/credential correspondence. No live schema read performed in ZB. Prior exact production credential lookup succeeded, but full current remote schema is not freshly attested; trusted production target/schema verification remains a later activation gate.",
+    "limits": "No database FK is added. Atomic registration guarantees its own pair creation, not integrity of arbitrary older/manual writes or separate existing upserts. Existing mappings unchanged."
+  },
+  "futureTransport": {
+    "path": "/api/identity/register",
+    "method": "POST only; other methods 405 before body read",
+    "contentType": "application/json with optional UTF-8 charset; unsupported type 415",
+    "body": "Stream-enforced maximum 8192 bytes; reject oversized declared or actual body with 413, invalid UTF-8, duplicate decoded JSON keys, unexpected keys and malformed JSON with fixed invalid-input 400. Exactly email and password strings. No query-string credentials or body logging.",
+    "origin": "Require canonical Origin exactly equal to explicitly trusted server-configured expected origin, never infer trust from request URL/Host/forwarded headers. Preserve existing login same-origin intent but use strict canonical comparison; missing/malformed/mismatched Origin is 403 before body read. HTTPS in production. No permissive CORS. A separate CSRF token is not selected with strict origin enforcement; later surface review must confirm authenticated cookie/session interaction.",
+    "responses": "JSON and Cache-Control: no-store on every response. Successful creation and internal conflict both map to the same public 202 generic acknowledgement without principal ID or account-existence indication. Invalid input 400, unavailable 503, policy failures 403/405/413/415, throttling 429, all fixed sanitized feedback. Generic acknowledgement does not claim account creation. The trusted service alone receives successful principalId; later owner verification is separate.",
+    "publicExposureBlockers": "Before public deployment select and verify bounded request/registration-rate and expensive-hash concurrency controls, compromised/common-password rejection, and neutral duplicate-response/timing behavior. No existing repository limiter can be reused. These are precise later security decisions; service/persistence implementation can proceed now against isolated tests. Do not deploy an unprotected registration endpoint or claim email ownership verification.",
+    "ownerInteraction": "Owner supplies password only directly into reviewed secure browser signup surface. Codex must never request, observe, invent, log or store that password. Unit/integration fixtures synthetic only."
+  },
+  "proposedImplementationFiles": [
+    "src/lib/identity/authentication/registration-service.ts",
+    "src/lib/identity/authentication/registration-service.test.ts",
+    "src/lib/identity/cloudflare/d1-registration-repository.ts",
+    "src/lib/identity/cloudflare/d1-registration-repository.test.ts",
+    "src/lib/identity/cloudflare/d1-registration-repository.integration.test.ts"
+  ],
+  "fileResponsibilities": "Service file owns new service/result/policy/atomic-repository contract types. D1 file owns narrow injected database types and atomic adapter. No existing repository interfaces, login implementation, exports or schema need changing in the first implementation slice. Future transport/runtime/browser files require a separately reviewed specification.",
+  "tests": [
+    "Valid registration returns only canonical principalId; active principal and matching credential share one timestamp.",
+    "Existing exact email normalization including case/whitespace, malformed and oversized email; no second canonicalization.",
+    "Password boundaries by scalar count and UTF-8 size, unpaired surrogates, unchanged spaces/unicode, nonstrings; synthetic secrets only.",
+    "Hash exactly once on valid attempt, never on invalid input; hash failure sanitized; no plaintext in repository calls/results/logs.",
+    "Invalid ID/clock outputs fail closed; no supplied identity/status/hash/role fields accepted.",
+    "Canonical-email duplicate never modifies original principal/credential or returns existing principal; ID collision fails without automatic retry.",
+    "Actual D1 batch creates pair atomically, failed credential write leaves no principal, failed principal write creates no credential, concurrent duplicates yield one account.",
+    "Affected-row/readback checks, malformed batch responses, unknown exceptions and transport uncertainty fail closed without compensating deletion or blind retry.",
+    "Register then authenticate using existing DefaultPasswordAuthenticationService and Argon2idPasswordHasher with canonical email and unchanged password.",
+    "No session auto-creation, Sesh mapping, FOOD assignment, configuration mutation, production binding acquisition or live DB access.",
+    "Isolated installed Miniflare convertV4MiniflareOptions, cf:false, d1Persist:false, synthetic identity binding, inline worker batch via dispatchFetch; actual 0001 migration only in harness; dispose; never getD1Database.",
+    "Identity principal/credential/password/login/session/runtime regressions; strict TypeScript for new files, git diff --check and normal build. Do not fix unrelated baseline errors."
+  ],
+  "sequencing": [
+    "Implement and validate generic registration service and atomic persistence against isolated tests; review and close separately.",
+    "Specify and implement request security, abuse controls, neutral responses, trusted runtime composition and browser signup surface separately.",
+    "Explicitly approve target verification and deployment; no phase silently authorizes the next.",
+    "Owner registers through normal secure browser flow; subsequent normal login remains unchanged.",
+    "Separately approve exact read-only canonical-principal verification and owner identity confirmation.",
+    "Separately approve protected FOOD administrator configuration; registration never assigns FOOD access."
+  ],
+  "exclusions": [
+    "No implementation, route, deployment, live database read/write, migration execution or account creation in ZB.",
+    "No real password handling, manual SQL bootstrap, fabricated password/ID, direct low-level production save calls, row repair or access-key substitution.",
+    "No FOOD data/configuration/admin assignment, runtime activation, commerce/payment, unrelated subsystem changes, staging, commit or push."
+  ],
+  "nextSlice": "Generic identity registration service/atomic persistence implementation and validation only; no route or production mutation. Public-exposure security decisions remain separately gated.",
+  "ambiguities": "No blocking ambiguity for the service/persistence slice. Later route security must select concrete abuse and compromised-password controls and verify neutral response timing before public exposure. Live schema and database health remain unverified in this read-only repository slice."
+}
