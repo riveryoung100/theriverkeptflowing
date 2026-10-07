@@ -1,0 +1,122 @@
+{
+  "id": "FOOD-002ZE",
+  "title": "Verified registration limiter configuration patch preview and disabled activation-variable representation only",
+  "baseline": {"branch": "cif-001-canonical-content-source-record", "head": "2775cd3ca6c36d85f0df2765c50b9c94109a55ad", "state": "Clean worktree and empty index verified"},
+  "scope": "Preview only. No existing file changed and no configuration applied. ZC and ZD remain unchanged authorities.",
+  "authorities": [
+    ".river-dev/specifications/food-002zc-identity-registration-transport-security-browser-boundary.json",
+    ".river-dev/specifications/food-002zd-registration-production-readiness.json",
+    "wrangler.jsonc",
+    "worker-configuration.d.ts",
+    "astro.config.mjs",
+    "src/lib/identity/runtime/principal-registration-server.ts",
+    "src/pages/api/identity/register.ts",
+    "src/lib/identity/cloudflare/registration-abuse-control.ts",
+    "node_modules/wrangler/config-schema.json",
+    "node_modules/wrangler/wrangler-dist/cli.d.ts",
+    "node_modules/wrangler/wrangler-dist/cli.js",
+    "package.json"
+  ],
+  "currentConfiguration": {
+    "identity": "RIVER_IDENTITY_DB already declared as river-identity and present as D1Database in generated Env; no identity binding change proposed. Live target/schema unverified here.",
+    "registration": "RIVER_IDENTITY_REGISTRATION_ENABLED and both registration limiter bindings absent in root configuration and generated Env. Root vars, ratelimits and named env sections are absent.",
+    "origin": "https://theriverkeptflowing.com",
+    "originConclusion": "NO ORIGIN CONFIGURATION CHANGE REQUIRED"
+  },
+  "namespaceSemantics": {
+    "documentation": "https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/",
+    "evidenceProvenance": "Authoritative documentation facts supplied explicitly by owner in resume instructions; no website or Cloudflare API accessed in ZE. Installed schema independently verifies field structure and periods, not production namespace semantics.",
+    "definition": "Developer-defined account-unique positive integer encoded as a string; not an arbitrary descriptive name. No separately provisioned rate-limit namespace resource required by this documented model.",
+    "sharedCounters": "Bindings with the same namespace_id across Workers in one account share counters for a given key. Distinct namespace IDs isolate independent IP/shared dimensions and policy ownership even though current keys also differ.",
+    "ipPlaceholder": "<UNIQUE_POSITIVE_INTEGER_IP_NAMESPACE>",
+    "sharedPlaceholder": "<UNIQUE_POSITIVE_INTEGER_SHARED_NAMESPACE>",
+    "gate": "ACCOUNT-WIDE NAMESPACE UNIQUENESS VERIFICATION REQUIRED BEFORE CONFIGURATION APPLICATION",
+    "finalRequirements": "Final values must match positive decimal integer lexical form, be string encoded, differ from one another and not collide with any existing rate-limit namespace in the approved Cloudflare account. Placeholder strings are documentary and must never be deployed.",
+    "verificationProcedure": "Later explicit read-only approval: verify account, inventory every Worker and deployed rate-limit binding/configuration in that account, including named environments and separately managed deployments; collect namespace IDs, select two unused positive integer strings and record protected evidence of account/inventory/time and selected IDs. Inspect supported Worker settings via dashboard/API only in that later scope. No dedicated account-wide namespace registry/listing mechanism was established locally. If inventory cannot be made complete, escalate to the account administrator and Cloudflare-supported settings/support verification before selecting; randomness or absence in this repository is not proof. Recheck before application, coordinate reservations with account operators to avoid concurrent configuration races. Do not fabricate a provisioning command."
+  },
+  "proposedAdditions": {
+    "vars": {"RIVER_IDENTITY_REGISTRATION_ENABLED": "false"},
+    "ratelimits": [
+      {"name": "RIVER_IDENTITY_REGISTRATION_IP_LIMITER", "namespace_id": "<UNIQUE_POSITIVE_INTEGER_IP_NAMESPACE>", "simple": {"limit": 5, "period": 60}},
+      {"name": "RIVER_IDENTITY_REGISTRATION_SHARED_LIMITER", "namespace_id": "<UNIQUE_POSITIVE_INTEGER_SHARED_NAMESPACE>", "simple": {"limit": 30, "period": 60}}
+    ]
+  },
+  "patchPreview": [
+    "--- a/wrangler.jsonc",
+    "+++ b/wrangler.jsonc",
+    "@@ -5,6 +5,21 @@",
+    " \t\t\"directory\": \"./dist\",",
+    " \t\t\"html_handling\": \"auto-trailing-slash\"",
+    " \t},",
+    "+\t\"vars\": {",
+    "+\t\t\"RIVER_IDENTITY_REGISTRATION_ENABLED\": \"false\"",
+    "+\t},",
+    "+\t\"ratelimits\": [",
+    "+\t\t{",
+    "+\t\t\t\"name\": \"RIVER_IDENTITY_REGISTRATION_IP_LIMITER\",",
+    "+\t\t\t\"namespace_id\": \"<UNIQUE_POSITIVE_INTEGER_IP_NAMESPACE>\",",
+    "+\t\t\t\"simple\": { \"limit\": 5, \"period\": 60 }",
+    "+\t\t},",
+    "+\t\t{",
+    "+\t\t\t\"name\": \"RIVER_IDENTITY_REGISTRATION_SHARED_LIMITER\",",
+    "+\t\t\t\"namespace_id\": \"<UNIQUE_POSITIVE_INTEGER_SHARED_NAMESPACE>\",",
+    "+\t\t\t\"simple\": { \"limit\": 30, \"period\": 60 }",
+    "+\t\t}",
+    "+\t],",
+    " \t\"d1_databases\": [",
+    " \t\t{",
+    " \t\t\t\"binding\": \"RIVER_COMMERCE_DB\","
+  ],
+  "patchQualification": "Exact additive context preview at current baseline; replace only namespace placeholders after verified selection. Adds 15 lines: hunk count is 6 original to21 resulting lines. No D1, R2, SESSION, origin, routes or unrelated variables changed. Structure parses against installed schema; placeholders do not satisfy documented production integer semantics.",
+  "installedToolchain": {
+    "wrangler": "4.129.0",
+    "syntax": "ratelimits array; each object name:string, namespace_id:string, simple:{limit:number,period:10|60}; no additional binding/simple properties. Positive5 and30 with60 seconds valid. vars is an ordinary nonsecret string configuration object.",
+    "runtimeKeys": {"ip": "registration:ip:{trustedClientKey}", "shared": "registration:shared"},
+    "semantics": "Per-location mitigation, not globally consistent quotas. No runtime key/source change proposed.",
+    "typeCommand": "node node_modules/wrangler/bin/wrangler.js types worker-configuration.d.ts --config wrangler.jsonc --strict-vars",
+    "commandEvidence": "Installed types --help confirms positional path, --config, --strict-vars boolean default true, include-runtime/include-env default true. Only help executed; type generation not executed.",
+    "expectedEnvAdditions": [
+      "RIVER_IDENTITY_REGISTRATION_ENABLED: \"false\";",
+      "RIVER_IDENTITY_REGISTRATION_IP_LIMITER: RateLimit;",
+      "RIVER_IDENTITY_REGISTRATION_SHARED_LIMITER: RateLimit;"
+    ],
+    "typeEvidence": "Installed generated runtime declares RateLimit.limit({key:string}):Promise<{success:boolean}>. Strict variable generation yields literal false string for initial configured var, not boolean false. Later true config requires regeneration. Generated hashes/runtime declarations may change legitimately; inspect full generated diff and stop on unrelated changes rather than hand-editing output. Never hardcode administrator/email here."
+  },
+  "environmentInheritance": "Current root-only config requires top-level vars and ratelimits. Both are non-inheritable in installed Wrangler normalization: if named environments are later introduced, explicitly declare vars and both limiters per intended environment. Keep distinct reviewed namespace policies for environment isolation; never assume production declarations inherit into dev/test.",
+  "disabledFirst": {
+    "activation": "Only exact string true accepted. String false, missing, boolean true, whitespace and malformed/throwing values unavailable; no truthy Boolean coercion.",
+    "routeOrdering": "Registration route first requires PROD true and exact enabled string true before CF-Connecting-IP acquisition, server runtime construction or handler invocation. Disabled result fixed503/no-store, no body read, limiter evaluation, HIBP request, DB prepare/batch/write or account creation.",
+    "factoryOrdering": "Direct injected C1 factory also checks environment enablement before constructing checker, abuse control or A runtime/repository/service. Disabled result unavailable without operational dependency calls.",
+    "construction": "Module imports and one isolate-local work-slot closure creation may occur; platform may expose configured binding handles. These are not resolver/limiter/network/database operations. Enabled valid composition is itself I/O-free; later handler operations remain gated by unchanged policy.",
+    "qualification": "Static committed-source proof only; no deployed request executed and no assertion that a committed switch matches existing live values. Verify deployed effective configuration later."
+  },
+  "deploymentDistinction": "Git configuration commit/push changes source only; CI is validation, not automatic deployment. npm run build generates artifacts; npm run deploy invokes wrangler deploy and applies reviewed effective configuration to chosen account/Worker. Deploying this false configuration must remain disabled. Future activation is separately authorized repository var false-to-true edit, type regeneration/validation and deployment of reviewed version; dashboard override is not the selected repository-owned path and must not silently diverge.",
+  "localDevelopment": "Existing C1 unknown structural env acquisition remains buildable with absent bindings. astro dev is not PROD true so route unavailable even if synthetic bindings exist. Missing activation/limiters also fail closed. Wrangler local production-like harness still requires explicit dependencies/exact true; no local registration functionality/configuration or configured DB access added here. Any local mock work is separate.",
+  "futureApplication": {
+    "paths": ["wrangler.jsonc", "worker-configuration.d.ts"],
+    "precondition": "Complete separately authorized account-wide namespace collision verification/selection first; owner approves exact disabled patch and target.",
+    "procedure": [
+      "Verify approved branch/HEAD/clean index/worktree and unchanged baseline configuration; stop on discrepancy.",
+      "Modify only wrangler.jsonc with both verified numeric-string namespace bindings and ordinary false activation var, preserving all existing configuration.",
+      "Regenerate worker-configuration.d.ts using documented installed command; do not manually edit generated types.",
+      "Validate JSON/config, types, relevant C1 disabled/activation and security regressions, normal build and whitespace; review effective generated deployment config while making no live calls.",
+      "Inspect complete diff and exact two-path set; stop on required unrelated edits rather than broadening scope.",
+      "Separate closure/staging/commit/push approval; still no deployment, external service, database or activation action."
+    ]
+  },
+  "remainingGates": [
+    "Account-wide namespace selection/collision verification and exact disabled configuration approval",
+    "Production identity account/target/schema/migration verification; no query in ZE",
+    "Trusted Cloudflare ingress and direct-origin/header provenance verification",
+    "Deployed SESSION driver/resource/cookie persistence verification",
+    "Separate live HIBP privacy/outbound approval; limiters do not authorize it",
+    "Workers plan capacity, Argon2, outbound timeout and batch compatibility checks",
+    "Approved disabled deployment and genuine browser verification with synthetic inputs",
+    "Owner temporary-window versus continued-public decision and separate exact-true activation approval",
+    "Repeated owner-account absence check, owner manual browser registration/login, read-only active canonical principal verification",
+    "Optional approved disablement and separately approved protected FOOD administrator configuration"
+  ],
+  "nextSlice": "FOOD-002ZF — read-only Cloudflare rate-limit namespace collision verification and final namespace selection",
+  "validation": "JSON, baseline/config/type/SITE/C1/schema checks and in-memory patch structure validation required; placeholders are never certified as deployable IDs. No account uniqueness proof claimed.",
+  "exclusions": "Only this new JSON artifact. No existing specification/source/Astro/Wrangler/generated type edit, Cloudflare API or live website access, resource provisioning/configuration, HIBP call, D1 query/migration/write, ingress probe, account/real password, FOOD change, deployment/activation, stage/commit/push or destructive action. Namespace facts supplied by owner resolve prior uncertainty without retroactively claiming installed schema proved production semantics."
+}
