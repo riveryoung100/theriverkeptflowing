@@ -1,0 +1,184 @@
+{
+  "version": "1.0.0",
+  "id": "FOOD-002S",
+  "name": "Production food database target and configuration decision packet",
+  "phase": "Discovery and owner decision support only",
+  "startingState": { "branch": "cif-001-canonical-content-source-record", "head": "4bf11451cbe09850b047844eb69de0b84fc1a63d", "worktree": "Verified clean" },
+  "purpose": "Present a concrete recommended initial Home Cottage configuration and separately gated execution plan. Recommendations are not owner selections or execution approvals.",
+  "references": [
+    ".river-dev/specifications/food-002r-production-repository-sourcing-and-activation-readiness-boundary.json",
+    "docs/architecture/food-private-runtime-activation.md",
+    "wrangler.jsonc",
+    "worker-configuration.d.ts",
+    "astro.config.mjs",
+    "package.json",
+    "src/lib/food/d1-draft-persistence.ts",
+    "src/lib/food/d1-menu-persistence.ts",
+    "src/lib/food/private-menu-runtime-acquisition.ts",
+    "src/lib/food/private-menu-runtime-composition.ts",
+    "src/lib/food/private-menu-server-adapter.ts",
+    "src/lib/food/menu-read-dependencies.ts",
+    "src/lib/food/private-menu-mutation-request.ts",
+    "src/lib/food/private-menu-mutation-request-adapter.ts",
+    "src/lib/food/private-menu-mutation-response.ts",
+    "src/lib/food/private-menu-mutation-server-handler.ts",
+    "src/lib/identity/session/contracts.ts",
+    "src/lib/identity/session/astro-session-adapter.ts",
+    "src/lib/identity/session/principal-resolver.ts",
+    "src/lib/identity/cloudflare/d1-principal-repository.ts",
+    "src/pages/api/sesh/creator/profile.ts",
+    "migrations/food/0001_food_draft_snapshots.sql",
+    "migrations/food/0002_food_menu_snapshots.sql"
+  ],
+  "baseline": {
+    "bindings": ["RIVER_COMMERCE_DB", "RIVER_CRM_DB", "SESH_DB", "RIVER_IDENTITY_DB"],
+    "resourceNamePrecedents": ["river-commerce", "river-crm", "sesh-production", "river-identity"],
+    "foodBindingDeclared": false,
+    "foodTargetVerified": false,
+    "configuredMigrationApplication": "Unverified; no configured database queried",
+    "abstractionConclusion": "NO ADDITIONAL COMPOSITION ABSTRACTION REQUIRED"
+  },
+  "topologyComparison": [
+    {
+      "option": "A: one dedicated shared food database",
+      "implementation": "Existing constructors accept the same FoodD1Database object; Q supplies exact reads. No repository change required.",
+      "configuration": "One new binding/target, one food migration directory and one target verification/recovery plan.",
+      "migrations": "Existing migrations/food stream: 0001 then 0002, with no file renaming.",
+      "operations": "Simpler initial operation, but both food domains share database availability, capacity and recovery failure domains.",
+      "transactions": "Internal menu publication integrity remains transactional. Shared storage does not make separate FOOD-001 reads and menu writes one transaction or an atomic cross-repository snapshot.",
+      "isolation": "Dedicated from commerce/CRM/Sesh/identity, with FOOD-001 and FOOD-002 table families together; no independent infrastructure isolation between those two families.",
+      "scalability": "Shares capacity; no capacity sufficiency claim is made without later workload evidence.",
+      "futureSplit": "Injection and absence of cross-family SQL foreign keys permit a later split. Actual data transfer, canonical-history verification, exact-reference checks and cutover require a separately approved migration project; not an automatic switch."
+    },
+    {
+      "option": "B: separate dedicated FOOD-001 and FOOD-002 databases",
+      "implementation": "Existing H/J/L accept Q reads sourced independently from menu storage. I acquires one explicitly selected database; a trusted call site acquires each source separately using existing capabilities. No new generic abstraction is required.",
+      "configuration": "Two approved binding keys/targets and explicit environment mapping; greater configuration and recovery complexity.",
+      "migrations": "Independent streams are possible, but both current SQL files share migrations/food. An approved split-stream plan is needed before assigning directories or applying files; do not apply the entire directory blindly to both targets.",
+      "operations": "Independent capacity/recovery boundaries, but menu operations verifying FOOD-001 references still depend on both databases being available.",
+      "transactions": "No cross-database transaction or physical FOOD-002-to-FOOD-001 FK; logical exact-read validation remains authoritative.",
+      "isolation": "Stronger operational separation at the cost of coordinating backups and consistent reference recovery.",
+      "scalability": "Independent workload allocation is possible; no current measured need establishes this extra complexity.",
+      "futureSplit": "Already separated; still requires coordinated historical-reference preservation and no latest substitution."
+    }
+  ],
+  "recommendation": {
+    "topology": "Option A: one new dedicated shared food D1 database for initial Home Cottage launch",
+    "binding": "RIVER_FOOD_DB",
+    "resourceName": "river-food",
+    "rationale": "RIVER_FOOD_DB matches existing RIVER_*_DB conventions and FOOD-001F/H contract, has no committed collision, and serves both repositories. river-food follows river-commerce/river-crm/river-identity resource naming. The existing migration directory supports shared storage directly.",
+    "approvalStatus": "RECOMMENDATION ONLY; topology, name, account/environment/location and actual target remain owner-unselected. Resource availability has not been queried. If the proposed name is unavailable, return to owner selection instead of silently choosing another target."
+  },
+  "futureFiles": [
+    { "path": "wrangler.jsonc", "purpose": "Add approved dedicated D1 declaration with migrations_dir migrations/food and explicit target/environment mapping", "editing": "Hand-edited after approval", "runtimeEffect": "Changes runtime binding availability on deployment", "requiresCreatedDatabaseId": true },
+    { "path": "worker-configuration.d.ts", "purpose": "Regenerate with installed wrangler types after approved declaration; account for protected administrator configuration typing through reviewed generation/structural input", "editing": "Generated, not manually fabricated", "runtimeEffect": "Types only", "requiresCreatedDatabaseId": "Indirectly, through approved configuration" },
+    { "path": "src/pages/river-os/actions/food-menu.ts", "purpose": "Future thin trusted call site: acquire shared food DB, build FOOD-001 repository/Q reads, parse trusted admin, select trusted origin, invoke J/L and M/N/P", "editing": "Hand-authored only in separately approved route slice; currently absent", "runtimeEffect": "Registers endpoint for next build/deployment", "requiresCreatedDatabaseId": "No embedded ID; needs valid runtime binding when used" }
+  ],
+  "otherFileDecisions": "No existing domain/repository/runtime interface, migration SQL, new environment schema, package script or generic handler wrapper needs modification for the recommended plan. Any later local/dev config or origin-config file must be explicitly selected, not silently created. No source contains concrete administrator values.",
+  "bindingPreview": {
+    "binding": "RIVER_FOOD_DB",
+    "database_name": "river-food",
+    "database_id": "<OWNER-VERIFIED-ID-FROM-APPROVED-CREATION>",
+    "migrations_dir": "migrations/food"
+  },
+  "bindingPreviewRules": "Documentary shape only, not usable configuration. No fabricated UUID or existing unrelated ID. Local persistence is a separately selected isolated directory; preview_database_id is optional only after a distinct preview target is approved/provisioned. Do not point preview/dev at production by default. Named Wrangler environments must be explicitly configured before using --env; bindings cannot be assumed inherited.",
+  "futureCommands": {
+    "verificationBasis": "Installed Wrangler CLI help for d1 create, d1 migrations apply/list and d1 execute was inspected with --help only; no infrastructure command executed.",
+    "create": "npx wrangler d1 create river-food --config <verified-target-config> --update-config=false",
+    "createGate": "OWNER APPROVAL REQUIRED — CREATES CLOUD INFRASTRUCTURE. Verify authenticated account, target environment and location/jurisdiction decision first; add approved --location or --jurisdiction only if selected. Capture returned database UUID and suggested binding block privately for owner verification. --update-config=false separates creation from config editing. Name is substituted if owner chooses another name.",
+    "localApply": "npx wrangler d1 migrations apply RIVER_FOOD_DB --local --persist-to <approved-isolated-local-state-directory> --config <approved-local-test-config>",
+    "localList": "npx wrangler d1 migrations list RIVER_FOOD_DB --local --persist-to <approved-isolated-local-state-directory> --config <approved-local-test-config>",
+    "remoteList": "npx wrangler d1 migrations list RIVER_FOOD_DB --remote --config <verified-target-config>",
+    "remoteApply": "npx wrangler d1 migrations apply RIVER_FOOD_DB --remote --config <verified-target-config>",
+    "remoteGate": "OWNER APPROVAL REQUIRED — CHANGES PERSISTENT DATABASE SCHEMA. Immediately verify account, binding/name/UUID, environment, migration inventory and backup/recovery plan. CLI confirmation is not owner authorization; noninteractive CLI may skip confirmation. No --yes or unattended execution is authorized here.",
+    "schemaInventory": "npx wrangler d1 execute RIVER_FOOD_DB --remote --config <verified-target-config> --command \"SELECT type,name,tbl_name,sql FROM sqlite_schema WHERE name LIKE 'food_%' ORDER BY type,name\" --json",
+    "inventoryGate": "Future read-only configured access still requires approval and exact target verification. Local equivalent uses --local and approved --persist-to; never omit target mode.",
+    "administrator": "npx wrangler secret put RIVER_FOOD_ADMIN_PRINCIPAL_ID --config <verified-target-config>",
+    "administratorGate": "Separately approve canonical principal verification and secret configuration. Supply the approved value through the prompt; do not put it in command arguments or Git.",
+    "types": "npx wrangler types --config <approved-config>",
+    "deployment": "npm run build followed by npm run deploy; package publish combines these and release includes publish, so neither publish nor release is a harmless validation command.",
+    "environmentFlags": "Append --env <approved-named-environment> only when that named environment exists and its exact target has been verified. Templates are descriptions, not instructions to execute in this slice."
+  },
+  "migrationPlan": {
+    "order": ["migrations/food/0001_food_draft_snapshots.sql", "migrations/food/0002_food_menu_snapshots.sql"],
+    "application": "One approved migrations apply invocation processes unapplied files in the configured stream; inspect pending list first to ensure exactly intended inventory. No renumbering or direct execute bypass of migration tracking.",
+    "levels": ["Existing isolated Miniflare SQL tests validate semantics without configured databases", "Separately approved local migration application uses dedicated temporary configuration/state", "Separately approved remote application changes the verified cloud target"],
+    "verification": [
+      "Migration list reports no intended pending files; distinguish pending list from complete applied-history proof.",
+      "Read sqlite_schema and compare exact eight food tables against 0001/0002, all UPDATE/DELETE rejection triggers, stable-offer and publication-membership triggers, indexes, safe-integer checks and exact composite FKs.",
+      "Approved read-only foreign-key/schema checks show required constraints and no integrity violations; required repository reads decode correctly and absent exact coordinates remain not-found.",
+      "Exercise mutation/concurrency/rollback smoke tests in isolated local harness/state. Production writes are not non-destructive verification and require a separate approved data plan; do not insert test products merely to prove production schema.",
+      "Record target, migration output and verification evidence without publishing identifiers/secrets. Successful local tests do not establish remote replication or production transport guarantees."
+    ],
+    "partialFailure": "Installed apply help states a failing migration rolls back while earlier successful migrations remain applied. Do not assume the whole two-file stream rolls back atomically; inspect actual target state before forward correction."
+  },
+  "administratorDecision": {
+    "item": "Select/verify the principal that owns Home Cottage private menu administration",
+    "source": "Owner-approved active canonical PrincipalId in existing identity system; protected per-environment trusted configuration under RIVER_FOOD_ADMIN_PRINCIPAL_ID as recommended by FOOD-001H.",
+    "secretMeaning": "Privileged configuration, not a credential. Recommend secret storage rather than committing the value; secrecy never replaces fresh session/principal authorization.",
+    "wiring": "Future trusted call site parses unchanged through parsePrincipalId then injects administratorPrincipalId into J. J does not acquire this key automatically.",
+    "missing": "Fixed sanitized configuration-unavailable/503, zero mutation/body consumption and no inferred/default/request-supplied identity."
+  },
+  "originDecision": {
+    "source": "Recommend approved canonical production origin derived from the trusted site configuration already declared in astro.config.mjs, through an explicit reviewed server configuration mapping. Dev/test mappings remain separate.",
+    "selection": "Owner confirms the intended canonical origin and how it is supplied to M; no new origin environment key or concrete value is selected by S.",
+    "rules": "Validate canonical origin without deriving trust from incoming Origin, Host or request.url. Existing site is a candidate, not automatic food activation approval. Missing/noncanonical source returns fixed sanitized configuration 503 before body read; no fallback."
+  },
+  "sessionIdentity": {
+    "status": "ALREADY RESOLVED — REUSE EXISTING SESSION/IDENTITY PATH",
+    "flow": "Astro APIRoute context.session -> J new AstroPrincipalSessionStore(session, optional clock), new D1PrincipalRepository(environment.RIVER_IDENTITY_DB), new DefaultSessionPrincipalResolver({ sessions, principals }); shared async session compatibility remains unchanged.",
+    "selection": "No new identity binding or session abstraction required. Existing identity target must be available and intended administrator verified separately; declaration is not live-health proof. Fresh request-scoped components prevent session state leakage."
+  },
+  "runtimeAssembly": [
+    "Obtain trusted Cloudflare env using existing endpoint precedent; obtain request-scoped context.session.",
+    "acquirePrivateFoodMenuDatabaseFromEnvironment({ environment, bindingName: approved RIVER_FOOD_DB key }); verify result before further construction.",
+    "new D1FoodDraftRepository(acquired.value); createFoodMenuReadDependencies({ repository: foodRepository }).",
+    "createPrivateFoodMenuOperationRuntimeFromServerContext({ environment, bindingName: same approved key, session, readDependencies, administratorPrincipalId, now?: trustedClock }); J/L internally create D1FoodMenuRepository with the same environment database object and one private service/workspace/gate bundle.",
+    "createPrivateFoodMenuMutationRequestBoundary({ operationGate, workspace, expectedOrigin: trustedApprovedOrigin }).",
+    "createPrivateFoodMenuMutationRequestAdapter({ boundary }); createPrivateFoodMenuMutationServerHandler({ adapter }); handler.handle(context.request), with O response mapping inside P."
+  ],
+  "runtimeRules": "Only a future concrete call site is needed; no new composition abstraction. Construction stays synchronous/I/O-free. Gate precedes lazy body parsing and normal mutation reauthorizes. Missing trusted database/admin/origin causes fixed sanitized no-store JSON 503 at assembly boundary, not a new M result or P callback failure. No memory/unrelated database fallback.",
+  "routeReadiness": {
+    "candidatePath": "src/pages/river-os/actions/food-menu.ts",
+    "code": "Contracts are composable; future route implementation/registration is separate owner-approved work with prerender=false and thin trusted assembly then handle(request).",
+    "configuration": "Not ready: binding, admin and trusted-origin configuration absent/unselected.",
+    "infrastructure": "Not ready: food target not provisioned/verified and configured migration application unverified.",
+    "activation": "Not approved. Astro registers src/pages source in next build; deploying it exposes an endpoint even if it only returns 503. Recommend keeping source absent until prerequisites and route scope are approved."
+  },
+  "ownerApprovalMatrix": [
+    { "item": "Shared versus separate topology", "classification": ["RECOMMENDATION ONLY", "OWNER SELECTION REQUIRED"] },
+    { "item": "Binding RIVER_FOOD_DB", "classification": ["RECOMMENDATION ONLY", "OWNER SELECTION REQUIRED"] },
+    { "item": "Resource name river-food and account/environment/location", "classification": ["RECOMMENDATION ONLY", "OWNER SELECTION REQUIRED"] },
+    { "item": "D1 creation", "classification": ["OWNER APPROVAL REQUIRED BEFORE EXECUTION", "INFRASTRUCTURE CHANGE"] },
+    { "item": "Wrangler binding patch and generated types", "classification": ["SAFE CODE WORK AFTER DECISION", "OWNER APPROVAL REQUIRED BEFORE EXECUTION"] },
+    { "item": "Local/remote migration application", "classification": ["OWNER APPROVAL REQUIRED BEFORE EXECUTION", "PRODUCTION DATA/SCHEMA CHANGE"], "note": "Production classification applies to remote target; isolated local application is separately approved and not production." },
+    { "item": "Administrator sourcing", "classification": ["RECOMMENDATION ONLY", "OWNER SELECTION REQUIRED"] },
+    { "item": "Administrator identity verification/selection and protected configuration", "classification": ["OWNER SELECTION REQUIRED", "OWNER APPROVAL REQUIRED BEFORE EXECUTION"] },
+    { "item": "Expected-origin source and value", "classification": ["OWNER SELECTION REQUIRED", "RECOMMENDATION ONLY"] },
+    { "item": "Runtime call-site wiring", "classification": ["SAFE CODE WORK AFTER DECISION", "OWNER APPROVAL REQUIRED BEFORE EXECUTION"] },
+    { "item": "Route registration", "classification": ["OWNER APPROVAL REQUIRED BEFORE EXECUTION", "SAFE CODE WORK AFTER DECISION"] },
+    { "item": "Deployment", "classification": ["OWNER APPROVAL REQUIRED BEFORE EXECUTION", "DEPLOYMENT CHANGE"] },
+    { "item": "Private activation/post-deployment smoke checks", "classification": ["OWNER APPROVAL REQUIRED BEFORE EXECUTION"], "note": "Read-only checks require scoped approval; writes require additional explicit production-data approval." }
+  ],
+  "recommendedSequence": [
+    "Owner reviews topology/binding/resource/environment/admin-origin sourcing and records selections; no selection authorizes execution.",
+    "Prepare sanitized configuration patch preview and local test/recovery plan without modifying active config or inventing database IDs.",
+    "Separately approve and create dedicated shared D1 target; verify captured ID/account/environment.",
+    "Separately approve binding declaration with real verified ID and migrations/food; regenerate types and review exact diff before any deployment.",
+    "Run approved isolated/local validation, then separately approve remote application of 0001 followed by 0002; inspect actual schema non-destructively.",
+    "Separately approve administrator verification/configuration and trusted canonical-origin mapping; preserve existing session/identity path.",
+    "Privately validate runtime assembly and policy/auth/mutation behavior in isolated tests without production fixtures.",
+    "Separately approve thin route source registration and validate build/security/fail-closed behavior.",
+    "Separately approve deployment, recognizing it exposes registered route source; activation approval must be obtained before live functionality is enabled, not deferred until after exposure.",
+    "Perform separately approved private post-deployment checks and monitor sanitized failures; public commerce/sales activation remains outside this plan."
+  ],
+  "recovery": [
+    { "step": "Provisioning", "plan": "Leave an unused dedicated database intact if later phases halt; no automatic deletion or destructive cleanup. Creation does not activate access." },
+    { "step": "Binding/admin/origin configuration", "plan": "Disable food route use, restore reviewed prior config/protected settings and redeploy only with approval; preserve data and avoid fallback to other targets." },
+    { "step": "Migrations", "plan": "Verify backup/recovery before execution, inspect partially applied state on failure and prefer forward correction. Git revert does not undo schema. Append-only triggers/history remain preserved; no routine drops or destructive rollback." },
+    { "step": "Route/deployment/activation", "plan": "Withdraw/disable endpoint or redeploy reviewed prior commit with owner approval, preserve append-only database history and revalidate identity/origin/target before reactivation." }
+  ],
+  "immediateNextStep": "After owner review and recorded selections, prepare a configuration patch PREVIEW only using unresolved ID placeholders outside active config. Actual D1 provisioning follows only a separate explicit cloud-infrastructure approval; no further generic architecture specification or wrapper is needed.",
+  "strictExclusions": ["Implementation", "Staging/commit/push", "Configuration or generated typing mutation", "Real secret/admin/account/database ID disclosure", "Secret-file inspection", "Cloudflare APIs", "D1 creation or configured database access", "Migration execution", "Route registration/UI", "Deployment/activation", "Production data", "Unrelated subsystem changes"],
+  "acceptanceCriteria": ["Exactly this decision packet is created and nothing staged; tracked files unchanged", "JSON, committed path/symbol/binding and migration checks pass", "Future D1 command syntax checked using local installed help only", "Recommendations remain separate from owner approval", "No live/configuration actions occurred", "Whitespace and git diff --check pass"]
+}
