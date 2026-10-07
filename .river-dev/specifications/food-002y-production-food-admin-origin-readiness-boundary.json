@@ -1,0 +1,118 @@
+{
+  "version": "1.0.0",
+  "id": "FOOD-002Y",
+  "name": "Production food administrator and trusted-origin readiness",
+  "phase": "Discovery and specification only",
+  "startingState": { "branch": "cif-001-canonical-content-source-record", "head": "8208e1b76884cd79f20ea4264740ca700be705d4", "worktree": "Verified clean; nothing staged" },
+  "references": [
+    ".river-dev/specifications/food-002r-production-repository-sourcing-and-activation-readiness-boundary.json",
+    ".river-dev/specifications/food-002s-production-food-target-owner-decision-packet.json",
+    ".river-dev/specifications/food-002t-production-food-configuration-patch-preview.json",
+    ".river-dev/specifications/food-002v-verified-food-binding-patch-review.json",
+    "docs/architecture/food-private-runtime-activation.md",
+    "src/lib/food/private-menu-server-adapter.ts",
+    "src/lib/food/private-menu-runtime-acquisition.ts",
+    "src/lib/food/private-menu-runtime-composition.ts",
+    "src/lib/food/private-menu-service.ts",
+    "src/lib/food/private-menu-mutation-request.ts",
+    "src/lib/food/private-menu-mutation-request-adapter.ts",
+    "src/lib/food/private-menu-mutation-server-handler.ts",
+    "src/lib/identity/identifiers.ts",
+    "src/lib/identity/session/contracts.ts",
+    "src/lib/identity/session/astro-session-adapter.ts",
+    "src/lib/identity/session/principal-resolver.ts",
+    "src/lib/identity/cloudflare/d1-principal-repository.ts",
+    "src/pages/api/sesh/creator/profile.ts",
+    "astro.config.mjs",
+    "wrangler.jsonc",
+    "worker-configuration.d.ts"
+  ],
+  "installedSourceEvidence": [
+    { "path": "node_modules/astro/client.d.ts", "finding": "ImportMetaEnv declares readonly SITE: string" },
+    { "path": "node_modules/astro/dist/core/create-vite.js", "finding": "import.meta.env.SITE is defined from settings.config.site, establishing a trusted build-config accessor rather than request URL provenance" }
+  ],
+  "infrastructureBaseline": {
+    "binding": "RIVER_FOOD_DB",
+    "resource": "river-food",
+    "databaseId": "3dae5997-161e-454b-8d5c-dada476d5185",
+    "schema": "FOOD-002X executed 0001 then 0002 remotely and verified both migration records and schema; no pending food migrations were reported. This is prior workflow evidence, not a fresh database query in Y.",
+    "deploymentDistinction": "Committed binding and remote schema are ready; no food route or deployment/activation has been authorized. Prior R/S/T/V historical readiness findings are not silently rewritten."
+  },
+  "administrator": {
+    "key": "RIVER_FOOD_ADMIN_PRINCIPAL_ID",
+    "naming": "Consistent with RIVER_FOOD_DB and existing FOOD-001F contract/FOOD-001H protected configuration recommendation; no alternative key needed",
+    "storage": "Recommend per-environment Cloudflare secret/protected configuration, outside committed vars/source. PrincipalId is privileged identifying configuration, not a bearer credential; disclosure alone does not authorize, but committing the intended administrator identity is unnecessary.",
+    "rawType": "unknown from a trusted server environment viewed structurally as Record<string, unknown>; expected concrete value is a string",
+    "parser": { "symbol": "parsePrincipalId", "path": "src/lib/identity/identifiers.ts", "signature": "parsePrincipalId(value: unknown): PrincipalId", "semantics": "Requires nonempty string unchanged by trim, principal: prefix and nonempty local part without surrounding whitespace or colons. Rejects rather than normalizes; does not require a UUID or establish principal existence/ownership/status." },
+    "flow": "Owner-authorized identity verification -> protected setting -> future trusted route reads environment.RIVER_FOOD_ADMIN_PRINCIPAL_ID -> parsePrincipalId unchanged -> createPrivateFoodMenuOperationRuntimeFromServerContext administratorPrincipalId. J validates canonical input again; normal service authorization still resolves caller freshly.",
+    "verificationWorkflow": "Owner identifies the intended existing authenticated Home Cottage administrator account. Under separate identity-read approval, reuse request-scoped AstroPrincipalSessionStore and DefaultSessionPrincipalResolver with D1PrincipalRepository on the verified RIVER_IDENTITY_DB to resolve the active canonical principal. Verify resolved identity matches owner intent and retain identifying output only in protected review/configuration. Missing/inactive/mismatched sessions must not be promoted. No lookup or personal identity read was executed in Y, and no dedicated owner lookup endpoint is assumed to exist.",
+    "selection": "Actual principal remains unselected/unverified. Do not ask for arbitrary UUID, infer from email/operator boolean, use current caller automatically, hardcode a fixture or manufacture principal records.",
+    "missingInvalid": "Fail before constructing operational mutation handler with fixed sanitized configuration-unavailable response; no fallback or value/exception disclosure"
+  },
+  "trustedOrigin": {
+    "committedSource": "astro.config.mjs site",
+    "committedCandidate": "https://theriverkeptflowing.com",
+    "accessor": "import.meta.env.SITE in future Astro-compiled server call site; installed Astro source maps it directly from config.site",
+    "recommendation": "Owner confirms committed canonical production site is the intended Home Cottage origin; confirmation suffices to select the production candidate without editing astro.config.mjs or adding a new production origin key. No value was set or selected in Y.",
+    "transformation": "First require a nonempty trusted configuration string with no surrounding whitespace, parse new URL(trustedSiteUrl), reject credentials and non-HTTP(S) protocols, then use url.origin as the one exact expectedOrigin. Production policy requires HTTPS. A syntactically valid URL is trusted only because it came from approved configuration.",
+    "normalization": {
+      "trailingSlashAndPath": "Trusted site URLs may include a trailing slash/path; URL.origin removes path/query/fragment. Do not pass full URL/path to M, which requires origin === input.",
+      "ports": "WHATWG URL canonicalization omits default HTTP/HTTPS ports and preserves nondefault ports. Scheme, canonical host and effective port are significant to exact matching.",
+      "https": "Production source must use HTTPS; reject downgrade instead of broadening trust.",
+      "localhostDev": "Separate explicitly approved local origin, normally HTTP localhost with exact port, in local-only trusted configuration. Never infer it from a request or add it to production trust.",
+      "malformed": "Reject absent, non-string, whitespace-changing, unparsable, opaque, credential-bearing or disallowed-protocol configuration before handler creation. No default/request-derived fallback."
+    },
+    "mPolicy": "FOOD-002M canonicalOrigin accepts HTTP(S) only with parsed origin exactly equal to its input; incoming Origin and configured expectedOrigin must both be canonical and exactly equal. Missing/noncanonical Origin is rejected. One origin per boundary, no allowlist expansion.",
+    "environments": "Production uses owner-confirmed canonical site. Local and preview/staging, if desired, each need their own explicit trusted site mapping/configuration and isolated admin/database plan before use. Do not silently reuse production settings or add preview origins to the production boundary.",
+    "configImpact": "No production site-config patch needed if committed candidate is confirmed. Only later route wiring of import.meta.env.SITE and validation is required. Local/preview overrides remain optional separately approved work, not a new file created here."
+  },
+  "corsCsrf": {
+    "conclusion": "No additional CSRF token mechanism is required by inspected contracts/precedents for this POST-only private mutation boundary: M requires an exact canonical trusted Origin before body access, then gate authorization and fresh mutation authorization. Preserve this policy without duplicating request checks or introducing CORS relaxation.",
+    "limits": "This conclusion assumes no alternate mutation route bypasses M and no acceptance of absent Origin or request-derived expectedOrigin. Same-origin script compromise is not prevented by this policy. Revisit only if later route scope changes these assumptions."
+  },
+  "sessionReadiness": {
+    "status": "ALREADY RESOLVED — REUSE EXISTING SESSION PATH",
+    "acquisition": "Astro APIRoute context.session, as used by src/pages/api/sesh/creator/profile.ts; injected into J as AstroSessionLike. No separate food session acquisition function needed.",
+    "async": "J adapter construction is synchronous/I/O-free. Later AstroPrincipalSessionStore.getSession awaits sync-or-async session.get; DefaultSessionPrincipalResolver.resolve is async. No eager session read during assembly.",
+    "failure": "Missing session dependency causes configuration-unavailable during assembly. Missing session payload yields unauthenticated; malformed/expired payload cleanup is preserved, rejected reads or cleanup/principal-storage failures fail unavailable; missing/inactive/mismatched principal retains destruction behavior.",
+    "newConfig": "No FOOD-specific session configuration or shared identity correction required by current contracts. Declaration/plumbing readiness does not prove live session/identity health."
+  },
+  "identityReadiness": {
+    "flow": "J constructs new D1PrincipalRepository(environment.RIVER_IDENTITY_DB), new AstroPrincipalSessionStore(session, optional now), new DefaultSessionPrincipalResolver({ sessions, principals }) per invocation, and delegates to existing runtime composition.",
+    "capability": "Identity database requires callable prepare; J does not require identity batch. Existing binding/type are present.",
+    "clarification": "J readDependencies is FOOD-001 FoodMenuReadDependencies, not an identity read bundle. Identity repository is constructed internally and reused unchanged, not exposed to requests.",
+    "authorization": "Principal equality with injected administrator and fresh resolver decisions remain owned by FOOD-002E/K service. River OS boolean authentication is not food administrator permission."
+  },
+  "missingConfigResponse": {
+    "conditions": ["Administrator key absent or parsePrincipalId rejects", "Trusted site config absent/malformed or production protocol invalid", "Missing/malformed trusted environment/session/database dependencies"],
+    "response": { "status": 503, "body": { "ok": false, "error": { "code": "configuration-unavailable", "message": "Food menu database configuration is unavailable." } }, "headers": { "cache-control": "no-store", "content-type": "application/json; charset=utf-8" } },
+    "rules": "Before operational handler construction/body reading; no principal/source/exception leakage, hardcoded defaults, anonymous permission or request-derived origin. Keep this future assembly failure separate from M result vocabulary and P callback-failed. Later resolver failures retain normal access-unavailable/O mapping."
+  },
+  "futureAssembly": [
+    "Future thin trusted route obtains Cloudflare env through existing endpoint precedent and request-scoped context.session; validates protected admin and trusted import.meta.env.SITE-derived origin first.",
+    "acquirePrivateFoodMenuDatabaseFromEnvironment({ environment, bindingName: RIVER_FOOD_DB }) -> new D1FoodDraftRepository(database) -> createFoodMenuReadDependencies({ repository }).",
+    "createPrivateFoodMenuOperationRuntimeFromServerContext({ environment, bindingName: RIVER_FOOD_DB, session, readDependencies, administratorPrincipalId }) -> J identity/session resolver -> L one D1FoodMenuRepository with shared food DB and Q reads -> service/workspace/operationGate.",
+    "createPrivateFoodMenuMutationRequestBoundary({ operationGate, workspace, expectedOrigin }) -> createPrivateFoodMenuMutationRequestAdapter({ boundary }) -> createPrivateFoodMenuMutationServerHandler({ adapter }) -> handler.handle(context.request) -> existing O response mapping."
+  ],
+  "routeReadiness": {
+    "classification": "BLOCKED ON OWNER VALUE SELECTION",
+    "explanation": "No new identity/session/composition abstraction required. Administrator identity verification/protected setting and canonical-origin owner confirmation remain genuine trusted-input blockers. Once selected/configured, source is ready for separately authorized route implementation and tests; route registration/deployment/activation are still separate approvals.",
+    "futurePath": "src/pages/river-os/actions/food-menu.ts",
+    "healthLimit": "No live identity/session health or end-to-end authorization was tested in Y; later approved private validation is required before activation."
+  },
+  "ownerDecisions": [
+    "Identify the intended existing Home Cottage administrative account and separately authorize canonical active principal verification through existing identity/session system.",
+    "Confirm that the committed production canonical site/origin is the intended Home Cottage origin; no arbitrary new URL is needed if confirmed.",
+    "Decide whether local/preview food routes are needed now; if yes, explicitly select separate trusted origins/environment mappings without broadening production trust."
+  ],
+  "futureChangeClassification": {
+    "administrator": "Protected external Cloudflare configuration change after verification/approval, not committed vars or a file containing a value. No setting or secret-list/value access in Y.",
+    "origin": "Existing production site configuration sufficient after owner confirmation; later route accessor/validation implementation only. No new origin config key required for that production path.",
+    "route": "Separate source implementation/registration approval; no existing generic FOOD module changes needed.",
+    "typing": "Structural unknown config read and parsePrincipalId suffice; no administrator value or fabricated global type added here."
+  },
+  "approvalGates": ["Owner administrator identity selection", "Separate authorized identity verification", "Owner production-origin confirmation", "Separate protected configuration mutation", "Separate route source creation/registration", "Separate deployment approval", "Separate private activation and post-deployment validation approval"],
+  "nextAction": "Owner confirms canonical production origin and identifies the existing intended administrative account; authorize a scoped identity verification next. Only after active canonical principal verification separately approve protected administrator setting, then route implementation. Do not configure or look up anything automatically.",
+  "executionRecord": "Y inspected committed contracts/configuration and installed Astro source/types only. No private principal records/secret stores inspected, no D1 access/mutation, config setting, route, deployment or activation; exactly this specification created.",
+  "acceptanceCriteria": ["JSON and committed-file/symbol validation pass", "Installed Astro SITE provenance and M origin policy verified", "No actual administrator/secret or fabricated origin recorded", "Whitespace and git diff --check pass", "Only this file untracked; no tracked changes; nothing staged"]
+}
