@@ -1,0 +1,75 @@
+{
+    "id":  "FOOD-002ZK2",
+    "title":  "Credential-page Cloudflare Web Analytics exclusion implementation",
+    "status":  "BLOCKED AT PHASE 1 — no analytics mutation performed",
+    "recordedDate":  "2026-10-08",
+    "baseline":  {
+                     "branch":  "cif-001-canonical-content-source-record",
+                     "committedRegistrationActivation":  "false",
+                     "originEquality":  true,
+                     "head":  "4dc519ca0bf163fdfa7dd2f3b1bc634f48262c40",
+                     "worktree":  "Clean with empty index before live read"
+                 },
+    "cloudflare":  {
+                       "zoneId":  "INDETERMINATE",
+                       "siteId":  "INDETERMINATE",
+                       "accountId":  "8401a673cced362e27f162662ce629ae",
+                       "hostname":  "theriverkeptflowing.com",
+                       "accountBasis":  "Inherited ZK/ZK1 target; not freshly verified"
+                   },
+    "production":  {
+                       "registrationActivation":  "false",
+                       "basis":  "Inherited closed ZK/ZK1 evidence only. No fresh deployment or Worker settings read performed in ZK2.",
+                       "version":  "882612e6-be5f-4022-a389-336d80e0681c",
+                       "activationBasis":  "Committed configuration verified false; prior audit reports disabled. Current live activation NOT reverified; no activation mutation performed."
+                   },
+    "authoritativeConfigRead":  {
+                                    "limitation":  "Authentication rejected; exact validity/scope cause not established. Enabled state, site identity and current rules cannot be authoritatively read.",
+                                    "authentication":  "Existing Wrangler OAuth credential used in memory; no credential emitted, refreshed or modified",
+                                    "method":  "GET",
+                                    "httpStatus":  401,
+                                    "endpoint":  "accounts/8401a673cced362e27f162662ce629ae/rum/site_info/list",
+                                    "status":  "DENIED"
+                                },
+    "preChangeRuleState":  "INDETERMINATE — configuration read denied; no restorable configuration snapshot obtained",
+    "exclusionIntent":  [
+                            "/register",
+                            "/register/",
+                            "/login",
+                            "/login/"
+                        ],
+    "subpathSemantics":  "INDETERMINATE — no wildcard or expression syntax selected; authoritative provider surface/rules read required",
+    "exclusionMechanism":  "NOT SELECTED — Phase 1 read prerequisite failed",
+    "exactPathsCovered":  [
+
+                          ],
+    "mutationResult":  "NOT PERFORMED",
+    "postChangeAuthoritativeConfig":  "NOT PERFORMED — no change",
+    "browser":  {
+                    "login":  "NOT PERFORMED in ZK2; inherited ZK1 PASS",
+                    "hydration":  "NOT PERFORMED in ZK2; inherited ZK1 PASS",
+                    "register":  "NOT PERFORMED in ZK2; inherited ZK1 PASS",
+                    "nativeFallback":  "NOT PERFORMED in ZK2; inherited ZK1 PASS"
+                },
+    "analytics":  {
+                      "basis":  "No new page GET/browser request after denied authoritative configuration read",
+                      "login":  "INDETERMINATE currently; inherited ZK1 PRESENT",
+                      "register":  "INDETERMINATE currently; inherited ZK1 PRESENT",
+                      "controlPage":  "INDETERMINATE currently; inherited ZK1 homepage HTML PRESENT"
+                  },
+    "accountPagePrivacy":  "BLOCKED based on unresolved closed ZK1 findings; current exclusion cannot be proven",
+    "credentialLeakageEstablished":  false,
+    "rollback":  "NOT REQUIRED — no mutation",
+    "zkBlockers":  "REMAIN",
+    "nextPrerequisite":  "Establish valid existing Cloudflare authentication with authoritative account/site Web Analytics configuration/rule read access, then resume ZK2 Phase 1. Do not provide tokens in chat; use the approved local authenticated environment.",
+    "nextSlice":  "FOOD-002ZK2 — resume authoritative credential-page Web Analytics configuration discovery after read-access prerequisite",
+    "activationReadiness":  "NOT READY; FOOD-002ZL not begun",
+    "statements":  [
+                       "REGISTRATION REMAINS DISABLED",
+                       "HIBP LIVE USE NOT AUTHORIZED",
+                       "REGISTRATION ACTIVATION NOT AUTHORIZED",
+                       "NO OWNER ACCOUNT WAS CREATED",
+                       "NO REAL PASSWORD WAS HANDLED"
+                   ],
+    "activity":  "One authorized read-only Cloudflare configuration request after local gates; then stopped per Phase 1. Only this blocked audit artifact created. No analytics rule mutation, rollback, global analytics change, source/config edit, deployment, DNS/limiter/secret/D1 change, HIBP request, account/login/registration action, password entry, FOOD admin configuration, staging, commit or push."
+}
