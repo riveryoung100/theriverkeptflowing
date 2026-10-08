@@ -1,0 +1,163 @@
+{
+    "slice":  "FOOD-002ZK2G1",
+    "title":  "Read-only RUM semantics and Windows browser prerequisites",
+    "recordedDate":  "2026-10-08",
+    "startingHead":  "253e773a8d4349a582bdadb378157fcd7ed04354",
+    "accountId":  "8401a673cced362e27f162662ce629ae",
+    "productionHostname":  "theriverkeptflowing.com",
+    "localGates":  "PASS",
+    "rum":  {
+                "publicAnalytics":  "PRESENT",
+                "subpaths":  "INDETERMINATE: literal path coverage of descendants not established",
+                "trailingSlash":  "INDETERMINATE: separate slash forms versus normalization not established",
+                "futureExclusionRulePlan":  {
+                                                "executablePayload":  null,
+                                                "status":  "NOT READY",
+                                                "executed":  "NO",
+                                                "requirements":  [
+                                                                     "Establish path grammar and trailing-slash/subpath matching",
+                                                                     "Establish overlap precedence and priority relative to current 1000 inclusion",
+                                                                     "Preserve public analytics and unrelated rules"
+                                                                 ],
+                                                "targets":  [
+                                                                "/register",
+                                                                "/login"
+                                                            ]
+                                            },
+                "pathMatching":  "INDETERMINATE: exact versus prefix matching not specified by inspected official RUM documentation",
+                "requests":  "GET site-list, site-get, rules-list using read credential only; write credential not used for requests",
+                "priorityPrecedence":  "INDETERMINATE: numeric field documented without numeric direction or first/last matching rule model",
+                "authoritativeRulesRead":  "PASS",
+                "currentRegister":  "NOT EXCLUDED",
+                "currentRules":  [
+                                     {
+                                         "id":  "c7739336-2a24-4767-abca-4c9913cfb829",
+                                         "host":  "*",
+                                         "is_paused":  false,
+                                         "paths":  [
+                                                       "*"
+                                                   ],
+                                         "observedOrder":  1,
+                                         "priority":  1000,
+                                         "inclusive":  true
+                                     }
+                                 ],
+                "allPageInteraction":  "INDETERMINATE: precedence between a narrow RUM exclusion and existing all-page inclusion not documented in inspected sources. Documented Configuration Rules precedence is a different rule system and is not substituted.",
+                "evidenceSources":  [
+                                        {
+                                            "supports":  "Default all-page inclusion; host/path controls; Configuration Rules precedence only",
+                                            "url":  "https://developers.cloudflare.com/web-analytics/configuration-options/rules/"
+                                        },
+                                        {
+                                            "supports":  "host, paths, inclusive and priority schema; no complete path grammar or priority evaluation model",
+                                            "url":  "https://developers.cloudflare.com/api/resources/rum/subresources/rules/methods/create/"
+                                        }
+                                    ],
+                "allPageMeaning":  "Active default all-page analytics inclusion, consistent with live values and official Rules documentation",
+                "pathPatternSyntax":  "INDETERMINATE beyond returned all-page *; no glob or regex grammar inferred",
+                "mutationPlan":  "NOT READY",
+                "siteId":  "fbba77ad476542eaa69537fd826d3b44",
+                "autoInstall":  true,
+                "publicEvidence":  "Fresh homepage GET; beacon script detected without recording snippet",
+                "authoritativeSiteRead":  "PASS",
+                "rulesetId":  "f0ceaece-477b-48f6-bb81-2ce1be58128c",
+                "inclusiveSemantics":  "VERIFIED: API defines inclusive as whether traffic is included or excluded from measurement; true includes, false excludes",
+                "enabled":  true,
+                "currentLogin":  "NOT EXCLUDED"
+            },
+    "browser":  {
+                    "rootCause":  "Observed helper-directory security mismatch explains prior SetNamedSecurityInfoW access-denied failure: caller is not owner, not elevated, and lacks ACL-change rights. Origin of that ACL is unknown.",
+                    "elevationOrSecurityPolicyNeeded":  "Scoped helper-directory ACL repair requires privileges not available in current non-elevated token; no elevation attempted and no security policy altered",
+                    "priorHarnessCommand":  "INDETERMINATE: prior audit describes mechanism but does not supply exact command",
+                    "publicControlBrowser":  "NOT PERFORMED",
+                    "windowsError":  5,
+                    "parentUserRights":  "FullControl inherited",
+                    "repairStatus":  "OWNER ACTION REQUIRED",
+                    "browserExecutable":  "NOT FRESHLY RESOLVED",
+                    "harnessMechanism":  "ZK1 audit identifies installed headless Google Chrome plus CDP through Node built-in WebSocket with isolated temporary profiles",
+                    "elevatedAdministrator":  false,
+                    "personalProfileInspection":  "NO",
+                    "inheritanceProtected":  true,
+                    "localRepairPerformed":  "NONE",
+                    "directoryReadOnly":  false,
+                    "currentUserRights":  "Modify, Synchronize; no ChangePermissions or TakeOwnership",
+                    "lockEvidence":  "No separate lock file listed in helper directory; handle ownership not established",
+                    "helperDirectory":  "C:\\Users\\river\\.codex\\.sandbox-bin",
+                    "processEvidence":  "Codex sandbox service and ordinary Chrome/Edge processes exist; no evidence any is a stale harness-owned process. None terminated.",
+                    "directoryExists":  true,
+                    "originalFailure":  "helper_sandbox_lock_failed",
+                    "antivirusEvidence":  "NOT ESTABLISHED",
+                    "loginPreMutationBrowser":  "NOT PERFORMED",
+                    "oneDriveEvidence":  "Failing helper directory is outside the OneDrive repository",
+                    "priorEvidencePath":  ".river-dev/specifications/food-002zk1-account-page-analytics-browser-prerequisite.json",
+                    "owner":  "BUILTIN\\Administrators",
+                    "controlledStartupAttempts":  1,
+                    "browserPassInferredFromHtml":  "NO",
+                    "controlledStartupResult":  "Node browser-tool bootstrap returned trusted Node process exited unexpectedly; kernel reset, rerun your request. No current full Windows error diagnostic supplied; original error retained as prior evidence, not claimed freshly reproduced verbatim.",
+                    "failureOperation":  "SetNamedSecurityInfoW sandbox directory",
+                    "registerPreMutationBrowser":  "NOT PERFORMED",
+                    "parentOwner":  "Current user",
+                    "harness":  "BLOCKED",
+                    "initialization":  "NOT COMPLETED"
+                },
+    "webAnalyticsMutation":  "NO",
+    "cloudflareConfigurationMutated":  "NO",
+    "zk2gMayResume":  "NO",
+    "registration":  "false",
+    "registrationEvidence":  "Committed wrangler.jsonc false verified at clean starting HEAD",
+    "exactNextPrerequisite":  "FOOD-002ZK2G2 — establish authoritative Cloudflare RUM matching/priority semantics and owner-repair the Windows browser-helper ACL before mutation",
+    "statements":  [
+                       "NO TOKEN VALUE WAS RECORDED",
+                       "NO WEB ANALYTICS RULE WAS MUTATED",
+                       "NO CLOUDFLARE CONFIGURATION WAS MUTATED",
+                       "NO APPLICATION SOURCE WAS CHANGED",
+                       "NO WORKER DEPLOYMENT OCCURRED",
+                       "NO DNS CHANGE OCCURRED",
+                       "NO RATE-LIMIT CHANGE OCCURRED",
+                       "NO D1 WRITE OCCURRED",
+                       "NO REGISTRATION ACTIVATION OCCURRED",
+                       "REGISTRATION REMAINS DISABLED",
+                       "NO OWNER ACCOUNT WAS CREATED",
+                       "NO REAL PASSWORD WAS HANDLED",
+                       "NO HIBP LIVE USE OCCURRED"
+                   ],
+    "nextPrerequisiteScope":  {
+                                  "rumSemantics":  {
+                                                       "cloudflareMutation":  "NO",
+                                                       "requiredEvidence":  [
+                                                                                "Exact versus prefix matching for /register and /login",
+                                                                                "Trailing-slash and descendant coverage for both routes",
+                                                                                "Supported Web Analytics path-pattern syntax",
+                                                                                "Exclusion meaning of inclusive=false, preserving existing verified evidence",
+                                                                                "Priority and overlap precedence for narrow exclusions against the existing all-page inclusion",
+                                                                                "Exact ordering preserving public analytics"
+                                                                            ],
+                                                       "mode":  "READ ONLY"
+                                                   },
+                                  "browserAclRepair":  {
+                                                           "verification":  [
+                                                                                "Browser startup",
+                                                                                "/register pre-mutation browser",
+                                                                                "/login pre-mutation browser",
+                                                                                "Public control browser"
+                                                                            ],
+                                                           "repairLimit":  "Minimum elevated ACL repair limited to the identified automation helper directory",
+                                                           "identificationGate":  "Confirm exact tool-owned helper directory before producing any future repair command",
+                                                           "preciseDirectory":  "C:\\Users\\river\\.codex\\.sandbox-bin",
+                                                           "performedDuringClosure":  "NO",
+                                                           "repairActor":  "OWNER",
+                                                           "cloudflareMutation":  "NO",
+                                                           "prohibited":  [
+                                                                              "Disabling Windows security",
+                                                                              "Disabling antivirus",
+                                                                              "Disabling Controlled Folder Access globally",
+                                                                              "Broad Everyone Full Control grants",
+                                                                              "Broad OneDrive permission changes",
+                                                                              "Personal browser profile changes",
+                                                                              "Recursive ownership changes across unrelated directories"
+                                                                          ]
+                                                       },
+                                  "resumeGate":  "Both prerequisites must pass before FOOD-002ZK2G resumes",
+                                  "performedDuringClosure":  "NO"
+                              }
+}
