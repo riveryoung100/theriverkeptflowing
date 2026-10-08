@@ -1,0 +1,99 @@
+{
+  "id": "FOOD-002ZK",
+  "title": "Disabled production browser verification and activation-readiness audit",
+  "baseline": {"branch": "cif-001-canonical-content-source-record", "head": "6157577b8cb971585fdffdf9e0cde52bfd401265", "state": "Clean worktree, empty index and origin tracking equality verified before live access"},
+  "scope": "Owner-authorized live non-activating verification and source/privacy planning only. Browser runtime unavailable; limited HTTP/HTML checks do not certify real-browser behavior.",
+  "production": {
+    "accountId": "8401a673cced362e27f162662ce629ae",
+    "worker": "theriverkeptflowing-site",
+    "version": "882612e6-be5f-4022-a389-336d80e0681c",
+    "trafficPercentage": 100,
+    "origin": "https://theriverkeptflowing.com",
+    "activation": "false",
+    "provenance": "Read-only account-scoped Worker deployments/settings and domains rechecked: exact ZJ active version, enabled canonical custom domain to intended Worker production and ordinary activation false. No drift found; account identity inherited from closed ZJ and successful expected-account endpoints.",
+    "ipLimiter": {"name": "RIVER_IDENTITY_REGISTRATION_IP_LIMITER", "namespace_id": "1001", "simple": {"limit": 5, "period": 60}},
+    "sharedLimiter": {"name": "RIVER_IDENTITY_REGISTRATION_SHARED_LIMITER", "namespace_id": "1002", "simple": {"limit": 30, "period": 60}}
+  },
+  "method": {
+    "classification": "LIMITED HTTP-HTML",
+    "browserDiscovery": "Browser skill read and runtime initialized. URL selection returned No browser is available; prescribed troubleshooting read and available-browser list returned empty. No connected browser capable of executing production JavaScript. No Playwright/Puppeteer project dependency found in package manifests; no packages/software installed.",
+    "browserStatus": "INDETERMINATE — REAL BROWSER TOOLING UNAVAILABLE",
+    "performed": "Read-only production metadata, credential-free GET of account pages and deployed sitemap, full committed HIBP checker and abuse-control source review, form/client ordering inspection. No browser interaction, network execution trace or synthetic input entry.",
+    "limitation": "Rendered appearance, runtime hydration, accessibility interaction, pending state and actual browser privacy/network behavior remain unverified; static HTML is not browser success."
+  },
+  "accountPages": {
+    "register": {"httpStatus": 200, "browserRenderedResult": "INDETERMINATE", "formPresent": true, "passwordInputType": true, "initialFieldsetDisabled": true, "credentialInputsUnnamed": true, "inlineClientHandlerPresent": true},
+    "login": {"httpStatus": 200, "browserRenderedResult": "INDETERMINATE", "formPresent": true, "passwordInputType": true, "initialFieldsetDisabled": true, "credentialInputsUnnamed": true, "inlineClientHandlerPresent": true},
+    "headersBothPages": {"Cache-Control": "no-store", "Referrer-Policy": "no-referrer", "X-Content-Type-Options": "nosniff"},
+    "hydrationFormWiring": "INDETERMINATE runtime; source installs submit prevention before enabling fieldset/button and wires exact first-party registration/login API JSON POST. Inputs stay unnamed even after initialization: client reads DOM values directly; no field-name assignment is required or claimed.",
+    "nativeFallbackProtection": "PASS initial HTML/source: disabled unnamed inputs; JS-only fetch, prevention installed before enabling. Real-browser initialized behavior INDETERMINATE.",
+    "labelsAndAccessibility": "Committed label for/id associations, fieldset legend, live status region, skip link and focus styles present; actual rendered accessibility/focus interactions not exercised.",
+    "credentialUrlPrivacy": "Source uses password input semantics, first-party relative fetch with JSON body, same-origin credentials, redirect:error and no-store; clears password before fetch and in finally. No query/URL insertion, password toggle or console logging path found in account-page source. No values entered; runtime logging/network confidentiality not certified.",
+    "duplicatePendingProtection": "Source guards pending, disables controls during request and clears state in finally. Runtime result INDETERMINATE; no requests generated to test duplication.",
+    "disabledResponseUx": "NOT EXERCISED in ZK. Source maps exact503 unavailable to Registration is temporarily unavailable., clears password/pending, shows uncertainty guidance and does not redirect/create session. Closed ZJ exact503 proof inherited; no additional POST necessary without real-browser integration tooling."
+  },
+  "privacyNetworkAudit": {
+    "status": "BLOCKED",
+    "finding": "Both live account HTML responses include platform-injected static.cloudflareinsights.com/beacon.min.js, contrary to the standalone analytics-free credential-page expectation. The presence is verified, while runtime beacon requests/payloads and exclusions cannot be determined without browser network inspection or separately authorized read-only platform privacy configuration review.",
+    "limits": "No credential capture, session replay, advertising pixel, third-party form collector or cross-origin credential POST is established by this HTML observation. Do not equate generic CDN traffic with credential exfiltration. Do not assert privacy PASS while unexpected analytics collection scope remains unresolved.",
+    "sanitization": "No beacon configuration token, cookies, email, synthetic/real password, credential values or network payloads recorded.",
+    "requiredCorrectionBoundary": "First identify platform injection control and credential-page exclusion capability read-only, define exact reviewed exclusion/correction if needed, then obtain separate mutation/deployment authorization and verify with a real browser before activation or owner credential entry. No correction executed in ZK."
+  },
+  "responseSecurity": {
+    "httpsFirstPartyOrigin": "PASS HTTP GET canonical HTTPS URLs, no credentials in URLs",
+    "accountPageHeaders": "PASS for committed no-store, no-referrer and nosniff",
+    "registrationApi": "Inherited closed ZJ503 sanitized JSON, no-store, nosniff and no session cookie; no new request or CORS probe. Committed API adds no permissive CORS header and retains exact trusted canonical Origin checks. Full live CORS/alternate-origin browser verification not newly performed.",
+    "originStatus": "PASS within inherited inspected source/ZJ scope; comprehensive DNS/header provenance and same-zone forwarding remains separate activation gate, not globally certified. No stronger browser guarantee claimed."
+  },
+  "sitemap": {"status": "PASS", "source": "Live sitemap-0.xml", "excludedPaths": ["/register", "/register/", "/login", "/login/"], "qualification": "Exact credential-page location patterns absent; account routes directly reachable200 as intended"},
+  "disabledState": {
+    "status": "PASS",
+    "evidence": "Current live activation false at exact ZJ version, committed exact-true gate before header/body/runtime acquisition, and closed ZJ disabled response proof. No evidence of activation; no self-correction or traffic threshold probe.",
+    "syntheticRegistrationPosts": 0,
+    "identityInvariant": "NOT REQUIRED: no ZK registration POST, so no new D1 query. Closed ZJ aggregate counts0 to0 remain prior evidence only; do not claim current owner-account absence from historical counts.",
+    "sessionLogin": "PASS structurally from closed ZJ; authenticated login DEFERRED until separately authorized appropriate account context. No login submission."
+  },
+  "hibpSourcePrivacyReview": {
+    "status": "PASS",
+    "source": "src/lib/identity/credentials/pwned-passwords-checker.ts",
+    "derivation": "Unchanged original password encoded as UTF-8; local SHA-1 digest yields uppercase hex; only first5 characters sent to range URL. Exact remaining35-character suffix compared locally. Full password/hash, email, principal ID and session token are not request inputs sent externally.",
+    "request": {"method": "GET", "addPadding": "true", "credentials": "omit", "redirect": "error", "cache": "no-store"},
+    "limits": {"timeoutMilliseconds": 3000, "responseBytes": 1048576, "maximumLines": 25000, "maximumCountDigits": 20},
+    "decisions": "Exact suffix with positive count rejected; valid nonmatch/zero allowed; malformed/duplicate/protocol/network/timeout/uncertain result unavailable. Registration transport fails closed on unavailable before write.",
+    "logging": "No checker telemetry/console path stores password, full hash, suffix or email association. Sensitive values remain transient local variables; source review does not prove absence of external platform logging not inspected here.",
+    "externalPrivacyModel": "Future enabled registration sends a five-character SHA-1 prefix and inherent server HTTP/network metadata to a third party. Padding reduces response-size disclosure but does not eliminate prefix/metadata disclosure. Separate explicit privacy/live-use approval and deployed runtime reachability/capacity verification are required; no live HIBP request made in ZK."
+  },
+  "rateLimitReadiness": {
+    "status": "PASS",
+    "evidence": "Current live exact1001/5/60 and1002/30/60 verified; committed server validates callable limiter methods; abuse adapter IP first then shared, strict boolean success and malformed/throwing dependencies unavailable.",
+    "executionOrder": "Route exact-true activation and trusted IP acquisition; transport method/Origin/type/length policy; IP then shared abuse control; local two-slot guard; bounded body read/parse; email/password precheck; HIBP check; canonical registration write.",
+    "qualification": "No intentional limiter consumption/threshold testing. Per-location counters and per-isolate slots are not a global quota or proof of indefinite public-signup capacity."
+  },
+  "activationPrerequisiteMatrix": {
+    "productionDeployment": "PASS",
+    "registrationDeployedDisabled": "PASS",
+    "canonicalIdentityD1": "PASS inherited ZH/ZJ",
+    "identitySchema": "PASS inherited ZH",
+    "sessionInfrastructure": "PASS structurally inherited ZJ",
+    "browserRegisterRendering": "INDETERMINATE — REAL BROWSER TOOLING UNAVAILABLE",
+    "browserLoginRendering": "INDETERMINATE — REAL BROWSER TOOLING UNAVAILABLE",
+    "clientHydrationFormWiring": "INDETERMINATE",
+    "accountPagePrivacyNetwork": "BLOCKED — unexpected platform-injected analytics scope unresolved",
+    "sitemapExclusion": "PASS",
+    "strictOriginSecurity": "PASS within inspected scope; complete ingress provenance remains outstanding",
+    "rateLimitBindings": "PASS",
+    "hibpSourcePrivacyDesign": "PASS",
+    "hibpLiveExternalUseApproval": "NOT YET AUTHORIZED",
+    "registrationActivation": "NOT AUTHORIZED",
+    "ownerAccount": "NOT CREATED by this workflow; current remote absence not rechecked",
+    "foodAdminPrincipal": "NOT CONFIGURED by this workflow"
+  },
+  "overallReadiness": "NOT READY FOR ACTIVATION PREFLIGHT",
+  "blockers": ["Account-page platform analytics/privacy scope and exclusions unresolved", "Actual browser rendering/hydration/network behavior unverified because no connected browser tooling"],
+  "nextSlice": "FOOD-002ZK1 — read-only credential-page analytics injection/exclusion discovery and real-browser verification prerequisite",
+  "nextSliceBoundary": "Smallest concrete privacy/tooling prerequisite; separate authorization required for any Cloudflare/source/deployment correction. Non-activating. Do not begin it here or advance to ZL while blockers remain.",
+  "futureOwnerSequence": "After privacy/browser blockers: explicit HIBP approval, activation preflight and separate owner exact-true patch/deployment authorization; verify active registration; owner manually enters credentials only in production browser; read-only canonical principal verification; optional separately authorized disablement; separate FOOD administrator configuration. No password passes through Codex/ChatGPT.",
+  "businessTrajectory": ["Private owner menu administration", "Dish/menu and recipe capture", "Nutrition modeling", "Protein/amino-acid strategy", "Fiber/micronutrient targets", "Complex carbohydrates", "Fats", "Portions", "Ingredient sourcing", "Allergens", "Costing", "Pricing", "Packaging", "Inventory/availability", "Ordering", "Pickup/delivery", "Payments", "Fulfillment", "Customer-facing menu", "Charity-meal tracking/reporting"],
+  "statements": ["HIBP LIVE USE NOT AUTHORIZED", "REGISTRATION ACTIVATION NOT AUTHORIZED", "REGISTRATION REMAINS DISABLED", "NO OWNER ACCOUNT WAS CREATED", "NO REAL PASSWORD WAS HANDLED"],
+  "activity": "Read-only production metadata and credential-free GET/HTML/source review only; no registration POST, login, D1 query/write/migration, HIBP call, deploy/rollback, Cloudflare configuration/secret/DNS/limiter mutation, real or synthetic credential entry, FOOD admin change or business implementation. Only this new artifact; no stage/commit/push."
+}
