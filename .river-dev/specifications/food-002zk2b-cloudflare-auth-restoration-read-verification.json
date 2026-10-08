@@ -1,0 +1,94 @@
+{
+    "id":  "FOOD-002ZK2B",
+    "title":  "Cloudflare authentication restoration and authoritative Web Analytics read verification",
+    "recordedDate":  "2026-10-08",
+    "status":  "OWNER_INTERACTION_REQUIRED — OAuth restored, Web Analytics configuration read denied",
+    "baseline":  {
+                     "branch":  "cif-001-canonical-content-source-record",
+                     "registrationActivation":  "false",
+                     "originEquality":  true,
+                     "head":  "8e7b5f2a420cebc29a68af48ce324228cdfda70e",
+                     "worktree":  "Clean and empty index before restoration"
+                 },
+    "accountId":  "8401a673cced362e27f162662ce629ae",
+    "hostname":  "theriverkeptflowing.com",
+    "worker":  "theriverkeptflowing-site",
+    "priorDiagnosis":  {
+                           "classification":  "AUTH_CREDENTIAL_EXPIRED",
+                           "expiryUtc":  "2026-10-07T23:44:43.219Z",
+                           "mechanism":  "Stored Wrangler OAuth access token reused directly without refresh"
+                       },
+    "restoration":  {
+                        "mode":  "CI noninteractive; Wrangler metrics disabled for command; stdout/stderr captured and not emitted",
+                        "credentialChange":  "Authorized refresh updated existing local access/refresh authentication state; no token values recorded",
+                        "ownerInteractionOccurred":  false,
+                        "unexpired":  true,
+                        "cliExitCode":  0,
+                        "mechanism":  "Installed Wrangler supported automatic OAuth refresh via Worker-specific deployments list",
+                        "command":  "node node_modules/wrangler/bin/wrangler.js deployments list --name theriverkeptflowing-site --json",
+                        "credentialChanged":  true,
+                        "permissions":  "No permission additions requested or made; no Account Settings Write granted or used. Existing broad historical OAuth grants were not expanded.",
+                        "authenticationRestorationSucceeded":  true,
+                        "newExpiryUtc":  "2026-10-08T16:28:39.097Z",
+                        "credentialStoreCategory":  "Existing user-local Wrangler default TOML store outside repository"
+                    },
+    "verification":  {
+                         "siteListEndpoint":  "GET /accounts/8401a673cced362e27f162662ce629ae/rum/site_info/list",
+                         "accountProbe":  "GET /accounts/8401a673cced362e27f162662ce629ae succeeded with matching account identity",
+                         "rulesListRead":  "NOT PERFORMED",
+                         "rulesetIdDiscoverable":  "NO",
+                         "webAnalyticsConfigRead":  "FAIL",
+                         "siteListErrorInterpretation":  "Request not authorized with restored OAuth. Valid authentication established separately; Web Analytics permission/resource read access remains blocked. No claim that expiry still causes this failure.",
+                         "siteListHttpStatus":  403,
+                         "cloudflareAuthenticated":  "YES",
+                         "intendedAccountVisible":  "YES",
+                         "credentialClassification":  "VALID_BUT_RULES_READ_BLOCKED",
+                         "rulesListReason":  "No authoritative site/ruleset identifier obtained after site configuration read denial; no fabricated ID",
+                         "workerVisible":  "YES",
+                         "siteListErrorCode":  10000,
+                         "productionSiteVisible":  "NO — Web Analytics site visibility not established; intended Worker metadata visibility does not substitute for site configuration",
+                         "rulesEndpoint":  "GET /accounts/{account_id}/rum/v2/{ruleset_id}/rules"
+                     },
+    "exclusions":  {
+                       "basis":  "Current rules not read. Inherited ZK1 account-page beacon evidence remains unresolved; no exclusion mutation or new browser test performed.",
+                       "login":  "INDETERMINATE",
+                       "register":  "INDETERMINATE"
+                   },
+    "permissions":  {
+                        "accountSettingsWrite":  "NOT GRANTED / NOT USED",
+                        "configurationRead":  "Account Settings Read documented for site list",
+                        "mutation":  "NOT AUTHORIZED",
+                        "rulesRead":  "READ PERMISSION NOT EXPLICITLY DOCUMENTED for rules-list endpoint in prior reviewed API reference",
+                        "noEscalation":  true
+                    },
+    "production":  {
+                       "trafficPercentage":  100,
+                       "versionBasis":  "Fresh intended-Worker deployments read",
+                       "version":  "882612e6-be5f-4022-a389-336d80e0681c",
+                       "registrationActivation":  "false",
+                       "activationBasis":  "Fresh intended-Worker settings binding read plus committed configuration; no setting changed"
+                   },
+    "zk2MayResume":  "NO",
+    "restorationPrerequisiteResolved":  false,
+    "ownerActionRequired":  true,
+    "minimumOwnerAction":  "Provision a valid local account-restricted read credential with Account Settings Read; current OAuth refresh alone is insufficient for the required Web Analytics site read. Owner-controlled credential setup is required before proceeding.",
+    "safeLocalSteps":  [
+                           "In the Cloudflare dashboard, owner chooses a custom API token with Account Settings Read restricted to account 8401a673cced362e27f162662ce629ae only; add no write permission or unrelated account/zone grants.",
+                           "Enter the token through a secure local secret/environment mechanism outside the repository, using CLOUDFLARE_API_TOKEN for the process that performs the read checks. Use a local masked entry or secret manager, never a literal command saved to history.",
+                           "Never paste the token into ChatGPT, print it, include it in JSON, or commit it. Confirm only that local credential provisioning is ready.",
+                           "In a subsequent authorized read verification, check the intended site-list endpoint first, derive the actual ruleset identifier, and verify rules-list read. If still denied, stop and diagnose without adding Account Settings Write."
+                       ],
+    "nextPrerequisite":  "CLOUDFLARE READ TOKEN PROVISIONING — owner creates account-restricted Account Settings Read token and stores it locally for authoritative Web Analytics read verification",
+    "nextBoundary":  "No analytics mutation authorized; after successful reads, FOOD-002ZK2 RESUME still needs separate owner mutation authorization.",
+    "statements":  [
+                       "NO TOKEN VALUE WAS RECORDED",
+                       "NO WEB ANALYTICS RULE WAS MUTATED",
+                       "NO DEPLOYMENT OCCURRED",
+                       "REGISTRATION REMAINS DISABLED",
+                       "HIBP LIVE USE NOT AUTHORIZED",
+                       "REGISTRATION ACTIVATION NOT AUTHORIZED",
+                       "NO OWNER ACCOUNT WAS CREATED",
+                       "NO REAL PASSWORD WAS HANDLED"
+                   ],
+    "activity":  "Supported existing OAuth refresh and read-only intended Worker/account/Web Analytics probes only, plus this artifact. No API token creation, permission changes, Account Settings Write use, analytics rule change, deployment, source/wrangler/DNS/limiter/D1 change, HIBP request, registration/login/account/password action, FOOD admin configuration, stage, commit or push."
+}
