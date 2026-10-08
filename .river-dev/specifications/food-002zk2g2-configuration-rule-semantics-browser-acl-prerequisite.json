@@ -1,0 +1,193 @@
+{
+    "slice":  "FOOD-002ZK2G2",
+    "title":  "Configuration Rule analytics-exclusion semantics and owner browser-helper ACL repair prerequisite",
+    "recordedDate":  "2026-10-08",
+    "startingHead":  "d60d55ee2bb6d87e8f4113b522baec2b9b2869d8",
+    "accountId":  "8401a673cced362e27f162662ce629ae",
+    "hostname":  "theriverkeptflowing.com",
+    "startingGates":  "PASS",
+    "analytics":  {
+                      "recommendedFutureMechanism":  "CONFIGURATION RULE",
+                      "existingDisableRumRule":  "INDETERMINATE",
+                      "exactPathBehavior":  "eq matches /register and /login exactly",
+                      "zoneId":  "44b502fe6ccfb1a92484dc15633e40b5",
+                      "existingRumRules":  [
+                                               {
+                                                   "id":  "c7739336-2a24-4767-abca-4c9913cfb829",
+                                                   "host":  "*",
+                                                   "is_paused":  false,
+                                                   "paths":  [
+                                                                 "*"
+                                                             ],
+                                                   "priority":  1000,
+                                                   "inclusive":  true
+                                               }
+                                           ],
+                      "disableRumSemantics":  "VERIFIED: disable_rum=true turns off Web Analytics for matching requests",
+                      "publicAnalytics":  "PRESENT",
+                      "recommendationBasis":  "Zone-backed auto-install RUM is active; official Configuration Rules documentation supplies exact expression semantics and override precedence. Proxied-site compatibility is supported by zone-linked auto-install and homepage beacon evidence; DNS proxy flags and zone plan entitlement not independently readable with current token.",
+                      "futureRule":  {
+                                         "action_parameters":  {
+                                                                   "disable_rum":  true
+                                                               },
+                                         "description":  "Disable Web Analytics on credential pages",
+                                         "enabled":  true,
+                                         "action":  "set_config",
+                                         "expression":  "http.host eq \"theriverkeptflowing.com\" and (http.request.uri.path eq \"/register\" or starts_with(http.request.uri.path, \"/register/\") or http.request.uri.path eq \"/login\" or starts_with(http.request.uri.path, \"/login/\"))"
+                                     },
+                      "phase":  "http_config_settings",
+                      "futureLeastPrivilegePermission":  "Zone \u003e Config Rules \u003e Edit",
+                      "remainingAnalyticsBlocker":  "Zone ruleset read denied: cannot establish existing http_config_settings ruleset, settings, order, or absence of conflicts; zone entitlement and future credential permission still need confirmation",
+                      "trailingSlashCoverage":  "starts_with prefixes ending in / explicitly match /register/ and /login/",
+                      "action":  "set_config",
+                      "currentConfigurationRuleset":  "READ BLOCKED",
+                      "hostRecommendation":  "Explicit http.host equality limits rule to production hostname; zone scope alone also includes subdomains",
+                      "futureMutationApi":  {
+                                                "existingRuleset":  "POST /zones/{zone_id}/rulesets/{ruleset_id}/rules adds one rule, default end placement; exact ruleset ID/position pending successful read",
+                                                "replacement":  "PUT ruleset replacement would require preserving all existing rules; not selected",
+                                                "absentRuleset":  "Only after absence verified: POST /zones/{zone_id}/rulesets with kind=zone, phase=http_config_settings and initial narrow rule; may include rule at creation"
+                                            },
+                      "precedence":  "VERIFIED: Configuration Rules disabling analytics override Web Analytics rules enabling analytics",
+                      "rumRulesetId":  "f0ceaece-477b-48f6-bb81-2ce1be58128c",
+                      "preservation":  "After authorized read, prefer additive single-rule creation preserving existing rules and order; inspect overlapping disable_rum settings before choosing safe insertion position. Avoid whole-ruleset PUT unless every existing rule is preserved.",
+                      "rulesRead":  "PASS",
+                      "previousRumAmbiguity":  "SUPERSEDED BY CONFIGURATION-RULE APPROACH",
+                      "exclusionSemantics":  "VERIFIED",
+                      "autoInstall":  true,
+                      "currentRegister":  "NOT EXCLUDED",
+                      "existingConfigurationRuleOrder":  "INDETERMINATE",
+                      "credentialExpression":  "http.host eq \"theriverkeptflowing.com\" and (http.request.uri.path eq \"/register\" or starts_with(http.request.uri.path, \"/register/\") or http.request.uri.path eq \"/login\" or starts_with(http.request.uri.path, \"/login/\"))",
+                      "zoneIdBasis":  "Authoritative RUM site/ruleset zone_tag; name-filtered zone list returned no visible zones, not evidence that zone is absent",
+                      "nestedPathCoverage":  "Same slash-bounded prefixes match child paths; /register-other and /login-other do not match",
+                      "apiPermissionName":  "Config Settings Write",
+                      "currentLogin":  "NOT EXCLUDED",
+                      "permissionScope":  "Specific production zone only",
+                      "analyticsExclusionPlan":  "NOT READY",
+                      "siteId":  "fbba77ad476542eaa69537fd826d3b44",
+                      "caseSensitivity":  "eq and starts_with use case-sensitive strings; uppercase route variants are not included",
+                      "enabled":  true,
+                      "siteRead":  "PASS",
+                      "currentAccountSettingsWriteSufficiency":  "NOT ESTABLISHED; Account Settings Write does not establish Config Rules Edit; write token not used for any request",
+                      "queryStringRelevance":  "http.request.uri.path is path only; query string is a separate field and does not affect this expression",
+                      "configurationRead":  {
+                                                "endpoint":  "GET /zones/44b502fe6ccfb1a92484dc15633e40b5/rulesets",
+                                                "httpStatus":  403,
+                                                "interpretation":  "Read token is not authorized for zone ruleset inspection; no permission modification attempted",
+                                                "errorCode":  10000,
+                                                "result":  "FAIL"
+                                            },
+                      "unverifiedZoneState":  {
+                                                  "zoneEntitlementReadPermission":  "UNVERIFIED",
+                                                  "actualMutationApi":  "UNVERIFIED",
+                                                  "safePlacement":  "UNVERIFIED",
+                                                  "httpConfigSettingsRuleset":  "UNVERIFIED",
+                                                  "existingConfigurationRules":  "UNVERIFIED",
+                                                  "existingDisableRumRule":  "UNVERIFIED"
+                                              }
+                  },
+    "browser":  {
+                    "registerPreMutationBrowser":  "NOT PERFORMED",
+                    "staleLock":  "No separate lock file observed in directory; lock-handle ownership not established",
+                    "staleProcess":  "No proven stale harness-owned process; existing sandbox service is not treated as stale",
+                    "publicControlBrowser":  "NOT PERFORMED",
+                    "loginPreMutationBrowser":  "NOT PERFORMED",
+                    "ownerCommandInstructions":  "Owner runs this command from Administrator PowerShell only after confirming exact tool-owned target. Then restart consuming Codex/browser tooling and verify startup. Command not executed by Codex.",
+                    "directoryToolOwned":  "YES: contains Codex command-runner executables",
+                    "inheritance":  "Protected; explicit ACEs",
+                    "personalBrowserData":  "No browser profile entries observed; directory contents limited to four Codex executables",
+                    "ownerCommandScope":  "Adds WDAC (change permissions) for identified current user on exact helper directory only; retains existing Modify rights, ACEs and protected inheritance; no /T, no OI/CI propagation, no Full Control, no ownership change, no parent change",
+                    "ownershipChangeRequired":  "NO: not proposed; narrowly granting missing WRITE_DAC is sufficient for the observed DACL-change failure, subject to startup verification",
+                    "userLevelRepairBasis":  "Already has Modify; does not have ChangePermissions or TakeOwnership. No explicitly supported alternate sandbox-bin directory found in inspected browser scripts; no safe lock/process fix established.",
+                    "owner":  "BUILTIN\\Administrators",
+                    "startupAttemptedThisSlice":  "NO",
+                    "exactOwnerCommand":  "icacls \"C:\\Users\\river\\.codex\\.sandbox-bin\" /grant \"RIV-PC\\river:(WDAC)\"",
+                    "harnessMechanism":  "Prior ZK1 installed headless Chrome/CDP; current browser-plugin bootstrap depends on Codex sandbox helper",
+                    "ownerElevatedActionRequired":  "YES",
+                    "harness":  "OWNER ACTION REQUIRED",
+                    "repairExecuted":  "NO",
+                    "acl":  [
+                                "SYSTEM: Modify, Synchronize",
+                                "Administrators: Modify, Synchronize",
+                                "RIV-PC\\river: Modify, Synchronize",
+                                "CodexSandboxUsers: ReadAndExecute, Synchronize"
+                            ],
+                    "helperDirectory":  "C:\\Users\\river\\.codex\\.sandbox-bin",
+                    "rootCause":  "Directory owned by Administrators; current non-owner user lacks ChangePermissions/WRITE_DAC required for prior SetNamedSecurityInfoW access-denied operation",
+                    "userLevelRepairAvailable":  "NO",
+                    "windowsError":  5,
+                    "currentUser":  "RIV-PC\\river",
+                    "postOwnerVerification":  [
+                                                  "Fully close VS Code/Codex",
+                                                  "Reopen VS Code/Codex",
+                                                  "Verify sandbox-helper startup without helper_sandbox_lock_failed and Windows error 5",
+                                                  "Verify browser initialization",
+                                                  "Load https://theriverkeptflowing.com/register",
+                                                  "Load https://theriverkeptflowing.com/login",
+                                                  "Load https://theriverkeptflowing.com/",
+                                                  "Do not submit forms",
+                                                  "Confirm pre-mutation analytics state only"
+                                              ]
+                },
+    "webAnalyticsConfigurationMutation":  "NO",
+    "windowsAclMutation":  "NO",
+    "zk2gMayResume":  "NO",
+    "registration":  "false",
+    "exactNextPrerequisite":  "FOOD-002ZK2G3 — establish authorized zone Rulesets read access and verify Configuration Rule placement; owner performs scoped sandbox-helper ACL repair and browser verification",
+    "statements":  [
+                       "NO TOKEN VALUE WAS RECORDED",
+                       "NO WEB ANALYTICS RULE WAS MUTATED",
+                       "NO CONFIGURATION RULE WAS MUTATED",
+                       "NO CLOUDFLARE CONFIGURATION WAS MUTATED",
+                       "NO APPLICATION SOURCE WAS CHANGED",
+                       "NO WORKER DEPLOYMENT OCCURRED",
+                       "NO DNS CHANGE OCCURRED",
+                       "NO RATE-LIMIT CHANGE OCCURRED",
+                       "NO D1 WRITE OCCURRED",
+                       "NO REGISTRATION ACTIVATION OCCURRED",
+                       "REGISTRATION REMAINS DISABLED",
+                       "NO OWNER ACCOUNT WAS CREATED",
+                       "NO REAL PASSWORD WAS HANDLED",
+                       "NO HIBP LIVE USE OCCURRED",
+                       "NO WINDOWS ACL CHANGE OCCURRED"
+                   ],
+    "sources":  [
+                    "https://developers.cloudflare.com/rules/configuration-rules/settings/",
+                    "https://developers.cloudflare.com/rules/configuration-rules/create-api/",
+                    "https://developers.cloudflare.com/ruleset-engine/rules-language/operators/",
+                    "https://developers.cloudflare.com/ruleset-engine/rules-language/functions/",
+                    "https://developers.cloudflare.com/ruleset-engine/rules-language/fields/reference/http.request.uri.path/",
+                    "https://developers.cloudflare.com/ruleset-engine/rulesets-api/add-rule/",
+                    "https://developers.cloudflare.com/fundamentals/api/reference/permissions/",
+                    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/icacls"
+                ],
+    "nextPrerequisiteTracks":  {
+                                   "resumeGate":  "Both tracks must pass before actual credential-page exclusion mutation resumes",
+                                   "cloudflare":  {
+                                                      "mutation":  "NO",
+                                                      "tasks":  [
+                                                                    "Determine least-privilege zone Rulesets read permission",
+                                                                    "Establish authorized read access",
+                                                                    "Determine whether http_config_settings exists",
+                                                                    "Read all existing rules and disable_rum settings",
+                                                                    "Establish safe placement/order",
+                                                                    "Select exact preservation-safe mutation API"
+                                                                ],
+                                                      "prerequisite":  "ESTABLISH AUTHORIZED ZONE RULESET READ ACCESS",
+                                                      "performedDuringClosure":  "NO"
+                                                  },
+                                   "windows":  {
+                                                   "prohibited":  [
+                                                                      "Broad or recursive ACL changes",
+                                                                      "Everyone or Full Control grants",
+                                                                      "OneDrive ACL changes",
+                                                                      "Disabling Windows security, antivirus or Controlled Folder Access",
+                                                                      "Personal browser profile changes"
+                                                                  ],
+                                                   "restart":  "Fully close and reopen VS Code/Codex",
+                                                   "performedDuringClosure":  "NO",
+                                                   "command":  "icacls \"C:\\Users\\river\\.codex\\.sandbox-bin\" /grant \"RIV-PC\\river:(WDAC)\"",
+                                                   "actor":  "OWNER",
+                                                   "verification":  "Sandbox helper, browser initialization and three pre-mutation pages"
+                                               }
+                               }
+}
