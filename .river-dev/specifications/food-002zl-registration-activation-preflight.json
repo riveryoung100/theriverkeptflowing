@@ -1,0 +1,274 @@
+{
+  "canonical": {
+    "slice": "FOOD-002ZL",
+    "startingHead": "50ace1f206156687f3116940d2585221402c629f",
+    "branch": "cif-001-canonical-content-source-record",
+    "date": "2026-10-08",
+    "startingGates": "PASS",
+    "authorization": "Preflight only; no activation or account creation"
+  },
+  "registration": {
+    "featureFlag": "RIVER_IDENTITY_REGISTRATION_ENABLED",
+    "currentState": "false",
+    "committedConfiguration": "wrangler.jsonc vars and generated Env",
+    "runtimeEvidence": "Current credential-free GET returns fixed disabled 503; live settings read denied403. Exact current runtime variable value independently unverified; historical ZJ/ZK records false.",
+    "enableSemantics": "Only exact string true; missing, boolean, malformed, other values or throwing access fail closed before ingress/body/runtime work.",
+    "route": "/api/identity/register",
+    "routeReadiness": "PASS",
+    "method": "POST once enabled; ALL route applies disabled gate first",
+    "body": "8192 bytes maximum; 5000ms read deadline; strict flat JSON exactly email and password; rejects unknown/duplicate fields, bad encoding and malformed bodies",
+    "emailNormalization": "trim and lowercase; maximum320 characters; validated single separator and no whitespace",
+    "passwordPolicy": "15–128 Unicode scalar values; at most1024 UTF-8 bytes; unpaired surrogates rejected",
+    "hashing": "Argon2id v19; memory19456KiB; iterations2; parallelism1; random16-byte salt;32-byte derived hash",
+    "neutralResponse": "Created and conflict both202 with identical generic acknowledgement; no principal identifier or credential returned",
+    "autoSession": "NONE",
+    "cacheControl": "no-store",
+    "cors": "NONE",
+    "evidence": [
+      "src/pages/api/identity/register.ts",
+      "src/lib/identity/http/principal-registration-api.ts",
+      "src/lib/identity/authentication/registration-service.ts",
+      "src/lib/identity/runtime/principal-registration-api.ts",
+      "src/lib/identity/credentials/argon2id.ts"
+    ]
+  },
+  "hibp": {
+    "implementation": "READY",
+    "localSha1": "Local WebCrypto SHA-1 over unchanged UTF-8 input",
+    "transport": "Only first5 uppercase hex characters sent to fixed HTTPS range endpoint; plaintext, full hash and remaining suffix never transmitted",
+    "addPadding": true,
+    "timeoutMs": 3000,
+    "bounds": {
+      "bytes": 1048576,
+      "lines": 25000,
+      "suffixCharacters": 35,
+      "countDigitsMaximum": 20,
+      "encoding": "fatal UTF-8; no BOM; duplicate suffixes and malformed lines rejected"
+    },
+    "suffixMatching": "Local exact suffix; positive count rejected; zero count or nonmatch allowed",
+    "failure": "FAIL CLOSED; unavailable stops registration before hashing/persistence",
+    "logging": "No password or full-hash logging in inspected checker/registration route",
+    "liveUseReadiness": "READY",
+    "syntheticNetworkTestPerformed": true,
+    "syntheticResult": {
+      "syntheticNetworkTestPerformed": true,
+      "realPasswordUsed": false,
+      "requestShapePass": true,
+      "timeoutConfigured3000ms": true,
+      "httpStatus": 200,
+      "parserSucceeded": true,
+      "decision": "allowed",
+      "readiness": "READY",
+      "executionLocation": "Local approved Node execution; deployed Worker outbound reachability not proven"
+    },
+    "realPasswordUsed": false,
+    "limitation": "Synthetic test ran locally, not in deployed Worker; production egress remains separately gated. Future real-owner HIBP use requires fresh explicit owner approval of prefix/network metadata disclosure."
+  },
+  "rateLimiting": {
+    "ipBinding": "RIVER_IDENTITY_REGISTRATION_IP_LIMITER",
+    "sharedBinding": "RIVER_IDENTITY_REGISTRATION_SHARED_LIMITER",
+    "configuredLimits": [
+      {
+        "namespace": "1001",
+        "limit": 5,
+        "periodSeconds": 60
+      },
+      {
+        "namespace": "1002",
+        "limit": 30,
+        "periodSeconds": 60
+      }
+    ],
+    "committedBindings": "PASS; both declarations match expected names/namespaces/policies",
+    "registrationUsage": "PASS; ordered IP then shared check before body/HIBP/hash/persistence",
+    "failure": "denied429 with Retry-After60; missing/malformed/throwing/unavailable503; no work after denial",
+    "trustedClientIpSource": "CF-Connecting-IP only; strict canonicalization",
+    "forwardedHeaderFallback": "NONE",
+    "workSlots": "2 per isolate; no queue",
+    "scopeQualification": "Cloudflare rate limits are per location; isolate slots are not a global quota. Activation-specific ingress provenance and runtime capacity are not established by static header parsing.",
+    "runtimeVerification": "BLOCKED; settings read403; historical ZJ/ZK bindings matched expected configuration",
+    "readiness": "FAIL",
+    "failureReason": "Current live binding readiness could not be independently reverified"
+  },
+  "origin": {
+    "expected": "https://theriverkeptflowing.com",
+    "source": "Fixed Astro SITE config; expected origin derived from trusted SITE, never request Host",
+    "crossOrigin": "403 on mismatch once enabled; missing, null, invalid, wildcard or noncanonical origin rejected",
+    "cors": "NONE",
+    "readiness": "PASS",
+    "evidence": "Source inspection and isolated existing tests; disabled production short-circuits before origin evaluation"
+  },
+  "privacy": {
+    "registerAnalytics": "ABSENT",
+    "loginAnalytics": "ABSENT",
+    "publicAnalytics": "PRESENT",
+    "accountPagePrivacy": "PASS",
+    "evidence": "Fresh isolated Chrome/CDP verification plus closed ZK2G commit evidence; no Cloudflare mutation"
+  },
+  "ownerAdmin": {
+    "ownerPrincipalState": "NOT CREATED by authorized workflow",
+    "ownerCredentialState": "NOT CREATED by authorized workflow",
+    "foodAdminState": "NOT CONFIGURED by authorized workflow; absent in committed config",
+    "currentRemoteAbsence": "UNVERIFIED; aggregate-only SELECT and runtime settings reads denied403; historical ZJ aggregate counts0/0 do not certify current remote absence",
+    "adminPrepopulation": "Absent from wrangler.jsonc; current deployed binding unverified",
+    "handoffDesign": "READY",
+    "handoff": "Owner manually registers only after separate authorization; neutral202 does not return principal. Separately authorized read-only lookup of canonical normalized email-to-principal mapping, active principal verification and login/session verification must precede separate explicit FOOD admin binding approval. No principal fabricated; registration grants no FOOD authority.",
+    "evidence": [
+      "src/lib/identity/cloudflare/d1-password-credential-repository.ts",
+      "src/lib/identity/cloudflare/d1-principal-repository.ts",
+      "src/lib/food/private-draft-runtime-acquisition.ts",
+      "src/lib/food/private-draft-server-adapter.ts"
+    ]
+  },
+  "activation": {
+    "mechanism": "Future owner-authorized exact true change to root wrangler.jsonc vars; npm run build generates dist/server/wrangler.json; npm run deploy deploys current Worker/assets and effective vars. This is a full Worker deployment, not a local flag-only action.",
+    "rollback": "Future separately authorized exact false change, rebuild and deploy; verify active settings and fixed503. Alternatively separately approved Worker runtime variable update must be reconciled with source to avoid redeployment drift. Reversal is deployment/configuration mediated, not instantaneous.",
+    "dependentConfiguration": "No new limiter/D1/admin setting change identified from committed design; live binding/schema/ingress verification still required. FOOD admin remains separately unconfigured.",
+    "ownerWindow": "Future slice must define one-owner window, explicit HIBP approval, manual owner credential entry outside chat, canonical principal capture, prompt re-disablement and post-registration verification.",
+    "planReadiness": "NOT READY",
+    "reason": "Current deployment/settings, owner absence and admin binding cannot be confirmed; production ingress/egress/capacity gates remain unresolved",
+    "authorization": "No activation, rollback, runtime update, deployment or FOOD-002ZM begun"
+  },
+  "browserApi": {
+    "register": "PASS",
+    "login": "PASS",
+    "hydration": "PASS",
+    "nativeFallback": "PASS",
+    "observations": {
+      "/register": {
+        "url": "https://theriverkeptflowing.com/register",
+        "ready": "complete",
+        "render": true,
+        "analyticsScript": false,
+        "analyticsResource": false,
+        "fieldsetDisabled": false,
+        "submitDisabled": false,
+        "unnamed": true,
+        "passwordEmpty": true,
+        "submitListeners": 1,
+        "analyticsRequests": 0,
+        "analytics": "ABSENT",
+        "nativeFallback": {
+          "render": true,
+          "fieldsDisabled": true,
+          "submitDisabled": true,
+          "unnamed": true
+        },
+        "browser": "PASS"
+      },
+      "/login": {
+        "url": "https://theriverkeptflowing.com/login",
+        "ready": "complete",
+        "render": true,
+        "analyticsScript": false,
+        "analyticsResource": false,
+        "fieldsetDisabled": false,
+        "submitDisabled": false,
+        "unnamed": true,
+        "passwordEmpty": true,
+        "submitListeners": 1,
+        "analyticsRequests": 0,
+        "analytics": "ABSENT",
+        "nativeFallback": {
+          "render": true,
+          "fieldsDisabled": true,
+          "submitDisabled": true,
+          "unnamed": true
+        },
+        "browser": "PASS"
+      },
+      "/": {
+        "url": "https://theriverkeptflowing.com/",
+        "ready": "complete",
+        "render": true,
+        "analyticsScript": true,
+        "analyticsResource": true,
+        "unnamed": null,
+        "passwordEmpty": null,
+        "submitListeners": null,
+        "analyticsRequests": 1,
+        "analytics": "PRESENT",
+        "browser": "PASS"
+      }
+    },
+    "disabledUi": "Initial HTML/native fallback has disabled fields and submit. Hydration enables form controls; no explicit feature-flag-aware unavailable UI is shown without submission. Backend remains unavailable.",
+    "credentialEntry": "NONE",
+    "formSubmission": "NONE",
+    "disabledApiResult": "PASS",
+    "disabledApi": {
+      "method": "GET",
+      "noBody": true,
+      "status": 503,
+      "code": "unavailable",
+      "noStore": true,
+      "noCors": true,
+      "noSessionCookie": true,
+      "result": "PASS",
+      "limitation": "GET corroborates disabled gate; no POST performed. No-write ordering verified from committed implementation and isolated tests."
+    },
+    "disabledStateSafety": "False gate precedes body read, limiter calls, HIBP, hashing, D1 persistence and session work; existing route-wiring tests cover non-true values with zero downstream calls."
+  },
+  "runtimeReads": {
+    "result": {
+      "settings": {
+        "success": false,
+        "httpStatus": 403
+      },
+      "deployments": {
+        "success": false
+      },
+      "identityCounts": {
+        "success": false,
+        "httpStatus": 403
+      }
+    },
+    "attempts": "Existing read and alternate write-capable credentials used only for identical read operations; both denied. No credential creation/modification or permission change.",
+    "d1Operation": "POST query endpoint carrying only aggregate SELECT; no write statement;403 denied before result; no individual records/emails/hashes requested"
+  },
+  "validation": {
+    "existingFocusedTests": {
+      "count": 353,
+      "passed": 353,
+      "failed": 0,
+      "scope": "HIBP checker, registration API, route wiring, abuse-control and server composition; synthetic/mocked dependencies only"
+    },
+    "jsonParse": "PASS",
+    "sanitization": "PASS",
+    "gitDiffCheck": "PASS",
+    "registrationUnchanged": "PASS",
+    "noAccountCreated": "PASS",
+    "noD1Write": "PASS",
+    "noCloudflareMutation": "PASS",
+    "noDeployment": "PASS"
+  },
+  "overall": {
+    "registrationActivationPreflight": "NOT READY",
+    "registrationRemains": "false",
+    "blocker": "HTTP403 prevents current Worker metadata, registration limiter/admin configuration and aggregate owner/principal absence verification. Historical evidence is not substituted for current-state proof.",
+    "exactNextPrerequisite": "Restore or provide authorized read-only access to the intended Worker settings/deployments and aggregate-only identity SELECT; verify active version, exact false flag, both limiter bindings, zero principals/credentials and absent FOOD admin binding, then complete activation-specific ingress and production outbound/capacity evidence before reconsidering FOOD-002ZM.",
+    "futureSliceAfterPrerequisites": "FOOD-002ZM — owner-authorized registration activation and controlled owner-account creation",
+    "futureAuthorization": "Fresh explicit authorization must separately cover enablement, real-owner HIBP privacy approval, manual one-owner registration, principal capture, re-disablement and post-registration verification. READY would not authorize action."
+  },
+  "statements": [
+    "NO REAL PASSWORD WAS HANDLED",
+    "NO REAL OWNER EMAIL WAS SUBMITTED",
+    "NO OWNER ACCOUNT WAS CREATED",
+    "NO D1 WRITE OCCURRED",
+    "NO REGISTRATION ACTIVATION OCCURRED",
+    "REGISTRATION REMAINS DISABLED",
+    "NO FOOD ADMIN CONFIGURATION OCCURRED",
+    "NO NEW CLOUDFLARE MUTATION OCCURRED",
+    "NO APPLICATION SOURCE WAS CHANGED",
+    "NO WORKER DEPLOYMENT OCCURRED",
+    "NO DNS CHANGE OCCURRED",
+    "NO RATE-LIMIT CHANGE OCCURRED",
+    "NO TOKEN VALUE WAS RECORDED"
+  ],
+  "sources": [
+    "https://haveibeenpwned.com/API/v3#PwnedPasswords",
+    "https://developers.cloudflare.com/workers/configuration/environment-variables/",
+    ".river-dev/specifications/food-002zj-disabled-production-registration-deployment.json",
+    ".river-dev/specifications/food-002zk-disabled-production-browser-activation-readiness.json",
+    ".river-dev/specifications/food-002zk2g-credential-page-disable-rum-mutation.json"
+  ]
+}
