@@ -1,0 +1,87 @@
+{
+    "title":  "CLOUDFLARE READ TOKEN PROVISIONING — least-privilege Account Settings Read credential and Web Analytics read verification",
+    "slice":  "FOOD-002ZK2C",
+    "status":  "OWNER_INTERACTION_REQUIRED",
+    "startingHead":  "26e8e2168c85353262c111dc7467dd4d952ab172",
+    "accountId":  "8401a673cced362e27f162662ce629ae",
+    "productionHostname":  "theriverkeptflowing.com",
+    "startingGates":  "PASS",
+    "token":  {
+                  "mechanism":  "custom API token — intended, not created",
+                  "permission":  "Account Settings Read — intended, not granted",
+                  "resourceScope":  "intended account only — required, not verified",
+                  "valueRecorded":  "NO",
+                  "created":  "NO",
+                  "locallyStored":  "NO",
+                  "processUserMachineEnvironmentPresence":  "ABSENT",
+                  "authentication":  "NOT PERFORMED",
+                  "accountScope":  "INDETERMINATE",
+                  "classification":  "OWNER_INTERACTION_REQUIRED"
+              },
+    "blocker":  "No API token is available locally. Existing Wrangler OAuth scope metadata does not establish API Tokens Write or Account API Tokens Write authority. No supported authorized token-creation mechanism was established; dashboard owner action is required. No token-creation request was attempted.",
+    "verification":  {
+                         "intendedAccountReadable":  "INDETERMINATE — NOT PERFORMED in this slice",
+                         "siteListRead":  "NOT PERFORMED",
+                         "siteRecordFound":  "INDETERMINATE",
+                         "siteGetRead":  "NOT PERFORMED",
+                         "webAnalyticsEnabled":  "INDETERMINATE",
+                         "autoInstall":  "INDETERMINATE",
+                         "siteIdentifierDiscoverable":  "INDETERMINATE",
+                         "rulesetDiscoverable":  "INDETERMINATE",
+                         "rulesListRead":  "NOT PERFORMED",
+                         "register":  "INDETERMINATE",
+                         "registerTrailingSlash":  "INDETERMINATE",
+                         "login":  "INDETERMINATE",
+                         "loginTrailingSlash":  "INDETERMINATE",
+                         "subpathCoverage":  "INDETERMINATE",
+                         "publicAnalyticsCoverage":  "INDETERMINATE",
+                         "zk2MayResume":  "NO"
+                     },
+    "ownerAction":  {
+                        "ui":  "My Profile \u003e API Tokens \u003e Create Token \u003e Custom token \u003e Get started",
+                        "permission":  "Account \u003e Account Settings \u003e Read",
+                        "accountResources":  "Include \u003e Specific account \u003e account 8401a673cced362e27f162662ce629ae",
+                        "zoneResources":  "None",
+                        "unrelatedPermissions":  "None",
+                        "expiration":  "Owner/default preference; no additional requirement imposed",
+                        "finish":  "Continue to summary; verify only the intended account and Account Settings Read; Create Token",
+                        "localStorage":  "Windows user Environment Variables UI: create CLOUDFLARE_API_TOKEN outside the repository. Enter the value locally, never in chat or a shell command. Restart the consuming app/process so it inherits the variable. No credential has been stored by this slice."
+                    },
+    "registration":  {
+                         "committedActivation":  "false",
+                         "liveVerification":  "NOT PERFORMED",
+                         "sourceModified":  "NO"
+                     },
+    "accountSettingsWrite":  "NOT AUTHORIZED / NOT GRANTED / NOT USED",
+    "apiCallsPerformed":  [
+
+                          ],
+    "cloudflareConfigurationMutated":  "NO",
+    "statements":  [
+                       "NO TOKEN VALUE WAS RECORDED",
+                       "NO WEB ANALYTICS RULE WAS MUTATED",
+                       "NO CLOUDFLARE CONFIGURATION WAS MUTATED",
+                       "NO DEPLOYMENT OCCURRED",
+                       "REGISTRATION REMAINS DISABLED",
+                       "HIBP LIVE USE NOT AUTHORIZED",
+                       "NO OWNER ACCOUNT WAS CREATED",
+                       "NO REAL PASSWORD WAS HANDLED",
+                       "NO API TOKEN WAS CREATED",
+                       "NO ACCOUNT SETTINGS WRITE WAS GRANTED",
+                       "NO SOURCE CHANGE OCCURRED",
+                       "NO DNS CHANGE OCCURRED",
+                       "NO D1 WRITE OCCURRED",
+                       "NO REGISTRATION ACTIVATION OCCURRED",
+                       "NO HIBP LIVE USE OCCURRED"
+                   ],
+    "nextPrerequisite":  "CLOUDFLARE READ TOKEN OWNER PROVISIONING — owner creates the account-restricted Account Settings Read token, stores it locally as CLOUDFLARE_API_TOKEN, restarts Codex, then authorizes authoritative Web Analytics read verification",
+    "nextMutationSlice":  "FOOD-002ZK2 RESUME — apply credential-page Cloudflare Web Analytics exclusions",
+    "mutationBoundary":  "Separate explicit mutation authorization required after authoritative read verification",
+    "sources":  [
+                    "https://developers.cloudflare.com/fundamentals/api/how-to/create-via-api/",
+                    "https://developers.cloudflare.com/api/resources/user/subresources/tokens/methods/create/",
+                    "https://developers.cloudflare.com/api/typescript/resources/accounts/subresources/tokens/methods/create/",
+                    "https://developers.cloudflare.com/fundamentals/api/get-started/create-token/"
+                ],
+    "limitations":  "Unperformed checks are explicitly marked rather than reported as failures or negative findings. Prior account readability does not establish current custom-token access."
+}
