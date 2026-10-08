@@ -540,3 +540,7 @@ Private evidence was supplied separately and remains private. Do not expose unde
 
 Related creator-platform document exists separately: River-Creation-Platform-Workflow-Handoff-2026-10-04.md. Its contents were not reviewed for this handoff. Read it in the receiving workflow before integrating overlapping media features; do not assume this document supersedes it.
 ```
+
+## October 8 restaurant and optional nutrition direction
+
+The [canonical long-term FOOD vision](food-restaurant-product-vision.md) extends these foundations: one chef-driven restaurant/food brand and one recipe system support default restaurant ordering plus optional precision nutrition and meal planning. The [FOOD-003 direction](../../.river-dev/specifications/food-003-long-term-restaurant-nutrition-planning-direction.json) preserves the identity/admin sequence, provisional FOOD-003A-E trajectory, progressive launch phases and canonical synthesis of the owner product direction. The optional calculator is not a prerequisite for an otherwise ready restaurant launch. This addition grants no implementation or activation authority.

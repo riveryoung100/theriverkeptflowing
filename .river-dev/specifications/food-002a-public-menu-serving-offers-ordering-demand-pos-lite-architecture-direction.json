@@ -5,6 +5,8 @@
     "phase": "Architecture direction only; no implementation or activation authorized",
     "foundation": "FOOD-001A-K remains the private versioned draft/evidence/compliance foundation. FOOD-002 is additive and never replaces it.",
     "planningReferences": [
+        ".river-dev/specifications/food-003-long-term-restaurant-nutrition-planning-direction.json",
+        "docs/architecture/food-restaurant-product-vision.md",
         ".river-dev/specifications/food-001-additive-food-business-draft-domain-direction.json",
         "docs/architecture/creation-food-shared-foundations.md"
     ],

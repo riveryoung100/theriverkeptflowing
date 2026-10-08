@@ -78,6 +78,7 @@
         "docs/architecture/creation-food-shared-foundations.md#food-business-and-community-meals-handoff-sanitized-source"
     ],
     "dependencyClarifications": [
+        "October 8 FOOD vision extension: docs/architecture/food-restaurant-product-vision.md and FOOD-003 preserve one restaurant with optional nutrition planning, the current FOOD-002ZK1 privacy/browser prerequisite followed by identity/admin sequence and provisional FOOD-003A-E slices; the calculator does not block an otherwise ready restaurant launch. Original steps and allowedPaths describe the October 4 scope, not this later documentation addition.",
         "Step numbers organize the planning record, not mandatory cross-track dependencies: creator implementation does not block food planning, draft-domain work or an otherwise lawful food launch.",
         "Creator Stage A precedes creator implementation; the complete cooking workflow precedes general editor/public-platform expansion.",
         "Food legal/tax/water/safety/payment gates apply to food sales activation; community preparation, partner and contribution gates apply only to community activation.",

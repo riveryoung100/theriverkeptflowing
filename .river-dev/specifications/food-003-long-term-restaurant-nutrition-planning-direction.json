@@ -1,0 +1,144 @@
+{
+    "version":  "1.0.0",
+    "id":  "FOOD-003",
+    "name":  "Long-term restaurant and optional precision nutrition / meal-planning direction",
+    "recordedDate":  "2026-10-08",
+    "status":  "Canonical product direction only; deferred implementation, no activation authority",
+    "sourceRecord":  "docs/architecture/food-restaurant-product-vision.md",
+    "coreDecision":  "One food business / restaurant brand, one menu, one recipe and production system; simple restaurant ordering by default with optional structured nutrition and meal planning.",
+    "experiences":  {
+                        "defaultRestaurant":  [
+                                                  "Good food, photography, clear descriptions, price, portion/package size, allergens, pickup/delivery, cart and checkout when independently ready.",
+                                                  "No required height, weight, calorie goal, macros, calculator or dieting language.",
+                                                  "Flagship frozen gnocchi, rotating meals, meal kits, prepared food, family portions and seasonal products remain attractive without planning."
+                                              ],
+                        "optionalPlanner":  [
+                                                "Opt-in height, weight, age, formula-required sex, activity, goal, dietary preferences/restrictions and household profiles.",
+                                                "Adult deficit, maintenance or surplus goals; sensible desired rate where appropriate without needless complexity.",
+                                                "Progressive simple, detailed nutrition and planner views; calculator easy to ignore."
+                                            ]
+                    },
+    "canonicalRecipe":  [
+                            "Ingredient grams; liquids grams/mL as appropriate; preparation method; finished and serving yields; portion weight; cooking-loss adjustments.",
+                            "Calories, protein, carbohydrates, fat, fiber, sodium and micronutrients only where sufficiently reliable; ingredients and allergens.",
+                            "Cost, nutrition/cost per gram, package/SKU relationship and nutrition per package.",
+                            "Exact shared recipe versions for ordinary orders and planned meals; separate fitness recipes only for real culinary/product reasons."
+                        ],
+    "portionRules":  [
+                         "Derive grams from recipe nutrition, calorie target, protein/fiber strategy, overall daily plan and reasonable serving constraints.",
+                         "Preserve satiety and real-food adequacy; no absurdly tiny portions.",
+                         "5000 g batch and 340/280/420 g portions are illustrative, never hardcoded.",
+                         "Suggested portions must map to supported production/package/serving offers; suggestions do not create order authority."
+                     ],
+    "household":  [
+                      "Future one account with multiple household profiles, individual portions, needs, preferences, allergens and goals; one family meal with suggested servings per person.",
+                      "Child/youth planning requires separate conservative age-appropriate guidance; never apply adult weight-loss logic or simplistic deficit/surplus dieting to minors."
+                  ],
+    "energyEstimation":  [
+                             "Future evidence-based resting energy and approximate total daily expenditure estimates with target calorie ranges; use estimated maintenance language.",
+                             "Never use endomorph/mesomorph/ectomorph, nationality, race or ethnicity as metabolic inputs.",
+                             "No formula or exact metabolism claim established here."
+                         ],
+    "adaptiveSystem":  [
+                           "Optional future weight, adherence, average planned-meal calorie intake and appropriate activity observations.",
+                           "Calculate -\u003e portion -\u003e eat -\u003e observe trend -\u003e recalibrate -\u003e repeat.",
+                           "Compare predicted changes against rolling trends with sufficient observation windows; do not react to isolated daily weigh-ins.",
+                           "Unexpected loss under an estimated maintenance plan may suggest higher maintenance; unexpected gain may suggest adjustment, without automatic certainty."
+                       ],
+    "weeklyPlanning":  [
+                           "Build My Week may use calorie/protein targets, preferences, allergens, budget, household size, goal, favorites and product availability.",
+                           "Support lunches, dinners, 5 or 10 meals/week, workweek, family dinners or custom selections; never require buying every meal from us."
+                       ],
+    "differentiation":  "Known recipes and measured portions support decisions before purchase and consumption, followed by food arriving measured; not merely another after-the-fact calorie logger.",
+    "flagship":  "The same Signature Gnocchi product has normal image/description/package/price/cooking/order presentation and optional serving grams, nutrients, meal-kit nutrition, plan-based portions, protein/vegetable pairings and daily-target effect.",
+    "founderInsight":  "River uses a small digital food scale to weigh ingredients, finished yield and portions, cook creatively with nutrition visibility, manage intake/body weight intentionally, reduce random/processed/eating-out food and make nutrition repeatable. Capture and planning must be simple enough for River to use.",
+    "deferredDomainConcepts":  [
+                                   "Customer nutrition profile",
+                                   "Household member profile",
+                                   "Energy estimate",
+                                   "Goal: deficit / maintenance / surplus",
+                                   "Activity level",
+                                   "Target calorie range",
+                                   "Target protein range",
+                                   "Meal plan",
+                                   "Meal plan day",
+                                   "Planned meal",
+                                   "Portion grams",
+                                   "Recipe nutrition per gram",
+                                   "Product nutrition per package",
+                                   "Weight trend",
+                                   "Calibrated energy estimate"
+                               ],
+    "currentPriority":  [
+                            "FOOD-002ZK1",
+                            "Resolve account-page analytics/privacy and real-browser prerequisites",
+                            "Identity activation prerequisites",
+                            "Canonical owner account",
+                            "FOOD admin authorization",
+                            "Private menu/product administration"
+                        ],
+    "futureSlices":  [
+                         {
+                             "candidate":  "FOOD-003A",
+                             "scope":  "Flagship gnocchi product architecture and recipe-capture model"
+                         },
+                         {
+                             "candidate":  "FOOD-003B",
+                             "scope":  "Recipe/version/component system"
+                         },
+                         {
+                             "candidate":  "FOOD-003C",
+                             "scope":  "Ingredient/allergen/nutrition model"
+                         },
+                         {
+                             "candidate":  "FOOD-003D",
+                             "scope":  "Yield/portion/cost/pricing model"
+                         },
+                         {
+                             "candidate":  "FOOD-003E",
+                             "scope":  "Optional nutrition calculator and customer meal-planning architecture"
+                         }
+                     ],
+    "numberingRule":  "Candidate numbering may adapt only if existing canonical repository architecture requires it; no implementation slice is begun or closed by this direction.",
+    "launchPhases":  [
+                         "1: normal restaurant, flagship products and transparent nutrition facts",
+                         "2: optional calorie/macro/portion calculator",
+                         "3: household meal planning",
+                         "4: adaptive calorie/weight-trend recalibration"
+                     ],
+    "acceptanceCriteria":  [
+                               "Normal ordering succeeds without nutrition onboarding or fitness framing.",
+                               "Ordinary and structured presentations use the same canonical food/version data.",
+                               "Nutrition depth is optional, realistic portions preserve satiety, and child planning remains separate.",
+                               "Unsupported metabolic inputs are excluded; estimates and data reliability remain explicit.",
+                               "Existing identity/admin work retains priority; calculator does not delay an otherwise ready restaurant launch.",
+                               "No deferred domain types are prematurely implemented."
+                           ],
+    "boundary":  "Documentation revision and staging only for the five FOOD-vision files. No technical implementation, production action, Cloudflare contact, deployment, commit or push. Separate owner authorization required for commit.",
+    "hardRequirements":  {
+                             "flagshipPositioning":  "Premium chef-driven frozen gnocchi is a core brand-recognition, freezer-friendly, scalable, satisfying, nutrition-aware restaurant-quality direct-to-consumer flagship and eventual commercial/retail candidate.",
+                             "productForms":  [
+                                                  "Standalone packaged frozen gnocchi sold by weight/portion",
+                                                  "Complete kits: gnocchi, sauce, protein, vegetables, finish/garnish and preparation/plating instructions; separate packaging where useful",
+                                                  "Prepared gnocchi meals designed as complete meals, not merely gnocchi and sauce"
+                                              ],
+                             "initialSkuStrategy":  "2–3 permanent/core flagship SKUs plus 1 rotating/seasonal SKU, optional kit variants, individual and potential family formats; final recipes/flavors determined by River prototypes.",
+                             "recipePossibilities":  "Classic potato, ricotta-forward, sweet-potato/vegetable, seasonal vegetable, higher-protein or legume-enhanced are possibilities, never finalized recipes.",
+                             "proteinStrategy":  "Contextual 25–40+ g protein per complete entrée design range; essential amino-acid adequacy, quality, complementary sources and BCAAs within sufficient complete protein; never sacrifice culinary quality to inflate numbers.",
+                             "proteinSources":  "Lentils, beans, chickpeas, peas, edamame, tofu, tempeh, eggs, dairy, cheese, ricotta, grain + legume combinations and other legally/operationally suitable foods.",
+                             "nutritionQuality":  "Reliable calories, protein, carbohydrates/quality/complex carbohydrates, added/simple sugars, fiber, total/saturated fat, sodium, iodine, potassium, calcium, iron, magnesium, zinc, folate, B vitamins, A/C/D/E/K; vegetable diversity, density, satiety, tolerance and useful glycemic characteristics. Balanced day/week, no medical-treatment or every-meal-100%-of-every-nutrient claims.",
+                             "saltIodine":  "Flavor/texture/finishing salt is separate from intentional iodine coverage through appropriate foods or iodized salt; no inherently healthier sea/pink salt claim.",
+                             "domainSeparation":  "Product, production recipe, reusable component, controlled recipe version, package/SKU, yield-derived nutrition profile, cost profile and customer preparation instructions remain distinct; one recipe may support bags, individual/family kits, prepared meals and sauce/seasonal combinations.",
+                             "ownerCapture":  "Cook -\u003e capture ingredients/weights/method/live adjustments -\u003e normalize -\u003e measure yield -\u003e establish portions -\u003e calculate nutrition/ingredient/packaging costs -\u003e labor/time -\u003e freeze -\u003e thaw/cook/reheat -\u003e customer instructions -\u003e presentation -\u003e revise/version. River remains chef; recipes need not be finalized before cooking.",
+                             "freezerTesting":  "Freeze method/stability, sticking/clumping, freezer burn, package integrity, stored texture, boiling/pan finishing, sauce stability, vegetable/protein texture, frozen/thawed preparation, error tolerance, safe realistic storage duration and labels; no unsupported shelf-life claims.",
+                             "componentPortions":  "Separate gnocchi, sauce, protein, vegetable and garnish/finish weights, complete weight, calories/protein/fiber, serving yield and category; individual, larger-appetite, family or standalone frozen. Exact weights are prototype/economics-driven.",
+                             "presentation":  "Photos, plating, finishing sauce, herb oil/herbs, grated/crumbled finish, toasted texture, allergen-appropriate seeds/nuts, storage-compatible crispy components, garnish/color/sequence and QR preparation video. Open -\u003e cook/reheat simply -\u003e finish -\u003e plate. Michelin-level is internal aspiration only, no recognition claim.",
+                             "economics":  "Per-SKU ingredient/component, packaging/labels, payment/delivery allocations, labor, waste/yield loss, freezer/storage, total COGS, price, gross-profit dollars and gross-margin percentage; explicit allocations avoid double counting.",
+                             "marginRule":  "Never shrink portions merely for margin; improve sourcing, batches, process, yield, waste, packaging, pricing, mix and inventory. Customers leave fed.",
+                             "inventory":  "Distinguish made-to-order and frozen inventory; future on-hand quantity, batch, frozen date, availability, package count, reserved/sold quantity and storage state. No fields implemented now.",
+                             "growth":  "Intended initial local DTC within applicable Texas cottage-food rules, subject to verified recipe/channel readiness; potential licensed commercial production, larger batches, distribution, retail freezer, lawful operational shipping/wholesale and packaged-brand expansion; no current approval inferred.",
+                             "storefront":  "Flagship prominence/story/photos/package/price/availability/nutrition/protein-fiber/ingredients-allergens/instructions/plating/video/cart/pickup-delivery/reorder/seasonal releases are future presentation, not implemented UI."
+                         },
+    "closedPrerequisite":  "FOOD-002ZK closed separately at d781fdcece3b41b046eb7eb45f56712f4ff599b8; activation remains unauthorized.",
+    "sourceBasis":  "Owner original dual-experience handoff plus October 8 closure/revision instructions, synthesized in sourceRecord rather than copied verbatim."
+}
