@@ -1,0 +1,139 @@
+{
+    "id":  "FOOD-002ZK2A",
+    "title":  "Cloudflare Web Analytics authentication and configuration/rule read-access prerequisite",
+    "recordedDate":  "2026-10-08",
+    "baseline":  {
+                     "branch":  "cif-001-canonical-content-source-record",
+                     "registrationActivation":  "false",
+                     "originEquality":  true,
+                     "head":  "b279a0cd62c5bf0d8a2b459d41312f4d3d8aa94b",
+                     "worktree":  "Clean and empty index before diagnosis"
+                 },
+    "accountId":  "8401a673cced362e27f162662ce629ae",
+    "productionHostname":  "theriverkeptflowing.com",
+    "worker":  "theriverkeptflowing-site",
+    "priorBlocker":  "ZK2 GET account RUM site list returned HTTP 401; no rules obtained or analytics mutation performed.",
+    "authentication":  {
+                           "expiryUtc":  "2026-10-07T23:44:43.219Z",
+                           "credentialPresent":  true,
+                           "mechanism":  "Wrangler OAuth stored access token, directly reused by PowerShell API requests without Wrangler refresh",
+                           "wranglerAuthenticated":  "INDETERMINATE",
+                           "scopeMeaning":  "Locally stored historical OAuth scope names only, not fresh effective API-token permissions or account resource policy. Do not map account:read automatically to Account Settings Read.",
+                           "scopeNames":  [
+                                              "account:read",
+                                              "user:read",
+                                              "workers:write",
+                                              "workers_kv:write",
+                                              "workers_routes:write",
+                                              "workers_scripts:write",
+                                              "workers_tail:read",
+                                              "d1:write",
+                                              "pages:write",
+                                              "zone:read",
+                                              "ssl_certs:write",
+                                              "ai:write",
+                                              "ai-search:write",
+                                              "ai-search:run",
+                                              "websearch.run",
+                                              "agent-memory:write",
+                                              "queues:write",
+                                              "pipelines:write",
+                                              "secrets_store:write",
+                                              "artifacts:write",
+                                              "flagship:write",
+                                              "containers:write",
+                                              "cloudchamber:write",
+                                              "connectivity:admin",
+                                              "email_routing:write",
+                                              "email_sending:write",
+                                              "browser:write",
+                                              "challenge-widgets.write",
+                                              "offline_access"
+                                          ],
+                           "wranglerStatusBasis":  "No whoami or login run: installed source exposes identity details and auth/account paths may refresh expired credentials and write storage. Refresh credential presence does not prove refresh success or current Wrangler authentication.",
+                           "environmentBasis":  "No CLOUDFLARE* or CF_* variable names observed in execution process; no values emitted. No claim about other processes or persistent user environments.",
+                           "directApiAuthenticated":  "NO — existing access token is expired and read probes were denied",
+                           "sourceCategory":  "User-local Wrangler default TOML credential store outside repository",
+                           "environmentCredentialVariableNames":  [
+
+                                                                  ],
+                           "wranglerVersion":  "4.129.0",
+                           "expired":  true,
+                           "refreshCredentialPresent":  true,
+                           "credentialClassification":  "INVALID_OR_EXPIRED",
+                           "sourceLocation":  "%APPDATA%/xdg.config/.wrangler/config/default.toml",
+                           "resourceScope":  "UNKNOWN — correct/all/different account or zone grant cannot be established from local scope names."
+                       },
+    "priorRequest":  {
+                         "authScheme":  "Bearer",
+                         "accountIdFormat":  "32 hexadecimal characters, matching intended target",
+                         "structuralValidity":  "Correct scheme and current documented site-list endpoint; token present; no evidence of malformed header",
+                         "method":  "GET",
+                         "classification":  "STRUCTURALLY CORRECT; expired stored OAuth reused without refresh",
+                         "endpoint":  "/accounts/8401a673cced362e27f162662ce629ae/rum/site_info/list",
+                         "rulesetId":  "Never obtained; site-list discovery denied before selecting a site/ruleset. No fabricated ruleset ID or rules-list request."
+                     },
+    "rootCause":  {
+                      "classification":  "AUTH_CREDENTIAL_EXPIRED",
+                      "evidence":  "Stored expiry precedes client date and execution time; prior direct request bypassed Wrangler refresh. Current /user and intended-account probes returned HTTP 403, confirming no usable read access.",
+                      "limits":  "Expiry directly established; API responses alone do not prove the sole rejection cause. Further endpoint/permission issues may remain after separately authorized restoration."
+                  },
+    "probes":  [
+                   {
+                       "endpoint":  "/user",
+                       "method":  "GET",
+                       "httpStatus":  403,
+                       "identity":  "Not established; no response identity or personal fields recorded"
+                   },
+                   {
+                       "endpoint":  "/accounts/8401a673cced362e27f162662ce629ae",
+                       "method":  "GET",
+                       "httpStatus":  403,
+                       "accountVisibility":  "INDETERMINATE because auth/access denied"
+                   }
+               ],
+    "credentialAccepted":  "NO",
+    "intendedAccountVisible":  "INDETERMINATE",
+    "zoneSiteVisible":  "INDETERMINATE",
+    "wranglerVsDirect":  "Same user-local OAuth credential source; no separate environment token detected. Direct API reused stale access token; Wrangler source supports refresh/store but current refreshed Wrangler success was deliberately not tested. No claim that Wrangler is currently authenticated.",
+    "apiDocumentation":  {
+                             "mutationPermission":  "Account Settings Write — INFORMATION ONLY / NOT AUTHORIZED",
+                             "dataVsConfiguration":  "Zone Analytics Read/data access is not evidence of Web Analytics configuration/rule access.",
+                             "sources":  [
+                                             "https://developers.cloudflare.com/api/resources/rum/subresources/site_info/methods/list/",
+                                             "https://developers.cloudflare.com/api/resources/rum/subresources/rules/methods/list/",
+                                             "https://developers.cloudflare.com/api/resources/rum/subresources/rules/methods/bulk_create/"
+                                         ],
+                             "siteDiscoveryCapability":  "Official response includes site configuration, auto_install and rules; can provide authoritative initial read without requesting write.",
+                             "siteDiscoveryEndpoint":  "GET /accounts/{account_id}/rum/site_info/list",
+                             "rulesetDiscovery":  "After successful account-scoped site read, obtain the actual site/ruleset identity from authoritative provider data; use matching site details or provider dashboard if needed. Do not invent a ruleset identifier.",
+                             "rulesReadPermission":  "READ PERMISSION NOT EXPLICITLY DOCUMENTED",
+                             "siteDiscoveryReadPermission":  "Account Settings Read",
+                             "rulesEndpoint":  "GET /accounts/{account_id}/rum/v2/{ruleset_id}/rules"
+                         },
+    "minimumRemediation":  "Owner separately authorizes credential restoration. For least-privilege authoritative initial configuration read, use an owner-managed credential restricted to Account Settings Read on only account 8401a673cced362e27f162662ce629ae; no write grants or unrelated account resources. Verify site-list configuration/rules first. Rules-list accepted permission is not explicit, so do not add write permissions merely to test it.",
+    "oauthAlternative":  "Separately authorized Wrangler refresh/reauthentication may restore the existing session, but its historical scope list is broader and Web Analytics read capability remains unproven. No refresh or interactive login performed.",
+    "ownerInteractionRequired":  true,
+    "safeLaterSteps":  [
+                           "Obtain separate owner authorization for credential creation/restoration; none granted in this diagnosis.",
+                           "Owner signs into Cloudflare directly and, if choosing a read token, grants Account Settings Read restricted to the intended account only. No Account Settings Write.",
+                           "Enter any credential only into the approved local secret/environment mechanism outside the repository, such as CLOUDFLARE_API_TOKEN; never paste it into chat, print it or commit it.",
+                           "In a later authorized read-only slice, verify authentication and intended-account site configuration visibility; safely derive actual ruleset identity and verify rules read access.",
+                           "If rules read still fails, record exact evidence and seek provider permission clarification without automatically broadening privileges.",
+                           "Any analytics mutation or Account Settings Write grant/use requires separate owner authorization."
+                       ],
+    "nextPrerequisite":  "CLOUDFLARE AUTH RESTORATION — owner-authorized least-privilege credential restoration and authoritative Web Analytics configuration read verification",
+    "nextSliceBoundary":  "Do not resume ZK2 mutation or ZL in this diagnosis. No credential created/replaced/refreshed; no permission changes.",
+    "credentialFileUnchanged":  true,
+    "statements":  [
+                       "NO CREDENTIAL WAS CREATED",
+                       "NO CREDENTIAL WAS MODIFIED",
+                       "NO TOKEN VALUE WAS RECORDED",
+                       "NO CLOUDFLARE CONFIGURATION WAS MUTATED",
+                       "REGISTRATION REMAINS DISABLED",
+                       "HIBP LIVE USE NOT AUTHORIZED",
+                       "REGISTRATION ACTIVATION NOT AUTHORIZED"
+                   ],
+    "activationQualification":  "Committed false verified; current live activation not re-read. No activation change performed.",
+    "activity":  "Only local metadata/source review, official public API documentation reads, two credential-in-memory read-only probes and this sanitized artifact. No credential refresh/login/change, permission/config/rule mutation, deployment, source edit, DNS/limiter/D1 change, HIBP call, owner account/password action, FOOD admin change, staging, commit or push."
+}
