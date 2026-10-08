@@ -1,0 +1,158 @@
+{
+    "id":  "FOOD-002ZK1",
+    "title":  "Read-only credential-page analytics injection/exclusion discovery and real-browser verification prerequisite",
+    "recordedDate":  "2026-10-08",
+    "baseline":  {
+                     "branch":  "cif-001-canonical-content-source-record",
+                     "originEquality":  true,
+                     "head":  "02f34976d57c5b485f8d1f6be3cac301c0a1f6ef",
+                     "worktree":  "Clean; empty index before live access"
+                 },
+    "production":  {
+                       "origin":  "https://theriverkeptflowing.com",
+                       "versionProvenance":  "Inherited closed ZK deployment evidence, NOT freshly verified: deployment/settings API reads returned HTTP 401.",
+                       "activationProvenance":  "Committed wrangler.jsonc false and closed ZK evidence; no activation/config mutation performed. Live settings could not be reverified.",
+                       "version":  "882612e6-be5f-4022-a389-336d80e0681c",
+                       "activation":  "false"
+                   },
+    "sourceInclusion":  {
+                            "homepage":  "src/pages/index.astro -\u003e MainLayout.astro -\u003e source Google Analytics gtag and /script.js; ReadingLayout has same source mechanisms but neither account page imports it.",
+                            "astro":  "Cloudflare adapter, MDX and sitemap integrations; no analytics/injectScript integration found. Sitemap explicitly excludes account paths.",
+                            "login":  [
+                                          "src/pages/login.astro standalone document; no shared layout/component imports",
+                                          "Only tokens.css, typography.css and accessibility.css imports; styling only",
+                                          "Own inline client handler; no source analytics or global script.js",
+                                          "src/middleware.ts passes non-River-OS routes through without HTML rewriting"
+                                      ],
+                            "register":  [
+                                             "src/pages/register.astro standalone document; no shared layout/component imports",
+                                             "Only tokens.css, typography.css and accessibility.css imports; styling only",
+                                             "Own inline client handler; no source analytics or global script.js",
+                                             "src/middleware.ts passes non-River-OS routes through without HTML rewriting"
+                                         ]
+                        },
+    "analyticsMechanisms":  [
+                                {
+                                    "mechanism":  "Google Analytics gtag",
+                                    "evidence":  "MainLayout.astro and ReadingLayout.astro explicit googletagmanager.com scripts",
+                                    "accountPages":  "ABSENT in source, HTML and observed browser network",
+                                    "classification":  "SOURCE-LEVEL / THIRD-PARTY"
+                                },
+                                {
+                                    "mechanism":  "Google Apps Script form capture",
+                                    "evidence":  "public/script.js attaches submit listener to first form and posts FormData to Google Apps Script; loaded by shared layouts",
+                                    "accountPages":  "ABSENT; account pages intentionally standalone. No request to this provider made.",
+                                    "classification":  "SOURCE-LEVEL / THIRD-PARTY"
+                                },
+                                {
+                                    "mechanism":  "Cloudflare Web Analytics / RUM beacon",
+                                    "evidence":  "Both account pages load static.cloudflareinsights.com beacon and send same-origin POST /cdn-cgi/rum",
+                                    "controlProvenance":  "Exact account/zone injection control and current rules INDETERMINATE because metadata reads denied",
+                                    "classification":  "Cloudflare platform resource; PLATFORM-INJECTED inferred from production-only presence"
+                                }
+                            ],
+    "productionHtml":  {
+                           "homepage":  [
+                                            "Google gtag",
+                                            "/script.js",
+                                            "Cloudflare Insights beacon"
+                                        ],
+                           "method":  "Exactly three credential-free GETs: homepage, /register and /login; each HTTP 200",
+                           "login":  [
+                                         "Cloudflare Insights beacon; no gtag or /script.js",
+                                         "Disabled fieldset/submit and unnamed credential inputs in initial HTML"
+                                     ],
+                           "register":  [
+                                            "Cloudflare Insights beacon; no gtag or /script.js",
+                                            "Disabled fieldset/submit and unnamed credential inputs in initial HTML"
+                                        ]
+                       },
+    "platformDiscovery":  {
+                              "limitation":  "Existing Wrangler OAuth credential used transiently in memory; no credential printed, refreshed or modified. Denied reads do not establish enabled settings, global rule scope or account-specific exclusion configuration.",
+                              "reads":  [
+                                            "Worker deployments: HTTP 401",
+                                            "Worker settings: HTTP 401",
+                                            "Account RUM site list: HTTP 401",
+                                            "Zone name lookup: HTTP 403"
+                                        ],
+                              "docs":  [
+                                           "https://developers.cloudflare.com/web-analytics/configuration-options/rules/",
+                                           "https://developers.cloudflare.com/web-analytics/data-metrics/data-origin-and-collection/",
+                                           "https://developers.cloudflare.com/web-analytics/faq/"
+                                       ],
+                              "exclusions":  "No effective analytics-free exclusion on observed /register and /login: beacon execution and RUM POST occurred. Interaction/form-capture exclusions cannot be proven.",
+                              "inference":  "Beacon URL and RUM network endpoint identify Cloudflare Web Analytics behavior. Absence in repository injection search supports edge/platform injection; exact enabling product/control not authoritatively verified.",
+                              "exclusionCapability":  "VERIFIED IN PRINCIPLE via official Cloudflare Web Analytics Rules documentation; actual site capability/settings/exclusions INDETERMINATE",
+                              "syntax":  "Official docs describe host/path rules and configuration-rule precedence, but exact matching syntax/site policy was not verified. /register, /register descendants, /login and /login descendants are conceptual targets, not an executable rule."
+                          },
+    "privacy":  {
+                    "classification":  "C. ANALYTICS PRESENT ON ACCOUNT PAGES — PRIVACY BLOCKER",
+                    "conclusion":  "BLOCKED — ANALYTICS PRESENT ON ACCOUNT PAGES",
+                    "leakage":  "No credential leakage, session replay or credential capture established. No values entered; analytics POST payloads were not inspected or printed. Presence alone does not prove password collection.",
+                    "status":  "FAIL",
+                    "question":  "YES: executable analytics loads on credential pages and can measure page activity. No authoritative credential-interaction exclusion proven."
+                },
+    "browserTooling":  {
+                           "mechanism":  "Existing installed Google Chrome headless + Chrome DevTools Protocol through Node v24.18.0 built-in WebSocket; no packages or browser downloaded",
+                           "isolation":  "Fresh temporary profiles outside repository, no user browser profile, credential entry or authentication; no software installation. Temporary profiles not delivered.",
+                           "skillAttempt":  "Browser skill read; Node browser-plugin kernel failed before initialization: Windows sandbox helper nonzero exit. No connected browser/runtime selected; fallback used existing Chrome only after this failure.",
+                           "availability":  "AVAILABLE",
+                           "repositoryHarness":  "No Playwright, Puppeteer or Cypress dependency found in package/package-lock or inspected node_modules paths."
+                       },
+    "browserVerification":  {
+                                "hydration":  "PASS",
+                                "sourceWiring":  "Both handlers prevent default before enabling controls, guard pending, disable controls during request, use canonical same-origin JSON endpoint with redirect:error and no-store, clear password before fetch and finally; no automatic authenticated navigation in source.",
+                                "analyticsExclusion":  "FAIL",
+                                "method":  "Genuine Chrome runtime on production pages; CDP Runtime/DOM/Network observation, separate JavaScript-disabled native fallback, re-enabled reload and submit-listener inspection.",
+                                "register":  "PASS",
+                                "bothPages":  [
+                                                  "Expected title/path; no unintended redirect or query string",
+                                                  "Email/password/submit present; associated labels and polite status region",
+                                                  "No Runtime.exceptionThrown during sampled initialized navigation",
+                                                  "Initialized fieldset and submit enabled; credential inputs remain unnamed; password type remains password; no password value attribute",
+                                                  "JavaScript disabled: fieldset and submit disabled, inputs unnamed; password type correct",
+                                                  "After re-enabled reload: one submit listener on each form"
+                                              ],
+                                "credentialPrivacy":  "FAIL",
+                                "scopeLimits":  "Rendering supported by DOM/title/control inspection, not screenshot/visual QA. No fields filled or submits performed. Pending duplicate guard and first-party JSON endpoint wiring verified in source only; request/pending behavior not exercised. No console payloads collected; absence of leakage during credential typing is NOT verified.",
+                                "login":  "PASS",
+                                "nativeFallbackRuntime":  "PASS"
+                            },
+    "network":  {
+                    "status":  "FAIL — account-page privacy requirement",
+                    "login":  [
+                                  "GET first-party /login",
+                                  "GET Cloudflare platform static.cloudflareinsights.com beacon",
+                                  "POST first-party-hosted Cloudflare /cdn-cgi/rum"
+                              ],
+                    "register":  [
+                                     "GET first-party /register",
+                                     "GET Cloudflare platform static.cloudflareinsights.com beacon",
+                                     "POST first-party-hosted Cloudflare /cdn-cgi/rum",
+                                     "GET first-party /favicon.ico"
+                                 ],
+                    "limits":  "Host/path/method summary only. No cookies, query tokens, headers or request bodies recorded. No synthetic values entered. RUM POST is automatic browser analytics, NOT registration POST."
+                },
+    "syntheticRegistrationPost":  "NOT PERFORMED",
+    "syntheticRegistrationPostCount":  0,
+    "loginSubmissionCount":  0,
+    "credentialEntryCount":  0,
+    "zkBlockers":  "REMAIN",
+    "resolved":  "Existing genuine browser capability and initialized account form/native fallback behavior established; no installation prerequisite needed.",
+    "remaining":  [
+                      "Cloudflare analytics still executes on both account pages; effective exclusion not proven",
+                      "Authoritative platform rule/control inspection requires valid read access; current deployment and activation cannot be freshly reverified"
+                  ],
+    "smallestNextPrerequisite":  "Obtain valid read-only account/zone Web Analytics configuration access or equivalent owner-provided authoritative settings evidence, identify actual injection control/current rules, then prepare exact path-specific exclusion for separate owner mutation authorization.",
+    "remediation":  "Prefer credential-path exclusion through the verified actual provider control, preserve unrelated analytics, and re-run credential-free browser/HTML/network checks. No rule/source/config change performed. Do not assume wildcard syntax or globally disable analytics.",
+    "nextSlice":  "FOOD-002ZK2 — credential-page Cloudflare Web Analytics exclusion implementation",
+    "nextSliceBoundary":  "First satisfy valid read-only configuration evidence prerequisite and obtain separate authorization for exact exclusion mutation. No ZK2 work begun. ZL blocked until privacy and required runtime checks pass.",
+    "statements":  [
+                       "REGISTRATION REMAINS DISABLED",
+                       "HIBP LIVE USE NOT AUTHORIZED",
+                       "REGISTRATION ACTIVATION NOT AUTHORIZED",
+                       "NO OWNER ACCOUNT WAS CREATED",
+                       "NO REAL PASSWORD WAS HANDLED"
+                   ],
+    "activity":  "Only read-only source/metadata/GET/browser inspection, public official documentation reads and this artifact. No activation, deployment, Cloudflare mutation, HIBP call, account/login/registration submission, D1 write, source edit, FOOD admin change, stage, commit or push."
+}
