@@ -27,6 +27,10 @@ Creator capabilities still need video-source import/storage contracts, creator-c
 
 Food capabilities still need versioned recipes/labels, draft review evidence, batches/cooling, inventory, physical orders and slots, refunds, fulfillment, reconciliation, protected exports and verified impact records. No operational food system or approved payment connection is established by the existing commerce code.
 
+## Recurring River content trajectory
+
+[Trash in the River](trash-in-the-river-content-trajectory.md) is a permanent first-class recurring series within the broader River journey. Its canonical editorial direction records former beliefs, personal responsibility, what God revealed, replacement beliefs and continuing downstream. Entry No. 001 remains a planned trash-carrying manifesto with an essential empty-handed return walk. It reuses existing content-series fields and the shared source/transcript/catalog/repurpose foundations; it creates no separate publishing engine or published placeholder. The linked record preserves the public faith-language rule, honest financial/abundance tension and restrained documentary identity without changing global branding or FOOD runtime/readiness work.
+
 ## Smallest next milestones
 
 Creator Stage A is documentation, reuse and dependency planning: map the existing systems, preserve obligations, identify the local-processing seam, and define a real-footage acceptance scenario. Record pending format, hardware, licensing, retention and recovery decisions before selecting FFmpeg, whisper.cpp or alternatives. Stage A does not produce playable outputs. The later first useful workflow is footage plus real voiceover to a reviewable main cooking video, up to three supported shorts, authentic thumbnail options and downloadable exports; preserve originals and creator revisions, with publishing separate.
