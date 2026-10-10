@@ -31,6 +31,115 @@ Food capabilities still need versioned recipes/labels, draft review evidence, ba
 
 [Trash in the River](trash-in-the-river-content-trajectory.md) is a permanent first-class recurring series within the broader River journey. Its canonical editorial direction records former beliefs, personal responsibility, what God revealed, replacement beliefs and continuing downstream. Entry No. 001 remains a planned trash-carrying manifesto with an essential empty-handed return walk. It reuses existing content-series fields and the shared source/transcript/catalog/repurpose foundations; it creates no separate publishing engine or published placeholder. The linked record preserves the public faith-language rule, honest financial/abundance tension and restrained documentary identity without changing global branding or FOOD runtime/readiness work.
 
+## Planned full-form reflection: I Will Never Again Let Fear Dictate My Life
+
+Recorded October 10, 2026 from River's owner-supplied direction. This section is the canonical editorial planning source for a future full-form River Kept Flowing video and written reflection, and a reusable thematic thread across the broader creation direction. The strongest current working title is **I Will Never Again Let Fear Dictate My Life**. It is ideation, not a final published title. No recording, transcript, publication, completed sales departure, customer orders, revenue or successful business outcome is asserted here. This is a story being lived in real time.
+
+### Personal source and central tension
+
+> I spent roughly ten years in sales. I learned how to communicate, read people, endure rejection, work, sell an idea, take responsibility, survive uncertainty, and keep moving when outcomes are not guaranteed. Those years were not wasted. But I have outgrown building my entire life around sales.
+>
+> Take what I learned. Put it to work somewhere that actually matters to me.
+>
+> I want to create. I want to cook. I want to build businesses around things I actually value. I want work that can exist around my wife and boys rather than constantly removing me from them. The River Kept Flowing and its connected businesses are a different expression of those capabilities, not a denial of what sales taught me.
+>
+> I have talked myself out of opportunities because the full path was not visible, finances were not perfect, and I did not feel ready. I feared failure, looking foolish, choosing incorrectly, and walking away from the identity and income structure I already understood. I wanted certainty before movement. Competence can become a cage.
+>
+> I still do not know exactly how this works out, but uncertainty no longer gets final authority over what I attempt.
+>
+> Change the approach. Pursue the opportunity. Build the thing I have been talking myself out of. Use what I already know. Learn what I do not know while moving.
+
+Preserve this as River's own transition, not an attack on sales or a generic motivational lesson. Do not manufacture an ending where leaving sales fixes everything, or claim he has already quit. Change is beginning through one decision, one boundary, one courageous step, one attempt, one fulfilled promise, and one thing actually built instead of endlessly contemplated.
+
+### The next concrete milestone: first food orders
+
+Beginning the cottage-food operation is a present expression of the direction. The next tangible milestone is **accepting and successfully fulfilling the first batch of actual customer orders**. It remains future, not accomplished:
+
+1. Accept the first batch of actual customer orders.
+2. Prepare the food.
+3. Package it correctly.
+4. Deliver or fulfill those orders.
+5. Learn from it.
+6. Then do it again.
+
+> The first milestone is not becoming a massive restaurant company. It is taking the first real orders and fulfilling them. It sounds small compared with the life I imagine, but that is how lives actually change.
+
+This is an editorial milestone, not food-sale activation authority or evidence of readiness. Preserve the separate food evidence and launch boundaries below; this content direction changes no FOOD implementation or diagnostic work. Do not invent orders, customer counts, revenue, a launch date, or footage showing fulfillment before it happens.
+
+### Unfinished, afraid, and still becoming
+
+The reusable thread is **fear → courage → action → becoming**. Its central image is movement despite uncertainty. Fear does not have to disappear before courage exists; courage is choosing differently while fear is still there.
+
+> The biggest sign that I have changed may be that I no longer need my life to be perfect before I respect the person I am becoming.
+>
+> I can be unfinished and still growing.
+>
+> I can be uncertain and still move forward.
+>
+> I can be afraid and still choose differently.
+>
+> I can be struggling financially and still have dignity.
+>
+> I can be building something small and still respect the direction of my life.
+>
+> I can have unanswered questions and still obey the next thing I know to do.
+>
+> I refuse to let fear steal another year of my life.
+>
+> I will never again let fear dictate my life.
+
+Let “fear steal another year” carry weight rather than treating it as a slogan. River believes there is more ahead without faking prosperity, success, certainty or arrival. Preserve the distinction between abundance and pretending. Dignity comes from becoming someone willing to move faithfully while unfinished; financial struggle does not erase it.
+
+There is a difference between patiently waiting on God and hiding behind “waiting” because I am afraid to act; between wisdom and paralysis; between preparation and endlessly postponing my life. Faith does not mean pretending the outcome is guaranteed. It means being willing to take the next faithful step without seeing the entire road.
+
+Follow the existing [faith-language rule](trash-in-the-river-content-trajectory.md#doctrine-and-voice): avoid religious identity labels. Use God, Jesus, following God, faith, obedience, stewardship, calling, and trusting God with what cannot yet be seen naturally where River's story supports them. Keep the voice personal and grounded, without preaching or artificially polishing away the tension.
+
+### Eventual structural trajectory
+
+This is a preserved editorial arc, not a finished script or an assertion that its milestones have happened:
+
+1. I spent ten years becoming good at something I no longer want to build my whole life around.
+2. That realization is frightening because competence can become a cage.
+3. The old instinct is to demand certainty before leaving what is familiar.
+4. I do not have certainty.
+5. What I do have is a next step.
+6. For me right now, one of those steps is taking the first actual food orders and fulfilling them.
+7. It sounds small compared with the life I imagine, but that is how lives actually change.
+8. One decision. One boundary. One courageous step.
+9. I am taking what the last ten years taught me instead of allowing the last ten years to determine the next ten.
+10. I can be unfinished and still respect who I am becoming.
+11. I can be afraid and still choose differently.
+12. I refuse to let fear steal another year of my life.
+13. I will never again let fear dictate my life.
+14. I do not need the entire map. I need the courage to take the next faithful step.
+
+### Relationships and existing creator foundations
+
+Faith & Calling already has related reflections: [You Do Not Need to See the Whole Road to Take the Next Right Step](../../src/content/essays/you-do-not-need-to-see-the-whole-road-to-take-the-next-right-step.md) and [You Cannot Control the Future by Worrying About It](../../src/content/essays/you-cannot-control-the-future-by-worrying-about-it.md). They establish related themes, not this specific ten-year sales transition or proof that the food milestone is complete. Preserve those works unchanged and keep this first-person story distinct.
+
+Carry the thread into stewardship (using learned capabilities responsibly), quiet/meaningful life (choosing what is true over what looks impressive), family-centered work (presence with wife and boys), cooking and entrepreneurship (the first fulfilled batch), and The River Kept Flowing founder story (building a different expression of existing capabilities). These are relationships, not interchangeable concepts or a new top-level website section.
+
+[Trash in the River](trash-in-the-river-content-trajectory.md) focuses on discarded beliefs, former identities, cultural conditioning and what River no longer wants carrying downstream. This reflection may reference old patterns, but centers on acting while afraid. Do not collapse it into that series or assign it an installment number by default.
+
+Reuse the shared creator workflow and [source/transcript/catalog/repurpose lineage](trash-in-the-river-content-trajectory.md#river-os-and-canonical-creator-pipeline) for the eventual video and written reflection. The [canonical intake contract](../../src/lib/assimilation/ingestion/canonical-content-source.ts) requires a real published URL and publication timestamp; the [site collections](../../src/content.config.ts) require a publication date. Keep this unrecorded, unpublished concept here rather than fabricating an intake record or public-content placeholder. Future truthful renditions can reuse existing category, tags and related-content fields where supported, without a parallel registry, publishing engine or new runtime fields. No social-platform metadata or derivatives are generated now.
+
+### Title ideation retained for owner review
+
+All options remain possible titles, not publication metadata:
+
+- I Will Never Again Let Fear Dictate My Life (strongest current working title)
+- I Refuse to Let Fear Steal Another Year
+- You Don’t Need the Whole Map
+- I’m Taking the Next Step Anyway
+- The Life I Want Starts With One Decision
+- I Don’t Need to Have It All Figured Out
+- I Can Be Afraid and Still Choose Differently
+- Ten Years Taught Me What I Needed — Now I’m Building Something Else
+- Competence Can Become a Cage
+- The First Order Changes Everything
+
+This addition records content direction only. Publication, runtime changes, FOOD-002ZL1 changes, identity changes, Cloudflare/D1 mutations, deployment, commit and push remain outside this task. Stop after local verification for owner review.
+
 ## Smallest next milestones
 
 Creator Stage A is documentation, reuse and dependency planning: map the existing systems, preserve obligations, identify the local-processing seam, and define a real-footage acceptance scenario. Record pending format, hardware, licensing, retention and recovery decisions before selecting FFmpeg, whisper.cpp or alternatives. Stage A does not produce playable outputs. The later first useful workflow is footage plus real voiceover to a reviewable main cooking video, up to three supported shorts, authentic thumbnail options and downloadable exports; preserve originals and creator revisions, with publishing separate.
