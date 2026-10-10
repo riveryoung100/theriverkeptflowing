@@ -27,7 +27,7 @@ function fixture() {
   };
   const input: IdentityRegistrationServerRuntimeInput = {
     environment, site: "https://signup.example.test/", trustedClientKey: "2001:db8::1", mode: "production",
-    async fetch(url, init) { calls.push("fetch"); assert.equal(url, "https://api.pwnedpasswords.com/range/00000"); assert.equal(init.method, "GET"); assert.equal(init.credentials, "omit"); assert.equal(init.redirect, "error"); assert.equal(init.cache, "no-store"); assert.deepEqual(init.headers, { "Add-Padding": "true" }); assert.equal(init.body, undefined); return new Response("0".repeat(35) + ":0\n"); },
+    async fetch(url, init) { calls.push("fetch"); assert.equal(url, "https://api.pwnedpasswords.com/range/00000"); assert.equal(init.method, "GET"); assert.equal(init.credentials, "omit"); assert.equal(Object.hasOwn(init, "redirect"), false); assert.equal(init.cache, "no-store"); assert.deepEqual(init.headers, { "Add-Padding": "true" }); assert.equal(init.body, undefined); return new Response("0".repeat(35) + ":0\n"); },
     subtle: { async digest(algorithm, bytes) { calls.push("digest"); assert.equal(algorithm, "SHA-1"); assert.equal(new TextDecoder().decode(bytes as Uint8Array), "Synthetic password only"); return new ArrayBuffer(20); } },
     scheduleTimeout(_callback, milliseconds) { calls.push("timer:" + milliseconds); return () => { calls.push("cancel:" + milliseconds); }; },
     acquireWorkSlot() { calls.push("slot"); return () => { calls.push("release"); }; },

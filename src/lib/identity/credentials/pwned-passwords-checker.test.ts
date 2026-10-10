@@ -35,7 +35,7 @@ for (const value of ["Synthetic ASCII password", password, "é synthetic passwo
     const { url, init } = f.requests[0];
     assert.equal(url, "https://api.pwnedpasswords.com/range/" + hash(value).slice(0, 5));
     assert.deepEqual(init.headers, { "Add-Padding": "true" });
-    assert.equal(init.method, "GET"); assert.equal(init.redirect, "error");
+    assert.equal(init.method, "GET"); assert.equal(Object.hasOwn(init, "redirect"), false);
     assert.equal(init.credentials, "omit"); assert.equal(init.cache, "no-store");
     assert(init.signal instanceof AbortSignal); assert.equal(init.body, undefined);
     for (const secret of [value, hash(value), hash(value).slice(5)]) assert(!JSON.stringify({ url, init }).includes(secret));

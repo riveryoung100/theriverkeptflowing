@@ -69,7 +69,7 @@ export function createPwnedPasswordsRegistrationChecker(input: PwnedPasswordsChe
           const hex = Array.from(new Uint8Array(hash), (byte) => byte.toString(16).padStart(2, "0")).join("").toUpperCase();
           const response = await fetchRange("https://api.pwnedpasswords.com/range/" + hex.slice(0, 5), {
             method: "GET", headers: { "Add-Padding": "true" }, credentials: "omit",
-            redirect: "error", cache: "no-store", signal: abort.signal,
+            cache: "no-store", signal: abort.signal,
           });
           if (!(response instanceof Response)) return "unavailable";
           if (stopped || response.status !== 200 || !response.body || response.redirected) {
