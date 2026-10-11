@@ -16,6 +16,8 @@ export interface IdentityRegistrationRequestHandlerInput {
   readonly abuseControl: RegistrationAbuseControl;
   readonly acquireWorkSlot: () => (() => void) | null;
   readonly scheduleTimeout: (callback: () => void, milliseconds: number) => (() => void);
+  readonly authorizeRequest?: (request: Request) => Promise<boolean>;
+  readonly beforePasswordCheck?: (emailNormalized: string) => Promise<boolean>;
 }
 export type IdentityRegistrationRequestHandler = (request: Request) => Promise<Response>;
 const errors = {
@@ -126,10 +128,13 @@ export function createIdentityRegistrationRequestHandler(input: IdentityRegistra
   let abuseControl: RegistrationAbuseControl;
   let acquireWorkSlot: IdentityRegistrationRequestHandlerInput["acquireWorkSlot"];
   let scheduleTimeout: IdentityRegistrationRequestHandlerInput["scheduleTimeout"];
+  let authorizeRequest: IdentityRegistrationRequestHandlerInput["authorizeRequest"];
+  let beforePasswordCheck: IdentityRegistrationRequestHandlerInput["beforePasswordCheck"];
   try {
     if (!object(input)) throw new Error();
-    ({ registration, expectedOrigin, compromisedPasswords, abuseControl, acquireWorkSlot, scheduleTimeout } = input);
+    ({ registration, expectedOrigin, compromisedPasswords, abuseControl, acquireWorkSlot, scheduleTimeout, authorizeRequest, beforePasswordCheck } = input);
     if (!object(registration) || typeof registration.register !== "function" || !origin(expectedOrigin) || !object(compromisedPasswords) || typeof compromisedPasswords.check !== "function" || !object(abuseControl) || typeof abuseControl.check !== "function" || typeof acquireWorkSlot !== "function" || typeof scheduleTimeout !== "function") throw new Error();
+    if ((authorizeRequest !== undefined && typeof authorizeRequest !== "function") || (beforePasswordCheck !== undefined && typeof beforePasswordCheck !== "function")) throw new Error();
   } catch { return async () => failure("unavailable"); }
   return async request => {
     let release: (() => void) | undefined;
@@ -138,6 +143,7 @@ export function createIdentityRegistrationRequestHandler(input: IdentityRegistra
       if (request.method !== "POST") return failure("method-not-allowed");
       const incoming = request.headers.get("origin");
       if (!origin(incoming) || incoming !== expectedOrigin) return failure("origin-rejected");
+      if (authorizeRequest && await authorizeRequest(request) !== true) return failure("unavailable");
       const type = request.headers.get("content-type");
       if (type === null || !/^application\/json(?:\s*;\s*charset\s*=\s*(?:utf-8|"utf-8"))?$/i.test(type)) return failure("unsupported-content-type");
       const encoded = request.headers.get("content-encoding");
@@ -155,8 +161,10 @@ export function createIdentityRegistrationRequestHandler(input: IdentityRegistra
       if (typeof slot !== "function") return failure("unavailable");
       release = slot;
       const payload = parseBody(await readBody(request, declared, scheduleTimeout));
-      try { normalizeCredentialEmail(payload.email); } catch { throw new InputFailure("invalid-input"); }
+      let emailNormalized: string;
+      try { emailNormalized = normalizeCredentialEmail(payload.email); } catch { throw new InputFailure("invalid-input"); }
       if (!isValidRegistrationPassword(payload.password)) throw new InputFailure("invalid-input");
+      if (beforePasswordCheck && await beforePasswordCheck(emailNormalized) !== true) return failure("unavailable");
       const checked = await compromisedPasswords.check(payload.password);
       if (checked === "rejected") throw new InputFailure("password-rejected");
       if (checked !== "allowed") throw new InputFailure("unavailable");

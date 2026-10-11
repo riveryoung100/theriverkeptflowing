@@ -16,13 +16,13 @@ function record(value: unknown): value is Record<string, unknown> { return typeo
 export function createIdentityRegistrationRuntime(input: IdentityRegistrationRuntimeInput): IdentityRegistrationRuntimeResult {
   try {
     if (!record(input)) throw new Error();
-    const { database, expectedOrigin, compromisedPasswords, abuseControl, acquireWorkSlot, scheduleTimeout, generatePrincipalId, now } = input;
+    const { database, expectedOrigin, compromisedPasswords, abuseControl, acquireWorkSlot, scheduleTimeout, generatePrincipalId, now, authorizeRequest, beforePasswordCheck } = input;
     if (!record(database) || typeof database.prepare !== "function" || typeof database.batch !== "function" || !record(compromisedPasswords) || typeof compromisedPasswords.check !== "function" || !record(abuseControl) || typeof abuseControl.check !== "function" || typeof acquireWorkSlot !== "function" || typeof scheduleTimeout !== "function" || typeof generatePrincipalId !== "function" || typeof now !== "function" || typeof expectedOrigin !== "string") throw new Error();
     const url = new URL(expectedOrigin);
     if (!["http:", "https:"].includes(url.protocol) || url.username || url.password || url.origin !== expectedOrigin) throw new Error();
     const repository = new D1IdentityRegistrationRepository(database);
     const passwordHasher = new Argon2idPasswordHasher();
     const registration = new DefaultIdentityRegistrationService({ repository, passwordHasher, generatePrincipalId, now });
-    return { ok: true, value: createIdentityRegistrationRequestHandler({ registration, expectedOrigin, compromisedPasswords, abuseControl, acquireWorkSlot, scheduleTimeout }) };
+    return { ok: true, value: createIdentityRegistrationRequestHandler({ registration, expectedOrigin, compromisedPasswords, abuseControl, acquireWorkSlot, scheduleTimeout, authorizeRequest, beforePasswordCheck }) };
   } catch { return { ok: false, error: { code: "unavailable", message: "Registration is temporarily unavailable." } }; }
 }

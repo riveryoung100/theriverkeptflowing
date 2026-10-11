@@ -7,7 +7,8 @@
 		"html_handling": "auto-trailing-slash"
 	},
 	"vars": {
-		"RIVER_IDENTITY_REGISTRATION_ENABLED": "false"
+		"RIVER_IDENTITY_REGISTRATION_ENABLED": "false",
+		"RIVER_IDENTITY_OWNER_BOOTSTRAP_ENABLED": "false"
 	},
 	"ratelimits": [
 		{

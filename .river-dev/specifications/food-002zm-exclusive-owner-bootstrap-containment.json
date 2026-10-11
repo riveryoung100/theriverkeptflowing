@@ -1,0 +1,66 @@
+{
+  "id": "FOOD-002ZM",
+  "name": "Exclusive owner bootstrap containment",
+  "date": "2026-10-11",
+  "scope": "Local implementation and synthetic/isolated tests only; no activation or account creation authorization.",
+  "startingState": {
+    "branch": "cif-001-canonical-content-source-record",
+    "head": "14acaad62e2ea7f21ca3592433abca55c2eab6f0",
+    "identifierSearch": "Only related future-work references in FOOD-002ZL; no existing FOOD-002ZM artifact or unrelated scope found.",
+    "ownerSuppliedProductionBaseline": "e937e860-ab7c-4986-81e5-64ed57ecd3e6 at 100%, deployment 43c7655f-23dd-4fc6-8837-e8d60636eddb, registration=false, aggregate identity counts 0/0, no administrator binding. No remote reconciliation in this implementation task."
+  },
+  "architecture": {
+    "route": "POST /api/identity/bootstrap-owner; ALL applies disabled/dev/mutual-exclusion gates before downstream work.",
+    "normalRegistration": "POST /api/identity/register remains unchanged; its server factory supplies no optional bootstrap policy hooks.",
+    "sharedLogic": "Two optional handler hooks authorizeRequest and beforePasswordCheck; shared bounded parser, validation, abuse/work-slot controls, HIBP, Argon2id, canonical registration service/repository and neutral acknowledgement.",
+    "bindings": {
+      "RIVER_IDENTITY_OWNER_BOOTSTRAP_ENABLED": "Plaintext version variable; canonical/default false; only exact string true enables bootstrap.",
+      "RIVER_IDENTITY_OWNER_BOOTSTRAP_TOKEN": "Future protected Worker secret; no configured value in Git; 32-256 base64url characters with no whitespace. Future provisioning must use a randomly generated high-entropy token; syntax validation alone does not establish entropy.",
+      "RIVER_IDENTITY_OWNER_BOOTSTRAP_EMAIL": "Future protected Worker secret; canonical credential email normalization; no configured value in Git."
+    },
+    "mutualExclusion": "Bootstrap unavailable whenever normal registration flag is exact string true.",
+    "authorization": "Strict Authorization: Bearer header only. Web Crypto HMAC-SHA-256 import/sign/verify delegates signature comparison to the crypto implementation; no ordinary equality of supplied and configured secret strings.",
+    "emailPolicy": "Normalized submitted email must equal normalized configured owner email; mismatch produces generic unavailable before COUNT/HIBP/hashing/persistence.",
+    "emptyStore": "One COUNT-only SELECT through canonical RIVER_IDENTITY_DB batch; require successful singleton result, changes=0 and numeric counts exactly 0/0 before HIBP.",
+    "ordering": "Closed/dev/invalid configuration and invalid IP fail before handler acquisition without database or external work. Activated handler checks method and canonical SITE Origin, verifies bearer, then checks content envelope, limiters and work-slot, reads bounded JSON, validates email/password, enforces owner email and empty store, checks HIBP, hashes and persists.",
+    "privacy": "Generic denied responses; no secret/account/hash/principal-ID output, no logs, no CORS, no-store, no session/cookie creation.",
+    "administrator": "Creates ordinary active principal only. No roles, first-account privilege inference, FOOD authority or administrator binding mutation.",
+    "login": "Normal login/session creation is independent of registration/bootstrap flags; closing bootstrap preserves D1 identity and password credential."
+  },
+  "schemaAndConcurrency": {
+    "schema": "migrations/identity/0001_river_identity.sql: principals.principal_id PRIMARY KEY; principal_password_credentials.principal_id PRIMARY KEY; email_normalized TEXT NOT NULL UNIQUE.",
+    "persistence": "Existing D1IdentityRegistrationRepository uses one batch: plain principal INSERT, credential INSERT, joined readback. Runtime batch transaction rolls back principal insert when credential uniqueness fails; existing and new isolated Miniflare tests exercise this.",
+    "ceiling": "Concurrent bootstrap requests for the same configured normalized owner email can both observe 0/0 and pass HIBP, but UNIQUE(email_normalized) plus atomic batch commits at most one principal/credential pair. Concurrent loser can receive the same neutral202; acknowledgement is not individual creation proof.",
+    "qualification": "COUNT is a preflight, not a global database lock. Guarantee assumes enabled bootstrap versions use the same intended owner email, public registration remains closed, and no out-of-band identity writer races the operation. Independently enabled versions with different owner-email secrets or direct administrative writes require separate containment; not claimed safe by this schema.",
+    "migration": "NONE"
+  },
+  "versionUrlContainment": "Reachable version URL/alias is not authorization. Requests still need canonical SITE Origin, private bearer, configured owner-email match and empty store. Ordinary same-origin version-URL browser form Origin does not match canonical SITE; future owner credential entry must preserve this policy.",
+  "publicRegistrationPolicy": "policy decision not yet canonicalized.",
+  "validation": {
+    "focusedTests": "PASS: bootstrap/server/route wiring and shared registration tests; separate actual isolated Worker Web Crypto test also passed.",
+    "fullIdentitySuite": "PASS: 593 passed, 0 failed, 0 skipped; local mocked/nonpersistent isolated D1 only.",
+    "productionBuild": "PASS: npm run build, including Astro and Pagefind; no upload or deployment.",
+    "artifactSecretScan": "PASS: normal registration and bootstrap routes present; both root/generated flags exact false; no secret/admin configuration; synthetic fixture token/email literals absent from all generated Worker modules; corrected HIBP request options retained.",
+    "gitDiffCheck": "PASS",
+    "changedFileLint": "PASS",
+    "changedFileTypeScript": "PASS: zero diagnostics in changed bootstrap/identity TypeScript files.",
+    "repositoryWideAstroTypecheck": "FAIL: 248 repository-wide errors, including untouched account pages and Sesh routes. No claim of a clean repository-wide typecheck."
+  },
+  "futureGates": [
+    "Owner reviews implementation and explicitly authorizes commit/push; neither occurs here.",
+    "Fresh source/build/resource/privacy/aggregate gates before any candidate upload.",
+    "Separately authorize protected secret provisioning and candidate version upload; registration stays false and admin remains absent.",
+    "Keep every reachable enabled version bound to the same intended owner email; inventory legacy enabled registration/bootstrap surfaces and resolve independent writers.",
+    "Define owner-controlled credential and bearer entry outside chat/history/logs, canonical Origin and HIBP prefix/network disclosure approval; no real credentials in this task.",
+    "Separately authorize real owner D1 creation, narrow principal lookup, login/session verification and prompt closure of enabled version surfaces.",
+    "FOOD administrator binding remains a later separately authorized operation."
+  ],
+  "operations": {
+    "remoteCalls": "NONE",
+    "cloudflareMutation": "NONE",
+    "remoteD1Write": "NONE",
+    "realCredentialsOrSecrets": "NONE",
+    "productionDeployment": "NONE",
+    "stagingCommitPush": "NONE"
+  }
+}

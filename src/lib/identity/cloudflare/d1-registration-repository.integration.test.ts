@@ -9,6 +9,8 @@ import { Argon2idPasswordHasher } from "../credentials/argon2id";
 import { DefaultPasswordAuthenticationService } from "../authentication/password-authentication-service";
 import { D1PrincipalRepository } from "./d1-principal-repository";
 import { D1PasswordCredentialRepository } from "./d1-password-credential-repository";
+import { webcrypto } from "node:crypto";
+import { createIdentityOwnerBootstrapServerRuntime, type IdentityOwnerBootstrapServerRuntimeInput } from "../runtime/principal-owner-bootstrap-server";
 type Query = { sql: string; values: unknown[] };
 class Bridge implements IdentityRegistrationD1Database {
   readonly calls: Query[][] = [];
@@ -74,4 +76,50 @@ test("real Argon2 registration is compatible with unchanged existing password lo
   assert.deepEqual(await login.authenticate({ email: " SYNTHETIC@example.test ", password }), { ok: true, value: { principalId: id, needsPasswordRehash: false } });
   const stored = (await db.execute([{ sql: "SELECT password_hash FROM principal_password_credentials", values: [] }]))[0].results![0].password_hash;
   assert.equal(typeof stored, "string"); assert((stored as string).startsWith("$argon2id$v=19$m=19456,t=2,p=1$")); assert.notEqual(stored, password);
+}));
+
+test("concurrent authorized owner bootstrap with both empty reads creates one principal/credential and preserves login after closure", async () => harness(async db => {
+  const syntheticToken = "synthetic_concurrent_bootstrap_only_0123456789";
+  const email = "concurrent-owner@example.test";
+  const password = "Synthetic concurrent bootstrap password";
+  let countReads = 0; let outbound = 0; let ids = 0;
+  let admitBoth!: () => void;
+  const bothEmpty = new Promise<void>(resolve => { admitBoth = resolve; });
+  const database: IdentityRegistrationD1Database = {
+    prepare: db.prepare.bind(db),
+    async batch(statements) {
+      const result = await db.batch(statements);
+      if (statements.length === 1 && countReads < 2) {
+        assert.deepEqual(result[0].results, [{ principals: 0, credentials: 0 }]);
+        countReads++; if (countReads === 2) admitBoth(); await bothEmpty;
+      }
+      return result;
+    },
+  };
+  const environment = {
+    RIVER_IDENTITY_REGISTRATION_ENABLED: "false", RIVER_IDENTITY_OWNER_BOOTSTRAP_ENABLED: "true",
+    RIVER_IDENTITY_OWNER_BOOTSTRAP_TOKEN: syntheticToken, RIVER_IDENTITY_OWNER_BOOTSTRAP_EMAIL: email, RIVER_IDENTITY_DB: database,
+    RIVER_IDENTITY_REGISTRATION_IP_LIMITER: { async limit() { return { success: true }; } },
+    RIVER_IDENTITY_REGISTRATION_SHARED_LIMITER: { async limit() { return { success: true }; } },
+  };
+  const input: IdentityOwnerBootstrapServerRuntimeInput = {
+    environment, site: "https://bootstrap.example.test/", mode: "production", trustedClientKey: "192.0.2.1",
+    subtle: webcrypto.subtle as unknown as IdentityOwnerBootstrapServerRuntimeInput["subtle"],
+    async fetch() { outbound++; return new Response("F".repeat(35) + ":0\n"); },
+    scheduleTimeout(callback, milliseconds) { const timer = setTimeout(callback, milliseconds); return () => clearTimeout(timer); },
+    acquireWorkSlot: () => () => {}, generatePrincipalId: () => createPrincipalId("concurrent-bootstrap-" + ++ids), now: () => new Date(time),
+  };
+  const a = createIdentityOwnerBootstrapServerRuntime(input); const b = createIdentityOwnerBootstrapServerRuntime(input); assert(a.ok && b.ok);
+  const request = () => new Request("https://version.example.test/api/identity/bootstrap-owner", { method: "POST", headers: { origin: "https://bootstrap.example.test", "content-type": "application/json", authorization: "Bearer " + syntheticToken }, body: JSON.stringify({ email, password }) });
+  const responses = await Promise.all([a.value(request()), b.value(request())]);
+  assert.deepEqual(responses.map(response => response.status), [202, 202]);
+  assert.deepEqual(await counts(db), [{ principals: 1, credentials: 1 }]);
+  assert.equal(outbound, 2);
+  assert.equal((await a.value(request())).status, 503); assert.equal(outbound, 2);
+  environment.RIVER_IDENTITY_OWNER_BOOTSTRAP_ENABLED = "false";
+  assert.equal(createIdentityOwnerBootstrapServerRuntime(input).ok, false);
+  const login = new DefaultPasswordAuthenticationService({ principals: new D1PrincipalRepository(db), credentials: new D1PasswordCredentialRepository(db), passwordHasher: new Argon2idPasswordHasher(), dummyPasswordHash: "unused-synthetic" });
+  const authenticated = await login.authenticate({ email, password }); assert(authenticated.ok);
+  assert.match(authenticated.value.principalId, /^principal:concurrent-bootstrap-[12]$/);
+  assert.deepEqual(await counts(db), [{ principals: 1, credentials: 1 }]);
 }));

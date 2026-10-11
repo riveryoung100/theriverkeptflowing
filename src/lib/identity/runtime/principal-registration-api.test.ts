@@ -51,3 +51,17 @@ test("successful runtime uses one atomic batch and keeps database receiver; real
 test("runtime source has no env acquisition, route, session or external network adapter", () => {
   const source = readFileSync(new URL("./principal-registration-api.ts", import.meta.url), "utf8"); assert(!/cloudflare:workers|process\.env|import\.meta\.env|wrangler|fetch\(|createSession|\.\.\/.*food/.test(source));
 });
+
+test("optional bootstrap policy hooks fail closed and do not affect existing policy-free registration", async () => {
+  for (const policy of [
+    { authorizeRequest: async () => false },
+    { authorizeRequest: async () => { throw Error("synthetic-private-policy"); } },
+    { beforePasswordCheck: async () => false },
+    { beforePasswordCheck: async () => { throw Error("synthetic-private-policy"); } },
+    { authorizeRequest: false }, { beforePasswordCheck: false },
+  ]) {
+    const f = fixture(); const runtime = createIdentityRegistrationRuntime({ ...f.input, ...policy } as unknown as IdentityRegistrationRuntimeInput); assert(runtime.ok);
+    const response = await runtime.value(request()); assert.equal(response.status, 503); assert(!f.calls.includes("check")); assert(!f.calls.includes("prepare"));
+    assert(!(await response.text()).includes("synthetic-private-policy"));
+  }
+});
