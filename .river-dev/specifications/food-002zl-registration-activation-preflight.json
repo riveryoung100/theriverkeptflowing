@@ -264,6 +264,132 @@
     "NO RATE-LIMIT CHANGE OCCURRED",
     "NO TOKEN VALUE WAS RECORDED"
   ],
+  "food002zl1FinalReconciliation": {
+    "id": "FOOD-002ZL1",
+    "date": "2026-10-10",
+    "startingHead": "4b9a4ff1592b6a7d2caddb3350c391f834d48e0a",
+    "branch": "cif-001-canonical-content-source-record",
+    "authority": "Documentation only; no staging, commit, push, remote reads, upload, deployment, activation, account creation, admin configuration or D1 operation in this recording task.",
+    "historicalRelationship": "The preceding FOOD-002ZL fields retain the October 8 preflight and its then-unresolved 403 findings. This dated reconciliation is the current readiness conclusion and supersedes those access/egress blockers only to the extent of the evidence below; it does not rewrite historical observations.",
+    "conclusion": "Activation-ready from runtime/egress perspective, production activation intentionally withheld. Source correction committed/pushed and verified in an undeployed preview; production still runs the prior uncorrected Worker. This is not a fully authorized or fully verified owner-bootstrap workflow.",
+    "evidenceProvenance": {
+      "directlyObservedInSession": "Five-option isolation, local fix/tests, corrected-checker preview, commit/push, and subsequent read-only production version/binding and aggregate-count reconciliation.",
+      "ownerSuppliedHistoricalEvidence": "Earlier registration-enabled preview, ingress/handler/validation probes, transport timing and credentials A/B. Preserved as supplied, not rerun here.",
+      "resourceDetailQualification": "Production number332, 100% traffic and exact resource/policy identifiers are owner-supplied current state consistent with root configuration and FOOD-002ZJ evidence; the latest reconciliation directly checked active version, false flag, one binding per limiter, absent admin binding and counts. It did not freshly compare every resource ID or limiter threshold.",
+      "countMetadataQualification": "Latest COUNT-only result was0/0. changed_db=false/no-write metadata is supplied by owner; this recording does not claim an additional remote metadata inspection. No individual records or credential hashes were read."
+    },
+    "production": {
+      "worker": "theriverkeptflowing-site",
+      "version": "882612e6-be5f-4022-a389-336d80e0681c",
+      "versionNumber": 332,
+      "trafficPercentage": 100,
+      "registration": "false",
+      "containsCommittedHibpCorrection": false,
+      "identity": { "binding": "RIVER_IDENTITY_DB", "database": "river-identity", "id": "4587d908-1466-4556-b868-1d60321f0970" },
+      "food": { "binding": "RIVER_FOOD_DB", "database": "river-food", "id": "3dae5997-161e-454b-8d5c-dada476d5185" },
+      "session": { "binding": "SESSION", "id": "1b34a684fcb74f6fb1e298adda5a0df9" },
+      "ipLimiter": { "binding": "RIVER_IDENTITY_REGISTRATION_IP_LIMITER", "namespace": "1001", "limit": 5, "period": 60 },
+      "sharedLimiter": { "binding": "RIVER_IDENTITY_REGISTRATION_SHARED_LIMITER", "namespace": "1002", "limit": 30, "period": 60 },
+      "adminBinding": "RIVER_FOOD_ADMIN_PRINCIPAL_ID ABSENT",
+      "identityCounts": { "principals": 0, "principal_password_credentials": 0 },
+      "aggregateQuery": "SELECT (SELECT COUNT(*) FROM principals) AS principals, (SELECT COUNT(*) FROM principal_password_credentials) AS credentials;",
+      "diagnosticsDeployedToProduction": false,
+      "trafficChangedDuringDiagnostics": false
+    },
+    "hibpEvidence": {
+      "initialRegistrationPreview": "HTTP503 unavailable; not evidence of a D1 failure.",
+      "ingress": "CF-Connecting-IP present/valid; GET405 established runtime/handler construction; malformed JSON POST400 and invalid short-input POST400 established abuse-control/work-slot and local validation paths respectively.",
+      "originalChecker": { "factoryCreated": true, "completed": true, "result": "unavailable", "threw": false },
+      "transport": { "attempted": true, "resolved": false, "rejected": true, "status": null, "safeException": "TypeError", "signalAborted": false, "elapsed": "under500ms; not the3000ms deadline" },
+      "minimalEgress": "Headers-only Worker-to-HIBP request resolved HTTP200.",
+      "credentialsAB": "Both original and credentials-omitted variants rejected TypeError; credentials was ruled out as the isolated cause.",
+      "optionIsolationVersion": "5534b168-a888-429c-b5e8-429b9185d341",
+      "optionIsolation": {
+        "baseline": { "resolved": true, "rejected": false, "status": 200, "exception": "NONE", "aborted": false },
+        "methodOnly": { "resolved": true, "rejected": false, "status": 200, "exception": "NONE", "aborted": false },
+        "cacheOnly": { "resolved": true, "rejected": false, "status": 200, "exception": "NONE", "aborted": false },
+        "redirectOnly": { "resolved": false, "rejected": true, "status": null, "exception": "TypeError", "aborted": false },
+        "signalOnly": { "resolved": true, "rejected": false, "status": 200, "exception": "NONE", "aborted": false }
+      },
+      "optionIsolationFetchAttempts": 5,
+      "rootCause": "redirect:error in the HIBP RequestInit caused immediate Cloudflare Worker TypeError without an HTTP response; other isolated options resolved.",
+      "fixCommit": "4b9a4ff1592b6a7d2caddb3350c391f834d48e0a",
+      "fixMessage": "FOOD-002ZL1: fix Cloudflare HIBP fetch compatibility",
+      "fixFiles": ["src/lib/identity/credentials/pwned-passwords-checker.ts", "src/lib/identity/credentials/pwned-passwords-checker.test.ts", "src/lib/identity/runtime/principal-registration-server.test.ts"],
+      "correction": "Removed only redirect:error from runtime request options; updated two existing test expectations to require redirect member absence. Original checker has only Add-Padding header, no User-Agent; no header was removed or invented.",
+      "preserved": "Local SHA-1 over unchanged input; only first5 uppercase hash characters sent; Add-Padding true; method GET; cache no-store; credentials omit; AbortSignal;3000ms total deadline;1MiB/25000-line bounds; fatal UTF-8 and strict range validation; response status200/body checks; response.redirected rejection; fail-closed unavailable behavior. Omitting redirect changes transport to its default handling; redirected responses still fail closed. Do not claim redirect prevention before transport.",
+      "tests": { "focusedPassed": 52, "identityPassed": 571, "failed": 0, "diffCheckBeforeCommit": "PASS" },
+      "correctedCheckerPreview": {
+        "version": "891fe898-a6e6-4b47-b7b6-375064689b25",
+        "realCorrectedCheckerImported": true,
+        "factoryCreated": true,
+        "completed": true,
+        "result": "rejected",
+        "threw": false,
+        "knownCompromisedSyntheticInputRejected": true,
+        "formerUnavailableFailureReproduced": false,
+        "registration": "false",
+        "invocations": 1,
+        "productionDeployed": false,
+        "d1Writes": 0,
+        "accountsCreated": 0,
+        "temporarySourceRemoved": true,
+        "generatedConfigRestoredByteForByte": true
+      },
+      "privacy": "Fixed synthetic inputs only; no real credentials, input material, digest, range prefix/suffix, sensitive request URL, response body, IP, exception message/stack or tokens recorded here. Future real-owner HIBP prefix/network disclosure requires separate explicit approval."
+    },
+    "statusClassification": {
+      "verified": ["Worker version/deployment read access", "Production registration/limiter-presence/admin-absence state", "Identity COUNT-only access and0/0 result", "Reported CF-Connecting-IP ingress behavior", "Reported limiter/work-slot and local validation paths", "Cloudflare-to-HIBP egress", "Actual corrected checker rejecting synthetic compromised input in Cloudflare preview", "Fail-closed behavior through local mocked tests", "Production remained registration-disabled throughout diagnostics"],
+      "notYetPerformed": ["Production registration activation", "Owner principal creation", "Admin principal binding establishment", "Public/customer registration activation", "Production deployment of corrected checker", "Production owner-bootstrap verification", "Destructive rollback"],
+      "remainingPrerequisites": [
+        "Fresh direct owner authorization for each activation/deployment/data/admin phase and real-owner HIBP disclosure; choose bounded owner window versus continued-public policy.",
+        "Define a verified exclusive/controlled owner-bootstrap procedure and ingress containment. Current exact-true flag enables normal registration, not an owner-only gate; limiters are per location and two-slot capacity is per isolate. Header presence and synthetic probes do not prove comprehensive DNS/header provenance or fleet capacity. Accept residual abuse/capacity risk explicitly or resolve it in separate bounded work.",
+        "Repeat exact binding/resource/policy, clean Git, artifact, privacy/credential-page and aggregate absence gates immediately before activation; prior evidence is point-in-time.",
+        "Build a fresh corrected artifact without temporary diagnostic routes. Existing preview diagnostic artifacts are not production candidates.",
+        "Complete manual owner login/session/cookie/expiry/logout and active canonical principal verification under separately approved procedure before FOOD administrator establishment. No live authenticated owner workflow has been verified."
+      ],
+      "noNewInfrastructureBlockerEstablished": "Latest access/egress failures are resolved within tested scope; neither these probes nor static source prove unrestricted public signup readiness."
+    },
+    "futureActivation": {
+      "authority": "All commands below are documentary examples, not executed or authorized by this record. No named production environment is configured; use the explicit verified generated config and Worker name, not an invented --env production.",
+      "phaseA": [
+        "Verify authorized canonical HEAD, origin match, clean index/worktree and no environment/config overrides; capture current production version and traffic as the rollback baseline.",
+        "Verify production false; exact identity/food D1 IDs, SESSION namespace, limiter namespaces/thresholds and absent admin binding; repeat COUNT-only0/0 gate and applicable schema/privacy/ingress readiness checks.",
+        "Run relevant identity tests and build checks; verify candidate includes fix commit and excludes diagnostic routes; approve bounded bootstrap plan and every material mutation before PhaseB."
+      ],
+      "phaseB": [
+        "npm run build from corrected source generates dist/server/wrangler.json. Root wrangler.jsonc remains false for controlled artifact-only activation; do not invoke npm run deploy for this reviewed-version workflow.",
+        "Back up generated config bytes/hash. Patch only its registration var to exact string true and its required SESSION/preview SESSION IDs to the verified namespace if generated declarations omit them. Verify identity/food D1 and limiter policies, preserve all unrelated resources/secrets, no admin binding. Restore generated config bytes in finally after upload.",
+        "Upload exactly one candidate with: .\\node_modules\\.bin\\wrangler.cmd versions upload --config dist/server/wrangler.json --name theriverkeptflowing-site --preview-alias <approved-alias> --tag <approved-tag> --message <approved-message>. No production traffic yet.",
+        "Inspect: .\\node_modules\\.bin\\wrangler.cmd versions view <candidate-id> --name theriverkeptflowing-site --json. Require exact true, all approved IDs/policies, absent admin binding, clean artifact and unchanged production baseline.",
+        "Any preview request requires a separately approved bounded procedure. Do not submit a valid clean synthetic registration merely to test: candidate is bound to real identity D1 and success can create an account. Preview availability is not owner-only access; current canonical Origin policy also applies."
+      ],
+      "phaseC": {
+        "supported": "Normal registration creates a canonical principal/credential transaction with neutral202 on creation/conflict; it returns no principal and creates no session or FOOD authority. First principal is not automatically administrator. There is no dedicated first-owner bootstrap or exclusive one-owner registration gate in the inspected route/handler.",
+        "ordering": "Understand and approve bootstrap containment before production activation. Actual owner creation occurs only after PhaseD authorizes a controlled enabled surface, unless an independently verified preview/bootstrap route is approved. This phase documents dependencies, not an instruction to create an owner before deploying or bypass canonical Origin.",
+        "ownerProcedure": "Owner manually enters credentials outside chat in the approved browser context. Do not infer creation from neutral202. Separately authorize minimum canonical normalized-identity-to-principal lookup without hash retrieval; verify active principal and authenticated session. Keep all personal identity data out of this record. Promptly close registration using approved containment, then verify aggregate state.",
+        "adminProcedure": "After exact canonical active PrincipalId and session verification, separately approve FOOD admin configuration using docs/architecture/food-private-runtime-activation.md. That runbook suggests Wrangler secret put through a private prompt; secret mutation may affect Worker version/config and needs its own inspected controlled procedure. No concrete admin value or automatic secret command is approved here.",
+        "publicRegistration": "Continued public/customer signup is a separate policy and authorization; it is not implied by owner bootstrap or FOOD admin setup."
+      },
+      "phaseD": [
+        "Require direct owner authorization for the exact inspected candidate UUID at100% production traffic and bounded window. Deploy that immutable version with: .\\node_modules\\.bin\\wrangler.cmd versions deploy <candidate-id>@100 --name theriverkeptflowing-site --yes. This full Worker-version traffic change is not a flag-only action.",
+        "Inspect deployments status --name theriverkeptflowing-site --json and versions view <candidate-id> --name theriverkeptflowing-site --json; require exact UUID/100% traffic, intended registration flag and all resource/policy bindings. Perform only approved minimal live health/bootstrap verification, then COUNT-only reconciliation and record evidence.",
+        "Execute approved prompt registration shut-off after the owner window; confirm false/fixed503, traffic and expected aggregate counts. Synchronize any later durable configuration intent separately so rebuilding root false cannot silently re-enable signup."
+      ],
+      "rollback": {
+        "preferredContainment": "Retain a verified corrected-code disabled version before activation if approved. Immediate registration shut-off is a controlled deployment to a verified false version, not local source edit. The currently captured disabled baseline can contain registration even though it predates the fix.",
+        "capturedCurrentBaseline": "882612e6-be5f-4022-a389-336d80e0681c",
+        "restoreExactVersionCommand": ".\\node_modules\\.bin\\wrangler.cmd versions deploy <captured-disabled-version-id>@100 --name theriverkeptflowing-site --yes",
+        "toolSupportedAlternative": ".\\node_modules\\.bin\\wrangler.cmd rollback <captured-disabled-version-id> --name theriverkeptflowing-site --yes; supported by installed Wrangler4.118.0 help, not exercised here; separately review compatibility/resources and authorization first.",
+        "newDisabledVersionIfNeeded": "Under separate approval, build corrected source with root false, verify generated resource IDs, upload disabled version, inspect false bindings, deploy exact UUID@100 and restore temporary generated config. Build/upload latency means this is not instantaneous shut-off.",
+        "verification": "After containment inspect active UUID/100% traffic and false registration, fixed503/no-store disabled response, preserved bindings and minimal health. Repeat aggregate-only counts and retain evidence; do not assert rollback succeeded before checks pass.",
+        "dataSafety": "Worker rollback does not undo D1 changes. Never automatically delete principals/credentials or run destructive cleanup; any remediation is separately reviewed/authorized and auditable.",
+        "adminSafety": "Do not automatically invent/remove/change admin binding. Inspect target-version bindings before rollback; if admin configuration exists at that later time, version switching may change effective bindings and requires the separately approved admin procedure."
+      },
+      "mechanismEvidence": ["package.json build/deploy scripts", "wrangler.jsonc exact-false defaults and bindings", "Installed Wrangler4.118.0 versions upload/deploy/view, deployments status and rollback help", "src/pages/api/identity/register.ts", "src/lib/identity/http/principal-registration-api.ts", "src/lib/identity/cloudflare/d1-password-credential-repository.ts", "src/lib/food/private-draft-runtime-acquisition.ts", "docs/architecture/food-private-runtime-activation.md"]
+    },
+    "recordingActivity": "Local repository/source/config/specification and installed CLI help reads only. One canonical JSON extension; no runtime edit, remote operation, staging, commit or push."
+  },
   "sources": [
     "https://haveibeenpwned.com/API/v3#PwnedPasswords",
     "https://developers.cloudflare.com/workers/configuration/environment-variables/",
