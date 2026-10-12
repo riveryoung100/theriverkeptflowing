@@ -1,0 +1,23 @@
+{
+  "id": "FOOD-004A",
+  "name": "Public informational menu read-service boundary",
+  "date": "2026-10-12",
+  "startingHead": "0bf07e3b81c431f924fff87c56d92b6e965b447f",
+  "identifierOrigin": "OWNER-DIRECTED POST-003E FORMALIZATION; no pre-existing FOOD-004A identifier claimed.",
+  "scope": "Injected internal application read service for future public informational exposure. Consumes FOOD-002; neither supersedes it nor reopens FOOD-003. No HTTP/UI/activation.",
+  "references": [".river-dev/specifications/food-002a-public-menu-serving-offers-ordering-demand-pos-lite-architecture-direction.json", ".river-dev/specifications/food-002b-canonical-dish-versioned-serving-offer-domain-boundary.json", ".river-dev/specifications/food-002c-menu-publication-availability-projection-boundary.json", "src/lib/food/menu-persistence.ts", "src/lib/food/menu-read-dependencies.ts"],
+  "contract": {
+    "construction": "Synchronous I/O-free factory captures callable getPublication/getPresentation/getOffer with their original receiver, plus existing FoodMenuReadDependencies product/recipe methods. Returned frozen object exposes readPublicMenu only; no auth/admin or persistence/runtime construction.",
+    "selection": "Strict exact {publicationId, version}, validated with existing ID/safe version parsers and captured before first await. No latest/current/list/fallback/cache policy. Future route selects exact live publication separately.",
+    "outcomes": "Frozen status-only invalid-input/not-found/not-published/unavailable, or found with only existing FoodPublicMenuProjection. Dependency failures, malformed envelopes, missing/mismatched exact dependencies, bound violations and projector failure map to unavailable without diagnostics.",
+    "flow": "Exact publication read; verify returned identity/version and explicit published state before downstream reads. Scan bounded canonical topology and deduplicate menu-level exact presentation/offer references. Resolve each distinct presentation, offer, product and recipe once per invocation; check every exact identity/version. Pass detached publication/contexts/offers and empty availability observations to projectFoodPublicMenu. Projector owns all deeper relationship validation and public allowlisting. No partial success.",
+    "availability": "FOOD-002C explicitly permits missing observations even when availability selection is true. No exact observation revisions are stored in publication selection. Supply [] to omit optional availability rather than invent latest/current selection or infer availability/orderability. A future observation-selection contract is separate.",
+    "limits": "At most 100 combined distinct exact presentation and offer references. Domain topology limits remain 20 sections/100 entries per section/20 offers per entry. Oversize rejects before downstream reads. Product/recipe counts are each bounded by distinct presentations, so total service calls <=301 including publication. Repository-internal validation reads are outside this service's injected-call count; no database transaction or global-cache claim.",
+    "snapshotSafety": "Immediately capture every resolved raw snapshot into detached frozen plain records before next await; reject cycles, non-data values and pathological snapshots using depth 20, 100000 nodes, 40000 array items. Projector provides final detached/frozen public output, so service does not duplicate public mapping/freezing.",
+    "consistency": "Sequential immutable exact-version reads; local per-invocation maps only, never cross-call caching. Exact product/recipe historical context retained; no publication scan or fallback.",
+    "separation": "Publication, public projection, service, HTTP route, UI, offer, approved price, cart and order remain distinct. Published/projectable does not mean orderable or deployed."
+  },
+  "files": ["src/lib/food/public-menu-read-service.ts", "src/lib/food/public-menu-read-service.test.ts"],
+  "validationGates": ["Focused service tests", "Full FOOD suite including projector/persistence/private service/workspace", "Changed-file lint", "Strict bounded TypeScript", "JSON/full diff/whitespace review"],
+  "excluded": "No raw/private records/capabilities/errors in output; no FOOD-003 nutrition/cost/prices/portions, price/orderability, routes/UI/configuration/migrations/real menu data, remote operations, deployment, staging, commit or push."
+}
