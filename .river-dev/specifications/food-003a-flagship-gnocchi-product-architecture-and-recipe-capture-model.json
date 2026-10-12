@@ -1,0 +1,35 @@
+{
+  "id": "FOOD-003A",
+  "name": "Flagship gnocchi product architecture and recipe-capture model",
+  "date": "2026-10-12",
+  "scope": "Pure local immutable prototype capture; no persistence or activation.",
+  "sources": [".river-dev/specifications/food-003-long-term-restaurant-nutrition-planning-direction.json", "docs/architecture/food-restaurant-product-vision.md"],
+  "startingHead": "fc39e52affd1df2c5def97b2ae849b4e2f82a6e5",
+  "concepts": {
+    "prototypeCapture": "Observed experiment/cooking run; the only newly implemented concept.",
+    "canonicalRecipe": "Production definition; existing FoodRecipeDraft remains unchanged.",
+    "recipeVersion": "Controlled canonical iteration; capture does not create or rewrite it.",
+    "product": "Distinct intended customer item; optional exact existing reference, not sale authority.",
+    "component": "Reusable culinary preparation; deferred FOOD-003B system.",
+    "packageSku": "Sellable format/quantity; not an observed yield.",
+    "nutritionProfile": "Derived nutrient data; no calculation here.",
+    "costProfile": "Production economics; no calculation here.",
+    "preparationInstructions": "Customer workflow; experimental method/notes are not customer instructions."
+  },
+  "contract": {
+    "identity": "food-prototype-capture:<local> uses existing FOOD prefix/local-ID conventions; no generated IDs or capture revision system.",
+    "references": "Optional recipe id/version requires matching validated supplied recipe snapshot. Optional product requires that recipe plus matching validated product snapshot. Context-free experiments are allowed. Unused supplied snapshots are rejected. No remote existence claims.",
+    "ingredients": "Ordered nonempty input list; unique bounded run-local keys, descriptive ingredient names, positive finite grams no greater than MAX_SAFE_INTEGER. Fractional grams preserved without rounding. Optional zero-based recipeIngredientIndex must match the supplied exact recipe ingredient name. Repeated names are allowed only with distinct keys; no merging.",
+    "method": "Nonempty ordered bounded text steps recording actual actions.",
+    "adjustments": "Ordered text process changes or add/remove mass records referencing a known input key. They never overwrite starting measurements. Adjustment-only ingredients may be declared with the mass adjustment's ingredientName instead of inputKey. This is an event record, not mass balance calculation.",
+    "yield": "Positive finite finishedYieldGrams; observed result, never SKU/package promise.",
+    "observations": "Ordered bounded category/text pairs, open category labels; empty list allowed.",
+    "provenance": "Required founder-measured kind and opaque sourceReference, optional occurredOn using validateFoodReviewDate. Supplied provenance is attribution, not verified measurement truth. Reference/inferred/calculated/canonicalized data is not accepted as measurement provenance. Existing FoodEvidence requirements are neither satisfied nor modified.",
+    "immutability": "Strict boundary validation, detached nested values and recursive freezing; no retained caller objects.",
+    "limits": "128 inputs, 128 steps, 128 adjustments, 128 observations; 128-character keys/categories, 256-character ingredient names, 2000-character notes, 512-character source reference.",
+    "futureUse": "May later provide source material/evidence for deliberate canonical updates; no automatic recipe/version creation, publication or sale authorization."
+  },
+  "files": ["src/lib/food/prototype-capture-domain.ts", "src/lib/food/prototype-capture-domain.test.ts"],
+  "validationGates": ["Focused capture tests", "Existing FOOD tests using tsx --test", "Changed-file ESLint", "Strict bounded TypeScript check of capture module/tests and imported draft domain", "git diff --check and intended-path review"],
+  "boundaries": "Synthetic fixtures only. No real gnocchi recipe, nutrition/cost/commerce, reusable components, persistence/schema/migrations, routes/UI, Cloudflare/D1/KV actions, deployment, commit or push. FOOD-002ZN operational completion is owner supplied; no ceremony reconstructed."
+}
