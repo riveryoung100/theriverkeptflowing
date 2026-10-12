@@ -1,0 +1,32 @@
+{
+  "id": "FOOD-003B",
+  "name": "Recipe/version/component system",
+  "date": "2026-10-12",
+  "startingHead": "d59e98d17baefc0981eb55c338b585e054dfff3f",
+  "sources": [".river-dev/specifications/food-003-long-term-restaurant-nutrition-planning-direction.json", "docs/architecture/food-restaurant-product-vision.md", ".river-dev/specifications/food-003a-flagship-gnocchi-product-architecture-and-recipe-capture-model.json"],
+  "canonicalIntent": "Distinct production recipe, controlled recipe version and reusable prepared component, with gram-based composition, internal method and yield. Exact versions remain traceable. Roadmap does not require recursive components.",
+  "scope": "Pure local additive formulation snapshots only; no persistence, promotion, publication or sale authority.",
+  "concepts": {
+    "recipeIdentity": "Existing FoodRecipeId; no replacement identity.",
+    "recipeVersion": "Immutable formulation companion to an exact validated existing FoodRecipeDraft id/version. Does not rewrite that draft or alter existing product references, evidence or serialization.",
+    "componentIdentity": "New food-component:<local> identity using FOOD conventions; distinct from recipe/product/purchased-component ingredient.",
+    "componentVersion": "Existing positive-safe-integer version convention, direct ingredient formulation, internal ordered method and supplied formulated yield.",
+    "prototypeCapture": "Experimental source, not a recipe/component version. Optional explicit capture IDs provide deliberate source links only; no automatic conversion, approval, evidence-review satisfaction or remote existence claim.",
+    "otherConcepts": "Product, package/SKU, nutrition profile, cost profile and customer preparation instructions remain separate and unchanged."
+  },
+  "contract": {
+    "recipe": "id/version must equal the supplied validated draft. Direct inputs reference zero-based indices into that exact draft ingredient list. Component lines contain only exact component id/version plus grams; matching supplied component snapshots required, with no expansion into recipe composition.",
+    "component": "Named immutable version with direct FoodIngredient inputs and positive grams. Purchased-component disclosure semantics reuse FOOD-001A; they do not permit reusable component nesting.",
+    "composition": "1-128 ordered lines. Order is intentional formulation order, not a new identity generator. Recipe direct ingredient indices and component identities must be unique; multiple versions of the same component in one recipe rejected. Component ingredient names must be unique. Split additions belong in method or prototype capture, not ambiguous duplicate formula lines.",
+    "componentContext": "At most 128 locally validated snapshots, unique exact id/version pairs. Newer versions may coexist; lookup is exact, never latest. Unused snapshots do not enter returned recipe values.",
+    "methodYield": "1-128 bounded nonempty internal process steps; positive finite yieldGrams following FOOD-003A gram rules. Yield is deliberately supplied formulation output, not guaranteed production, package size, capacity or stock. No scaling/calculation.",
+    "sources": "Optional captureSources list of unique validated FoodPrototypeCaptureId values, at most 128. Absence remains distinct from empty. Capture snapshots are not consumed or mutated. IDs alone claim reference shape, not source existence or verification.",
+    "versioning": "Explicit revision helpers require same identity and consecutive versions, reject overflow and replace all supplied formulation/source fields. Recipe revisions use reviseFoodRecipeDraft to preserve existing evidence/version rules. Constructors validate snapshots; only future persistence can prevent competing different snapshots for the same id/version globally.",
+    "immutability": "Validate, copy and recursively freeze every nested returned value. Existing canonical ingredient and gram validation reused via additive exports; existing modules retain prior behavior.",
+    "limits": "Local component ID 128 UTF-16 characters, names 256, method steps 2000; no broad quantity/graph framework.",
+    "nesting": "DEFERRED: component composition accepts only direct ingredients. Recipes reference exact components one level deep."
+  },
+  "files": ["src/lib/food/recipe-component-domain.ts", "src/lib/food/recipe-component-domain.test.ts", "src/lib/food/draft-domain.ts", "src/lib/food/prototype-capture-domain.ts"],
+  "validationGates": ["Focused FOOD-003B tests", "Full existing FOOD suite", "Changed-file lint", "Strict bounded TypeScript", "JSON and complete diff/whitespace review"],
+  "boundaries": "Synthetic-only fixtures; no real recipes, schema/migrations/persistence, routes/UI, nutrition/cost/pricing/commerce/inventory, customer instructions, SKU/serving changes, automatic canonicalization, remote operations, deployment, staging, commit or push."
+}

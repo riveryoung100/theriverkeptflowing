@@ -95,6 +95,8 @@ function review<C extends string>(v: unknown, conclusions: readonly C[], list: r
     if (state !== "reviewed") { keys(r, ["state"]); return { state }; }
     keys(r, ["state", "conclusion"]); requireEvidence(list, requirement); return { state, conclusion: member(r.conclusion, conclusions) };
 }
+/** Reuse canonical ingredient disclosure validation without creating a recipe. */
+export function validateFoodIngredient(v: unknown): FoodIngredient { return freeze(ingredients([v])[0]); }
 export function validateFoodRecipeDraft(v: unknown): FoodRecipeDraft {
     const r = record(v); keys(r, ["id", "version", "ingredients", "allergenReview", "process", "evidence"]);
     const id = parseFoodRecipeId(r.id); const version = validateFoodVersion(r.version); const list = evidence(r.evidence, "recipe", id, version);

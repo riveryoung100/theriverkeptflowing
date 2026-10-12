@@ -46,6 +46,8 @@ function grams(value: unknown): number {
     if (typeof value !== "number" || !Number.isFinite(value) || value <= 0 || value > Number.MAX_SAFE_INTEGER) throw new TypeError("Expected positive finite grams");
     return value;
 }
+/** Shared FOOD mass boundary; export preserves existing capture behavior. */
+export { grams as validateFoodGrams };
 function list<T>(value: unknown, build: (item: unknown) => T, required = false): T[] {
     if (!Array.isArray(value) || value.length > 128 || (required && !value.length)) throw new TypeError("Expected bounded ordered list");
     return Array.from(value, build);
