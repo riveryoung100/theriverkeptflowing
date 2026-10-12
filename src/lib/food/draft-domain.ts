@@ -97,6 +97,10 @@ function review<C extends string>(v: unknown, conclusions: readonly C[], list: r
 }
 /** Reuse canonical ingredient disclosure validation without creating a recipe. */
 export function validateFoodIngredient(v: unknown): FoodIngredient { return freeze(ingredients([v])[0]); }
+/** Declaration facts only: this does not perform or satisfy an allergen review. */
+export function validateFoodAllergenDeclarations(v: unknown): readonly FoodAllergenDeclaration[] {
+    return freeze(allergens({ state: "unknown", declarations: v }, []).declarations);
+}
 export function validateFoodRecipeDraft(v: unknown): FoodRecipeDraft {
     const r = record(v); keys(r, ["id", "version", "ingredients", "allergenReview", "process", "evidence"]);
     const id = parseFoodRecipeId(r.id); const version = validateFoodVersion(r.version); const list = evidence(r.evidence, "recipe", id, version);

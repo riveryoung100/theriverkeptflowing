@@ -1,0 +1,25 @@
+{
+  "id": "FOOD-003C",
+  "name": "Ingredient/allergen/nutrition model",
+  "date": "2026-10-12",
+  "startingHead": "729450c0b4e8e21d5bd156f49ef0ab845b911222",
+  "authority": "Owner-directed contract newly formalizes the previously provisional FOOD-003C candidate. Compatible with FOOD-003 vision, FOOD-001A disclosure/review rules and FOOD-003A/B exact formulation boundaries.",
+  "sources": [".river-dev/specifications/food-003-long-term-restaurant-nutrition-planning-direction.json", "docs/architecture/food-restaurant-product-vision.md", ".river-dev/specifications/food-003a-flagship-gnocchi-product-architecture-and-recipe-capture-model.json", ".river-dev/specifications/food-003b-recipe-version-component-system.json"],
+  "contract": {
+    "ingredientReference": "No standalone ingredient ID exists. Use exact recipe/component id, positive-safe version and zero-based ingredientIndex, validated against supplied draft/component. Ingredient value is detached from that exact context. Component indices refer to composition lines; recipe indices refer to draft ingredients.",
+    "profile": "Explicit basisGrams=100; four required nutrients energyKcal, proteinGrams, carbohydrateGrams, fatGrams. Each is known finite nonnegative value or explicit unknown. Known zero is valid; missing/null is invalid. Completeness derived from all four states.",
+    "source": "Bounded immutable opaque sourceReference/version; no latest resolution, network fetch, trust or existence claim. Source revision identifies the ingredient nutrition profile inputs without inventing persistence IDs.",
+    "allergens": "Reuse FoodAllergenReview states and canonical declaration validation via additive export. Reviewed ingredient facts require separate exact source/version, reviewDate and reviewer evidence. This local evidence is scoped by the enclosing ingredient reference; existing FoodEvidence is recipe/product-scoped and cannot correctly represent component-ingredient review. Existing FoodEvidence is unchanged and no review evidence is synthesized for canonical recipes.",
+    "disclosure": "Undisclosed purchased ingredients remain unresolved even with reviewed declarations. Unknown/pending states retain explicit declarations; absence is never proof of absence. Aggregation retains input reviews and evidence, first-seen declaration order and distinct details. Deduplicate identical allergen/detail facts, never erase conflicting species details. Aggregate is a projection, not a new canonical review or allergen-free claim.",
+    "component": "Validate exact FOOD-003B component and require one matching profile per direct input. Reject missing, wrong or duplicate profiles. Contribution=inputGrams/100*source value; total sums in formulation order. Any unknown contribution makes that nutrient unknown. Per100=total/yieldGrams*100. No retention/loss assumptions beyond this owner-specified formula.",
+    "recipe": "Validate FOOD-003B formulation against exact draft/component contexts. Direct inputs use exact profiles. Component inputs consume structurally validated already-derived component profiles matching exact id/version and exact supplied component formulation. No recursion or latest substitution. Component profile provenance retains ingredient references, source revisions and allergen evidence. Caller-supplied derived values are data, not independently authenticated computation evidence.",
+    "numericPolicy": "Finite nonnegative JavaScript numbers, no rounding or energy-from-macros calculation. Reject overflow in contributions, totals or yield normalization; do not silently expose Infinity or NaN.",
+    "provenance": "Derived result retains exact detached formulation, ordered input nutrient snapshots and exact ingredient/source or component-profile provenance. No full external source payload. This preserves source revisions even when later profiles use the same formulation version.",
+    "immutability": "All boundary values copied and recursively frozen. Source/profile arrays bounded to 128; source references/reviewers to 512 characters. No environment lookup, IO or automatic capture conversion.",
+    "separation": "Ingredient, nutrition profile, recipe/version, component/version, product, SKU/package, cost, prototype capture and customer instructions remain distinct. Nutrition completeness does not confer trust, legal compliance, publication or sale authority."
+  },
+  "deferred": ["Component nesting", "External datasets/APIs", "Micronutrients/fiber/sodium", "Labels/legal compliance", "Servings/packages/portions", "Meal planning", "Cost/pricing/inventory", "Persistence/migrations", "Routes/UI/commerce", "FOOD-003D/E"],
+  "files": ["src/lib/food/nutrition-domain.ts", "src/lib/food/nutrition-domain.test.ts", "src/lib/food/draft-domain.ts"],
+  "validationGates": ["Focused nutrition tests", "FOOD-001A/003A/003B and full FOOD suite", "Changed-file lint", "Strict bounded TypeScript", "JSON/full diff/whitespace review"],
+  "operations": "Synthetic fixtures only; no real recipes/datasets, remote actions, Cloudflare/D1/KV mutation, deployment, staging, commit or push."
+}
