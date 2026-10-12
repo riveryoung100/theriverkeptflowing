@@ -1,0 +1,38 @@
+{
+  "id": "FOOD-003E",
+  "name": "Optional nutrition calculator and customer meal-planning architecture",
+  "date": "2026-10-12",
+  "startingHead": "fa93487a18f3ede6293c865f24b57923f895626b",
+  "mode": "ARCHITECTURE_ONLY",
+  "sourceRecord": "docs/architecture/food-optional-nutrition-meal-planning.md",
+  "canonicalEvidence": {
+    "roadmap": ".river-dev/specifications/food-003-long-term-restaurant-nutrition-planning-direction.json: futureSlices explicitly names FOOD-003E as architecture; deferredDomainConcepts and energyEstimation select no formula.",
+    "vision": "docs/architecture/food-restaurant-product-vision.md: optional second experience, shared exact recipe data, progressive launch, household and later adaptive architecture.",
+    "ordering": ".river-dev/specifications/food-002a-public-menu-serving-offers-ordering-demand-pos-lite-architecture-direction.json: browsing/first ordering do not require accounts, and commercial readiness/publication remains independent.",
+    "foundations": ["FOOD-003A experimental capture", "FOOD-003B exact immutable formulation", "FOOD-003C nutrition/provenance/unknowns", "FOOD-003D internal portions and planning-only cost"],
+    "decision": "No canonical evidence requires an immediately implemented calculator primitive. Owner explicitly accepts architecture-only success. Projection formulas below define future contracts, not current APIs."
+  },
+  "now": {
+    "simpleOrdering": "Browse -> view dish -> choose supported available format -> required food information -> order when independently enabled. No targets, body measurements, planner, meal-plan profile or account solely for nutrition. This record does not activate ordering.",
+    "optionalPlanner": "Deliberate opt-in second layer over the same food catalog and canonical recipe/nutrition foundation; ordinary food remains usable without it.",
+    "nutritionReference": "Exact FoodRecipeId/version and retained FOOD-003C FoodRecipeNutritionProfile including input/source revisions, component references, completeness and conservative allergen facts. FOOD-003C currently has no independent persisted profile ID/version; recipe version alone is insufficient because source revisions may change. Retain the exact immutable profile snapshot/provenance until a separately designed durable reference exists. Never invent a profile ID, duplicate source values or resolve latest.",
+    "gramProjection": "Future deterministic positive finite planning grams use FOOD gram validation. For each known core nutrient, amount=grams/100*per100 value. Unknown remains unknown, known zero remains zero, completeness is derived. Reject nonfinite arithmetic; no rounding, 4/4/9 energy derivation, recipe mutation, SKU or serving-offer creation.",
+    "targets": "Future immutable explicitly customer-supplied kcal/protein/carbohydrate/fat values; specified finite nonnegative values versus not-specified state. Zero is specified, not missing. No target calculated from body data. Intent labels deficit/maintenance/surplus/custom/unspecified are supplied labels only.",
+    "profiles": "Future stable planning-profile identity/version distinct from PrincipalId and legal identity. Optional separately authorized account association; exact target snapshot, supplied intent and only needed preferences/restrictions. No identifier prefix, database schema or account API introduced here.",
+    "allocation": "Future immutable allocation retains exact recipe, exact nutrition snapshot/provenance and positive grams; calculated projections are derived caches, never hard-coded independent nutrition truth. Not an order line, offer, SKU or reservation.",
+    "mealDayWeek": "Ordered allocations form meals; ordered meals form days; ordered dated days form week structures. Labels are organizational only. Repeated allocations count independently, never silently deduplicate. Per-nutrient sums become unknown if any required contribution is unknown. Empty selection total may be known zero but means only no selected food. Specified target minus known total permits negative remaining. Missing target/unknown total yields explicit unavailable comparison, not advice.",
+    "household": "Architecture permits multiple independent planning profiles without accounts for every member. Household is not an account or legal identity; shared recipes may have distinct supplied portions/targets. No adult deficit/surplus prescription for minors; pediatric/pregnancy/medical targeting remains separately reviewed future work.",
+    "portionCost": "Arbitrary positive planning mass is allowed. FOOD-003D portion may supply a deliberate exact recipe-bound target but is optional. Nutrition projection does not depend on cost. Future cost displays consume exact FOOD-003D records and preserve formulation-cost-only limitations.",
+    "versioningPrivacy": "Future immutable plan/profile revisions retain exact recipe, nutrition input sources and targets. New versions do not update old plans automatically. No sensitive data or persistence now; do not require legal name, birth date, body measurements or medical history. Account linking and consent/access/deletion policies precede later persistence."
+  },
+  "later": ["Pure calculator implementation under separate bounded authorization", "Profile/account association", "Household/plan persistence and access policy", "Customer UI", "Explicit commercial order bridge", "Optimizer/recommendations", "Optional observations and explainable versioned adaptive recalibration"],
+  "boundaries": {
+    "commercial": "Planned food and a calculated portion are not products, packages, offers or orders. Future explicit order bridge must match supported exact commercial formats and freshly validate publication, availability, price, safety/legal readiness and fulfillment; unsupported grams remain planning-only.",
+    "allergens": "Retain FOOD-003C explicit facts and unresolved state. Preferences/targets/plans do not certify allergen safety. No cross-contact or allergen-free claims.",
+    "health": "No BMR/TDEE, body-derived targets, automatic deficit/surplus calculation, medical advice, health/weight outcomes, optimizer or adaptive algorithm. Long-term energy-estimation vision remains deferred, not contradicted.",
+    "concepts": "Menu item, recipe version, nutrition profile, internal portion, serving offer, customer target, planning profile, meal plan, order and health recommendation remain distinct."
+  },
+  "acceptanceCriteria": ["Spec/doc agree on architecture-only mode", "Same food catalog with opt-in planning and unchanged simple ordering", "Exact nutrition snapshots/provenance and unknown propagation defined", "Gram projection/target comparison documented without recommendation logic", "Meal/day/week/household/version/privacy boundaries defined", "No source, account, UI, persistence, order or commercial changes"],
+  "validation": "Parse JSON, verify repository-relative links and cited symbols, inspect full new-file content, check whitespace and intended paths. No code or existing files changed; FOOD tests/lint/typecheck not required by architecture-only gate.",
+  "operations": "Local specification/documentation only; no personal data, external actions, Cloudflare/D1/KV mutation, deployment, staging, commit or push."
+}
