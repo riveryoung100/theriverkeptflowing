@@ -1,0 +1,20 @@
+{
+  "id": "FOOD-004C",
+  "name": "Trusted public-menu composition and route wiring with explicit publication selection",
+  "identifierOrigin": "OWNER-DIRECTED POST-FOOD-004B FORMALIZATION; newly established identifier/title.",
+  "startingHead": "3e4a76ab1d07832d60369b224936963b0415fab5",
+  "route": "/api/food/menu",
+  "references": ["src/lib/food/public-menu-read-service.ts", "src/lib/food/public-menu-transport.ts", "src/lib/food/d1-menu-persistence.ts", "src/lib/food/d1-draft-persistence.ts", "src/lib/food/menu-read-dependencies.ts", "src/lib/food/private-menu-runtime-acquisition.ts", "src/pages/api/identity/register.ts"],
+  "contract": {
+    "authority": "FOOD-004A owns exact menu assembly; FOOD-004B owns methods/status/headers/serialization. C only acquires trusted configuration, composes existing repositories and adapts transport data to Response. No auth/private service/workspace/operation gate.",
+    "configuration": "Trusted cloudflare:workers env only, following existing endpoint convention. RIVER_FOOD_PUBLIC_MENU_PUBLICATION_ID must pass canonical ID validator; RIVER_FOOD_PUBLIC_MENU_PUBLICATION_VERSION must be a canonical positive decimal string matching [1-9][0-9]* and canonical safe version validator. No trimming/coercion/default/latest/current/fallback. Values are copied/frozen per composition and never logged. No production values are committed.",
+    "dependencies": "Reuse acquirePrivateFoodMenuDatabaseFromEnvironment structural acquisition with existing RIVER_FOOD_DB binding. One acquired database constructs D1FoodDraftRepository, createFoodMenuReadDependencies, D1FoodMenuRepository, FOOD-004A and FOOD-004B. No SQL/schema/storage format changes. Constructors perform no I/O; route uses exact reads only. Repository mutation methods stay internal and no repository is returned.",
+    "failure": "Absent/malformed configuration or expected acquisition/construction failure produces FOOD-004B transport with unavailable selector, yielding fixed 503. No diagnostics or config/binding values escape. Unsupported methods are delegated to FOOD-004B before acquiring environment/database; HEAD preserves status/headers without body. No request body/query/header/cookie/route parameter access.",
+    "route": "Thin Astro ALL endpoint, prerender=false, passes request.method and lazy trusted environment acquisition to request handler. Handler creates per-request graph and native Response with exact transport status/headers/body. No enrichment, global caches, logging, HTML/UI or price/orderability.",
+    "deployment": "Route source is not deployed production. Deployment and production publication selection remain separately authorized. No Cloudflare/D1/KV mutations or deployment commands.",
+    "deploymentDiscovery": "AUTO_DEPLOY_ON_PUSH=NO_EVIDENCE: only repository GitHub workflow validates main; package build is local Astro/Pagefind, deploy/publish/release are explicit Wrangler paths; Git hooks are samples and no core.hooksPath set. Repository evidence cannot attest external provider settings; no external service contacted."
+  },
+  "files": ["src/lib/food/public-menu-runtime.ts", "src/lib/food/public-menu-runtime.test.ts", "src/pages/api/food/menu.ts"],
+  "validation": ["Focused C/A/B tests", "Full FOOD suite", "Changed-file lint", "Bounded strict TypeScript including Astro route", "Safe local Astro build", "JSON/reference/whitespace/full diff review"],
+  "exclusions": "No configuration values, Wrangler/type regeneration, migrations, writes, new persistence, UI, cart/quote/order/payment, production data, credentials/PII, staging/commit/push/deployment."
+}
