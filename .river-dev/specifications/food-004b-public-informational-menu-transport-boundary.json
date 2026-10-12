@@ -1,0 +1,21 @@
+{
+  "id": "FOOD-004B",
+  "name": "Public informational menu transport boundary with explicit publication selection",
+  "identifierOrigin": "OWNER-DIRECTED POST-FOOD-004A FORMALIZATION; identifier/title newly established by owner after FOOD-004A closure.",
+  "startingHead": "f077a437633bdfdff0cecd0cede09fd8f1953d09",
+  "references": ["src/lib/food/public-menu-read-service.ts", ".river-dev/specifications/food-004a-public-informational-menu-read-service-boundary.json", ".river-dev/specifications/food-002a-public-menu-serving-offers-ordering-demand-pos-lite-architecture-direction.json", "src/lib/food/private-menu-mutation-response.ts"],
+  "scope": "Framework-neutral TRANSPORT consuming FOOD-004A only. Transport, service, selector, route, page, deployment, price publication and orderability remain separate. Actual route wiring and production reference selection are later separately authorized work.",
+  "contract": {
+    "construction": "Synchronous I/O-free factory captures selector.select and service.readPublicMenu with original receivers; returns frozen handle only. Missing callable dependencies throw fixed configuration TypeError. No environment/auth/repository acquisition.",
+    "request": "Only own method:string property. Exact GET and HEAD accepted, other methods 405 before selector/service. Malformed/extra request fields 400 before collaborators; never access their values or parse body/query/URL/header/cookie. Caller cannot select publication.",
+    "selector": "Trusted synchronous I/O-free select(): exact {publicationId,version} or null for unavailable. Validate strict own keys with canonical ID/version parsers; copy/freeze reference before single service invocation. Malformed, asynchronous or throwing selector maps to 503; no latest/current/history/fallback logic.",
+    "mapping": "found 200; invalid-input 400 invalid-request; not-found and not-published identical 404 menu-not-found; unavailable or unexpected collaborator/envelope/serialization failure 503 menu-unavailable; unsupported method 405 method-not-allowed.",
+    "response": "Frozen plain {status,headers,body?}; JSON.stringify canonical FOOD-004A menu only on GET success. Stable canonical projector insertion order preserved, no pretty printing/newline. Fixed GET failures serialize {error:code}. Serialized strings detach response from collaborator state. HEAD runs equivalent selection/read and returns identical status/headers for canonical service outcomes, without serializing or returning a body on any outcome. No added identity beyond existing canonical public projection.",
+    "authority": "Injected service must be canonical FOOD-004A; validate service envelope keys but do not duplicate projection/domain validation, resolve dependencies, add public fields or invoke projector directly. Canonical service is public payload allowlist authority, not an arbitrary untrusted payload callback.",
+    "headers": "Content-Type application/json; charset=utf-8 on GET and equivalent HEAD; Allow GET, HEAD on 405 only. No cache policy, CORS, ETag, Last-Modified or security-header framework. Private no-store precedent is specific to private mutation and does not impose a public caching policy.",
+    "lifetime": "No cross-request caches or retained request/selector results. Capture method before await; selector reference copied before service invocation. Unexpected request property access safely maps to 400; injected selector/service failures contained as fixed 503 following sanitized FOOD-004A convention. Factory programming misconfiguration remains explicit TypeError."
+  },
+  "files": ["src/lib/food/public-menu-transport.ts", "src/lib/food/public-menu-transport.test.ts"],
+  "exclusions": "No route/UI/runtime activation, production publication/menu/recipe data, price/orderability/cart/order/payment, auth/session/CSRF, config/bindings/secrets, Cloudflare/D1/KV/migrations/deployment, existing source changes, staging/commit/push.",
+  "validation": ["Focused transport and unchanged FOOD-004A tests", "Full FOOD suite including FOOD-002 projector/persistence/private boundaries", "Changed-file lint", "Bounded strict TypeScript", "JSON/reference/whitespace/full diff review"]
+}
