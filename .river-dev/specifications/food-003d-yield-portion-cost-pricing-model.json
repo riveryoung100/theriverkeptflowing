@@ -1,0 +1,23 @@
+{
+  "id": "FOOD-003D",
+  "name": "Yield/portion/cost/pricing model",
+  "date": "2026-10-12",
+  "startingHead": "45bdff84d4a7ffb4126c8459a6befc5639626eeb",
+  "authority": "Owner-directed bounded implementation of the provisional FOOD-003D candidate; compatible with FOOD-003 economics and FOOD-002/003A/B/C separation.",
+  "sources": [".river-dev/specifications/food-003-long-term-restaurant-nutrition-planning-direction.json", "docs/architecture/food-restaurant-product-vision.md", ".river-dev/specifications/food-003b-recipe-version-component-system.json", ".river-dev/specifications/food-003c-ingredient-allergen-nutrition-model.json"],
+  "contract": {
+    "money": "FOOD-local nonnegative safe-integer minorUnits and explicit three-uppercase-letter ISO-style currency. No conversion or currency registry claim; source/candidate zero is valid. Existing money structures found in commerce/insurance are domain-specific and not imported.",
+    "ingredient": "Reuse FOOD-003C exact owner kind/id/version/ingredientIndex and versioned opaque source references via two additive validator exports. Profile validates against exact recipe draft or component context; retains purchasedGrams and integer purchase money. Cost-per-gram derived only.",
+    "arithmetic": "Positive gram numbers interpreted by their canonical JavaScript decimal string including exponents, converted to exact decimal rational with BigInt arithmetic. Reduced numerator/denominator stored as JSON-safe canonical decimal strings. Denominator positive; normalized numerator/denominator at most 2048 digits. Explicitly reject excessive precision. No binary floating-point money arithmetic, intermediate rounding or general units/math library.",
+    "cost": "Currency explicitly supplied to derivation. Known zero differs from missing required profile. Missing profiles or components give unknown total/per100 and incomplete status; known input profiles remain in provenance. Reject wrong/duplicate/unused profiles and mixed currencies. Component contribution=inputGrams*purchaseMinorUnits/purchasedGrams. Recipe component contribution=componentTotal/componentYield*inputGrams. Per100=total/yield*100. Components one level only.",
+    "provenance": "Retain detached exact formulation, validated acquisition profiles/source revisions and exact component cost projections. Recipe projection retains draft context for validating ingredient indices. Revalidate incoming derived profiles by recomputing from retained exact inputs and comparing canonical summaries; no source trust/existence claim.",
+    "portion": "Exact recipe id/version and positive targetGrams validated against FOOD-003B formulation context. No portion/SKU/serving-offer identity. Yield projection uses exact decimal rationals: floor(yield/target), exact fractional count and exact rational remainderGrams. Full count must fit safe integer. Cost=recipeTotal/yield*target; unknown remains unknown.",
+    "scenario": "Planning-only exact portion and revalidated recipe cost retained. Candidate money explicit and compatible. costBasis=ingredient-formulation-cost-only. Gross profit may be negative. Food-cost percentage=cost/price*100; margin=(price-cost)/price*100, exact rational analysis values. Zero price produces unavailable percentages with zero-price reason; unknown cost gives cost-incomplete reason. No net-profit claim or omitted-cost inclusion.",
+    "stability": "Later evidence, component/recipe version, nutrition or capture does not update prior frozen projections/scenarios. FOOD-003B yield remains authoritative. Missing cost cannot become zero.",
+    "limits": "At most 128 acquisition/component profiles; existing formulation limits apply. Pure synchronous constructors; recursive freeze and detached validation.",
+    "separation": "Capture, formulation/version, nutrition, acquisition/component/recipe cost, portion, scenario, product, SKU, serving offer, published price and order remain distinct."
+  },
+  "deferred": ["Packaging/labels", "Labor/overhead/utilities", "Tax/payment/delivery/marketing/charity costs", "Supplier/live prices", "Inventory/purchases/batches", "SKU/packages", "Serving-offer price/publication", "Commerce/checkout", "Meal planning/FOOD-003E", "Persistence/migrations/routes/UI", "Deployment"],
+  "validationGates": ["Focused tests", "Full FOOD suite including FOOD-002/003A/B/C", "Changed-file lint", "Bounded strict TypeScript", "JSON/complete diff/whitespace review"],
+  "operations": "Synthetic fixtures only. No real recipe/prices/portions, external operations, staging, commit or push."
+}

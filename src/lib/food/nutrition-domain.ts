@@ -70,6 +70,8 @@ function reference(v: unknown): FoodIngredientReference {
     if (r.kind === "component") return { kind: "component", id: parseFoodComponentId(r.id), ...common };
     throw new TypeError("Invalid ingredient context");
 }
+/** Shared exact FOOD reference/source shape validation, without nutrition inference. */
+export { reference as parseFoodIngredientReference, source as validateFoodSourceReference };
 function facts(v: unknown, ingredient: FoodIngredient): FoodIngredientAllergens {
     const r = record(v, ["review", "evidence", "disclosureComplete"]);
     const review = record(r.review, ["state", "declarations"]);
