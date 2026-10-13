@@ -1,0 +1,81 @@
+{
+  "id": "FOOD-005N",
+  "title": "Exact fulfillment policy manual-approval requirement decision",
+  "startingHead": "12e1988aa7ca47381069b2b8b3fb0bd9de74621e",
+  "purpose": "Represent one immutable caller-supplied trusted-policy decision declaring whether one exact FOOD-005E physical-order and FOOD-005D fulfillment-intent snapshot requires separate manual fulfillment approval before later checkout/payment readiness may be considered.",
+  "files": [
+    ".river-dev/specifications/food-005n-fulfillment-policy-decision-domain.json",
+    "src/lib/food/fulfillment-policy-decision-domain.ts",
+    "src/lib/food/fulfillment-policy-decision-domain.test.ts"
+  ],
+  "whyNow": [
+    "Canonical business direction requires explicit manual approval for some fulfillment requests before charging.",
+    "FOOD-005M records positive manual approval evidence but does not decide which requests require that approval.",
+    "No canonical policy decision currently distinguishes fulfillment requests that require FOOD-005M from those that do not.",
+    "A general payment-readiness projection would otherwise have to require FOOD-005M for every order or guess when approval is required."
+  ],
+  "contract": {
+    "identity": "Caller-supplied food-fulfillment-policy-decision identity. Initial version is exactly 1.",
+    "orderBinding": "Bind one exact FOOD-005E physical-order ID/version.",
+    "fulfillmentBinding": "Bind the exact FOOD-005D fulfillment-intent ID/version and exact method/locationReference/windowReference snapshot associated with that order version.",
+    "manualApprovalRequirement": [
+      "not-required",
+      "required"
+    ],
+    "policyMeaning": "The decision is caller-supplied trusted-policy evidence only. This pure domain does not calculate geography, radius, distance, eligibility or fees.",
+    "notRequiredMeaning": "not-required means the trusted policy source says a separate FOOD-005M manual approval is not required for this exact fulfillment snapshot. It does not mean inside service area and does not create checkout/payment readiness.",
+    "requiredMeaning": "required means a separate positive FOOD-005M approval must later be supplied before downstream readiness may treat the manual-approval gate as satisfied. Required is not itself approval.",
+    "provenance": "Caller supplies attribution, opaque policyReference and decidedOn. The pure domain does not authenticate the policy source.",
+    "historicalCancellation": "A policy decision may remain historical evidence against an exact cancelled physical-order version and does not revive it.",
+    "immutability": "Strict own-key allowlists with detached frozen result and nested snapshots.",
+    "purity": "No geocoding, radius logic, routing, database, filesystem, clock, provider, network or persistence."
+  },
+  "invariants": [
+    "fulfillment policy decision != service-area calculation",
+    "fulfillment policy decision != inside-service-area assertion",
+    "fulfillment policy decision != outside-service-area assertion",
+    "fulfillment policy decision != distance calculation",
+    "fulfillment policy decision != route optimization",
+    "manual approval required != manual approval granted",
+    "manual approval not-required != checkout readiness",
+    "manual approval not-required != payment readiness",
+    "fulfillment policy decision != fee authorization",
+    "fulfillment policy decision != payable assessment",
+    "fulfillment policy decision != reservation acceptance",
+    "fulfillment policy decision != inventory reservation",
+    "fulfillment policy decision != payment initiation",
+    "fulfillment policy decision != payment confirmation",
+    "fulfillment policy decision != paid-in-full",
+    "fulfillment policy decision != preparation authority",
+    "fulfillment policy decision != dispatch readiness",
+    "fulfillment policy decision != fulfillment",
+    "fulfillment policy decision != completed sale",
+    "fulfillment policy decision != accounting/revenue",
+    "fulfillment policy decision != rewards/verified purchase",
+    "cancelled order + historical policy decision != revived order"
+  ],
+  "deferred": [
+    "service-area/radius configuration",
+    "automatic geographic eligibility calculation",
+    "geocoding and distance calculation",
+    "route optimization",
+    "policy source authentication",
+    "policy decision persistence and global uniqueness/idempotency",
+    "policy revision/replacement/revocation/expiration",
+    "FOOD-005M approval satisfaction composition",
+    "FOOD-005M approved-fee to FOOD-005J charge binding",
+    "checkout/payment readiness",
+    "hosted checkout/payment link creation",
+    "payment initiation/providers",
+    "inventory/slot persistence and race protection",
+    "fulfillment readiness",
+    "scheduled/preparing/ready/dispatched/handed-over lifecycle",
+    "completed sale/accounting/revenue",
+    "deployment/production activation"
+  ],
+  "future": {
+    "manualGate": "A later readiness projection may require exact FOOD-005M approval only when an exact FOOD-005N decision says manual approval is required.",
+    "standardGate": "When FOOD-005N says manual approval is not-required, later readiness may treat only that manual-approval requirement as satisfied. Every other readiness gate remains independent.",
+    "fees": "FOOD-005N does not authorize or price a fee. FOOD-005M remains the positive manual approval record carrying approvedAdditionalFee when manual approval is required."
+  }
+}
