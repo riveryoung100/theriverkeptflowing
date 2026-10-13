@@ -1,0 +1,45 @@
+{
+  "id": "FOOD-004K",
+  "title": "FOOD-004K — First real food prototype capture preparation",
+  "identifierOrigin": "OWNER-DIRECTED POST-FOOD-004J",
+  "date": "2026-10-13",
+  "startingHead": "db28d5ebd6d77849e64d0b68ebf59db1bfb05d11",
+  "branch": "cif-001-canonical-content-source-record",
+  "scope": "Local owner decision specification and blank operational worksheet only; no actual prototype-domain record or canonical food data.",
+  "sources": [
+    ".river-dev/specifications/food-003a-flagship-gnocchi-product-architecture-and-recipe-capture-model.json",
+    ".river-dev/specifications/food-003b-recipe-version-component-system.json",
+    "src/lib/food/prototype-capture-domain.ts",
+    "src/lib/food/prototype-capture-domain.test.ts",
+    "src/lib/food/recipe-component-domain.ts"
+  ],
+  "ownerDecision": {
+    "technicalFoundation": "Standalone frozen gnocchi is the first technical prototype; former FOOD-1 is a temporary decision label, not a canonical ID.",
+    "commercialFollowOn": "After foundation validation, develop a prepared gnocchi meal with owner-selected sauce and vegetables; former FOOD-3 is not a canonical ID.",
+    "standaloneCommercialRole": "Secondary/add-on standalone offer hypothesis if customers want it; no offer created.",
+    "marketTestHypothesis": "MARKET TEST HYPOTHESIS — NOT VALIDATED DEMAND: sample/market the complete prepared meal in its intended context; potentially offer standalone frozen gnocchi separately. No forecast, approved menu, sampling logistics or commercial activation."
+  },
+  "productionBaseline": "FOOD-004E established zero products, recipes, presentations, serving offers and unpublished/published publications. No production access in this slice.",
+  "unapprovedFacts": ["recipe", "exact ingredients", "gram formulation", "flavor", "sauce", "vegetable combination", "serving size", "package", "SKU", "price", "menu title", "public description", "publication", "orderability"],
+  "worksheet": "docs/operations/food/standalone-frozen-gnocchi-prototype-run.md",
+  "captureMapping": {
+    "inputs": "Ordered actual ingredientName and positive finite initial grams with unique run-local key; preserve initial measurements. No assumed ingredient list.",
+    "method": "Ordered actual actions; measured time/temperature, equipment and results may be retained in step text. No prescribed cooking procedure.",
+    "adjustments": "Ordered process text or mass add/remove with positive measured grams and exactly one known inputKey or adjustment-only ingredientName. Method position and reason belong in text. Unmeasured events remain observations/process notes, never fabricated numeric adjustments.",
+    "yield": "Actual measured finished usable yield maps to finishedYieldGrams. Identify measurement state and exclusions in observations. Never infer yield from inputs or piece count.",
+    "observations": "Category/text observations support quality, freezing/storage, sample masses, piece count and loss/waste. No new structured mass-balance, sample, portion or packaging domain.",
+    "provenance": "Founder-measured sourceReference required for later capture; optional occurredOn date in YYYY-MM-DD form. Worksheet time/source notes are supporting evidence, not added domain fields.",
+    "references": "Context-free captures are supported. Omit recipe/product references and recipeIngredientIndex until exact validated snapshots exist. A later domain capture requires its own capture ID; none is assigned here.",
+    "bounds": "Up to 128 inputs, method steps, adjustments and observations each; inputs/method nonempty. Positive finite gram values at most MAX_SAFE_INTEGER; fractional grams retained. Keys/categories 128 characters, ingredient names 256, step/adjustment/observation text 2000, sourceReference 512. Blank worksheet fields are not valid domain data."
+  },
+  "handoff": {
+    "evidence": "Actual names/grams, ordered method, adjustments, finished usable yield, available freezing/storage and quality observations, founder provenance and explicit owner run decision; optional photos/notes/test labels.",
+    "ownerDecision": ["ACCEPT_FOR_SECOND_CONFIRMATION_RUN", "REVISE_AND_TEST_AGAIN", "REJECT_THIS_FORMULATION", "UNDECIDED"],
+    "repeatability": "A repeat batch can check formulation, yield, method and freezing consistency. No arbitrary run count or statistical threshold; owner decides readiness.",
+    "canonicalization": "Separate future authorization and owner review required. FOOD-003B recipe formulation must match an exact FOOD-001 recipe draft id/version, with deliberate ordered ingredient-index/gram composition, internal method and yieldGrams; no automatic summing/promoting of prototype events.",
+    "componentReuse": "Future validated gnocchi may be deliberately represented as an exact direct-ingredient component version referenced by a meal recipe with grams. FOOD-003B does not allow recipe-as-component references or nested components; do not automatically convert or duplicate formulations.",
+    "preparedMealGaps": "Sauce and vegetables unselected; sauce recipe, vegetable preparation, complete-meal formulation, meal portion, package/SKU, price and serving offer do not exist. Public description is not approved. These require separate decisions/evidence."
+  },
+  "validation": ["JSON syntax", "Repository-relative links", "FOOD-003A/B contract review", "Ingredient-neutral blank fields and no invented IDs or measurements", "Whitespace and complete final change review"],
+  "operations": "Preparation authorized no code, actual capture/fixture/data record, staging, commit, push, D1/KV/Cloudflare/OAuth access, deployment or traffic/DNS change. Subsequent owner closure authorization permits local review/corrections and exact staging of these two documents only; commit/push and production actions remain unauthorized."
+}
