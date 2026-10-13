@@ -1,0 +1,90 @@
+{
+  "id": "FOOD-005K",
+  "title": "Exact payment reconciliation projection domain",
+  "startingHead": "0a317b300ab6ac2909e4dabb68770b6c74da73f8",
+  "files": [
+    ".river-dev/specifications/food-005k-payment-reconciliation-domain.json",
+    "src/lib/food/payment-reconciliation-domain.ts",
+    "src/lib/food/payment-reconciliation-domain.test.ts"
+  ],
+  "decision": {
+    "boundary": "Derive deterministic payment-status truth from one exact FOOD-005J payable-assessment version and a bounded collection of normalized immutable payment-evidence snapshots.",
+    "normalizedInput": "FOOD-005K does not create a persisted generic payment entity. It consumes transient normalized snapshots derived later by trusted adapters.",
+    "sourceFamiliesRemainSeparate": "FOOD-005F electronic confirmation and FOOD-005I cash evidence remain independent canonical source families.",
+    "idempotencyBoundary": "Duplicate source identity/version references are rejected within one reconciliation input only. Global uniqueness and durable idempotency remain deferred.",
+    "notOrderMutation": "Payment status does not mutate FOOD-005E order state and cannot revive cancellation.",
+    "notFulfillment": "Paid-in-full grants no preparation, reservation, scheduling, dispatch, delivery or handoff authority.",
+    "notSale": "Paid-in-full creates no completed-sale, revenue, accounting, inventory, rewards or verified-purchase authority."
+  },
+  "contract": {
+    "assessment": {
+      "source": "Exact FOOD-005J payable-assessment version.",
+      "latestCurrent": false
+    },
+    "evidence": {
+      "maximum": 64,
+      "allowedSourceKinds": [
+        "electronic-confirmation",
+        "cash-evidence"
+      ],
+      "duplicateRule": "sourceKind + sourceId + sourceVersion unique within one reconciliation.",
+      "orderRule": "Every evidence snapshot binds exact assessment physical-order ID/version and merchandise subtotal.",
+      "currencyRule": "Every evidence amount uses exact assessment amountDue currency."
+    },
+    "statuses": [
+      "no-payment-due",
+      "unpaid",
+      "partially-paid",
+      "paid-in-full",
+      "overpaid"
+    ],
+    "statusDerivation": {
+      "no-payment-due": "amountDue equals zero and evidenceTotal equals zero.",
+      "unpaid": "amountDue is positive and evidenceTotal equals zero.",
+      "partially-paid": "evidenceTotal is positive and below amountDue.",
+      "paid-in-full": "amountDue is positive and evidenceTotal exactly equals amountDue.",
+      "overpaid": "evidenceTotal exceeds amountDue."
+    },
+    "result": {
+      "kind": "Pure immutable derived projection.",
+      "persistence": false
+    }
+  },
+  "invariants": [
+    "payment reconciliation != payment evidence creation",
+    "payment reconciliation != global idempotency",
+    "payment reconciliation != checkout readiness",
+    "payment reconciliation != payment readiness",
+    "payment reconciliation != order lifecycle mutation",
+    "payment reconciliation != fulfillment authority",
+    "payment reconciliation != completed sale",
+    "payment reconciliation != revenue/accounting",
+    "payment reconciliation != inventory movement",
+    "payment reconciliation != rewards/referral entitlement",
+    "payment reconciliation != verified purchase",
+    "payment reconciliation != refund/reversal/chargeback handling",
+    "paid-in-full != dispatch-ready",
+    "paid-in-full != fulfilled",
+    "paid-in-full != completed sale",
+    "overpaid != refund owed or change due",
+    "no-payment-due is distinct from paid-in-full",
+    "all money arithmetic fails closed beyond safe integer range",
+    "source evidence order binding must exactly match assessment order"
+  ],
+  "deferred": [
+    "concrete FOOD-005F/FOOD-005I service adapters",
+    "durable reconciliation persistence",
+    "global payment evidence uniqueness/idempotency",
+    "refunds/reversals/chargebacks",
+    "cash change handling",
+    "checkout/payment readiness",
+    "reservation acceptance",
+    "fulfillment lifecycle",
+    "completed sale",
+    "inventory movement",
+    "accounting/revenue/ledger",
+    "rewards/referrals",
+    "verified purchase",
+    "runtime/routes/providers/deployment"
+  ]
+}
