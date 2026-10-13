@@ -1,0 +1,93 @@
+{
+  "id": "FOOD-005D",
+  "title": "FOOD-005D - Fulfillment intent, capacity requirements and reservation-request contracts",
+  "startingHead": "488c0702196ea405d055288ff662c4f5325f86e4",
+  "purpose": "Define pure fulfillment-intent and reservation-request contracts derived from exact FOOD-005C merchandise quote snapshots without claiming that inventory, production capacity or fulfillment capacity has actually been atomically reserved.",
+  "dependencies": [
+    "src/lib/food/cart-quote-domain.ts",
+    "src/lib/food/package-sku-domain.ts",
+    "src/lib/food/draft-domain.ts"
+  ],
+  "decisions": {
+    "fulfillmentIntent": "A fulfillment intent is an immutable versioned customer/request selection bound to one exact FOOD-005C merchandise quote version. It selects personal-delivery or meetup plus opaque location/window references. It does not mean the request is supported, approved, scheduled or fulfilled.",
+    "availabilityVsCapacity": "Availability is not capacity. Public/menu availability remains separate. FOOD-005D derives capacity demand only; it creates no quantity-on-hand, available-quantity, batch inventory, slot inventory or storage truth.",
+    "reservationOwnership": "FOOD-005D owns reservation-request contracts only. It does not mint an authoritative inventory or slot hold.",
+    "reservationQuantity": "Capacity demand is the positive safe-integer SKU purchase quantity copied exactly from each FOOD-005C quote line. Package internal mass/count and recipe grams are not reservation quantities.",
+    "identityVersioning": "Fulfillment intent and reservation request each have stable identities and positive safe-integer versions. Initial version is one; revisions are consecutive full replacements.",
+    "expiration": "No reservation expiration, hold timeout or implicit clock is introduced because this slice creates no committed hold and repository evidence does not establish an expiration policy.",
+    "fulfillmentMethods": "Only personal-delivery and meetup are represented. Pickup, shipping and third-party courier fulfillment are not introduced.",
+    "concurrency": "Pure domain contracts cannot prevent overselling. Atomic capacity checks, compare-and-set, transactions, idempotency and conflict handling belong to a future persistence/service authorization.",
+    "orderBoundary": "A reservation request is not an order, not a confirmed reservation, not checkout readiness and not payment readiness.",
+    "futureOrderHandoff": "FOOD-005E may consume exact quote and fulfillment-intent/request references, but must not treat a FOOD-005D reservation request as proof of reserved capacity. A separately trusted capacity-reservation acceptance seam is required before order truth may claim capacity is held."
+  },
+  "contract": {
+    "FoodFulfillmentIntentVersion": [
+      "dedicated identity",
+      "positive safe-integer version",
+      "exact merchandise quote ID/version",
+      "method personal-delivery or meetup",
+      "opaque location reference",
+      "opaque window reference"
+    ],
+    "FoodCapacityRequirementLine": [
+      "exact FoodSkuId/version",
+      "positive safe-integer SKU purchase quantity",
+      "derived from exact FOOD-005C quote lines"
+    ],
+    "FoodReservationRequestVersion": [
+      "dedicated identity",
+      "positive safe-integer version",
+      "exact merchandise quote ID/version",
+      "exact fulfillment-intent ID/version",
+      "derived ordered capacity requirements"
+    ]
+  },
+  "invariants": [
+    "menu availability != capacity",
+    "capacity requirement != available capacity",
+    "reservation request != reservation",
+    "reservation request != inventory hold",
+    "reservation request != fulfillment slot hold",
+    "fulfillment intent != fulfillment approval",
+    "fulfillment intent != scheduled fulfillment",
+    "fulfillment intent != order",
+    "quote exists != reservation request",
+    "reservation request != order",
+    "reservation request != checkout ready",
+    "reservation request != payment authorized",
+    "reservation request != payment captured"
+  ],
+  "deferred": [
+    "inventory quantity on hand",
+    "production batches",
+    "storage state",
+    "available quantity",
+    "reserved quantity ledger",
+    "sold quantity ledger",
+    "fulfillment slot inventory",
+    "service-area evaluation",
+    "distance/radius calculations",
+    "delivery fee",
+    "manual outside-area approval",
+    "atomic reservation execution",
+    "reservation acceptance",
+    "reservation release",
+    "reservation expiration",
+    "reservation conflict handling",
+    "persistence",
+    "order lifecycle",
+    "tax",
+    "discounts",
+    "checkout",
+    "payment",
+    "customer identity",
+    "production data",
+    "deployment"
+  ],
+  "files": [
+    ".river-dev/specifications/food-005d-fulfillment-capacity-reservation-contracts.json",
+    "src/lib/food/fulfillment-capacity-reservation-domain.ts",
+    "src/lib/food/fulfillment-capacity-reservation-domain.test.ts"
+  ],
+  "operations": "Exactly three local files only. No staging, commit, push, persistence mutation, production access or deployment."
+}
