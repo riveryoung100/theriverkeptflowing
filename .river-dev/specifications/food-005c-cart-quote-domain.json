@@ -1,0 +1,91 @@
+{
+  "id": "FOOD-005C",
+  "title": "FOOD-005C - Cart intent + merchandise quote snapshot domain",
+  "startingHead": "9479468b52dd6d43665f46af98c59054249695b8",
+  "purpose": "Pure exact-SKU cart intent and immutable merchandise quote snapshots that preserve approved commercial price truth without asserting final orderability, fulfillment, tax, checkout or payment readiness.",
+  "dependencies": [
+    "src/lib/food/package-sku-domain.ts",
+    "src/lib/food/approved-commercial-price-domain.ts",
+    "src/lib/food/cost-pricing-domain.ts",
+    "src/lib/food/draft-domain.ts"
+  ],
+  "precedent": {
+    "cart": "FOOD-002A states persistent cart state is convenience only.",
+    "quotation": "FOOD-002A requires eventual server quotations to revalidate exact versions plus availability, price, tax treatment, discounts, fees and fulfillment and forbids silent substitution.",
+    "scopeDecision": "FOOD-005C therefore creates a merchandise quote foundation only. It must not claim to be the final payable/orderable server quotation while later readiness domains remain unresolved."
+  },
+  "contract": {
+    "cart": "FoodCartVersion has a dedicated food-cart identity, positive safe-integer version and ordered exact-SKU lines. Cart state is convenience/intention only and does not establish existence, availability, orderability or price.",
+    "cartRevision": "Initial cart version is 1. Revisions are consecutive full replacements retaining stable cart identity. No automatic carry, latest/current SKU resolution or hidden merge behavior.",
+    "cartLine": "Each line retains exact FoodSkuId + SKU version and a positive safe-integer purchase quantity of SKU units. Package net quantity remains a separate FOOD-005A fact.",
+    "duplicates": "Duplicate exact SKU ID/version lines are rejected. No line identity is introduced in this slice; UI/application merge behavior is not commercial truth.",
+    "quote": "FoodMerchandiseQuoteVersion is an immutable merchandise-only commercial snapshot with its own identity/version, exact source cart identity/version, exact SKU references, exact approved-price authority ID/version references, immutable unit-price FoodMoney snapshots, quantities, line merchandise subtotals and aggregate merchandise subtotal.",
+    "quoteRevision": "Initial merchandise quote version is 1. Re-quotation is an explicit consecutive full replacement retaining quote identity and cart identity. Historical quote versions never mutate.",
+    "sourceValidation": "Quote creation requires explicit canonical SKU snapshots and explicit FOOD-005B approved-commercial-price snapshots for every cart line. There is no latest/current lookup and no automatic price selection.",
+    "priceSnapshot": "Unit price is copied from the selected exact FOOD-005B price snapshot. Caller-supplied line or aggregate arithmetic is not accepted by quote construction.",
+    "money": "Reuse FoodMoney and validateFoodMoney. Purchase quantity multiplication and aggregate addition use integer minor units only. Mixed-currency quotes are rejected. Arithmetic above Number.MAX_SAFE_INTEGER is rejected. No conversion or rounding is performed.",
+    "totals": "The only aggregate is merchandiseSubtotal. There is no grand total or amountDue because tax, discounts, delivery/service fees and other charges are not established here.",
+    "timestamp": "No createdAt, quotedAt, expiresAt or implicit system clock is introduced. Quote expiration policy is deferred.",
+    "staleness": "A later SKU revision or approved-price revision never rewrites or invalidates historical quote truth. Whether an old quote may currently be accepted is later trusted policy and may require explicit re-quotation.",
+    "immutability": "All returned snapshots and nested values are detached and frozen. No caller-owned mutable object remains authoritative.",
+    "purity": "No persistence, clock, random IDs, environment, filesystem, HTTP, network, database, Cloudflare, checkout or payment side effect exists in the domain."
+  },
+  "boundaries": [
+    "cart exists != SKU exists",
+    "cart exists != priced",
+    "quote exists != available",
+    "quote exists != inventory reserved",
+    "quote exists != fulfillment reserved",
+    "quote exists != orderable",
+    "quote exists != order placed",
+    "quote exists != checkout ready",
+    "quote exists != payment authorized",
+    "quote exists != payment captured",
+    "merchandise subtotal != customer payable total"
+  ],
+  "deferred": [
+    "Persistent cart repository",
+    "Customer/session ownership",
+    "Active/current SKU selection",
+    "Active/current approved-price selection",
+    "Availability validation",
+    "Inventory",
+    "Capacity and reservation",
+    "Pickup/delivery intent",
+    "Fulfillment windows",
+    "Orderability",
+    "Tax amount calculation",
+    "Discounts/coupons",
+    "Delivery/service fees",
+    "Tips/surcharges",
+    "Final payable total",
+    "Quote expiration",
+    "Current quote acceptance policy",
+    "Order placement",
+    "Checkout",
+    "Payment",
+    "Production data"
+  ],
+  "futureHandoffs": {
+    "FOOD-005D": "Consume exact cart/merchandise-quote snapshots while independently adding fulfillment, capacity, availability-window and reservation semantics.",
+    "FOOD-005E": "Retain the exact accepted merchandise quote identity/version, exact SKU versions, exact approved-price versions, quantities and immutable money snapshots in physical order truth.",
+    "FOOD-005F": "Payment remains separate from quote/order truth and must not infer payment readiness from FOOD-005C."
+  },
+  "files": [
+    ".river-dev/specifications/food-005c-cart-quote-domain.json",
+    "src/lib/food/cart-quote-domain.ts",
+    "src/lib/food/cart-quote-domain.test.ts"
+  ],
+  "validation": [
+    "Focused synthetic FOOD-005C tests",
+    "FOOD-005A and FOOD-005B regression",
+    "FOOD-003D and public-menu regression",
+    "Complete FOOD suite",
+    "Strict TypeScript",
+    "Changed-file lint",
+    "JSON/path checks",
+    "Forbidden-side-effect review",
+    "Whitespace and scope audit"
+  ],
+  "operations": "Exactly three local implementation files only. No staging, commit, push, production access, deployment, real food values or external mutation."
+}
