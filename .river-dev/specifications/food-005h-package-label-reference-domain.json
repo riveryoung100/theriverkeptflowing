@@ -1,0 +1,21 @@
+{
+  "id": "FOOD-005H",
+  "title": "FOOD-005H — Package label / public-information reference domain",
+  "startingHead": "ee8170ff7f8d22c24959e3de8d392b882facb452",
+  "files": [".river-dev/specifications/food-005h-package-label-reference-domain.json", "src/lib/food/package-label-reference-domain.ts", "src/lib/food/package-label-reference-domain.test.ts"],
+  "dependencies": ["src/lib/food/package-sku-domain.ts", "src/lib/food/dish-offer-domain.ts", "src/lib/food/draft-domain.ts"],
+  "contract": {
+    "identity": "FoodPackageLabelId, food-package-label prefix, supplied nonempty unpadded local text <=128 UTF-16 characters, no colon; create/parse helpers. Positive-safe versions, initial 1, consecutive explicit revisions without overflow.",
+    "references": "FoodPackageLabelVersion retains exact sku, package, servingOffer, presentation, product and recipe references. Sources helper validates supplied SKU, dish and serving offer using canonical validators and requires every retained reference to match. No persistence/existence/current/latest claim; package reference comes from SKU, no package contents inference.",
+    "title": "Optional displayTitle must exactly equal the supplied presentation.name under source validation. Structural validation alone does not establish source truth.",
+    "publicInformation": "Optional detached frozen FoodPublicInformationReference { reference }. Supplied public alias <=128 characters, ASCII letters/digits/underscore/hyphen, first character alphanumeric. Restricted lexical rule rejects URI syntax, namespaces and contact syntax without URL parsing. This opaque alias is not URL, token, secret, order/customer identity, publication or reorder authority. Pure domain cannot prove an arbitrary alias does not encode private meaning; trusted caller must supply nonprivate public references.",
+    "revision": "Same label identity, exact SKU version and all required upstream references; full explicit replacement. Public information/title may be removed or supplied again under source validation. Changed SKU/context requires new label identity; older snapshots detached/frozen and unchanged.",
+    "authority": "Semantic presentation/reference foundation only. Label != ingredients/allergens/nutrition/legal approval. Label/reference existence != publication/availability/orderability/inventory/price/checkout/payment readiness. Public alias resolver must respect explicit publication and privacy in later services.",
+    "purity": "Strict own-key allowlists, detached frozen nested values; no clock, random identity, IO, runtime, route, rendering or provider."
+  },
+  "deferred": ["Physical ingredient/allergen disclosure rendering", "Nutrition labeling", "Registration/business/compliance configuration", "Barcode association/allocation/reuse/uniqueness policy", "Reorder tokens/private order resolution/fresh cart construction", "Global uniqueness and active-label selection", "QR images/URLs/routes/resolvers", "Printing/PDF/HTML/CSS/provider integration", "Order/batch-specific labels"],
+  "privacy": "No customer, principal, contact, consent, physical-order, payment, session, location or secret fields. No real data. Public references must not encode private identities; no access-control claim.",
+  "futureReorder": "Separate trusted private historical-order resolution, fresh cart, fresh commercial/fulfillment/tax/discount checks and user confirmation; never clone historical commercial authority.",
+  "validation": ["Focused and targeted synthetic tests", "Complete FOOD suite", "Bounded strict TypeScript", "Changed-file ESLint zero warnings", "JSON/files/whitespace/scope audit"],
+  "operations": "Exactly three new unstaged files only; no production access/mutation, staging, commit/push or deployment."
+}
