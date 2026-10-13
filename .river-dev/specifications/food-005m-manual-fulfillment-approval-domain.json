@@ -1,0 +1,71 @@
+{
+  "id": "FOOD-005M",
+  "title": "Exact manual fulfillment approval evidence",
+  "startingHead": "abd8f3ceeb116a469b305d28f60b0d439b70686b",
+  "purpose": "Represent one immutable caller-supplied positive approval assertion for the exact fulfillment terms of one exact FOOD-005E physical-order version, including an explicitly approved additional fulfillment fee, without calculating service area or creating checkout/payment authority.",
+  "files": [
+    ".river-dev/specifications/food-005m-manual-fulfillment-approval-domain.json",
+    "src/lib/food/manual-fulfillment-approval-domain.ts",
+    "src/lib/food/manual-fulfillment-approval-domain.test.ts"
+  ],
+  "whyNow": [
+    "Canonical business direction requires manual approval for outside-area requests before charging.",
+    "The outside-area flow is request -> review route/location/time/cost -> approve fee/window -> payment link -> paid confirmation.",
+    "No canonical manual service-area, route, fee or window approval record currently exists.",
+    "A generic checkout/payment-readiness projection would be premature if it could not prove that required manual fulfillment approval occurred."
+  ],
+  "contract": {
+    "identity": "Caller-supplied food-manual-fulfillment-approval identity. Initial version is exactly 1. No revision family in this slice.",
+    "orderBinding": "Bind one exact FOOD-005E physical-order ID/version.",
+    "fulfillmentBinding": "Bind the exact FOOD-005D fulfillment-intent ID/version referenced by that physical-order version and copy exact method, locationReference and windowReference.",
+    "fee": "approvedAdditionalFee is explicit FoodMoney and must use the same currency as the exact physical-order merchandise subtotal. Zero is permitted. It is approval evidence only, not a final payable assessment.",
+    "approval": "Caller supplies attribution, opaque sourceReference and approvedOn. Pure domain does not authenticate the approver or source.",
+    "historicalCancellation": "An approval assertion may be retained against an exact cancelled physical-order version as historical evidence; it does not revive the order.",
+    "immutability": "Strict own-key allowlists; detached frozen result and nested snapshots.",
+    "purity": "No clock, network, geocoding, radius calculation, database, filesystem, provider, route optimization or persistence."
+  },
+  "boundaries": [
+    "manual fulfillment approval != service-area calculation",
+    "manual fulfillment approval != distance calculation",
+    "manual fulfillment approval != route optimization",
+    "manual fulfillment approval != reservation acceptance",
+    "manual fulfillment approval != inventory reservation",
+    "manual fulfillment approval != final payable assessment",
+    "manual fulfillment approval != checkout readiness",
+    "manual fulfillment approval != payment readiness",
+    "manual fulfillment approval != payment link",
+    "manual fulfillment approval != payment confirmation",
+    "manual fulfillment approval != paid-in-full",
+    "manual fulfillment approval != preparation authority",
+    "manual fulfillment approval != dispatch readiness",
+    "manual fulfillment approval != fulfillment",
+    "manual fulfillment approval != completed sale",
+    "manual fulfillment approval != accounting/revenue",
+    "manual fulfillment approval != rewards/verified purchase",
+    "historical approval on cancelled order != order revival"
+  ],
+  "deferred": [
+    "service-area/radius policy",
+    "automatic in-area eligibility",
+    "manual-approval-required classification",
+    "distance/geocoding/routing",
+    "route cost calculation",
+    "trusted approver authorization service",
+    "approval persistence and global uniqueness/idempotency",
+    "approval rejection/revocation/expiration",
+    "FOOD-005J adjustment integration",
+    "proof that an approved fee is included in a payable assessment",
+    "checkout/payment readiness",
+    "hosted checkout/payment link creation",
+    "payment initiation/providers",
+    "inventory/slot persistence and race protection",
+    "fulfillment readiness",
+    "scheduled/preparing/ready/dispatched/handed-over lifecycle",
+    "completed sale/accounting/revenue",
+    "deployment/production activation"
+  ],
+  "future": {
+    "payableAssessment": "A later trusted service may use the explicit approvedAdditionalFee as upstream authority for an exact FOOD-005J charge adjustment. FOOD-005M itself does not mutate or validate an assessment.",
+    "readiness": "A later readiness slice must preserve the distinction between standard-policy eligibility and requests requiring manual approval, and must not create provider checkout unless all required authorities are satisfied."
+  }
+}
