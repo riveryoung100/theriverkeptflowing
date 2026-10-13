@@ -1,0 +1,122 @@
+{
+  "id": "FOOD-005I",
+  "title": "Cash payment evidence domain",
+  "startingHead": "1f1b8672d5c722b25d045aa7880b5a2c625313ce",
+  "files": [
+    ".river-dev/specifications/food-005i-cash-payment-evidence-domain.json",
+    "src/lib/food/cash-payment-evidence-domain.ts",
+    "src/lib/food/cash-payment-evidence-domain.test.ts"
+  ],
+  "decision": {
+    "boundary": "Record immutable caller-supplied evidence that cash was received against one exact FOOD-005E physical-order version. This is evidence only and does not create completed-sale, paid-in-full, fulfillment, inventory, accounting or rewards authority.",
+    "reason": [
+      "FOOD-005E exposes only requested and cancelled physical-order truth.",
+      "FOOD-005F deliberately models electronic processor confirmation only.",
+      "FOOD-005F confirmed amount may differ from merchandise subtotal and does not establish paid-in-full truth.",
+      "Authoritative final payable total, tax, delivery fee, discount, tip and fulfillment-completion truth remain unresolved.",
+      "Cash therefore requires its own bounded evidence family before any later payment reconciliation or sale-completion service can reason across payment channels."
+    ],
+    "pos": "POS-lite remains application/service behavior over canonical records. FOOD-005I does not create a POS UI or sale ledger.",
+    "saleCompletion": "Deferred. Cash evidence does not establish a completed sale.",
+    "paymentReconciliation": "Deferred. A later trusted layer may combine authoritative payable-total truth with electronic and cash payment evidence.",
+    "accounting": "Deferred. Cash evidence is not revenue recognition, bookkeeping, deposit, settlement or ledger truth.",
+    "fulfillment": "Deferred. Cash evidence confers no scheduling, preparation, readiness, dispatch, delivery or handoff authority.",
+    "inventory": "Deferred. Cash evidence causes no inventory movement.",
+    "feedback": "Deferred. Customer feedback and verified-purchase semantics require later purchase/completion truth.",
+    "demand": "Deferred. Requested, paid and fulfilled demand remain distinct observations.",
+    "rewards": "Deferred. Cash evidence grants no loyalty, referral or rewards entitlement."
+  },
+  "contract": {
+    "identity": {
+      "type": "FoodCashPaymentEvidenceId",
+      "prefix": "food-cash-payment-evidence:",
+      "callerSupplied": true,
+      "generated": false
+    },
+    "version": {
+      "type": "FoodCashPaymentEvidenceVersion",
+      "initial": 1,
+      "revisionApi": false,
+      "meaning": "One immutable evidence occurrence. Corrections/reversals are separate future evidence rather than mutation."
+    },
+    "order": {
+      "binding": "Exact FOOD-005E physical-order ID/version",
+      "snapshot": "Copies exact merchandiseSubtotal only as historical context",
+      "mutation": false
+    },
+    "evidence": {
+      "channel": "cash",
+      "fields": [
+        "cashReceiptReference",
+        "confirmationSourceReference",
+        "receivedAmount"
+      ],
+      "amount": "Canonical FoodMoney",
+      "trustedMeaning": "Caller asserts that an external/manual trusted process observed cash receipt. Pure domain cannot authenticate the assertion."
+    }
+  },
+  "invariants": [
+    "cash evidence != paid-in-full order",
+    "cash evidence != completed sale",
+    "cash evidence != revenue",
+    "cash evidence != accounting entry",
+    "cash evidence != cash deposit",
+    "cash evidence != fulfillment authority",
+    "cash evidence != inventory movement",
+    "cash evidence != rewards entitlement",
+    "cash evidence != verified purchase",
+    "receivedAmount may differ from merchandiseSubtotal",
+    "merchandiseSubtotal is historical order context only",
+    "cash evidence must not mutate or reprice FOOD-005E",
+    "cancelled-order evidence occurrence does not revive the order",
+    "cash and electronic payment evidence remain distinct canonical source families",
+    "pure domain cannot establish global receipt-reference uniqueness or duplicate prevention"
+  ],
+  "excluded": [
+    "paidInFull",
+    "completedSale",
+    "revenue",
+    "tax",
+    "discount",
+    "deliveryFee",
+    "tip",
+    "grandTotal",
+    "amountDue",
+    "changeDue",
+    "cashTendered",
+    "drawer",
+    "register",
+    "deposit",
+    "bankDeposit",
+    "accounting",
+    "ledger",
+    "settlement",
+    "refund",
+    "chargeback",
+    "authorization",
+    "processor",
+    "card",
+    "customer",
+    "contact",
+    "inventory",
+    "fulfillment",
+    "dispatch",
+    "handoff",
+    "feedback",
+    "rating",
+    "verifiedPurchase",
+    "reward",
+    "referral",
+    "persistence",
+    "idempotency",
+    "runtime",
+    "provider",
+    "clock"
+  ],
+  "future": {
+    "paymentReconciliation": "A trusted future service may combine exact order truth, authoritative final payable total and one or more trusted payment evidence families.",
+    "saleCompletion": "Requires separate fulfillment/commercial truth and must not be inferred from FOOD-005I.",
+    "cashPersistence": "Repository/service layer must later enforce duplicate prevention and operational identity rules.",
+    "pos": "A later POS/admin surface may create trusted cash evidence but is outside this pure domain."
+  }
+}
