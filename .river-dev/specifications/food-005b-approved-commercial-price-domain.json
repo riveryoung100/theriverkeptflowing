@@ -1,0 +1,25 @@
+{
+  "id": "FOOD-005B",
+  "title": "FOOD-005B — Approved commercial price + sell/readiness boundary",
+  "startingHead": "66f31a49e1e16bfde2ed5adf2fce11c70d2815bf",
+  "purpose": "Pure exact-SKU commercial-price approval assertions, independent of the pending real gnocchi prototype.",
+  "dependencies": ["src/lib/food/package-sku-domain.ts", "src/lib/food/cost-pricing-domain.ts", "src/lib/food/draft-domain.ts"],
+  "contract": {
+    "authority": "FoodApprovedCommercialPriceVersion: id, version, sku { id, version }, money, approval { attribution, sourceReference, approvedOn }, optional candidateProvenance { sourceReference }.",
+    "identity": "Dedicated food-approved-commercial-price prefix; explicit create/parse, unpadded nonempty local identity up to 128 characters without colon. No generated IDs.",
+    "sku": "Validate supplied canonical FOOD-005A SKU and exact reference equality. No duplicated package/offer fields, resolution or remote existence claim. One price identity remains attached to the same exact SKU ID/version; changed SKU version requires separate price authority.",
+    "money": "Reuse FoodMoney/validateFoodMoney: uppercase three-letter currency, nonnegative safe-integer minorUnits including zero. No rounding, conversion, USD default or paid-sale minimum.",
+    "approval": "Every version explicitly supplies attribution and sourceReference (nonempty unpadded text up to 512 characters), approvedOn via validateFoodReviewDate. Records caller assertion only; no authentication/source verification. Later trusted service authorizes creation.",
+    "candidate": "Optional opaque bounded sourceReference, detached/frozen. No scenario identity, lookup, authenticity/applicability claim or amount comparison. Approved money must be supplied explicitly; FOOD-003D remains planningOnly and unchanged.",
+    "versions": "Initial creation requires version 1. General validation accepts positive safe-integer historical versions. Revision validates previous and full next against supplied exact SKU, requires stable authority and SKU, consecutive version without overflow, and explicitly supplied money/approval. No automatic copying; repeated assertion values are permitted and do not prove freshness/authentication.",
+    "immutability": "Strict own-key allowlists; all returned nested objects detached/frozen. Full replacement revision may omit prior optional provenance. Historical snapshots unchanged.",
+    "purity": "No clock, random IDs, environment, filesystem, network, database or HTTP. Dates supplied; validateFoodReviewDate reused. No persistence or durable uniqueness enforcement."
+  },
+  "boundaries": "Approved commercial price != published != available != inventory != orderable != checkout-ready != payment-ready. PRODUCT != RECIPE != RECIPE VERSION != COMPONENT != DISH PRESENTATION != SERVING OFFER != PACKAGE != SKU != PRICE != AVAILABILITY != ORDERABILITY != INVENTORY != CART LINE != ORDER LINE. No readiness aggregate or sale authority.",
+  "deferred": ["Active/current selection", "Revocation/deactivation/supersession policy", "Effective windows", "Publication/public price", "Availability/inventory/fulfillment", "Tax/discounts", "Cart/quote/order/checkout/payment", "Persistence and trusted approval service"],
+  "publicMenu": "FOOD-004A/B/C and projectFoodPublicMenu unchanged; no public price exposure.",
+  "futureFood005C": "Retain exact SKU ID/version, exact price authority ID/version and immutable FoodMoney in future quotes/orders. Later price revisions do not reprice retained snapshots; separate trusted policy decides permission to use an exact version.",
+  "files": ["src/lib/food/approved-commercial-price-domain.ts", "src/lib/food/approved-commercial-price-domain.test.ts"],
+  "validation": ["Focused synthetic tests", "FOOD-005A/003D and public-menu regressions", "Complete FOOD suite", "Changed-file lint", "Bounded strict TypeScript", "JSON/reference/whitespace/full review"],
+  "operations": "Only these three authorized files; no real data, staging, commit/push, production access/mutation, infrastructure, generated artifacts or deployment."
+}
