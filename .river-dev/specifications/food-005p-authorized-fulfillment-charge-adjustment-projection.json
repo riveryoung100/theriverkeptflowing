@@ -1,0 +1,67 @@
+{
+  "id": "FOOD-005P",
+  "title": "Authorized fulfillment charge to payable-adjustment projection",
+  "startingHead": "78fac8c4ed04307e616ea8ffcc68c625aa6f2afa",
+  "purpose": "Define the canonical pure translation from one trusted exact FOOD-005O authorized fulfillment charge candidate into the exact four-field charge-adjustment shape consumed by FOOD-005J, without constructing or mutating a payable assessment and without claiming the projected adjustment has been included in any assessment.",
+  "files": [
+    ".river-dev/specifications/food-005p-authorized-fulfillment-charge-adjustment-projection.json",
+    "src/lib/food/authorized-fulfillment-charge-adjustment.ts",
+    "src/lib/food/authorized-fulfillment-charge-adjustment.test.ts"
+  ],
+  "whyNow": [
+    "FOOD-005O establishes exact authorized fulfillment-fee authority but intentionally does not mutate FOOD-005J or prove assessment inclusion.",
+    "FOOD-005J accepts explicit charge adjustments containing direction, reference, money and sourceReference.",
+    "FOOD-005J adjustment provenance is opaque and does not contain separate source ID/version fields.",
+    "Therefore a deterministic canonical translation is required before a later exact assessment-inclusion validator can compare an assessment against FOOD-005O without guessing."
+  ],
+  "contract": {
+    "inputTrust": "Input is one trusted FOOD-005O FoodAuthorizedFulfillmentChargeCandidate produced by the canonical FOOD-005O derivation. This slice is an internal pure composition seam, not an arbitrary transport decoder.",
+    "direction": "Always charge.",
+    "reference": "Deterministically encodes the exact FOOD-005M manual-approval identity and version from FOOD-005O.",
+    "sourceReference": "Deterministically encodes the exact FOOD-005N fulfillment-policy-decision identity and version from FOOD-005O.",
+    "money": "Copied exactly from FOOD-005O money with no repricing, rounding, fee calculation or mutation. Zero remains an explicit zero-valued charge adjustment.",
+    "compatibility": "The resulting object is structurally accepted by FOOD-005J as one explicit adjustment.",
+    "immutability": "The adjustment and nested money are detached and frozen.",
+    "identityRule": "Same money with different exact approval/policy identities must yield different canonical references.",
+    "assessmentRule": "Projection says what exact adjustment should be supplied to FOOD-005J. It does not assert that any FOOD-005J assessment actually contains it."
+  },
+  "invariants": [
+    "authorized charge candidate != payable assessment",
+    "authorized charge adjustment projection != payable assessment inclusion",
+    "authorized charge adjustment projection != payable assessment selection/currentness",
+    "authorized charge adjustment projection != amountDue",
+    "authorized charge adjustment projection != checkout readiness",
+    "authorized charge adjustment projection != payment readiness",
+    "authorized charge adjustment projection != payment initiation",
+    "authorized charge adjustment projection != payment confirmation",
+    "authorized charge adjustment projection != paid-in-full",
+    "authorized charge adjustment projection != inventory reservation",
+    "authorized charge adjustment projection != reservation acceptance",
+    "authorized charge adjustment projection != preparation authority",
+    "authorized charge adjustment projection != dispatch readiness",
+    "authorized charge adjustment projection != fulfillment",
+    "authorized charge adjustment projection != completed sale",
+    "authorized charge adjustment projection != accounting/revenue",
+    "authorized charge adjustment projection != rewards/verified purchase",
+    "zero approved fee still preserves explicit manual-approval identity rather than erasing the approval gate"
+  ],
+  "deferred": [
+    "proof that one exact FOOD-005J assessment contains the exact projected adjustment",
+    "missing/duplicate authorized-adjustment detection inside an assessment",
+    "assessment-selection/currentness policy",
+    "checkout/payment readiness",
+    "hosted checkout/payment link creation",
+    "payment initiation/providers",
+    "payment confirmation/reconciliation",
+    "atomic inventory/slot persistence and race protection",
+    "fulfillment readiness",
+    "scheduled/preparing/ready/dispatched/handed-over lifecycle",
+    "completed sale/accounting/revenue",
+    "deployment/production activation"
+  ],
+  "future": {
+    "assessmentInclusion": "A later pure validator may rederive this exact projection from FOOD-005O and require exactly one matching adjustment in one exact FOOD-005J assessment while separately validating exact order binding.",
+    "duplicates": "Missing or duplicate exact projected adjustments must fail closed.",
+    "readiness": "Checkout/payment readiness remains downstream of explicit assessment inclusion proof and other independent readiness gates."
+  }
+}
