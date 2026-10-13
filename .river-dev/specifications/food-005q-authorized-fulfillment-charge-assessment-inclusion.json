@@ -1,0 +1,75 @@
+{
+  "id": "FOOD-005Q",
+  "title": "Authorized fulfillment charge assessment inclusion",
+  "startingHead": "1ca424e8c4938034dd8bbcbb01c5978f46e417c8",
+  "purpose": "Prove that one exact FOOD-005J payable-assessment version, already validated against one exact FOOD-005E physical-order version, contains exactly one canonical FOOD-005P adjustment rederived from one trusted exact FOOD-005O authorized fulfillment charge candidate.",
+  "files": [
+    ".river-dev/specifications/food-005q-authorized-fulfillment-charge-assessment-inclusion.json",
+    "src/lib/food/authorized-fulfillment-charge-assessment-inclusion.ts",
+    "src/lib/food/authorized-fulfillment-charge-assessment-inclusion.test.ts"
+  ],
+  "whyNow": [
+    "FOOD-005O establishes exact manual-fulfillment charge authority.",
+    "FOOD-005P deterministically projects that authority into FOOD-005J direction/reference/money/sourceReference shape.",
+    "FOOD-005J validates an exact payable-assessment version against an exact FOOD-005E physical-order version.",
+    "The next narrow prerequisite is therefore proof that the exact canonical FOOD-005P adjustment is actually present in one exact FOOD-005J assessment."
+  ],
+  "contract": {
+    "authorizedSource": "Consume one trusted exact FOOD-005O candidate and rederive FOOD-005P internally. Never trust a caller-supplied adjustment as the authority.",
+    "orderValidation": "Validate the supplied exact FOOD-005E physical-order version and require its ID/version to equal the FOOD-005O candidate order identity.",
+    "assessmentValidation": "Use canonical FOOD-005J validation against the exact FOOD-005E order before inspecting adjustments.",
+    "exactMatch": [
+      "direction",
+      "reference",
+      "sourceReference",
+      "money.currency",
+      "money.minorUnits"
+    ],
+    "cardinality": "Exactly one exact canonical projected adjustment must be present. Missing or multiple matches fail closed.",
+    "zeroFee": "A required manual-approval path with zero approved fee still requires the exact explicit zero-valued FOOD-005P adjustment.",
+    "result": "Return immutable inclusion evidence identifying the exact order, exact payable assessment and exact matching canonical adjustment.",
+    "selection": "The caller explicitly supplies the exact assessment version. FOOD-005Q does not choose latest/current/usable assessment."
+  },
+  "invariants": [
+    "assessment inclusion evidence != payable assessment creation",
+    "assessment inclusion evidence != payable assessment revision",
+    "assessment inclusion evidence != assessment selection/currentness",
+    "assessment inclusion evidence != checkout readiness",
+    "assessment inclusion evidence != payment readiness",
+    "assessment inclusion evidence != payment initiation",
+    "assessment inclusion evidence != payment confirmation",
+    "assessment inclusion evidence != payment reconciliation",
+    "assessment inclusion evidence != paid-in-full",
+    "assessment inclusion evidence != reservation acceptance",
+    "assessment inclusion evidence != inventory reservation",
+    "assessment inclusion evidence != preparation authority",
+    "assessment inclusion evidence != dispatch readiness",
+    "assessment inclusion evidence != fulfillment",
+    "assessment inclusion evidence != completed sale",
+    "assessment inclusion evidence != accounting/revenue",
+    "assessment inclusion evidence != rewards/verified purchase",
+    "same money without exact canonical provenance is not inclusion",
+    "same provenance with wrong money is not inclusion",
+    "credit direction is never equivalent to the required charge",
+    "historical inclusion evidence cannot revive a cancelled order or grant operational authority"
+  ],
+  "deferred": [
+    "assessment-selection/currentness policy",
+    "required-vs-not-required branch composition",
+    "checkout/payment readiness",
+    "hosted checkout/payment link creation",
+    "payment initiation/providers",
+    "payment confirmation/reconciliation",
+    "atomic inventory/slot persistence and race protection",
+    "fulfillment readiness",
+    "scheduled/preparing/ready/dispatched/handed-over lifecycle",
+    "completed sale/accounting/revenue",
+    "deployment/production activation"
+  ],
+  "future": {
+    "policyComposition": "A later readiness composition may require FOOD-005Q inclusion evidence only when exact FOOD-005N policy says manual approval is required; a not-required path should not invent FOOD-005O/Q evidence.",
+    "assessmentSelection": "A separate trusted seam must choose which exact FOOD-005J assessment version is usable/current.",
+    "readiness": "FOOD-005Q may become one prerequisite of future checkout/payment readiness but never establishes readiness by itself.",
+    "reservation": "Authoritative atomic inventory/slot reservation remains an independent prerequisite."
+  }
+}
