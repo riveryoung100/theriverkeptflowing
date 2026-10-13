@@ -1,0 +1,102 @@
+{
+  "id": "FOOD-005E",
+  "title": "FOOD-005E - Pre-payment physical order truth and bounded lifecycle",
+  "startingHead": "05bd129dd88af74f63dae73e451c34b123fc5e3b",
+  "purpose": "Create immutable pre-payment physical order truth from exact FOOD-005C merchandise quote and FOOD-005D fulfillment/reservation-request snapshots without claiming payment, inventory reservation, dispatch readiness or completed sale.",
+  "dependencies": [
+    "src/lib/food/cart-quote-domain.ts",
+    "src/lib/food/fulfillment-capacity-reservation-domain.ts",
+    "src/lib/food/approved-commercial-price-domain.ts",
+    "src/lib/food/package-sku-domain.ts",
+    "src/lib/food/cost-pricing-domain.ts",
+    "src/lib/food/draft-domain.ts"
+  ],
+  "decisions": {
+    "creationEvent": "A caller explicitly submits one exact validated merchandise quote, one exact quote-bound fulfillment intent and one exact quote-bound reservation request to create order version 1.",
+    "prePaymentMeaning": "The resulting order is a physical order request and historical commercial snapshot. It is not proof of payment, sale completion, capacity reservation, dispatch readiness or fulfillment completion.",
+    "reservationBoundary": "FOOD-005D reservation requests are retained exactly but remain non-authoritative. FOOD-005E does not invent reservation acceptance while no atomic reservation persistence/service exists.",
+    "merchandiseSnapshot": "Order lines copy exact SKU ID/version, approved commercial price authority ID/version, purchase quantity, immutable unit FoodMoney and immutable line merchandise subtotal from FOOD-005C. The order also copies aggregate merchandise subtotal.",
+    "fulfillmentSnapshot": "Order truth copies exact fulfillment-intent ID/version, method, opaque location reference and opaque window reference, plus exact reservation-request ID/version and ordered SKU-unit capacity requirements.",
+    "lifecycle": "FOOD-005E owns only requested and cancelled. Initial order version is requested. A requested order may receive one explicit consecutive cancelled revision. Cancellation is terminal in this slice.",
+    "paymentBoundary": "Paid, payment-authorized, payment-captured, refunded, chargeback and processor state belong to FOOD-005F or later. FOOD-005F must attach payment to an exact order identity/version without repricing or mutating retained merchandise truth.",
+    "operationalBoundary": "Scheduled, preparing, ready, dispatched and handed-over states are deferred until trusted payment and fulfillment authorities exist.",
+    "moneyBoundary": "FOOD-005E carries merchandise subtotal only. Tax, discounts, tips, delivery fee, processor fees, grand total and amount due are not introduced.",
+    "timeBoundary": "No system clock or supplied order timestamps are introduced yet. Persistence/audit timestamp policy remains separately authorized.",
+    "customerBoundary": "Guest/customer/account/contact identity is deferred to FOOD-005G.",
+    "concurrency": "Repository idempotency, atomic creation, reservation acceptance, stock/slot races and conflict handling are deferred to a later persistence/service slice."
+  },
+  "contract": {
+    "FoodPhysicalOrderId": "Dedicated food-physical-order identity.",
+    "FoodPhysicalOrderState": [
+      "requested",
+      "cancelled"
+    ],
+    "FoodPhysicalOrderVersion": [
+      "id",
+      "version",
+      "state",
+      "exact quote reference",
+      "copied fulfillment-intent snapshot",
+      "copied reservation-request snapshot",
+      "ordered immutable merchandise lines",
+      "immutable merchandise subtotal"
+    ]
+  },
+  "invariants": [
+    "order request != payment",
+    "order request != paid sale",
+    "order request != accepted inventory reservation",
+    "order request != dispatch authority",
+    "order request != fulfilled handoff",
+    "reservation request != reservation acceptance",
+    "later price revision does not reprice order history",
+    "later quote does not mutate order history",
+    "later fulfillment-intent revision does not retarget order history",
+    "later reservation-request revision does not retarget order history",
+    "cancelled != refunded"
+  ],
+  "deferred": [
+    "payment authorization",
+    "payment capture",
+    "processor integration",
+    "refunds",
+    "chargebacks",
+    "tax",
+    "discounts",
+    "tips",
+    "delivery fee",
+    "grand total",
+    "amount due",
+    "reservation acceptance",
+    "inventory ledger",
+    "slot ledger",
+    "production batches",
+    "scheduled",
+    "preparing",
+    "ready",
+    "dispatched",
+    "handed-over",
+    "customer/guest identity",
+    "labels",
+    "barcode/QR/reorder",
+    "POS-lite",
+    "demand analytics",
+    "persistence",
+    "idempotency",
+    "timestamps",
+    "production data",
+    "deployment"
+  ],
+  "future": {
+    "FOOD-005F": "Attach separately validated payment truth to exact order identity/version without changing historical merchandise, pricing or fulfillment snapshots.",
+    "FOOD-005G": "Guest/customer profiles and consent/contact identity.",
+    "FOOD-005H": "Labels, barcode, QR and reorder foundations.",
+    "FOOD-005I": "POS-lite, feedback and demand foundations."
+  },
+  "files": [
+    ".river-dev/specifications/food-005e-physical-order-lifecycle-domain.json",
+    "src/lib/food/physical-order-domain.ts",
+    "src/lib/food/physical-order-domain.test.ts"
+  ],
+  "operations": "Exactly three local files only. No staging, commit, push, persistence, production access or deployment."
+}
