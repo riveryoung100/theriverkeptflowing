@@ -1,0 +1,92 @@
+{
+  "id": "FOOD-005F",
+  "title": "FOOD-005F - Provider-neutral electronic payment confirmation boundary",
+  "startingHead": "ce53685f8cefc5488337e7a681f507f396346703",
+  "purpose": "Represent immutable provider-neutral server-confirmed electronic payment evidence against an exact FOOD-005E physical-order version without manufacturing paid-in-full order truth, dispatch authority, settlement truth or provider integration.",
+  "dependencies": [
+    "src/lib/food/physical-order-domain.ts",
+    "src/lib/food/cost-pricing-domain.ts",
+    "src/lib/food/draft-domain.ts"
+  ],
+  "decisions": {
+    "paymentFact": "FOOD-005F records a caller-supplied assertion that a trusted server-side/provider verification confirmed an electronic payment reference and amount. The pure domain validates structure and exact order binding; it cannot authenticate a processor, webhook or source.",
+    "providerNeutrality": "No processor is selected by this slice. Processor identity is opaque bounded text. Stripe remains neither assumed nor activated.",
+    "orderBinding": "Every confirmation binds one exact FOOD-005E physical-order ID/version and copies that order version's immutable merchandise subtotal as historical context.",
+    "amount": "confirmedAmount is the amount reported by the confirmed electronic payment evidence. It is canonical FoodMoney but is not required to equal the order merchandise subtotal.",
+    "payableTotalBoundary": "Merchandise subtotal is not final payable total. Tax, discounts, delivery fees, tips and other charges remain unresolved, so FOOD-005F cannot assert paid-in-full from amount equality or manufacture grandTotal/amountDue.",
+    "successPageBoundary": "Browser navigation, checkout success pages and client-supplied success flags are non-authoritative and are not fields in this domain.",
+    "authorizationBoundary": "Payment authorization and payment confirmation/capture are not conflated. Authorization records are deferred.",
+    "orderMutationBoundary": "Payment confirmation never reprices, revises or mutates FOOD-005E order merchandise/fulfillment truth.",
+    "cancelledOrderBoundary": "A late or out-of-order confirmation may be recorded against an exact cancelled order version because the confirmation is evidence, not permission to dispatch or revive the order.",
+    "dispatchBoundary": "A later trusted paid-order decision may unlock dispatch only after authoritative payable-total construction, exact payment reconciliation and any other required readiness/reservation gates.",
+    "cashBoundary": "Cash is separate from electronic processor confirmation and is deferred to later sales/accounting records.",
+    "refundBoundary": "Refund, partial refund, chargeback, dispute, reversal, settlement and payout facts are separate later records.",
+    "idempotencyBoundary": "Durable uniqueness of processor references, duplicate/out-of-order provider-event handling, webhook signature verification and atomic persistence belong to later trusted service/persistence slices."
+  },
+  "contract": {
+    "FoodElectronicPaymentConfirmationId": "Dedicated food-electronic-payment-confirmation identity.",
+    "FoodElectronicPaymentConfirmationVersion": [
+      "id",
+      "version",
+      "exact order snapshot { id, version, merchandiseSubtotal }",
+      "evidence { channel, processor, processorPaymentReference, confirmationSourceReference, confirmedAmount }"
+    ],
+    "channel": "electronic-processor only",
+    "initialVersion": 1
+  },
+  "invariants": [
+    "electronic payment confirmation != paid-in-full order",
+    "electronic payment confirmation != dispatch authority",
+    "electronic payment confirmation != processor settlement",
+    "electronic payment confirmation != refund",
+    "electronic payment confirmation != authorization",
+    "electronic payment confirmation != cash sale",
+    "success-page navigation != payment confirmation",
+    "confirmedAmount != implied grand total",
+    "confirmedAmount may differ from merchandiseSubtotal",
+    "later order revisions do not retarget historical confirmation",
+    "later pricing changes do not mutate confirmation history"
+  ],
+  "deferred": [
+    "processor selection",
+    "processor SDK/API integration",
+    "hosted checkout",
+    "webhook transport",
+    "webhook signature verification",
+    "provider-event persistence",
+    "duplicate/replay protection",
+    "out-of-order event reconciliation",
+    "authorization records",
+    "final payable-total construction",
+    "tax",
+    "discounts/coupons",
+    "delivery fees",
+    "tips",
+    "grand total",
+    "amount due",
+    "paid-in-full order authority",
+    "reservation acceptance",
+    "dispatch authorization",
+    "refunds",
+    "partial refunds",
+    "chargebacks/disputes",
+    "settlements/payouts",
+    "cash sales",
+    "customer/guest identity",
+    "accounting reconciliation",
+    "production data",
+    "deployment"
+  ],
+  "future": {
+    "paidOrderDecision": "A later trusted service can combine exact order truth, authoritative payable total and trusted payment confirmation to decide paid-in-full status without mutating historical order merchandise truth.",
+    "FOOD-005G": "Guest/customer profiles and consent/contact identity.",
+    "FOOD-005H": "Labels, barcode, QR and reorder foundations.",
+    "FOOD-005I": "POS-lite, feedback and demand foundations."
+  },
+  "files": [
+    ".river-dev/specifications/food-005f-electronic-payment-confirmation-domain.json",
+    "src/lib/food/electronic-payment-confirmation-domain.ts",
+    "src/lib/food/electronic-payment-confirmation-domain.test.ts"
+  ],
+  "operations": "Exactly three local files only. No staging, commit, push, processor connection, secrets, persistence, production access or deployment."
+}
