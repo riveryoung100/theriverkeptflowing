@@ -1,0 +1,121 @@
+{
+  "id": "FOOD-005J",
+  "title": "Exact-order payable assessment domain",
+  "startingHead": "bc218e6e886bfd0b9809fe97e0e41458d22ead62",
+  "files": [
+    ".river-dev/specifications/food-005j-payable-assessment-domain.json",
+    "src/lib/food/payable-assessment-domain.ts",
+    "src/lib/food/payable-assessment-domain.test.ts"
+  ],
+  "decision": {
+    "boundary": "Represent one versioned caller-supplied commercial payable assessment against one exact FOOD-005E physical-order version. The domain derives amountDue from the exact historical merchandise subtotal plus explicit charge adjustments minus explicit credit adjustments.",
+    "whyNow": [
+      "FOOD-005E preserves exact pre-payment order merchandise truth but no final payable amount.",
+      "FOOD-005F electronic payment confirmation is evidence only and explicitly does not establish paid-in-full truth.",
+      "FOOD-005I cash payment evidence is evidence only and explicitly does not establish paid-in-full truth.",
+      "Sales-tax review currently classifies product review state/conclusion but does not calculate a tax rate or tax amount.",
+      "A payable assessment is therefore required before any future payment reconciliation can compare received/confirmed money against an exact amount due."
+    ],
+    "notATaxEngine": "FOOD-005J does not infer taxable status, select a jurisdiction, choose a rate, calculate tax, or prove legal tax compliance. Any tax amount must arrive as an explicit caller-supplied charge adjustment from a future trusted policy/service.",
+    "notAFeeEngine": "FOOD-005J does not decide delivery radius, delivery pricing, meetup pricing, service fees, tips, discounts, rewards or promotions. Such amounts, if used later, must be explicitly supplied by trusted upstream policy as adjustments.",
+    "notReconciliation": "FOOD-005J consumes no electronic or cash payment evidence and does not establish paid, paid-in-full, overpaid or partially-paid truth.",
+    "notFulfillment": "FOOD-005J grants no reservation acceptance, preparation, scheduling, dispatch, delivery or handoff authority.",
+    "notAccounting": "FOOD-005J is commercial payable assessment truth, not revenue recognition, tax payable, bookkeeping, settlement or ledger truth."
+  },
+  "contract": {
+    "identity": {
+      "type": "FoodPayableAssessmentId",
+      "prefix": "food-payable-assessment:",
+      "callerSupplied": true,
+      "generated": false
+    },
+    "versioning": {
+      "initial": 1,
+      "revision": "Consecutive explicit revisions only.",
+      "stable": [
+        "assessment identity",
+        "exact physical-order ID",
+        "exact physical-order version"
+      ],
+      "newOrderVersion": "A different physical-order version requires a different payable-assessment identity."
+    },
+    "order": {
+      "binding": "Exact FOOD-005E physical-order ID/version.",
+      "snapshot": "Exact merchandiseSubtotal copied as historical context.",
+      "repricing": false
+    },
+    "adjustments": {
+      "maximum": 32,
+      "shape": {
+        "direction": ["charge", "credit"],
+        "reference": "Opaque caller-supplied bounded semantic reference unique within the assessment version.",
+        "money": "Canonical FoodMoney in the exact order currency.",
+        "sourceReference": "Opaque caller-supplied provenance reference."
+      },
+      "semantics": "No tax/fee/discount/reward semantics are inferred from adjustment references."
+    },
+    "amountDue": {
+      "derivation": "merchandiseSubtotal + sum(charge money) - sum(credit money)",
+      "currency": "Must remain the order merchandise currency.",
+      "minimum": 0,
+      "safeInteger": true,
+      "callerSupplied": false
+    },
+    "assessment": {
+      "fields": [
+        "attribution",
+        "sourceReference",
+        "assessedOn"
+      ],
+      "meaning": "Caller assertion/provenance only. Pure domain does not authenticate assessor or source."
+    }
+  },
+  "invariants": [
+    "payable assessment != tax calculation",
+    "payable assessment != legal tax determination",
+    "payable assessment != delivery-fee policy",
+    "payable assessment != discount entitlement",
+    "payable assessment != checkout readiness",
+    "payable assessment != payment readiness",
+    "payable assessment != payment confirmation",
+    "payable assessment != cash receipt",
+    "payable assessment != payment reconciliation",
+    "payable assessment != paid-in-full order",
+    "payable assessment != completed sale",
+    "payable assessment != fulfillment authority",
+    "payable assessment != inventory movement",
+    "payable assessment != accounting/revenue",
+    "payable assessment != rewards/referral entitlement",
+    "amountDue is derived, not trusted from caller input",
+    "credits may reduce amountDue to zero but never below zero",
+    "all adjustment money uses the exact merchandise currency",
+    "unsafe integer arithmetic fails closed",
+    "historical assessment versions are immutable"
+  ],
+  "deferred": [
+    "tax jurisdiction/rate engine",
+    "delivery-radius and delivery-fee policy",
+    "service-fee policy",
+    "tip policy",
+    "discount/coupon/promotion authority",
+    "rewards/referral redemption",
+    "checkout readiness",
+    "payment readiness",
+    "electronic/cash reconciliation",
+    "partial/split/mixed tender",
+    "overpayment handling",
+    "refund/reversal/chargeback handling",
+    "reservation acceptance",
+    "fulfillment lifecycle/completion",
+    "sale completion",
+    "inventory movement",
+    "accounting/revenue/ledger",
+    "persistence/global uniqueness",
+    "runtime/routes/providers/deployment"
+  ],
+  "future": {
+    "reconciliation": "A later service/domain may bind one exact payable-assessment version plus trusted FOOD-005F and/or FOOD-005I evidence to derive payment status without mutating any source history.",
+    "checkout": "A future trusted checkout service chooses which exact payable-assessment version is currently usable; existence alone grants no readiness.",
+    "policy": "Tax, fulfillment-fee, discount and other policy engines may later produce explicit adjustments without changing FOOD-005J arithmetic semantics."
+  }
+}
