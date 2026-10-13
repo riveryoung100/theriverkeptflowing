@@ -1,0 +1,28 @@
+{
+  "id": "FOOD-005A",
+  "title": "FOOD-005A — Package / SKU identity domain",
+  "identifierOrigin": "OWNER-DIRECTED POST-FOOD-004K COMMERCIAL INFRASTRUCTURE CONTINUATION",
+  "startingHead": "823d133a4978e2ecfa60ce1e5d3d4cbd27658485",
+  "candidateType": "DOMAIN",
+  "scope": "Pure local immutable package/SKU snapshots; independent of the pending FOOD-004K real gnocchi cooking run. Synthetic tests only.",
+  "discovery": "No canonical FOOD Package/SKU type found. Existing serving offers have optional descriptive packaging text; FOOD-003D portions and candidate prices remain internal planning, not package/SKU identities. Generic commerce/order/provider references are separate domains.",
+  "sources": ["src/lib/food/draft-domain.ts", "src/lib/food/dish-offer-domain.ts", "src/lib/food/menu-publication-domain.ts", "src/lib/food/menu-persistence.ts", "src/lib/food/cost-pricing-domain.ts", "src/lib/food/public-menu-read-service.ts", "docs/architecture/food-restaurant-product-vision.md"],
+  "contract": {
+    "package": "FoodPackageDefinitionVersion { id: FoodPackageDefinitionId; version; descriptor?; netQuantity?: { basis: grams; grams } }. Physical configuration identity distinct from its contents, serving offer and SKU. Facts may remain absent without becoming inferred values.",
+    "sku": "FoodSkuVersion { id: FoodSkuId; version; servingOffer: { offerId; version }; package: { id; version } }. Exact packaged commercial configuration; preserves serving offer -> presentation -> product/recipe hierarchy without duplicating downstream fields.",
+    "identity": "food-package-definition and food-sku prefixes with nonempty, unpadded local strings of at most 128 UTF-16 characters and no colon. Explicit create/parse functions; no coercion or generation.",
+    "quantity": "Optional net quantity supports positive finite grams at most MAX_SAFE_INTEGER via existing FOOD gram validator; fractions retained. Count-based packaging deferred: no bounded current requirement establishes its meaning. Count/ounces/pounds/cups/pieces rejected, never converted to mass.",
+    "descriptor": "Optional explicit bounded unpadded nonempty text, at most 500 characters; no package-kind taxonomy invented.",
+    "references": "Canonical serving-offer ID parser and version validator; exact package ID/version parser. Shape validation only: no dependency resolution, existence/completeness claim, snapshot comparison, latest/current/fallback lookup or storage access.",
+    "versioning": "Positive safe integers. Explicit revision helpers require same identity and consecutive versions, rejecting overflow. Full replacement snapshots; SKU relationships may change only in a deliberately supplied new version, never by retargeting existing values. No durable uniqueness enforcement.",
+    "immutability": "Strict own-key allowlists including symbols; new detached nested records frozen along with outer snapshots. Unknown fields rejected.",
+    "merchantCode": "Deferred: canonical identity suffices for exact downstream references; no established merchant-code uniqueness/normalization policy. UPC/GTIN/barcode remain separate future work.",
+    "formats": "SKU imposes no serving-format restriction or duplicate format fields. Existing individual/family/catering/custom offers can later be referenced; kits/standalone/prepared meals require separately authorized actual offers/packages. Shared lower-level food does not imply shared SKU."
+  },
+  "boundaries": "PRODUCT != RECIPE != RECIPE VERSION != COMPONENT != DISH PRESENTATION != SERVING OFFER != PACKAGE != SKU != PRICE != AVAILABILITY != ORDERABILITY != INVENTORY != CART LINE != ORDER LINE. Valid identity confers no publication, safety/legal/sale readiness. No approved or candidate prices, stock/reservation, tax/payment/provider fields, public projection or persistence.",
+  "files": ["src/lib/food/package-sku-domain.ts", "src/lib/food/package-sku-domain.test.ts"],
+  "existingFileChanges": "NONE; validators reused without additive exports.",
+  "compatibility": "FOOD-001, FOOD-002B/C/D, FOOD-003D and FOOD-004A/B/C unchanged. projectFoodPublicMenu remains unchanged and does not expose package/SKU. FOOD-004K introduces no real food facts.",
+  "validation": ["Focused synthetic tests", "Full FOOD suite including FOOD-002B/C, FOOD-003D and FOOD-004A/B/C", "Changed-file ESLint", "Bounded strict TypeScript", "JSON/reference/whitespace/full change review"],
+  "operations": "Implementation authorized no actual food/package/SKU records, persistence, infrastructure, production D1/KV/Cloudflare access, deployment, staging, commit or push. Subsequent owner closure authorization permits local review/corrections and exact staging of the three FOOD-005A files only. Commit/push remain unauthorized. FOOD-005B approved commercial-price bridge remains future work."
+}
