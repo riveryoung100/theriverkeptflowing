@@ -1,0 +1,66 @@
+{
+  "id": "FOOD-005O",
+  "title": "Authorized manual-fulfillment charge candidate",
+  "startingHead": "5dbfeedf7840c45ab523991800d51bc498e32f28",
+  "purpose": "Derive one immutable authorized fulfillment-charge candidate from one exact FOOD-005N policy decision requiring manual approval and one exact FOOD-005M positive manual fulfillment approval, bound to one exact requested FOOD-005E physical-order version and one exact FOOD-005D fulfillment-intent snapshot.",
+  "files": [
+    ".river-dev/specifications/food-005o-authorized-fulfillment-charge-candidate.json",
+    "src/lib/food/authorized-fulfillment-charge-candidate.ts",
+    "src/lib/food/authorized-fulfillment-charge-candidate.test.ts"
+  ],
+  "whyNow": [
+    "FOOD-005N now explicitly decides whether manual fulfillment approval is required.",
+    "FOOD-005M records exact positive approval and approvedAdditionalFee when manual approval occurs.",
+    "FOOD-005M explicitly defers proof that its approved fee is represented in an exact payable assessment.",
+    "Checkout/payment readiness remains premature until required manual-approved fee authority can be carried toward FOOD-005J without inventing fee values."
+  ],
+  "contract": {
+    "derivation": "This is a pure derived candidate, not a separately caller-minted identity/version family.",
+    "orderBinding": "Exact FOOD-005E physical-order ID/version. Derivation requires the exact order state to remain requested; cancelled historical evidence cannot create a new charge candidate.",
+    "fulfillmentBinding": "Exact FOOD-005D fulfillment-intent ID/version plus method, locationReference and windowReference.",
+    "policyBinding": "Exact FOOD-005N decision ID/version bound to the same order/fulfillment sources. manualApprovalRequirement must equal required.",
+    "approvalBinding": "Exact FOOD-005M approval ID/version bound to the same order/fulfillment sources.",
+    "money": "Candidate money is copied exactly from FOOD-005M approvedAdditionalFee. Zero remains valid because FOOD-005M permits zero.",
+    "provenance": "Preserve FOOD-005N policy attribution/policyReference/decidedOn and FOOD-005M approval attribution/sourceReference/approvedOn.",
+    "immutability": "Return detached frozen candidate and frozen nested snapshots.",
+    "purity": "No database, filesystem, network, clock, provider, payment initiation or persistence."
+  },
+  "invariants": [
+    "policy required != manual approval granted",
+    "manual approval evidence + required policy != payable assessment inclusion",
+    "authorized charge candidate != FOOD-005J assessment",
+    "authorized charge candidate != amountDue",
+    "authorized charge candidate != checkout readiness",
+    "authorized charge candidate != payment readiness",
+    "authorized charge candidate != payment initiation",
+    "authorized charge candidate != payment confirmation",
+    "authorized charge candidate != paid-in-full",
+    "authorized charge candidate != inventory reservation",
+    "authorized charge candidate != preparation authority",
+    "authorized charge candidate != dispatch readiness",
+    "authorized charge candidate != fulfillment",
+    "authorized charge candidate != completed sale",
+    "authorized charge candidate != accounting/revenue",
+    "authorized charge candidate != rewards/verified purchase",
+    "cancelled order historical approval != charge authorization"
+  ],
+  "deferred": [
+    "FOOD-005J assessment mutation",
+    "proof that an exact FOOD-005J assessment includes this authorized candidate",
+    "assessment-selection/currentness policy",
+    "checkout/payment readiness",
+    "hosted checkout/payment link creation",
+    "payment initiation/providers",
+    "payment confirmation/reconciliation",
+    "atomic inventory/slot persistence and race protection",
+    "fulfillment readiness",
+    "scheduled/preparing/ready/dispatched/handed-over lifecycle",
+    "completed sale/accounting/revenue",
+    "deployment/production activation"
+  ],
+  "future": {
+    "assessmentConstruction": "A later trusted service may translate the exact authorized candidate into one explicit FOOD-005J charge adjustment while preserving source provenance.",
+    "assessmentValidation": "A later seam may prove that one exact FOOD-005J assessment actually contains the required authorized charge candidate.",
+    "readiness": "A later readiness projection may require that proof whenever FOOD-005N says manual approval is required."
+  }
+}
