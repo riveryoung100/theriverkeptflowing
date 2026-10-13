@@ -1,0 +1,84 @@
+{
+  "id": "FOOD-005L",
+  "title": "Exact reservation and capacity acceptance evidence domain",
+  "startingHead": "58779504404fde6060a4c20e6e968e56de54808b",
+  "files": [
+    ".river-dev/specifications/food-005l-reservation-acceptance-domain.json",
+    "src/lib/food/reservation-acceptance-domain.ts",
+    "src/lib/food/reservation-acceptance-domain.test.ts"
+  ],
+  "decision": {
+    "boundary": "Represent one immutable caller-supplied positive acceptance assertion for one exact FOOD-005D reservation-request version as associated with one exact FOOD-005E physical-order version.",
+    "whyNow": [
+      "FOOD-005D creates reservation-request and capacity-demand truth only.",
+      "FOOD-005D explicitly requires a separately trusted reservation/capacity acceptance seam before held-capacity truth may be consumed downstream.",
+      "FOOD-005E retains exact reservation-request snapshots but explicitly does not invent acceptance.",
+      "No canonical positive reservation/capacity acceptance record currently exists."
+    ],
+    "trustedSourceBoundary": "The pure domain validates exact structure, snapshots and source binding only. It does not authenticate the accepting operator/service and does not itself perform the atomic stock/slot reservation. A later trusted service must create acceptance only after its authoritative reservation operation succeeds.",
+    "historicalBoundary": "Acceptance may be recorded against an exact requested or cancelled physical-order version as historical evidence. It does not revive a cancelled order.",
+    "notInventoryLedger": "The accepted capacity requirements are copied evidence of what was accepted. FOOD-005L does not decrement stock, create quantity-on-hand, mutate slot inventory, release capacity or implement race control.",
+    "notReadiness": "Acceptance alone does not create checkout readiness, payment readiness, preparation authority, dispatch readiness or fulfillment authority."
+  },
+  "contract": {
+    "identity": {
+      "prefix": "food-reservation-acceptance:",
+      "callerSupplied": true,
+      "initialVersion": 1,
+      "revisionFamily": false
+    },
+    "orderBinding": "Exact FOOD-005E physical-order ID/version.",
+    "requestBinding": "Exact FOOD-005D reservation-request ID/version copied by that physical-order version.",
+    "fulfillmentBinding": "Exact FOOD-005D fulfillment-intent ID/version plus method, locationReference and windowReference.",
+    "capacityBinding": "Exact immutable SKU ID/version/quantity requirements from the reservation request.",
+    "acceptanceMetadata": {
+      "attribution": "Caller supplied bounded text.",
+      "sourceReference": "Caller supplied opaque bounded provenance reference.",
+      "acceptedOn": "Caller supplied FOOD review date."
+    },
+    "immutability": "Returned record and all nested snapshots are detached and frozen.",
+    "sourceAuthentication": false,
+    "persistence": false
+  },
+  "invariants": [
+    "reservation request != reservation acceptance",
+    "reservation acceptance != inventory ledger mutation",
+    "reservation acceptance != quantity on hand",
+    "reservation acceptance != stock decrement",
+    "reservation acceptance != slot decrement",
+    "reservation acceptance != checkout readiness",
+    "reservation acceptance != payment readiness",
+    "reservation acceptance != payment status",
+    "reservation acceptance != preparation authority",
+    "reservation acceptance != dispatch readiness",
+    "reservation acceptance != fulfillment",
+    "reservation acceptance != completed sale",
+    "reservation acceptance != accounting/revenue",
+    "reservation acceptance != rewards/verified purchase",
+    "cancelled order + historical acceptance evidence != revived order"
+  ],
+  "deferred": [
+    "atomic inventory/slot reservation persistence",
+    "concurrency and oversell prevention",
+    "global acceptance uniqueness/idempotency",
+    "reservation rejection",
+    "reservation expiration",
+    "reservation release",
+    "reservation replacement",
+    "inventory quantity-on-hand",
+    "inventory movement ledger",
+    "checkout/payment readiness",
+    "payment initiation",
+    "fulfillment readiness",
+    "scheduled/preparing/ready/dispatched/handed-over lifecycle",
+    "completed sale",
+    "refunds/reversals",
+    "accounting/revenue",
+    "runtime/routes/providers/deployment"
+  ],
+  "future": {
+    "trustedService": "A later authoritative capacity service performs atomic inventory/slot reservation and creates FOOD-005L acceptance evidence only after success.",
+    "readiness": "A later readiness projection may combine exact non-cancelled order truth, trusted reservation acceptance, payable truth and other independent gates without mutating any source history.",
+    "cancellation": "Later operational services may release held capacity after cancellation; FOOD-005L remains immutable historical evidence."
+  }
+}
