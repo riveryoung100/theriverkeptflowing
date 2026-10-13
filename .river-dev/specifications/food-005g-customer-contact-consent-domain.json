@@ -1,0 +1,25 @@
+{
+  "id": "FOOD-005G",
+  "title": "FOOD-005G — Customer/contact/consent domain",
+  "startingHead": "6fa147ed32784fad812ee5e3026b124147ba3b9d",
+  "dependencies": ["src/lib/identity/identifiers.ts", "src/lib/food/draft-domain.ts", "src/lib/food/physical-order-domain.ts"],
+  "purpose": "Pure private customer relationship, purpose-specific communication assertion and exact historical order-contact association; independent concepts, no runtime authority.",
+  "contract": {
+    "customer": "FoodCustomerVersion { id, version, account?: { principalId }, contact? }. food-customer identity. Reuse pure PrincipalId parser/type. Account shape association does not prove persistence, authentication, ownership or permissions. Optional account must stay identical across revisions, including absence; linking/relinking deferred.",
+    "contact": "FoodContactSnapshot { displayName?, email?, phone? }; at least one supplied field. Nonempty unpadded text, max UTF-16 lengths 200/320/64 respectively. Preserve exact representation; no lowercase, punctuation removal, deliverability/ownership claim or semantic email/phone validation.",
+    "consent": "FoodContactConsentVersion { id, version, purpose, target, status, evidence }. food-contact-consent identity. Purpose order-service or marketing; target exactly email channel/email or sms channel/phone. Status granted, denied or revoked; absence is not an unknown assertion. Evidence sourceReference (512 characters) and supplied occurredOn via validateFoodReviewDate.",
+    "consentRevision": "Same identity, purpose and exact target/channel/contact; consecutive version; explicit replacement status and evidence. No copying, current selection or legal-sufficiency claim. Repeated evidence values permitted; domain cannot authenticate freshness.",
+    "marketing": "Absence of a marketing grant means marketing is not granted. Customer/account/contact/order existence and order-service grant never imply marketing. A historical grant is not a current send permission; operative version/suppression policy deferred.",
+    "association": "FoodOrderContactAssociationVersion { id, version, order { id, version }, customer?: { id, version }, contact }. food-order-contact-association identity. Guest capture requires no customer/account. Contact independently copied, need not equal customer contact.",
+    "sources": "AgainstSources validates canonical exact physical-order snapshot and optional exact customer snapshot. Customer reference requires matching supplied customer; guest rejects unused customer source. Local validation does not establish remote existence/access. Initial association validates sources; structural revisions may replace customer/contact explicitly and must subsequently use AgainstSources for source reconciliation.",
+    "associationRevision": "Stable identity and exact order ID/version, consecutive version; explicit customer/contact replacement or omission. Earlier versions detached/frozen; later order/customer changes do not retarget them. Never mutate FOOD-005E.",
+    "identityVersion": "Explicit branded identities with prescribed distinct prefixes, local nonempty unpadded text <=128 UTF-16 characters and no colon. No generated IDs. Positive safe integers; initial helpers require 1; consecutive helpers reject overflow. Historical structural validators do not claim durable uniqueness.",
+    "immutability": "Strict own-key allowlists including symbols; detached frozen outer/nested snapshots. No retained caller-owned objects or cross-call state.",
+    "privacy": "Contact data private; never change public menu/static content/analytics/impact projections. Contact != fulfillment location != account login != customer identity != payment identity. Matching contact strings imply neither same person nor deduplication, account linkage, consent or rewards.",
+    "purity": "No clock, randomness, environment, IO, provider/session/authentication runtime, persistence or message delivery. Only supplied date validation."
+  },
+  "deferred": ["Persistence/global uniqueness/races", "Normalization/deduplication/customer or account merging", "Contact verification/OTP", "Current consent/legal/suppression/send policy", "Authentication/authorization/order access", "Addresses/fulfillment locations", "Household/child/nutrition/allergen/preference profiles", "Rewards/referrals/reorder/CRM", "Deletion/anonymization/retention/redaction policy", "Payment/paid-order/dispatch", "Production and deployment"],
+  "files": [".river-dev/specifications/food-005g-customer-contact-consent-domain.json", "src/lib/food/customer-contact-consent-domain.ts", "src/lib/food/customer-contact-consent-domain.test.ts"],
+  "validation": ["Focused tests", "FOOD-005C/D/E/F and canonical identity regression", "Complete FOOD suite", "Bounded strict TypeScript", "Changed-file ESLint zero warnings", "JSON/path/whitespace/scope review"],
+  "operations": "Exactly three new authorized files; synthetic fixtures only. No staging, commit/push, production access, provider communication or deployment."
+}
