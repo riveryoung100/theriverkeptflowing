@@ -1,0 +1,90 @@
+{
+  "id": "FOOD-005V",
+  "title": "Trusted fulfillment-slot capacity source domain and persistence",
+  "startingHead": "c9edf7fb16878642bb1291968a972060f4f42eb6",
+  "selectedSlice": "A — trusted fulfillment-slot capacity source domain + persistence",
+  "files": [
+    ".river-dev/specifications/food-005v-fulfillment-slot-capacity-source-domain-persistence.json",
+    "src/lib/food/fulfillment-slot-capacity-source-domain.ts",
+    "src/lib/food/fulfillment-slot-capacity-source-domain.test.ts",
+    "src/lib/food/d1-fulfillment-slot-capacity-source-persistence.ts",
+    "src/lib/food/d1-fulfillment-slot-capacity-source-persistence.test.ts"
+  ],
+  "evidence": [
+    "No canonical FOOD model establishes produced/package quantity-on-hand.",
+    "FOOD-005A keeps SKU identity separate from inventory and stock.",
+    "Frozen inventory quantity-on-hand, production batch, reserved quantity and sold quantity remain deferred.",
+    "Business architecture independently requires service-area/time-slot checks and launch capacity bounded by delivery slots.",
+    "FOOD-005T/U already provide append-only revision-aware fulfillment-slot capacity storage.",
+    "Existing FOOD persistence establishes consecutive revisions, exact retry versus conflict distinction and fail-closed storage semantics."
+  ],
+  "domain": {
+    "kind": "fulfillment-slot-capacity-source",
+    "identity": [
+      "method",
+      "locationReference",
+      "windowReference"
+    ],
+    "methods": [
+      "personal-delivery",
+      "meetup"
+    ],
+    "revision": "positive safe integer",
+    "capacityUnits": "nonnegative safe integer representing explicitly supplied operational order-slot capacity",
+    "metadata": [
+      "attribution",
+      "sourceReference"
+    ],
+    "history": "append-only exact revisions"
+  },
+  "revisionSemantics": {
+    "initialRevision": 1,
+    "nextRevision": "exactly previous revision + 1",
+    "sameIdentitySameRevisionSamePayload": "already-present",
+    "sameIdentitySameRevisionDifferentPayload": "conflict",
+    "staleRevision": "conflict",
+    "skippedRevision": "conflict",
+    "storageFault": "storage-failure",
+    "malformedInput": "invalid"
+  },
+  "resultVocabulary": [
+    "created",
+    "already-present",
+    "conflict",
+    "invalid",
+    "storage-failure"
+  ],
+  "authority": [
+    "The domain validates explicit trusted caller input; it does not derive slot capacity.",
+    "The D1 repository persists only fulfillment-slot capacity source revisions.",
+    "No public route, request adapter or runtime activation is added.",
+    "A later private single-admin operation-gate/service slice must control who may invoke the mutation.",
+    "Persistence existence does not itself authenticate a caller."
+  ],
+  "boundaries": [
+    "slot capacity != SKU capacity",
+    "slot capacity != physical inventory",
+    "slot capacity != quantity-on-hand",
+    "slot capacity != menu availability",
+    "slot capacity != orderability",
+    "slot capacity != reservation success",
+    "slot capacity != FOOD-005L acceptance",
+    "slot capacity != checkout readiness",
+    "slot capacity != payment readiness"
+  ],
+  "deferred": [
+    "SKU capacity source writes",
+    "production-batch and physical inventory authority",
+    "made-to-order SKU capacity semantics",
+    "private single-admin capacity mutation service",
+    "operation-gate/runtime/transport exposure",
+    "atomic cross-resource reservation",
+    "capacity consumption and oversell prevention",
+    "reservation release/cancellation/expiration",
+    "FOOD-005L acceptance creation after committed reservation",
+    "checkout/payment readiness",
+    "payment provider initiation",
+    "configured/local/remote migration 0003 execution",
+    "production deployment"
+  ]
+}
