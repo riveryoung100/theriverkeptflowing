@@ -1,0 +1,51 @@
+{
+  "id": "FOOD-006J",
+  "title": "Complete Through Cutoff Inventory Evidence Enumeration Proof",
+  "startingHead": "af737254c94f1225c819ee219b431515851f949b",
+  "selectedSlice": "A — cutoff exhaustion proof only",
+  "purpose": "Acquire exactly one durable FOOD-006I high-water cutoff and exhaust every exact-SKU ledger page through that same cutoff, returning one immutable ordered evidence set with terminal pagination proof.",
+  "files": [
+    ".river-dev/specifications/food-006j-cutoff-exhaustion-proof.json",
+    "src/lib/food/inventory-evidence-cutoff-exhaustion-service.ts",
+    "src/lib/food/inventory-evidence-cutoff-exhaustion-service.test.ts"
+  ],
+  "rules": [
+    "The operation acquires the FOOD-006I global cutoff exactly once.",
+    "Every ledger page is requested for the same exact SKU and the same acquired cutoff.",
+    "The first page begins after sequence zero.",
+    "Each later page begins after exactly the prior page nextCursor.",
+    "Absence of nextCursor is the only successful terminal exhaustion signal.",
+    "Every returned evidence sequence must remain strictly increasing across page boundaries.",
+    "Repeated, decreasing, skipped-continuation, malformed or otherwise inconsistent cursor state fails closed.",
+    "Every exact ledger evidence entry returned before terminal exhaustion is retained.",
+    "A cutoff of zero yields a successfully exhausted empty evidence set without page storage access.",
+    "A positive cutoff with zero exact-SKU ledger entries is also a valid exhausted set.",
+    "Post-cutoff inserts do not affect the exhausted set because every page is bound to the original fixed cutoff.",
+    "The result retains exact SKU, acquired cutoff and every ordered ledger entry.",
+    "The result is detached and deeply frozen.",
+    "Storage failures fail the whole operation without partial success.",
+    "Invalid exact SKU input fails before storage access.",
+    "FOOD-006J does not construct a FOOD-006C manifest.",
+    "FOOD-006J does not truncate evidence to FOOD-006C cardinality limits.",
+    "FOOD-006J does not call FOOD-006E manifest resolution.",
+    "FOOD-006J does not call FOOD-006F balance composition.",
+    "FOOD-006J does not establish authoritative current quantity-on-hand.",
+    "FOOD-006J does not establish capacity, availability, checkout, payment, fulfillment, accounting or rewards authority.",
+    "Migration 0005 remains definition-only and unexecuted."
+  ],
+  "cardinalityRationale": [
+    "FOOD-006C permits at most 128 production batches.",
+    "FOOD-006C permits at most 128 movement identities per production batch.",
+    "FOOD-006I cursor pagination can legitimately enumerate exact-SKU evidence beyond those manifest limits.",
+    "Therefore FOOD-006J must preserve the complete ledger set independently rather than force it into a narrower manifest."
+  ],
+  "deferred": [
+    "A lossless representation strategy between exhausted ledger evidence and bounded FOOD-006C manifests.",
+    "Manifest partitioning or another explicit complete evidence representation.",
+    "Durable exact evidence resolution.",
+    "Recorded-balance composition over complete-through-cutoff evidence.",
+    "Authoritative current quantity-on-hand.",
+    "Reservation-aware availability.",
+    "Checkout and payment readiness."
+  ]
+}
