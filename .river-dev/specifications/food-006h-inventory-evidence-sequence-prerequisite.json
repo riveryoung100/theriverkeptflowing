@@ -1,0 +1,57 @@
+{
+  "id": "FOOD-006H",
+  "title": "Inventory Evidence Sequence Persistence Prerequisite",
+  "startingHead": "525a91682f82994bae2cb631859397b4b194b3b3",
+  "selectedSlice": "C — shared monotonic inventory evidence sequence persistence prerequisite",
+  "purpose": "Define, but do not execute, a migration that gives production-batch and physical-inventory-movement persistence one shared append-only monotonic evidence registration sequence for later stable-cutoff enumeration.",
+  "files": [
+    ".river-dev/specifications/food-006h-inventory-evidence-sequence-prerequisite.json",
+    "migrations/food/0005_food_inventory_evidence_sequence.sql",
+    "src/lib/food/inventory-evidence-sequence-migration.test.ts"
+  ],
+  "migration": {
+    "id": "0005",
+    "execution": "definition-only",
+    "dependsOn": "0004_food_physical_inventory.sql"
+  },
+  "rules": [
+    "A single shared sequence namespace covers both production batches and physical inventory movements.",
+    "The sequence is assigned by durable persistence registration, not by business date, lexical identifier ordering or caller input.",
+    "The sequence is positive, monotonic and bounded to JavaScript safe-integer range.",
+    "Production-batch inserts automatically append one ledger entry.",
+    "Physical-inventory-movement inserts automatically append one ledger entry.",
+    "Existing rows are backfilled if this migration is eventually executed after data already exists.",
+    "Backfill ordering is deterministic but does not claim historical insertion chronology.",
+    "The ledger is append-only and rejects update and delete.",
+    "The ledger binds evidence family, exact SKU, exact batch identity and movement identity where applicable.",
+    "Supporting indexes permit future exact-SKU evidence enumeration through an explicit sequence cutoff.",
+    "Supporting indexes permit future exact-batch movement evidence enumeration through an explicit sequence cutoff.",
+    "This slice creates no read API and does not acquire a cutoff.",
+    "This slice does not establish manifest completeness.",
+    "This slice does not establish a point-in-time inventory snapshot.",
+    "This slice does not establish authoritative current quantity-on-hand.",
+    "This slice does not establish availability, capacity, checkout, payment, fulfillment, accounting or rewards authority.",
+    "Migration 0005 must not be executed in this slice.",
+    "Migrations 0003 and 0004 remain unchanged and unexecuted."
+  ],
+  "laterUse": [
+    "Acquire a durable evidence high-water sequence.",
+    "Enumerate every exact-SKU ledger entry with evidence_sequence less than or equal to that cutoff.",
+    "Resolve exact canonical batch and movement evidence.",
+    "Prove exhaustion through that cutoff.",
+    "Bind the cutoff and complete evidence manifest together.",
+    "Only later evaluate whether complete-through-cutoff recorded balance can participate in authoritative inventory semantics."
+  ],
+  "deferred": [
+    "Migration execution.",
+    "Cutoff acquisition API.",
+    "Cutoff-bounded enumeration API.",
+    "Complete-through-cutoff manifest construction.",
+    "Point-in-time completeness proof.",
+    "Authoritative current quantity-on-hand.",
+    "Post-cutoff concurrency semantics.",
+    "Reservation-aware availability.",
+    "Checkout and payment readiness.",
+    "Physical fulfillment completion."
+  ]
+}
