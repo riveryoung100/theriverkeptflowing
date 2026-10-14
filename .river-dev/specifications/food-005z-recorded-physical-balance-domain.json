@@ -1,0 +1,55 @@
+{
+  "id": "FOOD-005Z",
+  "startingHead": "a160b4c8ea76b24711e918acfbd97371e9dd43bc",
+  "selectedSlice": "A — pure exact-batch recorded physical balance projection",
+  "purpose": "Derive recorded physical balance over an explicit supplied evidence set, without claiming authoritative current quantity-on-hand.",
+  "files": [
+    ".river-dev/specifications/food-005z-recorded-physical-balance-domain.json",
+    "src/lib/food/physical-inventory-balance-domain.ts",
+    "src/lib/food/physical-inventory-balance-domain.test.ts"
+  ],
+  "projection": {
+    "type": "FoodProductionBatchRecordedPhysicalBalance",
+    "function": "projectFoodProductionBatchRecordedPhysicalBalance",
+    "kind": "food-production-batch-recorded-physical-balance",
+    "input": "One production batch validated through validateFoodProductionBatchVersion plus an actual array whose every entry validates through validateFoodPhysicalInventoryMovement.",
+    "resultFields": ["kind", "batch", "sku", "recordedPackageBalance", "movementIds"],
+    "formula": "producedPackageCount + sum(adjustment-in packageCount) - sum(adjustment-out packageCount) - sum(waste packageCount)",
+    "emptyMovements": "Valid; balance equals historical production baseline and movementIds is empty.",
+    "batchBinding": "Every movement must match exact supplied batch ID/version; mismatches reject rather than filter.",
+    "skuBinding": "Every movement must match exact batch SKU ID/version; mismatches reject.",
+    "duplicates": "Duplicate movement IDs reject, including identical and divergent payload duplicates. No silent deduplication.",
+    "ordering": "Movement order is irrelevant; movementIds uses deterministic sorted canonical string ordering, without locale dependence or caller mutation.",
+    "arithmetic": "Exact internal BigInt accumulation. Only the final balance is bounded inclusively by +/- Number.MAX_SAFE_INTEGER, then converted to number. Transient large sums do not cause order-dependent errors.",
+    "negative": "Negative recorded balances are valid signed safe-integer evidence outputs, exposing overdrawn recorded history. Never clamp, reject merely for negativity, or equate with literally negative physical stock.",
+    "invalidInput": "Synchronous TypeError rejection consistent with existing pure domains; no storage result vocabulary.",
+    "immutability": "Completely detached/frozen outer result, exact batch/SKU references and movementIds array.",
+    "time": "No clock, date filtering, cutoff selection, or latest/current inference; use precisely the supplied set."
+  },
+  "notAuthority": [
+    "Recorded balance is not authoritative current quantity-on-hand.",
+    "Does not prove all movements or physical events were recorded/supplied, a current cutoff, truthful evidence, operational permission, or equality to real-world stock.",
+    "No IO, persistence, database reads, asynchronous API, or mutable balance storage.",
+    "No trusted inventory execution, authentication, or authorization.",
+    "No atomic negative-stock write prevention; removal/reconciliation/concurrency policy remains future work.",
+    "No fulfillment/handoff removal or order/payment quantity subtraction.",
+    "No reservation accounting; held packages remain physically present.",
+    "No exact-SKU aggregation across batches.",
+    "No stocked SKU capacity or available-to-promise derivation.",
+    "Physical packaged inventory does not establish made-to-order capacity.",
+    "No checkout/payment readiness."
+  ],
+  "deferred": [
+    "Trusted inventory execution and explicit removal/reconciliation policy",
+    "Atomic negative-stock enforcement with concurrency proof",
+    "Authoritative physical fulfillment/handoff removal",
+    "Exact-SKU aggregation",
+    "Stocked SKU capacity and reservation-aware availability",
+    "Made-to-order capacity",
+    "Checkout/payment readiness",
+    "Migration execution and production deployment"
+  ],
+  "migration": "No migration changes or indexes. Migrations 0003 and 0004 remain unchanged and unexecuted.",
+  "validation": "Synthetic-only focused and X+Y+Z regression tests, complete FOOD suite, bounded strict TypeScript, zero-warning lint, JSON parse, exact file scope and UTF-8 hygiene.",
+  "delivery": "Exactly three new unstaged files; no canonical modifications, staging, commit, push, migration execution, production access, deployment, or FOOD-006A."
+}
