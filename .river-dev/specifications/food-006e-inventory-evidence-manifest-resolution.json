@@ -1,0 +1,57 @@
+{
+  "id": "FOOD-006E",
+  "title": "Exact Inventory Evidence Manifest Resolution",
+  "startingHead": "f67bb37ef5b15a5b4a8ee67b1b024cbb6dc01d34",
+  "selectedSlice": "validated manifest to exact persisted evidence resolution only",
+  "purpose": "Resolve every exact production-batch and movement identity in one canonical FOOD-006C manifest through FOOD-006D exact persisted reads without yet projecting recorded balances.",
+  "files": [
+    ".river-dev/specifications/food-006e-inventory-evidence-manifest-resolution.json",
+    "src/lib/food/inventory-evidence-manifest-resolution.ts",
+    "src/lib/food/inventory-evidence-manifest-resolution.test.ts"
+  ],
+  "resultContract": [
+    "resolved",
+    "not-found",
+    "invalid",
+    "storage-failure"
+  ],
+  "rules": [
+    "The caller-supplied FOOD-006C manifest is canonically validated before storage access.",
+    "An invalid manifest returns invalid and performs no database reads.",
+    "Every manifest production-batch identity is read through FOOD-006D exact persisted batch resolution.",
+    "Every manifest movement identity is read through FOOD-006D exact persisted movement resolution.",
+    "A missing exact batch or movement returns not-found for the whole manifest.",
+    "Any storage failure aborts the whole resolution with no partial evidence result.",
+    "An impossible invalid outcome from a canonically validated exact selector fails closed as storage-failure.",
+    "Every resolved batch must exactly match its manifest batch ID and version.",
+    "Every resolved batch SKU must exactly equal the manifest SKU ID and version.",
+    "Every resolved movement must exactly match the requested movement ID.",
+    "Every resolved movement must bind the exact manifest batch ID and version.",
+    "Every resolved movement SKU must exactly equal the manifest SKU ID and version.",
+    "The canonical FOOD-006C manifest remains the supplied provenance object and is not reinterpreted.",
+    "Empty manifest batch collections resolve successfully with an empty evidence collection.",
+    "Resolved evidence ordering follows the canonical manifest ordering.",
+    "Resolved evidence is deeply frozen and detached.",
+    "No FOOD-005Z batch recorded-balance projection occurs.",
+    "No FOOD-006A exact-SKU balance aggregation occurs.",
+    "No evidence completeness or database cutoff is established.",
+    "No authoritative current quantity-on-hand is established.",
+    "No reservation, availability, capacity, checkout, payment, fulfillment or sale authority is established.",
+    "No writes occur.",
+    "No migration definition changes or migration execution occur."
+  ],
+  "deferred": [
+    "FOOD-005Z projection over resolved batches and movements.",
+    "FOOD-006A aggregation of resolved batch recorded balances.",
+    "Combined persisted manifest recorded-balance composition.",
+    "Evidence completeness proof.",
+    "Database cutoff or point-in-time snapshot provenance.",
+    "Authoritative current quantity-on-hand.",
+    "Physical handoff/removal authority.",
+    "Trusted stock mutation execution.",
+    "Reservation-aware availability.",
+    "Stocked SKU capacity.",
+    "Checkout and payment readiness.",
+    "Supporting indexes."
+  ]
+}
