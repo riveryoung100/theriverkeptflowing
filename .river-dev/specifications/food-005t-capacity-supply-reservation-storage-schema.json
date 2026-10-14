@@ -1,0 +1,129 @@
+{
+  "id": "FOOD-005T",
+  "title": "Capacity supply and reservation storage schema",
+  "startingHead": "9d68697f4a78dd2083992c6c3eb4ec45bce2da85",
+  "selectedSlice": "A — capacity-supply + reservation storage schema only",
+  "files": [
+    ".river-dev/specifications/food-005t-capacity-supply-reservation-storage-schema.json",
+    "migrations/food/0003_food_capacity_reservation_storage.sql",
+    "src/lib/food/capacity-reservation-storage-schema.test.ts"
+  ],
+  "purpose": "Define storage primitives required by a later trusted atomic FOOD reservation service without creating supply, performing reservations, creating acceptance evidence, or granting checkout/payment readiness.",
+  "findings": [
+    "FOOD-005D contains exact reservation demand only.",
+    "No canonical FOOD model currently owns SKU quantity-on-hand.",
+    "No canonical FOOD model currently owns fulfillment-slot capacity.",
+    "FOOD-005L is historical acceptance evidence only and requires a later trusted atomic reservation service before acceptance is created.",
+    "Reservation rows alone cannot prove available supply or prevent overselling."
+  ],
+  "schema": {
+    "skuCapacity": {
+      "table": "food_sku_capacity_sources",
+      "identity": "One exact SKU ID/version has at most one current authoritative capacity source row.",
+      "fields": [
+        "sku_id",
+        "sku_version",
+        "capacity_units",
+        "revision",
+        "attribution",
+        "source_reference"
+      ],
+      "semantics": "capacity_units is a future trusted-service supplied nonnegative whole SKU-unit capacity. This migration inserts no rows and does not determine capacity."
+    },
+    "slotCapacity": {
+      "table": "food_fulfillment_slot_capacity_sources",
+      "identity": "One exact method/locationReference/windowReference tuple has at most one current authoritative capacity source row.",
+      "fields": [
+        "method",
+        "location_reference",
+        "window_reference",
+        "capacity_units",
+        "revision",
+        "attribution",
+        "source_reference"
+      ],
+      "semantics": "capacity_units is future trusted-service supplied nonnegative order-slot capacity. SKU inventory and fulfillment slots remain separate resources."
+    },
+    "reservation": {
+      "table": "food_capacity_reservations",
+      "identity": "One exact FOOD-005E order ID/version + FOOD-005D reservation-request ID/version tuple is globally unique.",
+      "fields": [
+        "reservation_id",
+        "order_id",
+        "order_version",
+        "reservation_request_id",
+        "reservation_request_version",
+        "canonical_demand_json",
+        "state"
+      ],
+      "state": "Initial schema permits held only. Release/expiration/replacement lifecycles remain deferred."
+    },
+    "reservationLines": {
+      "table": "food_capacity_reservation_lines",
+      "identity": "Exact SKU ID/version demand line within one reservation.",
+      "fields": [
+        "reservation_id",
+        "line_index",
+        "sku_id",
+        "sku_version",
+        "quantity"
+      ]
+    },
+    "slotReservation": {
+      "table": "food_fulfillment_slot_reservations",
+      "identity": "At most one exact fulfillment slot claim per reservation.",
+      "fields": [
+        "reservation_id",
+        "method",
+        "location_reference",
+        "window_reference",
+        "quantity"
+      ]
+    }
+  },
+  "constraints": [
+    "versions and revisions are positive JS-safe integers",
+    "capacity and demand quantities are nonnegative/positive bounded integers as appropriate",
+    "SKU capacity and fulfillment-slot capacity remain separate",
+    "exact order version + reservation-request version identity is unique",
+    "reservation demand JSON is opaque canonical evidence, not independently trusted authority",
+    "reservation line quantities must be positive",
+    "slot reservation quantity must equal one in this initial schema",
+    "reservation lines cascade neither update nor delete",
+    "reservation rows and line rows are immutable after insert",
+    "capacity source rows may not be mutated by this migration or any trigger",
+    "no trigger automatically creates or decrements supply",
+    "no trigger automatically creates reservation acceptance"
+  ],
+  "notAuthority": [
+    "schema existence != inventory quantity",
+    "schema existence != slot capacity",
+    "schema existence != reservation success",
+    "schema existence != FOOD-005L acceptance",
+    "schema existence != checkout readiness",
+    "schema existence != payment readiness",
+    "schema existence != payment initiation",
+    "schema existence != fulfillment readiness",
+    "schema existence != completed sale"
+  ],
+  "deferred": [
+    "trusted capacity-source write API",
+    "capacity-source authentication",
+    "atomic conditional SKU decrement/reservation",
+    "atomic conditional fulfillment-slot reservation",
+    "cross-resource all-or-nothing reservation service",
+    "retry/idempotent service outcomes",
+    "conflict classification",
+    "FOOD-005L acceptance creation after successful atomic reservation",
+    "reservation release/cancellation",
+    "reservation expiration",
+    "replacement/rescheduling",
+    "inventory production batch ledger",
+    "sold quantity and inventory movement accounting",
+    "checkout/payment readiness",
+    "provider checkout/payment initiation",
+    "runtime routes/configuration",
+    "remote migration execution",
+    "production deployment"
+  ]
+}
