@@ -1,0 +1,82 @@
+{
+  "id": "FOOD-005S",
+  "title": "Fulfillment charge policy satisfaction",
+  "startingHead": "fffec4a599dc97ebc04e63679e83e904c41ac7c7",
+  "files": [
+    ".river-dev/specifications/food-005s-fulfillment-charge-policy-satisfaction.json",
+    "src/lib/food/fulfillment-charge-policy-satisfaction.ts",
+    "src/lib/food/fulfillment-charge-policy-satisfaction.test.ts"
+  ],
+  "decision": {
+    "selectedSlice": "A — required-vs-not-required fulfillment-charge gate composition",
+    "boundary": "Compose one exact FOOD-005N fulfillment-policy decision with one exact FOOD-005R selected payable-assessment reference. When manual approval is required, exact FOOD-005Q authorized-charge assessment-inclusion evidence for the same order and selected assessment is mandatory. When manual approval is not required, FOOD-005Q evidence is forbidden rather than replaced with synthetic zero-fee approval.",
+    "whyNow": [
+      "FOOD-005R now provides explicit exact payable-assessment selection.",
+      "FOOD-005N already supplies the trusted required versus not-required policy outcome.",
+      "FOOD-005Q already proves required-path authorized fulfillment-charge inclusion in one exact assessment.",
+      "A pure branch-composition record is narrower than checkout/payment readiness and narrower than atomic reservation persistence."
+    ]
+  },
+  "branches": {
+    "required": {
+      "policy": "FOOD-005N manualApprovalRequirement must equal required.",
+      "assessmentSelection": "One exact FOOD-005R selection is required.",
+      "assessmentInclusion": "One exact FOOD-005Q inclusion for the same order and selected payable assessment is required."
+    },
+    "notRequired": {
+      "policy": "FOOD-005N manualApprovalRequirement must equal not-required.",
+      "assessmentSelection": "One exact FOOD-005R selection is required.",
+      "assessmentInclusion": "FOOD-005Q inclusion must be absent. No synthetic zero-fee approval or charge evidence may be invented."
+    }
+  },
+  "output": {
+    "kind": "fulfillment-charge-policy-satisfaction",
+    "order": "Exact order ID/version shared by FOOD-005N and FOOD-005R.",
+    "policyDecision": "Exact FOOD-005N ID/version.",
+    "payableAssessment": "Exact selected FOOD-005J ID/version from FOOD-005R.",
+    "manualApprovalRequirement": ["required", "not-required"],
+    "chargeGate": [
+      "required-with-authorized-inclusion",
+      "not-required-without-charge"
+    ]
+  },
+  "invariants": [
+    "required policy requires FOOD-005Q inclusion evidence",
+    "required FOOD-005Q order must equal FOOD-005R selected order",
+    "required FOOD-005Q payable assessment must equal FOOD-005R selected payable assessment",
+    "not-required policy forbids FOOD-005Q inclusion evidence",
+    "not-required policy does not invent zero-fee approval",
+    "not-required policy does not invent FOOD-005O authority",
+    "not-required policy does not invent FOOD-005P adjustment",
+    "not-required policy does not invent FOOD-005Q inclusion",
+    "policy satisfaction != checkout readiness",
+    "policy satisfaction != payment readiness",
+    "policy satisfaction != payment initiation",
+    "policy satisfaction != payment confirmation",
+    "policy satisfaction != paid-in-full",
+    "policy satisfaction != live reservation",
+    "policy satisfaction != inventory reservation",
+    "policy satisfaction != preparation authority",
+    "policy satisfaction != dispatch readiness",
+    "policy satisfaction != fulfillment",
+    "policy satisfaction != completed sale",
+    "policy satisfaction != accounting/revenue",
+    "policy satisfaction != rewards/verified purchase",
+    "policy satisfaction does not reprice",
+    "policy satisfaction does not expose amountDue",
+    "policy satisfaction does not choose latest/current assessment",
+    "policy satisfaction is detached and immutable"
+  ],
+  "deferred": [
+    "atomic inventory/slot persistence and race protection",
+    "live reservation authority",
+    "checkout/payment readiness",
+    "hosted checkout/payment link creation",
+    "payment initiation/providers",
+    "payment confirmation/reconciliation",
+    "fulfillment readiness",
+    "scheduled/preparing/ready/dispatched/handed-over lifecycle",
+    "completed sale/accounting/revenue",
+    "deployment/production activation"
+  ]
+}
