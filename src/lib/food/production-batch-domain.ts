@@ -90,6 +90,26 @@ function exactOwnKeys(
   }
 }
 
+function exactOwnKeysWithOptional(
+  value: Record<PropertyKey, unknown>,
+  required: readonly string[],
+  optional: readonly string[],
+  label: string,
+): void {
+  const keys = Reflect.ownKeys(value);
+
+  if (
+    required.some((key) => !keys.includes(key)) ||
+    keys.some(
+      (key) =>
+        typeof key !== "string" ||
+        (!required.includes(key) && !optional.includes(key)),
+    )
+  ) {
+    throw new TypeError(`${label} has invalid fields`);
+  }
+}
+
 function boundedText(
   value: unknown,
   max: number,
@@ -239,7 +259,7 @@ export function validateFoodProductionBatchVersion(
       "production batch",
     );
 
-  exactOwnKeys(
+  exactOwnKeysWithOptional(
     value,
     [
       "kind",
@@ -250,10 +270,10 @@ export function validateFoodProductionBatchVersion(
       "storageMode",
       "producedPackageCount",
       "preparedOn",
-      "frozenOn",
       "attribution",
       "sourceReference",
     ],
+    ["frozenOn"],
     "production batch",
   );
 
@@ -293,6 +313,10 @@ export function validateFoodProductionBatchVersion(
   let frozenOn: string | undefined;
 
   if (mode === "frozen") {
+    if (!Object.prototype.hasOwnProperty.call(value, "frozenOn")) {
+      throw new TypeError("frozen production batch requires frozenOn");
+    }
+
     frozenOn =
       isoCalendarDate(
         value.frozenOn,

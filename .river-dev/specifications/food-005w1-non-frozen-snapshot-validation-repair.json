@@ -1,0 +1,39 @@
+{
+  "id": "FOOD-005W1",
+  "title": "Canonical non-frozen production-batch snapshot validation repair",
+  "startingHead": "75853fde67e5b7b8df5848de09f03ec02deef81c",
+  "purpose": "Repair canonical FOOD-005W structural validation so the optional frozenOn field matches canonical snapshot output and survives validation and serialization round trips.",
+  "files": [
+    "src/lib/food/production-batch-domain.ts",
+    "src/lib/food/production-batch-domain.test.ts",
+    ".river-dev/specifications/food-005w1-non-frozen-snapshot-validation-repair.json"
+  ],
+  "defect": [
+    "The validator required an own frozenOn key.",
+    "Canonical non-frozen snapshots omitted frozenOn.",
+    "Canonical non-frozen snapshots could not revalidate."
+  ],
+  "repair": [
+    "frozenOn is the only optional structural production-batch key.",
+    "All other required keys must remain own keys; unknown string and symbol fields reject.",
+    "Nested SKU and constructor input exact-key checks remain unchanged.",
+    "Frozen storage requires an own frozenOn with a valid calendar date not preceding preparedOn.",
+    "Non-frozen storage accepts absent or explicitly undefined frozenOn and forbids every defined value.",
+    "Canonical non-frozen output continues omitting frozenOn.",
+    "Canonical validation, constructor output, and JSON round trips are tested for all three storage modes."
+  ],
+  "preservedBoundaries": [
+    "No persistence",
+    "No quantity-on-hand",
+    "No inventory movements",
+    "No SKU capacity",
+    "No availability or orderability authority",
+    "No reservations or FOOD-005L creation",
+    "No checkout or payment readiness",
+    "No HTTP routes, admin services, Cloudflare bindings, or D1 repositories",
+    "No migration creation or execution; migration 0003 unchanged and unexecuted",
+    "No production data, production mutations, or deployment"
+  ],
+  "food005X": "Blocked until W1 is reviewed, staged, authorized, committed and pushed as canonical.",
+  "delivery": "Exactly three files, unstaged; no commit or push."
+}
