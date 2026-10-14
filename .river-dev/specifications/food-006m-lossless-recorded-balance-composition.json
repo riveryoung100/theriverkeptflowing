@@ -1,0 +1,31 @@
+{
+  "id": "FOOD-006M",
+  "startingHead": "efc4512824ec1c5bf25c888a16f4f0ed824a2356",
+  "selected": "A — pure lossless grouped composition",
+  "input": "Successful FoodResolvedGroupedInventoryEvidence; public API validates unknown at runtime.",
+  "api": "projectFoodLosslessGroupedInventoryRecordedBalance(input: unknown): FoodLosslessGroupedInventoryRecordedBalanceComposition",
+  "005Z": "projectFoodProductionBatchRecordedPhysicalBalance",
+  "006A": "projectFoodSkuRecordedPhysicalBalance",
+  "006F": "Not used; no bounded FOOD-006C manifest reconstruction.",
+  "guarantees": [
+    "Exactly one 005Z projection per exact batch with all its movements; baseline applied once.",
+    "Duplicate exact batch identities reject before duplicate baseline composition; distinct versions remain distinct.",
+    "Within-batch duplicate movement rejection delegates to 005Z; a global movement-ID set rejects cross-batch duplicates.",
+    "One global evidence-sequence uniqueness set covers batch and movement evidence.",
+    "Primitive positive safe evidence sequences must be within the nonnegative safe cutoff.",
+    "Exact SKU uses canonical parsing and version validation without normalization.",
+    "Exact SKU, cutoff, batch identity/sequence, movement identity/sequence and every batch balance are retained.",
+    "More than 128 batches and more than 128 movements per batch are allowed without chunking or truncation.",
+    "Every batch balance is aggregated exactly once through one 006A call; no duplicated arithmetic.",
+    "Synchronous TypeError failures propagate; no partial results, outcome conversions, clamping or zero substitution.",
+    "Negative recorded balances remain valid.",
+    "Positive global cutoff with zero exact-SKU batches is valid and aggregates to zero.",
+    "Cutoff zero with nonempty batches is invalid; evidence need not reach the global cutoff.",
+    "Output batches sort by exact batch ID/version; movement provenance sorts by evidence sequence.",
+    "Output is detached and deeply frozen; input is not mutated.",
+    "No persistence, manifest reconstruction or current-QOH authority."
+  ],
+  "authorityBoundary": "Retained provenance does not establish truthful capture of all physical events, later evidence absence, current QOH, reservation-adjusted availability, sellability, made-to-order capacity, checkout/payment readiness, fulfillment, accounting or rewards authority.",
+  "migrations": "0003, 0004 and 0005 unchanged and not executed; migration 0005 remains unexecuted.",
+  "delivery": "Exactly three new unstaged files; no commit, push, deployment, production mutation or FOOD-006N."
+}
