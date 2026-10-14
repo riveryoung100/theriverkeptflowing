@@ -1,0 +1,84 @@
+{
+  "id": "FOOD-005W",
+  "title": "Production batch and packaged physical inventory pure domain",
+  "startingHead": "708b152d4ec1ad4b27f91efaac640bcdcbb4654f",
+  "selectedSlice": "A — production-batch + packaged physical inventory pure domain only",
+  "files": [
+    ".river-dev/specifications/food-005w-production-batch-packaged-inventory-domain.json",
+    "src/lib/food/production-batch-domain.ts",
+    "src/lib/food/production-batch-domain.test.ts"
+  ],
+  "evidence": [
+    "No canonical FOOD model currently establishes physical quantity-on-hand.",
+    "No canonical FOOD model currently establishes production-batch authority.",
+    "The product vision requires future inventory to distinguish made-to-order from frozen inventory.",
+    "Frozen inventory may later require quantity-on-hand, production batch, frozen date, package count, reserved quantity, sold quantity and storage state.",
+    "The operating architecture requires batch codes and preserves exact product/version history.",
+    "Generic food_sku_capacity_sources storage must not itself be treated as physical inventory authority."
+  ],
+  "domain": {
+    "kind": "food-production-batch",
+    "purpose": "Immutable evidence that a specific number of packaged units for one exact SKU/version were physically produced in one batch.",
+    "identity": [
+      "batchId",
+      "version"
+    ],
+    "skuBinding": [
+      "sku.id",
+      "sku.version"
+    ],
+    "storageModes": [
+      "refrigerated",
+      "frozen",
+      "room-temperature"
+    ],
+    "fields": [
+      "batchCode",
+      "storageMode",
+      "producedPackageCount",
+      "preparedOn",
+      "frozenOn",
+      "attribution",
+      "sourceReference"
+    ],
+    "initialVersion": 1
+  },
+  "semantics": [
+    "SKU reference version is a positive safe integer.",
+    "producedPackageCount is historical production evidence and not current quantity-on-hand.",
+    "frozen batches require frozenOn.",
+    "non-frozen batches forbid frozenOn.",
+    "frozenOn cannot precede preparedOn.",
+    "batch identity binds one exact SKU ID/version.",
+    "production batch does not establish availability, orderability or reservable capacity."
+  ],
+  "notAuthority": [
+    "production batch != quantity-on-hand",
+    "production batch != available quantity",
+    "production batch != SKU capacity source",
+    "production batch != reservation",
+    "production batch != FOOD-005L acceptance",
+    "production batch != checkout readiness",
+    "production batch != payment readiness",
+    "production batch != completed sale"
+  ],
+  "deferred": [
+    "production-batch persistence",
+    "inventory movement ledger",
+    "quantity-on-hand derivation",
+    "reserved quantity projection",
+    "sold quantity projection",
+    "batch disposal/waste adjustments",
+    "multi-batch SKU allocation",
+    "made-to-order production capacity",
+    "stocked-versus-made-to-order capacity-source distinction",
+    "SKU capacity source writer",
+    "private admin inventory mutation service",
+    "atomic SKU reservation",
+    "cross-resource SKU + fulfillment-slot reservation",
+    "FOOD-005L creation after committed reservation",
+    "checkout/payment readiness",
+    "configured/local/remote migration 0003 execution",
+    "production deployment"
+  ]
+}
