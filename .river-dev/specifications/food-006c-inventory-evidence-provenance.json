@@ -1,0 +1,57 @@
+{
+  "id": "FOOD-006C",
+  "title": "Inventory Evidence Manifest and Provenance",
+  "startingHead": "6900c5e4440f020afddff8ab0e15d7f4bafd6241",
+  "selectedSlice": "B — explicit caller-supplied inventory evidence-set manifest/provenance",
+  "purpose": "Represent the exact immutable inventory evidence set used or observed for one exact SKU without claiming that the set is complete, current, authoritative, or tied to a durable point-in-time database cutoff.",
+  "files": [
+    ".river-dev/specifications/food-006c-inventory-evidence-provenance.json",
+    "src/lib/food/inventory-evidence-provenance-domain.ts",
+    "src/lib/food/inventory-evidence-provenance-domain.test.ts"
+  ],
+  "manifest": {
+    "kind": "food-inventory-evidence-manifest",
+    "sku": "Exact FoodSkuId/version.",
+    "batches": "Deterministically ordered exact production-batch id/version references, each carrying the exact movement IDs attributed to that supplied evidence entry.",
+    "provenance": "Caller-supplied bounded attribution and opaque sourceReference."
+  },
+  "rules": [
+    "The manifest is pure, synchronous and persistence-free.",
+    "The manifest records an explicitly supplied evidence set only.",
+    "An empty batch set is valid.",
+    "A batch entry may contain an empty movement set.",
+    "Every SKU, batch and movement identity is canonical.",
+    "Every version is a positive safe integer.",
+    "At most 128 batch entries may be supplied.",
+    "At most 128 movement identities may be supplied per batch.",
+    "Exact batch id/version identities must be unique.",
+    "A physical inventory movement identity may appear only once across the entire manifest.",
+    "Batch entries are sorted deterministically by batch id and then batch version.",
+    "Movement identities inside each batch entry are sorted deterministically.",
+    "The result is detached and deeply frozen.",
+    "Provenance is caller supplied and does not authenticate its source.",
+    "sourceReference is opaque and must not be interpreted as a database cursor or cutoff.",
+    "The manifest does not prove that all persisted batches were enumerated.",
+    "The manifest does not prove that all persisted movements were enumerated.",
+    "The manifest does not prove one consistent database snapshot across multiple reads.",
+    "The manifest does not establish an as-of timestamp, high-water mark or transaction boundary.",
+    "The manifest does not calculate a recorded physical balance.",
+    "The manifest does not establish authoritative current quantity-on-hand.",
+    "The manifest does not establish availability, capacity, reservation, orderability, checkout or payment readiness.",
+    "No migration change or migration execution occurs."
+  ],
+  "deferred": [
+    "Trusted database snapshot or durable cutoff semantics.",
+    "Evidence completeness proof.",
+    "Composition of persisted reads into recorded batch balances.",
+    "Composition of persisted batch balances into an exact-SKU recorded balance.",
+    "Authoritative current quantity-on-hand.",
+    "Physical handoff/removal evidence.",
+    "Trusted inventory mutation execution.",
+    "Atomic nonnegative stock enforcement.",
+    "Reservation-aware availability.",
+    "Stocked SKU capacity derivation/writing.",
+    "Checkout and payment readiness.",
+    "Supporting persistence indexes."
+  ]
+}
