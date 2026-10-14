@@ -1,0 +1,71 @@
+{
+  "id": "FOOD-005Y",
+  "startingHead": "3f02f5b4f504df7e04073da4f4ef0fb2285ed9ca",
+  "selectedSlice": "A — physical inventory-movement persistence only",
+  "purpose": "Add inert physical inventory movement persistence for canonical immutable single-version assertions, without operational authority.",
+  "files": [
+    ".river-dev/specifications/food-005y-physical-inventory-movement-persistence.json",
+    "src/lib/food/d1-physical-inventory-movement-persistence.ts",
+    "src/lib/food/d1-physical-inventory-movement-persistence.test.ts"
+  ],
+  "migration": {
+    "schemaChanges": "None; no new migration, amendment, or index.",
+    "migration 0003": "Unchanged and unexecuted.",
+    "migration 0004": "Reused unchanged and unexecuted; sufficient existing movement columns, primary key, batch foreign key, and immutable triggers.",
+    "execution": "Forbidden in this slice."
+  },
+  "persistence": {
+    "function": "appendFoodPhysicalInventoryMovement",
+    "writes": ["food_physical_inventory_movements"],
+    "reads": ["food_physical_inventory_movements", "food_production_batches"],
+    "interface": "Narrow local structural prepare/bind/all interface; no broad runtime globals.",
+    "identity": "Global caller-supplied movement ID; intrinsically single-version immutable evidence. No movement version, revision, timestamp, or mutable state.",
+    "outcomes": {
+      "created": "This insert returned exactly one valid canonical row equal to the complete requested movement.",
+      "already-present": "Exact movement ID exists with identical canonical payload.",
+      "conflict": "Exact movement ID exists with divergent canonical payload.",
+      "invalid": "Caller movement fails canonical validation, referenced exact durable batch is missing, or movement SKU differs from durable batch SKU.",
+      "storage-failure": "Malformed durable movement/batch, failed or uncertain storage read, impossible insert witness, or unresolved insert failure. Raw database exceptions are not exposed."
+    },
+    "ordering": "Validate caller, read exact movement ID first, classify existing canonical evidence, then validate batch only for an absent ID. An exact retry needs no batch read; divergent same-ID retries conflict before new-entry checks.",
+    "batchBinding": "Read exact batch_id/version, reconstruct the full canonical FoodProductionBatchVersion and validate through validateFoodProductionBatchVersion. Compare both SKU ID and SKU version before INSERT. Wrong returned batch identity and malformed/uncertain rows fail closed as storage-failure.",
+    "nonFrozenBatch": "SQL frozen_on null reconstructs frozenOn omission; canonical W1 validation is reused without business-validation duplication.",
+    "movementReconstruction": "Reconstruct every canonical movement field from selected columns and reuse validateFoodPhysicalInventoryMovement; no coercion or silently dropped malformed rows.",
+    "canonicalEquality": ["kind", "id", "batch.id", "batch.version", "sku.id", "sku.version", "movementType", "packageCount", "occurredOn", "attribution", "sourceReference"],
+    "insert": "Parameterized INSERT VALUES RETURNING only. Exactly one matching valid witness is required for created. No updates, deletes, replacements, or mutable upsert.",
+    "raceRecovery": "After INSERT exception/failed storage result, reread exact movement ID only. Identical canonical row yields already-present; divergent yields conflict; missing, malformed, wrong identity, or uncertain read yields storage-failure. Batch validation is not rerun as race authority.",
+    "references": "No latest/current resolution, history scan, aggregate query, or implicit identity generation.",
+    "immutability": "Canonical reconstructed snapshots and nested batch/SKU references are detached and frozen. Production-batch rows are never mutated."
+  },
+  "corrections": {
+    "policy": "Preserve original movement evidence. Future operational corrections may create a new explicitly attributed compensating movement where existing canonical types represent it.",
+    "examples": ["Incorrect adjustment-out may be compensated by adjustment-in.", "Incorrect adjustment-in may be compensated by adjustment-out."],
+    "types": ["adjustment-in", "adjustment-out", "waste"],
+    "boundary": "No reversal, void, correction, superseded, or cancelled types. No structured correction linkage is inferred from sourceReference."
+  },
+  "notAuthority": [
+    "Repository does not authenticate callers or prove administrator identity; authentication remains above persistence.",
+    "Persistence validates structure and exact durable binding, not physical event truth, source truth, or operational permission.",
+    "Repository does not enforce nonnegative stock; negative stock prevention belongs to later trusted execution with an atomic database balance guard.",
+    "No QOH calculation, projection, current-state storage, or sufficient-stock check.",
+    "No stocked SKU capacity writes or availability derivation.",
+    "Physical packaged inventory does not establish made-to-order capacity; that authority remains separate.",
+    "Reservation holds are not physical movements; no reservation execution, reconciliation, capacity consumption, or FOOD-005L acceptance creation.",
+    "No fulfillment/handoff removal, sale semantics, checkout/payment readiness, routes, services, runtime configuration, or deployment."
+  ],
+  "deferred": [
+    "Trusted physical movement execution and authentication",
+    "Atomic negative stock enforcement",
+    "QOH projection",
+    "Stocked SKU capacity derivation pending QOH, provenance, and reservation accounting policy",
+    "Made-to-order capacity authority",
+    "Reservation accounting and live execution",
+    "Fulfillment/handoff physical removal",
+    "Live FOOD-005L acceptance",
+    "Checkout/payment readiness",
+    "Migration execution",
+    "Production deployment"
+  ],
+  "validation": "Synthetic-only focused Y tests, X+Y regression, complete FOOD suite, bounded strict TypeScript, zero-warning lint, specification parse, unchanged migrations, exact scope and UTF-8 hygiene.",
+  "delivery": "Exactly three new unstaged files; no canonical edits, staging, commit, push, migration execution, production mutation, deployment, or FOOD-005Z."
+}
