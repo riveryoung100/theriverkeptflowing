@@ -1,0 +1,52 @@
+{
+  "id": "FOOD-006G",
+  "title": "Persisted Manifest Recorded-Balance Service",
+  "startingHead": "34d23bd83917fefa9fe39bd49ec3a64b7f14c4ce",
+  "selectedSlice": "direct persistence-facing manifest to FOOD-006E resolution to FOOD-006F recorded-balance composition",
+  "purpose": "Provide one bounded asynchronous orchestration operation that accepts a caller-supplied FOOD-006C manifest, resolves its exact persisted evidence through FOOD-006E, and on complete resolution composes that evidence through FOOD-006F.",
+  "files": [
+    ".river-dev/specifications/food-006g-persisted-manifest-recorded-balance-service.json",
+    "src/lib/food/persisted-inventory-recorded-balance-service.ts",
+    "src/lib/food/persisted-inventory-recorded-balance-service.test.ts"
+  ],
+  "resultContract": [
+    "composed",
+    "not-found",
+    "invalid",
+    "storage-failure"
+  ],
+  "rules": [
+    "The database dependency is supplied explicitly and uses the existing FOOD-006D/006E database contract.",
+    "The supplied manifest is passed to FOOD-006E without reinterpretation.",
+    "FOOD-006E invalid remains invalid.",
+    "FOOD-006E not-found remains not-found.",
+    "FOOD-006E storage-failure remains storage-failure.",
+    "FOOD-006F is invoked only after FOOD-006E returns resolved.",
+    "Successful composition returns the exact FOOD-006F canonical composition value.",
+    "A FOOD-006F exception after a resolved FOOD-006E result fails closed as storage-failure because it indicates internal durable/canonical disagreement or schema/program drift.",
+    "No partial resolved evidence or partial balances are ever returned.",
+    "No retry occurs.",
+    "No current, latest, clock or time inference occurs.",
+    "The returned composition remains supplied-manifest recorded evidence only.",
+    "Manifest provenance remains retained through FOOD-006F.",
+    "No evidence completeness or database cutoff is established.",
+    "No authoritative current quantity-on-hand is established.",
+    "No stock enforcement occurs.",
+    "No reservation-aware availability or stocked-capacity authority is established.",
+    "No checkout, payment, fulfillment, sale, accounting or rewards authority is established.",
+    "No persistence write occurs.",
+    "No migration definition changes or migration execution occur."
+  ],
+  "deferred": [
+    "Evidence completeness proof.",
+    "Database cutoff or point-in-time snapshot semantics.",
+    "Authoritative current quantity-on-hand.",
+    "Physical handoff/removal evidence.",
+    "Trusted inventory mutation execution.",
+    "Nonnegative stock enforcement.",
+    "Reservation-aware availability.",
+    "Stocked SKU capacity derivation.",
+    "Checkout and payment readiness.",
+    "Supporting indexes."
+  ]
+}
