@@ -1,0 +1,45 @@
+{
+  "id": "FOOD-006I",
+  "title": "Inventory Evidence Cutoff And Bounded Ledger Read Persistence",
+  "startingHead": "bbe33728b6cb67a7beaf8bcb0ceeb66b29359d19",
+  "selectedSlice": "C — acquire cutoff plus bounded enumeration persistence primitives",
+  "purpose": "Expose a read-only global inventory-evidence high-water cutoff and deterministic exact-SKU ledger pagination bounded by an explicit cutoff.",
+  "files": [
+    ".river-dev/specifications/food-006i-inventory-evidence-cutoff-bounded-read.json",
+    "src/lib/food/d1-inventory-evidence-cutoff-bounded-read-persistence.ts",
+    "src/lib/food/d1-inventory-evidence-cutoff-bounded-read-persistence.test.ts"
+  ],
+  "rules": [
+    "Cutoff acquisition reads the global maximum evidence_sequence from the FOOD-006H shared ledger.",
+    "An empty ledger produces explicit cutoff zero.",
+    "Cutoffs and cursors are nonnegative JavaScript safe integers.",
+    "Ledger evidence_sequence values are positive JavaScript safe integers.",
+    "Exact-SKU enumeration requires explicit SKU id/version and explicit cutoff.",
+    "Enumeration is ordered only by evidence_sequence ascending.",
+    "The cursor is evidence_sequence and means strictly greater than the prior returned sequence.",
+    "Every returned entry must have evidence_sequence greater than cursor and less than or equal to cutoff.",
+    "Pagination uses limit plus one and nextCursor is the last returned evidence_sequence only when more bounded rows exist.",
+    "Post-cutoff inserts are excluded naturally by evidence_sequence less-than-or-equal cutoff.",
+    "Batch ledger entries require no movement identity.",
+    "Movement ledger entries require a canonical nonempty movement identity.",
+    "Every returned row must match the requested exact SKU.",
+    "Malformed, duplicated, nonmonotonic, out-of-bound or uncertain durable rows fail closed as storage-failure.",
+    "Invalid caller selectors fail before storage access.",
+    "This slice is SELECT-only.",
+    "This slice does not construct a FOOD-006C manifest.",
+    "This slice does not prove that pagination has been fully exhausted across calls.",
+    "This slice therefore does not establish evidence completeness.",
+    "This slice does not establish authoritative current quantity-on-hand.",
+    "This slice does not establish capacity, availability, checkout, payment, fulfillment, accounting or rewards authority.",
+    "Migration 0005 remains definition-only and unexecuted."
+  ],
+  "deferred": [
+    "Complete exhaustion orchestration through one acquired cutoff.",
+    "Complete-through-cutoff manifest construction.",
+    "Binding cutoff provenance to a manifest.",
+    "Point-in-time evidence completeness proof.",
+    "Authoritative current quantity-on-hand.",
+    "Reservation-aware availability.",
+    "Checkout and payment readiness."
+  ]
+}
