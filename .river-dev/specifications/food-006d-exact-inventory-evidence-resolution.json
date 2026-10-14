@@ -1,0 +1,56 @@
+{
+  "id": "FOOD-006D",
+  "title": "Exact Persisted Inventory Evidence Resolution",
+  "startingHead": "2430a1adf438f0d74cbffe7145690b0501077cb5",
+  "selectedSlice": "exact production-batch and physical-movement persisted read APIs",
+  "purpose": "Expose narrow exact persisted reads required to resolve FOOD-006C evidence-manifest identities before any recorded-balance composition.",
+  "files": [
+    ".river-dev/specifications/food-006d-exact-inventory-evidence-resolution.json",
+    "src/lib/food/d1-inventory-evidence-resolution-persistence.ts",
+    "src/lib/food/d1-inventory-evidence-resolution-persistence.test.ts"
+  ],
+  "reads": [
+    "readFoodProductionBatchByExactIdentity",
+    "readFoodPhysicalInventoryMovementByExactIdentity"
+  ],
+  "resultContract": [
+    "found",
+    "not-found",
+    "invalid",
+    "storage-failure"
+  ],
+  "rules": [
+    "Caller exact identities are validated before database access.",
+    "Production batch lookup binds exact batch ID and exact version.",
+    "Movement lookup binds exact movement ID.",
+    "Every durable row is reconstructed through canonical domain validation.",
+    "A found batch must exactly match the requested batch ID/version.",
+    "A found movement must exactly match the requested movement ID.",
+    "Zero rows returns not-found.",
+    "More than one durable row for an exact selector fails closed as storage-failure.",
+    "Malformed, uncertain or selector-divergent durable state fails closed as storage-failure.",
+    "Read exceptions return storage-failure.",
+    "Returned found values are canonical, detached and deeply frozen.",
+    "No pagination or enumeration is performed.",
+    "No manifest composition is performed.",
+    "No FOOD-005Z or FOOD-006A projection is performed.",
+    "No evidence completeness or persistence cutoff is claimed.",
+    "No authoritative current quantity-on-hand is claimed.",
+    "No capacity, reservation, availability, checkout or payment readiness is claimed.",
+    "No writes occur.",
+    "No migration definition changes or migration execution occur."
+  ],
+  "deferred": [
+    "Whole FOOD-006C manifest resolution.",
+    "Persisted manifest evidence composition into FOOD-005Z batch balances.",
+    "Persisted batch balance composition into FOOD-006A exact-SKU recorded balance.",
+    "Evidence completeness proof.",
+    "Database cutoff or snapshot provenance.",
+    "Authoritative current quantity-on-hand.",
+    "Physical handoff/removal evidence.",
+    "Trusted stock mutation execution.",
+    "Reservation-aware availability.",
+    "Stocked SKU capacity.",
+    "Supporting indexes."
+  ]
+}
