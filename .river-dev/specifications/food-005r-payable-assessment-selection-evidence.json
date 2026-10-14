@@ -1,0 +1,87 @@
+{
+  "id": "FOOD-005R",
+  "title": "Payable assessment selection evidence",
+  "startingHead": "348de55fcec5520e80667b663bf501b60e16c6b9",
+  "files": [
+    ".river-dev/specifications/food-005r-payable-assessment-selection-evidence.json",
+    "src/lib/food/payable-assessment-selection-domain.ts",
+    "src/lib/food/payable-assessment-selection-domain.test.ts"
+  ],
+  "decision": {
+    "selectedSlice": "A — payable-assessment selection/currentness evidence",
+    "boundary": "Validate inert trusted evidence that one exact FOOD-005J payable-assessment version has been explicitly selected for one exact FOOD-005E order identity/version. The selection does not infer latest/current from revision numbers and grants no checkout, payment, reservation, fulfillment, sale, accounting or rewards authority.",
+    "whyNow": [
+      "FOOD-005J supports immutable historical assessment versions and consecutive revisions but does not establish which historical version is authorized for downstream use.",
+      "FOOD-005Q proves exact authorized fulfillment-charge inclusion in one exact assessment but explicitly grants no latest/current/usable assessment selection.",
+      "A later readiness boundary must not silently consume an arbitrary or repository-latest FOOD-005J assessment.",
+      "Explicit exact selection evidence is narrower than checkout/payment readiness and independent of atomic reservation persistence."
+    ]
+  },
+  "authority": {
+    "trustedSelection": "The caller supplies trusted explicit selection evidence. FOOD-005R validates that evidence against one exact valid FOOD-005J assessment version.",
+    "assessmentValidation": "The supplied FOOD-005J assessment must pass validateFoodPayableAssessmentVersion.",
+    "orderBinding": "Selection order ID/version must exactly equal the selected assessment order ID/version.",
+    "assessmentBinding": "Selection payable-assessment ID/version must exactly equal the supplied assessment ID/version.",
+    "noLatestInference": true,
+    "noCurrentInference": true,
+    "historicalVersionMayBeExplicitlySelected": true
+  },
+  "selectionShape": {
+    "kind": "payable-assessment-selection",
+    "order": {
+      "id": "exact FOOD-005E order identity carried by FOOD-005J",
+      "version": "exact positive safe integer order version"
+    },
+    "payableAssessment": {
+      "id": "exact FOOD-005J assessment identity",
+      "version": "exact positive safe integer assessment version"
+    },
+    "attribution": "bounded non-empty trusted selector attribution",
+    "sourceReference": "bounded non-empty selection provenance",
+    "selectedOn": "caller-supplied YYYY-MM-DD date"
+  },
+  "invariants": [
+    "selection evidence != latest assessment",
+    "selection evidence != automatically current assessment",
+    "selection evidence != repository latest lookup",
+    "selection evidence != payable assessment creation",
+    "selection evidence != payable assessment revision",
+    "selection evidence != repricing",
+    "selection evidence != amountDue authority",
+    "selection evidence != fulfillment-charge inclusion proof",
+    "selection evidence != checkout readiness",
+    "selection evidence != payment readiness",
+    "selection evidence != payment initiation",
+    "selection evidence != payment confirmation",
+    "selection evidence != payment reconciliation",
+    "selection evidence != paid-in-full",
+    "selection evidence != reservation acceptance",
+    "selection evidence != live inventory or slot reservation",
+    "selection evidence != preparation authority",
+    "selection evidence != dispatch readiness",
+    "selection evidence != fulfillment",
+    "selection evidence != completed sale",
+    "selection evidence != accounting/revenue",
+    "selection evidence != rewards/verified purchase",
+    "selection must bind exact order ID/version",
+    "selection must bind exact payable-assessment ID/version",
+    "a valid historical assessment version may be explicitly selected",
+    "higher version number does not automatically supersede selection authority",
+    "selection evidence is detached and immutable"
+  ],
+  "deferred": [
+    "required-vs-not-required fulfillment-charge gate composition",
+    "FOOD-005Q composition into readiness",
+    "assessment selection persistence/service",
+    "repository currentness policy",
+    "atomic inventory/slot persistence and race protection",
+    "checkout/payment readiness",
+    "hosted checkout/payment link creation",
+    "payment initiation/providers",
+    "payment confirmation/reconciliation",
+    "fulfillment readiness",
+    "scheduled/preparing/ready/dispatched/handed-over lifecycle",
+    "completed sale/accounting/revenue",
+    "deployment/production activation"
+  ]
+}
