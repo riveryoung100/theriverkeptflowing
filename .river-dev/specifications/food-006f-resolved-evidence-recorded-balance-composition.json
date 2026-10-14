@@ -1,0 +1,48 @@
+{
+  "id": "FOOD-006F",
+  "title": "Resolved Inventory Evidence Recorded-Balance Composition",
+  "startingHead": "62ff4332a879b23ba90db4e8b84e288b20f0048d",
+  "selectedSlice": "pure resolved-evidence to FOOD-005Z batch balances to FOOD-006A exact-SKU recorded balance",
+  "purpose": "Compose an already-resolved FOOD-006E evidence set through the existing pure FOOD-005Z and FOOD-006A projections without performing persistence reads or creating current-QOH authority.",
+  "files": [
+    ".river-dev/specifications/food-006f-resolved-evidence-recorded-balance-composition.json",
+    "src/lib/food/resolved-inventory-balance-composition.ts",
+    "src/lib/food/resolved-inventory-balance-composition.test.ts"
+  ],
+  "rules": [
+    "Composition is synchronous and pure.",
+    "No persistence read or write occurs.",
+    "The supplied resolved-evidence outer structure and retained FOOD-006C manifest are revalidated before composition.",
+    "Every resolved evidence batch must correspond exactly to the same-position canonical manifest batch identity.",
+    "Every resolved evidence batch SKU must equal the canonical manifest SKU.",
+    "Every resolved batch and its supplied movements are projected through FOOD-005Z.",
+    "The FOOD-005Z movement identity set must exactly equal the manifest movement identity set for that batch.",
+    "All FOOD-005Z batch recorded-balance snapshots are aggregated through FOOD-006A using the exact manifest SKU.",
+    "The result retains the canonical manifest, every per-batch FOOD-005Z recorded-balance snapshot, and the FOOD-006A exact-SKU recorded balance.",
+    "An empty resolved evidence set validly produces exact-SKU recorded balance zero.",
+    "A resolved batch with no movements retains its historical producedPackageCount baseline through FOOD-005Z.",
+    "Negative recorded balances remain valid historical evidence.",
+    "Input order does not create different canonical balance results.",
+    "Returned structures are detached and deeply frozen.",
+    "This is recorded supplied-manifest evidence only.",
+    "No evidence completeness or database cutoff is established.",
+    "No authoritative current quantity-on-hand is established.",
+    "No stock enforcement occurs.",
+    "No reservation-aware availability or capacity authority is established.",
+    "No checkout, payment, fulfillment, sale, accounting or rewards authority is established.",
+    "No migration definition changes or migration execution occur."
+  ],
+  "deferred": [
+    "Persistence-facing manifest-to-balance orchestration.",
+    "Evidence completeness proof.",
+    "Database cutoff or point-in-time snapshot semantics.",
+    "Authoritative current quantity-on-hand.",
+    "Physical handoff/removal evidence.",
+    "Trusted inventory mutation execution.",
+    "Nonnegative stock enforcement.",
+    "Reservation-aware availability.",
+    "Stocked SKU capacity derivation.",
+    "Checkout and payment readiness.",
+    "Supporting indexes."
+  ]
+}
