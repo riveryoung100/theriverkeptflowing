@@ -1,0 +1,32 @@
+{
+  "id": "FOOD-006I1",
+  "startingHead": "c56529621c4dfefa892b3ebf4ee44c6b2befdb5a",
+  "selectedSlice": "A — replace duplicated FOOD-006I ID validation with canonical domain parsers",
+  "purpose": "Align cutoff-bounded ledger input and durable-row identifier parsing with canonical domain semantics before FOOD-006M.",
+  "files": [
+    ".river-dev/specifications/food-006i1-canonical-identifier-parser-alignment.json",
+    "src/lib/food/d1-inventory-evidence-cutoff-bounded-read-persistence.ts",
+    "src/lib/food/d1-inventory-evidence-cutoff-bounded-read-persistence.test.ts"
+  ],
+  "rootCause": "The local grammar rejected internal whitespace accepted canonically and allowed overlong local identifiers through a 256-character total limit instead of the canonical 128-character local limit.",
+  "delegation": {
+    "SKU": "parseFoodSkuId for API exact-SKU input and durable row SKU IDs",
+    "batch": "parseFoodProductionBatchId for durable row batch IDs",
+    "movement": "parseFoodPhysicalInventoryMovementId for durable movement IDs",
+    "removed": "Unused duplicated validateCanonicalIdentifier helper",
+    "normalization": "None; canonical parser output is preserved exactly, without additional grammar or bounds."
+  },
+  "preserved": [
+    "API parser rejection returns invalid without database access",
+    "Durable-row parser rejection returns storage-failure without leaking exceptions",
+    "Equivalent primitive positive safe-integer SKU/batch version predicates remain untouched",
+    "Global cutoff acquisition including empty-ledger cutoff zero",
+    "Cutoff/after safe bounds, defaults, limit 1..100, limit+1 pagination and nextCursor behavior",
+    "Exact-SKU binding and strictly ascending evidence sequences through cutoff",
+    "Frozen/detached output and SELECT-only persistence"
+  ],
+  "regression": "Differential cases derive expected validity from actual canonical parsers, covering internal space/tab, 128/129 local lengths, padding, prefixes, colons, casing, nonstrings, Unicode preservation and version edge cases.",
+  "nonAuthority": ["No completeness", "No manifest", "No recorded balance", "No current QOH", "No capacity", "No availability", "No checkout/payment authority"],
+  "migrations": "0003, 0004 and 0005 unchanged and unexecuted; no SQL or migration execution in this slice.",
+  "delivery": "Exactly three files, unstaged; no commit, push, production mutation, deployment, or FOOD-006M."
+}

@@ -1,5 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { parseFoodSkuId } from "./package-sku-domain";
+import { parseFoodProductionBatchId } from "./production-batch-domain";
+import { parseFoodPhysicalInventoryMovementId } from "./physical-inventory-movement-domain";
+import { validateFoodVersion } from "./draft-domain";
 
 import {
   acquireFoodInventoryEvidenceCutoff,
@@ -8,6 +12,78 @@ import {
   type FoodInventoryEvidenceLedgerD1Result,
   type FoodInventoryEvidenceLedgerD1Statement,
 } from "./d1-inventory-evidence-cutoff-bounded-read-persistence";
+
+function identityCases(prefix: string): unknown[] {
+  return [
+    `${prefix}synthetic`, `${prefix}a b`, `${prefix}a\tb`,
+    `${prefix}${"x".repeat(128)}`, `${prefix}${"x".repeat(129)}`,
+    "", " ", ` ${prefix}x`, `${prefix}x `, `${prefix} x`,
+    "wrong:x", `${prefix.toUpperCase()}x`, `${prefix}X`,
+    prefix, `${prefix}a:b`, `${prefix}\ud800`, null, undefined,
+    1, new String(`${prefix}x`),
+  ];
+}
+
+function canonicalValue(parser: (value: unknown) => string | number, input: unknown) {
+  try { return parser(input); } catch { return undefined; }
+}
+
+test("006I1 API SKU validity delegates to the canonical parser with invalid classification", async () => {
+  for (const input of identityCases("food-sku:")) {
+    const expected = canonicalValue(parseFoodSkuId, input);
+    const h = database(() => ({ success: true, results: [] }));
+    const result = await listFoodInventoryEvidenceLedgerByExactSkuThroughCutoff(h.database, { id: input, version: 1 }, { cutoff: 1 });
+    assert.equal(result.outcome, expected === undefined ? "invalid" : "page");
+    assert.equal(h.calls.length, expected === undefined ? 0 : 1);
+    if (expected !== undefined) assert.equal(h.calls[0]!.values[0], expected);
+  }
+});
+
+for (const [label, prefix, parser, column] of [
+  ["SKU", "food-sku:", parseFoodSkuId, "sku_id"],
+  ["batch", "food-production-batch:", parseFoodProductionBatchId, "batch_id"],
+  ["movement", "food-physical-inventory-movement:", parseFoodPhysicalInventoryMovementId, "movement_id"],
+] as const) {
+  test(`006I1 durable ${label} identifiers match canonical parsing and preserve failure classification`, async () => {
+    for (const input of identityCases(prefix)) {
+      const expected = canonicalValue(parser, input);
+      const requestedSku = column === "sku_id" && expected !== undefined ? { id: expected, version: sku.version } : sku;
+      const row = { ...movementRow(1), [column]: input };
+      const h = database(() => ({ success: true, results: [row] }));
+      const result = await listFoodInventoryEvidenceLedgerByExactSkuThroughCutoff(h.database, requestedSku, { cutoff: 1 });
+      assert.equal(result.outcome, expected === undefined ? "storage-failure" : "page");
+      assert.equal(h.calls.length, 1);
+      if (expected !== undefined) {
+        if (result.outcome !== "page") assert.fail("Expected canonical page");
+        const item = result.value.items[0]!;
+        assert.equal(column === "sku_id" ? item.sku.id : column === "batch_id" ? item.batch.id : item.evidenceKind === "physical-inventory-movement" ? item.movementId : undefined, expected);
+        assert(Object.isFrozen(item));
+      }
+    }
+  });
+}
+
+test("006I1 durable production-batch row also uses canonical batch parsing", async () => {
+  for (const input of identityCases("food-production-batch:")) {
+    const expected = canonicalValue(parseFoodProductionBatchId, input);
+    const h = database(() => ({ success: true, results: [{ ...batchRow(1), batch_id: input }] }));
+    const result = await listFoodInventoryEvidenceLedgerByExactSkuThroughCutoff(h.database, sku, { cutoff: 1 });
+    assert.equal(result.outcome, expected === undefined ? "storage-failure" : "page");
+  }
+});
+
+test("006I1 unchanged version checks agree with canonical positive-safe validation", async () => {
+  for (const version of [1, 0, -1, 1.5, NaN, Infinity, -Infinity, Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER + 1, "1", new Number(1), null, undefined]) {
+    const expected = canonicalValue(validateFoodVersion, version);
+    const inputDb = database(() => ({ success: true, results: [] }));
+    assert.equal((await listFoodInventoryEvidenceLedgerByExactSkuThroughCutoff(inputDb.database, { id: sku.id, version }, { cutoff: 1 })).outcome, expected === undefined ? "invalid" : "page");
+    for (const column of ["sku_version", "batch_version"]) {
+      const h = database(() => ({ success: true, results: [{ ...batchRow(1), [column]: version }] }));
+      const requested = column === "sku_version" && expected !== undefined ? { id: sku.id, version: expected } : sku;
+      assert.equal((await listFoodInventoryEvidenceLedgerByExactSkuThroughCutoff(h.database, requested, { cutoff: 1 })).outcome, expected === undefined ? "storage-failure" : "page");
+    }
+  }
+});
 
 interface Call {
   sql: string;

@@ -18,6 +18,10 @@
  *   - accounting or rewards authority.
  */
 
+import { parseFoodSkuId } from "./package-sku-domain";
+import { parseFoodProductionBatchId } from "./production-batch-domain";
+import { parseFoodPhysicalInventoryMovementId } from "./physical-inventory-movement-domain";
+
 const MAX_SAFE_INTEGER =
   Number.MAX_SAFE_INTEGER;
 
@@ -228,51 +232,6 @@ function validateSafeInteger(
   return value;
 }
 
-function validateCanonicalIdentifier(
-  value: unknown,
-  expectedPrefix: string,
-): string {
-  if (
-    typeof value !==
-      "string" ||
-    value.length ===
-      0 ||
-    value !==
-      value.trim() ||
-    value.length >
-      256 ||
-    !value.startsWith(
-      expectedPrefix,
-    )
-  ) {
-    throw new TypeError(
-      "Invalid canonical identifier",
-    );
-  }
-
-  const local =
-    value.slice(
-      expectedPrefix.length,
-    );
-
-  if (
-    local.length ===
-      0 ||
-    local.includes(
-      ":",
-    ) ||
-    /\s/u.test(
-      local,
-    )
-  ) {
-    throw new TypeError(
-      "Invalid canonical identifier",
-    );
-  }
-
-  return value;
-}
-
 function validateSku(
   input: unknown,
 ): FoodInventoryEvidenceExactSku {
@@ -295,9 +254,8 @@ function validateSku(
 
   return Object.freeze({
     id:
-      validateCanonicalIdentifier(
+      parseFoodSkuId(
         input.id,
-        "food-sku:",
       ),
     version:
       validateSafeInteger(
@@ -416,9 +374,8 @@ function validateRow(
   }
 
   const skuId =
-    validateCanonicalIdentifier(
+    parseFoodSkuId(
       row.sku_id,
-      "food-sku:",
     );
 
   const skuVersion =
@@ -439,9 +396,8 @@ function validateRow(
   }
 
   const batchId =
-    validateCanonicalIdentifier(
+    parseFoodProductionBatchId(
       row.batch_id,
-      "food-production-batch:",
     );
 
   const batchVersion =
@@ -492,9 +448,8 @@ function validateRow(
       "physical-inventory-movement"
   ) {
     const movementId =
-      validateCanonicalIdentifier(
+      parseFoodPhysicalInventoryMovementId(
         row.movement_id,
-        "food-physical-inventory-movement:",
       );
 
     return Object.freeze({
