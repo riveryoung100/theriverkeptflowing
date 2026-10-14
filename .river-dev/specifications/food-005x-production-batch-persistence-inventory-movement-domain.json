@@ -1,0 +1,73 @@
+{
+  "id": "FOOD-005X",
+  "startingHead": "f99ba0d9e0bf9e3c778bc97dcb4c5a3b4d7511e2",
+  "selectedSlice": "C — production-batch persistence + inventory-movement pure domain",
+  "purpose": "Establish durable immutable production batch persistence and a pure append-only physical inventory movement vocabulary without quantity-on-hand, SKU capacity, reservation execution, or checkout/payment readiness.",
+  "files": [
+    ".river-dev/specifications/food-005x-production-batch-persistence-inventory-movement-domain.json",
+    "migrations/food/0004_food_physical_inventory.sql",
+    "src/lib/food/physical-inventory-movement-domain.ts",
+    "src/lib/food/physical-inventory-movement-domain.test.ts",
+    "src/lib/food/d1-production-batch-persistence.ts",
+    "src/lib/food/d1-production-batch-persistence.test.ts"
+  ],
+  "migration": {
+    "path": "migrations/food/0004_food_physical_inventory.sql",
+    "migration 0003": "Unchanged and unexecuted",
+    "migration 0004": "Definition created only; unexecuted; execution forbidden in this slice",
+    "tables": ["food_production_batches", "food_physical_inventory_movements"],
+    "immutability": "Both tables reject updates and deletes through stable immutable triggers.",
+    "batchPrimaryKey": ["batch_id", "version"],
+    "movementForeignKey": "batch_id/batch_version references food_production_batches(batch_id/version)",
+    "skuBinding": "Redundant exact SKU reference retained; no invented durable SKU table or SKU foreign key. Equality to batch SKU is deferred to trusted service/repository logic.",
+    "dateChecks": "SQL checks structural YYYY-MM-DD only; canonical application validation owns full calendar validity.",
+    "seedData": "None",
+    "productionDeployment": "None"
+  },
+  "batchPersistence": {
+    "function": "appendFoodProductionBatchVersion",
+    "validation": "Reuse validateFoodProductionBatchVersion; preserve canonical W1 self-validation and JSON round trips for all storage modes.",
+    "initialVersion": 1,
+    "otherVersions": "Invalid before database access; no arbitrary physical-history revision writer.",
+    "outcomes": ["created", "already-present", "conflict", "invalid", "storage-failure"],
+    "idempotency": "Exact ID/version and identical entire canonical payload returns already-present; divergent payload returns conflict; different IDs create separate immutable rows.",
+    "canonicalEquality": ["kind", "id", "version", "sku.id", "sku.version", "batchCode", "storageMode", "producedPackageCount", "preparedOn", "optional frozenOn", "attribution", "sourceReference"],
+    "insert": "Exact read, then INSERT RETURNING; created requires exactly one valid matching returned row. Failed insert rereads exact durable state: identical is already-present, divergent is conflict, absent/malformed/uncertain is storage-failure.",
+    "failurePolicy": "Fail closed; no raw database exceptions exposed.",
+    "nonFrozenShape": "SQL frozen_on NULL reconstructs omission, then canonical W1 validation; no empty string or artificial undefined output.",
+    "interface": "Narrow local structural prepare/bind/all interface; synthetic test double only.",
+    "authority": "Persistence is not authentication or authorization; no trusted service, route, runtime adapter, binding, or UI."
+  },
+  "movementDomain": {
+    "kind": "food-physical-inventory-movement",
+    "identityPrefix": "food-physical-inventory-movement:",
+    "localIdentity": "Caller-supplied nonempty unpadded text <=128 characters without colon; no generated IDs.",
+    "types": ["adjustment-in", "adjustment-out", "waste"],
+    "shape": ["kind", "id", "batch", "sku", "movementType", "packageCount", "occurredOn", "attribution", "sourceReference"],
+    "references": "Exact branded batch ID/version and SKU ID/version; positive JS-safe versions; no latest/current resolution, lookup, or existence proof.",
+    "packageCount": "Positive JS-safe integer; direction comes from movementType, never a signed count.",
+    "occurredOn": "Deterministic caller-supplied valid YYYY-MM-DD calendar date; no clock access.",
+    "metadata": "Required nonempty unpadded attribution and sourceReference, each <=512 characters.",
+    "strictness": "Unknown string/symbol keys and missing required own keys reject, including nested references.",
+    "snapshot": "Detached and frozen outer movement and nested batch/SKU references.",
+    "authority": "Asserted physical evidence only; proves neither administrator identity, source truth, sufficient stock, possible removal, nor nonnegative resulting quantity.",
+    "productionBaseline": "producedPackageCount is immutable historical production baseline, not quantity-on-hand. No production movement type to avoid duplicated authority.",
+    "reservationSeparation": "reservation hold/release are not physical inventory movements; holds change reservable availability rather than physical quantity.",
+    "futureQoh": "Future stocked physical quantity-on-hand may derive from producedPackageCount + adjustment-in - adjustment-out - waste - a future canonical fulfillment/handoff removal source. Explanatory only; no calculation or mutable counters implemented.",
+    "physicalVersusCapacity": "Physical stocked inventory is distinct from made-to-order capacity."
+  },
+  "deferred": [
+    "Physical movement D1 persistence and trusted service",
+    "Sale/fulfillment/handoff removal until exact authoritative operational evidence is selected",
+    "Quantity-on-hand projection and storage",
+    "SKU capacity derivation or writes; later stocked reservable capacity may compose physical QOH minus active reservations",
+    "Made-to-order capacity authority",
+    "Atomic SKU + fulfillment-slot reservation",
+    "FOOD-005L creation after successful authoritative reservation",
+    "Checkout/payment readiness",
+    "Migration 0003 execution",
+    "Migration 0004 execution",
+    "Production deployment"
+  ],
+  "delivery": "Exactly six new unstaged files; no staging, commit, push, migration execution, production mutation, deployment, or FOOD-005Y."
+}
