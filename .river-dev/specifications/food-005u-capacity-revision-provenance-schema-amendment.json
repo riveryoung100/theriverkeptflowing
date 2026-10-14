@@ -1,0 +1,82 @@
+{
+  "id": "FOOD-005U",
+  "title": "Capacity revision provenance schema amendment",
+  "startingHead": "965ef287bebf6b03b88be55b3164fb686aa10ad5",
+  "selectedSlice": "E — schema amendment required before service",
+  "files": [
+    ".river-dev/specifications/food-005t-capacity-supply-reservation-storage-schema.json",
+    ".river-dev/specifications/food-005u-capacity-revision-provenance-schema-amendment.json",
+    "migrations/food/0003_food_capacity_reservation_storage.sql",
+    "src/lib/food/capacity-reservation-provenance-schema.test.ts"
+  ],
+  "reason": [
+    "FOOD-005T storage is canonical but migration 0003 has not been executed.",
+    "Capacity source tables contain revision fields but FOOD-005T initially keyed source rows without revision.",
+    "A later reservation service must preserve the exact capacity revision relied upon so historical reservation and FOOD-005L acceptance evidence remain auditable after later capacity changes.",
+    "Existing FOOD D1 patterns already demonstrate conditional writes, exact retry/conflict inspection, RETURNING witnesses and batch rollback; the remaining blocker is schema provenance, not transaction capability."
+  ],
+  "amendment": {
+    "skuCapacitySource": {
+      "identity": [
+        "sku_id",
+        "sku_version",
+        "revision"
+      ],
+      "history": "append-only",
+      "immutable": true
+    },
+    "slotCapacitySource": {
+      "identity": [
+        "method",
+        "location_reference",
+        "window_reference",
+        "revision"
+      ],
+      "history": "append-only",
+      "immutable": true
+    },
+    "skuReservationLine": {
+      "adds": "capacity_revision",
+      "reference": "exact food_sku_capacity_sources sku_id/sku_version/revision"
+    },
+    "slotReservation": {
+      "adds": "capacity_revision",
+      "reference": "exact food_fulfillment_slot_capacity_sources method/location_reference/window_reference/revision"
+    }
+  },
+  "invariants": [
+    "capacity revision is positive and JS-safe",
+    "source rows are append-only",
+    "source UPDATE is rejected",
+    "source DELETE is rejected",
+    "reservation lines cannot reference nonexistent SKU capacity revisions",
+    "slot reservations cannot reference nonexistent slot capacity revisions",
+    "reservation provenance references exact source revisions rather than inferred latest/current rows",
+    "migration seeds no capacity",
+    "migration creates no reservation",
+    "migration creates no FOOD-005L acceptance",
+    "migration performs no quantity decrement",
+    "migration performs no slot decrement",
+    "migration grants no checkout/payment readiness"
+  ],
+  "migrationPolicy": {
+    "migration": "migrations/food/0003_food_capacity_reservation_storage.sql",
+    "reasonForEditingExistingDefinition": "0003 has not been executed by this workflow and production remains untouched. Strengthen the not-yet-applied migration definition before first execution rather than creating a corrective live migration.",
+    "afterFirstExecution": "Once 0003 is ever applied to any authoritative target, do not rewrite it; future changes require a new migration."
+  },
+  "deferred": [
+    "trusted SKU capacity-source write service",
+    "trusted fulfillment-slot capacity-source write service",
+    "inventory/production-batch authority",
+    "capacity-source authentication/runtime exposure",
+    "atomic cross-resource reservation service",
+    "available-capacity calculation",
+    "oversell prevention transaction",
+    "FOOD-005L acceptance creation after committed reservation",
+    "release/cancellation/expiration/rescheduling",
+    "checkout/payment readiness",
+    "payment-provider initiation",
+    "configured/local/remote migration execution",
+    "production deployment"
+  ]
+}

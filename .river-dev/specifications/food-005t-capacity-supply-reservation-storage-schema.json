@@ -2,7 +2,7 @@
   "id": "FOOD-005T",
   "title": "Capacity supply and reservation storage schema",
   "startingHead": "9d68697f4a78dd2083992c6c3eb4ec45bce2da85",
-  "selectedSlice": "A — capacity-supply + reservation storage schema only",
+  "selectedSlice": "A â€” capacity-supply + reservation storage schema only",
   "files": [
     ".river-dev/specifications/food-005t-capacity-supply-reservation-storage-schema.json",
     "migrations/food/0003_food_capacity_reservation_storage.sql",
@@ -19,7 +19,7 @@
   "schema": {
     "skuCapacity": {
       "table": "food_sku_capacity_sources",
-      "identity": "One exact SKU ID/version has at most one current authoritative capacity source row.",
+      "identity": "One exact SKU ID/version may have append-only authoritative capacity revisions; identity is exact SKU ID/version/revision.",
       "fields": [
         "sku_id",
         "sku_version",
@@ -32,7 +32,7 @@
     },
     "slotCapacity": {
       "table": "food_fulfillment_slot_capacity_sources",
-      "identity": "One exact method/locationReference/windowReference tuple has at most one current authoritative capacity source row.",
+      "identity": "One exact method/locationReference/windowReference tuple may have append-only authoritative capacity revisions; identity includes exact revision.",
       "fields": [
         "method",
         "location_reference",
@@ -88,10 +88,14 @@
     "exact order version + reservation-request version identity is unique",
     "reservation demand JSON is opaque canonical evidence, not independently trusted authority",
     "reservation line quantities must be positive",
+    "every reservation SKU line binds the exact capacity-source revision used",
+    "every fulfillment-slot reservation binds the exact slot-capacity-source revision used",
+    "capacity-source histories are append-only and immutable",
     "slot reservation quantity must equal one in this initial schema",
     "reservation lines cascade neither update nor delete",
     "reservation rows and line rows are immutable after insert",
-    "capacity source rows may not be mutated by this migration or any trigger",
+    "capacity source rows are immutable after insert",
+    "capacity-source revisions are preserved rather than overwritten",
     "no trigger automatically creates or decrements supply",
     "no trigger automatically creates reservation acceptance"
   ],

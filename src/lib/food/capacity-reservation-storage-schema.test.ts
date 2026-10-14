@@ -31,11 +31,11 @@ test(
 );
 
 test(
-  "SKU capacity storage binds exact SKU version and bounded nonnegative capacity",
+  "SKU capacity storage binds exact SKU version revision and bounded nonnegative capacity",
   () => {
     assert.match(
       sql,
-      /PRIMARY KEY\s*\(\s*sku_id,\s*sku_version\s*\)/,
+      /PRIMARY KEY\s*\(\s*sku_id,\s*sku_version,\s*revision\s*\)/,
     );
 
     assert.match(
@@ -56,11 +56,11 @@ test(
 );
 
 test(
-  "fulfillment slot capacity is separate and keyed by exact method location and window",
+  "fulfillment slot capacity is separate and keyed by exact method location window and revision",
   () => {
     assert.match(
       sql,
-      /PRIMARY KEY\s*\(\s*method,\s*location_reference,\s*window_reference\s*\)/,
+      /PRIMARY KEY\s*\(\s*method,\s*location_reference,\s*window_reference,\s*revision\s*\)/,
     );
 
     assert.match(

@@ -3,14 +3,15 @@ PRAGMA foreign_keys = ON;
 CREATE TABLE IF NOT EXISTS food_sku_capacity_sources (
     sku_id TEXT NOT NULL,
     sku_version INTEGER NOT NULL,
-    capacity_units INTEGER NOT NULL,
     revision INTEGER NOT NULL,
+    capacity_units INTEGER NOT NULL,
     attribution TEXT NOT NULL,
     source_reference TEXT NOT NULL,
 
     PRIMARY KEY (
         sku_id,
-        sku_version
+        sku_version,
+        revision
     ),
 
     CHECK (
@@ -48,15 +49,16 @@ CREATE TABLE IF NOT EXISTS food_fulfillment_slot_capacity_sources (
     method TEXT NOT NULL,
     location_reference TEXT NOT NULL,
     window_reference TEXT NOT NULL,
-    capacity_units INTEGER NOT NULL,
     revision INTEGER NOT NULL,
+    capacity_units INTEGER NOT NULL,
     attribution TEXT NOT NULL,
     source_reference TEXT NOT NULL,
 
     PRIMARY KEY (
         method,
         location_reference,
-        window_reference
+        window_reference,
+        revision
     ),
 
     CHECK (
@@ -152,6 +154,7 @@ CREATE TABLE IF NOT EXISTS food_capacity_reservation_lines (
     line_index INTEGER NOT NULL,
     sku_id TEXT NOT NULL,
     sku_version INTEGER NOT NULL,
+    capacity_revision INTEGER NOT NULL,
     quantity INTEGER NOT NULL,
 
     PRIMARY KEY (
@@ -166,6 +169,17 @@ CREATE TABLE IF NOT EXISTS food_capacity_reservation_lines (
         reservation_id
     ),
 
+    FOREIGN KEY (
+        sku_id,
+        sku_version,
+        capacity_revision
+    )
+    REFERENCES food_sku_capacity_sources (
+        sku_id,
+        sku_version,
+        revision
+    ),
+
     CHECK (
         line_index >= 0
         AND line_index <= 9007199254740991
@@ -174,6 +188,11 @@ CREATE TABLE IF NOT EXISTS food_capacity_reservation_lines (
     CHECK (
         sku_version >= 1
         AND sku_version <= 9007199254740991
+    ),
+
+    CHECK (
+        capacity_revision >= 1
+        AND capacity_revision <= 9007199254740991
     ),
 
     CHECK (
@@ -198,6 +217,7 @@ CREATE TABLE IF NOT EXISTS food_fulfillment_slot_reservations (
     method TEXT NOT NULL,
     location_reference TEXT NOT NULL,
     window_reference TEXT NOT NULL,
+    capacity_revision INTEGER NOT NULL,
     quantity INTEGER NOT NULL,
 
     FOREIGN KEY (
@@ -207,11 +227,29 @@ CREATE TABLE IF NOT EXISTS food_fulfillment_slot_reservations (
         reservation_id
     ),
 
+    FOREIGN KEY (
+        method,
+        location_reference,
+        window_reference,
+        capacity_revision
+    )
+    REFERENCES food_fulfillment_slot_capacity_sources (
+        method,
+        location_reference,
+        window_reference,
+        revision
+    ),
+
     CHECK (
         method IN (
             'personal-delivery',
             'meetup'
         )
+    ),
+
+    CHECK (
+        capacity_revision >= 1
+        AND capacity_revision <= 9007199254740991
     ),
 
     CHECK (
@@ -228,6 +266,30 @@ CREATE TABLE IF NOT EXISTS food_fulfillment_slot_reservations (
         AND length(window_reference) <= 512
     )
 );
+
+CREATE TRIGGER IF NOT EXISTS food_sku_capacity_sources_no_update
+BEFORE UPDATE ON food_sku_capacity_sources
+BEGIN
+    SELECT RAISE(ABORT, 'food sku capacity sources are immutable');
+END;
+
+CREATE TRIGGER IF NOT EXISTS food_sku_capacity_sources_no_delete
+BEFORE DELETE ON food_sku_capacity_sources
+BEGIN
+    SELECT RAISE(ABORT, 'food sku capacity sources are immutable');
+END;
+
+CREATE TRIGGER IF NOT EXISTS food_fulfillment_slot_capacity_sources_no_update
+BEFORE UPDATE ON food_fulfillment_slot_capacity_sources
+BEGIN
+    SELECT RAISE(ABORT, 'food fulfillment slot capacity sources are immutable');
+END;
+
+CREATE TRIGGER IF NOT EXISTS food_fulfillment_slot_capacity_sources_no_delete
+BEFORE DELETE ON food_fulfillment_slot_capacity_sources
+BEGIN
+    SELECT RAISE(ABORT, 'food fulfillment slot capacity sources are immutable');
+END;
 
 CREATE TRIGGER IF NOT EXISTS food_capacity_reservations_no_update
 BEFORE UPDATE ON food_capacity_reservations
