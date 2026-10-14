@@ -1,0 +1,63 @@
+{
+  "id": "FOOD-006A",
+  "title": "Exact-SKU Recorded Physical Balance Aggregation",
+  "startingHead": "e9cdd6595121284d7b71a2c4b2cc8f4c1c1de601",
+  "selectedSlice": "A — pure exact-SKU recorded physical balance aggregation",
+  "purpose": "Aggregate an explicitly supplied set of canonical FOOD-005Z production-batch recorded physical balance snapshots that all bind one exact SKU id/version, without claiming authoritative current quantity-on-hand.",
+  "files": [
+    ".river-dev/specifications/food-006a-exact-sku-recorded-physical-balance-aggregation.json",
+    "src/lib/food/sku-physical-inventory-balance-domain.ts",
+    "src/lib/food/sku-physical-inventory-balance-domain.test.ts"
+  ],
+  "input": {
+    "sku": "One exact SKU reference { id, version }.",
+    "batchBalances": "Explicit array of canonical FOOD-005Z production-batch recorded physical balance snapshots."
+  },
+  "output": {
+    "kind": "food-sku-recorded-physical-balance",
+    "sku": "Detached frozen exact SKU reference.",
+    "recordedPackageBalance": "Signed safe-integer aggregate over supplied exact-batch recorded balances.",
+    "batchReferences": "Detached frozen deterministic exact production-batch references."
+  },
+  "rules": [
+    "The aggregation is pure and synchronous.",
+    "The caller supplies the evidence set explicitly.",
+    "An empty batch-balance set is valid and returns recordedPackageBalance zero.",
+    "Every supplied batch balance must be a strict canonical FOOD-005Z-shaped record.",
+    "Every supplied batch balance must bind the exact requested SKU id/version.",
+    "Each exact batch id/version may appear only once.",
+    "Duplicate exact batch identities are rejected even if payloads are identical.",
+    "Different versions of the same batch id are distinct exact batch identities and may coexist only if supplied as distinct canonical facts.",
+    "recordedPackageBalance is accumulated internally using BigInt.",
+    "The final aggregate must fit the signed JavaScript safe-integer range.",
+    "Negative aggregate recorded balances are valid and preserved.",
+    "batchReferences are sorted deterministically by batch id then version.",
+    "The result and all nested references/arrays are detached and frozen.",
+    "The aggregation does not enumerate production-batch persistence.",
+    "The aggregation does not enumerate inventory-movement persistence.",
+    "The aggregation does not establish evidence completeness or a consistent persistence cutoff.",
+    "The aggregation is not authoritative current quantity-on-hand.",
+    "The aggregation does not subtract reservations.",
+    "The aggregation does not calculate available-to-promise.",
+    "The aggregation does not write or claim stocked SKU capacity.",
+    "The aggregation does not create trusted inventory mutation authority.",
+    "The aggregation does not authenticate callers.",
+    "The aggregation does not infer fulfillment, handoff, sale or physical departure.",
+    "No migration change is required.",
+    "Migration 0003 remains definition-only and unexecuted.",
+    "Migration 0004 remains definition-only and unexecuted."
+  ],
+  "deferred": [
+    "Persisted production-batch enumeration by exact SKU.",
+    "Persisted movement-history enumeration by exact batch.",
+    "Complete evidence-set/cutoff provenance.",
+    "Trusted inventory movement execution.",
+    "Atomic nonnegative operational removal enforcement.",
+    "Physical fulfillment/handoff removal evidence.",
+    "Complete reservation release/expiry accounting.",
+    "Reservation-aware availability.",
+    "Stocked SKU capacity derivation/writer.",
+    "Made-to-order capacity.",
+    "Checkout/payment readiness."
+  ]
+}
