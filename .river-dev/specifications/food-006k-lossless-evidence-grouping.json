@@ -1,0 +1,48 @@
+{
+  "id": "FOOD-006K",
+  "title": "Lossless Complete-Through-Cutoff Inventory Evidence Grouping",
+  "startingHead": "6eb380bb1e52fbeb80cb8ccb3dbbb71c48675182",
+  "selectedSlice": "B â€” pure lossless grouping prerequisite",
+  "purpose": "Transform one successfully exhausted FOOD-006J exact-SKU ledger set into one lossless immutable exact-batch grouping without FOOD-006C cardinality limits, durable reads or balance composition.",
+  "rules": [
+    "Input is the successful value produced by FOOD-006J complete-through-cutoff enumeration.",
+    "Exact SKU and acquired cutoff are retained unchanged.",
+    "Every production-batch ledger entry establishes exactly one exact batch group.",
+    "Every physical-inventory-movement ledger entry must attach to an existing exact batch group.",
+    "A movement whose exact batch has no production-batch ledger entry fails closed.",
+    "Duplicate exact production-batch ledger identities fail closed.",
+    "Duplicate physical inventory movement identities fail closed globally.",
+    "Every input evidence sequence must be a positive safe integer, strictly increasing and less than or equal to cutoff.",
+    "Every ledger entry must bind the same exact SKU as the exhausted input.",
+    "Each exact batch group retains its production-batch evidence sequence.",
+    "Each movement retains its own evidence sequence.",
+    "No evidence is dropped, truncated, partitioned or duplicated.",
+    "FOOD-006K does not truncate evidence.",
+    "A batch may retain more than 128 movements.",
+    "The complete grouping may contain more than 128 exact batches.",
+    "Group ordering is deterministic by exact batch identity rather than ledger pagination boundaries.",
+    "Movement ordering within each batch is deterministic by evidence sequence.",
+    "The output is detached and deeply frozen.",
+    "FOOD-006K does not construct a FOOD-006C manifest.",
+    "FOOD-006K performs no persistence or durable reads.",
+    "FOOD-006K does not call FOOD-006D, FOOD-006E, FOOD-006F or FOOD-006G.",
+    "FOOD-006K does not compose recorded physical balance.",
+    "FOOD-006K does not establish authoritative current quantity-on-hand.",
+    "FOOD-006K grants no capacity, availability, checkout, payment, fulfillment, accounting or rewards authority.",
+    "Migration 0005 remains definition-only and unexecuted."
+  ],
+  "whyNot006CPartitioning": [
+    "FOOD-006C has finite 128-batch and 128-movement-per-batch limits.",
+    "A single exact batch may legitimately have more than 128 movement ledger entries through one FOOD-006J cutoff.",
+    "Partitioning that batch into multiple manifests would create multiple independent representations of the same production batch.",
+    "Later independent 005Z composition of those partitions could reapply producedPackageCount more than once.",
+    "The lossless grouping therefore preserves one exact batch group containing all of that batch's movement evidence."
+  ],
+  "deferred": [
+    "FOOD-006L durable exact resolution of each grouped batch and movement through FOOD-006D.",
+    "Recorded-balance composition where each production baseline is applied exactly once.",
+    "Authoritative current quantity-on-hand.",
+    "Reservation-aware availability.",
+    "Checkout and payment readiness."
+  ]
+}
