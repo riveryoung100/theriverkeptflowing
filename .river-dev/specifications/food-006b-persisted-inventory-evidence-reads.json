@@ -1,0 +1,64 @@
+{
+  "id": "FOOD-006B",
+  "title": "Persisted Inventory Evidence Reads",
+  "startingHead": "0bba1cff5693f30f391985e43cbba088c11cddb6",
+  "selectedSlice": "C — both independent persisted evidence read APIs",
+  "purpose": "Provide independent deterministic read-only enumeration of durable production-batch evidence by exact SKU and durable physical-inventory movement evidence by exact batch.",
+  "files": [
+    ".river-dev/specifications/food-006b-persisted-inventory-evidence-reads.json",
+    "src/lib/food/d1-inventory-evidence-read-persistence.ts",
+    "src/lib/food/d1-inventory-evidence-read-persistence.test.ts"
+  ],
+  "productionBatchRead": {
+    "selector": "exact SKU id/version",
+    "ordering": "batch id binary ascending, then batch version ascending",
+    "cursor": "last returned exact batch id/version",
+    "pageLimit": "default 20; maximum 100",
+    "source": "food_production_batches"
+  },
+  "movementRead": {
+    "selector": "exact production batch id/version",
+    "ordering": "movement id binary ascending",
+    "cursor": "last returned movement id",
+    "pageLimit": "default 20; maximum 100",
+    "source": "food_physical_inventory_movements"
+  },
+  "rules": [
+    "Both APIs are read-only and authority-free.",
+    "Caller selector and pagination inputs are strictly validated before database access.",
+    "Every returned durable row is reconstructed through the canonical FOOD domain validator.",
+    "Returned production batches must bind the requested exact SKU id/version.",
+    "Returned movements must bind the requested exact batch id/version.",
+    "Durable malformed, uncertain, duplicated, out-of-order or selector-divergent state fails closed as storage-failure.",
+    "Pagination uses limit plus one lookahead.",
+    "Only returned page items are fully reconstructed; lookahead identity establishes continuation.",
+    "Returned items, cursors and page results are detached and frozen.",
+    "Production-batch pagination does not infer latest versions.",
+    "Movement pagination does not order or filter by occurredOn.",
+    "These reads do not compose evidence into recorded balances.",
+    "These reads do not prove that pagination observes a complete consistent point-in-time snapshot under concurrent appends.",
+    "No evidence completeness or cutoff provenance is claimed.",
+    "No current quantity-on-hand authority is created.",
+    "No reservation-aware availability is created.",
+    "No stocked SKU capacity is created or written.",
+    "No authentication or trusted mutation authority is introduced.",
+    "No SQL INSERT, UPDATE or DELETE occurs.",
+    "No migration change is required.",
+    "Migration 0003 remains unchanged and unexecuted.",
+    "Migration 0004 remains unchanged and unexecuted."
+  ],
+  "deferred": [
+    "Consistent evidence cutoff or snapshot provenance.",
+    "Composition of persisted batch and movement reads into recorded balances.",
+    "Authoritative current quantity-on-hand.",
+    "Physical handoff removal evidence.",
+    "Trusted inventory execution.",
+    "Atomic nonnegative removal enforcement.",
+    "Complete reservation release/expiry accounting.",
+    "Reservation-aware availability.",
+    "Stocked SKU capacity derivation and writing.",
+    "Made-to-order capacity.",
+    "Checkout and payment readiness.",
+    "Performance indexes for exact-SKU batch and exact-batch movement enumeration."
+  ]
+}
