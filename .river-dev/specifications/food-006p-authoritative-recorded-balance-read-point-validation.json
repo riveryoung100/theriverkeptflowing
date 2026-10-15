@@ -1,0 +1,36 @@
+{
+  "id": "FOOD-006P",
+  "title": "Authoritative recorded inventory balance read-point validation",
+  "startingHead": "dc24186fd077ff01316eaba301477e428a2d73bc",
+  "files": [
+    ".river-dev/specifications/food-006p-authoritative-recorded-balance-read-point-validation.json",
+    "src/lib/food/authoritative-recorded-inventory-balance-read-point-validation.ts",
+    "src/lib/food/authoritative-recorded-inventory-balance-read-point-validation.test.ts"
+  ],
+  "flow": "canonical 006O exactly once, then canonical 006N exactly once",
+  "generationSemantics": {
+    "H2>H1": "stale",
+    "H2=H1": "validated",
+    "H2<H1": "storage/invariant failure"
+  },
+  "safeClaim": "Recorded physical balance reconstructed through authoritative exact-SKU head H and subsequently validated at a later authoritative read point where that exact-SKU head remained H.",
+  "doesNotEstablish": [
+    "continued currentness",
+    "fixed snapshot",
+    "current QOH",
+    "verified physical stock",
+    "physical reconciliation",
+    "availability",
+    "capacity",
+    "reservation authority",
+    "checkout readiness",
+    "payment readiness",
+    "fulfillment authority",
+    "accounting authority",
+    "rewards authority"
+  ],
+  "phaseBSharedExtraction": "deferred",
+  "migration0004": "unchanged",
+  "migration0005": "unchanged / not executed",
+  "production": "untouched"
+}
