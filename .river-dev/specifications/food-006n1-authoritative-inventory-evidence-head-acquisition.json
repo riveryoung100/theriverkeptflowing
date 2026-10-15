@@ -1,0 +1,64 @@
+{
+  "id": "FOOD-006N1",
+  "title": "Authoritative exact-SKU inventory evidence head acquisition",
+  "startingHead": "2f90cae910b379fe763b6bb70134cb2c4b320226",
+  "selectedSlice": "Phase A: independent acquisition primitive; exactly three additions",
+  "purpose": "Originate an authoritative exact-SKU evidence head and its opaque consistency bookmark without an earlier composition.",
+  "files": [
+    ".river-dev/specifications/food-006n1-authoritative-inventory-evidence-head-acquisition.json",
+    "src/lib/food/authoritative-inventory-evidence-head-acquisition.ts",
+    "src/lib/food/authoritative-inventory-evidence-head-acquisition.test.ts"
+  ],
+  "relationshipTo006N": {
+    "reason": "006N validates an earlier composedCutoff and cannot serve as unconditional initial acquisition.",
+    "unchanged": "Existing 006N source, tests, specification and public contracts remain unchanged.",
+    "temporaryDuplication": "The small acquisition mechanism deliberately mirrors 006N. Differential tests protect compatibility; this phase does not establish one shared implementation.",
+    "phaseB": "Shared extraction requires separate review. Preserve 006N H>C returning stale without bookmark access, even when bookmark acquisition would fail."
+  },
+  "contract": {
+    "operation": "acquireFoodAuthoritativeInventoryEvidenceHead(database, input)",
+    "dependency": "Type-only reuse of FoodAuthoritativeInventoryReadPointD1Database and FoodAuthoritativeInventoryReadPointD1Result from 006N.",
+    "request": "Exactly { sku: { id: FoodSkuId, version: positive safe integer } }; canonical parseFoodSkuId and validateFoodVersion; no normalization.",
+    "unexpectedKeys": "Reject unexpected own keys including composedCutoff before session access.",
+    "acquired": "{ outcome: acquired, value: { sku: { id, version }, exactSkuEvidenceHead: H, bookmark } }; no redundant token object.",
+    "invalid": "Malformed request, exact SKU or canonical identity/version; no database access.",
+    "storage-failure": "Session, prepare, bind, query, malformed result/head, or bookmark failure; no partial value or escaping storage exception.",
+    "composedCutoff": "Not accepted, manufactured, inferred or compared.",
+    "stale": "No stale outcome or earlier-composition comparison."
+  },
+  "authoritativeReadPoint": {
+    "sessionConstraint": "first-primary",
+    "query": "SELECT MAX(evidence_sequence) AS evidence_head FROM food_inventory_evidence_sequence WHERE sku_id COLLATE BINARY = ? AND sku_version = ?",
+    "firstQuery": "The exact-SKU head query is the first executed query on the session; no earlier metadata/global/schema query or bookmark access.",
+    "bindings": ["exact SKU ID", "exact SKU version"],
+    "headParsing": "Match 006N exactly: success !== false; exactly one result row; object/nonarray row with own evidence_head; null or undefined maps to H=0, otherwise positive safe integer only. Numeric zero and coercible values fail.",
+    "exactScope": "H is the exact target SKU ID/version MAX, never a global maximum. Global gaps and higher unrelated-SKU sequences do not invalidate it.",
+    "bookmarkOrdering": "getBookmark only after successful head execution, result validation and head parsing.",
+    "bookmark": "Opaque nonempty string preserved exactly without trimming or internal parsing. Consistency anchor associated with the completed authoritative exact-SKU head read.",
+    "fixedSnapshotClaim": false,
+    "continuedCurrentnessClaim": false,
+    "cryptographicProofClaim": false
+  },
+  "immutability": "Fresh frozen acquired envelope, value and SKU; retain no mutable caller object or durable row. Failure envelopes are frozen.",
+  "future006O": {
+    "visibility": "H alone is a numerical historical boundary, not a visibility guarantee for a lagging unanchored reader.",
+    "requiredFlow": "006N1 -> bookmark-anchored session/read dependency -> direct 006I pages through fixed H -> 006K complete grouping -> 006L anchored exact durable resolution -> 006M composition.",
+    "laterWrites": "Later target-SKU appends can coexist with reconstruction through H under immutable ledger/durable evidence assumptions; no continued-currentness claim.",
+    "implementedHere": false
+  },
+  "nonGoals": [
+    "Earlier composition validation, shared extraction or modification of 006N",
+    "006I pagination, 006J exhaustion, 006K grouping, 006L durable resolution, 006M balance composition or 006O orchestration",
+    "Balance arithmetic, current QOH, physical stock or physical reconciliation",
+    "Availability, capacity, reservation, checkout, payment, fulfillment, accounting or rewards authority",
+    "SQL writes, schema changes, migration execution, runtime routes, provider calls or wall-clock behavior"
+  ],
+  "migrationStatus": "0004 and 0005 unchanged; 0005 definition-only and not executed by this slice.",
+  "productionStatus": "Untouched; synthetic tests only. Real primary/bookmark/trigger/concurrency behavior requires isolated non-production integration validation before production authority.",
+  "validation": [
+    "Focused tsx --test suite: strict request shape, canonical parsers, exact SQL/bindings, first query and bookmark ordering, head edges, storage failures, narrow output and detachment",
+    "Differential 006N head parsing and existing H=C, H<C, empty and H>C/no-bookmark regressions",
+    "Unmodified 006N regression, relevant persistence/parser regressions, full FOOD suite",
+    "Bounded strict TypeScript, ESLint --max-warnings 0, JSON parse, static authority scan, complete three-file review and diff hygiene"
+  ]
+}
