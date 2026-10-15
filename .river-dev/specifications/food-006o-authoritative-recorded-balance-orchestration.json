@@ -1,0 +1,66 @@
+{
+  "id": "FOOD-006O",
+  "title": "Authoritative recorded inventory balance orchestration",
+  "startingHead": "48e0187582924f9b7b37d504e5f7862086357ad1",
+  "selectedSlice": "One shared bookmark-anchored reconstruction session; exactly three additions",
+  "purpose": "Recorded physical balance reconstructed from exact-SKU evidence through authoritative head H, using a D1 read session anchored at the bookmark obtained after observing H.",
+  "files": [
+    ".river-dev/specifications/food-006o-authoritative-recorded-balance-orchestration.json",
+    "src/lib/food/authoritative-recorded-inventory-balance-orchestration.ts",
+    "src/lib/food/authoritative-recorded-inventory-balance-orchestration.test.ts"
+  ],
+  "prerequisites": ["FOOD-006N1", "FOOD-006I", "FOOD-006K", "FOOD-006L", "FOOD-006M"],
+  "contract": {
+    "operation": "composeFoodAuthoritativeRecordedInventoryBalance(database, input)",
+    "dependency": "Type-only reuse of FoodAuthoritativeInventoryReadPointD1Database; its session directly satisfies 006I and 006L without an adapter.",
+    "request": "Passed unchanged to 006N1 exactly once: strictly { sku: { id, version } }; no new parser, normalization, caller head, bookmark or composedCutoff.",
+    "composed": "Frozen { outcome: composed, value: { acquisition: canonical FoodAuthoritativeInventoryEvidenceHeadAcquisition, recordedBalance: canonical FoodLosslessGroupedInventoryRecordedBalanceComposition } }.",
+    "provenance": "Retain canonical acquisition and composition objects themselves, including exact SKU, original H and B, skuBalance, every batch/movement identity and evidence sequence, and every batch recorded balance.",
+    "immutability": "Freeze the new envelope and value. Nested canonical results are already deeply frozen and detached; no copying into weaker DTOs.",
+    "invalid": "Malformed request / 006N1 invalid, before any reconstruction session or downstream operation.",
+    "not-found": "006L missing exact durable batch or movement remains not-found.",
+    "storage-failure": "006N1 storage failure, anchored session failure, 006I failure or unexpected invalid, pagination integrity failure, premature exhaustion, 006K rejection, 006L storage failure or unexpected invalid, 006M rejection including overflow, or reconstruction exception. Frozen failure with no partial evidence or balance."
+  },
+  "flow": [
+    "006N1 exactly once: authoritative exact-SKU head H is the first executed query on its first-primary session; B captured afterwards.",
+    "Create exactly one reconstruction session with database.withSession(B), using original B. Creation failure has no fallback.",
+    "Pass that same session to every direct 006I page: exact S, cutoff H, initial after 0, limit 100. No raw post-acquisition reconstruction reads.",
+    "Accumulate canonical entries unchanged until nextCursor is absent. No sorting, deduplication, arbitrary page cap, manifest cap or cutoff reacquisition.",
+    "Present nextCursor must be a safe integer, greater than after, at most H, on a nonempty page and equal to its final returned sequence.",
+    "For positive H, terminal collected sequence must equal H because H is the known exact-SKU maximum. Global gaps remain valid.",
+    "Only after exhaustion, invoke 006K once with frozen complete entries in the structural { sku: S, cutoff: H, entries } contract. 006K's historical 006J reference is type-only; this collection is produced by 006O directly.",
+    "Invoke 006L once with the same anchored session. Its exact batch ID/version and movement ID reads cannot escape the supplied reader.",
+    "Only after successful resolution invoke 006M once. Delegate all 005Z/006A arithmetic and preserve negative recorded balances without clamping.",
+    "Return original acquisition metadata with the exact canonical 006M composition. Do not expose an advanced session bookmark."
+  ],
+  "emptyHead": "H=0 still creates the B-anchored session and follows I -> K -> L -> M. I returns its canonical empty page without querying, L performs zero durable reads, M produces canonical zero skuBalance retaining exact SKU. No invented zero arithmetic.",
+  "consistency": {
+    "H": "Numerical historical exact-SKU evidence boundary, not reader visibility.",
+    "B": "Opaque consistency anchor associated with the primary observation of H; not a cryptographic business token.",
+    "session": "Sequential consistency anchored at B. All reconstruction reads use one shared session; no raw fallback, new session per page, or new session per exact read.",
+    "laterWrites": "Later writes may be visible; 006I excludes evidence above fixed H. No final freshness comparison or global-head equality.",
+    "immutableEvidenceBasis": "Under canonical schema assumptions, migration 0004 protects exact batch/movement rows against update/delete; migration 0005 protects the append-only evidence ledger and registers durable inserts. Identities selected through H remain historical references.",
+    "fixedSnapshotClaim": false,
+    "continuedCurrentnessClaim": false
+  },
+  "excluded": [
+    "006J import, invocation, wrapper or cutoff acquisition",
+    "Old 006N validation after composition or fabricated composedCutoff",
+    "006C manifests, 006F bounded composition, duplicated grouping/resolution/arithmetic",
+    "Current QOH, verified physical stock, physical reconciliation or available-to-promise",
+    "Availability, capacity, reservation, checkout, payment, fulfillment, accounting or rewards authority",
+    "SQL writes, schema changes, migration execution, runtime routes, deployment, provider calls or wall-clock dependence",
+    "Phase B shared acquisition extraction and FOOD-006P"
+  ],
+  "validation": [
+    "Synthetic real canonical pipeline tests: empty, one page, multiple batches/movements, >100/>128 entries and >128 pages, exact provenance, negative balance and mutation detachment.",
+    "Distinct primary, lagging raw reader and anchored session; raw reconstruction prepare throws; anchored pagination and late durable entity reads succeed through H=150.",
+    "Fixed H and cursor chaining, later >H exclusion, unrelated SKU/version exclusion, gaps, terminal H integrity, page/storage/grouping/resolution/composition failures without partial state.",
+    "In-memory instrumentation of the actual module supplements real-operation tests only for impossible canonical cursor results and stage call ordering; no production injection API.",
+    "Focused tests, unchanged N1/N/I/K/L/M/005Z/006A regressions, full FOOD suite, bounded strict TypeScript, ESLint --max-warnings 0, JSON parse, static authority scan and complete file/diff hygiene."
+  ],
+  "runtimeLimitations": "Complete evidence is retained in memory and exact reads are sequential. No arbitrary truncation is introduced. Real D1 routing/bookmark/trigger/concurrency and deployment resource behavior require isolated non-production integration validation before production authority.",
+  "migrationStatus": "0004 and 0005 unchanged; no migration executed; 0005 remains definition-only.",
+  "productionStatus": "Untouched; synthetic fixtures only.",
+  "delivery": "Exactly three new unstaged files. Existing canonical modules unchanged. No staging, commit, push, closure staging or next architecture slice."
+}
