@@ -1,0 +1,70 @@
+{
+  "id": "FOOD-006T",
+  "title": "Physical inventory correction movement candidate bundle",
+  "startingHead": "82f5739b4285d070c86c5b08a0b5c8c41811c584",
+  "files": [
+    ".river-dev/specifications/food-006t-physical-inventory-correction-movement-candidates.json",
+    "src/lib/food/physical-inventory-correction-movement-candidates.ts",
+    "src/lib/food/physical-inventory-correction-movement-candidates.test.ts"
+  ],
+  "discoveryEvidence": {
+    "movementIdentity": "Canonical physical inventory movement identity is caller supplied; no correction-specific deterministic ID derivation exists.",
+    "occurredOn": "Canonical movement occurredOn is an explicit calendar date. FOOD-006Q observedAt is a UTC instant and no canonical observedAt-to-occurredOn mapping exists.",
+    "attribution": "Movement attribution is required bounded caller metadata and no correction-specific derivation exists.",
+    "sourceReference": "Movement sourceReference is required bounded caller metadata and no correction-specific derivation exists.",
+    "cardinality": "FOOD-006S exposes independent exact-batch allocations and no aggregate multi-batch physical movement contract exists.",
+    "canonicalization": "validateFoodPhysicalInventoryMovement is the canonical strict movement validator and returns frozen canonical evidence.",
+    "persistence": "appendFoodPhysicalInventoryMovement is a separate durable operation and is not called by FOOD-006T.",
+    "evidenceSequence": "Candidate creation alone does not enter FOOD-006 evidence sequencing. Migration 0005 remains unexecuted."
+  },
+  "decision": "FOOD-006T purely transforms one canonical FOOD-006S allocation result plus explicit per-exact-batch caller metadata into zero or more canonical physical inventory movement candidates.",
+  "metadataPerAllocation": {
+    "batch": "Exact allocation batch id/version used to bind metadata without relying on caller array order.",
+    "movementId": "Explicit caller-supplied canonical FoodPhysicalInventoryMovementId.",
+    "occurredOn": "Explicit caller-supplied canonical calendar date. Never generated and never inferred by truncating FOOD-006Q observedAt.",
+    "attribution": "Explicit caller-supplied canonical bounded attribution.",
+    "sourceReference": "Explicit caller-supplied canonical bounded provenance reference."
+  },
+  "agreement": "FOOD-006S no-correction-required requires an empty metadata array and returns zero movement candidates.",
+  "allocated": [
+    "Metadata cardinality must exactly equal FOOD-006S allocation cardinality.",
+    "Each metadata entry binds exactly one FOOD-006S exact batch.",
+    "Unknown or duplicate metadata batch bindings are rejected.",
+    "Duplicate movement IDs across candidate movements are rejected.",
+    "Exactly one movement candidate is produced for each FOOD-006S allocation.",
+    "Candidate batch equals allocation batch exactly.",
+    "Candidate SKU equals FOOD-006S SKU exactly.",
+    "Candidate packageCount equals allocation packageCount exactly.",
+    "Candidate movementType equals FOOD-006S proposedMovementType exactly.",
+    "FOOD-006T never derives waste.",
+    "Canonical movement validation owns movement identity/date/metadata validation.",
+    "Output follows canonical FOOD-006S allocation order even when metadata input order differs."
+  ],
+  "provenance": "The canonical FOOD-006S allocation plan is retained in the candidate bundle. Candidate metadata is detached into canonical FoodPhysicalInventoryMovement values.",
+  "persistence": "None.",
+  "schema": "None.",
+  "doesNotEstablish": [
+    "durable physical inventory movement",
+    "movement append success",
+    "evidence-sequence insertion",
+    "physical truth of the underlying count",
+    "physical truth of the caller-selected batch allocation",
+    "atomic persistence of multiple candidates",
+    "atomic temporal alignment",
+    "continued currentness",
+    "current QOH",
+    "verified physical stock",
+    "available-to-promise",
+    "availability",
+    "capacity",
+    "reservation authority",
+    "checkout readiness",
+    "payment readiness",
+    "fulfillment authority",
+    "accounting authority",
+    "rewards authority"
+  ],
+  "migration0004": "unchanged",
+  "migration0005": "unchanged / not executed",
+  "production": "untouched"
+}
