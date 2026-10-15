@@ -1,0 +1,59 @@
+{
+  "id": "FOOD-006R",
+  "title": "Exact-SKU physical inventory reconciliation projection domain",
+  "startingHead": "da24b5b2dbaa916330e8d1fd00e86ee07bd62590",
+  "files": [
+    ".river-dev/specifications/food-006r-exact-sku-physical-inventory-reconciliation-domain.json",
+    "src/lib/food/exact-sku-physical-inventory-reconciliation-domain.ts",
+    "src/lib/food/exact-sku-physical-inventory-reconciliation-domain.test.ts"
+  ],
+  "decision": "Implement a pure exact-SKU reconciliation projection over one canonical FOOD-006Q physical-count observation and one validated FOOD-006P recorded-balance result.",
+  "inputs": {
+    "recordedBalance": "Exactly one FOOD-006P result whose outcome is validated.",
+    "countObservation": "Exactly one canonicalizable FOOD-006Q exact-sku-total physical-count observation."
+  },
+  "compatibility": [
+    "FOOD-006Q SKU id/version must exactly equal FOOD-006P acquisition SKU.",
+    "FOOD-006P acquisition, recorded-balance, SKU-balance, read-point and consistency-token SKU id/version must agree.",
+    "FOOD-006P recorded cutoff, read-point cutoff/head and token cutoff/head must equal the acquisition exact-SKU evidence head.",
+    "No batch-level identity or location inference is introduced."
+  ],
+  "arithmetic": {
+    "formula": "variancePackageCount = countedPackageCount - recordedPackageBalance",
+    "implementation": "Use exact BigInt subtraction and reject a final value outside the signed JavaScript safe-integer range.",
+    "negativeRecordedBalance": "Preserve canonical negative recorded balances unchanged; do not clamp them."
+  },
+  "statuses": {
+    "agreement": "variancePackageCount equals zero.",
+    "count-over-recorded": "variancePackageCount is positive.",
+    "count-under-recorded": "variancePackageCount is negative."
+  },
+  "provenance": {
+    "countObservation": "Canonical FOOD-006Q observation is retained in the result.",
+    "recordedBalanceValidation": "The exact validated FOOD-006P value is retained by reference.",
+    "timeBoundary": "FOOD-006R does not prove that FOOD-006Q observedAt and the FOOD-006P authoritative database read point represent one atomic instant."
+  },
+  "safeClaim": "Mechanical exact-SKU reconciliation of one caller-asserted physical-count observation against one recorded physical balance that FOOD-006P validated at an unchanged authoritative exact-SKU evidence generation.",
+  "doesNotEstablish": [
+    "observer authentication",
+    "source authentication",
+    "truthful or complete physical counting",
+    "atomic temporal alignment between physical count and database read point",
+    "continued currentness",
+    "current QOH",
+    "verified physical stock beyond the supplied count assertion",
+    "available-to-promise",
+    "capacity",
+    "reservation authority",
+    "checkout readiness",
+    "payment readiness",
+    "fulfillment authority",
+    "accounting authority",
+    "rewards authority"
+  ],
+  "persistence": "None in FOOD-006R.",
+  "schema": "None.",
+  "migration0004": "unchanged",
+  "migration0005": "unchanged / not executed",
+  "production": "untouched"
+}
