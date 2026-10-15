@@ -1,0 +1,49 @@
+{
+  "id": "FOOD-006Q",
+  "title": "Exact-SKU physical count observation domain",
+  "startingHead": "56d8bb547ed3d39d6a4adb9cc8e88b3e2269fe96",
+  "files": [
+    ".river-dev/specifications/food-006q-exact-sku-physical-count-observation-domain.json",
+    "src/lib/food/exact-sku-physical-count-observation-domain.ts",
+    "src/lib/food/exact-sku-physical-count-observation-domain.test.ts"
+  ],
+  "decision": "Create physical-count evidence before physical reconciliation.",
+  "reason": "No canonical physical-count observation exists. Existing physical inventory movements are asserted batch/SKU corrections, while FOOD-006P validates recorded evidence generation but explicitly grants neither physical reconciliation nor current-QOH authority.",
+  "shape": [
+    "kind",
+    "id",
+    "sku.id",
+    "sku.version",
+    "countScope=exact-sku-total",
+    "countedPackageCount",
+    "observedAt",
+    "attribution",
+    "sourceReference"
+  ],
+  "countSemantics": "countedPackageCount is a nonnegative safe integer; zero is valid.",
+  "scopeSemantics": "exact-sku-total is a caller assertion that the observation is a total count for the exact SKU rather than a partial batch/location count. Structural validation does not authenticate or prove that assertion.",
+  "timeSemantics": "observedAt is caller-supplied canonical UTC YYYY-MM-DDTHH:mm:ssZ evidence. It is not a generated clock and does not establish continued currentness.",
+  "batchRelationship": "No batch field. FOOD-006Q records exact-SKU total count evidence so a later reconciliation slice can compare like-for-like against FOOD-006P exact-SKU recorded balance. Per-batch reconciliation remains separate.",
+  "reconciliation": "Deferred. A later slice may consume one canonical FOOD-006Q observation plus compatible authoritative FOOD-006P recorded-balance evidence and derive agreement/discrepancy without mutating either source.",
+  "doesNotEstablish": [
+    "observer authentication",
+    "source authentication",
+    "truthful or complete counting",
+    "physical reconciliation",
+    "continued currentness",
+    "current QOH",
+    "available-to-promise",
+    "capacity",
+    "reservation authority",
+    "checkout readiness",
+    "payment readiness",
+    "fulfillment authority",
+    "accounting authority",
+    "rewards authority"
+  ],
+  "persistence": "None in FOOD-006Q.",
+  "schema": "None.",
+  "migration0004": "unchanged",
+  "migration0005": "unchanged / not executed",
+  "production": "untouched"
+}
