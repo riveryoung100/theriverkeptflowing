@@ -1,0 +1,62 @@
+{
+  "id": "FOOD-006V",
+  "title": "Post-correction authoritative bookkeeping verification",
+  "startingHead": "2cead13a48ad100c824bcc7af739bff5cc588e82",
+  "files": [
+    ".river-dev/specifications/food-006v-post-correction-authoritative-bookkeeping-verification.json",
+    "src/lib/food/post-correction-authoritative-bookkeeping-verification.ts",
+    "src/lib/food/post-correction-authoritative-bookkeeping-verification.test.ts"
+  ],
+  "decision": "Implement discovery Option B: after canonical completed FOOD-006U, perform a fresh canonical FOOD-006P authoritative recorded-balance validation and then canonical FOOD-006R mechanical reconciliation against the exact historical FOOD-006Q count observation retained through correction provenance.",
+  "eligibility": [
+    "Canonical FOOD-006U completed is eligible.",
+    "Canonical FOOD-006U no-correction-required returns without database access.",
+    "FOOD-006U blocked is ineligible for whole-correction verification.",
+    "FOOD-006U invalid is ineligible.",
+    "Malformed or tampered completed/no-correction input returns invalid before database access."
+  ],
+  "completedFlow": [
+    "Revalidate the canonical FOOD-006T candidate bundle and every completed FOOD-006U attempt before database access.",
+    "Require every completed attempt result to be created or already-present and to contain the exact canonical candidate movement.",
+    "Call validateFoodAuthoritativeRecordedInventoryBalanceAtReadPoint exactly once using the candidate bundle exact SKU.",
+    "If FOOD-006P validates, call reconcileFoodExactSkuPhysicalInventory with the fresh FOOD-006P result and the original canonical FOOD-006Q count observation.",
+    "Preserve the original reconciliation, fresh validated recorded balance and fresh mechanical bookkeeping reconciliation."
+  ],
+  "freshReadOutcomes": {
+    "validated": "Return verified with canonical FOOD-006R bookkeeping reconciliation.",
+    "stale": "Return stale and the later exact-SKU evidence head; do not report verified.",
+    "not-found": "Return not-found.",
+    "invalid": "Fail closed to storage-failure because the request SKU was derived from canonical correction provenance.",
+    "storage-failure": "Return storage-failure."
+  },
+  "retrySemantics": "A completed FOOD-006U result containing already-present movements remains eligible. FOOD-006V does not require an evidence-head increase merely because the orchestration was retried.",
+  "movementInclusion": "Not proven. FOOD-006V does not claim that any observed head transition was caused by the correction movements and does not claim every correction movement was included in the fresh cutoff.",
+  "historicalCountSemantics": "The reused FOOD-006Q observation remains the historical caller-asserted physical count. Reconciliation against a fresh recorded balance is mechanical bookkeeping comparison only; it is not a new physical count.",
+  "verifiedSafeClaim": "A fresh authoritative exact-SKU recorded balance was reconstructed and validated by FOOD-006P after a completed FOOD-006U result, then mechanically compared by FOOD-006R with the exact historical physical-count observation retained in correction provenance.",
+  "doesNotEstablish": [
+    "correction movement inclusion in the fresh evidence cutoff",
+    "causality for any evidence-head transition",
+    "fresh physical count",
+    "truth or completeness of the historical physical count",
+    "truth of caller-selected batch allocations",
+    "atomic temporal alignment",
+    "absence of later exact-SKU inventory events",
+    "continued currentness",
+    "current QOH",
+    "verified physical stock",
+    "available-to-promise",
+    "availability",
+    "capacity",
+    "reservation authority",
+    "checkout readiness",
+    "payment readiness",
+    "fulfillment authority",
+    "accounting authority",
+    "rewards authority"
+  ],
+  "persistence": "None.",
+  "schema": "None.",
+  "migration0004": "unchanged",
+  "migration0005": "unchanged / not executed",
+  "production": "untouched"
+}
