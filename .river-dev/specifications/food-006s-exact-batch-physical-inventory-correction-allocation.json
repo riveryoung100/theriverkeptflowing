@@ -1,0 +1,75 @@
+{
+  "id": "FOOD-006S",
+  "title": "Exact-batch physical inventory correction allocation prerequisite",
+  "startingHead": "d56ad66c12f28b2e41393dfdcb0649d8af180b36",
+  "files": [
+    ".river-dev/specifications/food-006s-exact-batch-physical-inventory-correction-allocation.json",
+    "src/lib/food/exact-batch-physical-inventory-correction-allocation.ts",
+    "src/lib/food/exact-batch-physical-inventory-correction-allocation.test.ts"
+  ],
+  "discoveryEvidence": {
+    "movementRequirement": "Every canonical physical inventory movement binds one exact production batch id/version and one exact SKU id/version.",
+    "reconciliationBoundary": "FOOD-006R produces an exact-SKU variance and explicitly introduces no batch-level identity inference.",
+    "allocationPolicy": "No canonical automatic batch-allocation or lot-selection policy was found.",
+    "movementPersistence": "An existing append-only D1 physical inventory movement writer exists, but FOOD-006S does not invoke it.",
+    "sequenceIntegration": "Migration 0005 definition would sequence later persisted physical movements into exact-SKU inventory evidence, but migration 0005 remains unexecuted.",
+    "countReconciliationPersistence": "No durable FOOD-006Q physical-count or FOOD-006R reconciliation storage was found."
+  },
+  "decision": "FOOD-006S is a pure caller-supplied exact-batch correction allocation plan. It does not automatically choose batches and does not create or persist physical inventory movements.",
+  "input": {
+    "reconciliation": "One canonical FOOD-006R reconciliation.",
+    "allocations": "Caller-supplied array of exact production-batch id/version plus positive packageCount."
+  },
+  "agreement": "A zero reconciliation variance requires an empty allocation array and returns no-correction-required.",
+  "nonzeroVariance": {
+    "positive": "Positive counted-minus-recorded variance derives proposedMovementType adjustment-in.",
+    "negative": "Negative counted-minus-recorded variance derives proposedMovementType adjustment-out.",
+    "waste": "FOOD-006S never derives waste from reconciliation variance."
+  },
+  "batchRules": [
+    "Every allocation must reference an exact production batch already present in the FOOD-006P recorded composition retained by FOOD-006R.",
+    "Unknown batch ids or versions are rejected.",
+    "Duplicate exact batch allocations are rejected.",
+    "No FIFO, FEFO, oldest-batch, newest-batch or other automatic allocation policy is invented.",
+    "Allocation package counts are positive safe integers.",
+    "Allocation totals use exact BigInt arithmetic and must equal the absolute FOOD-006R variance exactly.",
+    "Output allocation order is canonical by batch id then version.",
+    "FOOD-006S does not claim that a caller-selected batch allocation is physically truthful.",
+    "FOOD-006S does not infer per-batch physical quantity from the exact-SKU count observation.",
+    "FOOD-006S does not prohibit a resulting future recorded per-batch balance from becoming negative; recorded negative balances remain discrepancy evidence rather than literal negative stock."
+  ],
+  "movementBoundary": [
+    "The result is not a FoodPhysicalInventoryMovement.",
+    "No movement identity is created.",
+    "No occurredOn date is chosen.",
+    "No attribution is chosen.",
+    "No sourceReference is chosen.",
+    "No appendFoodPhysicalInventoryMovement call occurs.",
+    "A later explicit slice may transform a reviewed allocation plan into movement candidates and separately persist them."
+  ],
+  "persistence": "None.",
+  "schema": "None.",
+  "doesNotEstablish": [
+    "physical truth of the count observation",
+    "physical truth of caller batch allocation",
+    "durable count observation",
+    "durable reconciliation",
+    "durable correction",
+    "atomic temporal alignment",
+    "continued currentness",
+    "current QOH",
+    "verified physical stock",
+    "available-to-promise",
+    "availability",
+    "capacity",
+    "reservation authority",
+    "checkout readiness",
+    "payment readiness",
+    "fulfillment authority",
+    "accounting authority",
+    "rewards authority"
+  ],
+  "migration0004": "unchanged",
+  "migration0005": "unchanged / not executed",
+  "production": "untouched"
+}
