@@ -1,0 +1,68 @@
+{
+  "id": "FOOD-006W",
+  "title": "Correction movement evidence-inclusion verification",
+  "startingHead": "b23360d089d3643a7d6fe695136b99747cb3335f",
+  "files": [
+    ".river-dev/specifications/food-006w-correction-movement-evidence-inclusion-verification.json",
+    "src/lib/food/correction-movement-evidence-inclusion-verification.ts",
+    "src/lib/food/correction-movement-evidence-inclusion-verification.test.ts"
+  ],
+  "decision": "Implement discovery Option A: a pure projection over canonical FOOD-006V verified provenance. Fresh FOOD-006P recorded-balance composition already preserves bounded physical-movement provenance as exact movementId plus evidenceSequence within each exact batch, so no additional database reader is required.",
+  "input": "One FOOD-006V result.",
+  "eligibility": [
+    "FOOD-006V verified is eligible for correction movement inclusion verification.",
+    "FOOD-006V no-correction-required returns no-correction-required without any inclusion claim.",
+    "FOOD-006V invalid, ineligible, stale, not-found and storage-failure are ineligible.",
+    "Malformed or tampered FOOD-006V verified/no-correction provenance returns invalid."
+  ],
+  "verification": [
+    "Revalidate the FOOD-006T candidate bundle from FOOD-006V.",
+    "Require the FOOD-006V original reconciliation to exactly equal canonical correction provenance.",
+    "Recompute canonical FOOD-006R from the fresh validated recorded-balance value and the exact historical FOOD-006Q observation.",
+    "Require the supplied FOOD-006V bookkeeping reconciliation to equal that canonical recomputation.",
+    "Use the fresh validated FOOD-006P recorded-balance composition already retained by FOOD-006V.",
+    "Index bounded movement provenance by exact movement identity.",
+    "Require every correction movement ID to exist.",
+    "Require each correction movement reference to occur on the exact candidate batch.",
+    "Require each correction movement evidenceSequence to be less than or equal to the validated exact-SKU cutoff.",
+    "Do not require correction evidence sequences to be consecutive.",
+    "Do not require correction movements to be the only evidence in the generation.",
+    "Allow unrelated exact-SKU evidence to interleave.",
+    "Do not require the authoritative head to advance for idempotent already-present retries."
+  ],
+  "outcomes": {
+    "verified": "Every canonical correction movement is represented in the exact bounded recorded-balance composition at or before the validated cutoff and on its exact batch.",
+    "missing-evidence": "One or more canonical correction movement identities are absent from the fresh bounded composition; all found and missing identities are exposed without claiming full inclusion.",
+    "no-correction-required": "No correction movement inclusion proof is required because upstream reconciliation was agreement.",
+    "ineligible": "The upstream FOOD-006V result is not a verified/no-correction result.",
+    "invalid": "Supplied provenance or bounded evidence violates canonical invariants."
+  },
+  "safeClaim": "Every canonical correction movement from the completed FOOD-006U bundle is represented by exact-SKU inventory evidence at or before the authoritative cutoff used by the validated post-correction recorded balance.",
+  "doesNotEstablish": [
+    "causality for the evidence-head transition",
+    "fresh physical truth",
+    "fresh physical count",
+    "truth or completeness of the historical physical count",
+    "truth of caller-selected batch allocation",
+    "absence of later inventory events",
+    "continued currentness",
+    "current QOH",
+    "verified physical stock",
+    "available-to-promise",
+    "availability",
+    "capacity",
+    "reservation authority",
+    "checkout readiness",
+    "payment readiness",
+    "fulfillment authority",
+    "accounting authority",
+    "rewards authority"
+  ],
+  "databaseReads": "None.",
+  "databaseWrites": "None.",
+  "persistence": "None.",
+  "schema": "None.",
+  "migration0004": "unchanged",
+  "migration0005": "unchanged / not executed",
+  "production": "untouched"
+}
