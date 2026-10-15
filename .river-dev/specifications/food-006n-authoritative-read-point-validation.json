@@ -1,0 +1,59 @@
+{
+  "id": "FOOD-006N",
+  "title": "Authoritative exact-SKU inventory read-point prerequisite",
+  "startingHead": "8a2671b28c730c073bf94f48f29af8eb93b25da0",
+  "selected": "D — authoritative read-point validation prerequisite",
+  "scope": {
+    "purpose": "Establish the authoritative exact-SKU evidence generation observed at a primary database read point.",
+    "input": {
+      "sku": "exact canonical SKU identity/version",
+      "composedCutoff": "nonnegative safe integer from an earlier composition"
+    },
+    "output": {
+      "success": "exact SKU + composed cutoff + authoritative exact-SKU evidence head + D1 session bookmark",
+      "stale": "authoritative exact-SKU evidence head exceeds composed cutoff",
+      "invalid": "malformed request",
+      "storage-failure": "session/query/result/bookmark failure"
+    }
+  },
+  "authoritativeReadPoint": {
+    "sessionConstraint": "first-primary",
+    "criticalInvariant": "The exact-SKU MAX(evidence_sequence) query is the first executed query on the session.",
+    "query": "SELECT MAX(evidence_sequence) AS evidence_head FROM food_inventory_evidence_sequence WHERE sku_id COLLATE BINARY = ? AND sku_version = ?",
+    "bookmark": "Captured after the authoritative head query.",
+    "fixedSnapshotClaim": false,
+    "continuedCurrentnessClaim": false
+  },
+  "generationToken": {
+    "fields": [
+      "exact SKU",
+      "composed cutoff",
+      "exact-SKU evidence head",
+      "session bookmark"
+    ],
+    "meaning": "The system-of-record evidence generation observed at the authoritative read point.",
+    "notMeaning": "A guarantee that no later writer commits after return."
+  },
+  "architectureCorrection": {
+    "sameSessionFinalHeadRejected": "A first-primary session guarantees the first query is primary; a later query on that same session must not be described as a guaranteed latest-primary read.",
+    "006MBalanceNotReturned": "This prerequisite does not authenticate or return an arbitrary supplied FOOD-006M balance.",
+    "nextLayer": "A later orchestration layer may bind the canonical J→K→L→M chain to this authoritative generation primitive."
+  },
+  "boundaries": {
+    "currentQohAuthority": false,
+    "physicalReconciliationAuthority": false,
+    "availabilityAuthority": false,
+    "capacityAuthority": false,
+    "checkoutAuthority": false,
+    "paymentAuthority": false,
+    "fulfillmentAuthority": false,
+    "accountingAuthority": false,
+    "rewardsAuthority": false,
+    "persistenceWrites": false,
+    "manifestReconstruction": false
+  },
+  "productionCaveat": {
+    "migration0005": "definition-only / unexecuted",
+    "runtimeIntegration": "Real D1 primary/bookmark/trigger/concurrency behavior still requires isolated non-production integration validation before production authority."
+  }
+}
