@@ -1,0 +1,62 @@
+{
+  "id": "FOOD-007A",
+  "title": "Exact-SKU stocked capacity-source candidate",
+  "startingHead": "00c909cdfbe7ec65186be8edbdf77b3e10dd6740",
+  "selectedDiscoveryOption": "A1 — pure exact-SKU stocked capacity-source candidate before persistence",
+  "files": [
+    ".river-dev/specifications/food-007a-exact-sku-stocked-capacity-source-candidate.json",
+    "src/lib/food/exact-sku-stocked-capacity-source-candidate.ts",
+    "src/lib/food/exact-sku-stocked-capacity-source-candidate.test.ts"
+  ],
+  "operation": "deriveFoodExactSkuStockedCapacitySourceCandidate(input: unknown): FoodExactSkuStockedCapacitySourceCandidateResult",
+  "purpose": "Create a pure, deterministic exact-SKU stocked capacity-source candidate from canonical FOOD-006Z fresh provenance without persistence or reservation authority.",
+  "input": "A purported canonical FOOD-006Z result. Canonical fresh input is revalidated by replaying FOOD-006Z from its retained FOOD-006Y provenance and explicit timing policy.",
+  "eligibility": {
+    "fresh": "Canonical FOOD-006Z fresh is eligible.",
+    "stale": "Canonical FOOD-006Z stale is ineligible.",
+    "invalid": "Canonical FOOD-006Z invalid/ineligible outcomes are ineligible; malformed or tampered supplied structures are invalid."
+  },
+  "capacityUnits": {
+    "derivation": "capacityUnits is exactly canonical FOOD-006X convergence.recordedPackageBalance retained through FOOD-006Y and FOOD-006Z.",
+    "equality": "Canonical convergence requires recordedPackageBalance === countedPackageCount and variancePackageCount === 0.",
+    "zero": "Allowed.",
+    "negative": "Forbidden for this candidate. Canonical eligible aggregate count/balance must be a nonnegative safe integer.",
+    "overflow": "Reject values outside JavaScript nonnegative safe-integer range."
+  },
+  "provenance": "The candidate retains the complete recursively detached canonical FOOD-006Z fresh result as physicalCountObservationFreshnessValidation. Timing/count/evidence facts are not independently reinvented.",
+  "referenceTime": "Retained only through canonical FOOD-006Z provenance.",
+  "clock": "No clock read. No implicit now.",
+  "databaseReads": "None.",
+  "databaseWrites": "None.",
+  "persistence": "None. FOOD-007B is expected to define explicit capacity-source revision metadata and D1 persistence against food_sku_capacity_sources.",
+  "migration": "None. Migration 0003 already contains the future food_sku_capacity_sources storage shape; production application is not inferred. Migration 0005 remains untouched and unexecuted.",
+  "safeClaim": "A bounded exact-SKU capacity-source candidate equal to the canonical converged recorded package balance whose retained physical-count observation satisfies the explicit FOOD-006Z freshness policy at its supplied reference time.",
+  "forbiddenClaims": [
+    "physical truth",
+    "current physical quantity-on-hand",
+    "current QOH",
+    "available stock",
+    "sellable stock",
+    "reservable quantity",
+    "available-to-promise",
+    "reservation acceptance",
+    "reservation hold",
+    "availability",
+    "orderability",
+    "checkout readiness",
+    "payment readiness",
+    "fulfillment authority",
+    "accounting authority"
+  ],
+  "boundaries": [
+    "FOOD-006Y validated != capacity authority",
+    "FOOD-006Z fresh != capacity authority",
+    "FOOD-007A candidate != persisted capacity source",
+    "FOOD-007A candidate != current physical QOH",
+    "FOOD-007A candidate != reservable capacity",
+    "FOOD-007A candidate != available-to-promise",
+    "FOOD-007A candidate != reservation authority",
+    "fulfillment-slot capacity != stocked-SKU capacity"
+  ],
+  "next": "FOOD-007B — exact-SKU capacity-source revision domain and D1 persistence, with explicit revision, attribution and sourceReference semantics."
+}
