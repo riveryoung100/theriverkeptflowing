@@ -1,0 +1,74 @@
+{
+  "id": "FOOD-006X",
+  "title": "Post-correction recorded-balance convergence classification",
+  "startingHead": "e1b1c1693ebaa5a808cc13b166ebc54b9fc9022e",
+  "files": [
+    ".river-dev/specifications/food-006x-post-correction-recorded-balance-convergence.json",
+    "src/lib/food/post-correction-recorded-balance-convergence.ts",
+    "src/lib/food/post-correction-recorded-balance-convergence.test.ts"
+  ],
+  "decision": "Implement discovery Option B: a pure convergence classifier over canonical FOOD-006W with explicit balance-comparison fields for auditability.",
+  "input": "Exactly one FOOD-006W correction-movement evidence-inclusion verification result.",
+  "canonicalChain": [
+    "FOOD-006W verified proves every canonical correction movement is represented by bounded exact-SKU evidence at or before validated cutoff H on its exact batch.",
+    "FOOD-006W retains canonical FOOD-006V verified provenance.",
+    "FOOD-006V retains the fresh validated FOOD-006P recorded balance and canonical FOOD-006R bookkeeping reconciliation against the exact historical FOOD-006Q observation.",
+    "FOOD-006X performs no new authoritative read and does not recompute correction allocation arithmetic."
+  ],
+  "outcomes": {
+    "converged": "FOOD-006W is verified and embedded canonical bookkeeping FOOD-006R is agreement with zero variance and exact counted/recorded equality.",
+    "not-converged": "FOOD-006W is verified but embedded canonical bookkeeping FOOD-006R remains nonzero after all correction movements are included.",
+    "no-correction-required": "Canonical FOOD-006W no-correction agreement is preserved without inventing a correction-cycle convergence claim.",
+    "ineligible": "Canonical FOOD-006W invalid, ineligible or missing-evidence cannot receive convergence certification.",
+    "invalid": "Malformed, tampered or noncanonical FOOD-006W provenance is rejected."
+  },
+  "convergedFields": [
+    "sku",
+    "cutoff",
+    "countedPackageCount",
+    "recordedPackageBalance",
+    "variancePackageCount",
+    "inclusions",
+    "correctionInclusionVerification"
+  ],
+  "notConvergedFields": [
+    "sku",
+    "cutoff",
+    "countedPackageCount",
+    "recordedPackageBalance",
+    "variancePackageCount",
+    "inclusions",
+    "correctionInclusionVerification"
+  ],
+  "safeClaim": "At authoritative exact-SKU cutoff H, every canonical correction movement from the completed correction bundle is represented in the validated recorded-balance evidence, and that recorded balance equals the exact historical caller-asserted physical count.",
+  "notConvergedSafeClaim": "Every canonical correction movement is represented at or before validated cutoff H, but the recorded balance at H does not equal the exact historical caller-asserted physical count.",
+  "doesNotEstablish": [
+    "that correction movements alone caused convergence",
+    "exclusive correction contribution",
+    "absence of unrelated interleaving evidence",
+    "fresh physical truth",
+    "fresh physical count",
+    "truth or completeness of the historical physical count",
+    "truth of caller-selected batch allocation",
+    "absence of later inventory events",
+    "continued currentness",
+    "current QOH",
+    "verified physical stock",
+    "available-to-promise",
+    "availability",
+    "capacity",
+    "reservation authority",
+    "checkout readiness",
+    "payment readiness",
+    "fulfillment authority",
+    "accounting authority",
+    "rewards authority"
+  ],
+  "databaseReads": "None.",
+  "databaseWrites": "None.",
+  "persistence": "None.",
+  "schema": "None.",
+  "migration0004": "unchanged",
+  "migration0005": "unchanged / not executed",
+  "production": "untouched"
+}
