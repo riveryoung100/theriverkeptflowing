@@ -1,0 +1,71 @@
+{
+  "id": "FOOD-006U",
+  "title": "Sequential physical inventory correction persistence orchestration",
+  "startingHead": "85a0cb36f41c05c261cb15292b99b5fdc6170913",
+  "files": [
+    ".river-dev/specifications/food-006u-physical-inventory-correction-persistence-orchestration.json",
+    "src/lib/food/physical-inventory-correction-persistence-orchestration.ts",
+    "src/lib/food/physical-inventory-correction-persistence-orchestration.test.ts"
+  ],
+  "discoveryDecision": "Use explicit non-atomic sequential fail-fast orchestration. The canonical single-movement writer performs its own exact movement read, exact batch read, insert and race-recovery read. No canonical transaction context exists that can wrap those calls while reusing the writer unchanged.",
+  "input": "One canonical FOOD-006T physical inventory correction movement candidate result.",
+  "preStorageValidation": [
+    "FOOD-006T input is revalidated before any database access.",
+    "No-correction provenance is rederived through canonical FOOD-006T.",
+    "Candidate allocation provenance is rederived through canonical FOOD-006T.",
+    "Every supplied candidate movement is canonically revalidated.",
+    "Candidate ordering, exact SKU, allocation plan and movement content must match canonical FOOD-006T output.",
+    "Tampered input returns invalid before persistence."
+  ],
+  "noCorrection": [
+    "Returns no-correction-required.",
+    "Performs zero physical movement database calls."
+  ],
+  "execution": [
+    "Candidates are processed in canonical FOOD-006T order.",
+    "appendFoodPhysicalInventoryMovement is the only movement persistence writer used.",
+    "The writer is invoked exactly once for each attempted candidate.",
+    "created and already-present are non-blocking.",
+    "conflict, invalid and storage-failure are blocking.",
+    "Processing stops immediately at the first blocking result.",
+    "No later candidate is attempted after a blocking result."
+  ],
+  "completed": [
+    "Every candidate was attempted.",
+    "Every per-candidate result was created or already-present.",
+    "Every exact per-candidate writer result is preserved."
+  ],
+  "blocked": [
+    "Every attempted result up to and including the blocker is preserved.",
+    "The blocking attempt and index are preserved.",
+    "Exact identities of remaining unattempted candidates are exposed.",
+    "Earlier durable success is never hidden.",
+    "No rollback is claimed or attempted.",
+    "The bundle is not described as atomic."
+  ],
+  "retry": "Re-running the same canonical FOOD-006T bundle revisits prior durable movement IDs through the canonical single-movement writer, which preserves created/already-present/conflict/storage-failure semantics.",
+  "postWrite": "FOOD-006U stops at movement append outcomes. It does not acquire a new evidence head, rebuild authoritative recorded balance, rerun FOOD-006P, or perform another physical reconciliation.",
+  "doesNotEstablish": [
+    "atomic multi-movement persistence",
+    "rollback of earlier durable movement writes",
+    "physical truth of the underlying count",
+    "physical truth of caller batch allocation",
+    "atomic temporal alignment",
+    "continued currentness",
+    "current QOH",
+    "verified physical stock",
+    "available-to-promise",
+    "availability",
+    "capacity",
+    "reservation authority",
+    "checkout readiness",
+    "payment readiness",
+    "fulfillment authority",
+    "accounting authority",
+    "rewards authority"
+  ],
+  "schema": "None.",
+  "migration0004": "unchanged",
+  "migration0005": "unchanged / not executed",
+  "production": "untouched"
+}
