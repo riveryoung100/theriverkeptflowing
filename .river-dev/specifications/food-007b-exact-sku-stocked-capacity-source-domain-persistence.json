@@ -1,0 +1,66 @@
+{
+  "id": "FOOD-007B",
+  "title": "Exact-SKU stocked capacity-source domain and D1 persistence",
+  "startingHead": "80bf275e40fda3153a214e55ecc6357436088ef7",
+  "selectedDiscoveryOption": "Option B — exact-SKU stocked capacity-source domain + D1 persistence",
+  "upstream": "Canonical FOOD-007A exact-SKU stocked capacity-source candidate.",
+  "files": [
+    ".river-dev/specifications/food-007b-exact-sku-stocked-capacity-source-domain-persistence.json",
+    "src/lib/food/exact-sku-stocked-capacity-source-domain.ts",
+    "src/lib/food/exact-sku-stocked-capacity-source-domain.test.ts",
+    "src/lib/food/d1-exact-sku-stocked-capacity-source-persistence.ts",
+    "src/lib/food/d1-exact-sku-stocked-capacity-source-persistence.test.ts"
+  ],
+  "domain": {
+    "kind": "exact-sku-stocked-capacity-source",
+    "sku": "Derived only from canonical FOOD-007A replay at the public append boundary.",
+    "capacityUnits": "Derived exactly from canonical FOOD-007A replay; public callers cannot supply independent SKU or capacityUnits.",
+    "revision": "Positive JavaScript safe integer. Durable history sequencing is enforced by persistence.",
+    "attribution": "Explicit caller-supplied nonempty unpadded text up to 512 characters.",
+    "sourceReference": "Explicit caller-supplied nonempty unpadded text up to 512 characters.",
+    "zeroCapacity": "Allowed.",
+    "negativeCapacity": "Rejected."
+  },
+  "candidateRevalidation": "deriveFoodExactSkuStockedCapacitySourceRevisionFromCandidate strictly replays FOOD-007A from the candidate retained FOOD-006Z provenance and requires exact canonical candidate equality before deriving SKU/capacity.",
+  "provenance": "Full FOOD-007A/006Z provenance is required in memory at the public write boundary. Only SKU/version/revision/capacity/attribution/source-reference are persisted. sourceReference is a reference string, not authenticated truth. Durable persistence and the latest stored revision do not establish current physical truth.",
+  "persistence": {
+    "table": "food_sku_capacity_sources",
+    "identity": [
+      "sku_id",
+      "sku_version",
+      "revision"
+    ],
+    "initialRevision": 1,
+    "sequence": "A new noninitial revision must be exactly latest stored revision + 1.",
+    "exactRetry": "Exact same durable revision is already-present.",
+    "divergentSameRevision": "conflict",
+    "revisionGap": "conflict",
+    "insertRace": "Reread exact durable identity; exact content -> already-present, divergent content -> conflict, absent/malformed/read failure -> storage-failure.",
+    "writes": "At most one INSERT attempt. No UPDATE. No DELETE.",
+    "publicInput": "Canonical candidate write request with exactly candidate, revision, attribution, sourceReference. Public append invokes deriveFoodExactSkuStockedCapacitySourceRevisionFromCandidate before any database access. Invalid candidate/write requests perform zero DB reads and zero inserts."
+  },
+  "resultUnion": [
+    "invalid",
+    "created",
+    "already-present",
+    "conflict",
+    "storage-failure"
+  ],
+  "authority": {
+    "currentQoh": false,
+    "physicalTruth": false,
+    "reservableQuantity": false,
+    "availableToPromise": false,
+    "availability": false,
+    "orderability": false,
+    "reservationAuthority": false,
+    "checkoutReadiness": false,
+    "paymentReadiness": false
+  },
+  "safeClaim": "An immutable historical exact-SKU capacity-source revision can be derived from canonical FOOD-007A plus explicit revision provenance and durably appended to the existing capacity-source history.",
+  "migration0003": "unchanged",
+  "migration0004": "unchanged",
+  "migration0005": "unchanged / not executed",
+  "production": "untouched",
+  "next": "Discover the next true reservation/capacity-read boundary after stocked-SKU source persistence."
+}
