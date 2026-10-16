@@ -182,6 +182,45 @@ test("007A retains timing policy only through canonical 006Z provenance", async 
     /maxObservationAgeSeconds:\s*value\.maxObservationAgeSeconds/,
   );
 });
+test("007A canonical snapshot accepts dense arrays without treating intrinsic length as provenance", async () => {
+  const source = await readFile(
+    new URL(
+      "./exact-sku-stocked-capacity-source-candidate.ts",
+      import.meta.url,
+    ),
+    "utf8",
+  );
+
+  assert.match(
+    source,
+    /if \(Array\.isArray\(input\)\)/,
+  );
+
+  assert.match(
+    source,
+    /ownKeys\.length !== input\.length \+ 1/,
+  );
+
+  assert.match(
+    source,
+    /ownKeys\[input\.length\] !== "length"/,
+  );
+
+  assert.match(
+    source,
+    /\.slice\(0, input\.length\)/,
+  );
+
+  assert.match(
+    source,
+    /key !== String\(index\)/,
+  );
+
+  assert.doesNotMatch(
+    source,
+    /const array = Array\.isArray\(input\);[\s\S]*entries\.length !== input\.length/,
+  );
+});
 test("007A specification locks the candidate-only authority boundary", async () => {
   const spec = JSON.parse(
     await readFile(

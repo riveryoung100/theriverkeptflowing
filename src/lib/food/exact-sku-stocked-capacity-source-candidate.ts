@@ -114,45 +114,94 @@ function snapshot(
 
   ancestors.add(input);
 
-  const array = Array.isArray(input);
+  if (Array.isArray(input)) {
+    const ownKeys = Reflect.ownKeys(input);
+
+    if (
+      ownKeys.length !== input.length + 1 ||
+      ownKeys[input.length] !== "length" ||
+      ownKeys
+        .slice(0, input.length)
+        .some(
+          (key, index) =>
+            typeof key !== "string" ||
+            key !== String(index),
+        )
+    ) {
+      throw new TypeError(
+        "Expected dense canonical array",
+      );
+    }
+
+    const values: unknown[] = [];
+
+    for (
+      let index = 0;
+      index < input.length;
+      index += 1
+    ) {
+      const descriptor =
+        Object.getOwnPropertyDescriptor(
+          input,
+          String(index),
+        );
+
+      if (
+        descriptor === undefined ||
+        !("value" in descriptor)
+      ) {
+        throw new TypeError(
+          "Expected canonical array data fields",
+        );
+      }
+
+      values.push(
+        snapshot(
+          descriptor.value,
+          ancestors,
+        ),
+      );
+    }
+
+    ancestors.delete(input);
+
+    return values;
+  }
+
   const entries: Array<[string, unknown]> = [];
 
   for (const key of Reflect.ownKeys(input)) {
     if (typeof key !== "string") {
-      throw new TypeError("Unexpected symbol field");
+      throw new TypeError(
+        "Unexpected symbol field",
+      );
     }
 
     const descriptor =
-      Object.getOwnPropertyDescriptor(input, key);
+      Object.getOwnPropertyDescriptor(
+        input,
+        key,
+      );
 
     if (
       descriptor === undefined ||
       !("value" in descriptor)
     ) {
-      throw new TypeError("Expected enumerable canonical fields");
+      throw new TypeError(
+        "Expected canonical fields",
+      );
     }
 
     entries.push([
       key,
-      snapshot(descriptor.value, ancestors),
+      snapshot(
+        descriptor.value,
+        ancestors,
+      ),
     ]);
   }
 
   ancestors.delete(input);
-
-  if (array) {
-    if (
-      entries.length !== input.length ||
-      entries.some(
-        ([key], index) =>
-          key !== String(index),
-      )
-    ) {
-      throw new TypeError("Expected dense canonical array");
-    }
-
-    return entries.map(([, value]) => value);
-  }
 
   return Object.fromEntries(entries);
 }
