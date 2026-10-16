@@ -1,0 +1,99 @@
+{
+  "id": "FOOD-007C",
+  "title": "Exact-SKU stocked capacity-source exact-revision read",
+  "startingHead": "1df023629aa2e4a931785ad7e6cbe6d79048c5a5",
+  "upstream": "Canonical FOOD-007B exact-SKU stocked capacity-source persistence/domain.",
+  "files": [
+    ".river-dev/specifications/food-007c-exact-sku-stocked-capacity-source-exact-revision-read.json",
+    "src/lib/food/d1-exact-sku-stocked-capacity-source-read.ts",
+    "src/lib/food/d1-exact-sku-stocked-capacity-source-read.test.ts"
+  ],
+  "publicFunction": "readFoodExactSkuStockedCapacitySourceRevision",
+  "selector": {
+    "shape": "{ sku: { id, version }, revision }",
+    "validation": "Exact own data keys at both levels; reject missing/extra/symbol/inherited-only fields and accessors without invoking getters. Canonical parseFoodSkuId and validateFoodVersion. Positive safe integer SKU version and revision. Capture detached frozen selector before database access.",
+    "invalid": "invalid; zero database access"
+  },
+  "resultUnion": [
+    "found",
+    "not-found",
+    "invalid",
+    "storage-failure"
+  ],
+  "found": "Frozen result containing canonical FOOD-007B durable value and frozen nested SKU; detached from storage and caller objects.",
+  "database": {
+    "table": "food_sku_capacity_sources",
+    "columns": [
+      "sku_id",
+      "sku_version",
+      "revision",
+      "capacity_units",
+      "attribution",
+      "source_reference"
+    ],
+    "identity": [
+      "sku_id",
+      "sku_version",
+      "revision"
+    ],
+    "predicate": "sku_id = ? AND sku_version = ? AND revision = ?",
+    "boundParameterOrder": [
+      "sku.id",
+      "sku.version",
+      "revision"
+    ],
+    "limit": 2,
+    "selectAttempts": "At most one. No retry, fallback, alternate lookup, or latest selection.",
+    "writes": 0,
+    "reservationReads": 0,
+    "reservationWrites": 0,
+    "sessions": "Accept injected read-capable database/session. No session creation or additional consistency promise."
+  },
+  "storageValidation": {
+    "envelope": "Object with success === true and array results; malformed or unsuccessful envelopes fail closed.",
+    "zeroRows": "not-found",
+    "multipleRows": "storage-failure",
+    "oneRow": "Require own six data columns, reconstruct canonical kind and nested SKU, invoke validateFoodExactSkuStockedCapacitySourceRevision, and require exact requested SKU ID/version/revision equality.",
+    "faults": "Prepare/bind/all exceptions, malformed stored data, or identity disagreement yield storage-failure; no public thrown validation errors."
+  },
+  "numericSemantics": "Zero and maximum safe capacity allowed. Negative/fractional/unsafe/coerced capacity rejected without clamping. Positive safe revision/version only. No continuity inspection.",
+  "safeClaim": "A structurally valid stored historical capacity-source assertion was returned for the requested exact SKU revision.",
+  "provenanceLimitation": "Full FOOD-007A/006Z provenance is not structurally stored and cannot be replayed from this read. Structural validation does not authenticate original provenance or writer.",
+  "sourceReferenceLimitation": "A persisted reference string, not authenticated truth.",
+  "freshnessCurrentness": "None. No clock, age calculation, inventory-head acquisition, latest check, physical recount, or movement reconstruction. Returned revision need not be latest, current, governing, physically accurate, or eligible for future acceptance.",
+  "nonClaims": [
+    "physical truth",
+    "current physical QOH",
+    "current capacity",
+    "available stock",
+    "sellable stock",
+    "reservable quantity",
+    "remaining capacity",
+    "available-to-promise / ATP",
+    "reservation acceptance",
+    "reservation hold",
+    "reservation release",
+    "availability",
+    "orderability",
+    "checkout readiness",
+    "payment readiness",
+    "fulfillment truth",
+    "accounting truth",
+    "authenticated caller",
+    "authenticated writer",
+    "authenticated sourceReference"
+  ],
+  "authority": {
+    "reservation": false,
+    "ATP": false,
+    "availability": false,
+    "orderability": false
+  },
+  "separation": "No reservation aggregation or lifecycle; no physical inventory access; no runtime routes or consumers. This reader is insufficient for reservation acceptance.",
+  "migrationImpact": "none",
+  "migration0003": "unchanged",
+  "migration0004": "unchanged",
+  "migration0005": "unchanged / not executed",
+  "production": "untouched",
+  "next": "Discovery for next prerequisite after exact SKU source read."
+}
