@@ -1,0 +1,110 @@
+{
+  "id": "FOOD-007D",
+  "title": "Exact fulfillment-slot capacity-source exact-revision read",
+  "startingHead": "a3894319a6ebf24531c046c40075542e87b47151",
+  "upstream": [
+    "Canonical FOOD-005V fulfillment-slot capacity-source domain/persistence.",
+    "Canonical FOOD-007C exact SKU historical reader as architectural precedent."
+  ],
+  "files": [
+    ".river-dev/specifications/food-007d-exact-fulfillment-slot-capacity-source-exact-revision-read.json",
+    "src/lib/food/d1-exact-fulfillment-slot-capacity-source-read.ts",
+    "src/lib/food/d1-exact-fulfillment-slot-capacity-source-read.test.ts"
+  ],
+  "publicFunction": "readFoodExactFulfillmentSlotCapacitySourceRevision",
+  "selector": {
+    "shape": "{ method, locationReference, windowReference, revision }",
+    "validation": "Exact own data keys. Reject missing/extra/symbol/inherited-only fields and accessors without invoking getters. Reuse validateFoodFulfillmentMethod and validateFoodVersion. References are nonempty unpadded strings up to 512 characters, matching FOOD-005V. No trimming or coercion.",
+    "capture": "Detached frozen selector before database access.",
+    "invalid": "invalid; zero database access"
+  },
+  "resultUnion": [
+    "found",
+    "not-found",
+    "invalid",
+    "storage-failure"
+  ],
+  "canonicalValidation": {
+    "kind": "FOOD_FULFILLMENT_SLOT_CAPACITY_SOURCE_KIND",
+    "validator": "validateFoodFulfillmentSlotCapacitySourceRevision",
+    "identity": "Require validated method/locationReference/windowReference/revision to exactly match selector.",
+    "result": "Frozen detached result/value."
+  },
+  "database": {
+    "table": "food_fulfillment_slot_capacity_sources",
+    "columns": [
+      "method",
+      "location_reference",
+      "window_reference",
+      "revision",
+      "capacity_units",
+      "attribution",
+      "source_reference"
+    ],
+    "predicate": "method = ? AND location_reference = ? AND window_reference = ? AND revision = ?",
+    "boundParameterOrder": [
+      "method",
+      "locationReference",
+      "windowReference",
+      "revision"
+    ],
+    "limit": 2,
+    "limitRationale": "Detect unexpected multiplicity and fail closed despite database uniqueness expectations.",
+    "selectAttempts": "At most one. No fallback, retry, alternate query, or latest selection.",
+    "writes": 0,
+    "reservationReads": 0,
+    "reservationWrites": 0,
+    "sessions": "Injected prepare/bind/all reader only; no session creation or stronger consistency promise."
+  },
+  "storageBehavior": {
+    "envelope": "Require object with success === true and array results.",
+    "zeroRows": "not-found",
+    "oneRow": "Require seven own data columns; reconstruct canonical durable value and validate exact identity.",
+    "multipleRows": "storage-failure",
+    "faults": "Malformed envelope/row, explicit unsuccessful result, wrong identity, or prepare/bind/all exception yields storage-failure. No public validation exception."
+  },
+  "numericSemantics": "Positive safe revision; nonnegative safe capacity. Zero and maximum safe capacity/revision allowed. No clamping or revision continuity inspection.",
+  "safeClaim": "A structurally valid stored historical fulfillment-slot capacity-source assertion was returned for the requested exact slot identity and revision.",
+  "nonClaims": [
+    "latest capacity",
+    "current slot capacity",
+    "slot availability",
+    "remaining slot capacity",
+    "reservable quantity",
+    "ATP",
+    "physical truth",
+    "current physical QOH",
+    "reservation acceptance",
+    "reservation hold",
+    "reservation release",
+    "active reservation",
+    "availability",
+    "orderability",
+    "checkout readiness",
+    "payment readiness",
+    "fulfillment truth",
+    "accounting truth",
+    "authenticated caller",
+    "authenticated writer",
+    "authenticated sourceReference"
+  ],
+  "fulfillmentIntentLimitation": "No fulfillment-intent resolution or persistence. Future reference-only acceptance needs separate intent-resolution/trust design.",
+  "reservationLifecycleLimitation": "No canonical active reservation lifecycle is supplied or inferred. No aggregation, consumption, release, or expiration.",
+  "sourceReferenceLimitation": "Persisted reference string, not authenticated truth; structural validation does not authenticate the writer.",
+  "freshnessCurrentness": "None. No clock, age/expiration check, latest lookup, or governing/acceptance eligibility claim.",
+  "authority": {
+    "slotAvailability": false,
+    "reservableQuantity": false,
+    "ATP": false,
+    "reservationAcceptance": false,
+    "availability": false,
+    "orderability": false
+  },
+  "separation": "No reservation tables, physical inventory, FOOD-005L evidence creation, runtime routes, or consumers. FOOD-005D is not made executable.",
+  "migrationImpact": "none",
+  "migration0003": "unchanged",
+  "migration0004": "unchanged",
+  "migration0005": "unchanged / not executed",
+  "production": "untouched",
+  "next": "Discover next prerequisite toward complete request composition / trusted source resolution / lifecycle / atomic acceptance."
+}
