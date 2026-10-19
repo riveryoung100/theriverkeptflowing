@@ -1,0 +1,103 @@
+{
+  "id": "FOOD-007E",
+  "title": "Reservation capacity-source revision selection request",
+  "startingHead": "91dea4c6eee731f81666c8a3b16190da32cd972b",
+  "publicFunction": "deriveFoodReservationCapacitySourceSelectionRequest",
+  "kind": "reservation-capacity-source-selection-request",
+  "files": [
+    ".river-dev/specifications/food-007e-reservation-capacity-source-selection-request.json",
+    "src/lib/food/reservation-capacity-source-selection-request.ts",
+    "src/lib/food/reservation-capacity-source-selection-request.test.ts"
+  ],
+  "upstream": [
+    "FOOD-005D request/quote/intent structural source binding.",
+    "FOOD-007C exact SKU source read as future consumer only.",
+    "FOOD-007D exact slot source read as future consumer only."
+  ],
+  "input": {
+    "keys": [
+      "request",
+      "quote",
+      "fulfillmentIntent",
+      "skuSelections",
+      "slotSelection"
+    ],
+    "capture": "Recursively detach plain own data before upstream validation; reject unexpected prototypes, accessors, symbols, cycles, unsupported primitives, sparse arrays and extra array properties. No trimming/coercion.",
+    "canonicalValidation": [
+      "validateFoodReservationRequestAgainstSources",
+      "validateFoodFulfillmentIntentVersion",
+      "parseFoodSkuId",
+      "validateFoodVersion",
+      "validateFoodFulfillmentMethod"
+    ]
+  },
+  "skuMapping": "Exactly one selection { sku: { id, version }, revision } for every exact demand SKU. Reject missing/extra/duplicate/wrong-id/wrong-version selections. Match by identity, never position alone.",
+  "outputOrdering": "Canonical SKU selections follow validated request demand line order regardless of caller selection order.",
+  "slotMapping": "Exact method/locationReference/windowReference/revision keys. Slot identity must equal validated intent. References are nonempty unpadded strings up to 512 characters.",
+  "revisionSemantics": "Positive safe integers including historical values and maximum safe integer. No existence, continuity, latest, currentness, eligibility or capacity test.",
+  "resultUnion": [
+    "candidate",
+    "invalid"
+  ],
+  "candidateFields": [
+    "kind",
+    "request",
+    "fulfillmentIntent",
+    "skuSelections",
+    "slotSelection"
+  ],
+  "quoteRetention": "Quote is a structural validation input only; not duplicated in output. Output is not authenticated provenance evidence.",
+  "immutability": "Result, candidate, snapshots, selection identities, selection array and slot selection are detached and deeply frozen. Caller objects remain mutable.",
+  "database": {
+    "reads": 0,
+    "writes": 0
+  },
+  "persistence": "None. No storage readers, routes or acceptance constructors.",
+  "safeClaim": "A complete set of proposed exact capacity-source revision references is structurally bound to the supplied reservation demand and fulfillment intent.",
+  "nonClaims": [
+    "authenticated request origin",
+    "authenticated quote origin",
+    "authenticated fulfillment intent origin",
+    "authorized source selection",
+    "trusted source selection",
+    "stored-source existence",
+    "latest source revision",
+    "current source revision",
+    "source freshness",
+    "source eligibility",
+    "source currentness",
+    "physical truth",
+    "current QOH",
+    "available stock",
+    "slot availability",
+    "active reservations",
+    "remaining capacity",
+    "reservable quantity",
+    "ATP",
+    "reservation hold",
+    "reservation acceptance",
+    "availability",
+    "orderability",
+    "checkout readiness",
+    "payment readiness",
+    "fulfillment truth",
+    "accounting truth"
+  ],
+  "sourceSelectionPolicy": "Not defined; explicit proposal only.",
+  "currentness": "None.",
+  "authority": {
+    "activeReservations": false,
+    "remainingCapacity": false,
+    "reservableQuantity": false,
+    "ATP": false,
+    "reservationAcceptance": false,
+    "availability": false,
+    "orderability": false
+  },
+  "migrationImpact": "none",
+  "migration0003": "unchanged",
+  "migration0004": "unchanged",
+  "migration0005": "unchanged / not executed",
+  "production": "untouched",
+  "next": "Discover/implement proposed revision resolution and/or eligibility policy before operational capacity accounting."
+}
