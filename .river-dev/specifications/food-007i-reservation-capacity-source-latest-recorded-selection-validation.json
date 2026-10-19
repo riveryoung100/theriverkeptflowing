@@ -1,0 +1,87 @@
+{
+  "unit": "FOOD-007I",
+  "title": "Reservation Capacity-Source Latest-Recorded Selection Validation",
+  "status": "implementation",
+  "objective": "Validate whether the exact capacity-source revisions already resolved by canonical FOOD-007F equal the highest structurally valid recorded revisions individually observed through the public FOOD-007G and FOOD-007H latest-recorded readers.",
+  "dependencies": [
+    "FOOD-007E exact reservation capacity-source selection request",
+    "FOOD-007F exact reservation capacity-source selection resolution",
+    "FOOD-007G public exact-SKU latest-recorded capacity-source read",
+    "FOOD-007H public exact fulfillment-slot latest-recorded capacity-source read"
+  ],
+  "inputBoundary": {
+    "input": "Canonical FOOD-007F FoodReservationCapacitySourceSelectionResolution.",
+    "database": "One injected database structurally satisfying the existing exact-SKU and exact-slot read contracts.",
+    "capture": "The relevant resolution identities and selected revisions are synchronously captured and validated before the first awaited database read.",
+    "binding": "The resolved SKU-source identities/revisions and resolved slot-source identity/revision must agree with the selection embedded by FOOD-007F."
+  },
+  "algorithm": [
+    "Capture and validate the FOOD-007F resolution shape and its exact selection/source bindings.",
+    "For each SKU selection in original demand order, invoke FOOD-007G for that exact SKU stream.",
+    "If the returned highest recorded revision equals the selected revision, preserve one detached observation and continue.",
+    "If the returned revision is greater than the selected revision, stop with later-recorded-revision.",
+    "If the returned revision is lower than the selected revision, fail closed as storage-failure because the observed latest-recorded stream contradicts the canonical previously resolved exact revision.",
+    "After all SKU checks succeed, invoke FOOD-007H for the exact selected fulfillment-slot stream.",
+    "Apply the same equality, later-recorded-revision and lower-than-selected fail-closed rules.",
+    "Return validated only when every individual read observed the selected revision as that stream's highest structurally valid recorded revision."
+  ],
+  "outcomes": {
+    "validated": "Every selected revision equaled the highest structurally valid recorded revision returned for its exact stream at that stream's individual read point.",
+    "later-recorded-revision": "At least one exact stream returned a structurally valid recorded revision greater than the selected revision. This reports only the observed revision relationship and does not establish governing authority.",
+    "not-found": "A latest-recorded reader returned not-found for a selected exact stream. This is not physical-stock absence and is not reservation authority.",
+    "invalid": "The supplied FOOD-007F resolution is malformed, internally misbound, or produces an invalid selector at the public latest-recorded reader boundary.",
+    "storage-failure": "A public reader reports storage-failure or a highest-recorded revision lower than a previously resolved selected revision is observed."
+  },
+  "ordering": {
+    "skuReads": "Sequential in original FOOD-007E demand order.",
+    "slotRead": "Runs only after every SKU selection passes.",
+    "failure": "Fail fast on the first nonmatching, missing, invalid or failed stream."
+  },
+  "concurrency": {
+    "snapshot": "None.",
+    "statement": "Sequential reads do not establish a simultaneous database snapshot. A later revision may be appended before, between or immediately after reads.",
+    "validatedMeaning": "Validated means only that each individual read returned the selected revision as that stream's highest structurally valid recorded revision at that reader's own observation point."
+  },
+  "nonClaims": [
+    "governing source status",
+    "source eligibility",
+    "source trust",
+    "physical truth",
+    "physical currentness",
+    "freshness",
+    "simultaneous snapshot",
+    "remaining capacity",
+    "reservable quantity",
+    "available-to-promise / ATP",
+    "orderability",
+    "checkout readiness",
+    "payment readiness",
+    "active reservation totals",
+    "reservation acceptance",
+    "inventory hold",
+    "slot hold",
+    "capacity consumption",
+    "release",
+    "expiration"
+  ],
+  "reservationBoundary": "FOOD-007I does not read food_capacity_reservations, food_capacity_reservation_lines or food_fulfillment_slot_reservations.",
+  "sideEffects": "Read-only server-library composition. No writes, routes, clocks, network calls beyond the injected database abstraction, environment access, randomness, acceptance construction or migration execution.",
+  "safeClaim": "At each individual latest-recorded read performed by this validation, the selected revision equaled the structurally valid highest-recorded revision returned for that exact stream.",
+  "invariants": [
+    "latest recorded != governing",
+    "latest recorded != eligible",
+    "latest recorded != current physical truth",
+    "latest recorded != remaining capacity",
+    "latest recorded != reservable quantity",
+    "latest recorded != ATP",
+    "latest recorded != reservation acceptance",
+    "reservation hold != physical movement",
+    "sourceReference != authenticated truth"
+  ],
+  "files": [
+    ".river-dev/specifications/food-007i-reservation-capacity-source-latest-recorded-selection-validation.json",
+    "src/lib/food/reservation-capacity-source-latest-recorded-selection-validation.ts",
+    "src/lib/food/reservation-capacity-source-latest-recorded-selection-validation.test.ts"
+  ],
+  "migration": "None. Migration 0005 must not be executed."
+}
