@@ -1,0 +1,102 @@
+{
+  "id": "FOOD-007G",
+  "title": "Public Exact-SKU Latest-Recorded Capacity-Source Read",
+  "startingHead": "6c4dc2bc51d14f4d6d96e7eaa6fcaed227ecb5ee",
+  "publicFunction": "readFoodLatestExactSkuStockedCapacitySourceRevision",
+  "purpose": "Return the structurally valid highest recorded capacity-source row returned by the injected read for one exact SKU stream.",
+  "selector": {
+    "shape": "{ sku: { id, version } }",
+    "capture": "Strict exact own-data keys at both levels, no getters, symbols, inherited-only fields, extras, coercion or trimming. Reuse parseFoodSkuId and validateFoodVersion. Capture frozen detached selector before database work.",
+    "invalid": "invalid; zero DB access"
+  },
+  "dependencies": [
+    "FOOD-007B validateFoodExactSkuStockedCapacitySourceRevision and canonical durable representation",
+    "FOOD-007C read-only database interface and result union"
+  ],
+  "resultUnion": [
+    "found",
+    "not-found",
+    "invalid",
+    "storage-failure"
+  ],
+  "query": {
+    "table": "food_sku_capacity_sources",
+    "columns": [
+      "sku_id",
+      "sku_version",
+      "revision",
+      "capacity_units",
+      "attribution",
+      "source_reference"
+    ],
+    "where": "sku_id = ? AND sku_version = ?",
+    "bindOrder": [
+      "sku.id",
+      "sku.version"
+    ],
+    "order": "ORDER BY revision DESC",
+    "limit": 1
+  },
+  "storageValidation": "Require success === true and array results, zero rows -> not-found, more than one row -> storage-failure. Require exact own data columns, reconstruct canonical durable value, validate through FOOD-007B, and compare returned SKU ID/version to captured selector. Canonical positive safe revision and nonnegative safe capacity; preserve metadata exactly.",
+  "highestRow": "Validate highest recorded row only. Malformed highest row -> storage-failure. No fallback to older valid rows, retry, exact selected revision lookup or backward scan.",
+  "failures": "Prepare/bind/all exceptions, unsuccessful or malformed envelope, malformed highest row, unexpected row count or returned identity mismatch -> storage-failure, never not-found.",
+  "ownership": "Canonical validator detaches/freezes durable value and nested SKU; freeze result. Do not freeze or mutate caller, database or storage rows.",
+  "database": {
+    "maxSelectsPerValidCall": 1,
+    "invalidAccess": 0,
+    "writes": 0,
+    "reservationReads": 0,
+    "slotReads": 0,
+    "movementReads": 0,
+    "physicalCountReads": 0
+  },
+  "safeClaim": "A structurally valid highest-revision capacity-source assertion returned by the injected database read for the requested exact SKU stream was obtained.",
+  "sessionCaveat": "Conditional on injected database/session semantics; no globally freshest-state guarantee or perpetual authority. A later revision may be appended immediately after the read.",
+  "nonClaims": [
+    "governing policy",
+    "source eligibility",
+    "trusted source",
+    "authenticated provenance",
+    "physical currentness",
+    "physical truth",
+    "fresh physical count",
+    "globally freshest state",
+    "latest unrecorded reality",
+    "current QOH",
+    "current stock",
+    "available stock",
+    "sellable stock",
+    "remaining capacity",
+    "reservable quantity",
+    "ATP",
+    "capacity sufficiency",
+    "reservation acceptance",
+    "reservation hold",
+    "active commitments",
+    "cross-revision commitment accounting",
+    "slot availability",
+    "orderability",
+    "checkout readiness",
+    "payment readiness",
+    "fulfillment readiness",
+    "accounting authority",
+    "perpetual currentness"
+  ],
+  "invariants": [
+    "latest stored revision != physical currentness",
+    "latest stored revision != fresh physical count",
+    "latest stored revision != authenticated truth",
+    "latest stored revision != remaining capacity",
+    "latest stored revision != reservable quantity",
+    "latest stored revision != ATP",
+    "latest stored revision != reservation acceptance",
+    "sourceReference != authenticated truth",
+    "FOOD-007G latest-recorded read != governing policy",
+    "read-time result != perpetual authority"
+  ],
+  "privateHelper": "This unit does not reuse, export or repair FOOD-007B's private append-oriented latest helper. Its LIMIT 2 / multiple-row rejection concern is separate follow-up only.",
+  "sideEffects": "Read-only server-library export. No route, reservation access, slot access, writes, clocks, network, environment, randomness, acceptance or migration access.",
+  "migrationImpact": "none",
+  "migration0005": "unchanged / not executed",
+  "production": "untouched"
+}
