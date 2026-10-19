@@ -1,0 +1,72 @@
+{
+  "id": "FOOD-007M",
+  "title": "Reservation Demand Recorded-Capacity Arithmetic",
+  "status": "implementation",
+  "startingHead": "0aec77a114605c9b54a7b5cc81a86d083475bb36",
+  "purpose": "Purely align canonical FOOD-007E reservation demand and exact source-revision selection with canonical FOOD-007L recorded-capacity arithmetic and compute a signed demand-adjusted arithmetic delta.",
+  "inputs": {
+    "selectionRequest": "Canonical FOOD-007E FoodReservationCapacitySourceSelectionRequest.",
+    "recordedCapacityArithmetic": "Canonical FOOD-007L FoodReservationSelectionRecordedCapacityArithmetic."
+  },
+  "algorithm": [
+    "Strictly capture and validate the FOOD-007E selection request without invoking accessors.",
+    "Validate its reservation request and fulfillment intent through their canonical structural validators.",
+    "Require the request fulfillment-intent reference and quote reference to agree with the supplied canonical fulfillment intent.",
+    "Require each request capacity requirement, each selected SKU revision and each FOOD-007L SKU arithmetic entry to align by demand-order index, SKU id, SKU version and exact capacity revision.",
+    "Require the selected fulfillment slot and FOOD-007L slot arithmetic entry to align by method, location reference, window reference and exact capacity revision.",
+    "Recheck FOOD-007L arithmetic identity: recordedCapacityDelta must exactly equal capacityUnits minus recordedHeldQuantity.",
+    "For every SKU compute recordedDemandAdjustedCapacityDelta = recordedCapacityDelta - demandQuantity.",
+    "For the selected fulfillment slot use the current canonical one-slot reservation quantity of 1 and compute recordedDemandAdjustedCapacityDelta = recordedCapacityDelta - 1.",
+    "Use BigInt subtraction and reject any result outside the signed JavaScript safe-integer range.",
+    "Preserve positive, zero and negative arithmetic exactly; never clamp.",
+    "Return a deeply frozen detached result."
+  ],
+  "formula": {
+    "sku": "recordedDemandAdjustedCapacityDelta = recordedCapacityDelta - demandQuantity",
+    "slot": "recordedDemandAdjustedCapacityDelta = recordedCapacityDelta - 1"
+  },
+  "slotDemandQuantity": 1,
+  "negativeArithmetic": "Negative recordedDemandAdjustedCapacityDelta is preserved exactly and is not clamped.",
+  "safeClaim": "For each exactly aligned recorded capacity-source revision, the returned signed value is only the mathematical difference between FOOD-007L recordedCapacityDelta and the canonical reservation demand quantity associated with that same selected SKU revision; for the selected fulfillment slot the current storage contract contributes one demand unit.",
+  "authorityBoundary": "recordedDemandAdjustedCapacityDelta is neutral arithmetic evidence only. Its sign does not mean sufficient, insufficient, reservable, unavailable, available, remaining, ATP, accepted, rejected or governing capacity.",
+  "writerBoundary": "FOOD-007M performs no authoritative reservation write and does not prevent oversell or overbooking.",
+  "acceptanceBoundary": "FOOD-007M does not create, validate as authoritative, infer or authenticate a reservation acceptance.",
+  "lifecycleBoundary": "FOOD-007M does not decide whether previously recorded held commitments are currently active after any future release, expiration, cancellation, replacement, rescheduling or consumption lifecycle.",
+  "crossRevisionBoundary": "FOOD-007M performs no cross-revision carry-forward or commitment accounting.",
+  "concurrencyBoundary": "FOOD-007M performs no reads or writes and does not create a fixed simultaneous snapshot. It composes previously obtained artifacts only.",
+  "physicalInventoryBoundary": "No physical quantity on hand, physical inventory truth or physical movement is established.",
+  "nonClaims": [
+    "remaining capacity",
+    "available capacity",
+    "reservable quantity",
+    "available-to-promise / ATP",
+    "capacity sufficiency",
+    "capacity insufficiency",
+    "reservation eligibility",
+    "reservation rejection",
+    "reservation acceptance",
+    "active reservations",
+    "active commitments",
+    "cross-revision commitment accounting",
+    "oversell prevention",
+    "overbooking prevention",
+    "governing capacity source",
+    "source eligibility",
+    "physical currentness",
+    "physical quantity on hand",
+    "availability",
+    "orderability",
+    "checkout readiness",
+    "payment readiness",
+    "fulfillment authority"
+  ],
+  "sideEffects": "Pure synchronous composition. No database access, SQL, writes, reservation mutation, acceptance creation, routes, clocks, network access, environment access, randomness, migration execution or production mutation.",
+  "migrationImpact": "none",
+  "migration0003": "unchanged / not executed",
+  "migration0005": "unchanged / not executed",
+  "files": [
+    ".river-dev/specifications/food-007m-reservation-demand-recorded-capacity-arithmetic.json",
+    "src/lib/food/reservation-demand-recorded-capacity-arithmetic.ts",
+    "src/lib/food/reservation-demand-recorded-capacity-arithmetic.test.ts"
+  ]
+}
