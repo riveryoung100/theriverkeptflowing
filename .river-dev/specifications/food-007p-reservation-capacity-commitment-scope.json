@@ -1,0 +1,138 @@
+{
+  "id": "FOOD-007P",
+  "title": "Reservation Capacity Commitment Scope",
+  "startingHead": "14aa40252faf1f2ba0efb7ad1f0c6f77c837a85e",
+  "kind": "reservation-capacity-commitment-scope",
+  "purpose": "Define which historically recorded held reservation commitments belong to the v1 commitment scope of an exact capacity stream once FOOD-007O has established that stream's governing capacity-source revision.",
+  "classification": {
+    "candidate": "B",
+    "name": "cumulative-through-governing-revision",
+    "policyVersion": 1,
+    "rule": "For one exact capacity stream governed at revision R, a recorded held commitment belongs to v1 scope when it is recorded against the same exact stream and its capacity revision is less than or equal to R."
+  },
+  "governingPrerequisite": {
+    "source": "FOOD-007O",
+    "requiredOutcome": "matches-policy",
+    "rule": "FOOD-007P may derive commitment scope only from a successful FOOD-007O governing-source evaluation. A FOOD-007O invalid or does-not-match-policy result does not produce a v1 commitment scope."
+  },
+  "skuStreamIdentity": {
+    "fields": [
+      "sku.id",
+      "sku.version"
+    ],
+    "rule": "SKU commitment carry-forward occurs only within the same exact SKU id/version stream."
+  },
+  "slotStreamIdentity": {
+    "fields": [
+      "method",
+      "locationReference",
+      "windowReference"
+    ],
+    "rule": "Fulfillment-slot commitment carry-forward occurs only within the same exact method/locationReference/windowReference stream."
+  },
+  "scopeBoundary": {
+    "included": "Recorded held commitments for the same exact stream whose capacityRevision is less than or equal to the governing revision.",
+    "excluded": "Recorded commitments belonging to any different exact stream or to a capacity revision greater than the governing revision.",
+    "comparison": "capacityRevision <= governingRevision",
+    "crossStreamComparison": false
+  },
+  "historicalRevisionBinding": "A held reservation remains historically attributed to the exact capacity-source revision against which it was recorded. FOOD-007P does not rewrite, migrate, relabel, or replace that historical revision binding.",
+  "carryForwardPolicy": "When a later capacity-source revision becomes governing for the same exact stream, earlier recorded held commitments remain in v1 commitment scope. Appending a later capacity assertion does not by itself release or erase prior held commitments.",
+  "capacityRevisionMeaning": "For v1 commitment-scope purposes, later revisions of one exact capacity stream are successive capacity assertions for that stream, not independent reservable pools.",
+  "noImplicitReset": "v1 defines no reset, supersession break, or commitment-forgetting operation inside one exact stream. If a future business rule requires a capacity-pool reset while preserving the same stream identity, that requires a new explicit durable contract before changing this policy.",
+  "skuAndSlotSymmetry": "v1 applies the same through-governing-revision commitment-scope rule to exact SKU capacity streams and exact fulfillment-slot capacity streams.",
+  "examples": {
+    "sameCapacity": {
+      "revision1CapacityUnits": 10,
+      "revision1RecordedHeldQuantity": 8,
+      "revision2CapacityUnits": 10,
+      "governingRevision": 2,
+      "scopeStatement": "The revision-1 held quantity remains in scope under governing revision 2."
+    },
+    "downwardCapacityChange": {
+      "revision1CapacityUnits": 10,
+      "revision1RecordedHeldQuantity": 8,
+      "revision2CapacityUnits": 5,
+      "governingRevision": 2,
+      "scopeStatement": "The revision-1 held quantity remains in scope. Later arithmetic may therefore produce a negative recorded delta and must not clamp it."
+    },
+    "upwardCapacityChange": {
+      "revision1CapacityUnits": 10,
+      "revision1RecordedHeldQuantity": 8,
+      "revision2CapacityUnits": 20,
+      "governingRevision": 2,
+      "scopeStatement": "The revision-1 held quantity remains in scope; the larger capacity assertion does not erase the earlier commitment."
+    }
+  },
+  "plannedApi": {
+    "constant": "FOOD_RESERVATION_CAPACITY_COMMITMENT_SCOPE_KIND",
+    "evaluationType": "FoodReservationCapacityCommitmentScope",
+    "resultType": "FoodReservationCapacityCommitmentScopeResult",
+    "function": "deriveFoodReservationCapacityCommitmentScope",
+    "signature": "deriveFoodReservationCapacityCommitmentScope(input: unknown): FoodReservationCapacityCommitmentScopeResult",
+    "outcomes": [
+      "scoped",
+      "invalid"
+    ]
+  },
+  "plannedInput": "The same outer commandInput plus observations structure accepted by FOOD-007O. FOOD-007P internally re-evaluates FOOD-007O and requires matches-policy.",
+  "plannedOutput": {
+    "kind": "reservation-capacity-commitment-scope",
+    "policyVersion": 1,
+    "governing": "The successful detached FOOD-007O governing-source evaluation.",
+    "skuScopes": "Canonical command-order exact SKU streams with each stream's governingRevision.",
+    "slotScope": "The canonical exact fulfillment-slot stream with its governingRevision."
+  },
+  "futureReaderRule": "A future durable recorded-held commitment reader may aggregate rows for the same exact stream where capacity_revision <= governingRevision. FOOD-007P itself performs no database read and no quantity aggregation.",
+  "food007jRelationship": "FOOD-007J remains an exact-revision historical recorded-held commitment reader. FOOD-007P does not change FOOD-007J semantics and does not reinterpret a FOOD-007J result as cumulative.",
+  "food007kRelationship": "FOOD-007K remains resolution of exact-revision recorded-held commitments for a reservation selection. It is historical exact-selection evidence, not the new governing cumulative scope.",
+  "food007lRelationship": "FOOD-007L arithmetic remains exact to the recorded-held evidence supplied to it. FOOD-007P does not silently change FOOD-007L arithmetic inputs.",
+  "food007mRelationship": "FOOD-007M remains demand-adjusted recorded-capacity arithmetic and is not a dependency of FOOD-007P.",
+  "mutationTimeBoundary": "A previously derived commitment scope is not mutation authority. A future authoritative reservation writer must re-establish governing source state and read the applicable commitment scope inside the mutation boundary.",
+  "lifecycleBoundary": "v1 scope is defined over durable rows recorded in held state under the current schema. FOOD-007P does not define release, expiration, cancellation, replacement, consumption, rescheduling, or future active-state semantics.",
+  "quantityBoundary": "FOOD-007P does not read, sum, subtract, compare, clamp, or interpret capacityUnits, recordedHeldQuantity, reservation demand quantity, or any capacity delta.",
+  "authorityBoundary": "FOOD-007P is a pure structural policy. It does not establish capacity sufficiency, admission, permission to reserve, remaining capacity, available capacity, reservable quantity, ATP, reservation acceptance, durable mutation success, or oversell prevention.",
+  "physicalTruthBoundary": "FOOD-007P does not establish physical currentness, current physical QOH, fresh physical count, physical truth, sellable stock, or availability.",
+  "trustBoundary": "FOOD-007P does not authenticate caller identity, observation provenance, database origin, sourceReference, attribution, observation age, or simultaneous snapshot acquisition.",
+  "sideEffects": "None. The planned FOOD-007P domain function is pure and synchronous with no database, SQL, filesystem, network, clock, randomness, environment, or mutation behavior.",
+  "nonClaims": [
+    "current physical QOH",
+    "physical currentness",
+    "physical truth",
+    "fresh physical count",
+    "sellable stock",
+    "available stock",
+    "remaining capacity",
+    "available capacity",
+    "reservable capacity",
+    "reservable quantity",
+    "ATP / available-to-promise",
+    "capacity sufficiency",
+    "capacity insufficiency",
+    "reservation admission",
+    "permission to reserve",
+    "reservation acceptance",
+    "reservation rejection",
+    "durable hold creation",
+    "reservation mutation success",
+    "atomic reservation",
+    "oversell prevention",
+    "slot-overbooking prevention",
+    "release",
+    "expiration",
+    "cancellation",
+    "replacement",
+    "consumption",
+    "rescheduling",
+    "authenticated caller",
+    "authenticated observation provenance",
+    "simultaneous observation snapshot",
+    "perpetual governing validity"
+  ],
+  "migrationImpact": "none",
+  "migration0003": "unchanged / not executed",
+  "migration0005": "unchanged / not executed",
+  "productionImpact": "none",
+  "production": "untouched",
+  "nextDependency": "Reservation Governing-Scope Recorded-Held Commitment Read"
+}
