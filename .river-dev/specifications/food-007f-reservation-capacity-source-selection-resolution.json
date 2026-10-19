@@ -1,0 +1,103 @@
+{
+  "id": "FOOD-007F",
+  "title": "Exact Reservation Capacity-Source Selection Resolution",
+  "startingHead": "aa6bc3eae86b97ae95632d2c32e451a83ae8f89b",
+  "publicFunction": "resolveFoodReservationCapacitySourceSelection",
+  "kind": "reservation-capacity-source-selection-resolution",
+  "files": [
+    ".river-dev/specifications/food-007f-reservation-capacity-source-selection-resolution.json",
+    "src/lib/food/reservation-capacity-source-selection-resolution.ts",
+    "src/lib/food/reservation-capacity-source-selection-resolution.test.ts"
+  ],
+  "purpose": "Resolve a complete FOOD-007E proposal into a complete immutable bundle of exact historical source assertions.",
+  "dependencies": [
+    "FOOD-007E deriveFoodReservationCapacitySourceSelectionRequest",
+    "FOOD-007C readFoodExactSkuStockedCapacitySourceRevision",
+    "FOOD-007D readFoodExactFulfillmentSlotCapacitySourceRevision",
+    "Canonical FOOD-007B and FOOD-005V durable source types"
+  ],
+  "input": "Original unknown/untrusted FOOD-007E input: request, quote, fulfillmentIntent, skuSelections, slotSelection. Replay FOOD-007E before any DB access. Purported candidates without original quote are not trusted.",
+  "invalidInput": "invalid; zero DB access; inherit strict own-data capture and structural source binding from FOOD-007E.",
+  "resultUnion": [
+    "resolved",
+    "invalid",
+    "not-found",
+    "storage-failure"
+  ],
+  "resolvedFields": [
+    "kind",
+    "selection",
+    "skuSources",
+    "slotSource"
+  ],
+  "resolution": "Exactly one found SKU source per canonical demand selection in request-line order, followed by the exact slot source. Historical identities/revisions match through canonical reader validation. Complete bundle only; no partial success or partial payload on failure.",
+  "readOrder": "Sequential deterministic fail-fast SKU-demand order, then slot. Stop on first failure; no later reads.",
+  "database": {
+    "interface": "FoodExactSkuStockedCapacitySourceReadD1Database: existing structurally compatible read-only 007C/007D capability",
+    "successReads": "N exact SKU reads + 1 exact slot read",
+    "latestQueries": 0,
+    "reservationReads": 0,
+    "physicalInventoryReads": 0,
+    "writes": 0,
+    "directSql": "none",
+    "retries": "none",
+    "fallback": "none"
+  },
+  "readerOutcomeMapping": {
+    "found": "continue; resolved only after all sources found",
+    "not-found": "not-found; stop",
+    "storage-failure": "storage-failure; stop",
+    "invalid": "storage-failure: internal inconsistency after canonical selector validation, not absence"
+  },
+  "ownership": "FOOD-007E captures and deeply freezes proposal before asynchronous reads. Canonical readers detach and freeze durable values. Freeze the owned array, bundle and result. Do not mutate or freeze caller input, storage rows or reader results.",
+  "safeClaim": "All proposed exact source revisions were found as structurally valid stored historical source assertions matching the reservation selection identities.",
+  "concurrency": "Injected database/session semantics only. Separate reads do not promise a simultaneous snapshot. Immutable historical records may coexist with newly appended revisions. Resolution is not perpetual authority and later acceptance must enforce its own governing-source and concurrency conditions.",
+  "skuSemantics": "capacityUnits is historical source metadata, not demand comparison or remaining capacity. Reduced durable 007B rows do not retain full 007A/006Z freshness provenance.",
+  "slotSemantics": "Historical supplied order-slot capacity only. Opaque windowReference confers no freshness/effective-time policy.",
+  "nonClaims": [
+    "source eligibility",
+    "governing source status",
+    "latest revision",
+    "source currentness",
+    "source freshness",
+    "source provenance authentication",
+    "trusted source",
+    "physical truth",
+    "current physical QOH",
+    "fresh physical count",
+    "available stock",
+    "sellable stock",
+    "current remaining stock",
+    "reservable quantity",
+    "ATP",
+    "current slot availability",
+    "current remaining slot capacity",
+    "active reservation totals",
+    "active SKU commitments",
+    "active slot commitments",
+    "cross-revision commitment accounting",
+    "reservation acceptance",
+    "reservation hold",
+    "reservation persistence",
+    "orderability",
+    "checkout readiness",
+    "payment readiness",
+    "fulfillment readiness",
+    "accounting authority",
+    "perpetual validity"
+  ],
+  "invariants": [
+    "latest stored revision != physical currentness",
+    "sourceReference != authenticated truth",
+    "resolution != eligibility",
+    "resolution != reservation acceptance"
+  ],
+  "acceptanceConstruction": "none",
+  "sideEffects": "No writes, migration, clocks, network, environment access, randomness, IDs, routes or production activation.",
+  "migrationImpact": "none",
+  "migration0003": "unchanged",
+  "migration0004": "unchanged",
+  "migration0005": "unchanged / not executed",
+  "production": "untouched",
+  "next": "Review implementation before staging. Governing/latest-recorded policy requires separate discovery and authorization."
+}
