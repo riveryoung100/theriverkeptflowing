@@ -1,0 +1,78 @@
+{
+  "id": "FOOD-007K",
+  "title": "Reservation Selection Recorded-Held Commitment Resolution",
+  "status": "implementation",
+  "purpose": "Compose canonical FOOD-007I latest-recorded selection validation with FOOD-007J exact-revision recorded-held commitment reads for the exact selected capacity-source revisions.",
+  "startingHead": "03c904c7d0fac3f79cdbd6c7fde03656090f1515",
+  "dependencies": [
+    "FOOD-007F exact reservation capacity-source selection resolution",
+    "FOOD-007I reservation capacity-source latest-recorded selection validation",
+    "FOOD-007J exact-revision recorded held-capacity commitment read"
+  ],
+  "input": "Canonical FOOD-007F FoodReservationCapacitySourceSelectionResolution plus an injected database satisfying FOOD-007I and FOOD-007J read capabilities.",
+  "algorithm": [
+    "Run FOOD-007I against the supplied FOOD-007F resolution.",
+    "If FOOD-007I does not return validated, preserve that canonical failure outcome and perform no FOOD-007J reads.",
+    "For each validated SKU observation in canonical demand order, require selectedRevision to equal observedHighestRecordedRevision and read FOOD-007J for that exact SKU and selected revision.",
+    "Fail closed as storage-failure if an internally constructed FOOD-007J selector is rejected, storage fails, or the returned identity differs from the requested exact identity.",
+    "After every SKU commitment read succeeds, perform one FOOD-007J read for the validated exact slot revision.",
+    "Return a detached deeply frozen bundle containing the copied FOOD-007I validation, exact SKU commitment observations in demand order, and the exact slot commitment observation."
+  ],
+  "successOutput": {
+    "kind": "reservation-selection-recorded-held-commitment-resolution",
+    "validation": "Detached copy of canonical FOOD-007I validation evidence.",
+    "skuCommitments": "One exact SKU id/version + selected capacity revision + recordedHeldQuantity per validated SKU observation in order.",
+    "slotCommitment": "Exact method/location/window + selected capacity revision + recordedHeldQuantity."
+  },
+  "outcomes": {
+    "resolved": "FOOD-007I validated the selected revisions and all matching FOOD-007J exact-revision recorded-held reads succeeded.",
+    "later-recorded-revision": "Preserved from FOOD-007I; no FOOD-007J commitment reads occur.",
+    "not-found": "Preserved from FOOD-007I; no FOOD-007J commitment reads occur.",
+    "invalid": "Preserved from FOOD-007I; no FOOD-007J commitment reads occur.",
+    "storage-failure": "Preserved from FOOD-007I or returned when FOOD-007J fails or contradicts the validated exact identity."
+  },
+  "safeClaim": "At the respective read times, the canonical FOOD-007F selected revisions passed FOOD-007I latest-recorded equality validation, and FOOD-007J returned recorded-held commitment aggregates for those same exact revisions.",
+  "concurrency": [
+    "FOOD-007I latest-recorded reads and FOOD-007J commitment reads are sequential operations under the injected database/session semantics.",
+    "FOOD-007K does not claim a fixed simultaneous snapshot across those reads.",
+    "A later capacity-source revision may be appended after FOOD-007I validation.",
+    "A later held reservation row may be inserted after a FOOD-007J commitment read.",
+    "Successful resolution is read-time evidence composition, not perpetual operational authority."
+  ],
+  "crossRevisionBoundary": "FOOD-007K does not roll commitments recorded against one capacity-source revision into another revision.",
+  "lifecycleBoundary": "Recorded-held commitment evidence is not interpreted as a future canonical active-reservation lifecycle.",
+  "arithmeticBoundary": "FOOD-007K performs no capacity subtraction, sufficiency comparison, remaining-capacity calculation, reservable-quantity calculation, or ATP calculation.",
+  "authorityBoundary": "Latest-recorded equality plus exact-revision recorded-held commitment evidence does not establish governing source policy, source eligibility, physical currentness, availability, orderability, checkout readiness, payment readiness, reservation acceptance, or fulfillment authority.",
+  "physicalInventoryBoundary": "Reservation holds are not physical inventory movements.",
+  "sideEffects": "Read-only server-library composition through FOOD-007I and FOOD-007J. No direct SQL, writes, routes, clocks, network access beyond the injected database abstraction, environment access, randomness, acceptance construction, migration execution, or production mutation.",
+  "nonClaims": [
+    "simultaneous snapshot",
+    "perpetual latest status",
+    "governing capacity source",
+    "source eligibility",
+    "authenticated sourceReference",
+    "physical currentness",
+    "physical truth",
+    "current quantity on hand",
+    "currently active reservations",
+    "cross-revision commitments",
+    "remaining capacity",
+    "reservable quantity",
+    "available-to-promise / ATP",
+    "capacity sufficiency",
+    "availability",
+    "orderability",
+    "reservation acceptance",
+    "checkout readiness",
+    "payment readiness",
+    "physical inventory movement"
+  ],
+  "migrationImpact": "none",
+  "migration0003": "unchanged / not executed",
+  "migration0005": "unchanged / not executed",
+  "files": [
+    ".river-dev/specifications/food-007k-reservation-selection-recorded-held-commitment-resolution.json",
+    "src/lib/food/reservation-selection-recorded-held-commitment-resolution.ts",
+    "src/lib/food/reservation-selection-recorded-held-commitment-resolution.test.ts"
+  ]
+}
