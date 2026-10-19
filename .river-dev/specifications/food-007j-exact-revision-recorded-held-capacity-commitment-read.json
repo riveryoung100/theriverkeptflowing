@@ -1,0 +1,71 @@
+{
+  "id": "FOOD-007J",
+  "title": "Exact-Revision Recorded Held-Capacity Commitment Read",
+  "status": "implementation",
+  "purpose": "Read the total quantity of durable held reservation rows recorded against one exact SKU capacity-source revision or one exact fulfillment-slot capacity-source revision.",
+  "dependencies": [
+    "FOOD-005T capacity supply and reservation storage schema",
+    "FOOD-005U capacity revision provenance schema amendment",
+    "migration 0003 food capacity reservation storage"
+  ],
+  "storage": {
+    "reservationTable": "food_capacity_reservations",
+    "reservationState": "held",
+    "skuLinesTable": "food_capacity_reservation_lines",
+    "slotTable": "food_fulfillment_slot_reservations",
+    "immutability": "Migration 0003 prohibits updates and deletes on reservation, reservation-line, and fulfillment-slot reservation rows."
+  },
+  "input": {
+    "sku": {
+      "scope": "sku",
+      "selector": "exact SKU id/version plus exact capacity-source revision"
+    },
+    "slot": {
+      "scope": "slot",
+      "selector": "exact fulfillment method/location/window plus exact slot capacity-source revision"
+    }
+  },
+  "queries": {
+    "sku": "Sum food_capacity_reservation_lines.quantity joined to food_capacity_reservations where parent state is held and sku_id, sku_version, capacity_revision exactly match the selector.",
+    "slot": "Sum food_fulfillment_slot_reservations.quantity joined to food_capacity_reservations where parent state is held and method, location_reference, window_reference, capacity_revision exactly match the selector."
+  },
+  "zeroSemantics": "No matching recorded held rows returns recordedHeldQuantity zero. Zero is not absence of physical stock, not proof of availability, and not reservation acceptance.",
+  "outcomes": {
+    "read": "A structurally valid nonnegative safe-integer aggregate was returned.",
+    "invalid": "The selector is structurally invalid; no database access occurs.",
+    "storage-failure": "Preparation, binding, execution, result-envelope validation, aggregate-row validation, or numeric validation failed."
+  },
+  "safeClaim": "Stored held reservation rows recorded against the requested exact capacity-source revision sum to the returned recordedHeldQuantity.",
+  "concurrency": "The result is a read-time aggregate under the injected database/session semantics only. Later inserts may occur immediately after the read.",
+  "crossRevisionBoundary": "FOOD-007J does not roll a commitment recorded against one capacity-source revision into any other revision.",
+  "lifecycleBoundary": "Migration 0003 supports held only. FOOD-007J does not infer current active status after any future release, cancellation, expiration, replacement, rescheduling, or consumption lifecycle is introduced.",
+  "acceptanceBoundary": "FOOD-007J does not create, require, validate, or infer FOOD-005L reservation acceptance.",
+  "physicalInventoryBoundary": "Reservation holds are not physical inventory movements and FOOD-007J does not establish physical quantity on hand.",
+  "nonClaims": [
+    "currently active reservation",
+    "current physical quantity",
+    "governing capacity source",
+    "source eligibility",
+    "source trust",
+    "source freshness",
+    "cross-revision commitments",
+    "remaining capacity",
+    "reservable quantity",
+    "available-to-promise / ATP",
+    "orderability",
+    "checkout readiness",
+    "payment readiness",
+    "reservation acceptance",
+    "release",
+    "expiration",
+    "cancellation",
+    "consumption",
+    "physical inventory movement"
+  ],
+  "sideEffects": "Read-only server-library export. No writes, routes, clocks, environment access, network access, randomness, acceptance construction, migration execution, or production mutation.",
+  "files": [
+    ".river-dev/specifications/food-007j-exact-revision-recorded-held-capacity-commitment-read.json",
+    "src/lib/food/d1-exact-revision-recorded-held-capacity-commitment-read.ts",
+    "src/lib/food/d1-exact-revision-recorded-held-capacity-commitment-read.test.ts"
+  ]
+}
