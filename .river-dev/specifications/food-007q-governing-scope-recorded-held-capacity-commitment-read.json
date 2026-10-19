@@ -1,0 +1,242 @@
+{
+  "id": "FOOD-007Q",
+  "title": "Governing-Scope Recorded Held-Capacity Commitment Read",
+  "startingHead": "f3078d34fee9a18c4c6d0a95baee005d9070906f",
+  "kind": "governing-scope-recorded-held-capacity-commitment",
+  "classification": {
+    "candidate": "B",
+    "name": "low-level-single-stream-governing-scope-reader",
+    "policyVersion": 1,
+    "rationale": "FOOD-007J establishes the repository pattern of a low-level D1 reader for one SKU or slot selector and FOOD-007K separately composes multiple reads. FOOD-007Q preserves that separation for cumulative governing-scope reads. A later reservation-level composition unit will consume FOOD-007P and call FOOD-007Q in canonical order."
+  },
+  "purpose": "Read durable held reservation quantity recorded for one exact SKU stream or one exact fulfillment-slot stream cumulatively through a supplied governing capacity-source revision.",
+  "relationshipToFood007P": {
+    "source": "FOOD-007P",
+    "scopeRule": "same exact stream and capacityRevision <= governingRevision",
+    "boundary": "FOOD-007Q does not itself derive or validate the entire FOOD-007P reservation scope. It accepts one already-chosen exact stream boundary per call.",
+    "compositionDeferred": true
+  },
+  "relationshipToFood007J": {
+    "source": "FOOD-007J",
+    "unchanged": true,
+    "food007jSemantics": "exact capacity revision only",
+    "food007qSemantics": "same exact stream cumulatively through governing revision",
+    "keySqlDifference": "FOOD-007J uses capacity_revision = ?; FOOD-007Q uses capacity_revision <= ?",
+    "sharedConventions": [
+      "held state filter",
+      "INNER JOIN to food_capacity_reservations",
+      "COALESCE(SUM(quantity), 0)",
+      "SUM(quantity) for SKU",
+      "SUM(quantity) for fulfillment slot",
+      "nonnegative safe-integer aggregate normalization",
+      "read | invalid | storage-failure result vocabulary"
+    ]
+  },
+  "selector": {
+    "sku": {
+      "exactKeys": [
+        "scope",
+        "sku",
+        "governingRevision"
+      ],
+      "scope": "sku",
+      "sku": {
+        "exactKeys": [
+          "id",
+          "version"
+        ],
+        "id": "bounded nonempty reference string under the same validation convention as FOOD-007J",
+        "version": "positive safe integer"
+      },
+      "governingRevision": "positive safe integer"
+    },
+    "slot": {
+      "exactKeys": [
+        "scope",
+        "method",
+        "locationReference",
+        "windowReference",
+        "governingRevision"
+      ],
+      "scope": "slot",
+      "method": [
+        "personal-delivery",
+        "meetup"
+      ],
+      "locationReference": "bounded nonempty reference string under the same validation convention as FOOD-007J",
+      "windowReference": "bounded nonempty reference string under the same validation convention as FOOD-007J",
+      "governingRevision": "positive safe integer"
+    }
+  },
+  "sql": {
+    "sku": {
+      "shape": [
+        "SELECT",
+        "COALESCE(SUM(line.quantity), 0) AS recorded_held_quantity",
+        "FROM food_capacity_reservation_lines AS line",
+        "INNER JOIN food_capacity_reservations AS reservation ON reservation.reservation_id = line.reservation_id",
+        "WHERE reservation.state = 'held'",
+        "AND line.sku_id = ?",
+        "AND line.sku_version = ?",
+        "AND line.capacity_revision <= ?"
+      ],
+      "bindOrder": [
+        "sku.id",
+        "sku.version",
+        "governingRevision"
+      ]
+    },
+    "slot": {
+      "shape": [
+        "SELECT",
+        "COALESCE(SUM(slot.quantity), 0) AS recorded_held_quantity",
+        "FROM food_fulfillment_slot_reservations AS slot",
+        "INNER JOIN food_capacity_reservations AS reservation ON reservation.reservation_id = slot.reservation_id",
+        "WHERE reservation.state = 'held'",
+        "AND slot.method = ?",
+        "AND slot.location_reference = ?",
+        "AND slot.window_reference = ?",
+        "AND slot.capacity_revision <= ?"
+      ],
+      "bindOrder": [
+        "method",
+        "locationReference",
+        "windowReference",
+        "governingRevision"
+      ],
+      "aggregatePolicy": "SUM(quantity), not COUNT(*), preserving the same recorded-held quantity vocabulary and SQL convention as FOOD-007J even though migration 0003 currently constrains durable slot quantity to 1."
+    }
+  },
+  "aggregateNormalization": {
+    "expectedRows": 1,
+    "expectedExactRowKey": "recorded_held_quantity",
+    "quantityContract": "nonnegative safe integer",
+    "zero": "valid successful read",
+    "negative": "storage-failure",
+    "unsafeInteger": "storage-failure",
+    "nonNumber": "storage-failure",
+    "missingOrMalformedEnvelope": "storage-failure",
+    "extraOrMissingAggregateRows": "storage-failure"
+  },
+  "plannedApi": {
+    "constant": "FOOD_GOVERNING_SCOPE_RECORDED_HELD_CAPACITY_COMMITMENT_KIND",
+    "selectorType": "FoodGoverningScopeRecordedHeldCapacityCommitmentSelector",
+    "valueType": "FoodGoverningScopeRecordedHeldCapacityCommitment",
+    "resultType": "FoodGoverningScopeRecordedHeldCapacityCommitmentReadResult",
+    "databaseType": "FoodGoverningScopeRecordedHeldCapacityCommitmentReadD1Database",
+    "function": "readFoodGoverningScopeRecordedHeldCapacityCommitment",
+    "async": true,
+    "resultOutcomes": [
+      "read",
+      "invalid",
+      "storage-failure"
+    ]
+  },
+  "successPayload": {
+    "sku": {
+      "kind": "governing-scope-recorded-held-capacity-commitment",
+      "scope": "sku",
+      "selector": {
+        "sku": {
+          "id": "captured exact SKU id",
+          "version": "captured exact SKU version"
+        },
+        "governingRevision": "captured governing revision"
+      },
+      "recordedHeldQuantity": "cumulative stored held quantity for the same exact SKU stream where capacity_revision <= governingRevision"
+    },
+    "slot": {
+      "kind": "governing-scope-recorded-held-capacity-commitment",
+      "scope": "slot",
+      "selector": {
+        "method": "captured exact fulfillment method",
+        "locationReference": "captured exact location reference",
+        "windowReference": "captured exact window reference",
+        "governingRevision": "captured governing revision"
+      },
+      "recordedHeldQuantity": "cumulative stored held quantity for the same exact slot stream where capacity_revision <= governingRevision"
+    }
+  },
+  "invalidBoundary": "Malformed, non-exact, unsupported, accessor-bearing, symbol-bearing, sparse, non-data, or otherwise invalid selector input must return invalid without issuing a database read, following FOOD-007J hostile-input capture conventions.",
+  "storageFailureBoundary": "Database prepare/bind/all failures and malformed aggregate response envelopes or quantities return storage-failure. Storage-failure does not become invalid.",
+  "streamIdentity": {
+    "sku": "exact sku id + sku version",
+    "slot": "exact method + locationReference + windowReference",
+    "crossSkuId": false,
+    "crossSkuVersion": false,
+    "crossSlotMethod": false,
+    "crossSlotLocation": false,
+    "crossSlotWindow": false
+  },
+  "revisionBoundary": {
+    "comparison": "capacityRevision <= governingRevision",
+    "includeEarlier": true,
+    "includeGoverning": true,
+    "includeFuture": false,
+    "rewriteHistoricalRevisionBinding": false
+  },
+  "semanticExamples": [
+    {
+      "case": "rev1 held 8, rev2 governs",
+      "expectedRecordedHeldQuantity": 8
+    },
+    {
+      "case": "rev1 held 3, rev2 held 4, rev3 governs",
+      "expectedRecordedHeldQuantity": 7
+    },
+    {
+      "case": "rev1 held 3, rev2 governs, rev3 held 4",
+      "expectedRecordedHeldQuantity": 3
+    },
+    {
+      "case": "no matching held rows",
+      "expectedRecordedHeldQuantity": 0
+    }
+  ],
+  "concurrency": "The result is a read-time aggregate under the injected database/session semantics only. Later inserts may occur immediately after the read. FOOD-007Q does not establish a mutation-time authoritative snapshot.",
+  "lifecycleBoundary": "Migration 0003 currently supports durable held rows only. FOOD-007Q does not infer future release, expiration, cancellation, replacement, consumption, or rescheduling semantics.",
+  "nonClaims": [
+    "current active commitments after future lifecycle support",
+    "current physical quantity on hand",
+    "physical truth",
+    "fresh physical count",
+    "remaining capacity",
+    "available capacity",
+    "reservable capacity",
+    "reservable quantity",
+    "available-to-promise / ATP",
+    "capacity sufficiency",
+    "capacity insufficiency",
+    "reservation admission",
+    "permission to reserve",
+    "reservation acceptance",
+    "reservation rejection",
+    "durable hold creation",
+    "mutation success",
+    "atomic reservation",
+    "oversell prevention",
+    "slot-overbooking prevention",
+    "release",
+    "expiration",
+    "cancellation",
+    "replacement",
+    "consumption",
+    "rescheduling",
+    "mutation-time governing validity",
+    "simultaneous authoritative snapshot"
+  ],
+  "writes": "none",
+  "clock": "none",
+  "network": "none",
+  "environment": "none",
+  "migrationImpact": "none",
+  "migration0003Execution": "not authorized and not required for FOOD-007Q source implementation",
+  "migration0005Execution": "not authorized",
+  "productionImpact": "none",
+  "implementationPaths": {
+    "source": "src/lib/food/d1-governing-scope-recorded-held-capacity-commitment-read.ts",
+    "test": "src/lib/food/d1-governing-scope-recorded-held-capacity-commitment-read.test.ts"
+  },
+  "nextDependency": "Reservation Governing-Scope Recorded-Held Commitment Resolution",
+  "nextDependencyIntent": "A later reservation-level resolver should accept/re-derive FOOD-007P scope, call FOOD-007Q once per SKU scope in canonical command order plus once for slot scope, and return a detached frozen bundle without performing capacity arithmetic or admission."
+}
