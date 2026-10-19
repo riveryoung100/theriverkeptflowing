@@ -1,0 +1,88 @@
+{
+  "id": "FOOD-007O",
+  "title": "Reservation Capacity Governing Source Policy",
+  "startingHead": "77b10cf4a16851b3cf61f1fef6daa00ea34e04b6",
+  "purpose": "Assign explicit v1 reservation-governance policy meaning to equality between each revision selected by a canonical FOOD-007N hold command and the complete supplied highest-recorded revision observations for those exact streams.",
+  "policyRule": {
+    "version": 1,
+    "newPolicy": true,
+    "callerConfigurable": false,
+    "rule": "A selected capacity-source revision satisfies v1 only when it equals the supplied highest-recorded revision observation for its exact stream.",
+    "overallMatch": "Every selected SKU stream and the selected fulfillment-slot stream must satisfy exact revision equality."
+  },
+  "inputs": {
+    "commandInput": "The original FOOD-007N construction input, replayed through deriveFoodReservationHoldCommand.",
+    "observations": {
+      "skuObservations": "Exactly one observation for every selected exact SKU id/version stream. Input order is arbitrary; output is normalized to canonical command-demand order.",
+      "slotObservation": "Exactly one observation for the selected method/locationReference/windowReference stream.",
+      "revisionField": "observedHighestRecordedRevision"
+    }
+  },
+  "result": {
+    "outcomes": [
+      "matches-policy",
+      "does-not-match-policy",
+      "invalid"
+    ],
+    "matches-policy": "The complete supplied observation set is valid and every selected revision equals the supplied highest-recorded revision for its exact stream.",
+    "does-not-match-policy": "The complete supplied observation set is valid and at least one exact-stream selected revision differs from its supplied highest-recorded revision.",
+    "invalid": "The command input, observation structure, complete-set requirement, exact-stream binding, or revision structure is invalid."
+  },
+  "exactStreamBinding": "SKU stream identity is sku.id plus sku.version. Fulfillment-slot stream identity is method plus locationReference plus windowReference. Revision numbers are never compared across unrelated streams.",
+  "completeSetRule": "Every selected SKU must have exactly one supplied observation and the exact selected slot must have exactly one supplied observation. Missing, duplicate, unknown-extra, or wrongly bound observations are invalid.",
+  "observationBoundary": "The policy evaluates only the complete observations supplied to this invocation. It does not acquire observations, authenticate their provenance, prove their age, or claim they form one simultaneous snapshot.",
+  "food007iRelationship": "FOOD-007I is database-backed latest-recorded observation/comparison evidence. FOOD-007O performs no database reads and adds the explicit v1 policy meaning that exact-stream selected-equals-observed-highest satisfies reservation source governance relative to the supplied observations.",
+  "mutationTimeRecheck": "A cached FOOD-007O result is not sufficient for reservation mutation. A future authoritative writer must reacquire authoritative state and enforce the governing-source policy inside its mutation boundary.",
+  "trustBoundary": "Structural validity does not authenticate caller identity, database origin, sourceReference, attribution, observation freshness, or service authority.",
+  "physicalTruthBoundary": "Highest-recorded and governing-under-v1 do not establish physical currentness, physical truth, fresh physical count, current physical QOH, sellable stock, or available capacity.",
+  "commitmentScopeBoundary": "FOOD-007O does not define which recorded-held commitments count against a governing capacity assertion and does not define cross-revision commitment carry-forward.",
+  "admissionBoundary": "FOOD-007O performs no quantity arithmetic and does not establish capacity sufficiency, insufficiency, remaining capacity, reservable quantity, ATP, or permission to reserve.",
+  "acceptanceBoundary": "FOOD-007O creates no reservation acceptance or rejection and does not authenticate successful durable reservation mutation.",
+  "atomicityBoundary": "FOOD-007O performs no mutation and provides no all-or-nothing reservation guarantee, rollback guarantee, oversell prevention, or slot-overbooking prevention.",
+  "safeClaim": {
+    "matches-policy": "Relative to the complete supplied exact-stream observations, every selected revision satisfies v1's selected-equals-observed-highest rule.",
+    "does-not-match-policy": "The complete supplied observations contain at least one exact-stream revision inequality under v1."
+  },
+  "nonClaims": [
+    "authenticated provenance",
+    "authenticated caller",
+    "database origin",
+    "sourceReference authenticity",
+    "attribution authenticity",
+    "observation age",
+    "simultaneous observation snapshot",
+    "physical currentness",
+    "physical truth",
+    "current physical QOH",
+    "fresh physical count",
+    "sellable stock",
+    "active capacity",
+    "remaining capacity",
+    "available capacity",
+    "active commitments",
+    "cross-revision commitment scope",
+    "capacity sufficiency",
+    "capacity insufficiency",
+    "reservation permission",
+    "reservation admission",
+    "reservable quantity",
+    "ATP / available-to-promise",
+    "acceptance",
+    "rejection",
+    "durable hold",
+    "persisted hold",
+    "reservation success",
+    "oversell prevention",
+    "slot-overbooking prevention",
+    "atomicity",
+    "perpetual governing validity",
+    "mutation-time governing status"
+  ],
+  "sideEffects": "Pure synchronous policy evaluation only. No database access, SQL, network, filesystem access, clock, randomness, environment access, reservation mutation, or acceptance creation.",
+  "migrationImpact": "none",
+  "productionImpact": "none",
+  "migration0003": "unchanged / not executed",
+  "migration0005": "unchanged / not executed",
+  "production": "untouched",
+  "nextDependency": "Reservation Capacity Commitment Scope"
+}
