@@ -1,0 +1,70 @@
+{
+  "id": "FOOD-007L",
+  "title": "Reservation-Selection Recorded Capacity Arithmetic",
+  "status": "implementation",
+  "startingHead": "8960a34dc5542ba1fa6e19446915afa65c3ce2b4",
+  "purpose": "Purely align canonical FOOD-007F exact capacity-source values with a successful canonical FOOD-007K recorded-held commitment resolution and compute a signed same-exact-revision arithmetic delta.",
+  "inputs": {
+    "capacitySourceResolution": "Canonical FOOD-007F FoodReservationCapacitySourceSelectionResolution.",
+    "recordedHeldCommitmentResolution": "Successful FOOD-007K FoodReservationSelectionRecordedHeldCommitmentResolution."
+  },
+  "dependencies": [
+    "FOOD-007F reservation capacity-source selection resolution",
+    "FOOD-007K reservation-selection recorded-held commitment resolution",
+    "FOOD-007B exact-SKU stocked capacity-source structural validation",
+    "FOOD-005V fulfillment-slot capacity-source structural validation"
+  ],
+  "algorithm": [
+    "Strictly capture the relevant FOOD-007F selection/source evidence and validate each durable source through its canonical source-domain validator.",
+    "Strictly capture the relevant FOOD-007K validation and recorded-held commitment evidence.",
+    "Require identical SKU counts and exact per-index SKU id, SKU version and capacity revision alignment.",
+    "Require exact fulfillment method, location reference, window reference and capacity revision alignment.",
+    "Require FOOD-007K validation observations to agree with its commitment observations and require selected revision to equal observed highest recorded revision.",
+    "For each aligned exact revision compute recordedCapacityDelta = capacityUnits - recordedHeldQuantity.",
+    "Use BigInt subtraction and reject any result outside the signed JavaScript safe-integer range.",
+    "Preserve negative arithmetic exactly; never clamp negative values to zero.",
+    "Return a deeply frozen detached result."
+  ],
+  "output": {
+    "kind": "reservation-selection-recorded-capacity-arithmetic",
+    "skuArithmetic": "Exact SKU identity/revision plus capacityUnits, recordedHeldQuantity and signed recordedCapacityDelta.",
+    "slotArithmetic": "Exact slot identity/revision plus capacityUnits, recordedHeldQuantity and signed recordedCapacityDelta."
+  },
+  "formula": "recordedCapacityDelta = capacityUnits - recordedHeldQuantity",
+  "negativeArithmetic": "Negative recordedCapacityDelta is preserved as arithmetic evidence and is not clamped.",
+  "safeClaim": "For each structurally aligned exact capacity-source revision, recordedCapacityDelta is the mathematical difference between that recorded source assertion's capacityUnits and FOOD-007K's recordedHeldQuantity for the same exact revision.",
+  "authorityBoundary": "recordedCapacityDelta is neutral arithmetic evidence only. It is not remaining capacity, available capacity, reservable quantity, ATP, capacity sufficiency, active capacity, governing capacity or acceptance authority.",
+  "crossRevisionBoundary": "No commitment from one capacity-source revision is rolled into another capacity-source revision.",
+  "lifecycleBoundary": "FOOD-007L does not decide whether recorded held rows are currently active after any future release, expiration, cancellation, replacement, rescheduling or consumption lifecycle.",
+  "concurrencyBoundary": "FOOD-007L performs no reads. It composes the already-obtained input artifacts and does not upgrade their read-time observations into a simultaneous or perpetual snapshot.",
+  "physicalInventoryBoundary": "No physical quantity on hand or physical inventory movement is established.",
+  "nonClaims": [
+    "remaining capacity",
+    "available capacity",
+    "reservable quantity",
+    "available-to-promise / ATP",
+    "capacity sufficiency",
+    "active reservations",
+    "active commitments",
+    "cross-revision commitment accounting",
+    "governing capacity source",
+    "source eligibility",
+    "physical currentness",
+    "physical quantity on hand",
+    "reservation acceptance",
+    "availability",
+    "orderability",
+    "checkout readiness",
+    "payment readiness",
+    "fulfillment authority"
+  ],
+  "sideEffects": "Pure synchronous composition. No database access, SQL, writes, routes, clocks, network access, environment access, randomness, reservation mutation, acceptance construction, migration execution or production mutation.",
+  "migrationImpact": "none",
+  "migration0003": "unchanged / not executed",
+  "migration0005": "unchanged / not executed",
+  "files": [
+    ".river-dev/specifications/food-007l-reservation-selection-recorded-capacity-arithmetic.json",
+    "src/lib/food/reservation-selection-recorded-capacity-arithmetic.ts",
+    "src/lib/food/reservation-selection-recorded-capacity-arithmetic.test.ts"
+  ]
+}
