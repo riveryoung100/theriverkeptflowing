@@ -1,0 +1,95 @@
+{
+  "id": "FOOD-007H",
+  "name": "Public Exact Fulfillment-Slot Latest-Recorded Capacity-Source Read",
+  "startingHead": "9782a3ab50d1c9871c2f889584654f2610f0ef90",
+  "publicFunction": "readFoodLatestExactFulfillmentSlotCapacitySourceRevision",
+  "purpose": "Return the structurally valid highest recorded capacity-source row returned by the injected read for one exact fulfillment-slot stream.",
+  "selector": {
+    "shape": "{ method, locationReference, windowReference }",
+    "capture": "Strict exact own-data keys, no getters, symbols, inherited-only fields, extras, coercion or trimming. Reuse validateFoodFulfillmentMethod and the bounded unpadded reference rules established by FOOD-007D. Capture a frozen detached selector before database work.",
+    "invalid": "invalid; zero DB access"
+  },
+  "dependencies": [
+    "FOOD-005V fulfillment-slot capacity-source durable domain and canonical validator",
+    "FOOD-007D public exact fulfillment-slot capacity-source read contract and D1 interfaces",
+    "FOOD-007G public latest-recorded read semantics and separation of concerns"
+  ],
+  "query": {
+    "table": "food_fulfillment_slot_capacity_sources",
+    "columns": [
+      "method",
+      "location_reference",
+      "window_reference",
+      "revision",
+      "capacity_units",
+      "attribution",
+      "source_reference"
+    ],
+    "where": "method = ? AND location_reference = ? AND window_reference = ?",
+    "bindOrder": [
+      "method",
+      "locationReference",
+      "windowReference"
+    ],
+    "order": "ORDER BY revision DESC",
+    "limit": 1
+  },
+  "resultUnion": [
+    "found",
+    "not-found",
+    "invalid",
+    "storage-failure"
+  ],
+  "storageValidation": "Require success === true and array results, zero rows -> not-found, more than one row -> storage-failure. Require exact own data columns, reconstruct the canonical durable value, validate through the fulfillment-slot capacity-source domain, and compare returned method/locationReference/windowReference to the captured selector.",
+  "highestRow": "Validate the highest recorded row only. Malformed highest row -> storage-failure. No fallback to older valid rows, retry, exact selected revision lookup or backward scan.",
+  "failures": "Prepare/bind/all exceptions, unsuccessful or malformed envelope, malformed highest row, unexpected row count or returned stream-identity mismatch -> storage-failure, never not-found.",
+  "ownership": "Capture a detached frozen selector before await. Canonical validator detaches/freezes the durable value and freeze the result. Do not freeze or mutate caller, database or storage rows.",
+  "database": {
+    "maxSelectsPerValidCall": 1,
+    "invalidAccess": 0,
+    "writes": 0,
+    "reservationReads": 0
+  },
+  "safeClaim": "A structurally valid highest-revision fulfillment-slot capacity-source assertion returned by the injected database read for the requested exact slot stream was obtained.",
+  "sessionCaveat": "Conditional on injected database/session semantics; no globally freshest-state guarantee or perpetual authority. A later revision may be appended immediately after the read.",
+  "nonClaims": [
+    "governing policy",
+    "source eligibility",
+    "trusted source",
+    "authenticated provenance",
+    "temporal freshness",
+    "effective-time validity",
+    "currently active fulfillment window",
+    "current slot availability",
+    "current remaining slot capacity",
+    "active slot commitments",
+    "cross-revision commitment accounting",
+    "reservable quantity",
+    "ATP",
+    "capacity sufficiency",
+    "reservation acceptance",
+    "reservation hold",
+    "orderability",
+    "checkout readiness",
+    "payment readiness",
+    "fulfillment readiness",
+    "accounting authority",
+    "perpetual currentness"
+  ],
+  "invariants": [
+    "latest stored revision != physical currentness",
+    "latest stored slot revision != current slot availability",
+    "latest stored slot revision != remaining slot capacity",
+    "latest stored revision != authenticated truth",
+    "sourceReference != authenticated truth",
+    "windowReference != temporal-currentness proof",
+    "FOOD-007H latest-recorded read != governing policy",
+    "read-time result != perpetual authority"
+  ],
+  "reservationBoundary": "This unit does not read food_capacity_reservations, food_capacity_reservation_lines or food_fulfillment_slot_reservations and does not compute remaining capacity or active commitments.",
+  "crossRevisionBoundary": "A later slot source revision does not by itself define whether historical reservation commitments roll forward into that revision. FOOD-007H does not solve that accounting policy.",
+  "sideEffects": "Read-only server-library export. No route, reservation-table access, SKU access, writes, clocks, network, environment, randomness, acceptance or migration access.",
+  "migrationImpact": "none",
+  "migration0005": "unchanged / not executed",
+  "production": "untouched"
+}
