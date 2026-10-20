@@ -1,0 +1,278 @@
+{
+  "id": "FOOD-007Y",
+  "title": "Durable Reservation Acceptance Evidence Persistence",
+  "classification": "authoritative append-only post-reservation acceptance-evidence persistence boundary",
+  "status": "contract-defined-unimplemented",
+  "startingHead": "4eda4b4ba2a42a02466dec2cc279d968aff569f6",
+
+  "decomposition": "FOOD-007Y owns only durable persistence and exact replay classification for the missing FOOD-005L reservation-acceptance evidence after a reservation has already been durably established by FOOD-007V and made durably fulfillment-intent-authenticatable by FOOD-007X. FOOD-007Y does not own reservation creation, governing-source policy, capacity arithmetic, capacity admission, capacity-source selection, payment, checkout readiness, fulfillment authority, release, expiration, cancellation, rescheduling, physical inventory truth or physical inventory movement.",
+
+  "discoveryDecision": {
+    "selectedOption": "append-only acceptance evidence record",
+    "reason": "The authoritative reservation receipt is reconstructable from durable FOOD-007V/FOOD-007X storage, but FOOD-005L acceptance identity/version plus attribution, sourceReference and acceptedOn are not reconstructable from those rows. Persisting those missing acceptance facts bound to reservation_id makes the acceptance evidence durably recoverable without duplicating authoritative reservation facts.",
+    "rejectedFullSnapshotPersistence": "Do not duplicate order, reservation-request, fulfillment snapshot, demand lines, capacity revisions or slot claim into the acceptance table because those facts are already authoritative in immutable reservation storage.",
+    "rejectedNoStorage": "FOOD-005L acceptance identity and metadata would otherwise disappear after process memory is lost.",
+    "rejectedVBatchExtension": "Acceptance is downstream evidence created after durable reservation establishment. Failure to persist acceptance must not roll back or reinterpret the already-authoritative reservation."
+  },
+
+  "dependencies": {
+    "food005l": {
+      "source": "src/lib/food/reservation-acceptance-domain.ts",
+      "sourceBlobAtContractDefinition": "b0ea5cf9a8cefb57ce371040d33eb1686f7cf816",
+      "specification": ".river-dev/specifications/food-005l-reservation-acceptance-domain.json",
+      "specificationBlobAtContractDefinition": "82415e94f88afef671a4a7660833739ca45dfd6b",
+      "role": "Canonical reservation-acceptance identity, version, validation and metadata semantics."
+    },
+    "food007v": {
+      "source": "src/lib/food/d1-authoritative-capacity-reservation-mutation.ts",
+      "sourceBlobAtContractDefinition": "9134d8dee4f0dc69b3616aababd0ea69860a6920",
+      "role": "Authoritative durable reservation receipt semantics."
+    },
+    "food007w": {
+      "source": "src/lib/food/post-mutation-reservation-acceptance.ts",
+      "sourceBlobAtContractDefinition": "3eaba1b918630368b52ce0e70ff46e1a2230fc87",
+      "specification": ".river-dev/specifications/food-007w-post-mutation-reservation-acceptance.json",
+      "specificationBlobAtContractDefinition": "a9e0b21b787609eaaa56fa2188107fd3f4308257",
+      "role": "Canonical post-mutation composition containing one authoritative reservation receipt and one FOOD-005L acceptance."
+    },
+    "food007x": {
+      "specification": ".river-dev/specifications/food-007x-authoritative-reservation-fulfillment-intent-durable-binding.json",
+      "specificationBlobAtContractDefinition": "d7566af702b4e9e1b1bc36b07d889cd265159f2b",
+      "migration": "migrations/food/0006_food_capacity_reservation_fulfillment_intent_binding.sql",
+      "migrationBlobAtContractDefinition": "b43d3e89a1078d864a6060de4e1c45d2f6c294ac",
+      "role": "Durable fulfillment-intent binding required to authenticate and reconstruct the reservation receipt."
+    }
+  },
+
+  "prospectiveArtifacts": {
+    "specification": ".river-dev/specifications/food-007y-durable-reservation-acceptance-evidence-persistence.json",
+    "migration": "migrations/food/0007_food_reservation_acceptance_evidence.sql",
+    "source": "src/lib/food/d1-durable-reservation-acceptance-evidence-persistence.ts",
+    "test": "src/lib/food/d1-durable-reservation-acceptance-evidence-persistence.test.ts"
+  },
+
+  "input": {
+    "type": "FoodPostMutationReservationAcceptance",
+    "source": "FOOD-007W",
+    "requiredKind": "post-mutation-reservation-acceptance",
+    "allowedReservationOutcomeValues": [
+      "created",
+      "already-present"
+    ],
+    "reservationOutcomeDurability": "The W reservationOutcome is operation-local provenance only. It must be validated but must not be persisted and must not participate in acceptance idempotency or conflict identity."
+  },
+
+  "publicApi": {
+    "kindConstant": "FOOD_DURABLE_RESERVATION_ACCEPTANCE_EVIDENCE_KIND",
+    "kind": "durable-reservation-acceptance-evidence",
+    "evidenceType": "FoodDurableReservationAcceptanceEvidence",
+    "resultType": "FoodDurableReservationAcceptanceEvidencePersistenceResult",
+    "databaseType": "FoodDurableReservationAcceptanceEvidenceD1Database",
+    "function": "persistFoodDurableReservationAcceptanceEvidence",
+    "signature": "persistFoodDurableReservationAcceptanceEvidence(database: FoodDurableReservationAcceptanceEvidenceD1Database, composition: FoodPostMutationReservationAcceptance): Promise<FoodDurableReservationAcceptanceEvidencePersistenceResult>"
+  },
+
+  "successValue": {
+    "kind": "durable-reservation-acceptance-evidence",
+    "reservationId": "Exact authoritative reservation ID.",
+    "acceptance": "The fully reconstructed and validated FoodReservationAcceptanceVersion.",
+    "detachment": "Returned data must be detached from caller-owned and database-owned mutable values.",
+    "immutability": "Returned data must be deeply frozen."
+  },
+
+  "outcomes": [
+    "created",
+    "already-present",
+    "reservation-not-established",
+    "conflict",
+    "storage-failure",
+    "invalid"
+  ],
+
+  "outcomeSemantics": {
+    "created": "The durable reservation authenticated exactly, no acceptance evidence existed for the reservation or acceptance identity, and one exact immutable acceptance evidence row was inserted successfully.",
+    "already-present": "An exact durable acceptance evidence row already exists and authenticates to the same reservation, acceptance identity/version and metadata. Exact replay performs no write.",
+    "reservation-not-established": "No authoritative reservation parent exists for the supplied W reservation ID. Acceptance evidence must not be written.",
+    "conflict": "The durable reservation exists but differs from the supplied W receipt or acceptance correlation; or the reservation already has different acceptance evidence; or the same acceptance identity/version is already bound to another reservation.",
+    "storage-failure": "Required durable reservation or acceptance storage is malformed/incomplete, a database read/write fails, or write recovery cannot classify the durable state safely.",
+    "invalid": "The caller input is malformed, hostile-shaped, accessor-backed, unsupported, fails canonical FOOD-005L validation, or otherwise cannot be safely interpreted."
+  },
+
+  "authoritativeReservationAuthentication": {
+    "required": true,
+    "callerReceiptAloneIsAuthority": false,
+    "databaseEvidence": [
+      "food_capacity_reservations",
+      "food_capacity_reservation_lines",
+      "food_fulfillment_slot_reservations",
+      "food_capacity_reservation_fulfillment_intents"
+    ],
+    "rule": "Before any acceptance insert, FOOD-007Y must reconstruct the canonical authoritative reservation receipt from durable rows and require exact semantic equality with composition.reservation.",
+    "missingParent": "reservation-not-established",
+    "missingRequiredChildRow": "storage-failure",
+    "malformedDurableRow": "storage-failure",
+    "receiptMismatch": "conflict",
+    "canonicalSkuOrder": "Use persisted line_index order. Never sort, repair or infer a different order."
+  },
+
+  "acceptanceCorrelation": {
+    "validation": "Validate composition.acceptance as canonical FOOD-005L data before persistence.",
+    "order": "acceptance.order id/version must exactly equal the authenticated durable reservation order.",
+    "reservationRequest": "acceptance.reservationRequest id/version must exactly equal the authenticated durable reservation request.",
+    "fulfillmentIntentIdentity": "acceptance.fulfillmentIntent id/version must exactly equal the durable FOOD-007X fulfillment-intent binding.",
+    "fulfillmentSnapshot": "acceptance.fulfillmentIntent method/locationReference/windowReference must exactly equal the durable slot claim.",
+    "capacityRequirements": "Acceptance SKU id/version/quantity sequence must exactly equal the authenticated durable reservation demand sequence. Capacity revisions remain reservation receipt facts and are not duplicated into acceptance evidence.",
+    "mismatch": "conflict"
+  },
+
+  "newDurableFacts": {
+    "reservationId": "Binding target only; already exists authoritatively in reservation storage.",
+    "acceptanceId": "FOOD-005L dedicated reservation acceptance ID.",
+    "acceptanceVersion": "Initial FOOD-005L acceptance version. FOOD-007W currently constructs version 1.",
+    "attribution": "FOOD-005L acceptance attribution.",
+    "sourceReference": "FOOD-005L acceptance source reference.",
+    "acceptedOn": "FOOD-005L acceptance date."
+  },
+
+  "factsExplicitlyNotDuplicated": [
+    "physical order id/version beyond the reservation FK relationship",
+    "reservation-request id/version",
+    "fulfillment-intent id/version",
+    "fulfillment method",
+    "location reference",
+    "window reference",
+    "SKU demand JSON",
+    "SKU claim revisions",
+    "slot capacity revision",
+    "reservation state",
+    "W reservationOutcome"
+  ],
+
+  "storage": {
+    "table": "food_reservation_acceptance_evidence",
+    "model": "one immutable acceptance evidence record per authoritative reservation",
+    "columns": [
+      "reservation_id",
+      "acceptance_id",
+      "acceptance_version",
+      "attribution",
+      "source_reference",
+      "accepted_on"
+    ],
+    "primaryKey": [
+      "acceptance_id",
+      "acceptance_version"
+    ],
+    "reservationUniqueness": "reservation_id must be UNIQUE so one authoritative reservation cannot acquire divergent acceptance identities.",
+    "reservationForeignKey": "reservation_id REFERENCES food_capacity_reservations(reservation_id)",
+    "acceptanceVersionPolicy": "FOOD-007Y persists the initial FOOD-005L acceptance only; acceptance_version must equal 1.",
+    "globalMetadataUniqueness": false,
+    "update": "forbidden by immutable trigger",
+    "delete": "forbidden by immutable trigger",
+    "upsert": "forbidden",
+    "repair": "forbidden",
+    "backfillThroughPublicApi": "forbidden"
+  },
+
+  "transactionBoundary": {
+    "insideFood007vBatch": false,
+    "separatePostReservationBoundary": true,
+    "reason": "The reservation is already an immutable authoritative fact before FOOD-007Y. Acceptance persistence failure must not undo, delete, replace or reinterpret the reservation.",
+    "coherency": "Reservation authentication reads are safe across the acceptance insert boundary because V/X reservation rows are append-only and immutable.",
+    "acceptanceConcurrency": "Database uniqueness constraints plus post-failure reread classification must resolve concurrent identical or divergent acceptance attempts without overwrite."
+  },
+
+  "writeProtocol": {
+    "step1": "Strictly validate and detach the supplied W composition.",
+    "step2": "Read and authenticate the complete durable reservation parent, ordered SKU claims, slot claim and fulfillment-intent binding.",
+    "step3": "Require exact correlation between authenticated reservation evidence and both W components.",
+    "step4": "Read acceptance evidence by reservation_id and by acceptance identity/version before attempting mutation.",
+    "step5": "If exact evidence exists return already-present without writing.",
+    "step6": "If either uniqueness dimension contains divergent evidence return conflict.",
+    "step7": "Insert exactly one immutable minimal acceptance evidence row.",
+    "step8": "Require an exact successful insert witness before returning created.",
+    "step9": "If mutation outcome is uncertain or fails, reread both uniqueness dimensions. Exact durable evidence may return already-present; divergent evidence returns conflict; otherwise return storage-failure."
+  },
+
+  "idempotency": {
+    "identity": "Exact reservation_id + acceptance_id/version + acceptance metadata.",
+    "exactReplay": "already-present",
+    "sameReservationDifferentAcceptanceIdentity": "conflict",
+    "sameReservationSameIdentityDifferentMetadata": "conflict",
+    "sameAcceptanceIdentityDifferentReservation": "conflict",
+    "callerRequestedRepair": "not supported",
+    "sortingOrNormalizationRepair": "not supported"
+  },
+
+  "hostileShapePolicy": {
+    "plainObjectsOnly": true,
+    "plainArraysOnly": true,
+    "accessors": "reject without invocation",
+    "symbolProperties": "reject",
+    "customPrototypes": "reject",
+    "sparseArrays": "reject",
+    "extraProperties": "reject unless explicitly part of the canonical contract",
+    "cycles": "reject",
+    "unsupportedRuntimeValues": "reject",
+    "failClosed": true
+  },
+
+  "authorityBoundary": {
+    "claims": [
+      "one acceptance identity/version and metadata record is durably bound to one already-authoritative reservation",
+      "the persisted acceptance evidence exactly correlated with the durable reservation at persistence time",
+      "exact durable acceptance replay is idempotently recognizable"
+    ],
+    "nonClaims": [
+      "permission to reserve",
+      "capacity admission",
+      "capacity sufficiency",
+      "capacity insufficiency",
+      "remaining capacity",
+      "available-to-promise",
+      "physical inventory truth",
+      "physical QOH",
+      "payment success",
+      "paid-in-full",
+      "checkout readiness",
+      "fulfillment approval",
+      "preparation authority",
+      "dispatch authority",
+      "delivery authority",
+      "completed handoff",
+      "release authority",
+      "expiration authority",
+      "cancellation authority",
+      "rescheduling authority",
+      "reservation consumption",
+      "accounting authority",
+      "rewards authority",
+      "migration execution",
+      "production deployment"
+    ]
+  },
+
+  "existingApiImpact": {
+    "food007vPublicApi": "unchanged",
+    "food007wPublicApi": "unchanged",
+    "food005lPublicApi": "unchanged",
+    "food007xStorage": "read-only dependency; unchanged",
+    "newStandalonePersistenceApi": true
+  },
+
+  "migrationImpact": {
+    "nextMigration": "0007",
+    "prospectivePath": "migrations/food/0007_food_reservation_acceptance_evidence.sql",
+    "createDuringContractDefinition": false,
+    "execute": false,
+    "modifyMigrations0003Through0006": false
+  },
+
+  "production": {
+    "touched": false,
+    "migrationExecuted": false,
+    "deploymentAuthorized": false
+  },
+
+  "nextStep": "Capture exact implementation anchors and schema conventions for migration 0007 and the new standalone D1 persistence adapter. Do not implement until those anchors have been reviewed."
+}
