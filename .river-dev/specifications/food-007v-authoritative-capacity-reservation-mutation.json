@@ -1,0 +1,646 @@
+{
+  "id": "FOOD-007V",
+  "title": "D1 Authoritative Capacity-Reservation Mutation",
+  "classification": "authoritative asynchronous durable reservation mutation boundary",
+  "status": "contract-defined-unimplemented",
+
+  "decomposition": "FOOD-007V owns only the authoritative durable mutation of one canonical reservation hold command against then-current durable capacity-source and recorded-held commitment state. It does not own structural command creation, source-policy definition, commitment-scope definition, arithmetic-policy definition, payment readiness, fulfillment readiness, reservation release, or reservation acceptance creation.",
+
+  "purpose": "For one canonical FOOD-007N reservation hold command, first resolve exact durable replay by reservation identity. For a fresh reservation identity, enforce governing-source currency, governing-scope recorded-held capacity and FOOD-007U admission semantics inside the protected mutation boundary, then atomically persist the reservation parent, every SKU capacity claim and the fulfillment-slot claim.",
+
+  "prospectiveArtifacts": {
+    "specification": ".river-dev/specifications/food-007v-authoritative-capacity-reservation-mutation.json",
+    "source": "src/lib/food/d1-authoritative-capacity-reservation-mutation.ts",
+    "test": "src/lib/food/d1-authoritative-capacity-reservation-mutation.test.ts"
+  },
+
+  "inputs": {
+    "database": {
+      "meaning": "Injected D1-compatible database boundary exposing only the prepare/batch operations required by this authoritative reservation mutation.",
+      "authority": "Database injection selects the storage authority for this invocation. FOOD-007V does not discover environment bindings, read process.env, access globals, or select production resources."
+    },
+
+    "command": {
+      "type": "FoodReservationHoldCommand",
+      "source": "FOOD-007N",
+      "meaning": "Canonical structural write intent containing the reservation identity, exact physical-order identity and canonical FOOD-007E reservation/source-selection context.",
+      "important": "The command is intent, not permission. A previously constructed command must never be treated as evidence that capacity remains admissible."
+    }
+  },
+
+  "publicApi": {
+    "databaseType": "FoodAuthoritativeCapacityReservationD1Database",
+    "receiptType": "FoodAuthoritativeCapacityReservationMutationReceipt",
+    "resultType": "FoodAuthoritativeCapacityReservationMutationResult",
+    "function": "executeFoodAuthoritativeCapacityReservationMutation",
+    "signature": "executeFoodAuthoritativeCapacityReservationMutation(database: FoodAuthoritativeCapacityReservationD1Database, command: FoodReservationHoldCommand): Promise<FoodAuthoritativeCapacityReservationMutationResult>"
+  },
+
+  "resultOutcomes": {
+    "created": {
+      "value": true,
+      "meaning": "One fresh canonical reservation parent, every demanded SKU claim and exactly one fulfillment-slot claim were committed as one successful authoritative mutation."
+    },
+
+    "already-present": {
+      "value": true,
+      "meaning": "An exact canonical durable reservation for this reservation identity already exists with the same parent binding, complete SKU claim set, quantities, selected capacity revisions and exact slot claim. No new write is performed."
+    },
+
+    "governing-source-mismatch": {
+      "value": false,
+      "meaning": "For a fresh reservation identity, at least one selected SKU or selected slot capacity revision is no longer the mutation-time governing source under the canonical governing-source policy."
+    },
+
+    "insufficient-capacity": {
+      "value": false,
+      "meaning": "For a fresh reservation identity whose selected source revisions remain governing, at least one SKU or the selected slot fails FOOD-007U policy version 1 under mutation-time durable held commitments."
+    },
+
+    "conflict": {
+      "value": false,
+      "meaning": "The reservation identity is already durably occupied by a canonical reservation whose binding or complete claim set differs from the supplied command."
+    },
+
+    "storage-failure": {
+      "value": false,
+      "meaning": "Durable state could not be read or written with enough certainty to return one of the other outcomes, or durable reservation state is malformed/partial in a way that cannot safely be classified as an exact replay or canonical divergent conflict."
+    },
+
+    "invalid": {
+      "value": false,
+      "meaning": "The supplied command or runtime data fails canonical structural/numeric validation before authoritative mutation."
+    }
+  },
+
+  "receipt": {
+    "kind": "authoritative-capacity-reservation-mutation-receipt",
+
+    "fields": [
+      "kind",
+      "reservationId",
+      "order",
+      "reservationRequest",
+      "fulfillmentIntent",
+      "skuClaims",
+      "slotClaim"
+    ],
+
+    "order": {
+      "id": "exact FOOD-007N physical-order identity",
+      "version": "positive safe integer"
+    },
+
+    "reservationRequest": {
+      "id": "exact FOOD-007N selection request identity",
+      "version": "positive safe integer"
+    },
+
+    "fulfillmentIntent": {
+      "id": "exact FOOD-007N fulfillment-intent identity",
+      "version": "positive safe integer"
+    },
+
+    "skuClaims": {
+      "ordering": "Canonical FOOD-007E request demand order. Never sort, reorder, deduplicate or repair.",
+      "fields": [
+        "sku",
+        "capacityRevision",
+        "quantity"
+      ],
+      "capacityRevision": "Exact governing source revision that was authoritatively guarded for the successful reservation mutation.",
+      "quantity": "Exact positive demand quantity from the canonical reservation request."
+    },
+
+    "slotClaim": {
+      "fields": [
+        "method",
+        "locationReference",
+        "windowReference",
+        "capacityRevision",
+        "quantity"
+      ],
+      "quantity": 1,
+      "capacityRevision": "Exact governing slot capacity revision guarded for the successful reservation mutation."
+    },
+
+    "immutability": "Receipt, claim arrays and all nested identities are detached and deeply frozen."
+  },
+
+  "durableSchema": {
+    "migration": "migrations/food/0003_food_capacity_reservation_storage.sql",
+
+    "sourceTables": [
+      "food_sku_capacity_sources",
+      "food_fulfillment_slot_capacity_sources"
+    ],
+
+    "reservationTables": [
+      "food_capacity_reservations",
+      "food_capacity_reservation_lines",
+      "food_fulfillment_slot_reservations"
+    ],
+
+    "reservationParent": {
+      "table": "food_capacity_reservations",
+      "identity": "reservation_id primary key",
+      "immutability": "Migration-defined UPDATE and DELETE abort triggers make committed reservation parents append-only."
+    },
+
+    "skuClaims": {
+      "table": "food_capacity_reservation_lines",
+      "binding": "Every row binds one reservation parent, exact SKU identity/version, exact capacity source revision and positive reserved quantity.",
+      "immutability": "Migration-defined UPDATE and DELETE abort triggers make committed SKU reservation lines append-only."
+    },
+
+    "slotClaim": {
+      "table": "food_fulfillment_slot_reservations",
+      "cardinality": "Exactly one canonical slot claim per successful reservation identity.",
+      "binding": "The row binds the reservation parent, selected fulfillment-slot identity and exact capacity source revision.",
+      "immutability": "Migration-defined UPDATE and DELETE abort triggers make committed slot reservation rows append-only."
+    },
+
+    "sourceImmutability": "SKU and fulfillment-slot capacity source rows are also append-only under migration-defined UPDATE/DELETE abort triggers."
+  },
+
+  "replayPolicy": {
+    "order": "Exact durable replay resolution occurs before fresh mutation-time governing/admission evaluation.",
+
+    "why": "A previously successful reservation remains a successful reservation even if later capacity-source revisions or later reservations change current capacity state.",
+
+    "exactReplay": "If reservation_id already exists, load the canonical parent, complete SKU-line set and slot claim. Require exact deep semantic equality to the command-derived expected reservation record.",
+
+    "exactOutcome": "already-present",
+
+    "divergentCanonicalReplay": "If the same reservation identity exists with a different canonical parent binding, SKU set/order-independent durable set, quantity, source revision or slot binding, return conflict.",
+
+    "partialOrMalformedReplay": "If the reservation parent exists but its durable child state is incomplete, malformed, impossible or cannot be read with certainty, return storage-failure rather than inventing success.",
+
+    "noReevaluationForExactReplay": "After exact durable replay has been established, do not reject that replay because source revisions advanced or current free capacity later became negative. No new capacity is consumed by an exact retry.",
+
+    "noWriteOnReplay": true
+  },
+
+  "freshMutationPreconditions": {
+    "appliesOnlyWhen": "No durable reservation exists for reservationId.",
+
+    "selectedSourceExistence": "Every selected SKU capacity source revision and selected slot capacity source revision must exist as canonical durable source rows.",
+
+    "governingSource": "For each demanded SKU and the selected slot, the command-selected revision must still match the highest recorded authoritative revision under FOOD-007O policy at mutation time.",
+
+    "commitmentScope": "Held-capacity accounting follows the canonical FOOD-007P governing commitment scope.",
+
+    "skuHeldQuantity": "For each demanded SKU, authoritative mutation logic must account for all canonical recorded reservation-line quantities in governing scope through the selected governing revision.",
+
+    "slotHeldQuantity": "For the selected fulfillment slot, authoritative mutation logic must account for all canonical recorded slot commitments in governing scope through the selected governing revision.",
+
+    "skuAdmission": "For every demanded SKU: capacityUnits - recordedHeldQuantity - demandQuantity must be >= 0.",
+
+    "slotAdmission": "For the selected slot: capacityUnits - recordedHeldQuantity - 1 must be >= 0.",
+
+    "zero": "Exactly zero after demand remains admissible.",
+
+    "negative": "Any negative demand-adjusted delta is insufficient-capacity.",
+
+    "aggregate": "All demanded SKUs and the slot must pass. Partial admission is forbidden."
+  },
+
+  "cachedEvidenceBoundary": {
+    "food007u": "A previously created FOOD-007U admission result may be useful evidence or for tests but is never authoritative write permission.",
+
+    "food007o": "A previously created FOOD-007O governing-source result is never sufficient for mutation.",
+
+    "food007q": "A previously created FOOD-007Q held-commitment read is never sufficient for mutation.",
+
+    "statement": "The fresh-write authority must be enforced against database state inside the protected mutation boundary."
+  },
+
+  "atomicMutation": {
+    "scope": [
+      "one food_capacity_reservations parent",
+      "every food_capacity_reservation_lines row for the complete canonical demand",
+      "one food_fulfillment_slot_reservations row"
+    ],
+
+    "allOrNothing": true,
+
+    "partialWriteForbidden": true,
+
+    "databasePrimitive": "Use one D1 batch / atomic storage unit for the fresh reservation mutation.",
+
+    "guardPlacement": "Mutation-time governing-source and capacity guards must be encoded in or otherwise protected by the same atomic mutation unit that creates the reservation rows.",
+
+    "preflightNotAuthority": "Sequential JavaScript reads performed before the atomic batch may inform diagnostics but cannot alone authorize the batch.",
+
+    "silentZeroRowForbidden": "A capacity/governing guard must not silently affect zero rows while allowing earlier parent or claim statements to commit. Guard failure must make the mutation unit fail or otherwise prove that no partial reservation state can commit.",
+
+    "rollbackRequirement": "Any failed SKU guard, slot guard, foreign-key/constraint failure, duplicate conflict or other failed required statement must roll back the complete fresh reservation mutation.",
+
+    "statementOrder": "Canonical implementation may use parent then SKU claims in request demand order then slot claim, but atomic correctness must not depend on partial success of that sequence.",
+
+    "returningWitnesses": "Successful mutating statements should return canonical durable witnesses where the D1 interface permits RETURNING, and every returned witness must be structurally validated."
+  },
+
+  "concurrency": {
+    "goal": "Prevent two concurrent fresh reservations from both consuming the same recorded free capacity beyond the canonical admission threshold.",
+
+    "freshWriteRule": "Concurrency safety comes from mutation-time database guards plus one all-or-nothing D1 mutation unit, not from an earlier application-memory calculation.",
+
+    "sourceAppendRace": "A concurrent capacity-source append must not allow a reservation to claim that an older selected revision was governing if that revision was no longer governing at the authoritative reservation mutation point.",
+
+    "reservationRace": "Concurrent reservation attempts must observe serialized/atomic durable claim behavior such that only mutations satisfying the guarded capacity rule can commit.",
+
+    "sameReservationRace": "Concurrent identical reservationId attempts resolve through durable exact replay recovery: exactly one fresh commit may win; an identical durable winner becomes already-present for the other attempt.",
+
+    "divergentReservationRace": "Concurrent divergent writes for the same reservationId resolve to conflict once durable canonical state can be established.",
+
+    "runtimeQualification": "Real D1 serialization, batch rollback, RETURNING, trigger and concurrent-request behavior requires isolated non-production integration validation before production authority is claimed."
+  },
+
+  "failureRecovery": {
+    "noBlindRetry": "FOOD-007V performs at most one fresh atomic mutation attempt per invocation. It must not blindly retry an uncertain write.",
+
+    "afterMutationExceptionOrFailedResult": [
+      "Reread the exact reservation identity first.",
+      "If the complete durable reservation exactly equals the requested canonical reservation, return already-present.",
+      "If the reservation identity is durably occupied by a canonical divergent reservation, return conflict.",
+      "If reservation state is partial/malformed/uncertain, return storage-failure.",
+      "If no reservation exists, reacquire current governing-source and recorded-held state.",
+      "If selected sources are clearly no longer governing, return governing-source-mismatch.",
+      "If selected sources remain governing but current capacity is clearly insufficient, return insufficient-capacity.",
+      "Otherwise return storage-failure."
+    ],
+
+    "causalityBoundary": "Post-failure rereads classify the state that can be established after the failed attempt. They do not prove which exact concurrent event caused the original write failure."
+  },
+
+  "governingSourceMismatch": {
+    "freshOnly": true,
+
+    "condition": "At least one command-selected SKU or slot capacity revision does not satisfy the canonical FOOD-007O governing-source policy against mutation-time durable source state.",
+
+    "outcome": "governing-source-mismatch",
+
+    "writes": "none committed"
+  },
+
+  "insufficientCapacity": {
+    "freshOnly": true,
+
+    "condition": "Selected source revisions remain governing, but one or more canonical FOOD-007U policy-v1 demand-adjusted deltas are negative under mutation-time held commitments.",
+
+    "outcome": "insufficient-capacity",
+
+    "writes": "none committed",
+
+    "zeroRule": "Zero remains admissible."
+  },
+
+  "numericRules": {
+    "integers": "All revisions, quantities, capacities and held totals must be finite safe integers in their canonical signed/nonnegative/positive domains.",
+
+    "skuQuantity": "Positive safe integer copied exactly from canonical reservation request demand.",
+
+    "slotQuantity": 1,
+
+    "arithmetic": "Where application-side arithmetic is used for validation/classification, use BigInt intermediates and reject results outside JavaScript safe-integer range.",
+
+    "databaseAggregation": "Durable SQL aggregation must be validated back into canonical safe-integer application values before semantic classification.",
+
+    "noClamp": true
+  },
+
+  "inputHardening": {
+    "command": "Do not trust the TypeScript type at runtime. Capture/validate the FOOD-007N command using exact own-key data descriptors before semantic reads.",
+
+    "objectPrototype": "Caller-supplied records must have direct Object.prototype.",
+
+    "arrayPrototype": "Caller-supplied arrays must have direct Array.prototype.",
+
+    "accessors": "Reject without invocation.",
+
+    "symbols": "Reject.",
+
+    "sparseArrays": "Reject.",
+
+    "extendedArrays": "Reject.",
+
+    "cycles": "Reject.",
+
+    "customObjectPrototype": "Reject.",
+
+    "nullObjectPrototype": "Reject.",
+
+    "customArrayPrototype": "Reject.",
+
+    "nullArrayPrototype": "Reject.",
+
+    "arraySubclassPrototype": "Reject.",
+
+    "iteratorSafety": "Never use caller for...of, spread, Array.from or inherited iteration before canonical array capture."
+  },
+
+  "durableRowValidation": {
+    "rule": "Every database row that affects replay, governing-source determination, held aggregation, race recovery or returned success must be parsed through strict canonical row validation.",
+
+    "malformed": "Fail closed as storage-failure.",
+
+    "missingRequiredRow": "Fail closed unless absence has an explicitly defined semantic meaning.",
+
+    "unexpectedMultiplicity": "Fail closed.",
+
+    "unsafeInteger": "Fail closed.",
+
+    "identityMismatch": "Fail closed."
+  },
+
+  "acceptanceBoundary": {
+    "createsFood005L": false,
+
+    "reason": "FOOD-007V owns durable capacity reservation mutation only. FOOD-005L acceptance is historical acceptance evidence and requires additional source snapshots not retained in full by the FOOD-007N command.",
+
+    "allowedAfter": [
+      "created",
+      "already-present"
+    ],
+
+    "forbiddenAfter": [
+      "governing-source-mismatch",
+      "insufficient-capacity",
+      "conflict",
+      "storage-failure",
+      "invalid"
+    ],
+
+    "statement": "A downstream trusted composition/orchestration unit may construct FOOD-005L acceptance only after it has a verified successful FOOD-007V durable reservation result and the exact additional canonical source snapshots required by FOOD-005L."
+  },
+
+  "migrationBoundary": {
+    "requiredSchemaDefinition": "migrations/food/0003_food_capacity_reservation_storage.sql",
+
+    "migration0003StatusAtContractDefinition": "NOT EXECUTED",
+
+    "migration0005StatusAtContractDefinition": "NOT EXECUTED",
+
+    "food007vExecutesMigrations": false,
+
+    "food007vCreatesTables": false,
+
+    "food007vAltersSchema": false,
+
+    "implementationTestingBeforeMigration": "Synthetic/in-memory adapter tests and static SQL contract tests only unless a separately authorized isolated non-production database is explicitly provisioned.",
+
+    "productionAuthority": false
+  },
+
+  "relationshipToFood007B": {
+    "reuse": [
+      "strict canonical row parsing",
+      "exact durable identity reread",
+      "created/already-present/conflict/storage-failure/invalid result discipline",
+      "race recovery by exact reread",
+      "RETURNING witness validation"
+    ],
+
+    "doNotCopyBlindly": "FOOD-007B appends one immutable capacity-source revision. FOOD-007V mutates one cross-resource reservation bundle under governing-source, held-capacity, admission and atomicity constraints.",
+
+    "additionalRequirements": [
+      "cross-resource atomicity",
+      "mutation-time governing-source checks",
+      "mutation-time held-capacity checks",
+      "oversell/slot-overbooking prevention",
+      "complete replay verification across parent and child rows"
+    ]
+  },
+
+  "relationshipToFood007N": {
+    "role": "FOOD-007N is the canonical structural reservation write command consumed by FOOD-007V.",
+
+    "notAuthority": "FOOD-007N never proves capacity remains available.",
+
+    "reservationId": "FOOD-007V uses FOOD-007N reservationId as the durable idempotency/replay identity."
+  },
+
+  "relationshipToFood007O": {
+    "role": "Defines governing-source policy semantics.",
+
+    "writerRequirement": "FOOD-007V must enforce equivalent governing-source truth against mutation-time durable state for every selected SKU and slot."
+  },
+
+  "relationshipToFood007P": {
+    "role": "Defines which recorded commitments belong to governing capacity scope.",
+
+    "writerRequirement": "FOOD-007V held-capacity guards must use the same governing-scope semantics."
+  },
+
+  "relationshipToFood007Q": {
+    "role": "Defines the low-level cumulative recorded-held semantics through governing revision.",
+
+    "writerRequirement": "FOOD-007V mutation-time durable aggregation must be semantically equivalent but protected against concurrent over-admission by the authoritative mutation boundary."
+  },
+
+  "relationshipToFood007S": {
+    "role": "Defines recordedCapacityDelta = capacityUnits - recordedHeldQuantity.",
+
+    "writerRequirement": "FOOD-007V must preserve the same signed arithmetic identity when classifying fresh state."
+  },
+
+  "relationshipToFood007T": {
+    "role": "Defines recordedDemandAdjustedCapacityDelta = recordedCapacityDelta - demandQuantity.",
+
+    "writerRequirement": "FOOD-007V must preserve the same demand-adjusted arithmetic identity."
+  },
+
+  "relationshipToFood007U": {
+    "role": "Defines admission policy version 1.",
+
+    "policy": "Every SKU and the selected slot must have recordedDemandAdjustedCapacityDelta >= 0.",
+
+    "zero": "admissible",
+
+    "negative": "insufficient-capacity",
+
+    "cachedResultNotAuthority": true
+  },
+
+  "nonResponsibilities": [
+    "FOOD-005L reservation acceptance construction",
+    "payment authorization",
+    "payment reconciliation",
+    "checkout readiness",
+    "fulfillment readiness",
+    "dispatch",
+    "physical quantity-on-hand mutation",
+    "production batch inventory mutation",
+    "capacity source revision creation",
+    "capacity source business-policy authoring",
+    "reservation release",
+    "reservation expiration",
+    "reservation cancellation",
+    "reservation replacement",
+    "reservation consumption",
+    "reservation rescheduling",
+    "partial reservation",
+    "best-effort reservation",
+    "automatic retry loops",
+    "environment binding discovery",
+    "authentication of the caller",
+    "authorization of the caller",
+    "deployment",
+    "migration execution",
+    "production activation"
+  ],
+
+  "nonClaims": [
+    "A FOOD-007N command guarantees reservation success.",
+    "A cached FOOD-007U admissible result grants durable write permission.",
+    "Sequential preflight reads form an authoritative transaction snapshot.",
+    "A successful synthetic test proves Cloudflare D1 production concurrency behavior.",
+    "Migration 0003 has been executed.",
+    "Migration 0005 has been executed.",
+    "FOOD-007V creates FOOD-005L acceptance.",
+    "A reservation receipt is payment or checkout authorization.",
+    "Recorded capacity is physical inventory quantity-on-hand.",
+    "Current capacity remains unchanged after a successful reservation transaction."
+  ],
+
+  "implementationConstraints": {
+    "async": true,
+
+    "database": true,
+
+    "writes": true,
+
+    "oneFreshMutationAttemptMaximum": true,
+
+    "crossResourceAtomicityRequired": true,
+
+    "exactReplayFirst": true,
+
+    "sourceSelectionOrder": "Preserve canonical request demand order in application/result surfaces.",
+
+    "sqlParameterization": "All dynamic values must use bound parameters. Never interpolate caller data into SQL.",
+
+    "noEnvironmentReads": true,
+
+    "noClockDependency": "FOOD-007V does not invent wall-clock timestamps unless an existing canonical durable schema explicitly requires a caller/injected timestamp in a later contract amendment.",
+
+    "noRandomIds": "reservationId comes from FOOD-007N.",
+
+    "noAcceptanceConstructor": true
+  },
+
+  "plannedTests": {
+    "structural": [
+      "valid canonical FOOD-007N command accepted",
+      "malformed command invalid",
+      "wrong kind invalid",
+      "accessor rejected without invocation",
+      "symbol rejected",
+      "null/custom/class object prototype rejected",
+      "null/custom/subclass array prototype rejected",
+      "sparse/extended arrays rejected",
+      "cycle rejected"
+    ],
+
+    "exactReplay": [
+      "complete identical durable reservation returns already-present",
+      "exact replay performs no new write",
+      "exact replay remains already-present after newer capacity-source revisions exist",
+      "exact replay remains already-present after later commitments consume remaining capacity",
+      "divergent reservation parent returns conflict",
+      "divergent SKU quantity returns conflict",
+      "divergent SKU capacity revision returns conflict",
+      "missing SKU claim under existing parent returns storage-failure",
+      "extra SKU claim under existing parent returns conflict or storage-failure according to canonical durable-set validity",
+      "missing slot claim under existing parent returns storage-failure",
+      "divergent slot claim returns conflict"
+    ],
+
+    "governingSource": [
+      "fresh reservation with exact current SKU and slot revisions proceeds",
+      "newer SKU source revision causes governing-source-mismatch",
+      "newer slot source revision causes governing-source-mismatch",
+      "missing selected source row fails closed",
+      "malformed source row fails closed"
+    ],
+
+    "admission": [
+      "positive SKU and slot deltas create reservation",
+      "zero SKU delta is admissible",
+      "zero slot delta is admissible",
+      "negative one SKU delta returns insufficient-capacity",
+      "negative slot delta returns insufficient-capacity",
+      "multiple demanded SKUs require all pass",
+      "no partial admission"
+    ],
+
+    "atomicity": [
+      "successful fresh write creates parent plus every SKU line plus one slot row",
+      "failed first SKU guard leaves no parent",
+      "failed middle SKU guard leaves no parent or earlier SKU rows",
+      "failed final SKU guard leaves no partial rows",
+      "failed slot guard leaves no parent or SKU rows",
+      "duplicate constraint failure rolls back entire fresh mutation",
+      "foreign-key/trigger failure rolls back entire fresh mutation",
+      "silent zero-row guard is not accepted as successful mutation",
+      "success requires complete validated durable witnesses"
+    ],
+
+    "concurrency": [
+      "two competing reservations cannot both overconsume one SKU capacity",
+      "two competing reservations cannot both overbook one slot capacity",
+      "same reservationId identical race resolves created plus already-present",
+      "same reservationId divergent race resolves one winner plus conflict",
+      "source revision advancing around fresh mutation cannot authorize stale selected source"
+    ],
+
+    "raceRecovery": [
+      "insert/batch exception followed by exact durable match returns already-present",
+      "insert/batch exception followed by divergent reservation returns conflict",
+      "failed mutation followed by clear newer governing revision returns governing-source-mismatch",
+      "failed mutation followed by clear capacity shortage returns insufficient-capacity",
+      "failed mutation with no safely classifiable durable explanation returns storage-failure",
+      "no blind automatic second mutation attempt"
+    ],
+
+    "receipt": [
+      "created receipt preserves exact reservation/order/request/intent identities",
+      "created receipt preserves SKU demand order",
+      "created receipt preserves exact guarded capacity revisions and quantities",
+      "slot quantity equals 1",
+      "receipt deeply frozen",
+      "receipt detached from caller and database row objects"
+    ],
+
+    "authorityBoundary": [
+      "source does not import or create FOOD-005L acceptance",
+      "source does not perform payment logic",
+      "source does not mutate physical inventory",
+      "source does not execute migrations",
+      "source does not read environment bindings",
+      "source does not claim production authority"
+    ],
+
+    "integrationDeferred": [
+      "real D1 atomic batch rollback",
+      "real D1 concurrent reservation serialization",
+      "real D1 RETURNING witnesses",
+      "real migration 0003 foreign keys/checks/triggers",
+      "real concurrent capacity-source append interaction"
+    ]
+  },
+
+  "completionCriteria": [
+    "Contract is internally consistent with FOOD-007N through FOOD-007U.",
+    "Exact replay is resolved before fresh mutation-time admission.",
+    "Fresh write authority is never derived solely from cached evidence.",
+    "All-or-nothing parent/SKU/slot mutation is mandatory.",
+    "Zero adjusted capacity remains admissible and negative remains insufficient.",
+    "Replay, conflict, storage uncertainty and semantic capacity failure are distinct.",
+    "FOOD-005L acceptance remains downstream.",
+    "Migration execution and production activation remain explicitly out of scope."
+  ],
+
+  "next": "Implement FOOD-007V source and synthetic tests only after this contract is reviewed and locked. Do not stage the contract before source/test implementation and validation unless the workflow explicitly reaches the staging gate."
+}
