@@ -1,0 +1,365 @@
+{
+    "id":  "FOOD-007T",
+    "title":  "Reservation Governing-Scope Demand Recorded-Capacity Arithmetic",
+    "version":  1,
+    "status":  "contract",
+    "startingHead":  "1e49d61e25dc31be824fbdeb0f6643c04f301c29",
+    "classification":  "pure synchronous governing-scope demand recorded-capacity evidence arithmetic",
+    "decomposition":  "One pure synchronous demand-arithmetic responsibility; separate from sufficiency, admission, acceptance and mutation.",
+    "purpose":  "Strictly align canonical FOOD-007E reservation demand with canonical FOOD-007S governing-scope recorded-capacity arithmetic and derive signed demand-adjusted recorded-capacity evidence without assigning capacity authority.",
+    "inputs":  {
+                   "selectionRequest":  {
+                                            "type":  "FoodReservationCapacitySourceSelectionRequest",
+                                            "source":  "FOOD-007E",
+                                            "meaning":  "Canonical reservation demand, reservation-request identity, fulfillment-intent identity, SKU selection order/revisions and selected fulfillment-slot identity."
+                                        },
+                   "recordedCapacityArithmetic":  {
+                                                      "type":  "FoodReservationGoverningScopeRecordedCapacityArithmetic",
+                                                      "source":  "FOOD-007S",
+                                                      "meaning":  "Canonical governing-scope signed recorded-capacity arithmetic for the exact SKU and fulfillment-slot streams."
+                                                  }
+               },
+    "api":  {
+                "constant":  "FOOD_RESERVATION_GOVERNING_SCOPE_DEMAND_RECORDED_CAPACITY_ARITHMETIC_KIND",
+                "kind":  "reservation-governing-scope-demand-recorded-capacity-arithmetic",
+                "skuArithmeticType":  "FoodReservationGoverningScopeDemandRecordedCapacitySkuArithmetic",
+                "slotArithmeticType":  "FoodReservationGoverningScopeDemandRecordedCapacitySlotArithmetic",
+                "arithmeticType":  "FoodReservationGoverningScopeDemandRecordedCapacityArithmetic",
+                "resultType":  "FoodReservationGoverningScopeDemandRecordedCapacityArithmeticResult",
+                "function":  "deriveFoodReservationGoverningScopeDemandRecordedCapacityArithmetic",
+                "signature":  "deriveFoodReservationGoverningScopeDemandRecordedCapacityArithmetic(selectionRequest: FoodReservationCapacitySourceSelectionRequest, recordedCapacityArithmetic: FoodReservationGoverningScopeRecordedCapacityArithmetic): FoodReservationGoverningScopeDemandRecordedCapacityArithmeticResult",
+                "synchronous":  true,
+                "async":  false
+            },
+    "result":  {
+                   "success":  {
+                                   "outcome":  "derived",
+                                   "payloadField":  "value",
+                                   "valueType":  "FoodReservationGoverningScopeDemandRecordedCapacityArithmetic"
+                               },
+                   "failure":  {
+                                   "outcome":  "invalid"
+                               },
+                   "partialSuccess":  false,
+                   "exceptionsForMalformedInput":  false
+               },
+    "output":  {
+                   "rootKeys":  [
+                                    "kind",
+                                    "reservationRequest",
+                                    "fulfillmentIntent",
+                                    "skuArithmetic",
+                                    "slotArithmetic"
+                                ],
+                   "reservationRequest":  {
+                                              "keys":  [
+                                                           "id",
+                                                           "version"
+                                                       ]
+                                          },
+                   "fulfillmentIntent":  {
+                                             "keys":  [
+                                                          "id",
+                                                          "version"
+                                                      ]
+                                         },
+                   "skuArithmetic":  {
+                                         "orderedBy":  "Canonical FOOD-007E / FOOD-007S SKU index order.",
+                                         "keys":  [
+                                                      "sku",
+                                                      "governingRevision",
+                                                      "capacityUnits",
+                                                      "recordedHeldQuantity",
+                                                      "recordedCapacityDelta",
+                                                      "demandQuantity",
+                                                      "recordedDemandAdjustedCapacityDelta"
+                                                  ],
+                                         "skuKeys":  [
+                                                         "id",
+                                                         "version"
+                                                     ]
+                                     },
+                   "slotArithmetic":  {
+                                          "keys":  [
+                                                       "method",
+                                                       "locationReference",
+                                                       "windowReference",
+                                                       "governingRevision",
+                                                       "capacityUnits",
+                                                       "recordedHeldQuantity",
+                                                       "recordedCapacityDelta",
+                                                       "demandQuantity",
+                                                       "recordedDemandAdjustedCapacityDelta"
+                                                   ]
+                                      },
+                   "revisionVocabulary":  "governingRevision",
+                   "forbiddenRevisionVocabulary":  "capacityRevision"
+               },
+    "algorithm":  [
+                      "Capture both supplied inputs without invoking caller-owned accessors or inherited iterators.",
+                      "Strictly validate the canonical FOOD-007E capacity-source selection request.",
+                      "Validate the reservation request and fulfillment intent through the canonical structural contracts required by FOOD-007E.",
+                      "Require the reservation request fulfillment-intent reference and quote reference to agree with the canonical supplied fulfillment intent exactly as required by the FOOD-007M precedent.",
+                      "Strictly validate canonical FOOD-007S governing-scope recorded-capacity arithmetic.",
+                      "Require FOOD-007E SKU selections, request capacity requirements and FOOD-007S SKU arithmetic to have equal lengths and identical per-index SKU id/version.",
+                      "Require each FOOD-007E selected SKU revision to equal the corresponding FOOD-007S governingRevision.",
+                      "Reject reordered, missing, extra, duplicate or inconsistent SKU streams rather than sorting or repairing them.",
+                      "Require the FOOD-007E selected fulfillment slot and FOOD-007S slot arithmetic to align exactly by method, locationReference, windowReference and selected revision/governingRevision.",
+                      "Recheck each supplied FOOD-007S recorded arithmetic identity: recordedCapacityDelta must equal capacityUnits minus recordedHeldQuantity.",
+                      "For every SKU, validate canonical positive-safe reservation demand quantity and compute recordedDemandAdjustedCapacityDelta = recordedCapacityDelta - demandQuantity.",
+                      "For the selected fulfillment slot, use the canonical one-slot reservation demand quantity of 1 and compute recordedDemandAdjustedCapacityDelta = recordedCapacityDelta - 1.",
+                      "Use BigInt subtraction for demand adjustment and reject a result outside the signed JavaScript safe-integer range.",
+                      "Preserve positive, zero and negative arithmetic exactly; never clamp.",
+                      "Return a detached and deeply frozen result."
+                  ],
+    "correlation":  {
+                        "skuCountRule":  "selectionRequest.skuSelections length, selectionRequest.request.capacityRequirements length and FOOD-007S skuArithmetic length must be exactly equal.",
+                        "skuOrderRule":  "Correlate strictly by canonical array index. Never sort or search-and-reorder.",
+                        "skuIdentityRule":  "At every index, request demand SKU, selected SKU and FOOD-007S arithmetic SKU must have identical id and version.",
+                        "revisionRule":  "At every SKU index, FOOD-007E selected revision must equal FOOD-007S governingRevision.",
+                        "slotIdentityRule":  "Selected slot and FOOD-007S slot arithmetic must have identical method, locationReference and windowReference.",
+                        "slotRevisionRule":  "FOOD-007E selected slot revision must equal FOOD-007S slot governingRevision.",
+                        "requestIntentBinding":  "Preserve FOOD-007M\u0027s canonical reservation-request, fulfillment-intent and quote-reference binding requirements.",
+                        "mismatchOutcome":  "invalid"
+                    },
+    "arithmetic":  {
+                       "sku":  "recordedDemandAdjustedCapacityDelta = recordedCapacityDelta - demandQuantity",
+                       "slot":  "recordedDemandAdjustedCapacityDelta = recordedCapacityDelta - 1",
+                       "slotDemandQuantity":  1,
+                       "governingRecordedCapacityIdentity":  "recordedCapacityDelta = capacityUnits - recordedHeldQuantity",
+                       "numericStrategy":  "Use BigInt subtraction and validate the final signed result before conversion to Number.",
+                       "demandQuantity":  "positive safe integer for every SKU",
+                       "governingRevision":  "positive safe integer",
+                       "capacityUnits":  "nonnegative safe integer",
+                       "recordedHeldQuantity":  "nonnegative safe integer",
+                       "recordedCapacityDelta":  "signed safe integer",
+                       "recordedDemandAdjustedCapacityDelta":  "signed safe integer",
+                       "preservePositive":  true,
+                       "preserveZero":  true,
+                       "preserveNegative":  true,
+                       "clamp":  false
+                   },
+    "safeClaim":  "For each exactly aligned governing-scope SKU stream, recordedDemandAdjustedCapacityDelta is only the mathematical difference between FOOD-007S recordedCapacityDelta and the canonical FOOD-007E demand quantity for that same selected SKU/governing revision. For the selected fulfillment slot, the canonical reservation demand contribution is exactly one.",
+    "authorityBoundary":  "recordedDemandAdjustedCapacityDelta is neutral arithmetic evidence only. Its sign does not mean sufficient, insufficient, reservable, unavailable, available, remaining, ATP, accepted, rejected or governing reservation authority.",
+    "hostileInput":  {
+                         "captureBeforeTrust":  true,
+                         "exactRootKeys":  true,
+                         "exactNestedKeys":  true,
+                         "ownPropertiesOnly":  true,
+                         "dataDescriptorsOnly":  true,
+                         "accessorExecution":  "forbidden",
+                         "symbols":  "reject",
+                         "sparseArrays":  "reject",
+                         "extendedArrays":  "reject",
+                         "objectPrototype":  "Direct prototype must be Object.prototype for caller-controlled record objects.",
+                         "arrayPrototype":  "Direct prototype must be Array.prototype for caller-controlled arrays.",
+                         "rejectNullObjectPrototype":  true,
+                         "rejectCustomObjectPrototype":  true,
+                         "rejectClassInstances":  true,
+                         "rejectNullArrayPrototype":  true,
+                         "rejectCustomArrayPrototype":  true,
+                         "rejectArraySubclassPrototype":  true,
+                         "iteratorRule":  "Do not use for...of, spread, Array.from or caller Symbol.iterator before canonical-array validation and descriptor capture.",
+                         "cycleRule":  "Reject cyclic or unsupported caller-owned structures.",
+                         "precedent":  "Use FOOD-007S\u0027s strengthened canonical descriptor-capture discipline rather than copying FOOD-007M\u0027s older trust boundary unchanged."
+                     },
+    "immutability":  {
+                         "detached":  true,
+                         "deeplyFrozen":  true,
+                         "freeze":  [
+                                        "root value",
+                                        "reservationRequest",
+                                        "fulfillmentIntent",
+                                        "skuArithmetic array",
+                                        "every SKU arithmetic entry",
+                                        "every nested SKU identity",
+                                        "slotArithmetic"
+                                    ],
+                         "callerMutationAfterDerivation":  "must not alter successful output"
+                     },
+    "purity":  {
+                   "database":  "none",
+                   "sql":  "none",
+                   "network":  "none",
+                   "clock":  "none",
+                   "environment":  "none",
+                   "randomness":  "none",
+                   "mutation":  "none",
+                   "routes":  "none",
+                   "promises":  "none",
+                   "async":  false
+               },
+    "nonClaims":  [
+                      "remaining capacity",
+                      "available capacity",
+                      "reservable capacity",
+                      "reservable quantity",
+                      "available-to-promise / ATP",
+                      "capacity sufficiency",
+                      "capacity insufficiency",
+                      "reservation eligibility",
+                      "reservation admission",
+                      "reservation rejection",
+                      "reservation acceptance",
+                      "permission to reserve",
+                      "current QOH",
+                      "physical quantity on hand",
+                      "physical inventory truth",
+                      "physical currentness",
+                      "live availability",
+                      "simultaneous authoritative snapshot",
+                      "mutation-time authoritative snapshot",
+                      "oversell prevention",
+                      "slot-overbooking prevention",
+                      "atomic reservation",
+                      "durable hold creation",
+                      "release authority",
+                      "expiration authority",
+                      "cancellation authority",
+                      "replacement authority",
+                      "rescheduling authority",
+                      "consumption authority",
+                      "checkout readiness",
+                      "payment readiness",
+                      "fulfillment authority"
+                  ],
+    "nonResponsibilities":  {
+                                "sourceSelection":  false,
+                                "governingRevisionSelection":  false,
+                                "durableHeldRead":  false,
+                                "recordedCapacityDerivation":  false,
+                                "sufficiency":  false,
+                                "insufficiency":  false,
+                                "admission":  false,
+                                "reservable":  false,
+                                "atp":  false,
+                                "acceptance":  false,
+                                "rejection":  false,
+                                "persistence":  false,
+                                "mutation":  false,
+                                "concurrencyControl":  false,
+                                "lifecycleResolution":  false,
+                                "physicalInventoryAuthority":  false
+                            },
+    "plannedTests":  {
+                         "success":  [
+                                         "positive SKU demand-adjusted delta",
+                                         "zero SKU demand-adjusted delta",
+                                         "negative SKU demand-adjusted delta",
+                                         "negative arithmetic preserved without clamping",
+                                         "slot demand quantity exactly 1",
+                                         "slot demand-adjusted delta equals recordedCapacityDelta minus 1",
+                                         "multiple SKUs preserve canonical order",
+                                         "reservationRequest identity retained",
+                                         "fulfillmentIntent identity retained",
+                                         "governingRevision retained rather than capacityRevision",
+                                         "equivalent canonical input determinism"
+                                     ],
+                         "correlationFailures":  [
+                                                     "SKU count mismatch",
+                                                     "request demand versus selected SKU identity mismatch",
+                                                     "selected SKU versus FOOD-007S SKU identity mismatch",
+                                                     "SKU version mismatch",
+                                                     "selected SKU revision versus FOOD-007S governingRevision mismatch",
+                                                     "reordered SKU streams",
+                                                     "selected slot method mismatch",
+                                                     "selected slot locationReference mismatch",
+                                                     "selected slot windowReference mismatch",
+                                                     "selected slot revision versus FOOD-007S governingRevision mismatch",
+                                                     "reservation-request fulfillment-intent linkage mismatch",
+                                                     "reservation-request quote linkage mismatch where canonical validator requires it",
+                                                     "wrong FOOD-007E kind/shape",
+                                                     "wrong FOOD-007S kind/shape",
+                                                     "invalid supplied FOOD-007S arithmetic identity"
+                                                 ],
+                         "numericFailures":  [
+                                                 "zero demand quantity",
+                                                 "negative demand quantity",
+                                                 "unsafe demand quantity",
+                                                 "non-number demand quantity",
+                                                 "invalid governingRevision",
+                                                 "invalid capacityUnits",
+                                                 "invalid recordedHeldQuantity",
+                                                 "invalid recordedCapacityDelta identity",
+                                                 "unsafe signed demand-adjusted result if constructible under accepted operand contracts"
+                                             ],
+                         "hostileInput":  [
+                                              "missing root key",
+                                              "extra root key",
+                                              "accessor-bearing root",
+                                              "accessor-bearing nested object",
+                                              "unexpected symbol",
+                                              "custom object prototype",
+                                              "null object prototype",
+                                              "class-instance prototype",
+                                              "sparse array",
+                                              "extended array",
+                                              "custom Array prototype",
+                                              "null Array prototype",
+                                              "Array subclass/custom prototype",
+                                              "inherited Symbol.iterator getter",
+                                              "hostile getter call count remains zero",
+                                              "malformed input returns invalid rather than escaping"
+                                          ],
+                         "output":  [
+                                        "detached root",
+                                        "frozen root",
+                                        "frozen reservationRequest",
+                                        "frozen fulfillmentIntent",
+                                        "frozen skuArithmetic array",
+                                        "frozen every SKU entry",
+                                        "frozen nested SKU identity",
+                                        "frozen slotArithmetic",
+                                        "caller mutation cannot alter output"
+                                    ],
+                         "nonAuthority":  [
+                                              "no remainingCapacity surface",
+                                              "no reservableQuantity surface",
+                                              "no availableToPromise surface",
+                                              "no sufficiency/admission fields",
+                                              "no acceptance fields",
+                                              "no database/D1/SQL",
+                                              "no Promise/async/await",
+                                              "no mutation lifecycle",
+                                              "no clamp behavior"
+                                          ],
+                         "testFixtureRule":  "Do not use as never or broad assertion casts to conceal a structurally noncanonical FOOD-007E or FOOD-007S fixture."
+                     },
+    "files":  {
+                  "spec":  ".river-dev/specifications/food-007t-reservation-governing-scope-demand-recorded-capacity-arithmetic.json",
+                  "source":  "src/lib/food/reservation-governing-scope-demand-recorded-capacity-arithmetic.ts",
+                  "test":  "src/lib/food/reservation-governing-scope-demand-recorded-capacity-arithmetic.test.ts"
+              },
+    "migrationImpact":  "none",
+    "migration0003":  "unchanged / not executed",
+    "migration0005":  "unchanged / not executed",
+    "productionImpact":  "none",
+    "production":  "untouched",
+    "nextDependencyHypothesis":  {
+                                     "status":  "hypothesis only; not defined or implemented here",
+                                     "description":  "A later unit may interpret or compare governing-scope demand-adjusted arithmetic for a narrowly defined decision responsibility. FOOD-007T itself establishes no sufficiency, admission or mutation authority."
+                                 },
+    "provenance":  {
+                       "food007e":  {
+                                        "source":  "src/lib/food/reservation-capacity-source-selection-request.ts",
+                                        "gitBlob":  "96ee266230180020cf1fd2c049729a34e31f7c7c",
+                                        "role":  "Canonical reservation demand and selected revision/slot evidence."
+                                    },
+                       "food007m":  {
+                                        "source":  "src/lib/food/reservation-demand-recorded-capacity-arithmetic.ts",
+                                        "sourceGitBlob":  "251f0c522cffd8750e4d1fa28823174a18d87145",
+                                        "spec":  ".river-dev/specifications/food-007m-reservation-demand-recorded-capacity-arithmetic.json",
+                                        "specGitBlob":  "ea56d1591097251f9b64cbee64ddfc6119c8e2dc",
+                                        "test":  "src/lib/food/reservation-demand-recorded-capacity-arithmetic.test.ts",
+                                        "testGitBlob":  "4f93ecc8b55c508277393cb3a525a2b74e4f5703",
+                                        "role":  "Behavioral precedent for demand arithmetic, slot demand 1, neutral signed evidence, detachment and non-authority."
+                                    },
+                       "food007s":  {
+                                        "source":  "src/lib/food/reservation-governing-scope-recorded-capacity-arithmetic.ts",
+                                        "sourceGitBlob":  "6b0d4417bdf5abf2c87191d65fb05939033164a7",
+                                        "spec":  ".river-dev/specifications/food-007s-reservation-governing-scope-recorded-capacity-arithmetic.json",
+                                        "specGitBlob":  "70d6324b999175aa8403ee0a5902e67a62a21d55",
+                                        "role":  "Canonical governing-scope recorded-capacity arithmetic consumed by FOOD-007T."
+                                    }
+                   }
+}
