@@ -622,6 +622,21 @@ function queueFreshState(
   );
 }
 
+function fulfillmentIntentBindingRow(
+  command:
+    FoodReservationHoldCommand,
+) {
+  return {
+    reservation_id:
+      command.reservationId,
+    fulfillment_intent_id:
+      command.selection
+        .fulfillmentIntent.id,
+    fulfillment_intent_version:
+      command.selection
+        .fulfillmentIntent.version,
+  };
+}
 function successfulBatch(
   command:
     FoodReservationHoldCommand,
@@ -647,6 +662,14 @@ function successfulBatch(
     result(
       [
         slotRow(
+          command,
+        ),
+      ],
+      1,
+    ),
+    result(
+      [
+        fulfillmentIntentBindingRow(
           command,
         ),
       ],
@@ -684,6 +707,14 @@ function queueExactReplay(
       ),
     ]),
   );
+
+  db.reads.push(
+    result([
+      fulfillmentIntentBindingRow(
+        command,
+      ),
+    ]),
+  );
 }
 
 function frozen(
@@ -713,7 +744,7 @@ function frozen(
 }
 
 test(
-  "007V fresh admissible state creates one atomic parent/SKU/slot batch",
+  "007X fresh admissible state creates one atomic parent/SKU/slot/fulfillment-intent batch",
   async () => {
     const command =
       commandFixture(2);
@@ -763,7 +794,7 @@ test(
 
     assert.equal(
       db.batches[0]!.length,
-      4,
+      5,
     );
 
     const parent =
@@ -1039,7 +1070,7 @@ test(
 
     assert.equal(
       db.readCalls.length,
-      3,
+      4,
     );
 
     frozen(
@@ -1936,6 +1967,310 @@ test(
 
     frozen(
       outcome,
+    );
+  },
+);
+
+test(
+  "007X fresh mutation includes exact fulfillment-intent binding in the authoritative batch",
+  async () => {
+    const command =
+      commandFixture(2);
+
+    const db =
+      new ScriptedDatabase();
+
+    queueFreshState(
+      db,
+      command,
+    );
+
+    db.batchResponse =
+      successfulBatch(
+        command,
+      );
+
+    const outcome =
+      await executeFoodAuthoritativeCapacityReservationMutation(
+        db,
+        command,
+      );
+
+    assert.equal(
+      outcome.outcome,
+      "created",
+    );
+
+    assert.equal(
+      db.batches.length,
+      1,
+    );
+
+    const binding =
+      db.batches[0]![
+        db.batches[0]!.length - 1
+      ]!;
+
+    assert.match(
+      binding.sql,
+      /INSERT INTO food_capacity_reservation_fulfillment_intents/,
+    );
+
+    assert.deepEqual(
+      binding.values,
+      [
+        command.reservationId,
+        command.selection
+          .fulfillmentIntent.id,
+        command.selection
+          .fulfillmentIntent.version,
+      ],
+    );
+  },
+);
+
+test(
+  "007X exact replay authenticates the durable fulfillment-intent binding",
+  async () => {
+    const command =
+      commandFixture(1);
+
+    const db =
+      new ScriptedDatabase();
+
+    queueExactReplay(
+      db,
+      command,
+    );
+
+    const outcome =
+      await executeFoodAuthoritativeCapacityReservationMutation(
+        db,
+        command,
+      );
+
+    assert.equal(
+      outcome.outcome,
+      "already-present",
+    );
+
+    assert.equal(
+      db.batches.length,
+      0,
+    );
+
+    assert.equal(
+      db.readCalls.length,
+      4,
+    );
+
+    const bindingRead =
+      db.readCalls[3]!;
+
+    assert.match(
+      bindingRead.sql,
+      /FROM food_capacity_reservation_fulfillment_intents/,
+    );
+
+    assert.deepEqual(
+      bindingRead.values,
+      [
+        command.reservationId,
+      ],
+    );
+  },
+);
+
+test(
+  "007X existing reservation with missing fulfillment-intent binding fails storage-failure without repair",
+  async () => {
+    const command =
+      commandFixture(1);
+
+    const db =
+      new ScriptedDatabase();
+
+    queueExactReplay(
+      db,
+      command,
+    );
+
+    db.reads.splice(
+      db.reads.length - 1,
+      1,
+      result([]),
+    );
+
+    const outcome =
+      await executeFoodAuthoritativeCapacityReservationMutation(
+        db,
+        command,
+      );
+
+    assert.equal(
+      outcome.outcome,
+      "storage-failure",
+    );
+
+    assert.equal(
+      db.batches.length,
+      0,
+    );
+  },
+);
+
+test(
+  "007X existing reservation with different fulfillment-intent binding is conflict",
+  async () => {
+    const command =
+      commandFixture(1);
+
+    const db =
+      new ScriptedDatabase();
+
+    queueExactReplay(
+      db,
+      command,
+    );
+
+    db.reads.splice(
+      db.reads.length - 1,
+      1,
+      result([
+        {
+          ...fulfillmentIntentBindingRow(
+            command,
+          ),
+          fulfillment_intent_id:
+            "food-fulfillment-intent:007x-conflict",
+        },
+      ]),
+    );
+
+    const outcome =
+      await executeFoodAuthoritativeCapacityReservationMutation(
+        db,
+        command,
+      );
+
+    assert.equal(
+      outcome.outcome,
+      "conflict",
+    );
+
+    assert.equal(
+      db.batches.length,
+      0,
+    );
+  },
+);
+
+test(
+  "007X malformed durable fulfillment-intent binding fails storage-failure",
+  async () => {
+    const command =
+      commandFixture(1);
+
+    const db =
+      new ScriptedDatabase();
+
+    queueExactReplay(
+      db,
+      command,
+    );
+
+    db.reads.splice(
+      db.reads.length - 1,
+      1,
+      result([
+        {
+          ...fulfillmentIntentBindingRow(
+            command,
+          ),
+          fulfillment_intent_version:
+            0,
+        },
+      ]),
+    );
+
+    const outcome =
+      await executeFoodAuthoritativeCapacityReservationMutation(
+        db,
+        command,
+      );
+
+    assert.equal(
+      outcome.outcome,
+      "storage-failure",
+    );
+
+    assert.equal(
+      db.batches.length,
+      0,
+    );
+  },
+);
+
+test(
+  "007X migration defines immutable one-to-one reservation fulfillment-intent evidence",
+  () => {
+    const sql =
+      readFileSync(
+        new URL(
+          "../../../migrations/food/0006_food_capacity_reservation_fulfillment_intent_binding.sql",
+          import.meta.url,
+        ),
+        "utf8",
+      );
+
+    assert.match(
+      sql,
+      /CREATE TABLE IF NOT EXISTS food_capacity_reservation_fulfillment_intents/,
+    );
+
+    assert.match(
+      sql,
+      /reservation_id TEXT NOT NULL PRIMARY KEY/,
+    );
+
+    assert.match(
+      sql,
+      /fulfillment_intent_id TEXT NOT NULL/,
+    );
+
+    assert.match(
+      sql,
+      /fulfillment_intent_version INTEGER NOT NULL/,
+    );
+
+    assert.match(
+      sql,
+      /REFERENCES food_capacity_reservations/,
+    );
+
+    assert.match(
+      sql,
+      /food_capacity_reservation_fulfillment_intents_no_update/,
+    );
+
+    assert.match(
+      sql,
+      /BEFORE UPDATE ON food_capacity_reservation_fulfillment_intents/,
+    );
+
+    assert.match(
+      sql,
+      /food_capacity_reservation_fulfillment_intents_no_delete/,
+    );
+
+    assert.match(
+      sql,
+      /BEFORE DELETE ON food_capacity_reservation_fulfillment_intents/,
+    );
+
+    assert.doesNotMatch(
+      sql,
+      /ON DELETE CASCADE/,
     );
   },
 );

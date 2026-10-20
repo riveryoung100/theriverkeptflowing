@@ -1,0 +1,347 @@
+{
+    "id":  "FOOD-007X",
+    "title":  "Authoritative Reservation Fulfillment-Intent Durable Binding",
+    "status":  "contract-defined",
+    "startingHead":  "6de46fab893fe808013fdd521e84c9b629013ca1",
+    "classification":  "authoritative persistence-integrity extension",
+    "purpose":  [
+                    "Close the durability gap between FOOD-007V\u0027s authoritative reservation receipt and the reservation evidence stored by FOOD migration 0003.",
+                    "Durably bind the canonical fulfillment-intent identity and version to every newly created authoritative capacity reservation inside the same mutation boundary used by FOOD-007V.",
+                    "Require exact replay verification of that durable binding before FOOD-007V may classify an existing reservation as already-present."
+                ],
+    "problemStatement":  {
+                             "receiptContains":  [
+                                                     "fulfillmentIntent.id",
+                                                     "fulfillmentIntent.version"
+                                                 ],
+                             "currentDurableStorageContains":  [
+                                                                   "reservation identity",
+                                                                   "order identity/version",
+                                                                   "reservation-request identity/version",
+                                                                   "ordered SKU claims via line_index",
+                                                                   "SKU identity/version/quantity",
+                                                                   "capacity/governing revisions",
+                                                                   "fulfillment method",
+                                                                   "locationReference",
+                                                                   "windowReference",
+                                                                   "slot revision/quantity"
+                                                               ],
+                             "currentDurableStorageMissing":  [
+                                                                  "fulfillmentIntent.id",
+                                                                  "fulfillmentIntent.version"
+                                                              ],
+                             "consequence":  "Existing durable reservation rows cannot independently authenticate every authority-bearing field retained in the FOOD-007V receipt and therefore cannot fully authenticate FOOD-007W\u0027s retained V evidence."
+                         },
+    "architecturalPosition":  {
+                                  "upstream":  [
+                                                   "FOOD-007N",
+                                                   "FOOD-007O",
+                                                   "FOOD-007P",
+                                                   "FOOD-007Q",
+                                                   "FOOD-007R",
+                                                   "FOOD-007S",
+                                                   "FOOD-007T",
+                                                   "FOOD-007U",
+                                                   "FOOD-007V",
+                                                   "FOOD-007W"
+                                               ],
+                                  "role":  "Integrity extension of FOOD-007V\u0027s authoritative durable reservation mutation boundary.",
+                                  "doesNotReplace":  "FOOD-007V",
+                                  "likelyFutureBoundary":  "A later unit may persist durable reservation-to-acceptance evidence only after this binding makes the complete V receipt durably authenticatable."
+                              },
+    "existingGap":  {
+                        "durableFulfillmentIntentIdentity":  false,
+                        "canonicalSkuOrderPersisted":  true,
+                        "canonicalSkuOrderField":  "line_index",
+                        "acceptancePersistenceBlockedUntilClosed":  true
+                    },
+    "authorityBoundary":  {
+                              "owns":  [
+                                           "durable fulfillment-intent ID/version binding for authoritative capacity reservations",
+                                           "atomic creation of the binding with new FOOD-007V reservation creation",
+                                           "exact replay authentication of the binding",
+                                           "fail-closed behavior for missing durable fulfillment-intent binding",
+                                           "conflict behavior for mismatched durable fulfillment-intent binding"
+                                       ],
+                              "excludes":  [
+                                               "fulfillment-intent selection",
+                                               "fulfillment-intent creation",
+                                               "fulfillment-intent mutation",
+                                               "capacity governing-source policy",
+                                               "capacity arithmetic",
+                                               "capacity admission",
+                                               "reservation acceptance persistence",
+                                               "reservation release",
+                                               "reservation cancellation",
+                                               "reservation expiration",
+                                               "reservation consumption",
+                                               "reservation replacement",
+                                               "reservation rescheduling",
+                                               "order-state transitions",
+                                               "payment authority",
+                                               "preparation authority",
+                                               "dispatch authority",
+                                               "fulfillment completion",
+                                               "physical inventory movement"
+                                           ]
+                          },
+    "durableBindingModel":  {
+                                "model":  "one-to-one append-only sidecar table",
+                                "table":  "food_capacity_reservation_fulfillment_intents",
+                                "reservationCardinality":  "exactly one binding per post-FOOD-007X authoritative reservation",
+                                "fulfillmentIntentGlobalUniqueness":  false,
+                                "bindingSource":  [
+                                                      "command.selection.fulfillmentIntent.id",
+                                                      "command.selection.fulfillmentIntent.version"
+                                                  ],
+                                "secondCallerSuppliedBindingObjectAllowed":  false,
+                                "callerRepairAllowed":  false
+                            },
+    "schemaModel":  {
+                        "futureTable":  "food_capacity_reservation_fulfillment_intents",
+                        "conceptualColumns":  {
+                                                  "capacity_reservation_id":  "foreign key to food_capacity_reservations and one-to-one reservation key",
+                                                  "fulfillment_intent_id":  "canonical fulfillment-intent identity",
+                                                  "fulfillment_intent_version":  "canonical fulfillment-intent version"
+                                              },
+                        "requirements":  [
+                                             "one binding per capacity reservation",
+                                             "capacity_reservation_id foreign key references the authoritative reservation parent",
+                                             "fulfillment_intent_id is required",
+                                             "fulfillment_intent_version is required and must satisfy canonical version constraints",
+                                             "binding is immutable after insertion",
+                                             "UPDATE is prohibited",
+                                             "DELETE is prohibited",
+                                             "no cascade may silently destroy historical binding evidence",
+                                             "existing migration 0003 is not modified",
+                                             "existing migration 0004 is not modified",
+                                             "existing migration 0005 is not modified"
+                                         ]
+                    },
+    "migrationImpact":  {
+                            "migrationRequired":  true,
+                            "nextUnusedMigration":  "0006",
+                            "prospectiveMigration":  "migrations/food/0006_food_capacity_reservation_fulfillment_intent_binding.sql",
+                            "migrationCreatedByThisContractTask":  false,
+                            "migrationExecutionAuthorized":  false,
+                            "modifiesMigration0003":  false,
+                            "modifiesMigration0004":  false,
+                            "modifiesMigration0005":  false
+                        },
+    "vMutationIntegration":  {
+                                 "existingExecutable":  "executeFoodAuthoritativeCapacityReservationMutation",
+                                 "standaloneBindingWriteApi":  false,
+                                 "creationRequirement":  "The parent reservation, SKU claims, slot claim, and fulfillment-intent binding must participate in the same authoritative FOOD-007V creation batch/transaction boundary.",
+                                 "partialCreationAllowed":  false,
+                                 "bindingMayBePersistedAfterSuccessfulVReturn":  false
+                             },
+    "atomicity":  {
+                      "required":  true,
+                      "invariant":  "A newly classified created reservation must never exist as a successful post-FOOD-007X reservation without its fulfillment-intent binding.",
+                      "creationSet":  [
+                                          "reservation parent",
+                                          "reservation SKU claims",
+                                          "fulfillment-slot reservation claim",
+                                          "fulfillment-intent binding"
+                                      ]
+                  },
+    "vReceiptCompatibility":  {
+                                  "receiptShape":  "unchanged",
+                                  "reason":  "The existing FOOD-007V receipt already exposes fulfillmentIntent.id and fulfillmentIntent.version. FOOD-007X makes those fields durably provable rather than adding new receipt fields."
+                              },
+    "createdSemantics":  {
+                             "outcome":  "created",
+                             "allowedOnlyWhen":  "The authoritative reservation and fulfillment-intent binding are durably established together under FOOD-007V\u0027s mutation boundary."
+                         },
+    "alreadyPresentSemantics":  {
+                                    "outcome":  "already-present",
+                                    "requires":  [
+                                                     "durable reservation parent matches the command",
+                                                     "durable SKU claims match exactly",
+                                                     "canonical SKU claim order matches",
+                                                     "durable slot claim matches exactly",
+                                                     "durable fulfillment-intent binding exists",
+                                                     "durable fulfillment-intent ID matches exactly",
+                                                     "durable fulfillment-intent version matches exactly"
+                                                 ]
+                                },
+    "missingBindingSemantics":  {
+                                    "outcome":  "storage-failure",
+                                    "reason":  "A reservation whose fulfillment-intent binding is absent is incomplete under the post-FOOD-007X durable invariant.",
+                                    "mayReturnAlreadyPresent":  false,
+                                    "callerValueMayRepair":  false,
+                                    "automaticBackfill":  false
+                                },
+    "conflictingBindingSemantics":  {
+                                        "outcome":  "conflict",
+                                        "conditions":  [
+                                                           "durable fulfillment-intent ID differs from command fulfillment-intent ID",
+                                                           "durable fulfillment-intent version differs from command fulfillment-intent version"
+                                                       ],
+                                        "automaticOverwrite":  false
+                                    },
+    "legacyReservationSemantics":  {
+                                       "legacyRowsMayExist":  true,
+                                       "assumptionThatNoLegacyRowsExist":  false,
+                                       "missingBindingIsAuthenticatable":  false,
+                                       "callerBackfillForbidden":  true,
+                                       "replayMustFailClosed":  true,
+                                       "separateRecoveryAuthorityRequiredForAnyFutureBackfill":  true
+                                   },
+    "replaySemantics":  {
+                            "exactReplay":  "already-present only when the durable fulfillment-intent binding exists and exactly matches the canonical command",
+                            "duplicateBindingInsert":  false,
+                            "missingBindingReplay":  "storage-failure",
+                            "mismatchedBindingReplay":  "conflict"
+                        },
+    "concurrencySemantics":  {
+                                 "identicalConcurrentMutations":  "must converge to one durable reservation/binding relationship with established FOOD-007V created/already-present behavior",
+                                 "conflictingFulfillmentIntentBindings":  "must not both succeed",
+                                 "duplicateBindingsAllowed":  false
+                             },
+    "databaseAuthority":  {
+                              "permitted":  [
+                                                "insert fulfillment-intent binding inside FOOD-007V authoritative reservation mutation",
+                                                "read fulfillment-intent binding during FOOD-007V replay classification",
+                                                "strictly validate returned durable binding rows"
+                                            ],
+                              "forbidden":  [
+                                                "capacity-source rediscovery",
+                                                "capacity admission reauthorization",
+                                                "payment writes",
+                                                "fulfillment completion writes",
+                                                "reservation release",
+                                                "inventory mutation",
+                                                "acceptance persistence"
+                                            ]
+                          },
+    "publicApiImpact":  {
+                            "newStandaloneWriteApi":  false,
+                            "newCommand":  false,
+                            "newReceipt":  false,
+                            "existingVExecutableExtendedInternally":  true,
+                            "food007vReceiptShapeChanged":  false
+                        },
+    "wCompatibility":  {
+                           "sourceChangeRequired":  false,
+                           "testChangeRequired":  false,
+                           "specificationChangeRequired":  false,
+                           "reason":  "FOOD-007W already retains and validates the V receipt. FOOD-007X strengthens the durability provenance behind existing V receipt fields."
+                       },
+    "hostileCallerPolicy":  [
+                                "preserve existing FOOD-007V strict runtime validation",
+                                "do not invoke hostile accessors",
+                                "reject symbol-bearing hostile records",
+                                "reject unsupported custom prototypes",
+                                "reject sparse or extended arrays",
+                                "reject invalid or unsafe numeric versions",
+                                "perform no coercive normalization",
+                                "perform no sorting repair",
+                                "perform no JSON stringify cloning"
+                            ],
+    "hostileStoragePolicy":  [
+                                 "binding query prepare failure fails closed",
+                                 "binding query bind failure fails closed",
+                                 "binding query execution failure fails closed",
+                                 "missing binding row fails closed",
+                                 "malformed binding row fails closed",
+                                 "null binding identity fails closed",
+                                 "invalid binding version fails closed",
+                                 "unsafe binding version fails closed",
+                                 "unexpected multiplicity fails closed"
+                             ],
+    "forbiddenAuthority":  [
+                               "acceptance persistence",
+                               "new standalone fulfillment-binding mutation authority",
+                               "capacity governing-source change",
+                               "capacity arithmetic change",
+                               "capacity admission change",
+                               "reservation release",
+                               "reservation cancellation",
+                               "reservation expiration",
+                               "reservation replacement",
+                               "reservation consumption",
+                               "reservation rescheduling",
+                               "order-state transition",
+                               "checkout authorization",
+                               "payment authorization or capture",
+                               "preparation authorization",
+                               "dispatch authorization",
+                               "fulfillment completion",
+                               "physical inventory movement",
+                               "clock authority",
+                               "randomness",
+                               "network authority",
+                               "production authority"
+                           ],
+    "nonGoals":  [
+                     "redesign FOOD-007V\u0027s existing unrelated uniqueness model",
+                     "repair historical reservation rows",
+                     "backfill fulfillment-intent identity from a replay caller",
+                     "persist FOOD-005L acceptance",
+                     "persist FOOD-007W reservation-to-acceptance relationship",
+                     "create FOOD-007Y",
+                     "modify migrations 0003 through 0005"
+                 ],
+    "testRequirements":  [
+                             "future migration exposes the contracted one-to-one binding table",
+                             "reservation foreign key is enforced",
+                             "one binding per reservation is enforced",
+                             "fulfillment-intent ID is required",
+                             "fulfillment-intent version is required",
+                             "invalid versions fail",
+                             "binding UPDATE is prohibited",
+                             "binding DELETE is prohibited",
+                             "canonical V creation writes binding in same authoritative mutation batch",
+                             "stored fulfillment-intent ID matches command exactly",
+                             "stored fulfillment-intent version matches command exactly",
+                             "V receipt shape remains unchanged",
+                             "created receipt fulfillment identity equals durable binding",
+                             "created is not returned after an incomplete authoritative write",
+                             "exact reservation plus exact binding replays as already-present",
+                             "replay does not insert duplicate binding",
+                             "existing reservation missing binding never returns already-present",
+                             "missing binding is never repaired from caller input",
+                             "missing binding returns storage-failure",
+                             "different fulfillment-intent ID returns conflict",
+                             "different fulfillment-intent version returns conflict",
+                             "different fulfillment-intent ID and version returns conflict",
+                             "malformed durable binding fails closed",
+                             "binding read prepare failure returns storage-failure",
+                             "binding read bind failure returns storage-failure",
+                             "binding read execution failure returns storage-failure",
+                             "binding write failure causes authoritative mutation failure",
+                             "no partial newly-created reservation survives failed atomic mutation according to repository-supported batch guarantees",
+                             "ambiguous successful first write remains replay-safe",
+                             "concurrent exact duplicates create only one binding",
+                             "concurrent incompatible fulfillment bindings cannot both succeed",
+                             "no acceptance persistence",
+                             "no standalone binding write authority",
+                             "no capacity reauthorization",
+                             "no governing-policy expansion",
+                             "no reservation release",
+                             "no order transition",
+                             "no payment authority",
+                             "no fulfillment-completion authority",
+                             "no inventory movement",
+                             "no current clock",
+                             "no randomness",
+                             "no network or production access",
+                             "FOOD-007V regression remains valid except for intentionally strengthened durable-binding invariant",
+                             "FOOD-007W remains unchanged and passes",
+                             "critical reservation chain remains valid"
+                         ],
+    "futureBoundaries":  [
+                             "durable reservation-to-acceptance evidence persistence",
+                             "reservation release",
+                             "reservation cancellation/expiration lifecycle",
+                             "reservation replacement/rescheduling",
+                             "reservation consumption",
+                             "checkout/payment readiness",
+                             "preparation/dispatch/fulfillment readiness",
+                             "public durable reservation lookup",
+                             "public durable acceptance lookup",
+                             "production D1 migration execution and concurrency validation"
+                         ],
+    "productionAuthority":  false
+}

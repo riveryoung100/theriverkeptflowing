@@ -2308,7 +2308,7 @@ async function recoverAfterMutationFailure(
   return storageFailure();
 }
 
-export async function executeFoodAuthoritativeCapacityReservationMutation(
+async function executeFoodAuthoritativeCapacityReservationMutationCore(
   database:
     FoodAuthoritativeCapacityReservationD1Database,
   command:
@@ -2427,4 +2427,728 @@ export async function executeFoodAuthoritativeCapacityReservationMutation(
       expected,
     );
   }
+}
+
+/* FOOD-007X: durable fulfillment-intent binding integrity extension. */
+
+const FOOD_007X_BINDING_READ_SQL = `
+SELECT
+  reservation_id,
+  fulfillment_intent_id,
+  fulfillment_intent_version
+FROM food_capacity_reservation_fulfillment_intents
+WHERE reservation_id = ?
+LIMIT 2
+`.trim();
+
+const FOOD_007X_BINDING_INSERT_SQL = `
+INSERT INTO food_capacity_reservation_fulfillment_intents (
+  reservation_id,
+  fulfillment_intent_id,
+  fulfillment_intent_version
+)
+VALUES (?, ?, ?)
+RETURNING
+  reservation_id,
+  fulfillment_intent_id,
+  fulfillment_intent_version
+`.trim();
+
+const FOOD_007X_MISSING =
+  Symbol(
+    "food-007x-missing-data-property",
+  );
+
+type Food007xFulfillmentIntentBinding =
+  Readonly<{
+    reservationId: string;
+    fulfillmentIntentId: string;
+    fulfillmentIntentVersion: number;
+  }>;
+
+type Food007xBindingRead =
+  | Readonly<{
+      status: "found";
+      value:
+        Food007xFulfillmentIntentBinding;
+    }>
+  | Readonly<{
+      status: "not-found";
+    }>
+  | Readonly<{
+      status: "storage-failure";
+    }>;
+
+function food007xDirectRecord(
+  input: unknown,
+): object | undefined {
+  if (
+    input === null ||
+    typeof input !== "object" ||
+    Object.getPrototypeOf(input) !==
+      Object.prototype ||
+    Object.getOwnPropertySymbols(input)
+      .length !==
+      0
+  ) {
+    return undefined;
+  }
+
+  return input;
+}
+
+function food007xOwnData(
+  input: object,
+  key: string,
+): unknown | typeof FOOD_007X_MISSING {
+  const descriptor =
+    Object.getOwnPropertyDescriptor(
+      input,
+      key,
+    );
+
+  if (
+    descriptor === undefined ||
+    !Object.hasOwn(
+      descriptor,
+      "value",
+    )
+  ) {
+    return FOOD_007X_MISSING;
+  }
+
+  return descriptor.value;
+}
+
+function food007xDirectArray(
+  input: unknown,
+): readonly unknown[] | undefined {
+  if (
+    !Array.isArray(input) ||
+    Object.getPrototypeOf(input) !==
+      Array.prototype ||
+    Object.getOwnPropertySymbols(input)
+      .length !==
+      0
+  ) {
+    return undefined;
+  }
+
+  const lengthDescriptor =
+    Object.getOwnPropertyDescriptor(
+      input,
+      "length",
+    );
+
+  if (
+    lengthDescriptor === undefined ||
+    !Object.hasOwn(
+      lengthDescriptor,
+      "value",
+    )
+  ) {
+    return undefined;
+  }
+
+  const length:
+    unknown =
+      lengthDescriptor.value;
+
+  if (
+    typeof length !== "number" ||
+    !Number.isSafeInteger(length) ||
+    length < 0
+  ) {
+    return undefined;
+  }
+
+  const names =
+    Object.getOwnPropertyNames(
+      input,
+    );
+
+  if (
+    names.length !==
+      length + 1
+  ) {
+    return undefined;
+  }
+
+  const values:
+    unknown[] =
+      [];
+
+  for (
+    let index = 0;
+    index < length;
+    index += 1
+  ) {
+    const descriptor =
+      Object.getOwnPropertyDescriptor(
+        input,
+        String(index),
+      );
+
+    if (
+      descriptor === undefined ||
+      !Object.hasOwn(
+        descriptor,
+        "value",
+      )
+    ) {
+      return undefined;
+    }
+
+    values.push(
+      descriptor.value,
+    );
+  }
+
+  return Object.freeze(
+    values,
+  );
+}
+
+function food007xResult(
+  input: unknown,
+):
+  | Readonly<{
+      rows: readonly unknown[];
+      changes: number;
+    }>
+  | undefined {
+  const record =
+    food007xDirectRecord(
+      input,
+    );
+
+  if (record === undefined) {
+    return undefined;
+  }
+
+  const success =
+    food007xOwnData(
+      record,
+      "success",
+    );
+
+  const results =
+    food007xOwnData(
+      record,
+      "results",
+    );
+
+  const metaInput =
+    food007xOwnData(
+      record,
+      "meta",
+    );
+
+  if (
+    success !== true ||
+    results ===
+      FOOD_007X_MISSING ||
+    metaInput ===
+      FOOD_007X_MISSING
+  ) {
+    return undefined;
+  }
+
+  const rows =
+    food007xDirectArray(
+      results,
+    );
+
+  const meta =
+    food007xDirectRecord(
+      metaInput,
+    );
+
+  if (
+    rows === undefined ||
+    meta === undefined
+  ) {
+    return undefined;
+  }
+
+  const changes =
+    food007xOwnData(
+      meta,
+      "changes",
+    );
+
+  if (
+    typeof changes !== "number" ||
+    !Number.isSafeInteger(
+      changes,
+    ) ||
+    changes < 0
+  ) {
+    return undefined;
+  }
+
+  return Object.freeze({
+    rows,
+    changes,
+  });
+}
+
+function food007xBindingRow(
+  input: unknown,
+):
+  | Food007xFulfillmentIntentBinding
+  | undefined {
+  const record =
+    food007xDirectRecord(
+      input,
+    );
+
+  if (record === undefined) {
+    return undefined;
+  }
+
+  const names =
+    Object.getOwnPropertyNames(
+      record,
+    );
+
+  if (
+    names.length !== 3 ||
+    !names.includes(
+      "reservation_id",
+    ) ||
+    !names.includes(
+      "fulfillment_intent_id",
+    ) ||
+    !names.includes(
+      "fulfillment_intent_version",
+    )
+  ) {
+    return undefined;
+  }
+
+  const reservationId =
+    food007xOwnData(
+      record,
+      "reservation_id",
+    );
+
+  const fulfillmentIntentId =
+    food007xOwnData(
+      record,
+      "fulfillment_intent_id",
+    );
+
+  const fulfillmentIntentVersion =
+    food007xOwnData(
+      record,
+      "fulfillment_intent_version",
+    );
+
+  if (
+    typeof reservationId !==
+      "string" ||
+    reservationId.length < 1 ||
+    reservationId.length > 512 ||
+    typeof fulfillmentIntentId !==
+      "string" ||
+    fulfillmentIntentId.length < 1 ||
+    fulfillmentIntentId.length > 512 ||
+    typeof fulfillmentIntentVersion !==
+      "number" ||
+    !Number.isSafeInteger(
+      fulfillmentIntentVersion,
+    ) ||
+    fulfillmentIntentVersion < 1
+  ) {
+    return undefined;
+  }
+
+  return Object.freeze({
+    reservationId,
+    fulfillmentIntentId,
+    fulfillmentIntentVersion,
+  });
+}
+
+function food007xCaptureBindingInput(
+  input: unknown,
+):
+  | Food007xFulfillmentIntentBinding
+  | undefined {
+  const command =
+    food007xDirectRecord(
+      input,
+    );
+
+  if (command === undefined) {
+    return undefined;
+  }
+
+  const reservationId =
+    food007xOwnData(
+      command,
+      "reservationId",
+    );
+
+  const selectionInput =
+    food007xOwnData(
+      command,
+      "selection",
+    );
+
+  if (
+    typeof reservationId !==
+      "string" ||
+    reservationId.length < 1 ||
+    reservationId.length > 512 ||
+    selectionInput ===
+      FOOD_007X_MISSING
+  ) {
+    return undefined;
+  }
+
+  const selection =
+    food007xDirectRecord(
+      selectionInput,
+    );
+
+  if (selection === undefined) {
+    return undefined;
+  }
+
+  const intentInput =
+    food007xOwnData(
+      selection,
+      "fulfillmentIntent",
+    );
+
+  if (
+    intentInput ===
+      FOOD_007X_MISSING
+  ) {
+    return undefined;
+  }
+
+  const intent =
+    food007xDirectRecord(
+      intentInput,
+    );
+
+  if (intent === undefined) {
+    return undefined;
+  }
+
+  const id =
+    food007xOwnData(
+      intent,
+      "id",
+    );
+
+  const version =
+    food007xOwnData(
+      intent,
+      "version",
+    );
+
+  if (
+    typeof id !== "string" ||
+    id.length < 1 ||
+    id.length > 512 ||
+    typeof version !== "number" ||
+    !Number.isSafeInteger(
+      version,
+    ) ||
+    version < 1
+  ) {
+    return undefined;
+  }
+
+  return Object.freeze({
+    reservationId,
+    fulfillmentIntentId:
+      id,
+    fulfillmentIntentVersion:
+      version,
+  });
+}
+
+function food007xSameBinding(
+  left:
+    Food007xFulfillmentIntentBinding,
+  right:
+    Food007xFulfillmentIntentBinding,
+): boolean {
+  return (
+    left.reservationId ===
+      right.reservationId &&
+    left.fulfillmentIntentId ===
+      right.fulfillmentIntentId &&
+    left.fulfillmentIntentVersion ===
+      right.fulfillmentIntentVersion
+  );
+}
+
+async function food007xReadBinding(
+  database:
+    FoodAuthoritativeCapacityReservationD1Database,
+  reservationId: string,
+): Promise<Food007xBindingRead> {
+  try {
+    const raw =
+      await database
+        .prepare(
+          FOOD_007X_BINDING_READ_SQL,
+        )
+        .bind(
+          reservationId,
+        )
+        .all();
+
+    const result =
+      food007xResult(
+        raw,
+      );
+
+    if (result === undefined) {
+      return Object.freeze({
+        status:
+          "storage-failure",
+      });
+    }
+
+    if (
+      result.rows.length === 0
+    ) {
+      return Object.freeze({
+        status:
+          "not-found",
+      });
+    }
+
+    if (
+      result.rows.length !== 1
+    ) {
+      return Object.freeze({
+        status:
+          "storage-failure",
+      });
+    }
+
+    const value =
+      food007xBindingRow(
+        result.rows[0],
+      );
+
+    if (
+      value === undefined ||
+      value.reservationId !==
+        reservationId
+    ) {
+      return Object.freeze({
+        status:
+          "storage-failure",
+      });
+    }
+
+    return Object.freeze({
+      status: "found",
+      value,
+    });
+  }
+  catch {
+    return Object.freeze({
+      status:
+        "storage-failure",
+    });
+  }
+}
+
+function food007xRequireCreatedBindingWitness(
+  input: unknown,
+  expected:
+    Food007xFulfillmentIntentBinding,
+): void {
+  const result =
+    food007xResult(
+      input,
+    );
+
+  if (
+    result === undefined ||
+    result.changes !== 1 ||
+    result.rows.length !== 1
+  ) {
+    throw new TypeError(
+      "Invalid FOOD-007X binding mutation witness",
+    );
+  }
+
+  const row =
+    food007xBindingRow(
+      result.rows[0],
+    );
+
+  if (
+    row === undefined ||
+    !food007xSameBinding(
+      row,
+      expected,
+    )
+  ) {
+    throw new TypeError(
+      "FOOD-007X binding mutation witness mismatch",
+    );
+  }
+}
+
+function food007xDatabaseWithBinding(
+  database:
+    FoodAuthoritativeCapacityReservationD1Database,
+  binding:
+    Food007xFulfillmentIntentBinding,
+):
+  FoodAuthoritativeCapacityReservationD1Database {
+  return Object.freeze({
+    prepare(
+      sql:
+        Parameters<
+          FoodAuthoritativeCapacityReservationD1Database["prepare"]
+        >[0],
+    ) {
+      return database.prepare(
+        sql,
+      );
+    },
+
+    async batch(
+      statements:
+        Parameters<
+          FoodAuthoritativeCapacityReservationD1Database["batch"]
+        >[0],
+    ) {
+      const bindingStatement =
+        database
+          .prepare(
+            FOOD_007X_BINDING_INSERT_SQL,
+          )
+          .bind(
+            binding.reservationId,
+            binding.fulfillmentIntentId,
+            binding.fulfillmentIntentVersion,
+          );
+
+      const results =
+        await database.batch([
+          ...statements,
+          bindingStatement,
+        ]);
+
+      const captured =
+        food007xDirectArray(
+          results,
+        );
+
+      if (
+        captured === undefined ||
+        captured.length !==
+          statements.length + 1
+      ) {
+        throw new TypeError(
+          "Invalid FOOD-007X atomic batch result",
+        );
+      }
+
+      food007xRequireCreatedBindingWitness(
+        captured[
+          captured.length - 1
+        ],
+        binding,
+      );
+
+      const visibleResults =
+        [];
+
+      for (
+        let index = 0;
+        index <
+        statements.length;
+        index += 1
+      ) {
+        visibleResults.push(
+          results[index]!,
+        );
+      }
+
+      return visibleResults;
+    },
+  });
+}
+
+export async function executeFoodAuthoritativeCapacityReservationMutation(
+  database:
+    FoodAuthoritativeCapacityReservationD1Database,
+  command:
+    FoodReservationHoldCommand,
+): Promise<
+  FoodAuthoritativeCapacityReservationMutationResult
+> {
+  const binding =
+    food007xCaptureBindingInput(
+      command,
+    );
+
+  if (binding === undefined) {
+    return Object.freeze({
+      outcome: "invalid",
+    });
+  }
+
+  const result =
+    await executeFoodAuthoritativeCapacityReservationMutationCore(
+      food007xDatabaseWithBinding(
+        database,
+        binding,
+      ),
+      command,
+    );
+
+  if (
+    result.outcome !==
+      "already-present"
+  ) {
+    return result;
+  }
+
+  const durableBinding =
+    await food007xReadBinding(
+      database,
+      binding.reservationId,
+    );
+
+  if (
+    durableBinding.status ===
+      "not-found" ||
+    durableBinding.status ===
+      "storage-failure"
+  ) {
+    return Object.freeze({
+      outcome:
+        "storage-failure",
+    });
+  }
+
+  if (
+    !food007xSameBinding(
+      durableBinding.value,
+      binding,
+    )
+  ) {
+    return Object.freeze({
+      outcome:
+        "conflict",
+    });
+  }
+
+  return result;
 }
