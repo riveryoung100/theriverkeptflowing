@@ -1,0 +1,205 @@
+{
+    "unit":  "FOOD-008A",
+    "title":  "Authoritative Physical Order Version Persistence",
+    "status":  "contract-defined",
+    "purpose":  "Persist FOOD-005E physical-order versions as authoritative append-only durable order-history truth with exact idempotency, strict requested-to-cancelled sequencing and fail-closed concurrency handling.",
+    "dependencyReason":  "FOOD-007Z provides durable reservation-acceptance read truth, but downstream payment/readiness composition still cannot authenticate whether an exact physical-order version is durably requested or cancelled. FOOD-005E explicitly deferred repository idempotency and atomic persistence.",
+    "dependencies":  {
+                         "food005e":  {
+                                          "specification":  ".river-dev/specifications/food-005e-physical-order-lifecycle-domain.json",
+                                          "specificationBlobAtContractDefinition":  "71ff8ebc09ceaa9b0cc90ca3119a900c641c7d20",
+                                          "source":  "src/lib/food/physical-order-domain.ts",
+                                          "sourceBlobAtContractDefinition":  "45302c5db278e2d406938452d476ca018750897b",
+                                          "test":  "src/lib/food/physical-order-domain.test.ts",
+                                          "testBlobAtContractDefinition":  "6ef9f7aed428cb30c500c80b8325bebe03f01fcc",
+                                          "role":  "Canonical FoodPhysicalOrderVersion structure, requested/cancelled lifecycle, validation and immutable cancellation transition."
+                                      },
+                         "food007z":  {
+                                          "specification":  ".river-dev/specifications/food-007z-exact-durable-reservation-acceptance-evidence-read.json",
+                                          "specificationBlobAtContractDefinition":  "4461ffa3b6e13111805fa9419fb896527aa652b9",
+                                          "source":  "src/lib/food/d1-exact-durable-reservation-acceptance-evidence-read.ts",
+                                          "sourceBlobAtContractDefinition":  "521841441207704276ee0c7dd3f5071a88b54bf9",
+                                          "role":  "Upstream durable reservation-acceptance read seam; FOOD-008A does not change or consume its authority."
+                                      }
+                     },
+    "artifacts":  {
+                      "specification":  ".river-dev/specifications/food-008a-authoritative-physical-order-version-persistence.json",
+                      "migration":  "migrations/food/0008_food_physical_order_versions.sql",
+                      "futureSource":  "src/lib/food/d1-physical-order-version-persistence.ts",
+                      "futureTest":  "src/lib/food/d1-physical-order-version-persistence.test.ts"
+                  },
+    "durableModel":  {
+                         "table":  "food_physical_order_versions",
+                         "primaryIdentity":  [
+                                                 "order_id",
+                                                 "order_version"
+                                             ],
+                         "representation":  "Identity/version/state columns plus one canonical immutable snapshot JSON payload.",
+                         "reason":  "FoodPhysicalOrderVersion contains nested quote, fulfillment-intent, reservation-request, capacity-requirement, line, price and money snapshots. One canonical payload preserves the exact validated FOOD-005E snapshot without creating unnecessary query surfaces. State/version remain indexed columns because lifecycle sequencing must be enforced durably.",
+                         "columns":  [
+                                         "order_id",
+                                         "order_version",
+                                         "state",
+                                         "snapshot_format_version",
+                                         "snapshot_json"
+                                     ],
+                         "snapshotFormatVersion":  1,
+                         "canonicalSnapshotOwnKeyOrder":  [
+                                                              "quote",
+                                                              "fulfillmentIntent",
+                                                              "reservationRequest",
+                                                              "lines",
+                                                              "merchandiseSubtotal"
+                                                          ],
+                         "excludedFromSnapshotBecauseStoredAsColumns":  [
+                                                                            "id",
+                                                                            "version",
+                                                                            "state"
+                                                                        ],
+                         "canonicalization":  "Validate the complete input with validateFoodPhysicalOrderVersion first, then create a fresh detached snapshot object in the exact locked key order and JSON.stringify that object. Stored JSON text is therefore deterministic canonical adapter output.",
+                         "reconstruction":  "Read order_id/order_version/state plus snapshot_json, parse the exact snapshot object, combine them into one complete FoodPhysicalOrderVersion and pass the reconstructed value through validateFoodPhysicalOrderVersion.",
+                         "noArbitraryJsonAuthority":  "A syntactically valid JSON payload is not sufficient authority. Stored content must reconstruct into a canonical FOOD-005E value."
+                     },
+    "lifecycle":  {
+                      "supportedStates":  [
+                                              "requested",
+                                              "cancelled"
+                                          ],
+                      "initial":  {
+                                      "orderVersion":  1,
+                                      "state":  "requested",
+                                      "predecessor":  null,
+                                      "rule":  "Version 1 requested must be the first durable version for the order ID."
+                                  },
+                      "cancellation":  {
+                                           "orderVersion":  2,
+                                           "state":  "cancelled",
+                                           "predecessorVersion":  1,
+                                           "predecessorState":  "requested",
+                                           "snapshotEquality":  "snapshot_format_version and snapshot_json must exactly equal the durable requested predecessor.",
+                                           "terminal":  true
+                                       },
+                      "unsupported":  [
+                                          "version greater than 2",
+                                          "cancelled version 1",
+                                          "requested version 2",
+                                          "requested revision after cancellation",
+                                          "revision after cancelled",
+                                          "version gaps",
+                                          "order identity drift",
+                                          "snapshot drift during cancellation"
+                                      ],
+                      "noLifecycleExpansion":  [
+                                                   "awaiting-payment",
+                                                   "paid",
+                                                   "scheduled",
+                                                   "preparing",
+                                                   "ready",
+                                                   "dispatched",
+                                                   "handed-over",
+                                                   "refunded"
+                                               ]
+                  },
+    "publicApi":  {
+                      "database":  "FoodPhysicalOrderVersionPersistenceD1Database",
+                      "result":  "FoodPhysicalOrderVersionPersistenceResult",
+                      "function":  "appendFoodPhysicalOrderVersion",
+                      "signature":  "appendFoodPhysicalOrderVersion(database: FoodPhysicalOrderVersionPersistenceD1Database, input: unknown): Promise\u003cFoodPhysicalOrderVersionPersistenceResult\u003e",
+                      "outcomes":  [
+                                       "created",
+                                       "already-present",
+                                       "conflict",
+                                       "invalid",
+                                       "storage-failure"
+                                   ]
+                  },
+    "outcomeSemantics":  {
+                             "created":  "The exact validated version did not already exist, all durable lifecycle prerequisites held, one canonical row was inserted, and the returned row reconstructed to the exact requested FOOD-005E value.",
+                             "already-present":  "The same order ID/version already exists and reconstructs to exactly the same canonical FOOD-005E value. No write occurs.",
+                             "conflict":  "The caller supplied a structurally valid FOOD-005E value that conflicts with durable identity, version sequencing, lifecycle state, predecessor state, terminal cancellation rules or exact immutable snapshot history.",
+                             "invalid":  "The supplied input fails canonical FOOD-005E structural validation or cannot be canonically serialized.",
+                             "storage-failure":  "A D1 operation fails, a stored row is malformed, storage state violates invariants, or an uncertain insert cannot be resolved by authoritative reread."
+                         },
+    "appendAlgorithm":  [
+                            "Validate and detach the complete input using validateFoodPhysicalOrderVersion.",
+                            "Build canonical snapshot_format_version=1 and deterministic snapshot_json from quote, fulfillmentIntent, reservationRequest, lines and merchandiseSubtotal.",
+                            "Read the exact durable order_id/order_version first.",
+                            "If exact exists and reconstructs identically, return already-present.",
+                            "If exact exists and differs, return conflict.",
+                            "If version=1, require state=requested and require no durable version already exists for the order ID.",
+                            "If version=2, require state=cancelled, require exact durable predecessor version 1 in requested state, and require canonical snapshot equality with that predecessor.",
+                            "Reject all versions greater than 2 as conflict under the current FOOD-005E lifecycle.",
+                            "Attempt one INSERT RETURNING.",
+                            "Require one returned row that reconstructs exactly before returning created.",
+                            "If insert throws or result is uncertain, reread the exact identity once.",
+                            "Exact canonical raced row =\u003e already-present.",
+                            "Divergent exact raced row =\u003e conflict.",
+                            "No classifiable exact durable row =\u003e storage-failure.",
+                            "Never blindly retry a write."
+                        ],
+    "concurrency":  {
+                        "callerChecks":  [
+                                             "exact identity read",
+                                             "latest/history-state read where required",
+                                             "predecessor authentication",
+                                             "one insert attempt",
+                                             "one exact post-error reread"
+                                         ],
+                        "databaseConstraints":  [
+                                                    "composite primary key on order_id/order_version",
+                                                    "state/version CHECK",
+                                                    "version-1 first-history trigger",
+                                                    "version-2 requested-predecessor and exact-snapshot trigger",
+                                                    "no-update trigger",
+                                                    "no-delete trigger"
+                                                ],
+                        "blindRetry":  false
+                    },
+    "readBoundary":  {
+                         "privateReadsAllowed":  "FOOD-008A may use private exact/latest/predecessor reads solely to enforce append idempotency and lifecycle concurrency.",
+                         "downstreamPublicRead":  "Not owned by FOOD-008A.",
+                         "expectedFuture":  "A later FOOD-008B exact authoritative physical-order read/authentication boundary should expose durable order truth to payment/readiness consumers."
+                     },
+    "immutability":  {
+                         "appendOnly":  true,
+                         "update":  false,
+                         "delete":  false,
+                         "deepFreezeReturnedValues":  true,
+                         "callerReferencesRetained":  false
+                     },
+    "authorityBoundary":  {
+                              "durableOrderHistory":  true,
+                              "reservationAcceptance":  false,
+                              "checkoutReadiness":  false,
+                              "paymentReadiness":  false,
+                              "paymentAuthorization":  false,
+                              "paymentCapture":  false,
+                              "paidInFull":  false,
+                              "preparationAuthority":  false,
+                              "dispatchAuthority":  false,
+                              "fulfillmentAuthority":  false,
+                              "completedSale":  false,
+                              "reservationRelease":  false,
+                              "inventoryTruth":  false,
+                              "accounting":  false,
+                              "rewards":  false
+                          },
+    "migration":  {
+                      "number":  "0008",
+                      "file":  "migrations/food/0008_food_physical_order_versions.sql",
+                      "creates":  [
+                                      "food_physical_order_versions",
+                                      "food_physical_order_versions_initial_guard",
+                                      "food_physical_order_versions_cancel_guard",
+                                      "food_physical_order_versions_no_update",
+                                      "food_physical_order_versions_no_delete"
+                                  ],
+                      "executedByThisUnitDefinition":  false,
+                      "productionTouched":  false
+                  },
+    "future":  {
+                   "food008b":  "Exact authoritative physical-order read/authentication.",
+                   "payment":  "Durable electronic/cash payment evidence and authoritative payment reconciliation remain downstream.",
+                   "readiness":  "Checkout/payment/operational readiness composition remains downstream of authoritative order and payment truth."
+               }
+}
