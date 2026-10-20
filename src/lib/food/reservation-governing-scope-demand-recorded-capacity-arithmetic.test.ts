@@ -33,6 +33,7 @@ const WINDOW =
 
 import { parseFoodMerchandiseQuoteId } from "./cart-quote-domain";
 import {
+  createFoodFulfillmentIntentId,
   parseFoodFulfillmentIntentId,
   parseFoodReservationRequestId,
 } from "./fulfillment-capacity-reservation-domain";
@@ -414,7 +415,9 @@ test(
 
     selection.request
       .fulfillmentIntent.id =
-      "food-fulfillment-intent:other";
+      createFoodFulfillmentIntentId(
+        "other",
+      );
 
     assert.deepEqual(
       deriveFoodReservationGoverningScopeDemandRecordedCapacityArithmetic(
