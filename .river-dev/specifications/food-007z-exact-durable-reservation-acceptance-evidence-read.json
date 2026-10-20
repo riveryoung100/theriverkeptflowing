@@ -1,0 +1,181 @@
+{
+    "unit":  "FOOD-007Z",
+    "title":  "Exact Durable Reservation Acceptance Evidence Read",
+    "status":  "contract-defined",
+    "purpose":  "Provide the first public read-only consumer seam for one exact durably persisted reservation-acceptance identity/version. Reconstruct and authenticate the complete FOOD-007Y durable evidence value from immutable acceptance evidence plus authoritative reservation storage without trusting process-memory FOOD-005L or FOOD-007W objects.",
+    "decomposition":  "FOOD-007Z owns exact durable acceptance evidence retrieval and authentication only. It does not own checkout readiness, payment readiness, payment status, order-state mutation, reservation mutation, reservation release, preparation authority, dispatch authority, fulfillment authority, completed-sale authority, inventory truth, accounting or rewards.",
+    "reasonForNextUnit":  {
+                              "food007yGap":  "FOOD-007Y establishes durable persistence and returns evidence during persistence, but its public API exposes no independent durable read operation for a later process/request.",
+                              "readinessGap":  "No current FOOD runtime contract owns combined checkout/payment/fulfillment readiness. A future readiness projection therefore needs an authoritative durable acceptance input seam before composition.",
+                              "orderStateBoundary":  "FOOD-005E remains requested/cancelled only. FOOD-007Z must not invent accepted, paid, confirmed, preparing, ready, dispatched or completed order states.",
+                              "noMigration":  "FOOD-007Z reads existing immutable tables created by migrations 0003, 0006 and 0007. No schema change or migration 0008 is required."
+                          },
+    "dependencies":  {
+                         "food005l":  {
+                                          "specification":  ".river-dev/specifications/food-005l-reservation-acceptance-domain.json",
+                                          "specificationBlobAtContractDefinition":  "82415e94f88afef671a4a7660833739ca45dfd6b",
+                                          "source":  "src/lib/food/reservation-acceptance-domain.ts",
+                                          "sourceBlobAtContractDefinition":  "b0ea5cf9a8cefb57ce371040d33eb1686f7cf816",
+                                          "role":  "Canonical FoodReservationAcceptanceId, FoodReservationAcceptanceVersion, parser and validation semantics."
+                                      },
+                         "food007y":  {
+                                          "specification":  ".river-dev/specifications/food-007y-durable-reservation-acceptance-evidence-persistence.json",
+                                          "specificationBlobAtContractDefinition":  "8c558c09b27dac2cbf6f1ed50fccf07fb9dbd742",
+                                          "source":  "src/lib/food/d1-durable-reservation-acceptance-evidence-persistence.ts",
+                                          "sourceBlobAtContractDefinition":  "0baaf9b6a549d88b7b4dd771460037d2b196e1c8",
+                                          "migration":  "migrations/food/0007_food_reservation_acceptance_evidence.sql",
+                                          "migrationBlobAtContractDefinition":  "e8056ef7aaa6d23be5d80d5c3ebe22cdc60d6371",
+                                          "role":  "Canonical durable evidence value shape, persistence semantics and acceptance evidence table."
+                                      },
+                         "reservationStorage":  {
+                                                    "migration":  "migrations/food/0003_food_capacity_reservation_storage.sql",
+                                                    "migrationBlobAtContractDefinition":  "4a1a76cc8306c10c3466caf0305a4b1a1078d363",
+                                                    "role":  "Authoritative immutable reservation parent, canonical demand lines and fulfillment-slot claim."
+                                                },
+                         "fulfillmentIntentBinding":  {
+                                                          "migration":  "migrations/food/0006_food_capacity_reservation_fulfillment_intent_binding.sql",
+                                                          "migrationBlobAtContractDefinition":  "b43d3e89a1078d864a6060de4e1c45d2f6c294ac",
+                                                          "role":  "Authoritative immutable reservation-to-fulfillment-intent ID/version binding required to reconstruct the FOOD-005L acceptance snapshot."
+                                                      }
+                     },
+    "prospectiveArtifacts":  {
+                                 "specification":  ".river-dev/specifications/food-007z-exact-durable-reservation-acceptance-evidence-read.json",
+                                 "source":  "src/lib/food/d1-exact-durable-reservation-acceptance-evidence-read.ts",
+                                 "test":  "src/lib/food/d1-exact-durable-reservation-acceptance-evidence-read.test.ts",
+                                 "migration":  null
+                             },
+    "lookup":  {
+                   "authority":  "Exact caller-supplied acceptance identity/version is a lookup key only. It grants no commerce authority.",
+                   "acceptanceId":  "Canonical FoodReservationAcceptanceId parsed by FOOD-005L.",
+                   "acceptanceVersion":  "Positive safe-integer exact version. Current durable FOOD-007Y schema contains version 1 only; any absent exact version returns not-found rather than inferring latest/current.",
+                   "noLatest":  true,
+                   "noCurrent":  true,
+                   "noFallback":  true,
+                   "noReservationIdInferenceFromCaller":  "The caller does not supply the authoritative reservation ID. The exact acceptance evidence row supplies reservation_id, which must then authenticate against authoritative reservation storage."
+               },
+    "publicApi":  {
+                      "evidenceType":  "Reuse FoodDurableReservationAcceptanceEvidence from FOOD-007Y.",
+                      "resultType":  "FoodExactDurableReservationAcceptanceEvidenceReadResult",
+                      "databaseType":  "FoodExactDurableReservationAcceptanceEvidenceReadD1Database",
+                      "function":  "readFoodDurableReservationAcceptanceEvidenceByExactAcceptance",
+                      "signature":  "readFoodDurableReservationAcceptanceEvidenceByExactAcceptance(database: FoodExactDurableReservationAcceptanceEvidenceReadD1Database, acceptanceId: unknown, acceptanceVersion: unknown): Promise\u003cFoodExactDurableReservationAcceptanceEvidenceReadResult\u003e"
+                  },
+    "outcomes":  [
+                     "found",
+                     "not-found",
+                     "storage-failure",
+                     "invalid"
+                 ],
+    "outcomeSemantics":  {
+                             "found":  "One exact acceptance evidence row exists, its reservation relationship and all required durable reservation children authenticate, the complete canonical FOOD-005L acceptance can be reconstructed exactly, and a detached deeply frozen FOOD-007Y evidence value is returned.",
+                             "not-found":  "No durable acceptance evidence row exists for the exact canonical acceptance ID/version. Do not infer another version, latest acceptance, reservation acceptance, or readiness.",
+                             "storage-failure":  "The acceptance evidence row exists but required authoritative reservation storage is missing, malformed, internally inconsistent, cannot reconstruct the exact canonical acceptance, or a database read fails.",
+                             "invalid":  "The supplied acceptance identity/version is malformed, hostile or otherwise cannot be safely interpreted as an exact lookup."
+                         },
+    "authoritativeRead":  {
+                              "acceptanceEvidenceTable":  "food_reservation_acceptance_evidence",
+                              "requiredReservationTables":  [
+                                                                "food_capacity_reservations",
+                                                                "food_capacity_reservation_lines",
+                                                                "food_fulfillment_slot_reservations",
+                                                                "food_capacity_reservation_fulfillment_intents"
+                                                            ],
+                              "acceptanceLookup":  "Read exactly by acceptance_id + acceptance_version.",
+                              "reservationIdentity":  "Take reservation_id only from the exact durable acceptance evidence row.",
+                              "parentRequirement":  "A found acceptance row requires exactly one corresponding authoritative reservation parent.",
+                              "lineRequirement":  "Reconstruct capacity requirements in persisted line_index order. Never sort, repair or canonicalize a different order.",
+                              "slotRequirement":  "Require the exact durable fulfillment-slot claim for method/locationReference/windowReference.",
+                              "fulfillmentBindingRequirement":  "Require the exact FOOD-007X fulfillment-intent ID/version binding.",
+                              "demandIntegrity":  "Authenticate persisted canonical demand and reservation lines using the same durable semantics established by FOOD-007Y. Missing or contradictory storage is storage-failure.",
+                              "acceptanceReconstruction":  "Combine exact acceptance ID/version and metadata from FOOD-007Y with exact authoritative order/request/fulfillment/demand facts from reservation storage, then validate the reconstructed FoodReservationAcceptanceVersion using canonical FOOD-005L validation.",
+                              "output":  "Return FOOD-007Y FoodDurableReservationAcceptanceEvidence with durable reservationId plus reconstructed acceptance."
+                          },
+    "readOnlyBoundary":  {
+                             "databaseWrites":  false,
+                             "sqlInsert":  false,
+                             "sqlUpdate":  false,
+                             "sqlDelete":  false,
+                             "sqlUpsert":  false,
+                             "migration":  false,
+                             "clock":  false,
+                             "randomness":  false,
+                             "network":  false,
+                             "provider":  false,
+                             "mutationRecovery":  "Not applicable. This unit never performs a write."
+                         },
+    "immutability":  {
+                         "detachment":  "Returned values must not retain caller-owned or database-row mutable references.",
+                         "deepFreeze":  "Found evidence and all nested acceptance data must be deeply frozen.",
+                         "sourceMutation":  false
+                     },
+    "hostileShapePolicy":  {
+                               "accessorInvocation":  "Do not invoke hostile getter/setter properties while validating caller-supplied lookup input.",
+                               "symbols":  "Reject unsupported symbol-keyed shape where object input is inspected.",
+                               "customPrototype":  "Reject unsupported custom-prototype object input where applicable.",
+                               "arrays":  "No array lookup input is accepted.",
+                               "repair":  "Never repair malformed caller input or malformed durable rows."
+                           },
+    "invariants":  [
+                       "durable acceptance persistence != durable acceptance read",
+                       "lookup identity != acceptance authority",
+                       "found durable acceptance != checkout readiness",
+                       "found durable acceptance != payment readiness",
+                       "found durable acceptance != payment status",
+                       "found durable acceptance != order-state mutation",
+                       "found durable acceptance != preparation authority",
+                       "found durable acceptance != dispatch authority",
+                       "found durable acceptance != fulfillment authority",
+                       "found durable acceptance != completed sale",
+                       "found durable acceptance != physical inventory truth",
+                       "found durable acceptance != reservation release",
+                       "found durable acceptance != reservation cancellation",
+                       "found durable acceptance != reservation consumption",
+                       "found durable acceptance != accounting authority",
+                       "found durable acceptance != rewards authority",
+                       "not-found != reservation rejection",
+                       "not-found != capacity unavailable",
+                       "not-found != checkout denied",
+                       "exact read != latest/current inference"
+                   ],
+    "nonClaims":  [
+                      "checkout readiness",
+                      "payment readiness",
+                      "payment initiation",
+                      "payment authorization",
+                      "payment capture",
+                      "payment settlement",
+                      "paid-in-full truth",
+                      "order confirmation",
+                      "order-state mutation",
+                      "preparation authority",
+                      "dispatch readiness",
+                      "dispatch authority",
+                      "delivery authority",
+                      "handoff authority",
+                      "fulfillment completion",
+                      "completed sale",
+                      "physical QOH",
+                      "physical currentness",
+                      "availability",
+                      "orderability",
+                      "reservation mutation",
+                      "reservation release",
+                      "reservation expiration",
+                      "reservation cancellation",
+                      "reservation replacement",
+                      "reservation consumption",
+                      "rescheduling",
+                      "accounting",
+                      "revenue",
+                      "rewards",
+                      "provider integration",
+                      "routes",
+                      "deployment"
+                  ],
+    "future":  {
+                   "readiness":  "A later pure readiness composition may consume one FOOD-007Z found durable acceptance alongside exact non-cancelled order truth, exact payable/payment truth and other independently established policy gates.",
+                   "lifecycle":  "Reservation release/expiration/cancellation/consumption remain separate future operational boundaries.",
+                   "orderState":  "Any expansion beyond FOOD-005E requested/cancelled requires its own deliberate lifecycle contract.",
+                   "migration":  "No migration 0008 is created or implied by FOOD-007Z."
+               }
+}
