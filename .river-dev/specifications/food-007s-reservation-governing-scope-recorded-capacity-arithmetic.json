@@ -1,0 +1,638 @@
+{
+  "id": "FOOD-007S",
+  "title": "Reservation Governing-Scope Recorded-Capacity Arithmetic",
+  "version": 1,
+  "status": "contract-definition",
+  "startingHead": "9a1064f73694a450e4115aebaa874a4f279aedf8",
+  "classification": "pure synchronous governing-scope recorded-capacity evidence arithmetic",
+  "classificationPrecedent": "FOOD-007L defines pure synchronous arithmetic through purpose and sideEffects; it has no formal classification field or candidate designation. No new candidate taxonomy is assigned here.",
+  "decomposition": "One pure synchronous evidence-arithmetic responsibility; separate from demand arithmetic, policy selection, admission and mutation.",
+  "purpose": "Correlate supplied FOOD-007F capacity-source evidence, FOOD-007P governing commitment scope and FOOD-007R cumulative recorded-held evidence, then derive signed per-stream recordedCapacityDelta.",
+  "plannedFiles": {
+    "spec": ".river-dev/specifications/food-007s-reservation-governing-scope-recorded-capacity-arithmetic.json",
+    "source": "src/lib/food/reservation-governing-scope-recorded-capacity-arithmetic.ts",
+    "test": "src/lib/food/reservation-governing-scope-recorded-capacity-arithmetic.test.ts"
+  },
+  "plannedApi": {
+    "kindConstant": "FOOD_RESERVATION_GOVERNING_SCOPE_RECORDED_CAPACITY_ARITHMETIC_KIND",
+    "kindLiteral": "reservation-governing-scope-recorded-capacity-arithmetic",
+    "skuArithmeticType": "FoodReservationGoverningScopeRecordedCapacitySkuArithmetic",
+    "slotArithmeticType": "FoodReservationGoverningScopeRecordedCapacitySlotArithmetic",
+    "arithmeticType": "FoodReservationGoverningScopeRecordedCapacityArithmetic",
+    "resultType": "FoodReservationGoverningScopeRecordedCapacityArithmeticResult",
+    "function": "deriveFoodReservationGoverningScopeRecordedCapacityArithmetic",
+    "parameters": [
+      {
+        "name": "capacitySourceResolution",
+        "type": "FoodReservationCapacitySourceSelectionResolution",
+        "unit": "FOOD-007F"
+      },
+      {
+        "name": "commitmentScope",
+        "type": "FoodReservationCapacityCommitmentScope",
+        "unit": "FOOD-007P"
+      },
+      {
+        "name": "recordedHeldCommitmentResolution",
+        "type": "FoodReservationGoverningScopeRecordedHeldCommitmentResolution",
+        "unit": "FOOD-007R"
+      }
+    ],
+    "async": false,
+    "signature": "deriveFoodReservationGoverningScopeRecordedCapacityArithmetic(capacitySourceResolution: FoodReservationCapacitySourceSelectionResolution, commitmentScope: FoodReservationCapacityCommitmentScope, recordedHeldCommitmentResolution: FoodReservationGoverningScopeRecordedHeldCommitmentResolution): FoodReservationGoverningScopeRecordedCapacityArithmeticResult"
+  },
+  "resultContract": {
+    "outcomes": [
+      "derived",
+      "invalid"
+    ],
+    "success": {
+      "exactKeys": [
+        "outcome",
+        "value"
+      ],
+      "outcome": "derived",
+      "valueType": "FoodReservationGoverningScopeRecordedCapacityArithmetic"
+    },
+    "failure": {
+      "exactKeys": [
+        "outcome"
+      ],
+      "outcome": "invalid"
+    },
+    "envelopePrecedent": "FOOD-007L uses value, not arithmetic, for its successful result payload.",
+    "failClosed": "Any capture, structural, identity, correlation or numeric failure returns a frozen invalid result. Ordinary malformed input does not throw outward. No partial successful arithmetic is returned.",
+    "storageOutcomes": false
+  },
+  "inputContract": {
+    "artifactValuesOnly": true,
+    "resultWrappersAccepted": false,
+    "capacitySourceResolution": {
+      "type": "FoodReservationCapacitySourceSelectionResolution",
+      "kind": "reservation-capacity-source-selection-resolution",
+      "exactRootKeys": [
+        "kind",
+        "selection",
+        "skuSources",
+        "slotSource"
+      ]
+    },
+    "commitmentScope": {
+      "type": "FoodReservationCapacityCommitmentScope",
+      "kind": "reservation-capacity-commitment-scope",
+      "exactRootKeys": [
+        "kind",
+        "policyVersion",
+        "governing",
+        "skuScopes",
+        "slotScope"
+      ],
+      "policyVersion": 1
+    },
+    "recordedHeldCommitmentResolution": {
+      "type": "FoodReservationGoverningScopeRecordedHeldCommitmentResolution",
+      "kind": "reservation-governing-scope-recorded-held-commitment-resolution",
+      "exactRootKeys": [
+        "kind",
+        "skuCommitments",
+        "slotCommitment"
+      ]
+    },
+    "capacityEvidenceOwnership": "Neither P nor R contains capacityUnits. Only the validated exact source revisions in F supply capacityUnits. P remains mandatory because R does not retain its complete governing envelope.",
+    "prohibitedInvocations": [
+      "resolveFoodReservationCapacitySourceSelection",
+      "evaluateFoodReservationCapacityGoverningSourcePolicy",
+      "deriveFoodReservationCapacityCommitmentScope",
+      "readFoodGoverningScopeRecordedHeldCapacityCommitment",
+      "resolveFoodReservationGoverningScopeRecordedHeldCommitments"
+    ],
+    "boundary": "Validate and correlate already-supplied artifacts only. Do not choose revisions, rederive P, recompute O policy, reacquire observations or perform held reads."
+  },
+  "nestedContracts": {
+    "skuIdentity": {
+      "exactKeys": [
+        "id",
+        "version"
+      ],
+      "id": "Canonical FoodSkuId validated through parseFoodSkuId; preserve text exactly.",
+      "version": "Positive safe integer under the canonical upstream version contract."
+    },
+    "selection": {
+      "kind": "reservation-capacity-source-selection-request",
+      "exactKeys": [
+        "kind",
+        "request",
+        "fulfillmentIntent",
+        "skuSelections",
+        "slotSelection"
+      ]
+    },
+    "skuSelection": {
+      "exactKeys": [
+        "sku",
+        "revision"
+      ],
+      "revision": "Positive safe integer."
+    },
+    "slotSelection": {
+      "exactKeys": [
+        "method",
+        "locationReference",
+        "windowReference",
+        "revision"
+      ],
+      "revision": "Positive safe integer."
+    },
+    "request": {
+      "type": "FoodReservationRequestVersion",
+      "exactKeys": [
+        "id",
+        "version",
+        "quote",
+        "fulfillmentIntent",
+        "capacityRequirements"
+      ],
+      "validator": "validateFoodReservationRequestVersion"
+    },
+    "fulfillmentIntent": {
+      "type": "FoodFulfillmentIntentVersion",
+      "exactKeys": [
+        "id",
+        "version",
+        "quote",
+        "method",
+        "locationReference",
+        "windowReference"
+      ],
+      "validator": "validateFoodFulfillmentIntentVersion"
+    },
+    "versionedReference": {
+      "exactKeys": [
+        "id",
+        "version"
+      ],
+      "validation": "Use the canonical referenced domain identity parser and positive safe version validator."
+    },
+    "capacityRequirement": {
+      "exactKeys": [
+        "sku",
+        "quantity"
+      ],
+      "quantity": "Canonical positive safe integer; retain only for structural validation and correspondence, never subtract it."
+    },
+    "skuSource": {
+      "type": "FoodExactSkuStockedCapacitySourceRevision",
+      "kind": "exact-sku-stocked-capacity-source",
+      "exactKeys": [
+        "kind",
+        "sku",
+        "revision",
+        "capacityUnits",
+        "attribution",
+        "sourceReference"
+      ],
+      "validator": "validateFoodExactSkuStockedCapacitySourceRevision"
+    },
+    "slotSource": {
+      "type": "FoodFulfillmentSlotCapacitySourceRevision",
+      "kind": "fulfillment-slot-capacity-source",
+      "exactKeys": [
+        "kind",
+        "method",
+        "locationReference",
+        "windowReference",
+        "revision",
+        "capacityUnits",
+        "attribution",
+        "sourceReference"
+      ],
+      "validator": "validateFoodFulfillmentSlotCapacitySourceRevision"
+    },
+    "governing": {
+      "kind": "reservation-capacity-governing-source-policy",
+      "policyVersion": 1,
+      "exactKeys": [
+        "kind",
+        "policyVersion",
+        "command",
+        "observations"
+      ]
+    },
+    "command": {
+      "kind": "reservation-hold-command",
+      "exactKeys": [
+        "kind",
+        "reservationId",
+        "order",
+        "selection"
+      ],
+      "reservationId": "Opaque FOOD-007N string; SQLite-compatible Unicode code-point length before first NUL is 1..512; preserve complete text.",
+      "order": "Exact id/version reference, parsed as FoodPhysicalOrderId and positive safe version."
+    },
+    "observations": {
+      "exactKeys": [
+        "skuObservations",
+        "slotObservation"
+      ]
+    },
+    "skuObservation": {
+      "exactKeys": [
+        "sku",
+        "observedHighestRecordedRevision"
+      ],
+      "observedHighestRecordedRevision": "Positive safe integer."
+    },
+    "slotObservation": {
+      "exactKeys": [
+        "method",
+        "locationReference",
+        "windowReference",
+        "observedHighestRecordedRevision"
+      ],
+      "observedHighestRecordedRevision": "Positive safe integer."
+    },
+    "skuScope": {
+      "exactKeys": [
+        "sku",
+        "governingRevision"
+      ]
+    },
+    "slotScope": {
+      "exactKeys": [
+        "method",
+        "locationReference",
+        "windowReference",
+        "governingRevision"
+      ]
+    },
+    "skuCommitment": {
+      "exactKeys": [
+        "sku",
+        "governingRevision",
+        "recordedHeldQuantity"
+      ]
+    },
+    "slotCommitment": {
+      "exactKeys": [
+        "method",
+        "locationReference",
+        "windowReference",
+        "governingRevision",
+        "recordedHeldQuantity"
+      ]
+    },
+    "methods": [
+      "personal-delivery",
+      "meetup"
+    ],
+    "slotReferences": "Preserve exact canonical bounded locationReference/windowReference text; use upstream structural validation without coercion, trimming or normalization.",
+    "validatorBoundary": "Recursively capture caller-owned descriptors before canonical validators inspect values. Validate all retained nested structures, including references and request capacityRequirements; do not treat an upstream TypeScript annotation as runtime proof."
+  },
+  "correlation": {
+    "completeCaptureBeforeArithmetic": true,
+    "orderAuthority": "commitmentScope.skuScopes",
+    "byIndexOnly": true,
+    "sorting": false,
+    "fallback": false,
+    "duplicateSkuIdentities": "invalid",
+    "sourceSelectionBinding": "F.selection and P.governing.command.selection must agree structurally in their complete canonical request, intent, SKU selections and slot selection; compare captured values, not object references or property insertion order.",
+    "requestIntentBinding": "Within each selection, request.fulfillmentIntent id/version and quote id/version must match the supplied fulfillmentIntent. Request demand identities must match SKU selection order exactly.",
+    "skuCountEquality": [
+      "F.selection.request.capacityRequirements.length",
+      "F.selection.skuSelections.length",
+      "F.skuSources.length",
+      "P.governing.command.selection.request.capacityRequirements.length",
+      "P.governing.command.selection.skuSelections.length",
+      "P.governing.observations.skuObservations.length",
+      "P.skuScopes.length",
+      "R.skuCommitments.length"
+    ],
+    "nonemptySkuStreams": true,
+    "skuIdentityEquality": "At every index, all request demand identities, F selections/sources, P governing selections/observations/scopes and R commitments have exactly the same sku.id and sku.version. Reject reordered, missing, extra, duplicate or inconsistent streams.",
+    "skuRevisionEquality": [
+      "F.selection.skuSelections[i].revision",
+      "F.skuSources[i].revision",
+      "P.governing.command.selection.skuSelections[i].revision",
+      "P.governing.observations.skuObservations[i].observedHighestRecordedRevision",
+      "P.skuScopes[i].governingRevision",
+      "R.skuCommitments[i].governingRevision"
+    ],
+    "slotIdentityFields": [
+      "method",
+      "locationReference",
+      "windowReference"
+    ],
+    "slotIdentityEquality": "F selection/intent/source, P governing selection/intent/observation/scope and R slot commitment must agree exactly on all slot identity fields.",
+    "slotRevisionEquality": [
+      "F.selection.slotSelection.revision",
+      "F.slotSource.revision",
+      "P.governing.command.selection.slotSelection.revision",
+      "P.governing.observations.slotObservation.observedHighestRecordedRevision",
+      "P.slotScope.governingRevision",
+      "R.slotCommitment.governingRevision"
+    ],
+    "governingValidation": "Require P kind/policyVersion and nested O/N/E kind/version literals, complete governing structure and the correspondence equalities above. These are consistency checks on supplied evidence, not a new O policy evaluation or freshness claim."
+  },
+  "outputContract": {
+    "kind": "reservation-governing-scope-recorded-capacity-arithmetic",
+    "exactRootKeys": [
+      "kind",
+      "skuArithmetic",
+      "slotArithmetic"
+    ],
+    "skuEntryKeys": [
+      "sku",
+      "governingRevision",
+      "capacityUnits",
+      "recordedHeldQuantity",
+      "recordedCapacityDelta"
+    ],
+    "skuIdentityKeys": [
+      "id",
+      "version"
+    ],
+    "slotEntryKeys": [
+      "method",
+      "locationReference",
+      "windowReference",
+      "governingRevision",
+      "capacityUnits",
+      "recordedHeldQuantity",
+      "recordedCapacityDelta"
+    ],
+    "skuArithmeticType": "readonly FoodReservationGoverningScopeRecordedCapacitySkuArithmetic[]",
+    "slotArithmeticType": "FoodReservationGoverningScopeRecordedCapacitySlotArithmetic",
+    "order": "Exactly P.skuScopes order.",
+    "revisionVocabulary": "governingRevision",
+    "forbiddenFieldNames": [
+      "capacityRevision",
+      "remainingCapacity",
+      "availableCapacity",
+      "reservableCapacity",
+      "reservableQuantity",
+      "availableToPromise"
+    ],
+    "skuMapping": {
+      "sku": "P.skuScopes[i].sku",
+      "governingRevision": "P.skuScopes[i].governingRevision",
+      "capacityUnits": "F.skuSources[i].capacityUnits",
+      "recordedHeldQuantity": "R.skuCommitments[i].recordedHeldQuantity",
+      "recordedCapacityDelta": "capacityUnits - recordedHeldQuantity"
+    },
+    "slotMapping": {
+      "identity": "P.slotScope method/locationReference/windowReference",
+      "governingRevision": "P.slotScope.governingRevision",
+      "capacityUnits": "F.slotSource.capacityUnits",
+      "recordedHeldQuantity": "R.slotCommitment.recordedHeldQuantity",
+      "recordedCapacityDelta": "capacityUnits - recordedHeldQuantity"
+    }
+  },
+  "arithmetic": {
+    "formula": "recordedCapacityDelta = capacityUnits - recordedHeldQuantity",
+    "perSku": true,
+    "perSlot": true,
+    "meaning": "Subtract R cumulative durable held quantity through the matched governingRevision from F capacityUnits at that exact governing revision and stream.",
+    "capacityUnits": "nonnegative safe integer",
+    "recordedHeldQuantity": "nonnegative safe integer",
+    "governingRevision": "positive safe integer",
+    "skuVersion": "positive safe integer; canonical upstream contract",
+    "recordedCapacityDelta": "signed safe integer",
+    "strategy": "BigInt(capacityUnits) - BigInt(recordedHeldQuantity); verify Number.MIN_SAFE_INTEGER <= result <= Number.MAX_SAFE_INTEGER before converting to number; otherwise invalid.",
+    "preservePositive": true,
+    "preserveZero": true,
+    "preserveNegative": true,
+    "clamp": false,
+    "numericBoundaryNote": "Two valid nonnegative safe-integer operands cannot produce an out-of-range signed difference. Retain the defensive result bound check; test both extreme valid deltas and reject unsafe operands rather than fabricate an impossible public-input overflow.",
+    "crossStreamAggregation": false,
+    "demandArithmetic": false
+  },
+  "hostileInput": {
+    "exactRootKeys": true,
+    "exactNestedKeys": true,
+    "ownPropertiesOnly": true,
+    "dataDescriptorsOnly": true,
+    "rejectAccessors": true,
+    "callerAccessorExecution": false,
+    "rejectSymbols": true,
+    "rejectSparseArrays": true,
+    "rejectExtendedArrays": true,
+    "rejectUnsupportedPrototypes": true,
+    "objectDirectPrototype": "Object.prototype",
+    "objectPolicyRationale": "F source/selection constructors, P/O/N constructors and R constructors return ordinary object records; reject null/custom/class object prototypes consistently for all caller-owned records.",
+    "arrayDirectPrototype": "Array.prototype",
+    "rejectCustomArrayPrototypes": true,
+    "rejectNullArrayPrototypes": true,
+    "rejectArraySubclasses": true,
+    "prototypeCheckBeforeIteration": true,
+    "inheritedIteratorLookupBeforeValidation": false,
+    "arrayCapture": "Validate direct prototype, exact own index/length shape, symbol absence and dense own data descriptors before using any caller array iterator. Capture indexed descriptor values into owned ordinary arrays; never spread or Array.from an unvalidated caller array.",
+    "rejectCycles": true,
+    "rejectUnsupportedPrimitives": true,
+    "rejectNonfiniteNumbers": true,
+    "coercion": false,
+    "captureAllInputsBeforeCorrelation": true,
+    "mutateCallerValues": false
+  },
+  "immutability": {
+    "detached": true,
+    "reuseCallerObjects": false,
+    "deeplyFrozen": true,
+    "frozenLevels": [
+      "result envelope",
+      "arithmetic root",
+      "skuArithmetic array",
+      "each SKU entry",
+      "each nested SKU identity",
+      "slotArithmetic"
+    ],
+    "callerMutationCannotAlterOutput": true
+  },
+  "purity": {
+    "async": false,
+    "database": "none",
+    "sql": "none",
+    "storageAccess": "none",
+    "mutation": "none",
+    "clock": "none",
+    "network": "none",
+    "filesystem": "none",
+    "environment": "none",
+    "randomness": "none",
+    "deterministic": true
+  },
+  "responsibilities": {
+    "recordedCapacityArithmetic": true,
+    "demandArithmetic": false,
+    "sufficiency": false,
+    "insufficiency": false,
+    "admission": false,
+    "reservable": false,
+    "atp": false,
+    "acceptance": false,
+    "rejection": false,
+    "governingSelection": false
+  },
+  "safeClaim": "For each exactly correlated supplied governing stream, recordedCapacityDelta is only the signed difference between that revision source assertion and the supplied cumulative recorded-held evidence. Structural consistency does not authenticate origin, freshness or authority.",
+  "concurrencyBoundary": "No new reads, no simultaneous authoritative snapshot, no mutation-time authoritative snapshot, and no guarantee the observations remain valid after their original reads.",
+  "nonClaims": [
+    "current physical inventory truth",
+    "current QOH",
+    "physical inventory movement",
+    "live availability",
+    "remaining sellable inventory",
+    "remaining capacity",
+    "available capacity",
+    "reservable quantity",
+    "available-to-promise / ATP",
+    "capacity sufficiency",
+    "capacity insufficiency",
+    "demand satisfaction",
+    "reservation admission",
+    "permission to reserve",
+    "reservation acceptance",
+    "reservation rejection",
+    "durable hold creation",
+    "mutation success",
+    "oversell prevention",
+    "slot-overbooking prevention",
+    "atomic reservation",
+    "mutation-time authoritative snapshot",
+    "simultaneous authoritative snapshot",
+    "release",
+    "expiration",
+    "cancellation",
+    "consumption",
+    "replacement",
+    "rescheduling",
+    "authenticated caller or observation provenance",
+    "perpetual governing validity",
+    "current active commitments"
+  ],
+  "nonResponsibilities": [
+    "demand subtraction",
+    "policy selection or recomputation",
+    "source revision selection",
+    "governing revision selection",
+    "durable held reads",
+    "database writes",
+    "reservation lifecycle decisions",
+    "acceptance creation",
+    "physical inventory mutation"
+  ],
+  "implementationPrecedent": {
+    "source": "src/lib/food/reservation-selection-recorded-capacity-arithmetic.ts",
+    "test": "src/lib/food/reservation-selection-recorded-capacity-arithmetic.test.ts",
+    "mirror": "Pure synchronous derived/value envelope, per-stream signed BigInt subtraction, correlation failure handling and detached frozen output.",
+    "mustChange": "Consume F/P/R, correlate governingRevision and cumulative held scope, remove K/I exact-revision validation assumptions, enforce corrected R canonical array-prototype guards and recursive capture."
+  },
+  "plannedTests": {
+    "success": [
+      "positive SKU delta",
+      "zero SKU delta",
+      "negative SKU delta",
+      "positive slot delta",
+      "zero slot delta",
+      "negative slot delta",
+      "multiple SKUs preserve P order",
+      "personal-delivery",
+      "meetup",
+      "genuine canonical F/P/R inputs"
+    ],
+    "correlationFailures": [
+      "SKU count mismatch",
+      "reordered SKU streams",
+      "duplicate SKU identity",
+      "SKU id mismatch",
+      "SKU version mismatch",
+      "F source revision versus P governingRevision mismatch",
+      "P versus R governingRevision mismatch",
+      "R SKU identity mismatch",
+      "slot method mismatch",
+      "slot locationReference mismatch",
+      "slot windowReference mismatch",
+      "slot governingRevision mismatch",
+      "wrong kind on each input and governing/command/selection object",
+      "governing correspondence mismatch",
+      "wrong root or governing policyVersion",
+      "F selection versus P governing command selection mismatch",
+      "request/intent linkage mismatch",
+      "malformed source/scope/commitment evidence"
+    ],
+    "numericFailures": [
+      "invalid capacityUnits",
+      "invalid recordedHeldQuantity",
+      "invalid governingRevision",
+      "invalid SKU version",
+      "unsafe operands rejected",
+      "signed result safety guard; extreme valid MIN_SAFE_INTEGER and MAX_SAFE_INTEGER deltas preserved; public overflow is unreachable with valid operands"
+    ],
+    "hostileInput": [
+      "unexpected root key",
+      "missing root key",
+      "accessor-bearing root",
+      "accessor-bearing nested record",
+      "unexpected symbols",
+      "sparse arrays",
+      "extended arrays",
+      "custom Array prototype",
+      "null Array prototype",
+      "subclass/custom Array prototype",
+      "inherited Symbol.iterator getter: zero calls",
+      "nested hostile getters: zero calls",
+      "null/custom/class record prototypes",
+      "cycles and unsupported primitive values",
+      "no caller-owned mutation"
+    ],
+    "output": [
+      "detached root",
+      "frozen result envelope",
+      "frozen arithmetic root",
+      "frozen skuArithmetic array",
+      "frozen each SKU entry",
+      "frozen nested SKU identity",
+      "frozen slotArithmetic",
+      "caller mutation after derivation cannot alter output",
+      "exact output key sets"
+    ],
+    "nonAuthority": [
+      "no remainingCapacity surface",
+      "no reservableQuantity surface",
+      "no availableToPromise surface",
+      "no admission/acceptance fields",
+      "no DB/SQL/storage access",
+      "no Promise or async implementation",
+      "no caller or durable mutation",
+      "no O/P/Q/R invocation"
+    ],
+    "pureFunction": [
+      "deterministic repeat derivation from equivalent canonical evidence"
+    ]
+  },
+  "migrationImpact": "none",
+  "migration0003": "unchanged / not executed",
+  "migration0005": "unchanged / not executed",
+  "productionImpact": "none",
+  "production": "untouched",
+  "nextDependencyHypothesis": {
+    "status": "hypothesis only; not defined or implemented here",
+    "description": "A separate governing-scope demand-arithmetic counterpart to FOOD-007M may later consume this evidence. No follow-on ID or API is assigned."
+  },
+  "provenance": {
+    "food007f": {
+      "source": "src/lib/food/reservation-capacity-source-selection-resolution.ts",
+      "gitBlob": "24acbaf85eb5461d8c7416e9b9c1c3c1ab57cfa5"
+    },
+    "food007l": {
+      "source": "src/lib/food/reservation-selection-recorded-capacity-arithmetic.ts",
+      "gitBlob": "698e8d3556503895c8efb88ce7daab6e8c022a1e"
+    },
+    "food007p": {
+      "source": "src/lib/food/reservation-capacity-commitment-scope.ts",
+      "gitBlob": "644824439365a0934ee694e2f119a5d7cfb2dc53"
+    },
+    "food007r": {
+      "source": "src/lib/food/reservation-governing-scope-recorded-held-commitment-resolution.ts",
+      "gitBlob": "27c4b92fefdd105e9740d633455ad0ca336661ef"
+    }
+  }
+}
