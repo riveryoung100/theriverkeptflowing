@@ -1,0 +1,224 @@
+{
+    "id":  "FOOD-007R",
+    "title":  "Reservation Governing-Scope Recorded-Held Commitment Resolution",
+    "version":  1,
+    "classification":  {
+                           "candidate":  "B",
+                           "name":  "governing-scope-recorded-held-composition",
+                           "decomposition":  "scope-level asynchronous evidence composition"
+                       },
+    "purpose":  "Compose durable recorded held-capacity commitment evidence for every exact stream in one canonical FOOD-007P governing commitment scope by invoking FOOD-007Q once per stream through that stream\u0027s governingRevision.",
+    "relationship":  {
+                         "food007p":  "Supplies the complete canonical structural commitment scope. FOOD-007R consumes this scope; it does not derive governing revisions.",
+                         "food007q":  "Supplies the durable cumulative recorded-held read for one exact SKU or fulfillment-slot stream through governingRevision.",
+                         "food007k":  "Provides the established asynchronous composition, fail-closed read sequencing, detached result, and no-arithmetic/no-authority precedent. FOOD-007R does not change FOOD-007K.",
+                         "food007l":  "Capacity arithmetic remains downstream and outside FOOD-007R.",
+                         "food007m":  "Demand-adjusted arithmetic remains downstream and outside FOOD-007R.",
+                         "food007n":  "Hold-attempt proposal/admission behavior remains downstream and outside FOOD-007R."
+                     },
+    "plannedFiles":  {
+                         "source":  "src/lib/food/reservation-governing-scope-recorded-held-commitment-resolution.ts",
+                         "test":  "src/lib/food/reservation-governing-scope-recorded-held-commitment-resolution.test.ts"
+                     },
+    "plannedApi":  {
+                       "kindConstant":  "FOOD_RESERVATION_GOVERNING_SCOPE_RECORDED_HELD_COMMITMENT_RESOLUTION_KIND",
+                       "kindLiteral":  "reservation-governing-scope-recorded-held-commitment-resolution",
+                       "databaseType":  "FoodReservationGoverningScopeRecordedHeldCommitmentResolutionD1Database",
+                       "skuCommitmentType":  "FoodReservationGoverningScopeRecordedHeldSkuCommitment",
+                       "slotCommitmentType":  "FoodReservationGoverningScopeRecordedHeldSlotCommitment",
+                       "resolutionType":  "FoodReservationGoverningScopeRecordedHeldCommitmentResolution",
+                       "resultType":  "FoodReservationGoverningScopeRecordedHeldCommitmentResolutionResult",
+                       "function":  "resolveFoodReservationGoverningScopeRecordedHeldCommitments",
+                       "async":  true
+                   },
+    "inputContract":  {
+                          "database":  "FOOD-007Q-compatible D1 database surface",
+                          "commitmentScope":  "FoodReservationCapacityCommitmentScope from FOOD-007P",
+                          "acceptedScopeKind":  "reservation-capacity-commitment-scope",
+                          "scopeOwnership":  "FOOD-007R consumes an already-derived FOOD-007P scope and must not select, recalculate, advance, or reinterpret governingRevision."
+                      },
+    "sequencing":  {
+                       "skuOrder":  "Invoke FOOD-007Q sequentially for skuScopes in the exact existing FOOD-007P array order.",
+                       "slotOrder":  "Only after every SKU read succeeds, invoke FOOD-007Q once for slotScope.",
+                       "concurrency":  "No Promise.all or speculative parallel reads. Preserve the FOOD-007K fail-closed sequencing precedent.",
+                       "failureShortCircuit":  "On the first unsuccessful FOOD-007Q read, stop immediately and perform no later SKU or slot read.",
+                       "callCardinality":  "Exactly one FOOD-007Q call per FOOD-007P stream on a successful resolution."
+                   },
+    "selectorMapping":  {
+                            "sku":  {
+                                        "scope":  "sku",
+                                        "sku":  "scope.skuScopes[index].sku",
+                                        "governingRevision":  "scope.skuScopes[index].governingRevision"
+                                    },
+                            "slot":  {
+                                         "scope":  "slot",
+                                         "method":  "scope.slotScope.method",
+                                         "locationReference":  "scope.slotScope.locationReference",
+                                         "windowReference":  "scope.slotScope.windowReference",
+                                         "governingRevision":  "scope.slotScope.governingRevision"
+                                     }
+                        },
+    "outputContract":  {
+                           "kind":  "reservation-governing-scope-recorded-held-commitment-resolution",
+                           "skuCommitments":  "Detached frozen array preserving FOOD-007P skuScopes order.",
+                           "skuEntryKeys":  [
+                                                "sku",
+                                                "governingRevision",
+                                                "recordedHeldQuantity"
+                                            ],
+                           "slotCommitment":  "Detached frozen object for the exact FOOD-007P slotScope.",
+                           "slotEntryKeys":  [
+                                                 "method",
+                                                 "locationReference",
+                                                 "windowReference",
+                                                 "governingRevision",
+                                                 "recordedHeldQuantity"
+                                             ],
+                           "revisionVocabulary":  "Use governingRevision in FOOD-007R outputs. Do not rename it back to capacityRevision.",
+                           "recordedHeldMeaning":  "Each recordedHeldQuantity is cumulative durable held commitment evidence through the supplied governingRevision, exactly as returned by FOOD-007Q.",
+                           "immutability":  "Root resolution, skuCommitments array, each SKU object, nested SKU identity, and slotCommitment are detached and frozen before return."
+                       },
+    "resultVocabulary":  {
+                             "success":  "resolved",
+                             "validationFailure":  "invalid",
+                             "storageFailure":  "storage-failure",
+                             "propagation":  "Map unsuccessful FOOD-007Q results into FOOD-007R result vocabulary without manufacturing recordedHeldQuantity.",
+                             "distinction":  "Input/scope shape failures are invalid. D1 prepare/bind/all or malformed aggregate failures remain storage-failure through FOOD-007Q."
+                         },
+    "validation":  {
+                       "exactRootKeys":  true,
+                       "exactNestedKeys":  true,
+                       "dataPropertiesOnly":  true,
+                       "rejectAccessors":  true,
+                       "rejectSymbols":  true,
+                       "rejectSparseArrays":  true,
+                       "rejectUnsupportedObjects":  true,
+                       "governingRevision":  "Positive safe integer for every SKU and slot scope.",
+                       "skuIdentity":  "Exact FOOD-007P SKU id/version identity preserved.",
+                       "slotIdentity":  "Exact FOOD-007P method/locationReference/windowReference identity preserved.",
+                       "allowedMethods":  [
+                                              "personal-delivery",
+                                              "meetup"
+                                          ],
+                       "hostileInputPrecedent":  "Match the existing FOOD reservation validation discipline and FOOD-007K fail-closed behavior."
+                   },
+    "cumulativeSemantics":  {
+                                "lowerLevelRule":  "FOOD-007Q reads capacity_revision \u003c= governingRevision.",
+                                "earlierCommitments":  "Earlier held commitments in the exact stream are intentionally included.",
+                                "governingRevision":  "The governing revision itself is included.",
+                                "futureCommitments":  "Rows with capacity_revision \u003e governingRevision are excluded.",
+                                "zero":  "No qualifying durable held rows resolves as recordedHeldQuantity 0.",
+                                "streamIsolation":  "SKU streams are keyed by SKU id + version. Slot stream is keyed by method + locationReference + windowReference.",
+                                "noCrossStreamAggregation":  "FOOD-007R composes per-stream results and performs no cross-stream SUM or arithmetic."
+                            },
+    "failureSemantics":  {
+                             "firstFailure":  "Return immediately on first unsuccessful FOOD-007Q read.",
+                             "partialEvidence":  "Never return a partially populated successful resolution.",
+                             "secondSkuFailure":  "If a later SKU read fails, prior successful reads may have occurred internally but no partial successful bundle is returned and slot read must not occur.",
+                             "slotFailure":  "If slot read fails after successful SKU reads, no successful resolution is returned.",
+                             "exceptions":  "Unexpected lower-level invocation exceptions fail closed and must not be represented as successful evidence."
+                         },
+    "nonResponsibilities":  [
+                                "database mutation",
+                                "reservation creation",
+                                "reservation state transition",
+                                "capacity subtraction",
+                                "demand subtraction",
+                                "remaining-capacity calculation",
+                                "reservable-quantity calculation",
+                                "available-to-promise calculation",
+                                "sufficiency decision",
+                                "admission decision",
+                                "hold acceptance",
+                                "governing revision selection",
+                                "active physical inventory authority",
+                                "current physical quantity-on-hand authority",
+                                "rewriting FOOD-007J",
+                                "rewriting FOOD-007K",
+                                "rewriting FOOD-007P",
+                                "rewriting FOOD-007Q"
+                            ],
+    "examples":  [
+                     {
+                         "name":  "one SKU cumulative governing scope",
+                         "scope":  "SKU A governingRevision 2",
+                         "durableHeldRows":  "revision 1 quantity 3; revision 2 quantity 4",
+                         "expectedRecordedHeldQuantity":  7
+                     },
+                     {
+                         "name":  "future row excluded",
+                         "scope":  "SKU A governingRevision 2",
+                         "durableHeldRows":  "revision 1 quantity 3; revision 3 quantity 4",
+                         "expectedRecordedHeldQuantity":  3
+                     },
+                     {
+                         "name":  "multiple SKU order preservation",
+                         "scope":  "SKU B then SKU A in FOOD-007P",
+                         "expected":  "FOOD-007R resolves and returns SKU B then SKU A; it does not sort."
+                     },
+                     {
+                         "name":  "fail closed before slot",
+                         "scope":  "two SKUs plus slot",
+                         "condition":  "second SKU FOOD-007Q read fails",
+                         "expected":  "return failure; do not read slot; do not return partial successful resolution."
+                     }
+                 ],
+    "implementationStrategy":  {
+                                   "sourcePrecedent":  "src/lib/food/reservation-selection-recorded-held-commitment-resolution.ts",
+                                   "testPrecedent":  "src/lib/food/reservation-selection-recorded-held-commitment-resolution.test.ts",
+                                   "lowerLevelReader":  "src/lib/food/d1-governing-scope-recorded-held-capacity-commitment-read.ts",
+                                   "scopeProducer":  "src/lib/food/reservation-capacity-commitment-scope.ts",
+                                   "preferredApproach":  "Derive FOOD-007R composition structure from FOOD-007K while replacing exact-revision selection reads with FOOD-007P governing scope consumption and FOOD-007Q cumulative reads.",
+                                   "preserve007K":  "FOOD-007K remains exact-revision behavior and must not be modified.",
+                                   "preserve007Q":  "FOOD-007Q remains the only low-level governing-scope durable aggregate reader."
+                               },
+    "provenance":  {
+                       "canonicalHead":  "c37b48bf010e1d4948b9ae39357cb0272df80b95",
+                       "food007p":  {
+                                        "specification":  {
+                                                              "path":  ".river-dev/specifications/food-007p-reservation-capacity-commitment-scope.json",
+                                                              "sha256":  "8490b50ca4d5583b4cfad9e49ba154374a6be32a26037374144ceca28e101686",
+                                                              "gitBlob":  "227edf46764b2caf14f1bdcdd7c9fc66b70a9b49"
+                                                          },
+                                        "source":  {
+                                                       "path":  "src/lib/food/reservation-capacity-commitment-scope.ts",
+                                                       "sha256":  "ee682b93c9c89ea8153a9d50c6325f0e4bbecbd9505afebbca3a1da8de1a716e",
+                                                       "gitBlob":  "644824439365a0934ee694e2f119a5d7cfb2dc53"
+                                                   },
+                                        "test":  {
+                                                     "path":  "src/lib/food/reservation-capacity-commitment-scope.test.ts",
+                                                     "sha256":  "1c30f34569f4347483a7abe3e463a072ae1a1e9dc98def9016bc41cc2dab4345",
+                                                     "gitBlob":  "528df886824445fa91afeb6ceda2f0ecb99a86d3"
+                                                 }
+                                    },
+                       "food007q":  {
+                                        "specification":  {
+                                                              "path":  ".river-dev/specifications/food-007q-governing-scope-recorded-held-capacity-commitment-read.json",
+                                                              "sha256":  "e377b7b286deedcc09a0ad6c72a7ff9bfc73e6a701fc89c23ecbb0b0ee4448ee",
+                                                              "gitBlob":  "4aa1b06164bf4a13377c3cd32d7d03ed64284919"
+                                                          },
+                                        "source":  {
+                                                       "path":  "src/lib/food/d1-governing-scope-recorded-held-capacity-commitment-read.ts",
+                                                       "sha256":  "37b3e33a913efb6dc43ebe09f84ab004ce6ab22b05823128496761b015a89cc5",
+                                                       "gitBlob":  "2dad8a9ead92f45744a34eaec2f3238ffdad921e"
+                                                   },
+                                        "test":  {
+                                                     "path":  "src/lib/food/d1-governing-scope-recorded-held-capacity-commitment-read.test.ts",
+                                                     "sha256":  "ffe3e1326e642aa3e8fb03960a1c29fefcb1980c3bc17ae8eaff6d73de78f68a",
+                                                     "gitBlob":  "2e7d2dcf59fdbb07279f8fcf6acc63f7caadf842"
+                                                 }
+                                    },
+                       "food007kPrecedent":  {
+                                                 "source":  {
+                                                                "path":  "src/lib/food/reservation-selection-recorded-held-commitment-resolution.ts",
+                                                                "sha256":  "d663f536dcd431039da9f828e1b23b5321a62c27bf11f9171b100cb447800bbf",
+                                                                "gitBlob":  "d1ba663819e1994b69ece64a304d3a2f729925b5"
+                                                            },
+                                                 "test":  {
+                                                              "path":  "src/lib/food/reservation-selection-recorded-held-commitment-resolution.test.ts",
+                                                              "sha256":  "02e296be3fea33c6eccf9e292b741ecfdec858e095c53dd1b70fcbb45268945e",
+                                                              "gitBlob":  "68823dd550dbf99bb09cdebfd326171ee7840a74"
+                                                          }
+                                             }
+                   }
+}
