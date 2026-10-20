@@ -1,0 +1,271 @@
+{
+  "id": "FOOD-007W",
+  "title": "Post-Mutation Reservation Acceptance Composition",
+  "classification": "pure synchronous post-authoritative-mutation acceptance-evidence composition boundary",
+  "status": "contract-defined-unimplemented",
+  "startingHead": "95d6b0527580a39517256d44759fcdef3601bfc5",
+
+  "decomposition": "FOOD-007W owns only the post-FOOD-007V construction of existing FOOD-005L reservation-acceptance evidence after an authoritative durable reservation result has already been obtained. It does not own reservation mutation, governing-source policy, commitment-scope policy, capacity arithmetic, capacity admission, capacity-source reads, acceptance persistence, payment, fulfillment, release or physical inventory movement.",
+
+  "purpose": "Correlate one canonical FOOD-007N reservation hold command, one FOOD-007V authoritative mutation result and the exact physical-order snapshot required by FOOD-005L. Only a FOOD-007V created or already-present result may produce FOOD-005L acceptance evidence. The accepted composition retains both the authoritative reservation receipt and the FOOD-005L acceptance value so reservation provenance is not discarded.",
+
+  "prospectiveArtifacts": {
+    "specification": ".river-dev/specifications/food-007w-post-mutation-reservation-acceptance.json",
+    "source": "src/lib/food/post-mutation-reservation-acceptance.ts",
+    "test": "src/lib/food/post-mutation-reservation-acceptance.test.ts"
+  },
+
+  "dependencies": {
+    "food007n": "Canonical reservation hold command and reservation identity.",
+    "food007v": "Authoritative durable reservation mutation result and successful mutation receipt.",
+    "food005e": "Exact immutable physical-order snapshot.",
+    "food005l": "Existing pure reservation-acceptance evidence domain and initial acceptance constructor."
+  },
+
+  "publicApi": {
+    "kindConstant": "FOOD_POST_MUTATION_RESERVATION_ACCEPTANCE_KIND",
+    "kind": "post-mutation-reservation-acceptance",
+    "compositionType": "FoodPostMutationReservationAcceptance",
+    "resultType": "FoodPostMutationReservationAcceptanceResult",
+    "function": "deriveFoodPostMutationReservationAcceptance",
+    "signature": "deriveFoodPostMutationReservationAcceptance(command: FoodReservationHoldCommand, mutationResult: FoodAuthoritativeCapacityReservationMutationResult, order: FoodPhysicalOrderVersion, identityInput: unknown, acceptanceInput: unknown): FoodPostMutationReservationAcceptanceResult"
+  },
+
+  "acceptedComposition": {
+    "kind": "post-mutation-reservation-acceptance",
+    "reservationOutcome": [
+      "created",
+      "already-present"
+    ],
+    "reservation": "The exact FOOD-007V FoodAuthoritativeCapacityReservationMutationReceipt associated with the supplied command.",
+    "acceptance": "The exact FOOD-005L FoodReservationAcceptanceVersion constructed only after successful mutation-result correlation.",
+    "deepFrozen": true,
+    "detached": true
+  },
+
+  "resultOutcomes": {
+    "accepted": {
+      "value": true,
+      "meaning": "The supplied FOOD-007V result is created or already-present, its success receipt exactly correlates with the canonical FOOD-007N command, the supplied physical-order snapshot exactly correlates with the command request and fulfillment snapshots, and FOOD-005L acceptance construction succeeds."
+    },
+
+    "reservation-not-established": {
+      "value": false,
+      "reservationOutcomes": [
+        "governing-source-mismatch",
+        "insufficient-capacity",
+        "conflict",
+        "storage-failure"
+      ],
+      "meaning": "FOOD-007V did not establish an authoritative durable reservation outcome that is permitted to produce reservation acceptance. FOOD-007W creates no FOOD-005L acceptance."
+    },
+
+    "invalid": {
+      "value": false,
+      "meaning": "The command, mutation result, success receipt, physical order, acceptance identity/metadata or their required correlations are malformed or inconsistent, or the supplied FOOD-007V outcome is invalid. FOOD-007W creates no returned acceptance."
+    }
+  },
+
+  "sequence": [
+    "Capture and structurally validate caller-controlled inputs without invoking accessors or caller hooks.",
+    "Validate the canonical FOOD-007N command.",
+    "Validate the supplied physical-order snapshot.",
+    "Correlate command.order exactly to the supplied physical-order identity and version.",
+    "Inspect the supplied FOOD-007V result.",
+    "For governing-source-mismatch, insufficient-capacity, conflict or storage-failure, return reservation-not-established with the exact reservation outcome and construct no FOOD-005L acceptance.",
+    "For FOOD-007V invalid, return invalid and construct no FOOD-005L acceptance.",
+    "For FOOD-007V created or already-present, validate the success receipt and correlate it exactly to the command before acceptance construction.",
+    "Validate that the supplied order, command selection reservation request and command selection fulfillment intent satisfy existing FOOD-005L source-binding requirements.",
+    "Invoke existing FOOD-005L createInitialFoodReservationAcceptanceVersion using the caller-supplied acceptance identity/version, exact physical-order snapshot, exact command reservation-request snapshot, exact command fulfillment-intent snapshot and caller-supplied acceptance metadata.",
+    "Return one deeply frozen accepted composition retaining both the FOOD-007V receipt and the FOOD-005L acceptance."
+  ],
+
+  "mutationResultGate": {
+    "created": "Acceptance construction is permitted after exact success-receipt correlation.",
+    "already-present": "Acceptance construction is permitted after exact replay-receipt correlation because FOOD-007V has proven the same canonical durable reservation already exists and performs no new write.",
+    "governing-source-mismatch": "No acceptance.",
+    "insufficient-capacity": "No acceptance.",
+    "conflict": "No acceptance.",
+    "storage-failure": "No acceptance because authoritative durable reservation success is uncertain.",
+    "invalid": "No acceptance."
+  },
+
+  "receiptCorrelation": {
+    "required": true,
+    "reservationIdentity": "The FOOD-007V receipt reservation identity must equal command.reservationId exactly.",
+    "order": "Receipt order identity/version must equal command.order exactly.",
+    "reservationRequest": "Receipt reservation-request identity/version must equal command.selection.request exactly.",
+    "fulfillmentIntent": "Receipt fulfillment identity/version and method/location/window must equal command.selection.fulfillmentIntent exactly.",
+    "skuClaims": "Receipt SKU claims must exactly equal the command selected SKU identities, selected revisions and canonical demand quantities in canonical request order.",
+    "slotClaim": "Receipt slot identity, selected revision and quantity-one semantics must exactly equal the command slot selection.",
+    "sortingRepairForbidden": true,
+    "partialReceiptForbidden": true
+  },
+
+  "orderCorrelation": {
+    "required": true,
+    "identity": "Supplied physical-order id/version must equal command.order id/version exactly.",
+    "reservationRequest": "The physical-order reservation-request binding must equal command.selection.request identity/version exactly.",
+    "fulfillmentIntent": "The physical-order fulfillment-intent binding/snapshot must equal command.selection.fulfillmentIntent exactly.",
+    "capacityRequirements": "FOOD-005L must validate that acceptance capacity requirements exactly equal the canonical reservation-request requirements. FOOD-007W does not invent, reorder, aggregate or alter demand."
+  },
+
+  "food005lConstruction": {
+    "constructor": "createInitialFoodReservationAcceptanceVersion",
+    "identity": "Caller supplied. FOOD-007W does not derive a FOOD-005L acceptance identity from the capacity reservation identity.",
+    "initialVersion": 1,
+    "orderInput": "The supplied exact FoodPhysicalOrderVersion.",
+    "requestInput": "command.selection.request",
+    "fulfillmentInput": "command.selection.fulfillmentIntent",
+    "acceptanceInput": {
+      "fields": [
+        "attribution",
+        "sourceReference",
+        "acceptedOn"
+      ],
+      "callerSupplied": true
+    },
+    "clock": "FOOD-007W does not read the current clock or invent acceptedOn.",
+    "idGeneration": "none"
+  },
+
+  "capacitySourceBoundary": {
+    "exactRevisionReadsRequired": false,
+    "latestRecordedReadsRequired": false,
+    "heldCommitmentReadsRequired": false,
+    "governingPolicyRequiredAgain": false,
+    "capacityArithmeticRequiredAgain": false,
+    "admissionRequiredAgain": false,
+    "reason": "FOOD-007V already established authoritative durable reservation success inside its protected mutation boundary. FOOD-005L acceptance evidence does not contain SKU or slot capacity-source revisions. Re-reading capacity after mutation would create a different-time observation and is neither required nor permitted as an acceptance prerequisite."
+  },
+
+  "provenanceBoundary": {
+    "acceptedCompositionRetainsReceipt": true,
+    "food005lAloneContainsCapacityReservationId": false,
+    "food005lAloneContainsCapacitySourceRevisions": false,
+    "safeClaim": "Within a FOOD-007W accepted composition, the retained FOOD-007V receipt is the authoritative durable-reservation evidence and the retained FOOD-005L value is the corresponding immutable reservation-acceptance evidence.",
+    "detachedFood005lLimitation": "A FOOD-005L acceptance value used alone does not structurally encode the FOOD-007V reservation identity or selected capacity-source revisions. FOOD-007W does not silently add those fields to FOOD-005L."
+  },
+
+  "trustBoundary": {
+    "structuralValidation": "FOOD-007W validates shapes and exact correlations.",
+    "callerProvenance": "A structurally valid caller-supplied object does not by itself authenticate that a mutation result actually came from FOOD-007V.",
+    "trustedCompositionRequirement": "Operational callers must pass the actual FOOD-007V result produced by the trusted reservation service path; FOOD-007W does not authenticate arbitrary caller provenance, database provenance or service identity.",
+    "cachedCapacityEvidence": "No pre-V cached policy/arithmetic/admission artifact is accepted as a substitute for FOOD-007V success."
+  },
+
+  "replayBoundary": {
+    "food007vAlreadyPresent": "An exact FOOD-007V already-present result is sufficient reservation-success evidence for acceptance construction after exact correlation.",
+    "acceptancePersistence": "none",
+    "globalAcceptanceUniqueness": "not established",
+    "globalAcceptanceIdempotency": "not established",
+    "meaning": "FOOD-007W is pure construction. Repeating the same valid inputs may reproduce equivalent immutable acceptance evidence but does not prove or persist a globally unique acceptance record."
+  },
+
+  "failureAtomicityBoundary": {
+    "reservationMutationOwnedByFood007v": true,
+    "food007wWrites": false,
+    "acceptancePersistence": false,
+    "meaning": "FOOD-007W cannot roll back or alter a durable FOOD-007V reservation because it performs no reservation mutation. A later acceptance-persistence unit, if introduced, must define its own idempotency and failure semantics."
+  },
+
+  "hostileShapeBoundary": {
+    "directPlainObjectPrototypeRequired": true,
+    "directArrayPrototypeRequired": true,
+    "symbolKeysRejected": true,
+    "accessorsRejectedWithoutInvocation": true,
+    "sparseArraysRejected": true,
+    "extendedArraysRejected": true,
+    "cyclesRejected": true,
+    "nonFiniteNumbersRejected": true,
+    "sortingRepairForbidden": true,
+    "callerMutationAfterReturnCannotAlterOutput": true
+  },
+
+  "acceptanceAuthority": {
+    "doesCreateFood005L": true,
+    "meaning": "FOOD-007W is the first FOOD-007-series unit permitted to construct FOOD-005L reservation-acceptance evidence, and only after FOOD-007V authoritative reservation success.",
+    "doesNotPersistAcceptance": true,
+    "doesNotCreateReservation": true,
+    "doesNotReauthorizeReservation": true
+  },
+
+  "safeClaim": "If FOOD-007W returns accepted, the supplied canonical FOOD-007N command and exact physical-order snapshot were structurally correlated to a FOOD-007V created or already-present authoritative reservation result, and the returned FOOD-005L acceptance evidence was constructed only after that successful reservation-result gate. The retained receipt preserves authoritative reservation provenance for the composition.",
+
+  "nonClaims": [
+    "acceptance persistence",
+    "globally unique acceptance",
+    "globally idempotent acceptance",
+    "payment authorization",
+    "payment readiness",
+    "payment capture",
+    "checkout readiness",
+    "fulfillment readiness",
+    "dispatch authority",
+    "physical inventory quantity",
+    "physical quantity on hand",
+    "physical inventory movement",
+    "fresh physical count",
+    "sellable stock",
+    "available stock",
+    "remaining capacity",
+    "reservable quantity",
+    "available-to-promise / ATP",
+    "new governing-source decision",
+    "new capacity admission",
+    "new durable reservation write",
+    "reservation release",
+    "reservation expiration",
+    "reservation cancellation",
+    "reservation replacement",
+    "reservation consumption",
+    "reservation rescheduling",
+    "completed sale",
+    "accounting authority",
+    "revenue recognition",
+    "rewards authority",
+    "authenticated arbitrary caller provenance"
+  ],
+
+  "sideEffects": "None. FOOD-007W is planned as a pure synchronous server-library composition over existing canonical values and FOOD-005L construction. No SQL, database access, filesystem access, network access, environment access, current clock, randomness, generated IDs, routes, deployment or production mutation.",
+
+  "migrationImpact": "none",
+  "migration0003": "unchanged / not executed",
+  "migration0005": "unchanged / not executed",
+  "productionAuthority": false,
+  "production": "untouched",
+
+  "implementationPlan": {
+    "phase": "not yet implemented",
+    "sourceWillImportFood007n": true,
+    "sourceWillImportFood007vTypes": true,
+    "sourceWillImportFood005e": true,
+    "sourceWillImportFood005l": true,
+    "databaseDependency": false,
+    "sql": false,
+    "capacityReaders": false,
+    "mutation": false
+  },
+
+  "validationPlan": [
+    "Specification parses as JSON and locks FOOD-007W identity, starting HEAD and prospective artifact paths.",
+    "Focused implementation tests must prove acceptance only for FOOD-007V created and already-present success results.",
+    "Every FOOD-007V failure outcome must prove zero FOOD-005L acceptance construction.",
+    "Success receipt must be exactly correlated to command reservation identity, order, request, fulfillment, every SKU claim and the slot claim.",
+    "Canonical SKU order must be preserved and mismatched, reordered or duplicate claims must be invalid rather than repaired.",
+    "Supplied physical order must correlate exactly to command.order and the request/fulfillment snapshots consumed by FOOD-005L.",
+    "FOOD-005L identity and acceptance metadata validation must remain delegated to existing canonical FOOD-005L behavior rather than redefined inconsistently.",
+    "Accepted result must retain both the FOOD-007V receipt and FOOD-005L acceptance.",
+    "Output must be deeply frozen and detached.",
+    "Hostile accessors, symbols, sparse arrays, extended arrays, custom prototypes and cyclic shapes must fail closed with zero accessor invocation.",
+    "Source must contain no database, SQL, migration, clock, randomness, payment-provider, route or production dependencies.",
+    "Critical reservation chain and full FOOD regression suites must remain green.",
+    "Astro must report zero FOOD-007W and zero src/lib/food TypeScript diagnostics; existing unrelated global baseline debt may remain separately reported."
+  ],
+
+  "files": [
+    ".river-dev/specifications/food-007w-post-mutation-reservation-acceptance.json",
+    "src/lib/food/post-mutation-reservation-acceptance.ts",
+    "src/lib/food/post-mutation-reservation-acceptance.test.ts"
+  ]
+}
