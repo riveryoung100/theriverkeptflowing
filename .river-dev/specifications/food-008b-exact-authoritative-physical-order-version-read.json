@@ -1,0 +1,204 @@
+{
+  "unit": "FOOD-008B",
+  "title": "Exact Authoritative Physical Order Version Read",
+  "status": "contract-defined",
+  "purpose": "Provide a read-only adapter that reads and authenticates one exact durable FOOD-005E physical-order version from FOOD-008A storage by exact physical-order ID and exact persisted version. Downstream boundaries receive authoritative durable order truth rather than trusting caller-owned FoodPhysicalOrderVersion snapshots. No new lifecycle state or operational authority is created.",
+  "baseline": {
+    "branch": "cif-001-canonical-content-source-record",
+    "commit": "c5b7a09e2fb1ee05f92cbeb1c5a6d2329678882a",
+    "food008aReviewFingerprint": "d1c98819bdbe3a091dcf8077d6e9e38ca2e5860cd95d05cc867cd32a0406df0e"
+  },
+  "dependencies": {
+    "food005e": {
+      "specification": ".river-dev/specifications/food-005e-physical-order-lifecycle-domain.json",
+      "source": "src/lib/food/physical-order-domain.ts",
+      "role": "Canonical parseFoodPhysicalOrderId and validateFoodPhysicalOrderVersion identity/value validation, detached reconstruction and deep freezing. Preserve the committed domain."
+    },
+    "food008a": {
+      "specification": ".river-dev/specifications/food-008a-authoritative-physical-order-version-persistence.json",
+      "specificationBlobAtContractDefinition": "e6b4128c24d77c8f117e004209061e307542b637",
+      "migration": "migrations/food/0008_food_physical_order_versions.sql",
+      "migrationBlobAtContractDefinition": "b2fd2596105faec6fb43fb339f2c96f63be08da7",
+      "source": "src/lib/food/d1-physical-order-version-persistence.ts",
+      "sourceBlobAtContractDefinition": "48e4c222d4b9a84d92c8dc4219a2c23059887cba",
+      "test": "src/lib/food/d1-physical-order-version-persistence.test.ts",
+      "testBlobAtContractDefinition": "a1b89e9c9a5cdda74d57cc9c53e669a3210975b9",
+      "role": "Closed immutable durable physical-order persistence, row shape and canonical snapshot format 1. Do not modify these artifacts."
+    },
+    "food007z": {
+      "specification": ".river-dev/specifications/food-007z-exact-durable-reservation-acceptance-evidence-read.json",
+      "specificationBlobAtContractDefinition": "4461ffa3b6e13111805fa9419fb896527aa652b9",
+      "source": "src/lib/food/d1-exact-durable-reservation-acceptance-evidence-read.ts",
+      "sourceBlobAtContractDefinition": "521841441207704276ee0c7dd3f5071a88b54bf9",
+      "test": "src/lib/food/d1-exact-durable-reservation-acceptance-evidence-read.test.ts",
+      "testBlobAtContractDefinition": "8778ae978f11cd5196c6b41b37899160089a3d22",
+      "role": "Architectural precedent only for a narrow exact durable read seam. Preserve it; do not mechanically copy its multi-table adapter into this simpler single-row read."
+    }
+  },
+  "artifacts": {
+    "specification": ".river-dev/specifications/food-008b-exact-authoritative-physical-order-version-read.json",
+    "futureSource": "src/lib/food/d1-exact-physical-order-version-read.ts",
+    "futureTest": "src/lib/food/d1-exact-physical-order-version-read.test.ts",
+    "migration": null,
+    "authorization": "Contract definition only: create exactly this specification, unstaged. Source and test are future intended artifacts and are not authorized in this task."
+  },
+  "publicApi": {
+    "databaseType": "FoodExactPhysicalOrderVersionReadD1Database",
+    "resultType": "FoodExactPhysicalOrderVersionReadResult",
+    "function": "readFoodPhysicalOrderVersionByExactIdentity",
+    "signature": "readFoodPhysicalOrderVersionByExactIdentity(database: FoodExactPhysicalOrderVersionReadD1Database, orderId: unknown, orderVersion: unknown): Promise<FoodExactPhysicalOrderVersionReadResult>",
+    "foundValue": "FoodPhysicalOrderVersion",
+    "resultShape": "Readonly discriminated union using outcome; found carries value: FoodPhysicalOrderVersion. Other outcomes carry no durable value or database metadata.",
+    "excludedApis": ["latest read", "current read", "list/history", "mutation"]
+  },
+  "outcomes": ["found", "not-found", "storage-failure", "invalid"],
+  "lookup": {
+    "coordinates": "exact physical-order ID + exact persisted order version",
+    "callerSuppliesOnly": ["orderId", "orderVersion"],
+    "orderId": "Use canonical FOOD-005E parseFoodPhysicalOrderId. Require the parsed canonical identity to equal the supplied primitive string exactly. Malformed, missing, noncanonical or hostile identities are invalid.",
+    "orderVersion": "Require a primitive number that is finite and a safe integer, exactly 1 or 2. Version 1 is requested; version 2 is cancelled. Every other version is invalid under this public contract.",
+    "coercion": false,
+    "flooring": false,
+    "missingValueDefaults": false,
+    "historyVersionInference": false,
+    "noLatestFallback": true,
+    "noCurrentFallback": true,
+    "noActiveFallback": true,
+    "noEffectiveFallback": true,
+    "invalidInputDatabaseReads": 0,
+    "hostileInput": "Do not invoke getters or coercion hooks on lookup values. Reject objects, arrays, boxed values and hostile wrappers; if a wrapper is ever introduced, accessors or unsupported shape must yield invalid."
+  },
+  "durableRead": {
+    "table": "food_physical_order_versions",
+    "columns": ["order_id", "order_version", "state", "snapshot_format_version", "snapshot_json"],
+    "sql": "SELECT\n  order_id,\n  order_version,\n  state,\n  snapshot_format_version,\n  snapshot_json\nFROM food_physical_order_versions\nWHERE order_id = ?\n  AND order_version = ?\nLIMIT 2",
+    "bindingsInOrder": ["canonical orderId", "exact orderVersion"],
+    "queryCount": "Exactly one exact SELECT for valid lookup coordinates; no secondary, fallback, predecessor or history query and no retry.",
+    "resultEnvelope": "Require an unambiguous successful D1 response with success exactly true and results an actual array. Missing, malformed, hostile or uncertain envelopes and thrown prepare/bind/all/read operations yield storage-failure; never interpret missing results as zero rows.",
+    "cardinality": {
+      "zero": "not-found",
+      "one": "Authenticate and reconstruct before found.",
+      "moreThanOne": "storage-failure; never silently choose the first row. Migration 0008 composite primary key does not make an injected database interface trustworthy."
+    },
+    "forbiddenSql": ["ORDER BY", "MAX", "latest query", "secondary fallback query", "INSERT", "UPDATE", "DELETE", "UPSERT"]
+  },
+  "rowAuthentication": {
+    "shape": "Require a plain own-data-property object with exactly the durableRead columns. Accept only Object.prototype or null prototype; reject arrays, custom prototypes, inherited field substitutes, symbols, missing/extra properties and getter/setter descriptors. Capture own data descriptors without invoking accessors; hostile inspection failures are storage-failure.",
+    "order_id": "Strictly equals requested canonical physical-order ID.",
+    "order_version": "Strictly equals requested exact primitive version.",
+    "snapshot_format_version": "Strictly equals numeric 1.",
+    "snapshot_json": "Primitive string; parse with JSON.parse. Parse failure is storage-failure.",
+    "snapshotShape": "Parsed snapshot must be a plain own-data-property object with exactly canonicalSnapshot.ownKeyOrder keys. No symbols, inherited data, accessors, missing keys, extra keys or repair.",
+    "reconstruction": "Build a complete object with id from durable order_id, version from durable order_version, state from durable state, and quote, fulfillmentIntent, reservationRequest, lines, merchandiseSubtotal from the authenticated parsed snapshot.",
+    "validator": "validateFoodPhysicalOrderVersion",
+    "lifecycleMapping": {"1": "requested", "2": "cancelled"},
+    "failure": "Any mismatched coordinate, unsupported format, malformed shape/content, failed FOOD-005E validation or incompatible state/version is storage-failure."
+  },
+  "canonicalSnapshot": {
+    "formatVersion": 1,
+    "ownKeyOrder": ["quote", "fulfillmentIntent", "reservationRequest", "lines", "merchandiseSubtotal"],
+    "excludedDurableColumns": ["id", "version", "state"],
+    "authentication": "After validating the complete reconstructed FoodPhysicalOrderVersion, build a fresh canonical snapshot object from the validated value in exactly ownKeyOrder order. JSON.stringify it and require exact byte-for-byte canonical text equality with durable snapshot_json. Nested canonical ordering comes from FOOD-005E validated reconstruction, matching FOOD-008A serialization.",
+    "rejectExamples": ["pretty-printed JSON", "changed property ordering", "extra JSON keys", "missing JSON keys", "malformed nested values", "durable identity mismatch", "unsupported snapshot format", "incompatible state/version pair"],
+    "normalizeThenAccept": false,
+    "rewriteOrRepair": false
+  },
+  "outcomeSemantics": {
+    "found": "Valid exact coordinates, one row, exact durable coordinate equality, canonical own-data row and snapshot shapes, supported format, parseable JSON, full FOOD-005E validation, valid lifecycle mapping and exact regenerated canonical snapshot text equality are all required.",
+    "foundSafeClaim": "A canonical FOOD-005E physical-order version was durably recorded at the requested exact ID/version and successfully authenticated from FOOD-008A storage.",
+    "not-found": "Valid lookup coordinates and a successful exact SELECT returning zero rows only. No further query is permitted.",
+    "notFoundDoesNotMean": ["order never existed", "no other version exists", "latest version absent", "order rejected", "checkout denied", "capacity unavailable", "payment failed"],
+    "storage-failure": "A read throws, D1 response is uncertain/malformed, multiple exact rows appear, row shape is hostile, coordinates differ, format is unsupported, JSON is malformed, snapshot keys are missing/extra/hostile, reconstructed FOOD-005E validation fails, lifecycle mapping fails, canonical text differs, or any durable content cannot be safely authenticated.",
+    "invalid": "Lookup input itself is malformed or hostile: malformed/noncanonical/missing ID, unsupported version, unsafe or non-finite number, numeric string, object version, or hostile/accessor wrapper if introduced. Do not classify malformed durable content as invalid."
+  },
+  "immutability": {
+    "foundType": "FoodPhysicalOrderVersion",
+    "detachedFrom": ["database row objects", "parsed raw JSON", "caller input"],
+    "deepFreeze": "Return the detached deeply frozen canonical value produced according to FOOD-005E validator precedent, including all nested objects and arrays.",
+    "neverReturn": ["raw row", "raw snapshot JSON", "mutable parsed JSON", "D1 metadata", "caller-owned values"],
+    "sourceMutation": false
+  },
+  "authorityBoundary": {
+    "foundMeansOnly": "This exact physical-order version is authentic durable order-history truth.",
+    "nonClaims": ["reservation accepted", "checkout permitted", "payment ready", "payment authorized", "payment captured", "paid-in-full", "preparation permitted", "dispatch permitted", "fulfillment permitted", "order completed", "sale completed", "inventory available", "capacity available", "refund complete", "reservation released", "accounting posted", "rewards earned"],
+    "cancelledVersion": "Historical durable truth only.",
+    "cancellationInvariants": ["cancelled != refunded", "cancelled != reservation released", "cancelled != payment reversed", "cancelled != inventory restored", "cancelled != capacity restored"]
+  },
+  "latestCurrentBoundary": {
+    "exposeOrInfer": false,
+    "forbidden": ["latest", "current", "active", "effective", "most recent"],
+    "private008aQuery": "FOOD-008A private LATEST_SQL and ORDER BY order_version DESC enforce write-time lifecycle only. They do not authorize any public latest-order read.",
+    "consumerRequirement": "Explicitly supply the exact order version whose historical truth must be authenticated."
+  },
+  "readOnlyBoundary": {
+    "readOnly": true,
+    "forbidden": ["INSERT", "UPDATE", "DELETE", "UPSERT", "transaction", "batch mutation", "clock", "randomness", "network", "payment-provider request", "migration execution", "file-system runtime behavior"],
+    "writes": false
+  },
+  "migration": {
+    "required": false,
+    "existingDeclarativeSource": "migrations/food/0008_food_physical_order_versions.sql",
+    "migration0009MustNotBeCreated": true,
+    "modify0008": false,
+    "execute0008": false,
+    "productionDatabaseChanges": false
+  },
+  "futureImplementationResponsibilities": [
+    "Validate exact lookup coordinates before database access.",
+    "Issue exactly one exact SELECT.",
+    "Classify zero / one / impossible-multiple row cardinality.",
+    "Authenticate strict own-data row shape.",
+    "Authenticate exact requested identity/version.",
+    "Authenticate snapshot format version 1.",
+    "Parse snapshot JSON.",
+    "Authenticate exact snapshot own-key shape.",
+    "Reconstruct FoodPhysicalOrderVersion.",
+    "Run FOOD-005E validateFoodPhysicalOrderVersion.",
+    "Enforce version/state mapping.",
+    "Regenerate canonical snapshot JSON.",
+    "Require byte-for-byte equality.",
+    "Return detached frozen canonical value.",
+    "Expose no latest/current surface.",
+    "Perform no writes."
+  ],
+  "requiredFutureTestThemes": [
+    "found requested version 1",
+    "found cancelled version 2",
+    "not-found exact coordinates",
+    "invalid malformed order ID",
+    "invalid noncanonical order ID",
+    "invalid unsupported version",
+    "invalid non-safe version",
+    "invalid hostile lookup values",
+    "database read exception => storage-failure",
+    "uncertain/malformed D1 response => storage-failure",
+    "more than one exact row => storage-failure",
+    "wrong durable order ID => storage-failure",
+    "wrong durable order version => storage-failure",
+    "unsupported snapshot format => storage-failure",
+    "malformed snapshot JSON => storage-failure",
+    "missing snapshot key => storage-failure",
+    "extra snapshot key => storage-failure",
+    "hostile/accessor snapshot => storage-failure; exercise defensive shape authentication without invoking accessors even though normal JSON.parse cannot produce accessor descriptors",
+    "invalid reconstructed FOOD-005E object => storage-failure",
+    "noncanonical snapshot JSON text => storage-failure",
+    "version 1 + cancelled => storage-failure",
+    "version 2 + requested => storage-failure",
+    "returned value detached",
+    "returned value deeply frozen",
+    "no INSERT",
+    "no UPDATE",
+    "no DELETE",
+    "no ORDER BY latest/current behavior",
+    "no public latest/current API",
+    "no payment/readiness authority",
+    "no migration 0009",
+    "no migration execution"
+  ],
+  "future": {
+    "afterClosure": "Authoritative exact durable physical-order truth exists publicly. FOOD-007Z remains the authoritative exact durable reservation-acceptance evidence read. These are separate authority layers.",
+    "nextAssessment": "Reevaluate the first missing payment durability/read prerequisite. Do not skip directly to readiness composition.",
+    "broaderChain": ["FOOD-008A durable physical-order persistence", "FOOD-008B exact authoritative physical-order read", "payment evidence durability/read seams", "authoritative payment reconciliation/read seam", "narrow readiness compositions"]
+  },
+  "operations": "Create exactly this specification only, UTF-8 without BOM, unstaged. No source, test, migration 0009, staging, commit, push, deployment, migration execution or production access. Preserve FOOD-005E, FOOD-007Z and FOOD-008A. Stop on unexpected repository delta; do not reset, restore, clean, rebase, amend or force push. Stop after contract definition."
+}
