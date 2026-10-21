@@ -1,0 +1,227 @@
+{
+    "unit":  "FOOD-008F",
+    "title":  "Exact Durable Cash Payment Evidence Read",
+    "status":  "specified-not-implemented",
+    "baseline":  {
+                     "branch":  "cif-001-canonical-content-source-record",
+                     "head":  "5af2c2765b7b69a13b93651cd90af90a0ba93690",
+                     "predecessor":  "FOOD-008E",
+                     "predecessorCommit":  "5af2c2765b7b69a13b93651cd90af90a0ba93690",
+                     "predecessorSpecification":  ".river-dev/specifications/food-008e-durable-cash-payment-evidence-persistence.json",
+                     "predecessorSpecificationSha256":  "bd91838fa3ce4a787e3c725f59e8cf6c974ad4c09788ce71aabac6f82eb4a4e4",
+                     "exactReadPrecedent":  "FOOD-008D",
+                     "exactReadPrecedentSpecification":  ".river-dev/specifications/food-008d-exact-durable-electronic-payment-confirmation-read.json"
+                 },
+    "purpose":  [
+                    "Read one exact durable cash payment evidence version from the existing FOOD-008E storage model.",
+                    "Require caller-supplied canonical cash evidence identity and exact supported version.",
+                    "Return reconstructed validated cash evidence without selecting any latest or current version.",
+                    "The record is evidence of a claimed cash receipt, not independent proof that funds were received, reconciled, or settled.",
+                    "Do not compose payment completion, order readiness, fulfillment, delivery, accounting, refund, or settlement authority."
+                ],
+    "ownedArtifact":  {
+                          "specification":  ".river-dev/specifications/food-008f-exact-durable-cash-payment-evidence-read.json",
+                          "source":  "src/lib/food/d1-exact-cash-payment-evidence-read.ts",
+                          "test":  "src/lib/food/d1-exact-cash-payment-evidence-read.test.ts",
+                          "newMigration":  false
+                      },
+    "storage":  {
+                    "table":  "food_cash_payment_evidence",
+                    "schemaOwner":  "FOOD-008E",
+                    "schemaMigration":  "migrations/food/0010_food_cash_payment_evidence.sql",
+                    "newMigrationRequired":  false,
+                    "newMigrationOwned":  false,
+                    "migrationExecutionRequired":  false,
+                    "durableIdentity":  [
+                                            "cash_evidence_id",
+                                            "cash_evidence_version"
+                                        ],
+                    "supportedDurableVersion":  1,
+                    "schemaIsImmutable":  true,
+                    "authoritativeColumns":  [
+                                                 "cash_evidence_id",
+                                                 "cash_evidence_version",
+                                                 "order_id",
+                                                 "order_version",
+                                                 "merchandise_subtotal_currency",
+                                                 "merchandise_subtotal_minor_units",
+                                                 "channel",
+                                                 "cash_receipt_reference",
+                                                 "confirmation_source_reference",
+                                                 "received_amount_currency",
+                                                 "received_amount_minor_units"
+                                             ]
+                },
+    "publicApi":  {
+                      "databaseType":  "FoodExactCashPaymentEvidenceReadD1Database",
+                      "resultType":  "FoodExactCashPaymentEvidenceReadResult",
+                      "function":  "readFoodCashPaymentEvidenceByExactIdentity",
+                      "signature":  "readFoodCashPaymentEvidenceByExactIdentity(database, cashEvidenceId, cashEvidenceVersion)",
+                      "valueType":  "FoodCashPaymentEvidenceVersion",
+                      "outcomes":  [
+                                       "found",
+                                       "not-found",
+                                       "invalid",
+                                       "storage-failure"
+                                   ]
+                  },
+    "inputContract":  {
+                          "cashEvidenceId":  "Require exact canonical FoodCashPaymentEvidenceId accepted by parseFoodCashPaymentEvidenceId. No coercion, trimming, prefix repair, fallback, or normalization.",
+                          "cashEvidenceVersion":  "Require number type, safe integer, exactly 1. No coercion, latest-version selection, fallback, default, or repair.",
+                          "invalidInputOutcome":  "invalid",
+                          "invalidInputMustNotQuery":  true,
+                          "noCallerProvidedOrderSnapshot":  true
+                      },
+    "queryContract":  {
+                          "selection":  "exact durable identity only",
+                          "table":  "food_cash_payment_evidence",
+                          "columns":  [
+                                          "cash_evidence_id",
+                                          "cash_evidence_version",
+                                          "order_id",
+                                          "order_version",
+                                          "merchandise_subtotal_currency",
+                                          "merchandise_subtotal_minor_units",
+                                          "channel",
+                                          "cash_receipt_reference",
+                                          "confirmation_source_reference",
+                                          "received_amount_currency",
+                                          "received_amount_minor_units"
+                                      ],
+                          "where":  "cash_evidence_id = ? AND cash_evidence_version = ?",
+                          "boundArguments":  [
+                                                 "canonical cashEvidenceId",
+                                                 "exact cashEvidenceVersion"
+                                             ],
+                          "rowLimit":  2,
+                          "reasonForLimitTwo":  "Reject impossible or hostile duplicate exact-identity rows instead of silently selecting one.",
+                          "allowedD1Method":  "prepare(sql).bind(id, version).all()",
+                          "ordering":  "none",
+                          "latestSelection":  false,
+                          "currentSelection":  false,
+                          "joins":  false,
+                          "pagination":  false,
+                          "mutations":  false
+                      },
+    "durableRowContract":  {
+                               "expectedColumns":  [
+                                                       "cash_evidence_id",
+                                                       "cash_evidence_version",
+                                                       "order_id",
+                                                       "order_version",
+                                                       "merchandise_subtotal_currency",
+                                                       "merchandise_subtotal_minor_units",
+                                                       "channel",
+                                                       "cash_receipt_reference",
+                                                       "confirmation_source_reference",
+                                                       "received_amount_currency",
+                                                       "received_amount_minor_units"
+                                                   ],
+                               "exactIdentityMustMatchSelector":  true,
+                               "exactVersionMustMatchSelector":  true,
+                               "rejectMissingColumns":  true,
+                               "rejectExtraColumns":  true,
+                               "rejectSymbolKeys":  true,
+                               "rejectAccessors":  true,
+                               "rejectHostilePrototypes":  true,
+                               "rejectUnexpectedRowShapes":  true,
+                               "rejectNoncanonicalDomainValues":  true,
+                               "malformedPersistedRowOutcome":  "storage-failure"
+                           },
+    "reconstruction":  {
+                           "domainType":  "FoodCashPaymentEvidenceVersion",
+                           "canonicalIdParser":  "parseFoodCashPaymentEvidenceId",
+                           "domainValidator":  "validateFoodCashPaymentEvidenceVersion",
+                           "exactVersion":  1,
+                           "supportedPhysicalOrderVersions":  [
+                                                                  1,
+                                                                  2
+                                                              ],
+                           "orderSnapshotFields":  [
+                                                       "id",
+                                                       "version",
+                                                       "merchandiseSubtotal"
+                                                   ],
+                           "evidenceFields":  [
+                                                  "channel",
+                                                  "cashReceiptReference",
+                                                  "confirmationSourceReference",
+                                                  "receivedAmount"
+                                              ],
+                           "channel":  "cash",
+                           "monetaryFields":  [
+                                                  "merchandiseSubtotal.currency",
+                                                  "merchandiseSubtotal.minorUnits",
+                                                  "receivedAmount.currency",
+                                                  "receivedAmount.minorUnits"
+                                              ],
+                           "currencyAndMoneyMustValidate":  true,
+                           "receivedAmountMayDifferFromSubtotal":  true,
+                           "deepFreezeReturnedValue":  true,
+                           "forbidMutationOfDatabaseRow":  true,
+                           "reauthenticatePhysicalOrderOnRead":  false,
+                           "reauthenticationExplanation":  "This unit reads immutable historical evidence only; it does not establish current order state or confer authority from a fresh physical-order read."
+                       },
+    "responseContract":  {
+                             "validEnvelopeRequiresOwnSuccessTrue":  true,
+                             "validEnvelopeRequiresOwnResultsArray":  true,
+                             "allowD1MetadataFields":  true,
+                             "rejectAccessorProperties":  true,
+                             "rejectHostileArrayShape":  true,
+                             "zeroRows":  "not-found",
+                             "oneValidRow":  "found",
+                             "multipleRows":  "storage-failure",
+                             "failedOrMalformedEnvelope":  "storage-failure",
+                             "databasePrepareFailure":  "storage-failure",
+                             "databaseBindFailure":  "storage-failure",
+                             "databaseReadFailure":  "storage-failure",
+                             "corruptStoredValue":  "storage-failure",
+                             "returnedOutcomesFrozen":  true
+                         },
+    "safetyBoundaries":  [
+                             "Read only; no INSERT, UPDATE, DELETE, REPLACE, transactions, or migration execution.",
+                             "Do not select latest, current, maximum version, or all records.",
+                             "Do not infer that cash was physically received from the existence of an evidence row.",
+                             "Do not infer paid-in-full status from receivedAmount matching merchandiseSubtotal.",
+                             "Do not require receivedAmount to equal merchandiseSubtotal.",
+                             "Do not confer readiness, fulfillment, dispatch, refund, settlement, or accounting authority.",
+                             "Do not compose electronic processor confirmations or processor authenticity.",
+                             "Do not modify FOOD-008E domain, persistence implementation, or migration.",
+                             "Do not silently normalize malformed durable data.",
+                             "Do not expose a list, search, or aggregate cash evidence API."
+                         ],
+    "testRequirements":  [
+                             "Exact canonical ID and version 1 returns found with validated immutable value.",
+                             "No matching row returns not-found.",
+                             "Malformed ID, noncanonical prefix, whitespace variants, and invalid versions return invalid without querying.",
+                             "Query uses exactly eleven selected columns, exact two-field WHERE, and LIMIT 2.",
+                             "Query binds exactly the supplied canonical ID and version.",
+                             "Zero, one, two, and malformed result counts are handled distinctly.",
+                             "Unexpected row columns, missing columns, accessors, symbols, prototypes, and corrupt field types return storage-failure.",
+                             "Stored row identity/version mismatching selector returns storage-failure.",
+                             "Invalid cash channel, money, currency, reference bounds, or order snapshot returns storage-failure.",
+                             "Received cash amount different from merchandise subtotal remains valid when domain constraints pass.",
+                             "Prepare, bind, read, and response-envelope failures return storage-failure.",
+                             "No writes, no latest lookup, no current order lookup, and no settlement/readiness inference.",
+                             "Found result, nested order snapshot, evidence, and money values cannot be mutated.",
+                             "Existing FOOD-008E persistence behavior remains unchanged."
+                         ],
+    "verification":  {
+                         "specificationMustParseAsJson":  true,
+                         "focusedTestsMustPass":  true,
+                         "relevantESLintMustPass":  true,
+                         "newAstroDiagnosticsMustBeZero":  true,
+                         "fullFoodRegressionRequired":  true,
+                         "existingProjectWideAstroErrorsAreNotTreatedAsPass":  true,
+                         "exactFileGitReviewRequired":  true,
+                         "separateCommitAuthorizationRequired":  true,
+                         "separatePushAuthorizationRequired":  true
+                     },
+    "delivery":  {
+                     "implementationStage":  "FOOD-008F",
+                     "noProductionChange":  true,
+                     "noMigrationExecution":  true,
+                     "noGitStageCommitOrPushDuringSpecificationAuthoring":  true,
+                     "nextAction":  "Implement the exact durable cash payment evidence read and focused adversarial tests against this locked specification."
+                 }
+}
