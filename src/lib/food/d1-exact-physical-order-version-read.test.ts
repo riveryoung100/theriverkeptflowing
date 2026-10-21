@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { validateFoodPhysicalOrderVersion, type FoodPhysicalOrderVersion } from "./physical-order-domain";
 import {
   readFoodPhysicalOrderVersionByExactIdentity as read,
@@ -288,8 +288,19 @@ test("found exposes historical truth with no payment/readiness authority", async
   assert.match(source, /grants no reservation acceptance/);
   assert.match(source, /payment readiness/);
 });
-test("no migration 0009", () => {
-  assert.ok(!readdirSync(new URL("../../../migrations/food/", import.meta.url)).some(name => /^0009.*\.sql$/.test(name)));
+test("FOOD-008B owns no migration and remains read-only", () => {
+  const specification = JSON.parse(readFileSync(new URL(
+    "../../../.river-dev/specifications/food-008b-exact-authoritative-physical-order-version-read.json",
+    import.meta.url,
+  ), "utf8"));
+  assert.equal(specification.unit, "FOOD-008B");
+  assert.equal(specification.artifacts.migration, null);
+  assert.equal(specification.migration.required, false);
+  assert.equal(specification.migration.execute0008, false);
+  assert.equal(specification.migration.productionDatabaseChanges, false);
+  assert.equal(specification.readOnlyBoundary.readOnly, true);
+  assert.equal(specification.readOnlyBoundary.writes, false);
+  assert.ok(specification.readOnlyBoundary.forbidden.includes("migration execution"));
 });
 test("no migration execution or runtime side effects", () => {
   assert.doesNotMatch(source, /\b(?:exec|batch|transaction)\s*\(|wrangler|migrate|fetch\s*\(|Date\.now|new Date|Math\.random|randomUUID/);

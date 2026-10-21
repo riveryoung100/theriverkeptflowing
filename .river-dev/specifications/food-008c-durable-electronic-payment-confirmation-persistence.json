@@ -1,0 +1,224 @@
+{
+  "unit": "FOOD-008C",
+  "title": "Durable Electronic Payment Confirmation Persistence",
+  "status": "contract-defined",
+  "purpose": "Authoritative immutable durable recording of one validated FOOD-005F electronic payment confirmation against one exact durable FOOD physical-order version. Authority concerns recorded evidence and its order binding only; persistence does not authenticate the external payment assertion.",
+  "baseline": {
+    "branch": "cif-001-canonical-content-source-record",
+    "commit": "259983cfbe7f60b70d2cfdb4e15dcea0a0f2207e",
+    "food008bContractFingerprint": "def523e70bfc43d5ad5cd8ae6a288d31bc01c1c5f70ac69933af48bbdf2e1c1f",
+    "food008bReviewFingerprint": "d5eeff69243c0e13135a0d9326d9e6f68080cbe3fb87e4d7d263a3de3725f98e"
+  },
+  "dependencies": {
+    "food005f": {
+      "specification": ".river-dev/specifications/food-005f-electronic-payment-confirmation-domain.json",
+      "specificationBlobAtContractDefinition": "cdd0d0befc64374bfdbfdc8f511a609bc933b362",
+      "source": "src/lib/food/electronic-payment-confirmation-domain.ts",
+      "sourceBlobAtContractDefinition": "338d2a03cbcdf20b11ff677eea03350d05a527e2",
+      "test": "src/lib/food/electronic-payment-confirmation-domain.test.ts",
+      "testBlobAtContractDefinition": "05c13e816133fd84da2ec90d340f7850be946a15",
+      "role": "Canonical confirmation identity, immutable value validation and validateFoodElectronicPaymentConfirmationAgainstOrder. Initial creation requires version 1; there is no revision API."
+    },
+    "food005i": {
+      "specification": ".river-dev/specifications/food-005i-cash-payment-evidence-domain.json",
+      "specificationBlobAtContractDefinition": "04eed1ac30a048c39f840bc436f2bf71404d620d",
+      "source": "src/lib/food/cash-payment-evidence-domain.ts",
+      "sourceBlobAtContractDefinition": "512ff0e26ada7a6a90bf1824104c0e9d5645b080",
+      "role": "Separate cash family; preserve and do not consume or persist cash evidence here."
+    },
+    "food005k": {
+      "specification": ".river-dev/specifications/food-005k-payment-reconciliation-domain.json",
+      "specificationBlobAtContractDefinition": "72f9f053cf630926299fe9cffed61a023e714e4b",
+      "source": "src/lib/food/payment-reconciliation-domain.ts",
+      "sourceBlobAtContractDefinition": "220792f6e5da4bdd3d3dd6163f5e3ee76099bc8c",
+      "role": "Pure reconciliation precedent only. Its transient normalized snapshots do not become a generic durable payment entity."
+    },
+    "food008a": {
+      "source": "src/lib/food/d1-physical-order-version-persistence.ts",
+      "sourceBlobAtContractDefinition": "48e4c222d4b9a84d92c8dc4219a2c23059887cba",
+      "migration": "migrations/food/0008_food_physical_order_versions.sql",
+      "migrationBlobAtContractDefinition": "b2fd2596105faec6fb43fb339f2c96f63be08da7",
+      "role": "Existing immutable parent table and created/already-present/conflict/invalid/storage-failure naming precedent."
+    },
+    "food008b": {
+      "specification": ".river-dev/specifications/food-008b-exact-authoritative-physical-order-version-read.json",
+      "specificationBlobAtContractDefinition": "2242b2d8297f831715b759dbb32e7b9e8901df39",
+      "source": "src/lib/food/d1-exact-physical-order-version-read.ts",
+      "sourceBlobAtContractDefinition": "e80b4befcaaabd97963e2769ecf11752da2cf9b7",
+      "test": "src/lib/food/d1-exact-physical-order-version-read.test.ts",
+      "testBlobAtContractDefinition": "b07e0a114e8ac44d0da963a48ef8da1a8ee93d5b",
+      "role": "Direct exact durable order authentication dependency; never replace with caller-owned order snapshots."
+    },
+    "food007y": {
+      "source": "src/lib/food/d1-durable-reservation-acceptance-evidence-persistence.ts",
+      "sourceBlobAtContractDefinition": "0baaf9b6a549d88b7b4dd771460037d2b196e1c8",
+      "role": "Authenticate durable parent before recording evidence; uncertain INSERT RETURNING responses resolve through one exact reread. No reservation semantics are imported."
+    }
+  },
+  "artifacts": {
+    "specification": ".river-dev/specifications/food-008c-durable-electronic-payment-confirmation-persistence.json",
+    "futureMigration": "migrations/food/0009_food_electronic_payment_confirmations.sql",
+    "futureSource": "src/lib/food/d1-electronic-payment-confirmation-persistence.ts",
+    "futureTest": "src/lib/food/d1-electronic-payment-confirmation-persistence.test.ts",
+    "currentAuthorization": "Create this specification only, unstaged. Migration, source and test must not be created in the contract-definition task."
+  },
+  "publicApi": {
+    "databaseType": "FoodElectronicPaymentConfirmationPersistenceD1Database",
+    "resultType": "FoodElectronicPaymentConfirmationPersistenceResult",
+    "function": "appendFoodElectronicPaymentConfirmation",
+    "signature": "appendFoodElectronicPaymentConfirmation(database: FoodElectronicPaymentConfirmationPersistenceD1Database, input: unknown): Promise<FoodElectronicPaymentConfirmationPersistenceResult>",
+    "databaseSurface": "Repository-standard injected prepare(sql).bind(...values).all<T>() success/results surface, structurally compatible with FOOD-008B. Private reads and one INSERT RETURNING only; no batch, exec, transaction or public read API.",
+    "successValue": "FoodElectronicPaymentConfirmationVersion",
+    "resultShape": "Readonly discriminated union with outcome. created and already-present carry value; conflict, invalid and storage-failure carry no evidence or D1 metadata.",
+    "outcomes": ["created", "already-present", "conflict", "invalid", "storage-failure"],
+    "readApi": "Deferred to a later exact durable read unit; private persistence reads are not public retrieval authority."
+  },
+  "candidateAuthentication": {
+    "validator": "validateFoodElectronicPaymentConfirmationVersion",
+    "supportedConfirmationVersions": [1],
+    "versionReason": "FOOD-005F createInitialFoodElectronicPaymentConfirmationVersion requires 1. General positive-version validation does not establish revision semantics. Every other confirmation version is invalid here.",
+    "hostileShape": "Before invoking domain validation, capture a detached candidate using exact own data-property descriptors at every record level. Require plain Object.prototype or null-prototype records; reject arrays, accessors, symbols, inherited field substitutes, missing/extra keys, custom prototypes and throwing inspection without invoking getters or coercion hooks. This is boundary shape protection, not a duplicate domain validator.",
+    "exactKeys": {
+      "root": ["id", "version", "order", "evidence"],
+      "order": ["id", "version", "merchandiseSubtotal"],
+      "evidence": ["channel", "processor", "processorPaymentReference", "confirmationSourceReference", "confirmedAmount"],
+      "money": ["currency", "minorUnits"]
+    },
+    "captureTiming": "Validate and detach the full candidate before the first await. Caller mutation while a durable read is pending must not change the requested identity, order binding or evidence.",
+    "canonicalIdentity": "Use FOOD-005F identity parsing and canonical domain reconstruction. Reject any original identity/text/number representation that differs from its canonical captured value; do not coerce or repair.",
+    "invalidReadsOrWrites": 0,
+    "unsupportedFields": ["providerEventId", "idempotencyKey", "collectorIdentity", "timestamp", "authorizationStatus", "captureStatus", "settlementStatus", "refundStatus", "reservationAcceptanceId", "paidInFull", "readiness"]
+  },
+  "orderAuthentication": {
+    "model": "B: perform FOOD-008B exact durable read directly on the injected database before accepting persistence, including idempotent replays.",
+    "function": "readFoodPhysicalOrderVersionByExactIdentity",
+    "coordinates": "Captured candidate.order.id and candidate.order.version only.",
+    "found": "Pass the captured complete confirmation and the authenticated durable order to validateFoodElectronicPaymentConfirmationAgainstOrder. Require exact order ID, version and merchandise subtotal currency/minorUnits equality.",
+    "not-found": "conflict; the structurally valid candidate has no established exact durable parent. Zero writes. Do not add an order-not-established outcome or infer that payment failed.",
+    "invalid": "invalid; unsupported or malformed exact order lookup coordinates. Zero writes.",
+    "storage-failure": "storage-failure; no evidence write and no fallback.",
+    "candidateOrderMismatch": "conflict when a valid candidate differs from an authenticated valid order, including subtotal mismatch. Malformed or wrong-coordinate durable rows remain FOOD-008B storage-failure.",
+    "cancelledOrder": "Allow exact cancelled version 2 as FOOD-005F does. Record historical evidence without reviving order version 1 or implying release, reversal, refund or fulfillment permission.",
+    "noCallerOrderParameter": true,
+    "noLatestCurrentFallback": true,
+    "reservationBinding": "Separate. No 007Z read or reservation-acceptance field is required for recording this occurrence."
+  },
+  "durableModel": {
+    "table": "food_electronic_payment_confirmations",
+    "storageModel": "normalized-columns",
+    "reason": "The complete FOOD-005F shape is small and consists of identity/version, exact order context, money and opaque references. Explicit columns support primary identity and relational constraints without redundant snapshot JSON or a serialization-format column.",
+    "primaryIdentity": ["confirmation_id", "confirmation_version"],
+    "columns": ["confirmation_id", "confirmation_version", "order_id", "order_version", "merchandise_subtotal_currency", "merchandise_subtotal_minor_units", "channel", "processor", "processor_payment_reference", "confirmation_source_reference", "confirmed_amount_currency", "confirmed_amount_minor_units"],
+    "columnMapping": {
+      "confirmation_id": "id",
+      "confirmation_version": "version",
+      "order_id": "order.id",
+      "order_version": "order.version",
+      "merchandise_subtotal_currency": "order.merchandiseSubtotal.currency",
+      "merchandise_subtotal_minor_units": "order.merchandiseSubtotal.minorUnits",
+      "channel": "evidence.channel",
+      "processor": "evidence.processor",
+      "processor_payment_reference": "evidence.processorPaymentReference",
+      "confirmation_source_reference": "evidence.confirmationSourceReference",
+      "confirmed_amount_currency": "evidence.confirmedAmount.currency",
+      "confirmed_amount_minor_units": "evidence.confirmedAmount.minorUnits"
+    },
+    "money": "Preserve each canonical FoodMoney independently: uppercase three-letter currency and primitive nonnegative safe-integer minorUnits. Confirmed amount need not equal merchandise subtotal, and FOOD-005F does not require the two currencies to match. Do not introduce either equality constraint here; reconciliation has its own currency/amount gates.",
+    "noSnapshotJson": true,
+    "noSnapshotFormatVersion": true,
+    "noTimestamp": true
+  },
+  "referenceUniqueness": {
+    "primaryConfirmationIdentityEnforced": true,
+    "processorAndPaymentReferenceUnique": false,
+    "confirmationSourceReferenceUnique": false,
+    "decision": "Deferred explicitly: opaque processor/payment/source strings have no established account, merchant, environment or event namespace. Do not invent provider-global or processor-scoped uniqueness. Migration 0009 enforces only confirmation primary identity, not reference uniqueness.",
+    "consequence": "Different confirmation identities may retain equal processor/payment or source references. created/already-present proves identity-level durable recording only, not that money has not been represented by another confirmation. Downstream reference identity/deduplication must be contracted before authoritative aggregation.",
+    "notAnEventId": "Do not reinterpret confirmationSourceReference as a dedicated provider event ID."
+  },
+  "privateReadsAndAuthentication": {
+    "exactLookup": "SELECT all 12 durableModel columns FROM food_electronic_payment_confirmations WHERE confirmation_id = ? AND confirmation_version = ? LIMIT 2. Static parameterized SQL; no ORDER BY, MAX, list/history or secondary reference lookup.",
+    "envelope": "Require trustworthy own success exactly true and own results array using hostile-boundary protections. Missing/uncertain envelopes, prepare/bind/all exceptions, sparse/accessor row slots, hostile rows or impossible cardinality are storage-failure.",
+    "cardinality": "Zero rows means absent privately; one row must authenticate; more than one is storage-failure, never choose the first.",
+    "storedRow": "Require exactly the 12 plain own-data-property columns, no accessors/symbols/inherited/missing/extra fields, canonical primitive values and exact requested confirmation coordinates. Reconstruct a fresh complete FOOD-005F object, validate it and enforce confirmation version 1 and supported order coordinates. Any unsafe stored shape or domain-invalid content is storage-failure. A structurally canonical divergent row is sufficient to reject the candidate as conflict; this does not claim that divergent row is authenticated payment authority. Before any success, require content equality and validate the matching value against the already-authenticated exact durable order.",
+    "noSilentNormalization": "Compare every stored column strictly against its validator-produced canonical mapped value. Domain parse/validation must not normalize malformed stored content into accepted durable truth.",
+    "contentEquality": "Compare all canonical FOOD-005F fields, including identity, exact order/subtotal, channel, both references, processor and confirmed money. Object identity is not content equality. A valid authentic existing record with the requested confirmation identity but different candidate content is conflict; a malformed stored record is storage-failure."
+  },
+  "outcomeSemantics": {
+    "created": "An absent exact confirmation identity was inserted once, exactly one returned row authenticates against the durable order and equals the captured canonical candidate.",
+    "already-present": "An authenticated exact durable row equals every canonical candidate field, either during initial lookup or one post-insert recovery reread. No claim of processor/event deduplication is made.",
+    "conflict": "A valid exact durable identity contains different authentic canonical content, or the valid candidate lacks its exact durable order or mismatches that order/subtotal. Do not overwrite, retarget or relabel as payment rejection.",
+    "invalid": "Malformed/hostile candidate, unsupported confirmation version, unsupported exact order coordinates or domain validation failure before durable relationship comparison. No write.",
+    "storage-failure": "Order read fails authentication, storage operation throws, durable content/envelope/cardinality is unsafe, or an uncertain write cannot be classified by one exact reread. No fabricated success."
+  },
+  "appendAlgorithm": [
+    "Strictly capture, validate and detach the candidate; require confirmation version 1 before D1 access.",
+    "Authenticate its exact durable order using FOOD-008B and apply the locked result mappings.",
+    "Validate the complete candidate against that exact order using FOOD-005F. Reject relationship mismatch without a write.",
+    "Read the exact confirmation identity privately and authenticate any existing row. Identical authentic content returns already-present; divergent authentic content returns conflict; malformed storage returns storage-failure.",
+    "If absent, attempt one parameterized INSERT of the 12 columns with RETURNING the same 12 columns, using the existing FOOD all<T>() convention. Never UPDATE, DELETE, UPSERT or overwrite.",
+    "Require exactly one authenticated identical returned row before created. A throw, uncertain envelope, missing/multiple/malformed/mismatched returned rows or uniqueness race triggers one exact identity reread, not another INSERT.",
+    "Recovery reread: identical authentic row returns already-present; divergent authentic row returns conflict; absent, malformed, multiple, throwing or unclassifiable durable state returns storage-failure.",
+    "Return detached deeply frozen FOOD-005F canonical evidence for successes and frozen result wrappers. Do not expose raw rows, metadata or caller-owned references."
+  ],
+  "migration": {
+    "required": true,
+    "number": "0009",
+    "futureFile": "migrations/food/0009_food_electronic_payment_confirmations.sql",
+    "createInContractTask": false,
+    "execution": "Declarative only in the future implementation unit; never execute this or any other migration as part of authoring/validation work.",
+    "table": "food_electronic_payment_confirmations",
+    "constraints": [
+      "All 12 columns NOT NULL with SQLite TEXT/INTEGER storage-class checks or equivalent STRICT table protections.",
+      "Composite PRIMARY KEY (confirmation_id, confirmation_version) with exact binary text identity semantics.",
+      "confirmation_version exactly integer 1; order_version integer 1 or 2 as supported by FOOD-008A/008B.",
+      "channel exactly electronic-processor.",
+      "Each currency exactly three uppercase ASCII letters; each money minor_units integer between 0 and 9007199254740991 inclusive; no cross-money equality requirement.",
+      "Bounded canonical confirmation ID according to FOOD-005F prefix plus local maximum 128; order ID according to FOOD-005E prefix plus local maximum 128; SQL minimum nonempty/bounded checks supplement, never replace, domain parsers.",
+      "processor length 1..128; processor_payment_reference and confirmation_source_reference length 1..512; nonempty canonical bounded text required by application validation.",
+      "Composite FOREIGN KEY (order_id, order_version) REFERENCES food_physical_order_versions(order_id, order_version), without update/delete cascades.",
+      "BEFORE UPDATE and BEFORE DELETE triggers abort every attempted mutation. No reference-uniqueness constraint beyond primary confirmation identity."
+    ],
+    "foreignKeyBoundary": "Use the existing FOOD SQLite foreign-key convention and require enforcement on the runtime connection. The FK protects parent existence under enforced constraints; FOOD-008B plus FOOD-005F authenticates exact content/subtotal. Neither replaces the other. No runtime PRAGMA, migration execution, snapshot-parsing SQL or order mutation is added by the adapter.",
+    "parentImmutability": "The authenticated FOOD-008A parent is append-only and cannot be updated/deleted under its declared schema. No new lifecycle insertion guard beyond version/channel/money/identity/FK constraints is required for this evidence occurrence."
+  },
+  "authorityBoundary": {
+    "safeClaim": "A validated FOOD-005F electronic payment confirmation is durably recorded under this exact confirmation identity/version and exact order binding.",
+    "nonClaims": ["processor-authenticated", "provider-event-authenticated", "authorized", "captured", "settled", "irreversible", "paid-in-full", "order ready", "checkout readiness", "payment readiness", "preparation permitted", "dispatch permitted", "fulfillment permitted", "refund complete", "sale complete", "reservation accepted", "reservation released", "inventory truth", "capacity truth", "accounting", "rewards"],
+    "paymentFamily": "electronic only",
+    "cashEvidence": "Separate and out of scope.",
+    "callerAssertion": "Domain validation plus persistence authenticates recorded structure/history, not the truth of the caller's asserted external verification."
+  },
+  "sideEffects": {
+    "maximumWriteAttempts": 1,
+    "recoveryExactReads": 1,
+    "allowed": ["FOOD-008B exact order SELECT", "private exact confirmation SELECT", "one confirmation INSERT RETURNING", "one exact recovery SELECT if needed"],
+    "forbidden": ["blind INSERT retry", "UPDATE", "DELETE", "UPSERT", "provider network call", "webhook verification", "cash mutation", "reservation mutation", "physical order mutation", "inventory mutation", "fulfillment mutation", "email", "notification", "accounting", "rewards", "readiness state", "clock", "randomness", "file-system runtime behavior", "migration execution", "deployment"]
+  },
+  "requiredFutureTestThemes": [
+    "Valid version 1 persists as created with all 12 fields retained exactly.",
+    "Exact order ID/version, historical subtotal, processor/payment/source references and confirmed amount are retained.",
+    "Malformed confirmation ID, unsupported confirmation version and hostile candidate shapes return invalid with zero D1 calls.",
+    "Malformed order ID/version, subtotal, processor, processor payment reference, source reference and confirmed money fail closed.",
+    "Order not-found maps to conflict; invalid maps to invalid; storage-failure maps to storage-failure; each prevents INSERT.",
+    "Candidate/order ID and version mismatch, wrong returned coordinates, and subtotal mismatch cannot persist; distinguish relationship conflict from malformed storage.",
+    "Exact cancelled order version 2 accepts evidence without reviving or granting authority.",
+    "Confirmed amount may differ from subtotal; independently valid confirmed currency is retained without inventing an equality constraint.",
+    "Same identity and exact content returns already-present with no write; valid divergent content returns conflict; malformed existing row returns storage-failure.",
+    "Different confirmation identities sharing processor/payment or source reference are not falsely deduplicated; reference uniqueness remains deferred.",
+    "Prepare/bind/all failure in a read returns storage-failure; INSERT preparation/bind/execution failure performs at most one recovery read and no write retry.",
+    "Uncertain INSERT followed by identical authentic exact row returns already-present; divergent authentic row returns conflict; absent or unauthentic row returns storage-failure.",
+    "Malformed response envelopes, row accessors/symbols/custom prototypes, missing/extra columns, duplicates, numeric strings and noncanonical stored values fail closed.",
+    "Candidate mutation across await cannot alter the write; returned evidence is detached and deeply frozen.",
+    "Migration declaratively contains primary identity, version/channel/money constraints, exact composite order FK and immutable UPDATE/DELETE prevention; static schema assertions must verify the aborting trigger definitions; do not execute the migration in this unit.",
+    "No paid-in-full, readiness, reservation, provider-authenticity or cash authority is introduced.",
+    "No public read/latest/current/list API, secondary fallback query, mutation of other authorities, provider request or blind retry exists.",
+    "Migration 0009 is absent during contract definition and exists only after separately authorized implementation; no migration execution or production access occurs."
+  ],
+  "downstream": {
+    "likelyFood008d": "Exact Durable Electronic Payment Confirmation Read",
+    "remaining": ["separate cash persistence and exact read", "processor/source reference namespace and cross-confirmation deduplication", "trusted electronic/cash provenance authentication", "payable assessment durability/exact read and selection truth", "authoritative reconciliation and completeness policy", "later narrow readiness composition"],
+    "readiness": "Do not jump directly to reconciliation/readiness after FOOD-008C. Durable recording alone does not complete these prerequisites."
+  },
+  "operations": "Contract definition only: create exactly this UTF-8 no-BOM specification unstaged. Preserve all existing committed artifacts. No migration/source/test creation, staging, commit, push, migration execution, production access or deployment. Stop on unexpected delta without reset, restore, clean, rebase, amend or force push."
+}
