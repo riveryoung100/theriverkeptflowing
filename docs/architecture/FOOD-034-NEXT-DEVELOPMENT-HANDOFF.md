@@ -8,9 +8,10 @@ Baseline: `be09e5ea038dcc5497f638a200973c121d6b496a`.
 Branch: `cif-001-canonical-content-source-record`.
 Remote: `https://github.com/riveryoung100/theriverkeptflowing.git`.
 Worker: `theriverkeptflowing-site`.
-Release commit and deployed version: recorded in the final release completion section after deployment.
+Release source commit: `a3ec246682e478b049747e51f27b7f0415eed775` (all 13 approved paths).
+Cloudflare production version: `acdb273b-9b11-45ff-9154-57b4a474e327` (100% active).
 
-Final release gates are being run on the preserved source-only validation directory at `C:/Users/river/AppData/Local/Temp/food-033-source-review-20261025`. It reuses installed dependencies and excludes original private evidence. All executable source must match the working tree before release. The established workflow is `npm run check`, FOOD tests, focused output/operator checks, then the package's `npm run deploy` (Wrangler using generated `dist/server/wrangler.json` and `dist/client` assets). No D1 migrations or commerce operations are part of this workflow. Existing Cloudflare OAuth is used; no credential values are copied or committed.
+Final release gates passed on the preserved source-only validation directory at `C:/Users/river/AppData/Local/Temp/food-033-source-review-20261025`. It reuses installed dependencies and excludes original private evidence. All executable source must match the working tree before release. The established workflow is `npm run check`, FOOD tests, focused output/operator checks, then the package's `npm run deploy` (Wrangler using generated `dist/server/wrangler.json` and `dist/client` assets). No D1 migrations or commerce operations are part of this workflow. Existing Cloudflare OAuth is used; no credential values are copied or committed.
 
 ## Approved 13-path scope
 
@@ -74,3 +75,23 @@ Fresh full `npm run check` PASS: lint, Astro zero errors/warnings (11 existing h
 Comparison of 2,923 tracked source/component files against the source-only validation copy found zero mismatches. All four generated essay article bodies match the pre-release live hashes. Explicit approved-source and complete generated-build secret/private-marker scans found no matches; public asset inventory contains no matching private evidence files. These are scoped exclusion checks, not a universal secret-detection claim. Cloudflare dry run passed using the generated deployment configuration, with no upload, migration or commercial activation.
 
 Local evidence: `.river-dev/food-033-release-check.log`, `food-033-release-food-tests.log`, `food-033-release-focused.log`, `food-033-release-source-equality.json`, `food-033-release-privacy.json`, `food-033-release-full-build-privacy.json`, `food-033-release-live-before.json` and `food-033-release-dryrun-approved.log`. All evidence remains excluded from Git and deployment assets.
+
+## Release completed — 2026-10-25, 4:28 p.m. America/Chicago
+
+STATUS: PASS. Source commit `a3ec246682e478b049747e51f27b7f0415eed775` was pushed normally to `origin/cif-001-canonical-content-source-record`; exact remote hash verified. The established `npm run deploy -- --message ...` workflow deployed Worker `theriverkeptflowing-site` using existing OAuth. Active version `acdb273b-9b11-45ff-9154-57b4a474e327` was confirmed at 100% traffic through Cloudflare deployment readback. Existing SESSION binding was inherited. No database migration, Stripe write, customer notification, coupon operation or commercial activation ran.
+
+Live verification at 4:28 p.m. America/Chicago:
+
+- https://theriverkeptflowing.com/the-table/ — HTTP 200; new food-first hero/story, navigation and six FAQs; full HTML byte-identical to the validated build.
+- https://theriverkeptflowing.com/the-table/southwest-harvest-bowl/ — HTTP 200; restored quantity, fulfillment/window and summary preview, all disabled; six FAQs after preview; full HTML byte-identical to the validated build.
+- Both canonical URLs are correct. Owned concept SVG, `/styles.css`, `/website-v4.css` and `/_assets/table-launch.K8mnlDRz.css` return HTTP 200 and match local build hashes. Responsive CSS, navigation structure, accessible references and closed-commerce output checks passed. No fresh agent browser interaction/screenshot claim is made.
+- No form, checkout action, payment script, coupon/redemption, invented dollar price/nutrition or Offer/Product/ratings schema appears in the storefront main content. Availability and order status remain in-development/unavailable. Production catalog, food domains/API and commercial settings were not changed by the release.
+- All four TRKF essays return HTTP 200; complete HTML and article-body hashes are unchanged from the pre-deployment capture. Source content and FOOD-031 histories have no release diff.
+- Repository `npm run verify:production` PASS, including endpoint/metadata/schema checks and the live sitemap (176 URLs). Both Table routes are included in the sitemap.
+- Stripe operator safety tests passed again **11/11** after the release commit, proving the historical authorization still rejects the new HEAD without provider retrieval, storage or payment authorization.
+
+Final local evidence: `.river-dev/food-033-release-deployment.log`, `food-033-release-active-deployment.log`, `food-033-release-live-after.json`, `food-033-release-production-check.log`, `food-033-release-postcommit-stripe.log` and `food-033-release-push-verified.txt`. They remain outside Git/deployment assets; original private evidence was preserved.
+
+This final handoff is committed as a documentation-only follow-up to the source release so the actual deployment version and live results can be recorded. Its current Git identity is available with `git log -1 -- docs/architecture/FOOD-034-NEXT-DEVELOPMENT-HANDOFF.md`; no self-referential commit hash is embedded. No application source changed after release, so no additional deployment or full test rerun is needed for this record.
+
+NEXT EXACT ACTION: approve a bounded FOOD-034 synthetic eligibility/exposure specification and assemble the missing physical/economic launch evidence. Do not implement FOOD-034, issue invitations/coupons or enable sales from this release authorization.
