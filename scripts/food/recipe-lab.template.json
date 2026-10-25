@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "trials": [
+    {
+      "recipeVersion": null,
+      "preparationDate": null,
+      "batchId": null,
+      "trialId": null,
+      "containerId": null,
+      "configuration": null,
+      "thawMethod": null,
+      "sauceStorage": null,
+      "toppingPackaging": null,
+      "measurementNotes": null,
+      "defects": null,
+      "recommendations": null,
+      "storageCondition": null,
+      "storageDays": null,
+      "portionGrams": null,
+      "sauceGrams": null,
+      "toppingGrams": null,
+      "fillDepthMm": null,
+      "startingTemperatureF": null,
+      "microwaveWatts": null,
+      "standingSeconds": null,
+      "addedWaterGrams": null,
+      "laborMinutes": null,
+      "stages": [],
+      "temperaturesF": {
+        "center": null,
+        "edge": null,
+        "bottom": null
+      },
+      "scores": {
+        "riceMoisture": null,
+        "riceTexture": null,
+        "potatoIntegrity": null,
+        "beanTexture": null,
+        "vegetableTexture": null,
+        "liquidControl": null,
+        "mushroomTexture": null,
+        "sauceTaste": null,
+        "sauceStability": null,
+        "crunch": null,
+        "sweetBalance": null,
+        "saltyBalance": null,
+        "savoryBalance": null,
+        "umamiBalance": null,
+        "bitterBalance": null,
+        "acidBalance": null,
+        "appearance": null,
+        "aroma": null,
+        "overallEnjoyment": null
+      },
+      "safety": {
+        "cooking": {
+          "status": null,
+          "evidence": null
+        },
+        "cooling": {
+          "status": null,
+          "evidence": null
+        },
+        "storageCapacity": {
+          "status": null,
+          "evidence": null
+        },
+        "portioning": {
+          "status": null,
+          "evidence": null
+        },
+        "coldStorage": {
+          "status": null,
+          "evidence": null
+        },
+        "transport": {
+          "status": null,
+          "evidence": null
+        },
+        "containerSuitability": {
+          "status": null,
+          "evidence": null
+        },
+        "thermometerCheck": {
+          "status": null,
+          "evidence": null
+        },
+        "sauceHandling": {
+          "status": null,
+          "evidence": null
+        },
+        "toppingHandling": {
+          "status": null,
+          "evidence": null
+        }
+      },
+      "standingCovered": null
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+---
+import type { PublicTableProduct } from '../../lib/food/table-catalog';
+interface Props { product: PublicTableProduct }
+const { product } = Astro.props;
+const labels = { 'in-development': 'In development', unavailable: 'Not accepting orders', available: 'Available', 'temporarily-paused': 'Temporarily unavailable', 'sold-out': 'Sold out' };
+---
+<span class="tl-badge" data-table-availability={product.availability}>{labels[product.availability]}</span>

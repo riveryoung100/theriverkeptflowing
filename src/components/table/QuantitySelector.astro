@@ -1,0 +1,13 @@
+---
+interface Props { id: string; maxPerOrder: number | null }
+const { id, maxPerOrder } = Astro.props;
+---
+<div class="tl-quantity">
+  <label for={id}>Quantity</label>
+  <div class="tl-quantity-controls">
+    <button type="button" disabled aria-label="Decrease quantity" aria-controls={id}>−</button>
+    <input id={id} type="number" min="1" step="1" max={maxPerOrder ?? undefined} placeholder="At launch" disabled aria-describedby={`${id}-note`} />
+    <button type="button" disabled aria-label="Increase quantity" aria-controls={id}>+</button>
+  </div>
+  <p class="tl-disclaimer" id={`${id}-note`}>Minimum 1 when ordering opens. {maxPerOrder === null ? 'The maximum per order and available batch capacity are not yet confirmed.' : `Maximum ${maxPerOrder} per order, subject to available batch capacity.`}</p>
+</div>

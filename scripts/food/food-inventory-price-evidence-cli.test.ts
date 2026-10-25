@@ -1,0 +1,35 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtemp,mkdir,readFile,writeFile,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {runInventoryPriceCLI} from './food-inventory-price-evidence-cli';
+import {inspectPrivateInventoryPriceEvidence} from './food-inventory-price-evidence';
+import {TABLE_CATALOG} from '../../src/lib/food/table-catalog';
+test('private workflow creates write-once template with no fabricated inventory or approvals',async t=>{
+ const previous=process.cwd(),root=await mkdtemp(join(tmpdir(),'food-inventory-evidence-'));process.chdir(root);
+ t.after(async()=>{process.chdir(previous);await rm(root,{recursive:true,force:true});});
+ await mkdir(join(root,'.river-dev','state'),{recursive:true});
+ const input='.river-dev/state/sku-evidence-v1.json';
+ assert.equal(await runInventoryPriceCLI(['init',input]),0);
+ const value=JSON.parse(await readFile(input,'utf8'));assert.deepEqual(value.assertions,[]);
+ const report=inspectPrivateInventoryPriceEvidence(value,TABLE_CATALOG[0]);assert.equal(report.launchStatus,'BLOCKED');
+ assert.equal(await runInventoryPriceCLI(['inspect',input]),0);
+ await assert.rejects(runInventoryPriceCLI(['init',input]),/EEXIST/);
+ await assert.rejects(runInventoryPriceCLI(['init','public/unsafe.json']),/Private/);
+ await assert.rejects(runInventoryPriceCLI(['init','../escape.json']),/Private/);
+});
+test('append uses fresh hash and never overwrites an existing input/output',async t=>{
+ const previous=process.cwd(),root=await mkdtemp(join(tmpdir(),'food-review-'));process.chdir(root);
+ t.after(async()=>{process.chdir(previous);await rm(root,{recursive:true,force:true});});
+ await mkdir(join(root,'.river-dev','state'),{recursive:true});
+ const source='.river-dev/state/base.json',item='.river-dev/state/review.json',out='.river-dev/state/v2.json';
+ await runInventoryPriceCLI(['init',source]);const original=JSON.parse(await readFile(source,'utf8'));
+ const fingerprint=inspectPrivateInventoryPriceEvidence(original,TABLE_CATALOG[0]).fingerprint;
+ await writeFile(item,JSON.stringify({kind:'regulatory-review',reference:'synthetic-supplier-review',observation:{outcome:'pending',at:'2026-10-22T15:00:00Z',attribution:'synthetic-owner',sourceReference:'synthetic-source-note',scope:TABLE_CATALOG[0].product.id}}));
+ assert.equal(await runInventoryPriceCLI(['append',source,item,out,fingerprint]),0);
+ assert.equal(JSON.parse(await readFile(source,'utf8')).assertions.length,0);
+ assert.equal(JSON.parse(await readFile(out,'utf8')).assertions.length,1);
+ await assert.rejects(runInventoryPriceCLI(['append',source,item,out,fingerprint]),/EEXIST/);
+ await assert.rejects(runInventoryPriceCLI(['append',source,item,'.river-dev/state/other.json','stale']),/Stale/);
+});

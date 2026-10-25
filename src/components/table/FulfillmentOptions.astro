@@ -1,0 +1,13 @@
+---
+import { TABLE_FULFILLMENT_OPTIONS } from '../../lib/food/table-order-preview';
+import FulfillmentWindow from './FulfillmentWindow.astro';
+interface Props { id: string }
+const { id } = Astro.props;
+---
+<fieldset class="tl-fulfillment-options" disabled aria-describedby={`${id}-note`}>
+  <legend>Getting your meal</legend>
+  {TABLE_FULFILLMENT_OPTIONS.map(option => <label class="tl-fulfillment-option"><input type="radio" name={id} value={option.kind} /><span><strong>{option.label}</strong><span>{option.description}</span></span></label>)}
+</fieldset>
+<p class="tl-disclaimer" id={`${id}-note`}>No option is currently bookable. For future delivery, your order must be placed and paid online before a trip is dispatched.</p>
+<p class="tl-disclaimer">Delivery eligibility and any out-of-area request will require review. A request for manual approval does not reserve a trip or authorize payment.</p>
+<FulfillmentWindow id={`${id}-window`} />

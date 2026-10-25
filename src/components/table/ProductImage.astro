@@ -1,0 +1,21 @@
+---
+import type { PublicTableProduct } from '../../lib/food/table-catalog';
+import { currentTableDepartment } from '../../lib/food/table-menu-plan';
+interface Props { product: PublicTableProduct }
+const { product } = Astro.props;
+const department = currentTableDepartment(product.slug);
+---
+<figure class="tl-photo-stage">
+  <div class="tl-stage-top"><span>THE TABLE / {(department?.label ?? product.category).toUpperCase()}</span><span>{product.concept ? 'RECIPE IN DEVELOPMENT' : 'THE FINISHED DISH'}</span></div>
+  {product.image.kind === 'owned-photo' ?
+    <img class="tl-product-photo" src={product.image.src} alt={product.image.alt} width={product.image.width} height={product.image.height} loading="eager" decoding="async" /> :
+    <div class:list={['tl-photo-mat', {'tl-concept-art': department !== null}]}>
+      {department ? <img class="tl-concept-image" src="/images/table/southwest-harvest-concept.svg" alt="Illustrated Southwest Harvest Bowl concept with a separate dry pepita packet; not a product photograph or verified portion." width="1000" height="900" loading="eager" decoding="async" /> : <>
+      <span class="tl-photo-rule" aria-hidden="true"></span>
+      <p class="tl-photo-title">Something good<br /><em>is taking shape.</em></p>
+      </>}
+      <p class="tl-photo-label">CONCEPTUAL PLACEHOLDER · NOT A PRODUCT PHOTO</p>
+    </div>
+  }
+  <figcaption><strong>{product.name}</strong><span>{product.image.caption}</span></figcaption>
+</figure>

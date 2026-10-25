@@ -167,3 +167,161 @@ Exact numbering may adapt only if canonical repository architecture requires it;
 Launch phases are normal restaurant ordering, flagship products and transparent nutrition facts (Phase 1); optional calorie/macro/portion calculator (Phase 2); household planning (Phase 3); and adaptive calorie/weight-trend recalibration (Phase 4). Advanced nutrition features must not unnecessarily delay first revenue from an otherwise ready restaurant system.
 
 This scope authorizes documentation revision and staging only. It creates no recipes, domain code, schemas, migrations, accounts, admin configuration, inventory, ordering or payment implementation, public exposure, production changes or deployment. Commit and push require separate owner authorization.
+
+## Current founder direction — FOOD-032E, October 23, 2026
+
+This owner-authorized update supersedes earlier implementation sequencing and any
+implication above that gnocchi is the first active launch product. Earlier text is
+retained as historical domain context. The current operating focus is exclusively
+**Hot Food Bowls → Southwest Harvest Bowl**, in development. All other departments
+and earlier optional nutrition features are future planning, not launch inventory.
+The complete founder handoff and implementation verification are preserved in
+[FOOD-032E](../../.river-dev/specifications/food-commerce-032e-vision-storefront.md).
+
+### One family company and one current bottleneck
+
+Build one trustworthy, repeatable and profitable family-owned food company.
+Software, food production, content, SEO, ads, relationships, customer care and
+reporting serve The Table. Other ventures may provide bridge income or remain
+parked; they are not competing active priorities for this workstream. Do not
+reuse another employer's or unrelated business's customer data without an
+independent lawful basis and consent. Protect family time, integrity, stewardship
+and faith-inspired service without spiritual or health product claims.
+
+Long-term intent is a legally compliant dedicated production facility, reliable
+staff, measured operations and a transferable business. On-site/nearby residence
+requires independently established zoning and facility separation. Manager-run
+repeatability precedes a choice among company-owned sites, franchising, licensing
+or sale. These are distinct economic/legal models, not current implementation.
+Growth is earned through safe operations, repeat demand, capacity and cash flow.
+No quantitative growth slogan is a verified business promise.
+
+### Six durable departments, one active experiment
+
+The lightweight planning registry is `src/lib/food/table-menu-plan.ts`; it creates
+no product, offer, SKU, price, inventory, ordering permission or public category
+route. Only the first department appears in the current storefront navigation.
+
+| Stable ID | Department | Planning scope |
+| --- | --- | --- |
+| hot-food-bowls | Hot Food Bowls | Southwest Harvest Bowl is the only active experiment; vegetable stir-fry bowl is a future concept. |
+| cold-bowls | Cold Bowls / Açaí / Playa-inspired | Future açaí/customizable bowls and ube, mango, coconut, cacao/nibs. Other brands are inspiration only, without affiliation. |
+| hot-soups | Hot Soups | Seasonal soups and Mi-Mi-inspired Chickenless Gnocchi Soup featuring The Table's Signature Gnocchi. Soft dumpling-like gnocchi is desired HERE. |
+| signature-gnocchi | Signature Gnocchi | Garden Vegetable Gnocchi and sauced dishes; tender interior, possible seared exterior and distinct freeze/microwave texture goals. Soup is not duplicated here. |
+| juice-water | Juice / Water | Separate measured pressed juices and juice/water blend formulas; treatment, fermentation, cold chain, labels and regulatory scope require validation. |
+| freezer-packs | Take-Home Frozen Gnocchi Packs | Bulk frozen signature gnocchi, with independently validated home preparation, package, storage and legal requirements. |
+
+Far-future bookmark only: tortellini and ravioli may eventually extend a mature specialty pasta line; no current recipes, category, SKU, images, purchases or work estimates.
+
+Recognizable produce-forward ingredients, flavor, value and repeatable texture
+come before marketing slogans. Avoid the nine major U.S. food allergens in core
+formulations where practical, without claiming allergen-free food or universal
+allergy safety. Verify supplier subingredients, shared equipment and cross-contact;
+any deliberate exceptions need justified, prominent disclosure. Soy/tofu is parked
+and not in the current bowl. No unsubstantiated all-natural, low-sodium, detox,
+nutrition, fruit-ripeness, dilution or hypoallergenic claims.
+
+### Current Southwest Harvest Bowl and physical evidence
+
+Proposed components are sweet potatoes, black beans, rice, peppers/onions,
+cilantro-lime sauce above rice and below vegetables, and one sealed dry pepita
+packet removed before microwaving. No feta or extra chilled topping kit.
+Mushrooms are excluded from current experiments as a preference, not a final
+approved formulation decision. Kale is unresolved. Preserve the distinct FOOD-031
+A/no-kale, B/blanched-kale and C/lightly-steamed-kale trial histories. Ten grams
+cooked/drained kale per portion is a test hypothesis, never measured evidence.
+Sauce and package freeze/reheat performance remain unverified.
+
+Real grocery/packaging spending and physical trials are intentionally postponed
+until the founder can review a nearly finished storefront, launch preparation,
+SEO and operations. This does not authorize sales or imply available food.
+Canonical recipe evidence and adoption remain separate from public owner-intent
+copy. Physical food, ingredients, labels, costs and approvals still gate launch.
+
+### Customer experience and fulfillment direction
+
+Preserve the existing visual brand and routes. Use image-led, accessible,
+mobile-first food presentation with honest concept imagery until actual product
+photography exists. Diagnose assets and CSS before aesthetic replacement.
+Standard browsing is the default. Optional gram/nutrition/household planning
+comes later, only with verified data and demand; never force it onto shoppers.
+
+Future daily ordering/fulfillment is restricted to owner-set windows, lead times,
+capacity and independent legal permission; no automatic same-day promise. Free
+scheduled pickup and qualifying local delivery are customer pricing goals, not
+zero operating costs. Model labor, fuel/mileage, transport, insulation, packaging,
+fees, tax and waste before price authorization. Home/property pickup needs safe
+staffed access and family privacy; public/third-party sites need permission. No
+unattended cooler for temperature-controlled meals. Prepaid home/off-site pickup
+and any family-member address require exact independent Texas legal review.
+
+Delivery uses consented addresses and scheduled windows. No customer GPS, route
+or location telemetry. Future tracking links are scoped per order; manual operator
+state transitions must agree with customer views and be durable/idempotent.
+Optional on-the-way/almost-there notifications and customer I'm-here signals
+must be truthful and consented. No real email/SMS integration or sends now.
+Staff/family roles, shifts and delivery assignments come later with lawful
+compensation; meals do not replace required wages.
+
+### Ordered roadmap — preparation only
+
+1. **Finish and review this first-product prelaunch storefront.** Current increment
+   repairs its missing visual focal point, keeps navigation narrow, and tests
+   closed-order states. No public signup unless a real consent-aware backend is
+   independently verified; no inert form masquerading as functional.
+2. **Private synthetic customer status journey.** Reuse existing order/status
+   engines. Manual truthful updates, scoped tracking tokens, durable events,
+   operator/customer agreement and retry tests; no GPS or timer-invented progress.
+3. **Owner capacity and fulfillment controls.** Reuse scheduling/production and
+   inventory authorities for explicit windows, batch lead times, daily limits,
+   permissioned sites and delivery zones. Establish legality and actual free-to-
+   customer fulfillment allocations before publishing options.
+4. **Notification design.** Independently verify opt-in consent, provider costs,
+   privacy, idempotency/retries and channel preferences before optional email/SMS.
+   No live notifications or credentials are configured by this mission.
+5. **Truthful local discovery and marketing drafts.** Big Spring and only genuinely
+   intended/served areas; accurate titles/meta/canonical/robots/sitemap, accessible
+   local media and privacy-aware analytics. Determine GBP eligibility/service-area
+   configuration without publishing a false address, hours, reviews or ratings.
+   Draft campaign tags, referrals, opted-in CRM and ads; no paid activation now.
+6. **Physical/legal launch gates.** Exact production/fulfillment eligibility,
+   independent food handling/cooling/storage/transport review, measured ingredients
+   and yields, supplier allergens/cross-contact, package freezing/heating/seals,
+   shelf-life, labels, tax, price/SKU, capacity and owner go/no-go. Then genuine
+   photography, approved offers and separately authorized controlled activation.
+7. **Earn additional product lines.** Repeat demand, profitable economics, reliable
+   handoffs and capacity precede one-at-a-time seasonal products. Charity meals
+   and private aggregate impact remain aspirations, with recipient privacy.
+8. **Facility-aware scale after proof.** QA/SOPs, staff roles, production/inventory/
+   order ledgers and site KPIs only as operational need emerges; no speculative
+   multi-facility infrastructure in this slice. Choose expansion model after
+   compliant manager-run repeatability is demonstrated.
+
+The next single bottleneck is founder review of the first-product prelaunch
+storefront. Physical evidence and separate launch authorization follow; software
+quality never substitutes for business permission or food validation.
+
+
+### FOOD-032E final founder amendment: governing brand direction
+
+The Table is one family-owned food company built around real food, homestyle
+cooking, thoughtful ingredients, exceptional flavor, consistent quality, repeat
+customers and long-term family ownership. Grandmother-style comfort and care are
+culinary inspiration, not verified nutrition, health, processing, allergen or
+safety claims. Earn repeat business through trustworthy experience. Use genuine
+product photography when available; until then clearly identify concept imagery.
+Expand only when capacity, economics and operations justify it, toward a company
+the family can own without performing every task forever.
+
+The earlier game-inspired marketing direction is rejected and superseded. No
+locked/silhouette cards, unlockable or mystery products, artificial scarcity,
+countdowns, game-style release animations or manufactured urgency. No such
+mechanics were found in the current Table implementation. Future departments
+remain planning only; restrained Coming Soon copy is optional, not a current task.
+
+This exclusion does not remove useful order progress: preserve the planned
+practical tracker, scheduled pickup/delivery windows, manual operator updates,
+optional consented notifications and customer reassurance. No GPS, customer
+location surveillance or live driver coordinates. Existing commercial gates,
+FOOD-031's three unchanged sauce trials and the one-bowl implementation scope
+remain authoritative. No FOOD-033, new infrastructure or additional product work.

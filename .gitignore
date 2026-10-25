@@ -31,3 +31,17 @@ Thumbs.db
 .dev.vars
 .dev.vars.*
 !.dev.vars.example
+
+# Food mission diagnostics: preserve locally, keep source/specifications visible
+/.river-dev/food-*.log
+/.river-dev/food-*-initial-status.txt
+/.river-dev/food-*-baseline-hashes.json
+/.river-dev/food-*-baseline.json
+/.river-dev/food-*-change-manifest.json
+/.river-dev/food-*-preservation.json
+/.river-dev/food-*-http.json
+/.river-dev/food-*-asset.json
+/.river-dev/food-032g-browser-evidence/
+# One-off browser diagnosis; reusable preview tooling lives in scripts/food/
+/.river-dev/food-032g-browser-qa.mjs
+/.river-dev/food-032g-preview.mjs

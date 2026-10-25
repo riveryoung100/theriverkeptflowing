@@ -1,0 +1,9 @@
+---
+interface Props { id: string }
+const {id} = Astro.props;
+---
+<div class="tl-window-selection">
+  <label for={id}>Pickup or delivery window</label>
+  <select id={id} disabled aria-describedby={`${id}-note`}><option>No confirmed windows yet</option></select>
+  <p class="tl-disclaimer" id={`${id}-note`}>Approved dates and available capacity will appear here before ordering opens. No time or location is reserved.</p>
+</div>

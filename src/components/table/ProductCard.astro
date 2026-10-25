@@ -1,0 +1,17 @@
+---
+import type { PublicTableProduct } from '../../lib/food/table-catalog';
+import { formatTableMoney } from '../../lib/food/table-order-preview';
+import ProductAvailability from './ProductAvailability.astro';
+import {currentTableDepartment} from '../../lib/food/table-menu-plan';
+interface Props { product: PublicTableProduct }
+const { product } = Astro.props;
+const department = currentTableDepartment(product.slug);
+---
+<article class="tl-product-card" data-table-product={product.id}>
+  <div class="tl-card-top"><span class="tl-eyebrow">{department?.label ?? product.category} / {product.concept ? 'Working concept' : 'The collection'}</span><ProductAvailability product={product} /></div>
+  <h3><a href={product.path}>{product.name}</a></h3>
+  <p class="tl-product-description">{product.shortDescription}</p>
+  <p class="tl-disclaimer tl-card-note">{product.concept ? 'The recipe is still in development. Ingredients, allergens, portions, and handling details are not final.' : 'Review the full ingredient, allergen, and handling information before choosing your meal.'}</p>
+  <dl class="tl-product-facts"><div><dt>Price</dt><dd>{formatTableMoney(product.price)}</dd></div><div><dt>Ordering</dt><dd>Not yet open</dd></div></dl>
+  <a class="tl-button tl-button-primary" href={product.path}>Explore the bowl <span aria-hidden="true">&rarr;</span></a>
+</article>

@@ -1,0 +1,13 @@
+{
+  "sellingPriceCents": null,
+  "ingredientsCents": null,
+  "packagingAndLabelsCents": null,
+  "cookingConsumablesCents": null,
+  "laborCents": null,
+  "paymentProcessingCents": null,
+  "fulfillmentCents": null,
+  "ingredientWasteBasisPoints": null,
+  "weeklyFixedExpensesCents": null,
+  "weeklyProfitTargetCents": null,
+  "quantities": []
+}

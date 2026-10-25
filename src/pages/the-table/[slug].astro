@@ -1,0 +1,58 @@
+---
+import type { GetStaticPaths, InferGetStaticPropsType } from 'astro';
+import MainLayout from '../../layouts/MainLayout.astro';
+import { TABLE_PRODUCTS } from '../../lib/food/table-catalog';
+import { formatTableMoney } from '../../lib/food/table-order-preview';
+import ProductImage from '../../components/table/ProductImage.astro';
+import ProductAvailability from '../../components/table/ProductAvailability.astro';
+import QuantitySelector from '../../components/table/QuantitySelector.astro';
+import FulfillmentOptions from '../../components/table/FulfillmentOptions.astro';
+import OrderSummary from '../../components/table/OrderSummary.astro';
+import '../../styles/table-launch.css';
+import {currentTableDepartment,SOUTHWEST_PRELAUNCH_DESIGN} from '../../lib/food/table-menu-plan';
+export const prerender = true;
+export const getStaticPaths = (() => TABLE_PRODUCTS.map(product => ({params: {slug: product.slug}, props: {product}}))) satisfies GetStaticPaths;
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+const { product } = Astro.props;
+const department = currentTableDepartment(product.slug);
+const workingDesign = product.concept && department ? SOUTHWEST_PRELAUNCH_DESIGN : null;
+---
+<MainLayout bodyClass="table-storefront" title={`${product.name} | The Table`} description={`${product.shortDescription} ${product.concept ? 'Recipe in development. ' : ''}Ordering is not yet open.`}>
+  <a class="tl-skip-link" href="#table-content">Skip to The Table content</a>
+  <main tabindex="-1" class="tl-page" id="table-content" data-pagefind-body data-table-product={product.id}>
+    <div class="tl-status"><span aria-hidden="true"></span> A first look at The Table. Ordering is not yet open.</div>
+    <nav class="tl-subnav" aria-label="The Table navigation"><a class="tl-wordmark" href="/the-table/">The Table<span>BY THE RIVER KEPT FLOWING</span></a><div><a href="/the-table/#first-bowl">Hot Food Bowls</a><a href="#bowl-details">Product details</a><a href="#ordering-preview">Ordering details</a></div></nav>
+    <div class="tl-detail-wrap">
+      <nav class="tl-breadcrumb" aria-label="Breadcrumb"><a href="/the-table/">The Table</a><span aria-hidden="true">/</span><span aria-current="page">{product.name}</span></nav>
+      <section class="tl-detail-grid" aria-labelledby="bowl-title">
+        <ProductImage product={product} />
+        <div class="tl-detail-intro">
+          <p class="tl-eyebrow">{department?.label ?? product.category} / The Table</p>
+          <h1 id="bowl-title">{product.name}</h1>
+          <ProductAvailability product={product} />
+          <p class="tl-detail-lede">{product.shortDescription}</p>
+          <p class="tl-product-description">{workingDesign?.description ?? product.description}</p>
+          <dl class="tl-product-facts"><div><dt>Price</dt><dd>{formatTableMoney(product.price)}</dd></div><div><dt>Portion</dt><dd>{product.netGrams === null ? 'Final serving details to come' : `${product.netGrams} g`}</dd></div></dl>
+          <p class="tl-disclaimer tl-packaging-note">Final packaging and label details will be shared after testing and review.</p>
+          {product.serving.state === 'specified' && <p class="tl-disclaimer">{product.serving.minimum === product.serving.maximum ? `${product.serving.minimum} serving${product.serving.minimum === 1 ? '' : 's'}` : `${product.serving.minimum}–${product.serving.maximum} servings`}</p>}
+          <a class="tl-text-link" href="#bowl-details">Discover the details <span aria-hidden="true">&darr;</span></a>
+        </div>
+      </section>
+      <section class="tl-details-section" id="bowl-details" aria-labelledby="inside-heading">
+        <div class="tl-section-heading"><p class="tl-eyebrow">The details make the dish</p><h2 id="inside-heading">Considered ingredients.<br /><em>A thoughtful finish.</em></h2><p>{product.concept ? 'The details below describe our working concept. The finished recipe and serving information will be confirmed before ordering opens.' : 'Explore the ingredients, finishing components, and handling information for this dish.'}</p></div>
+        <div class="tl-detail-panels">
+          <article class="tl-detail-panel"><h3>{product.ingredientsStatus === 'verified' ? 'Ingredients' : 'Proposed ingredients'}</h3><ul class="tl-ingredient-list">{(workingDesign?.ingredients ?? product.ingredients).map((ingredient, i) => <li><span aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>{ingredient}</li>)}</ul><p class="tl-disclaimer">{workingDesign?.pending ?? (product.concept ? 'Provisional composition, not a final ingredient label. Seasonings and subingredients remain to be verified.' : 'Review the final product label for complete information.')}</p></article>
+          {product.finishingComponents.length > 0 && <article class="tl-detail-panel"><h3>The bowl &amp; the crunch</h3><p class="tl-disclaimer">{product.concept ? 'Proposed assembly — still under development' : 'Finishing components'}</p><dl class="tl-fulfillment">{(workingDesign?.finishingComponents ?? product.finishingComponents).map(component => <div><dt>{component.name}</dt><dd>{component.description}</dd></div>)}</dl></article>}
+          <article class="tl-detail-panel"><h3>Allergen information</h3>{product.allergens === null ? <p>Allergen review is not complete. Ingredients, supplier subingredients, and cross-contact information must be verified before ordering is available.</p> : <><p>Verified declarations:</p><ul>{product.allergens.map(allergen => <li>{allergen}</li>)}</ul><p class="tl-disclaimer">Review the complete label and handling disclosures. This does not establish an allergen-free kitchen.</p></>}</article>
+          <article class="tl-detail-panel"><h3>Keeping &amp; reheating</h3><dl class="tl-fulfillment"><div><dt>Storage</dt><dd>{product.storage.state === 'specified' ? product.storage.text : 'Final storage and handling instructions are being tested with the actual meal and packaging.'}</dd></div><div><dt>Reheating</dt><dd>{product.reheating.state === 'specified' ? product.reheating.text : 'Validated reheating directions will accompany the finished product. No customer heating time is available yet.'}</dd></div></dl></article>
+        </div>
+        {product.nutrition && <article class="tl-detail-panel"><h3>Nutrition</h3><p>{product.nutrition.serving}</p><dl>{product.nutrition.facts.map(f => <div><dt>{f.label}</dt><dd>{f.value}</dd></div>)}</dl></article>}
+      </section>
+      <section class="tl-ordering-section" id="ordering-preview" aria-labelledby="ordering-heading">
+        <div><p class="tl-eyebrow">A preview of what comes next</p><h2 id="ordering-heading">A simpler way<br /><em>to mealtime.</em></h2><p>Recipe testing comes first. Price, availability, and fulfillment details will be published when verified.</p><QuantitySelector id="bowl-quantity" maxPerOrder={product.maxPerOrder} /><FulfillmentOptions id="bowl-fulfillment" /></div>
+        <OrderSummary product={product} />
+      </section>
+      <div class="tl-footer"><span>The Table</span><p>Thoughtfully developed, one detail at a time.</p><a href="/the-table/">Back to the collection <span aria-hidden="true">&larr;</span></a></div>
+    </div>
+  </main>
+</MainLayout>

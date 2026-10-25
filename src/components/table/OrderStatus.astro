@@ -1,0 +1,12 @@
+---
+import { TABLE_ORDER_STATUSES, type TableOrderStage } from '../../lib/food/table-order-status';
+interface Props { id: string; stage?: TableOrderStage; synthetic?: boolean; fulfillment?: 'pickup' | 'delivery' }
+const {id, stage = 'unavailable', synthetic = false, fulfillment = 'pickup'} = Astro.props;
+const status = TABLE_ORDER_STATUSES[stage];
+const deliveryReady = stage === 'ready-for-pickup' && fulfillment === 'delivery';
+---
+<div class="tl-order-status" role="status" aria-live="polite" aria-atomic="true" aria-labelledby={`${id}-title`} data-order-stage={stage}>
+  <p class="tl-eyebrow">{synthetic ? 'Simulation only · No real purchase' : 'Ordering status'}</p>
+  <p id={`${id}-title`} class="tl-order-status-title">{deliveryReady ? 'Ready for delivery' : status.label}</p>
+  <p class="tl-disclaimer">{deliveryReady ? 'Your meal is ready for the confirmed delivery handoff.' : status.detail}</p>
+</div>

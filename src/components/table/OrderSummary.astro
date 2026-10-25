@@ -1,0 +1,23 @@
+---
+import type { PublicTableProduct } from '../../lib/food/table-catalog';
+import { formatTableMoney, type TableOrderPreview } from '../../lib/food/table-order-preview';
+import OrderStatus from './OrderStatus.astro';
+interface Props { product?: PublicTableProduct; preview?: TableOrderPreview }
+const { product, preview } = Astro.props;
+const lines = preview?.lines ?? (product ? [{productId: product.id, name: product.name, quantity: null, unitPrice: product.price, subtotal: null}] : []);
+---
+<div class="tl-order-summary">
+  <h3>At a glance</h3>
+  <p class="tl-disclaimer">PRELAUNCH PREVIEW · No order has been created.</p>
+  <OrderStatus id="table-order-status" />
+  {lines.length ? <ul class="tl-summary-lines">{lines.map(line => <li><strong>{line.name}</strong><dl><div><dt>Quantity</dt><dd>{line.quantity ?? 'Not selected'}</dd></div><div><dt>Unit price</dt><dd>{formatTableMoney(line.unitPrice)}</dd></div><div><dt>Item subtotal</dt><dd>{formatTableMoney(line.subtotal)}</dd></div></dl></li>)}</ul> : <p>No items selected.</p>}
+  <dl class="tl-summary-totals">
+    <div><dt>Subtotal</dt><dd>{formatTableMoney(preview?.subtotal ?? null)}</dd></div>
+    <div><dt>Pickup / delivery</dt><dd>{formatTableMoney(preview?.fulfillmentFee ?? null)}</dd></div>
+    <div><dt>Applicable tax</dt><dd>{preview?.tax ? formatTableMoney(preview.tax) : 'To be determined'}</dd></div>
+    <div class="tl-summary-total"><dt>Total</dt><dd>{preview?.total ? formatTableMoney(preview.total) : 'Not available yet'}</dd></div>
+  </dl>
+  <p class="tl-disclaimer">Final totals require verified prices, fulfillment charges, and applicable tax information.</p>
+  <button class="tl-button tl-checkout-disabled" type="button" disabled aria-describedby="table-checkout-notice">Ordering is not yet open</button>
+  <p class="tl-disclaimer" id="table-checkout-notice">Payments and preorders remain unavailable. This preview cannot accept an order.</p>
+</div>

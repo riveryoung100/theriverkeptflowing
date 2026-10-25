@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="900" viewBox="0 0 1000 900" role="img" aria-labelledby="title desc">
+ <title id="title">Southwest Harvest Bowl — illustrated concept</title>
+ <desc id="desc">An editorial illustration of rice, sweet potatoes, beans and peppers in a bowl, with a separate dry pepita packet. This is a design concept, not a photograph or verified serving.</desc>
+ <defs>
+  <radialGradient id="paper"><stop stop-color="#f3e8cf"/><stop offset="1" stop-color="#d9c6a5"/></radialGradient>
+  <radialGradient id="ceramic"><stop offset=".78" stop-color="#fff9e9"/><stop offset="1" stop-color="#d8d0bb"/></radialGradient>
+  <pattern id="grain" width="31" height="27" patternUnits="userSpaceOnUse"><path d="m5 9 8 4m9 5 5-2" stroke="#e6d29b" stroke-width="5" stroke-linecap="round"/></pattern>
+  <g id="potato"><path d="m-28-20 43-8 22 29-15 32-43-6-12-25z" fill="#c66a32"/><path d="m-27-19 41-7 9 28-45 8z" fill="#e79a53"/><path d="m23 2 13-1-15 30-10-7z" fill="#a94e28"/></g>
+  <g id="bean"><ellipse rx="17" ry="11" fill="#453c34"/><path d="m-7-2q5-4 11 1" fill="none" stroke="#6c5b4a" stroke-width="3" stroke-linecap="round"/></g>
+  <g id="leaf"><path d="M0 0q-30-33-5-45 35 5 5 45m0 0q13-43 34-28 12 25-34 28" fill="#62764c"/><path d="M0 13V-28" stroke="#4e653c" stroke-width="3"/></g>
+  <g id="pepper"><path d="M0 0q60-25 105 3l-7 18q-48-22-94 0z" fill="#c6543b"/><path d="m12 3q43-17 79 4" fill="none" stroke="#ef9a62" stroke-width="4"/></g>
+ </defs>
+ <path fill="url(#paper)" d="M0 0h1000v900H0z"/>
+ <path d="m0 160 1000 490M0 192l1000 490" stroke="#c8b698" stroke-width="2" opacity=".4"/>
+ <path d="M45 60h320v780H45z" fill="#dedfc9" transform="rotate(-8 45 60)"/>
+ <path d="m60 80 95 745m-77-746 95 745" stroke="#c1c8aa" stroke-width="3"/>
+ <ellipse cx="490" cy="467" rx="361" ry="331" fill="#5c4b37" opacity=".12"/>
+ <circle cx="476" cy="432" r="327" fill="url(#ceramic)"/>
+ <circle cx="476" cy="432" r="284" fill="#eee1bb"/>
+ <circle cx="476" cy="432" r="274" fill="url(#grain)"/>
+ <path d="M254 480q52-114 184-143 133-5 220 97-28 183-202 227-120-12-202-181" fill="#8b9b64" opacity=".64"/>
+ <g transform="translate(313 287)"><use href="#potato"/><use href="#potato" transform="translate(69 23) rotate(30)"/><use href="#potato" transform="translate(-37 66) rotate(-12)"/><use href="#potato" transform="translate(32 83) rotate(17)"/><use href="#potato" transform="translate(-61 132) rotate(31)"/><use href="#potato" transform="translate(8 151) rotate(-14)"/><use href="#potato" transform="translate(102 55) rotate(-23)"/></g>
+ <g transform="translate(494 264)"><use href="#bean"/><use href="#bean" transform="translate(38 11) rotate(22)"/><use href="#bean" transform="translate(74 5) rotate(-30)"/><use href="#bean" transform="translate(107 32)"/><use href="#bean" transform="translate(7 33) rotate(36)"/><use href="#bean" transform="translate(48 45) rotate(-31)"/><use href="#bean" transform="translate(85 50) rotate(21)"/><use href="#bean" transform="translate(120 68) rotate(48)"/><use href="#bean" transform="translate(-13 68)"/><use href="#bean" transform="translate(26 78) rotate(-36)"/><use href="#bean" transform="translate(65 90)"/><use href="#bean" transform="translate(100 103) rotate(-12)"/><use href="#bean" transform="translate(142 104) rotate(35)"/><use href="#bean" transform="translate(5 108) rotate(31)"/><use href="#bean" transform="translate(43 122) rotate(-18)"/><use href="#bean" transform="translate(80 132) rotate(12)"/></g>
+ <g transform="translate(526 465)"><use href="#pepper" transform="rotate(-20)"/><use href="#pepper" transform="translate(10 52) rotate(8)"/><use href="#pepper" transform="translate(5 107) rotate(-14)"/><use href="#pepper" transform="translate(-53 139) rotate(12)"/><path d="M32-24q78 19 73 62M-12 68q-28 39 14 65M25 109q69-9 77-63" fill="none" stroke="#e8c087" stroke-width="15" stroke-linecap="round"/></g>
+ <g transform="translate(420 435)"><use href="#leaf"/><use href="#leaf" transform="translate(39 39) rotate(56) scale(.8)"/><use href="#leaf" transform="translate(-28 57) rotate(-36) scale(.7)"/></g>
+ <path d="M775 580h162v205H775z" fill="#f1e7cc" stroke="#b6aa89" stroke-width="3" transform="rotate(8 775 580)"/>
+ <g fill="#708052" stroke="#4c643f" stroke-width="1"><ellipse cx="815" cy="653" rx="9" ry="18" transform="rotate(25 815 653)"/><ellipse cx="849" cy="670" rx="9" ry="18" transform="rotate(-28 849 670)"/><ellipse cx="888" cy="654" rx="9" ry="18"/><ellipse cx="827" cy="707" rx="9" ry="18" transform="rotate(65 827 707)"/><ellipse cx="870" cy="713" rx="9" ry="18" transform="rotate(30 870 713)"/></g>
+ <text x="830" y="764" font-family="Arial,sans-serif" font-size="13" letter-spacing="2" fill="#42543c">DRY PEPITAS</text>
+ <path d="m775 799 149 23" stroke="#9c8e6d" stroke-width="2"/>
+ <text x="82" y="830" font-family="Georgia,serif" font-size="25" fill="#46543c">A thoughtful beginning.</text>
+ <text x="82" y="858" font-family="Arial,sans-serif" font-size="12" letter-spacing="2" fill="#6a6654">ILLUSTRATED CONCEPT / NOT A PRODUCT PHOTO</text>
+</svg>

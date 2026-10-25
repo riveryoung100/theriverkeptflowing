@@ -95,7 +95,8 @@ document.addEventListener("DOMContentLoaded", function () {
     */
 
 
-    const anchorLinks = document.querySelectorAll('a[href^="#"]');
+    // Native fragment navigation must move keyboard focus for Table bypass links.
+    const anchorLinks = document.querySelectorAll('a[href^="#"]:not(.tl-skip-link)');
 
 
 

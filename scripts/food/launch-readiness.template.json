@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "productId": "food-product:southwest-harvest-bowl",
+  "productVersion": 1,
+  "display": {
+    "accurateDescription": {
+      "status": null,
+      "evidenceReference": null
+    },
+    "ingredientDisclosure": {
+      "status": null,
+      "evidenceReference": null
+    },
+    "allergenDisclosure": {
+      "status": null,
+      "evidenceReference": null
+    },
+    "photoDisclosure": {
+      "status": null,
+      "evidenceReference": null
+    }
+  },
+  "production": {
+    "recipeApproved": {
+      "status": null,
+      "evidenceReference": null
+    },
+    "portionsMeasured": {
+      "status": null,
+      "evidenceReference": null
+    },
+    "packagingVerified": {
+      "status": null,
+      "evidenceReference": null
+    },
+    "labelsVerified": {
+      "status": null,
+      "evidenceReference": null
+    },
+    "foodHandlerVerified": {
+      "status": null,
+      "evidenceReference": null
+    },
+    "regulatoryVerified": {
+      "status": null,
+      "evidenceReference": null
+    },
+    "cookingCoolingVerified": {
+      "status": null,
+      "evidenceReference": null
+    },
+    "freezingStorageVerified": {
+      "status": null,
+      "evidenceReference": null
+    },
+    "transportVerified": {
+      "status": null,
+      "evidenceReference": null
+    }
+  },
+  "commercial": {
+    "approvedPrice": {
+      "status": null,
+      "evidenceReference": null
+    },
+    "orderLimits": {
+      "status": null,
+      "evidenceReference": null
+    },
+    "fulfillmentOptions": {
+      "status": null,
+      "evidenceReference": null
+    },
+    "productionDatesCapacity": {
+      "status": null,
+      "evidenceReference": null
+    },
+    "taxReview": {
+      "status": null,
+      "evidenceReference": null
+    },
+    "checkoutTested": {
+      "status": null,
+      "evidenceReference": null
+    },
+    "paymentOrderReconciliation": {
+      "status": null,
+      "evidenceReference": null
+    },
+    "confirmationsTested": {
+      "status": null,
+      "evidenceReference": null
+    },
+    "refundCancellationPolicy": {
+      "status": null,
+      "evidenceReference": null
+    }
+  },
+  "launchAuthorization": {
+    "status": null,
+    "evidenceReference": null,
+    "authorizedBy": null,
+    "authorizedOn": null,
+    "productId": null,
+    "productVersion": null
+  }
+}
