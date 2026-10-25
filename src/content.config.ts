@@ -2,13 +2,15 @@ import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 
+import { contentDateSchema } from "./lib/contentDates";
+
 const sharedSchema = z.object({
     title: z.string(),
     description: z.string(),
     seoTitle: z.string().optional(),
     seoDescription: z.string().optional(),
-    published: z.coerce.date(),
-    updated: z.coerce.date().optional(),
+    published: contentDateSchema,
+    updated: contentDateSchema.optional(),
     author: z.string().default("River Young"),
     draft: z.boolean().default(false),
     featured: z.boolean().default(false),
@@ -58,6 +60,12 @@ const essays = defineCollection({
     }),
     schema: sharedSchema.extend({
         category: z.string().optional(),
+        // Explicit null means the historical publication date is unverified.
+        published: contentDateSchema.nullable(),
+        sourceScriptId: z.string().optional(),
+        sourceScriptSha256: z.string().regex(/^[a-f0-9]{64}$/).optional(),
+        sourceVideoId: z.string().regex(/^[A-Za-z0-9_-]{11}$/).optional(),
+        sourceVideoPublishedAt: contentDateSchema.optional(),
 
     })
 });

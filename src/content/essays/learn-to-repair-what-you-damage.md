@@ -2,7 +2,7 @@
 title: "Learn to Repair What You Damage"
 description: "A reflection on apology, restitution, changed behavior, rebuilt trust, and the responsibility to make things right when our choices have cost someone else something."
 category: "Character & Responsibility"
-published: true
+published: null # Historical publication date unverified; do not infer from Git.
 ---
 
 There is a version of responsibility that only thinks about prevention.

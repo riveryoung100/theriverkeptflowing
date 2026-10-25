@@ -6,7 +6,7 @@ import type { APIContext } from "astro";
 interface FeedEntry {
     title: string;
     description: string;
-    published: Date;
+    published: Date | null;
     link: string;
 }
 
@@ -104,8 +104,8 @@ export async function GET(
     ].sort((first, second) => {
 
         return (
-            second.published.getTime() -
-            first.published.getTime()
+            (second.published?.getTime() ?? 0) -
+            (first.published?.getTime() ?? 0)
         );
 
     });
@@ -130,7 +130,7 @@ export async function GET(
 
             description: entry.description,
 
-            pubDate: entry.published,
+            pubDate: entry.published ?? undefined,
 
             link: entry.link
 

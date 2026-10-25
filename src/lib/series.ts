@@ -17,7 +17,7 @@ export interface SeriesEntry {
     id: string;
     title: string;
     description: string;
-    published: Date;
+    published: Date | null;
     updated?: Date;
     tags: string[];
     featured: boolean;
@@ -330,8 +330,8 @@ Promise<SeriesEntry[]> {
             }
 
 
-            return first.published.getTime() -
-                second.published.getTime();
+            return (first.published?.getTime() ?? 0) -
+                (second.published?.getTime() ?? 0);
 
         });
 
@@ -402,8 +402,8 @@ Promise<ContentSeries[]> {
 
 
                                 return (
-                                    first.published.getTime() -
-                                    second.published.getTime()
+                                    (first.published?.getTime() ?? 0) -
+                                    (second.published?.getTime() ?? 0)
                                 );
 
                             }
@@ -415,6 +415,7 @@ Promise<ContentSeries[]> {
                         .map((entry) => {
                             return entry.published;
                         })
+                        .filter((date): date is Date => date !== null)
                         .sort((first, second) => {
                             return (
                                 first.getTime() -

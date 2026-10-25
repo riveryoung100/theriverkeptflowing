@@ -70,8 +70,8 @@ const librarySections = await Promise.all(
 
         const sortedEntries = entries.sort(
             (a, b) =>
-                b.data.published.getTime() -
-                a.data.published.getTime()
+                (b.data.published?.getTime() ?? 0) -
+                (a.data.published?.getTime() ?? 0)
         );
 
         const latestEntry = sortedEntries[0];

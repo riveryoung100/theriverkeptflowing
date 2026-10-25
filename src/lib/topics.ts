@@ -19,7 +19,7 @@ export interface TopicEntry {
     prerequisites: string[];
     nextReading: string[];
     learningPath: string[];
-    published: Date;
+    published: Date | null;
     readingMinutes?: number;
     featured: boolean;
 }
@@ -256,8 +256,8 @@ Promise<TopicEntry[]> {
         ...films
     ].sort((first, second) => {
         return (
-            second.published.getTime() -
-            first.published.getTime()
+            (second.published?.getTime() ?? 0) -
+            (first.published?.getTime() ?? 0)
         );
     });
 

@@ -2,7 +2,7 @@
 title: "Do Not Make People Pay Forever for Who They Used to Be"
 description: "A reflection on mercy, memory, boundaries, and the responsibility to recognize genuine change instead of permanently defining people by an old version of themselves."
 category: "Relationships & Community"
-published: true
+published: null # Historical publication date unverified; do not infer from Git.
 ---
 
 People remember.

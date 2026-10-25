@@ -1,4 +1,5 @@
 ---
+import { formatContentDate } from "../../lib/contentDates";
 import {
     createTopicSlug
 } from "../../lib/topics";
@@ -7,7 +8,7 @@ interface Props {
     title: string;
     description?: string;
     author?: string;
-    published?: Date;
+    published?: Date | null;
     readingMinutes?: number;
     version?: string;
     tags?: string[];
@@ -70,15 +71,11 @@ const validTags = (
 
 
             {
-                published && (
+                published ? (
                     <span>
-                        {published.toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric"
-                        })}
+                        {formatContentDate(published)}
                     </span>
-                )
+                ) : published === null ? <span>Publication date unverified</span> : null
             }
 
 

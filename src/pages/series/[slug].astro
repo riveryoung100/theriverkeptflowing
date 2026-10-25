@@ -65,7 +65,7 @@ const seriesSchema = {
                     ).toString(),
                 datePublished:
                     entry.published
-                        .toISOString()
+                        ?.toISOString()
             })
         )
 };

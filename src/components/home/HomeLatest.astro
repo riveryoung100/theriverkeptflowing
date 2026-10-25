@@ -67,7 +67,7 @@ const publishedEntries = collectionResults
             return a.featured ? -1 : 1;
         }
 
-        return b.published.getTime() - a.published.getTime();
+        return (b.published?.getTime() ?? 0) - (a.published?.getTime() ?? 0);
     })
     .slice(0, 3);
 

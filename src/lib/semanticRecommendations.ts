@@ -349,10 +349,9 @@ function calculateRecencyScore(
     candidateEntry: TopicEntry
 ): number {
 
-    const publishedTime =
-        candidateEntry
-            .published
-            .getTime();
+    if (!candidateEntry.published) return 0;
+
+    const publishedTime = candidateEntry.published.getTime();
 
     const ageInDays =
         Math.max(
@@ -640,13 +639,13 @@ export function rankSemanticRecommendations(
 
 
             if (
-                second.published.getTime() !==
-                first.published.getTime()
+                (second.published?.getTime() ?? 0) !==
+                (first.published?.getTime() ?? 0)
             ) {
 
                 return (
-                    second.published.getTime() -
-                    first.published.getTime()
+                    (second.published?.getTime() ?? 0) -
+                    (first.published?.getTime() ?? 0)
                 );
 
             }

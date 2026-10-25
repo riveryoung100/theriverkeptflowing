@@ -60,8 +60,7 @@ const resolvedBreadcrumbParentUrl =
 const shouldRenderArticleSchema =
     Boolean(
         articleTitle &&
-        articleDescription &&
-        published
+        articleDescription
     );
 
 const articleSchema =
@@ -80,8 +79,8 @@ const articleSchema =
                 name: "The River Kept Flowing",
                 url: `${siteOrigin}/`
             },
-            datePublished: published,
-            dateModified: modified ?? published,
+            ...(published ? { datePublished: published } : {}),
+            ...((modified ?? published) ? { dateModified: modified ?? published } : {}),
             mainEntityOfPage: resolvedCanonical,
             articleSection,
             version

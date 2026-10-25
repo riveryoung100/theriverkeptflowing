@@ -13,8 +13,8 @@ const essays = await getCollection(
 const essayItems = essays
     .sort(
         (a, b) =>
-            b.data.published.getTime() -
-            a.data.published.getTime()
+            (b.data.published?.getTime() ?? 0) -
+            (a.data.published?.getTime() ?? 0)
     )
     .map((essay) => ({
         title: essay.data.title,
