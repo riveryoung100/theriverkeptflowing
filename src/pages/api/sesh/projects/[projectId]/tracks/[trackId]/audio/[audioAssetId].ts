@@ -1,3 +1,4 @@
+import { env } from "cloudflare:workers";
 import type {
   APIRoute,
 } from "astro";
@@ -53,11 +54,9 @@ async ({
   request,
   params,
   session,
-  locals,
 }) => {
   try {
-    const env =
-      locals.runtime.env;
+    if (!session) return infrastructureFailure();
 
     return await handleSeshTrackAudioAttach({
       request,
@@ -90,11 +89,9 @@ async ({
   request,
   params,
   session,
-  locals,
 }) => {
   try {
-    const env =
-      locals.runtime.env;
+    if (!session) return infrastructureFailure();
 
     return await handleSeshTrackAudioDetach({
       request,

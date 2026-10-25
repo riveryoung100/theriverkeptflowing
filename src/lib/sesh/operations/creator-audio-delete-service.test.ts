@@ -1,3 +1,5 @@
+import { parseSeshMusicProjectId as fixtureParseproject, parseSeshAudioAssetId as fixtureParseaudio, parseSeshCreatorId as fixtureParsecreator, parseSeshTrackId as fixtureParsetrack } from "../identifiers";
+import { parsePrincipalId } from "../../identity/identifiers";
 import assert from "node:assert/strict";
 import test from "node:test";
 
@@ -37,13 +39,13 @@ import {
 } from "./creator-audio-delete-service";
 
 const projectId =
-  "sesh-project:delete-project";
+  fixtureParseproject("sesh-project:delete-project");
 
 const audioAssetId =
-  "sesh-audio:delete-audio";
+  fixtureParseaudio("sesh-audio:delete-audio");
 
 const creatorId =
-  "sesh-creator:delete-owner";
+  fixtureParsecreator("sesh-creator:delete-owner");
 
 const storageReference = {
   provider:
@@ -79,6 +81,7 @@ SeshMusicProject = {
   trackIds:
     [],
 
+  sessionIds: [],
   audioAssetIds: [
     audioAssetId,
   ],
@@ -128,6 +131,8 @@ SeshProjectOwnershipAuthorizer {
           true as const,
 
         value: {
+          principalId: parsePrincipalId("principal:delete-owner"),
+          action: "write" as const,
           projectId,
 
           seshCreatorId:
@@ -766,7 +771,7 @@ test(
     const track:
       SeshTrack = {
         id:
-          "sesh-track:delete-guard-track",
+          fixtureParsetrack("sesh-track:delete-guard-track"),
 
         projectId,
 
@@ -1313,6 +1318,9 @@ async function createCanonicalMembershipDeleteFixture(
               true as const,
 
             value: {
+              principalId: parsePrincipalId("principal:delete-owner"),
+              action: "write" as const,
+              projectId: fixtureProjectId,
               seshCreatorId:
                 fixtureCreatorId,
             },

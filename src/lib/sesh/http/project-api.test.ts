@@ -1,3 +1,4 @@
+import { parseSeshMusicProjectId as fixtureParseproject, parseSeshCreatorId as fixtureParsecreator } from "../identifiers";
 import assert from "node:assert/strict";
 import test from "node:test";
 
@@ -20,10 +21,10 @@ import {
 const project:
   SeshMusicProject = {
     id:
-      "sesh-project:http-test",
+      fixtureParseproject("sesh-project:http-test"),
 
     ownerCreatorId:
-      "sesh-creator:http-test",
+      fixtureParsecreator("sesh-creator:http-test"),
 
     title:
       "HTTP Test",

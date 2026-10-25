@@ -1,15 +1,13 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
     mkdtemp,
     rm,
-    writeFile,
-    mkdir
+    writeFile
 } from "node:fs/promises";
 
 import {
-    dirname,
     join
 } from "node:path";
 

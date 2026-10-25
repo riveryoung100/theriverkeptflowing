@@ -39,20 +39,7 @@ export type SeshProjectOwnershipAuthorizationResult =
 
       readonly value: {
         readonly principalId:
-          Awaited<
-            ReturnType<
-              AuthenticatedSeshCreatorResolver[
-                "resolve"
-              ]
-            >
-          > extends {
-            readonly ok: true;
-            readonly value: {
-              readonly principalId: infer TPrincipalId;
-            };
-          }
-            ? TPrincipalId
-            : never;
+          Extract<Awaited<ReturnType<AuthenticatedSeshCreatorResolver["resolve"]>>, { readonly ok: true }>["value"]["principalId"];
 
         readonly seshCreatorId:
           SeshCreatorId;

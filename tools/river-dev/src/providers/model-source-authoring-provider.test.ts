@@ -459,19 +459,19 @@ test(
             true
         );
         assert.equal(
-            capturedUser.includes('\"session\"'),
+            capturedUser.includes('"session"'),
             false
         );
         assert.equal(
-            capturedUser.includes('\"repository\"'),
+            capturedUser.includes('"repository"'),
             false
         );
         assert.equal(
-            capturedUser.includes('\"discovery\"'),
+            capturedUser.includes('"discovery"'),
             false
         );
         assert.equal(
-            capturedUser.includes('\"approvedCommands\"'),
+            capturedUser.includes('"approvedCommands"'),
             false
         );
     }

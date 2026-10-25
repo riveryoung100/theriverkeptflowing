@@ -1,4 +1,4 @@
-﻿import {
+import {
     mkdir,
     open
 } from "node:fs/promises";
@@ -413,7 +413,8 @@ async function persistPreparedArtifact(
                 "EEXIST"
         ) {
             throw new TypeError(
-                `Artifact already exists: ${artifact.repositoryPath}`
+                `Artifact already exists: ${artifact.repositoryPath}`,
+                { cause: error }
             );
         }
 

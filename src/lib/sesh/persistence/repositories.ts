@@ -1,3 +1,4 @@
+export type { SeshPersistenceError } from "./model";
 import type {
   SeshCreatorHandle,
   SeshCreatorHandleReservation,

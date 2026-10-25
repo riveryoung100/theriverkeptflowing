@@ -1,3 +1,4 @@
+import { parseSeshCreatorId } from "../../sesh/identifiers";
 import assert from "node:assert/strict";
 import test from "node:test";
 
@@ -33,7 +34,7 @@ const mapping:
   PrincipalSeshCreatorMapping = {
     principalId,
     seshCreatorId:
-      "sesh-creator:river",
+      parseSeshCreatorId("sesh-creator:river"),
     createdAt:
       "2026-09-22T15:00:00.000Z",
   };

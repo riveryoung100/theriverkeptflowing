@@ -41,7 +41,7 @@ test("valid construction is synchronous, inert, service-only and creates indepen
     assert.deepEqual(Object.keys(a), ["ok", "value"]); assert.deepEqual(Object.keys(a.value), ["service", "workspace"]); assert(Object.isFrozen(a)); assert(Object.isFrozen(a.value)); assert.equal("then" in a, false);
     assert.notEqual(a.value.service, b.value.service); assert.notEqual(a.value.workspace, b.value.workspace); assert.deepEqual(Object.keys(a.value.service), []);
     assert(!Object.isFrozen(f.input.session)); assert(!Object.isFrozen(f.input.environment));
-    assert(create({ ...f.input, now: undefined }).ok); const { now: _unused, ...withoutClock } = f.input; assert(create(withoutClock).ok); assert.deepEqual(f.state.events, []);
+    assert(create({ ...f.input, now: undefined }).ok); const { now, ...withoutClock } = f.input; assert.equal(now, f.input.now); assert(create(withoutClock).ok); assert.deepEqual(f.state.events, []);
 });
 
 test("malformed and throwing dependencies fail closed with fixed sanitized result", () => {
@@ -113,7 +113,7 @@ test("FOOD-002L J: frozen exact companion output, fresh graphs and zero dependen
     assert(!Object.isFrozen(a.value.service)); assert.deepEqual(Object.keys(a.value.service), []); assert.notEqual(a.value.service, b.value.service); assert.notEqual(a.value.workspace, b.value.workspace);
     assert(!Object.isFrozen(f.input.session)); assert(!Object.isFrozen(f.input.environment)); assert.deepEqual(f.state.events, []);
     const old = create(f.input); assert(old.ok); assert.deepEqual(Object.keys(old.value), ["service", "workspace"]);
-    const { now: _unused, ...withoutClock } = f.input; assert(createOperation(withoutClock).ok); assert(createOperation({ ...f.input, now: undefined }).ok); assert.deepEqual(f.state.events, []);
+    const { now, ...withoutClock } = f.input; assert.equal(now, f.input.now); assert(createOperation(withoutClock).ok); assert(createOperation({ ...f.input, now: undefined }).ok); assert.deepEqual(f.state.events, []);
 });
 
 test("FOOD-002L J: companion failures preserve exact fixed configuration result with no fallback", () => {

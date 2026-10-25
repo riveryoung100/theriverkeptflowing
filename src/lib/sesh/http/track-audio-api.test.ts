@@ -1,3 +1,4 @@
+import { parseSeshMusicProjectId as fixtureParseproject, parseSeshTrackId as fixtureParsetrack, parseSeshAudioAssetId as fixtureParseaudio } from "../identifiers";
 import assert from "node:assert/strict";
 import test from "node:test";
 
@@ -12,13 +13,13 @@ import {
 } from "./track-audio-api";
 
 const projectId =
-  "sesh-project:http-track-audio";
+  fixtureParseproject("sesh-project:http-track-audio");
 
 const trackId =
-  "sesh-track:http-track-audio";
+  fixtureParsetrack("sesh-track:http-track-audio");
 
 const audioAssetId =
-  "sesh-audio:http-track-audio";
+  fixtureParseaudio("sesh-audio:http-track-audio");
 
 function sameOriginRequest(
   method:
@@ -148,8 +149,9 @@ test(
       "no-store",
     );
 
-    const body =
-      await response.json();
+    const body: unknown = await response.json();
+    assert.ok(body !== null && typeof body === "object" && "ok" in body && "value" in body);
+    assert.ok(body.value !== null && typeof body.value === "object" && "audioAssetIds" in body.value);
 
     assert.equal(
       body.ok,
@@ -213,8 +215,9 @@ test(
       200,
     );
 
-    const body =
-      await response.json();
+    const body: unknown = await response.json();
+    assert.ok(body !== null && typeof body === "object" && "ok" in body && "value" in body);
+    assert.ok(body.value !== null && typeof body.value === "object" && "audioAssetIds" in body.value);
 
     assert.equal(
       body.ok,

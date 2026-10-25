@@ -674,7 +674,7 @@ function idempotentInput(
         emailOnlyRecords(),
     idempotencyKey =
         "quote:test-key",
-    requestFingerprint =
+    requestFingerprint: string =
         "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 ){
     return {
@@ -700,7 +700,7 @@ function submissionRow(
         >,
     relationshipId =
         "relationship:existing",
-    requestFingerprint =
+    requestFingerprint: string =
         input.requestFingerprint
 ){
     return {

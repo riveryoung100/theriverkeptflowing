@@ -1,3 +1,4 @@
+import { createSeshMusicProjectId, type SeshMusicProjectId } from "../identifiers";
 import {
   D1PrincipalRepository,
   D1PrincipalSeshCreatorMappingRepository,

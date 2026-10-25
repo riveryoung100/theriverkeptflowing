@@ -1,3 +1,5 @@
+import { loadRiverDevConfiguration } from "../core/config";
+const fixtureConfiguration = await loadRiverDevConfiguration(process.cwd());
 import {
     strict as assert
 } from "node:assert";
@@ -15,13 +17,14 @@ import {
 function createOptions(
     overrides:
         Record<string, unknown> = {}
-): any {
+): Parameters<typeof generateLiveIntentRiverDev>[0] {
 
     return {
         repositoryRoot:
             "/repo",
         configuration:
             {
+                ...fixtureConfiguration,
                 repositoryRoot:
                     "/repo"
             },

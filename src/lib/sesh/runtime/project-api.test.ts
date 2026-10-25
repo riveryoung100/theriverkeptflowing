@@ -1,3 +1,4 @@
+import { parseSeshMusicProjectId } from "../identifiers";
 import assert from "node:assert/strict";
 import test from "node:test";
 
@@ -162,7 +163,7 @@ test(
         () =>
           "2026-09-22T17:00:00.000Z",
         () =>
-          "sesh-project:runtime-test",
+          parseSeshMusicProjectId("sesh-project:runtime-test"),
       );
 
     assert.equal(

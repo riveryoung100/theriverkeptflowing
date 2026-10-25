@@ -1,4 +1,4 @@
-﻿import test from "node:test";
+import test from "node:test";
 import assert from "node:assert/strict";
 
 import {
@@ -25,18 +25,18 @@ function validPredecessor(): RiverDevControlledOperationExecutionLifecycleFounda
     executionLifecycleState:
       "CONTROLLED_OPERATION_EXECUTION_LIFECYCLE_ESTABLISHED",
 
-    controlledOperationExecutionReceipt: {} as any,
-    controlledOperationExecution: {} as any,
-    operationExecutionAuthorization: {} as any,
-    controlledExecutorInvocation: {} as any,
-    controlledDispatch: {} as any,
-    dispatchAuthorization: {} as any,
-    activeAdmission: {} as any,
-    authorization: {} as any,
-    eligibility: {} as any,
-    consumption: {} as any,
-    receiptState: {} as any,
-    executedOperation: {} as any,
+    controlledOperationExecutionReceipt: {} as unknown as import("../types").RiverDevControlledOperationExecutionReceiptFoundationResult | null,
+    controlledOperationExecution: {} as unknown as import("../types").RiverDevControlledOperationExecutionBoundaryFoundationResult | null,
+    operationExecutionAuthorization: {} as unknown as import("../types").RiverDevOperationExecutionAuthorizationFoundationResult | null,
+    controlledExecutorInvocation: {} as unknown as import("../types").RiverDevControlledExecutorInvocationFoundationResult | null,
+    controlledDispatch: {} as unknown as import("../types").RiverDevControlledExecutorDispatchFoundationResult | null,
+    dispatchAuthorization: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationFoundationResult | null,
+    activeAdmission: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionFoundationResult | null,
+    authorization: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionAuthorizationFoundationResult | null,
+    eligibility: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionEligibilityFoundationResult | null,
+    consumption: {} as unknown as import("../types").RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionConsumptionFoundationResult | null,
+    receiptState: {} as unknown as string | null,
+    executedOperation: {} as unknown as string | null,
 
     approvedExecutionScope: ["operation:test"],
     provenance: ["DEV-277"],
@@ -127,8 +127,8 @@ test(
 );
 
 test("DEV-278 rejects wrong predecessor version", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.version = "DEV-276";
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "version", "DEV-276");
 
   const result =
     establishControlledExecutionCompletionFoundation(predecessor);
@@ -138,7 +138,7 @@ test("DEV-278 rejects wrong predecessor version", () => {
 
 test("DEV-278 rejects untrusted predecessor", () => {
   const predecessor = validPredecessor();
-  predecessor.trusted = false;
+  Reflect.set(predecessor, "trusted", false);
 
   const result =
     establishControlledExecutionCompletionFoundation(predecessor);
@@ -148,7 +148,7 @@ test("DEV-278 rejects untrusted predecessor", () => {
 
 test("DEV-278 rejects unready predecessor", () => {
   const predecessor = validPredecessor();
-  predecessor.ready = false;
+  Reflect.set(predecessor, "ready", false);
 
   const result =
     establishControlledExecutionCompletionFoundation(predecessor);
@@ -158,7 +158,7 @@ test("DEV-278 rejects unready predecessor", () => {
 
 test("DEV-278 rejects predecessor without established lifecycle", () => {
   const predecessor = validPredecessor();
-  predecessor.executionLifecycleEstablished = false;
+  Reflect.set(predecessor, "executionLifecycleEstablished", false);
 
   const result =
     establishControlledExecutionCompletionFoundation(predecessor);
@@ -167,9 +167,8 @@ test("DEV-278 rejects predecessor without established lifecycle", () => {
 });
 
 test("DEV-278 rejects wrong lifecycle state", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.executionLifecycleState =
-    "CONTROLLED_OPERATION_EXECUTION_LIFECYCLE_NOT_ESTABLISHED";
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "executionLifecycleState", "CONTROLLED_OPERATION_EXECUTION_LIFECYCLE_NOT_ESTABLISHED");
 
   const result =
     establishControlledExecutionCompletionFoundation(predecessor);
@@ -178,8 +177,8 @@ test("DEV-278 rejects wrong lifecycle state", () => {
 });
 
 test("DEV-278 rejects non-deterministic lifecycle predecessor", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.executionLifecycleResultIsDeterministicData = false;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "executionLifecycleResultIsDeterministicData", false);
 
   const result =
     establishControlledExecutionCompletionFoundation(predecessor);
@@ -188,8 +187,8 @@ test("DEV-278 rejects non-deterministic lifecycle predecessor", () => {
 });
 
 test("DEV-278 rejects predecessor outside lifecycle boundary", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.controlledOperationExecutionLifecycleBoundaryOnly = false;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "controlledOperationExecutionLifecycleBoundaryOnly", false);
 
   const result =
     establishControlledExecutionCompletionFoundation(predecessor);
@@ -199,7 +198,7 @@ test("DEV-278 rejects predecessor outside lifecycle boundary", () => {
 
 test("DEV-278 rejects missing execution receipt", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecutionReceipt = null;
+  Reflect.set(predecessor, "controlledOperationExecutionReceipt", null);
 
   const result =
     establishControlledExecutionCompletionFoundation(predecessor);
@@ -209,7 +208,7 @@ test("DEV-278 rejects missing execution receipt", () => {
 
 test("DEV-278 rejects missing controlled operation execution", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecution = null;
+  Reflect.set(predecessor, "controlledOperationExecution", null);
 
   const result =
     establishControlledExecutionCompletionFoundation(predecessor);
@@ -219,7 +218,7 @@ test("DEV-278 rejects missing controlled operation execution", () => {
 
 test("DEV-278 rejects missing executed operation", () => {
   const predecessor = validPredecessor();
-  predecessor.executedOperation = null;
+  Reflect.set(predecessor, "executedOperation", null);
 
   const result =
     establishControlledExecutionCompletionFoundation(predecessor);
@@ -229,7 +228,7 @@ test("DEV-278 rejects missing executed operation", () => {
 
 test("DEV-278 rejects empty approved execution scope", () => {
   const predecessor = validPredecessor();
-  predecessor.approvedExecutionScope = [];
+  Reflect.set(predecessor, "approvedExecutionScope", []);
 
   const result =
     establishControlledExecutionCompletionFoundation(predecessor);
@@ -239,7 +238,7 @@ test("DEV-278 rejects empty approved execution scope", () => {
 
 test("DEV-278 rejects empty provenance", () => {
   const predecessor = validPredecessor();
-  predecessor.provenance = [];
+  Reflect.set(predecessor, "provenance", []);
 
   const result =
     establishControlledExecutionCompletionFoundation(predecessor);
@@ -249,7 +248,7 @@ test("DEV-278 rejects empty provenance", () => {
 
 test("DEV-278 rejects missing lifecycle evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecutionLifecycleEvidence = [];
+  Reflect.set(predecessor, "controlledOperationExecutionLifecycleEvidence", []);
 
   const result =
     establishControlledExecutionCompletionFoundation(predecessor);
@@ -259,7 +258,7 @@ test("DEV-278 rejects missing lifecycle evidence", () => {
 
 test("DEV-278 rejects blocked predecessor", () => {
   const predecessor = validPredecessor();
-  predecessor.blockedReasons = ["blocked"];
+  Reflect.set(predecessor, "blockedReasons", ["blocked"]);
 
   const result =
     establishControlledExecutionCompletionFoundation(predecessor);
@@ -268,8 +267,8 @@ test("DEV-278 rejects blocked predecessor", () => {
 });
 
 test("DEV-278 rejects predecessor with executor authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayInvokeExecutor = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayInvokeExecutor", true);
 
   const result =
     establishControlledExecutionCompletionFoundation(predecessor);
@@ -278,8 +277,8 @@ test("DEV-278 rejects predecessor with executor authority", () => {
 });
 
 test("DEV-278 rejects predecessor with execution authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayExecuteOperation = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayExecuteOperation", true);
 
   const result =
     establishControlledExecutionCompletionFoundation(predecessor);
@@ -288,8 +287,8 @@ test("DEV-278 rejects predecessor with execution authority", () => {
 });
 
 test("DEV-278 rejects predecessor with retry authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayRetryExecution = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayRetryExecution", true);
 
   const result =
     establishControlledExecutionCompletionFoundation(predecessor);
@@ -298,8 +297,8 @@ test("DEV-278 rejects predecessor with retry authority", () => {
 });
 
 test("DEV-278 rejects predecessor with lifecycle persistence authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayPersistLifecycleState = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayPersistLifecycleState", true);
 
   const result =
     establishControlledExecutionCompletionFoundation(predecessor);
@@ -308,8 +307,8 @@ test("DEV-278 rejects predecessor with lifecycle persistence authority", () => {
 });
 
 test("DEV-278 rejects predecessor with repository mutation authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayModifyRepository = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayModifyRepository", true);
 
   const result =
     establishControlledExecutionCompletionFoundation(predecessor);
@@ -318,8 +317,8 @@ test("DEV-278 rejects predecessor with repository mutation authority", () => {
 });
 
 test("DEV-278 rejects predecessor with external side-effect authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayPerformExternalSideEffects = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayPerformExternalSideEffects", true);
 
   const result =
     establishControlledExecutionCompletionFoundation(predecessor);
@@ -328,8 +327,8 @@ test("DEV-278 rejects predecessor with external side-effect authority", () => {
 });
 
 test("DEV-278 rejects missing future completion boundary", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.futureControlledExecutionCompletionBoundaryRequired = false;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "futureControlledExecutionCompletionBoundaryRequired", false);
 
   const result =
     establishControlledExecutionCompletionFoundation(predecessor);

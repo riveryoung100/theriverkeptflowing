@@ -126,7 +126,7 @@ function createDocxAsset(
             [],
 
         status:
-            "stored",
+            "preserved",
 
         reviewStatus:
             "not-required",
@@ -307,6 +307,8 @@ test(
             "complete"
         );
 
+        assert.equal(typeof extraction.text, "string");
+        assert.ok(extraction.text !== undefined);
         assert.equal(
             extraction.text.trim(),
             expectedText

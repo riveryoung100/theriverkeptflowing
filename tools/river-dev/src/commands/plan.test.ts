@@ -1,3 +1,6 @@
+import { mkdtemp } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { execFileSync } from "node:child_process";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { resolve } from "node:path";
@@ -20,22 +23,19 @@ const repositoryRoot =
         ".."
     );
 
-const specificationPath =
-    resolve(
-        repositoryRoot,
-        ".river-dev",
-        "specifications",
-        "plan-001-architecture-grounded-production-planning-integration.json"
-    );
 
 
 test(
     "grounds the production governed plan in authoritative development context",
     async () => {
 
+        const fixtureRoot = await mkdtemp(resolve(tmpdir(), "river-plan-test-"));
+        execFileSync("git", ["clone", "--shared", "--quiet", repositoryRoot, fixtureRoot], { windowsHide: true });
+        execFileSync("git", ["switch", "-c", "plan-001-architecture-grounded-production-planning-integration"], { cwd: fixtureRoot, windowsHide: true, stdio: "pipe" });
+        const specificationPath = resolve(fixtureRoot, ".river-dev/specifications/plan-001-architecture-grounded-production-planning-integration.json");
         const configuration =
             await loadRiverDevConfiguration(
-                repositoryRoot
+                fixtureRoot
             );
 
         const generatedAt =

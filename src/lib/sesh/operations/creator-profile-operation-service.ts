@@ -392,18 +392,7 @@ implements AuthenticatedSeshCreatorProfileOperationService {
           true;
 
         readonly value:
-          Awaited<
-            ReturnType<
-              AuthenticatedSeshCreatorResolver[
-                "resolve"
-              ]
-            >
-          > extends {
-            readonly ok: true;
-            readonly value: infer TValue;
-          }
-            ? TValue
-            : never;
+          Extract<Awaited<ReturnType<AuthenticatedSeshCreatorResolver["resolve"]>>, { readonly ok: true }>["value"];
       }
     | {
         readonly ok:

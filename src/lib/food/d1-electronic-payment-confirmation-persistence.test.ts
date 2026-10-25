@@ -362,7 +362,7 @@ const malformedEnvelopes: [string, () => unknown][] = [
   ["missing success", () => ({ results: [] })], ["missing results", () => ({ success: true })],
   ["non-array", () => ({ success: true, results: {} })],
   ["inherited success", () => Object.assign(Object.create({ success: true }), { results: [] })],
-  ["getter", () => ({ get success() { assert.fail("envelope getter invoked"); }, results: [] })],
+  ["getter", () => ({ get success(): never { return assert.fail("envelope getter invoked"); }, results: [] })],
   ["duplicate", () => ok([row(), row()])], ["sparse", () => ok(new Array(1))],
   ["array accessor", () => ok(Object.defineProperty([row()], "0", { get() { assert.fail("array getter invoked"); } }))],
 ];

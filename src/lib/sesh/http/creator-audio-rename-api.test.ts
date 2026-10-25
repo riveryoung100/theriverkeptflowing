@@ -1,3 +1,4 @@
+import { parseSeshMusicProjectId as fixtureParseproject, parseSeshAudioAssetId as fixtureParseaudio } from "../identifiers";
 import assert from "node:assert/strict";
 import test from "node:test";
 
@@ -63,10 +64,10 @@ test(
           }),
 
         projectId:
-          "sesh-project:one",
+          fixtureParseproject("sesh-project:one"),
 
         audioAssetId:
-          "sesh-audio:one",
+          fixtureParseaudio("sesh-audio:one"),
 
         renames:
           service(
@@ -87,7 +88,7 @@ test(
 
                 value: {
                   id:
-                    "sesh-audio:one",
+                    fixtureParseaudio("sesh-audio:one"),
 
                   kind:
                     "recording",
@@ -114,8 +115,8 @@ test(
     assert.deepEqual(
       received,
       [
-        "sesh-project:one",
-        "sesh-audio:one",
+        fixtureParseproject("sesh-project:one"),
+        fixtureParseaudio("sesh-audio:one"),
         {
           name:
             "Renamed",
@@ -175,10 +176,10 @@ test(
           ),
 
         projectId:
-          "sesh-project:one",
+          fixtureParseproject("sesh-project:one"),
 
         audioAssetId:
-          "sesh-audio:one",
+          fixtureParseaudio("sesh-audio:one"),
 
         renames:
           service(
@@ -220,10 +221,10 @@ test(
           ),
 
         projectId:
-          "sesh-project:one",
+          fixtureParseproject("sesh-project:one"),
 
         audioAssetId:
-          "sesh-audio:one",
+          fixtureParseaudio("sesh-audio:one"),
 
         renames:
           service(
@@ -277,10 +278,10 @@ test(
             }),
 
           projectId:
-            "sesh-project:one",
+            fixtureParseproject("sesh-project:one"),
 
           audioAssetId:
-            "sesh-audio:one",
+            fixtureParseaudio("sesh-audio:one"),
 
           renames:
             service(

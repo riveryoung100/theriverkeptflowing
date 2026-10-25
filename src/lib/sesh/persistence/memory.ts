@@ -35,7 +35,7 @@ function success<T>(
 }
 
 function failure<T>(
-  kind: "not-found" | "validation" | "storage",
+  kind: import("./model").SeshPersistenceError["kind"],
   message: string,
 ): SeshPersistenceResult<T> {
   return {
@@ -601,7 +601,7 @@ implements SeshAudioAssetRepository {
 
   async getAudioAssetSnapshot(
     assetId: SeshAudioAssetId,
-  ) {
+  ): ReturnType<import("./repositories").SeshAudioAssetRepository["getAudioAssetSnapshot"]> {
     const assetResult =
       await this.getAudioAsset(
         assetId,
@@ -630,7 +630,7 @@ implements SeshAudioAssetRepository {
   async updateAudioAssetConditionally(
     asset: unknown,
     expectedRevision: number,
-  ) {
+  ): ReturnType<import("./repositories").SeshAudioAssetRepository["getAudioAssetSnapshot"]> {
     try {
       const validated =
         validateSeshAudioAsset(

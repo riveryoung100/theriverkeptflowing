@@ -178,7 +178,7 @@ test("persistence has only exact batch reads and append SQL", async () => {
 });
 
 test("migration 0004 defines immutable physical schema only; never executed", async () => {
-  const sql = await readFile(new URL("../../../migrations/food/0004_food_physical_inventory.sql", import.meta.url), "utf8");
+  const sql = (await readFile(new URL("../../../migrations/food/0004_food_physical_inventory.sql", import.meta.url), "utf8")).replace(/\r\n/g, "\n");
   assert.match(sql, /^PRAGMA foreign_keys = ON;/);
   assert.deepEqual([...sql.matchAll(/CREATE TABLE IF NOT EXISTS (\w+)/g)].map(match => match[1]), ["food_production_batches", "food_physical_inventory_movements"]);
   assert.match(sql, /PRIMARY KEY\s*\(batch_id, version\)/);

@@ -1,3 +1,4 @@
+import type { D1FulfillmentDatabase } from "./d1-fulfillment-persistence";
 import type {
     FulfillmentPersistence
 } from "../fulfillment/persistence";
@@ -420,7 +421,7 @@ implements OrderPersistenceSurface {
 
     public constructor(
         private readonly database:
-            D1Database
+            D1FulfillmentDatabase
     ) {}
 
 
@@ -531,7 +532,7 @@ implements OrderPersistenceSurface {
 
 export function createD1CommerceOrderPersistence(
     database:
-        D1Database
+        D1FulfillmentDatabase
 ): OrderPersistenceSurface {
 
     return new D1CommerceOrderPersistence(

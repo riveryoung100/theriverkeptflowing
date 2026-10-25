@@ -435,7 +435,7 @@ export async function handleCreatorPrivateAudioRead(
     );
 
     return new Response(
-      result.value.bytes,
+      new Uint8Array(result.value.bytes),
       {
         status:
           206,
@@ -446,7 +446,7 @@ export async function handleCreatorPrivateAudioRead(
   }
 
   return new Response(
-    result.value.bytes,
+    new Uint8Array(result.value.bytes),
     {
       status:
         200,

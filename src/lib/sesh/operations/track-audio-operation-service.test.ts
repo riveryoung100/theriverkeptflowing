@@ -1,3 +1,4 @@
+import { parsePrincipalId } from "../../identity/identifiers";
 import assert from "node:assert/strict";
 import test from "node:test";
 
@@ -80,6 +81,9 @@ function ownerAuthorizer(
           true as const,
 
         value: {
+          principalId: parsePrincipalId("principal:track-audio-owner"),
+          projectId,
+          action: "write" as const,
           seshCreatorId:
             creatorId,
         },

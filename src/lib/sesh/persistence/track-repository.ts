@@ -1,3 +1,4 @@
+export type SeshTrackSnapshot = SeshTrackPersistenceSnapshot;
 import type {
   SeshMusicProjectId,
   SeshTrackId,

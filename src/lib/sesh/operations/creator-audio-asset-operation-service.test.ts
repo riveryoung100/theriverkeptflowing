@@ -1,3 +1,4 @@
+import { parseSeshMusicProjectId as fixtureParseproject, parseSeshAudioAssetId as fixtureParseaudio, parseSeshCreatorId as fixtureParsecreator } from "../identifiers";
 import assert from "node:assert/strict";
 import test from "node:test";
 
@@ -6,10 +7,10 @@ import {
 } from "./creator-audio-asset-operation-service";
 
 const projectId =
-  "sesh-project:project-one";
+  fixtureParseproject("sesh-project:project-one");
 
 const assetId =
-  "sesh-audio:take-one";
+  fixtureParseaudio("sesh-audio:take-one");
 
 function authorizedProjectReader() {
   return {
@@ -23,7 +24,7 @@ function authorizedProjectReader() {
             projectId,
 
           ownerCreatorId:
-            "sesh-creator:river",
+            fixtureParsecreator("sesh-creator:river"),
 
           title:
             "Project",
@@ -374,7 +375,7 @@ test(
                 ...authorizedAsset(),
 
                 projectId:
-                  "sesh-project:other",
+                  fixtureParseproject("sesh-project:other"),
               },
             };
           },
@@ -450,7 +451,7 @@ test(
                   ...authorizedAsset(),
 
                   projectId:
-                    "sesh-project:other",
+                    fixtureParseproject("sesh-project:other"),
                 },
               ],
             };

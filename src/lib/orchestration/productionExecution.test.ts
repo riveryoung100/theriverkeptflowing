@@ -21,10 +21,6 @@ import {
     productionKnowledgeQueryRequestInputKey
 } from "./handlers/productionKnowledgeQuery";
 import {
-    productionKnowledgeReasoningRequestInputKey
-} from "./handlers/productionKnowledgeReasoning";
-import {
-    productionKnowledgeInsightReasoningRequestInputKey,
     productionKnowledgeInsightRequestInputKey
 } from "./handlers/productionKnowledgeInsight";
 

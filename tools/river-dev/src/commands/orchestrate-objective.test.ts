@@ -26,23 +26,23 @@ async function initializeTemporaryGitRepository(repositoryRoot: string): Promise
 }
 
 function createFixtureDependencies(calls: string[]): RiverDevObjectiveOrchestrationDependencies {
-    const context = { branch: "fixture-branch" } as any;
-    const plan = { planId: "fixture-plan", branch: "fixture-branch" } as any;
-    const intent = { intentId: "fixture-intent" } as any;
-    const proposal = { version: "1.0.0", proposalId: "fixture-proposal", planId: "fixture-plan", branch: "fixture-branch", objective: "fixture objective", approved: true, operations: [] } as any;
-    const manifest = { implementationId: "fixture-implementation" } as any;
-    const preVerification = { verificationId: "fixture-pre-verification", passed: true, verifiedAt: "2026-08-31T00:00:00.000Z", commands: [], warnings: [] } as any;
-    const executionPackage = { version: "1.0.0", packageId: "fixture-package", planId: "fixture-plan", branch: "fixture-branch", state: "ready-for-implementation" } as any;
+    const context = { branch: "fixture-branch" } as unknown as Awaited<ReturnType<RiverDevObjectiveOrchestrationDependencies["understand"]>>;
+    const plan = { planId: "fixture-plan", branch: "fixture-branch" } as unknown as Awaited<ReturnType<RiverDevObjectiveOrchestrationDependencies["plan"]>>;
+    const intent = { intentId: "fixture-intent" } as unknown as Awaited<ReturnType<RiverDevObjectiveOrchestrationDependencies["generateIntent"]>>;
+    const proposal = { version: "1.0.0", proposalId: "fixture-proposal", planId: "fixture-plan", branch: "fixture-branch", objective: "fixture objective", approved: true, operations: [] } as unknown as import("../core/implementation-proposal").RiverDevImplementationProposal;
+    const manifest = { implementationId: "fixture-implementation" } as unknown as import("../execution/runner").RiverDevImplementationManifest;
+    const preVerification = { verificationId: "fixture-pre-verification", passed: true, verifiedAt: "2026-08-31T00:00:00.000Z", commands: [], warnings: [] } as unknown as Awaited<ReturnType<RiverDevObjectiveOrchestrationDependencies["executionVerification"]>>;
+    const executionPackage = { version: "1.0.0", packageId: "fixture-package", planId: "fixture-plan", branch: "fixture-branch", state: "ready-for-implementation" } as unknown as Awaited<ReturnType<RiverDevObjectiveOrchestrationDependencies["executionPackage"]>>;
     const persistedExecutionPackagePath = ".river-dev/execution-packages/fixture-package.json";
-    const execution = { packageId: "fixture-package", mode: "dry-run", implementation: {}, explicitApplyAuthorized: false } as any;
-    const verification = { version: "1.0.0", verificationId: "fixture-post-verification", branch: "fixture-branch", passed: true, requiredCommandsPassed: true, commandCount: 0, commands: [], warnings: [] } as any;
-    const review = { reviewId: "fixture-review", passed: true, repositoryRoot: ".", branch: "fixture-branch", changedPaths: [], unexpectedPaths: [], findings: [], diffSummary: "" } as any;
+    const execution = { packageId: "fixture-package", mode: "dry-run", implementation: {}, explicitApplyAuthorized: false } as unknown as Awaited<ReturnType<RiverDevObjectiveOrchestrationDependencies["execute"]>>;
+    const verification = { version: "1.0.0", verificationId: "fixture-post-verification", branch: "fixture-branch", passed: true, requiredCommandsPassed: true, commandCount: 0, commands: [], warnings: [] } as unknown as Awaited<ReturnType<RiverDevObjectiveOrchestrationDependencies["verify"]>>;
+    const review = { reviewId: "fixture-review", passed: true, repositoryRoot: ".", branch: "fixture-branch", changedPaths: [], unexpectedPaths: [], findings: [], diffSummary: "" } as unknown as Awaited<ReturnType<RiverDevObjectiveOrchestrationDependencies["review"]>>;
 
     return {
         understand: async () => { calls.push("understand"); return context; },
         plan: async (receivedContext) => { calls.push("plan"); assert.equal(receivedContext, context); return plan; },
         generateIntent: async (receivedPlan, receivedContext) => { calls.push("generate-intent"); assert.equal(receivedPlan, plan); assert.equal(receivedContext, context); return intent; },
-        runArtifactPipeline: (receivedPlan, receivedIntent, approveProposal) => { calls.push("generate-artifacts"); assert.equal(receivedPlan, plan); assert.equal(receivedIntent, intent); return approveProposal ? { outcome: "ready", proposal, manifest, proposalApproved: true, repositoryWritesPerformed: false } as any : { outcome: "approval-required", proposal: { ...proposal, approved: false }, manifest: null, proposalApproved: false, repositoryWritesPerformed: false } as any; },
+        runArtifactPipeline: (receivedPlan, receivedIntent, approveProposal) => { calls.push("generate-artifacts"); assert.equal(receivedPlan, plan); assert.equal(receivedIntent, intent); return approveProposal ? { outcome: "ready", proposal, manifest, proposalApproved: true, repositoryWritesPerformed: false } as unknown as import("../core/artifact-pipeline").RiverDevArtifactPipelineResult | Promise<import("../core/artifact-pipeline").RiverDevArtifactPipelineResult> : { outcome: "approval-required", proposal: { ...proposal, approved: false }, manifest: null, proposalApproved: false, repositoryWritesPerformed: false } as unknown as import("../core/artifact-pipeline").RiverDevArtifactPipelineResult | Promise<import("../core/artifact-pipeline").RiverDevArtifactPipelineResult>; },
         executionVerification: async (receivedProposal, receivedManifest) => { calls.push("execution-verification"); assert.equal(receivedProposal, proposal); assert.equal(receivedManifest, manifest); return preVerification; },
         executionPackage: async (receivedProposal, receivedManifest, receivedVerification) => { calls.push("execution-package"); assert.equal(receivedProposal, proposal); assert.equal(receivedManifest, manifest); assert.equal(receivedVerification, preVerification); return executionPackage; },
         persistExecutionPackage: async (receivedPackage) => { calls.push("persist-execution-package"); assert.equal(receivedPackage, executionPackage); return persistedExecutionPackagePath; },
@@ -85,7 +85,7 @@ test("requires explicit proposal approval before downstream execution lifecycle"
 test("blocks execution-package creation when pre-execution verification fails", async () => {
     const calls: string[] = [];
     const baseDependencies = createFixtureDependencies(calls);
-    const dependencies: RiverDevObjectiveOrchestrationDependencies = { ...baseDependencies, executionVerification: async () => { calls.push("execution-verification"); return { verificationId: "fixture-failed-pre-verification", passed: false, verifiedAt: null, commands: [], warnings: ["fixture failure"] } as any; } };
+    const dependencies: RiverDevObjectiveOrchestrationDependencies = { ...baseDependencies, executionVerification: async () => { calls.push("execution-verification"); return { verificationId: "fixture-failed-pre-verification", passed: false, verifiedAt: null, commands: [], warnings: ["fixture failure"] } as unknown as import("../core/execution-package").RiverDevExecutionVerificationMetadata | PromiseLike<import("../core/execution-package").RiverDevExecutionVerificationMetadata>; } };
     const result = await orchestrateObjectiveRiverDev(dependencies, { mode: "dry-run", approveProposal: true });
     assert.equal(result.outcome, "blocked");
     assert.equal(result.blockedStage, "execution-package");
@@ -98,7 +98,7 @@ test("blocks execution-package creation when pre-execution verification fails", 
 test("failed post-execution verification stops before review and exposes unsupported repair boundary", async () => {
     const calls: string[] = [];
     const baseDependencies = createFixtureDependencies(calls);
-    const dependencies: RiverDevObjectiveOrchestrationDependencies = { ...baseDependencies, verify: async (execution) => { calls.push("verify"); assert.ok(execution); return { version: "1.0.0", verificationId: "fixture-failed-verification", branch: "fixture-branch", passed: false, requiredCommandsPassed: false, commandCount: 1, commands: [], warnings: ["fixture failure"] } as any; } };
+    const dependencies: RiverDevObjectiveOrchestrationDependencies = { ...baseDependencies, verify: async (execution) => { calls.push("verify"); assert.ok(execution); return { version: "1.0.0", verificationId: "fixture-failed-verification", branch: "fixture-branch", passed: false, requiredCommandsPassed: false, commandCount: 1, commands: [], warnings: ["fixture failure"] } as unknown as import("../execution/verification").RiverDevVerificationResult | PromiseLike<import("../execution/verification").RiverDevVerificationResult>; } };
     const result = await orchestrateObjectiveRiverDev(dependencies, { mode: "dry-run", approveProposal: true });
     assert.equal(result.outcome, "blocked");
     assert.equal(result.blockedStage, "review");

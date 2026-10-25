@@ -1,3 +1,4 @@
+import { parseSeshMusicProjectId as fixtureParseproject, parseSeshAudioAssetId as fixtureParseaudio } from "../identifiers";
 import assert from "node:assert/strict";
 import test from "node:test";
 
@@ -45,7 +46,7 @@ function request(
         ...headers,
       },
 
-      body,
+      body: new Uint8Array(body),
     },
   );
 }
@@ -82,7 +83,7 @@ test(
           ),
 
         projectId:
-          "sesh-project:http-upload",
+          fixtureParseproject("sesh-project:http-upload"),
 
         uploads:
           uploadService(
@@ -102,7 +103,7 @@ test(
 
                 value: {
                   id:
-                    "sesh-audio:server-generated",
+                    fixtureParseaudio("sesh-audio:server-generated"),
 
                   kind:
                     "recording",
@@ -144,7 +145,7 @@ test(
 
     assert.equal(
       capturedProject,
-      "sesh-project:http-upload",
+      fixtureParseproject("sesh-project:http-upload"),
     );
 
     assert.deepEqual(
@@ -268,7 +269,7 @@ test(
             ),
 
           projectId:
-            "sesh-project:http-upload",
+            fixtureParseproject("sesh-project:http-upload"),
 
           uploads,
         });
@@ -306,7 +307,7 @@ test(
           ),
 
         projectId:
-          "sesh-project:http-upload",
+          fixtureParseproject("sesh-project:http-upload"),
 
         uploads:
           uploadService(
@@ -353,7 +354,7 @@ test(
           ),
 
         projectId:
-          "sesh-project:http-upload",
+          fixtureParseproject("sesh-project:http-upload"),
 
         uploads:
           uploadService(
@@ -410,7 +411,7 @@ test(
             ),
 
           projectId:
-            "sesh-project:http-upload",
+            fixtureParseproject("sesh-project:http-upload"),
 
           uploads:
             uploadService(

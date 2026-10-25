@@ -39,7 +39,7 @@ import type {
 
 function sha256(
     value:
-        Buffer
+        Uint8Array
         | string
 ): string {
 
@@ -226,7 +226,7 @@ describe(
                                     "sent",
                                 providerMessageReference:
                                     "product-001d-07-message",
-                                sentAt:
+                                acceptedAt:
                                     "2026-09-05T22:03:01.000Z"
                             };
 
@@ -372,7 +372,7 @@ describe(
 
                 assert.equal(
                     persistedFulfillment.deliveredAt,
-                    "2026-09-05T22:03:00.000Z"
+                    "2026-09-05T22:03:01.000Z"
                 );
 
                 assert.equal(

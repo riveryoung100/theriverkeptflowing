@@ -71,16 +71,16 @@ Astro.response.headers.set("X-Content-Type-Options", "nosniff");
         password instanceof HTMLInputElement && fields instanceof HTMLFieldSetElement &&
         submit instanceof HTMLButtonElement && status instanceof HTMLElement) {
       const unavailable = "Authentication is temporarily unavailable.";
-      const messages = { 401: { "invalid-credentials": "Invalid email or password." }, 403: { forbidden: "Login request was rejected." }, 503: { unavailable: "Authentication is temporarily unavailable." } };
+      const messages: Record<number, Record<string, string>> = { 401: { "invalid-credentials": "Invalid email or password." }, 403: { forbidden: "Login request was rejected." }, 503: { unavailable: "Authentication is temporarily unavailable." } };
       let pending = false;
 
-      function object(value) {
+      function object(value: unknown): value is Record<string, unknown> {
         return typeof value === "object" && value !== null && !Array.isArray(value);
       }
-      function keys(value, expected) {
+      function keys(value: unknown, expected: string): value is Record<string, unknown> {
         return object(value) && Object.keys(value).sort().join(",") === expected;
       }
-      async function readResponse(response) {
+      async function readResponse(response: Response): Promise<unknown> {
         if (response.redirected || !response.body) throw new Error();
         const reader = response.body.getReader();
         const bytes = new Uint8Array(4096);
@@ -102,7 +102,7 @@ Astro.response.headers.set("X-Content-Type-Options", "nosniff");
           reader.releaseLock();
         }
       }
-      function feedback(statusCode, body) {
+      function feedback(statusCode: number, body: unknown) {
         if (statusCode === 200 && keys(body, "ok") && body.ok === true) return "You are signed in.";
         if (!keys(body, "error,ok") || body.ok !== false || !keys(body.error, "code,message") ||
             typeof body.error.code !== "string" || typeof body.error.message !== "string") return unavailable;
@@ -122,22 +122,21 @@ Astro.response.headers.set("X-Content-Type-Options", "nosniff");
         form.setAttribute("aria-busy", "true");
         status.textContent = "Signing in…";
 
-        let payload;
-        let body;
+        const transient: { payload: { email: string; password: string } | undefined; body: string | undefined } = { payload: undefined, body: undefined };
         try {
-          payload = { email: email.value, password: password.value };
-          body = JSON.stringify(payload);
+          transient.payload = { email: email.value, password: password.value };
+          transient.body = JSON.stringify(transient.payload);
           password.value = "";
           const response = await fetch("/api/identity/login", {
             method: "POST", headers: { "Content-Type": "application/json" },
-            credentials: "same-origin", redirect: "error", cache: "no-store", body
+            credentials: "same-origin", redirect: "error", cache: "no-store", body: transient.body
           });
           status.textContent = feedback(response.status, await readResponse(response));
         } catch {
           status.textContent = unavailable;
         } finally {
-          payload = undefined;
-          body = undefined;
+          transient.payload = undefined;
+          transient.body = undefined;
           password.value = "";
           pending = false;
           fields.disabled = false;

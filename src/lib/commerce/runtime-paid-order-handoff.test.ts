@@ -134,7 +134,7 @@ implements DeliveryProvider {
             providerMessageReference:
                 "runtime-message-001",
 
-            sentAt:
+            acceptedAt:
                 "2026-09-06T00:02:00.000Z"
         };
     }

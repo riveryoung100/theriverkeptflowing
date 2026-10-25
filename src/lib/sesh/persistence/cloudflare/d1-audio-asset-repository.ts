@@ -310,7 +310,7 @@ implements SeshAudioAssetRepository {
 
   async getAudioAssetSnapshot(
     assetId: SeshAudioAssetId,
-  ) {
+  ): ReturnType<import("../repositories").SeshAudioAssetRepository["getAudioAssetSnapshot"]> {
     let canonicalId:
       SeshAudioAssetId;
 
@@ -390,7 +390,7 @@ implements SeshAudioAssetRepository {
   async updateAudioAssetConditionally(
     asset: unknown,
     expectedRevision: number,
-  ) {
+  ): ReturnType<import("../repositories").SeshAudioAssetRepository["getAudioAssetSnapshot"]> {
     let validated:
       SeshAudioAsset;
 

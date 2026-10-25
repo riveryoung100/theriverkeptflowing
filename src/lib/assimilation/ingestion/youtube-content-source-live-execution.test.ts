@@ -30,7 +30,7 @@ function createOptions(
         string,
     overrides:
         Record<string, unknown> = {}
-): any {
+): Parameters<typeof executeYouTubeContentSourceLiveDiscovery>[0] {
 
     return {
         persistenceRoot,

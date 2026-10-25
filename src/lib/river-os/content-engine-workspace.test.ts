@@ -32,7 +32,7 @@ function createEntry(
             "2026-01-01T00:00:00.000Z",
         sourceStatus:
             transcriptState === "available"
-                ? "transcript-available"
+                ? "transcript-ready"
                 : "transcript-pending",
         transcriptState,
         ingestedAt:

@@ -43,8 +43,5 @@ export function createInsuranceOutboundContactProviderComposition(
         };
     }
 
-    const exhaustive: never =
-        configuration;
-
-    return exhaustive;
+    throw new TypeError("Unsupported outbound contact provider");
 }

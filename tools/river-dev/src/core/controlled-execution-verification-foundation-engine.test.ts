@@ -25,24 +25,24 @@ function validPredecessor():
 
     executionAttestationState: "CONTROLLED_EXECUTION_ATTESTED",
 
-    controlledExecutionAudit: {} as any,
-    controlledExecutionArchive: {} as any,
-    controlledExecutionClosure: {} as any,
-    controlledExecutionFinalization: {} as any,
-    controlledExecutionCompletion: {} as any,
-    controlledOperationExecutionLifecycle: {} as any,
-    controlledOperationExecutionReceipt: {} as any,
-    controlledOperationExecution: {} as any,
-    operationExecutionAuthorization: {} as any,
-    controlledExecutorInvocation: {} as any,
-    controlledDispatch: {} as any,
-    dispatchAuthorization: {} as any,
-    activeAdmission: {} as any,
-    authorization: {} as any,
-    eligibility: {} as any,
-    consumption: {} as any,
-    receiptState: {} as any,
-    executedOperation: {} as any,
+    controlledExecutionAudit: {} as unknown as import("../types").RiverDevControlledExecutionAuditFoundationResult | null,
+    controlledExecutionArchive: {} as unknown as import("../types").RiverDevControlledExecutionArchiveFoundationResult | null,
+    controlledExecutionClosure: {} as unknown as import("../types").RiverDevControlledExecutionClosureFoundationResult | null,
+    controlledExecutionFinalization: {} as unknown as import("../types").RiverDevControlledExecutionFinalizationFoundationResult | null,
+    controlledExecutionCompletion: {} as unknown as import("../types").RiverDevControlledExecutionCompletionFoundationResult | null,
+    controlledOperationExecutionLifecycle: {} as unknown as import("../types").RiverDevControlledOperationExecutionLifecycleFoundationResult | null,
+    controlledOperationExecutionReceipt: {} as unknown as import("../types").RiverDevControlledOperationExecutionReceiptFoundationResult | null,
+    controlledOperationExecution: {} as unknown as import("../types").RiverDevControlledOperationExecutionBoundaryFoundationResult | null,
+    operationExecutionAuthorization: {} as unknown as import("../types").RiverDevOperationExecutionAuthorizationFoundationResult | null,
+    controlledExecutorInvocation: {} as unknown as import("../types").RiverDevControlledExecutorInvocationFoundationResult | null,
+    controlledDispatch: {} as unknown as import("../types").RiverDevControlledExecutorDispatchFoundationResult | null,
+    dispatchAuthorization: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationFoundationResult | null,
+    activeAdmission: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionFoundationResult | null,
+    authorization: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionAuthorizationFoundationResult | null,
+    eligibility: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionEligibilityFoundationResult | null,
+    consumption: {} as unknown as import("../types").RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionConsumptionFoundationResult | null,
+    receiptState: {} as unknown as string | null,
+    executedOperation: {} as unknown as string | null,
 
     approvedExecutionScope: ["controlled-operation"],
     provenance: ["DEV-283"],
@@ -185,15 +185,15 @@ test(
 );
 
 test("DEV-284 rejects wrong predecessor version", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.version = "DEV-282";
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "version", "DEV-282");
 
   expectDenied(predecessor, "INVALID_DEV_283_VERSION");
 });
 
 test("DEV-284 rejects untrusted predecessor", () => {
   const predecessor = validPredecessor();
-  predecessor.trusted = false;
+  Reflect.set(predecessor, "trusted", false);
 
   expectDenied(
     predecessor,
@@ -203,7 +203,7 @@ test("DEV-284 rejects untrusted predecessor", () => {
 
 test("DEV-284 rejects unready predecessor", () => {
   const predecessor = validPredecessor();
-  predecessor.ready = false;
+  Reflect.set(predecessor, "ready", false);
 
   expectDenied(
     predecessor,
@@ -213,7 +213,7 @@ test("DEV-284 rejects unready predecessor", () => {
 
 test("DEV-284 rejects unattested predecessor", () => {
   const predecessor = validPredecessor();
-  predecessor.executionAttested = false;
+  Reflect.set(predecessor, "executionAttested", false);
 
   expectDenied(
     predecessor,
@@ -224,8 +224,7 @@ test("DEV-284 rejects unattested predecessor", () => {
 test("DEV-284 rejects wrong attestation state", () => {
   const predecessor = validPredecessor();
 
-  predecessor.executionAttestationState =
-    "CONTROLLED_EXECUTION_NOT_ATTESTED";
+  Reflect.set(predecessor, "executionAttestationState", "CONTROLLED_EXECUTION_NOT_ATTESTED");
 
   expectDenied(
     predecessor,
@@ -236,10 +235,9 @@ test("DEV-284 rejects wrong attestation state", () => {
 test(
   "DEV-284 rejects non-deterministic attestation result",
   () => {
-    const predecessor = validPredecessor() as any;
+    const predecessor = validPredecessor();
 
-    predecessor.executionAttestationResultIsDeterministicData =
-      false;
+    Reflect.set(predecessor, "executionAttestationResultIsDeterministicData", false);
 
     expectDenied(
       predecessor,
@@ -251,10 +249,9 @@ test(
 test(
   "DEV-284 rejects predecessor outside attestation boundary",
   () => {
-    const predecessor = validPredecessor() as any;
+    const predecessor = validPredecessor();
 
-    predecessor.controlledExecutionAttestationBoundaryOnly =
-      false;
+    Reflect.set(predecessor, "controlledExecutionAttestationBoundaryOnly", false);
 
     expectDenied(
       predecessor,
@@ -265,7 +262,7 @@ test(
 
 test("DEV-284 rejects missing execution audit", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledExecutionAudit = null;
+  Reflect.set(predecessor, "controlledExecutionAudit", null);
 
   expectDenied(
     predecessor,
@@ -275,7 +272,7 @@ test("DEV-284 rejects missing execution audit", () => {
 
 test("DEV-284 rejects missing execution archive", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledExecutionArchive = null;
+  Reflect.set(predecessor, "controlledExecutionArchive", null);
 
   expectDenied(
     predecessor,
@@ -285,7 +282,7 @@ test("DEV-284 rejects missing execution archive", () => {
 
 test("DEV-284 rejects missing execution closure", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledExecutionClosure = null;
+  Reflect.set(predecessor, "controlledExecutionClosure", null);
 
   expectDenied(
     predecessor,
@@ -295,7 +292,7 @@ test("DEV-284 rejects missing execution closure", () => {
 
 test("DEV-284 rejects missing execution finalization", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledExecutionFinalization = null;
+  Reflect.set(predecessor, "controlledExecutionFinalization", null);
 
   expectDenied(
     predecessor,
@@ -305,7 +302,7 @@ test("DEV-284 rejects missing execution finalization", () => {
 
 test("DEV-284 rejects missing execution completion", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledExecutionCompletion = null;
+  Reflect.set(predecessor, "controlledExecutionCompletion", null);
 
   expectDenied(
     predecessor,
@@ -315,7 +312,7 @@ test("DEV-284 rejects missing execution completion", () => {
 
 test("DEV-284 rejects missing execution lifecycle", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecutionLifecycle = null;
+  Reflect.set(predecessor, "controlledOperationExecutionLifecycle", null);
 
   expectDenied(
     predecessor,
@@ -325,7 +322,7 @@ test("DEV-284 rejects missing execution lifecycle", () => {
 
 test("DEV-284 rejects missing execution receipt", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecutionReceipt = null;
+  Reflect.set(predecessor, "controlledOperationExecutionReceipt", null);
 
   expectDenied(
     predecessor,
@@ -337,7 +334,7 @@ test(
   "DEV-284 rejects missing controlled operation execution",
   () => {
     const predecessor = validPredecessor();
-    predecessor.controlledOperationExecution = null;
+    Reflect.set(predecessor, "controlledOperationExecution", null);
 
     expectDenied(
       predecessor,
@@ -350,7 +347,7 @@ test(
   "DEV-284 rejects missing operation execution authorization",
   () => {
     const predecessor = validPredecessor();
-    predecessor.operationExecutionAuthorization = null;
+    Reflect.set(predecessor, "operationExecutionAuthorization", null);
 
     expectDenied(
       predecessor,
@@ -363,7 +360,7 @@ test(
   "DEV-284 rejects missing controlled executor invocation",
   () => {
     const predecessor = validPredecessor();
-    predecessor.controlledExecutorInvocation = null;
+    Reflect.set(predecessor, "controlledExecutorInvocation", null);
 
     expectDenied(
       predecessor,
@@ -374,7 +371,7 @@ test(
 
 test("DEV-284 rejects missing controlled dispatch", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledDispatch = null;
+  Reflect.set(predecessor, "controlledDispatch", null);
 
   expectDenied(
     predecessor,
@@ -384,7 +381,7 @@ test("DEV-284 rejects missing controlled dispatch", () => {
 
 test("DEV-284 rejects missing dispatch authorization", () => {
   const predecessor = validPredecessor();
-  predecessor.dispatchAuthorization = null;
+  Reflect.set(predecessor, "dispatchAuthorization", null);
 
   expectDenied(
     predecessor,
@@ -394,7 +391,7 @@ test("DEV-284 rejects missing dispatch authorization", () => {
 
 test("DEV-284 rejects missing active admission", () => {
   const predecessor = validPredecessor();
-  predecessor.activeAdmission = null;
+  Reflect.set(predecessor, "activeAdmission", null);
 
   expectDenied(
     predecessor,
@@ -404,7 +401,7 @@ test("DEV-284 rejects missing active admission", () => {
 
 test("DEV-284 rejects missing authorization", () => {
   const predecessor = validPredecessor();
-  predecessor.authorization = null;
+  Reflect.set(predecessor, "authorization", null);
 
   expectDenied(
     predecessor,
@@ -414,7 +411,7 @@ test("DEV-284 rejects missing authorization", () => {
 
 test("DEV-284 rejects missing eligibility", () => {
   const predecessor = validPredecessor();
-  predecessor.eligibility = null;
+  Reflect.set(predecessor, "eligibility", null);
 
   expectDenied(
     predecessor,
@@ -424,7 +421,7 @@ test("DEV-284 rejects missing eligibility", () => {
 
 test("DEV-284 rejects missing consumption", () => {
   const predecessor = validPredecessor();
-  predecessor.consumption = null;
+  Reflect.set(predecessor, "consumption", null);
 
   expectDenied(
     predecessor,
@@ -434,7 +431,7 @@ test("DEV-284 rejects missing consumption", () => {
 
 test("DEV-284 rejects missing receipt state", () => {
   const predecessor = validPredecessor();
-  predecessor.receiptState = null;
+  Reflect.set(predecessor, "receiptState", null);
 
   expectDenied(
     predecessor,
@@ -444,7 +441,7 @@ test("DEV-284 rejects missing receipt state", () => {
 
 test("DEV-284 rejects missing executed operation", () => {
   const predecessor = validPredecessor();
-  predecessor.executedOperation = null;
+  Reflect.set(predecessor, "executedOperation", null);
 
   expectDenied(
     predecessor,
@@ -454,7 +451,7 @@ test("DEV-284 rejects missing executed operation", () => {
 
 test("DEV-284 rejects empty approved execution scope", () => {
   const predecessor = validPredecessor();
-  predecessor.approvedExecutionScope = [];
+  Reflect.set(predecessor, "approvedExecutionScope", []);
 
   expectDenied(
     predecessor,
@@ -464,7 +461,7 @@ test("DEV-284 rejects empty approved execution scope", () => {
 
 test("DEV-284 rejects empty provenance", () => {
   const predecessor = validPredecessor();
-  predecessor.provenance = [];
+  Reflect.set(predecessor, "provenance", []);
 
   expectDenied(
     predecessor,
@@ -476,7 +473,7 @@ test(
   "DEV-284 rejects missing controlled dispatch evidence",
   () => {
     const predecessor = validPredecessor();
-    predecessor.controlledDispatchEvidence = [];
+    Reflect.set(predecessor, "controlledDispatchEvidence", []);
 
     expectDenied(
       predecessor,
@@ -489,7 +486,7 @@ test(
   "DEV-284 rejects missing executor invocation authorization evidence",
   () => {
     const predecessor = validPredecessor();
-    predecessor.executorInvocationAuthorizationEvidence = [];
+    Reflect.set(predecessor, "executorInvocationAuthorizationEvidence", []);
 
     expectDenied(
       predecessor,
@@ -502,7 +499,7 @@ test(
   "DEV-284 rejects missing controlled executor invocation evidence",
   () => {
     const predecessor = validPredecessor();
-    predecessor.controlledExecutorInvocationEvidence = [];
+    Reflect.set(predecessor, "controlledExecutorInvocationEvidence", []);
 
     expectDenied(
       predecessor,
@@ -515,7 +512,7 @@ test(
   "DEV-284 rejects missing operation execution authorization evidence",
   () => {
     const predecessor = validPredecessor();
-    predecessor.operationExecutionAuthorizationEvidence = [];
+    Reflect.set(predecessor, "operationExecutionAuthorizationEvidence", []);
 
     expectDenied(
       predecessor,
@@ -528,7 +525,7 @@ test(
   "DEV-284 rejects missing controlled operation execution evidence",
   () => {
     const predecessor = validPredecessor();
-    predecessor.controlledOperationExecutionEvidence = [];
+    Reflect.set(predecessor, "controlledOperationExecutionEvidence", []);
 
     expectDenied(
       predecessor,
@@ -541,7 +538,7 @@ test(
   "DEV-284 rejects missing execution receipt evidence",
   () => {
     const predecessor = validPredecessor();
-    predecessor.controlledOperationExecutionReceiptEvidence = [];
+    Reflect.set(predecessor, "controlledOperationExecutionReceiptEvidence", []);
 
     expectDenied(
       predecessor,
@@ -554,7 +551,7 @@ test(
   "DEV-284 rejects missing execution lifecycle evidence",
   () => {
     const predecessor = validPredecessor();
-    predecessor.controlledOperationExecutionLifecycleEvidence = [];
+    Reflect.set(predecessor, "controlledOperationExecutionLifecycleEvidence", []);
 
     expectDenied(
       predecessor,
@@ -567,7 +564,7 @@ test(
   "DEV-284 rejects missing execution completion evidence",
   () => {
     const predecessor = validPredecessor();
-    predecessor.controlledExecutionCompletionEvidence = [];
+    Reflect.set(predecessor, "controlledExecutionCompletionEvidence", []);
 
     expectDenied(
       predecessor,
@@ -580,7 +577,7 @@ test(
   "DEV-284 rejects missing execution finalization evidence",
   () => {
     const predecessor = validPredecessor();
-    predecessor.controlledExecutionFinalizationEvidence = [];
+    Reflect.set(predecessor, "controlledExecutionFinalizationEvidence", []);
 
     expectDenied(
       predecessor,
@@ -593,7 +590,7 @@ test(
   "DEV-284 rejects missing execution closure evidence",
   () => {
     const predecessor = validPredecessor();
-    predecessor.controlledExecutionClosureEvidence = [];
+    Reflect.set(predecessor, "controlledExecutionClosureEvidence", []);
 
     expectDenied(
       predecessor,
@@ -606,7 +603,7 @@ test(
   "DEV-284 rejects missing execution archive evidence",
   () => {
     const predecessor = validPredecessor();
-    predecessor.controlledExecutionArchiveEvidence = [];
+    Reflect.set(predecessor, "controlledExecutionArchiveEvidence", []);
 
     expectDenied(
       predecessor,
@@ -619,7 +616,7 @@ test(
   "DEV-284 rejects missing execution audit evidence",
   () => {
     const predecessor = validPredecessor();
-    predecessor.controlledExecutionAuditEvidence = [];
+    Reflect.set(predecessor, "controlledExecutionAuditEvidence", []);
 
     expectDenied(
       predecessor,
@@ -632,7 +629,7 @@ test(
   "DEV-284 rejects missing execution attestation evidence",
   () => {
     const predecessor = validPredecessor();
-    predecessor.controlledExecutionAttestationEvidence = [];
+    Reflect.set(predecessor, "controlledExecutionAttestationEvidence", []);
 
     expectDenied(
       predecessor,
@@ -643,7 +640,7 @@ test(
 
 test("DEV-284 rejects blocked predecessor", () => {
   const predecessor = validPredecessor();
-  predecessor.blockedReasons = ["blocked"];
+  Reflect.set(predecessor, "blockedReasons", ["blocked"]);
 
   expectDenied(
     predecessor,
@@ -652,8 +649,8 @@ test("DEV-284 rejects blocked predecessor", () => {
 });
 
 test("DEV-284 rejects executor authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayInvokeExecutor = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayInvokeExecutor", true);
 
   expectDenied(
     predecessor,
@@ -662,8 +659,8 @@ test("DEV-284 rejects executor authority", () => {
 });
 
 test("DEV-284 rejects execution authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayExecuteOperation = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayExecuteOperation", true);
 
   expectDenied(
     predecessor,
@@ -672,8 +669,8 @@ test("DEV-284 rejects execution authority", () => {
 });
 
 test("DEV-284 rejects retry authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayRetryExecution = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayRetryExecution", true);
 
   expectDenied(
     predecessor,
@@ -684,8 +681,8 @@ test("DEV-284 rejects retry authority", () => {
 test(
   "DEV-284 rejects lifecycle persistence authority",
   () => {
-    const predecessor = validPredecessor() as any;
-    predecessor.mayPersistLifecycleState = true;
+    const predecessor = validPredecessor();
+    Reflect.set(predecessor, "mayPersistLifecycleState", true);
 
     expectDenied(
       predecessor,
@@ -697,8 +694,8 @@ test(
 test(
   "DEV-284 rejects repository mutation authority",
   () => {
-    const predecessor = validPredecessor() as any;
-    predecessor.mayModifyRepository = true;
+    const predecessor = validPredecessor();
+    Reflect.set(predecessor, "mayModifyRepository", true);
 
     expectDenied(
       predecessor,
@@ -708,8 +705,8 @@ test(
 );
 
 test("DEV-284 rejects commit authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayCommit = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayCommit", true);
 
   expectDenied(
     predecessor,
@@ -718,8 +715,8 @@ test("DEV-284 rejects commit authority", () => {
 });
 
 test("DEV-284 rejects push authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayPush = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayPush", true);
 
   expectDenied(
     predecessor,
@@ -730,8 +727,8 @@ test("DEV-284 rejects push authority", () => {
 test(
   "DEV-284 rejects external side-effect authority",
   () => {
-    const predecessor = validPredecessor() as any;
-    predecessor.mayPerformExternalSideEffects = true;
+    const predecessor = validPredecessor();
+    Reflect.set(predecessor, "mayPerformExternalSideEffects", true);
 
     expectDenied(
       predecessor,
@@ -743,10 +740,9 @@ test(
 test(
   "DEV-284 rejects missing future verification boundary",
   () => {
-    const predecessor = validPredecessor() as any;
+    const predecessor = validPredecessor();
 
-    predecessor.futureControlledExecutionVerificationBoundaryRequired =
-      false;
+    Reflect.set(predecessor, "futureControlledExecutionVerificationBoundaryRequired", false);
 
     expectDenied(
       predecessor,

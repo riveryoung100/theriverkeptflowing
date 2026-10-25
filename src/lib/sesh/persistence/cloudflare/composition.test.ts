@@ -1,3 +1,4 @@
+import { parseSeshMusicProjectId as fixtureParseproject } from "../../identifiers";
 import assert from "node:assert/strict";
 import test from "node:test";
 
@@ -68,7 +69,7 @@ implements SeshR2BucketLike {
   Promise<void> {}
 
   async head():
-  Promise<unknown | null> {
+  Promise<import("./types").SeshR2HeadObjectLike | null> {
     return null;
   }
 }
@@ -115,13 +116,13 @@ test("uses one injected D1 binding for both metadata repositories", async () => 
 
   const projectExists =
     await composition.projectRepository.projectExists(
-      "sesh-project:test" as never,
+      fixtureParseproject("sesh-project:test") as never,
     );
 
   const audioListing =
     await composition.audioAssetRepository
       .listAudioAssetsForProject(
-        "sesh-project:test" as never,
+        fixtureParseproject("sesh-project:test") as never,
       );
 
   assert.deepEqual(projectExists, {

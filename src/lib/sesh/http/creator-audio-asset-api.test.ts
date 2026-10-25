@@ -1,3 +1,4 @@
+import { parseSeshMusicProjectId as fixtureParseproject, parseSeshAudioAssetId as fixtureParseaudio } from "../identifiers";
 import assert from "node:assert/strict";
 import test from "node:test";
 
@@ -12,7 +13,7 @@ test(
     const response =
       await handleCreatorAudioAssetCollectionRead({
         projectId:
-          "sesh-project:one",
+          fixtureParseproject("sesh-project:one"),
 
         operations: {
           async listProjectAudioAssets() {
@@ -23,7 +24,7 @@ test(
               value: [
                 {
                   id:
-                    "sesh-audio:one",
+                    fixtureParseaudio("sesh-audio:one"),
 
                   kind:
                     "recording" as const,
@@ -67,7 +68,7 @@ test(
         value: [
           {
             id:
-              "sesh-audio:one",
+              fixtureParseaudio("sesh-audio:one"),
 
             kind:
               "recording",
@@ -107,10 +108,10 @@ test(
       const response =
         await handleCreatorAudioAssetRead({
           projectId:
-            "sesh-project:one",
+            fixtureParseproject("sesh-project:one"),
 
           audioAssetId:
-            "sesh-audio:one",
+            fixtureParseaudio("sesh-audio:one"),
 
           operations: {
             async listProjectAudioAssets() {
@@ -161,10 +162,10 @@ test(
 
     await handleCreatorAudioAssetRead({
       projectId:
-        "sesh-project:one",
+        fixtureParseproject("sesh-project:one"),
 
       audioAssetId:
-        "sesh-audio:one",
+        fixtureParseaudio("sesh-audio:one"),
 
       operations: {
         async listProjectAudioAssets() {
@@ -189,7 +190,7 @@ test(
 
             value: {
               id:
-                "sesh-audio:one",
+                fixtureParseaudio("sesh-audio:one"),
 
               kind:
                 "recording" as const,
@@ -207,12 +208,12 @@ test(
 
     assert.equal(
       receivedProject,
-      "sesh-project:one",
+      fixtureParseproject("sesh-project:one"),
     );
 
     assert.equal(
       receivedAsset,
-      "sesh-audio:one",
+      fixtureParseaudio("sesh-audio:one"),
     );
   },
 );

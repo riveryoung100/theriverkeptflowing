@@ -58,6 +58,7 @@ SeshMusicProject {
       ),
     ],
 
+    sessionIds: [],
     audioAssetIds:
       [],
   };

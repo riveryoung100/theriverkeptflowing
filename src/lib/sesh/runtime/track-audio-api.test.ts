@@ -24,12 +24,10 @@ const fakeSession = {
     return undefined;
   },
 
-  regenerate() {
-    return undefined;
+  async regenerate() {
   },
 
-  destroy() {
-    return undefined;
+  async destroy() {
   },
 };
 

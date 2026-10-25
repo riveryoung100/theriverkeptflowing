@@ -25,21 +25,21 @@ function validPredecessor():
 
     executionClosureState: "CONTROLLED_EXECUTION_CLOSED",
 
-    controlledExecutionFinalization: {} as any,
-    controlledExecutionCompletion: {} as any,
-    controlledOperationExecutionLifecycle: {} as any,
-    controlledOperationExecutionReceipt: {} as any,
-    controlledOperationExecution: {} as any,
-    operationExecutionAuthorization: {} as any,
-    controlledExecutorInvocation: {} as any,
-    controlledDispatch: {} as any,
-    dispatchAuthorization: {} as any,
-    activeAdmission: {} as any,
-    authorization: {} as any,
-    eligibility: {} as any,
-    consumption: {} as any,
-    receiptState: {} as any,
-    executedOperation: {} as any,
+    controlledExecutionFinalization: {} as unknown as import("../types").RiverDevControlledExecutionFinalizationFoundationResult | null,
+    controlledExecutionCompletion: {} as unknown as import("../types").RiverDevControlledExecutionCompletionFoundationResult | null,
+    controlledOperationExecutionLifecycle: {} as unknown as import("../types").RiverDevControlledOperationExecutionLifecycleFoundationResult | null,
+    controlledOperationExecutionReceipt: {} as unknown as import("../types").RiverDevControlledOperationExecutionReceiptFoundationResult | null,
+    controlledOperationExecution: {} as unknown as import("../types").RiverDevControlledOperationExecutionBoundaryFoundationResult | null,
+    operationExecutionAuthorization: {} as unknown as import("../types").RiverDevOperationExecutionAuthorizationFoundationResult | null,
+    controlledExecutorInvocation: {} as unknown as import("../types").RiverDevControlledExecutorInvocationFoundationResult | null,
+    controlledDispatch: {} as unknown as import("../types").RiverDevControlledExecutorDispatchFoundationResult | null,
+    dispatchAuthorization: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationFoundationResult | null,
+    activeAdmission: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionFoundationResult | null,
+    authorization: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionAuthorizationFoundationResult | null,
+    eligibility: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionEligibilityFoundationResult | null,
+    consumption: {} as unknown as import("../types").RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionConsumptionFoundationResult | null,
+    receiptState: {} as unknown as string | null,
+    executedOperation: {} as unknown as string | null,
 
     approvedExecutionScope: ["operation:test"],
     provenance: ["DEV-280:test"],
@@ -153,8 +153,8 @@ test(
 );
 
 test("DEV-281 rejects wrong predecessor version", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.version = "DEV-279";
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "version", "DEV-279");
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -165,7 +165,7 @@ test("DEV-281 rejects wrong predecessor version", () => {
 
 test("DEV-281 rejects untrusted predecessor", () => {
   const predecessor = validPredecessor();
-  predecessor.trusted = false;
+  Reflect.set(predecessor, "trusted", false);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -175,7 +175,7 @@ test("DEV-281 rejects untrusted predecessor", () => {
 
 test("DEV-281 rejects unready predecessor", () => {
   const predecessor = validPredecessor();
-  predecessor.ready = false;
+  Reflect.set(predecessor, "ready", false);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -185,7 +185,7 @@ test("DEV-281 rejects unready predecessor", () => {
 
 test("DEV-281 rejects predecessor without closed execution", () => {
   const predecessor = validPredecessor();
-  predecessor.executionClosed = false;
+  Reflect.set(predecessor, "executionClosed", false);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -196,8 +196,7 @@ test("DEV-281 rejects predecessor without closed execution", () => {
 test("DEV-281 rejects wrong closure state", () => {
   const predecessor = validPredecessor();
 
-  predecessor.executionClosureState =
-    "CONTROLLED_EXECUTION_NOT_CLOSED";
+  Reflect.set(predecessor, "executionClosureState", "CONTROLLED_EXECUTION_NOT_CLOSED");
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -206,8 +205,8 @@ test("DEV-281 rejects wrong closure state", () => {
 });
 
 test("DEV-281 rejects non-deterministic closure predecessor", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.executionClosureResultIsDeterministicData = false;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "executionClosureResultIsDeterministicData", false);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -216,8 +215,8 @@ test("DEV-281 rejects non-deterministic closure predecessor", () => {
 });
 
 test("DEV-281 rejects predecessor outside closure boundary", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.controlledExecutionClosureBoundaryOnly = false;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "controlledExecutionClosureBoundaryOnly", false);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -227,7 +226,7 @@ test("DEV-281 rejects predecessor outside closure boundary", () => {
 
 test("DEV-281 rejects missing finalization", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledExecutionFinalization = null;
+  Reflect.set(predecessor, "controlledExecutionFinalization", null);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -237,7 +236,7 @@ test("DEV-281 rejects missing finalization", () => {
 
 test("DEV-281 rejects missing completion", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledExecutionCompletion = null;
+  Reflect.set(predecessor, "controlledExecutionCompletion", null);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -247,7 +246,7 @@ test("DEV-281 rejects missing completion", () => {
 
 test("DEV-281 rejects missing lifecycle", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecutionLifecycle = null;
+  Reflect.set(predecessor, "controlledOperationExecutionLifecycle", null);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -257,7 +256,7 @@ test("DEV-281 rejects missing lifecycle", () => {
 
 test("DEV-281 rejects missing execution receipt", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecutionReceipt = null;
+  Reflect.set(predecessor, "controlledOperationExecutionReceipt", null);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -267,7 +266,7 @@ test("DEV-281 rejects missing execution receipt", () => {
 
 test("DEV-281 rejects missing controlled operation execution", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecution = null;
+  Reflect.set(predecessor, "controlledOperationExecution", null);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -277,7 +276,7 @@ test("DEV-281 rejects missing controlled operation execution", () => {
 
 test("DEV-281 rejects missing executed operation", () => {
   const predecessor = validPredecessor();
-  predecessor.executedOperation = null;
+  Reflect.set(predecessor, "executedOperation", null);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -287,7 +286,7 @@ test("DEV-281 rejects missing executed operation", () => {
 
 test("DEV-281 rejects empty approved execution scope", () => {
   const predecessor = validPredecessor();
-  predecessor.approvedExecutionScope = [];
+  Reflect.set(predecessor, "approvedExecutionScope", []);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -297,7 +296,7 @@ test("DEV-281 rejects empty approved execution scope", () => {
 
 test("DEV-281 rejects empty provenance", () => {
   const predecessor = validPredecessor();
-  predecessor.provenance = [];
+  Reflect.set(predecessor, "provenance", []);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -307,7 +306,7 @@ test("DEV-281 rejects empty provenance", () => {
 
 test("DEV-281 rejects missing controlled dispatch evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledDispatchEvidence = [];
+  Reflect.set(predecessor, "controlledDispatchEvidence", []);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -319,7 +318,7 @@ test(
   "DEV-281 rejects missing executor invocation authorization evidence",
   () => {
     const predecessor = validPredecessor();
-    predecessor.executorInvocationAuthorizationEvidence = [];
+    Reflect.set(predecessor, "executorInvocationAuthorizationEvidence", []);
 
     const result =
       establishControlledExecutionArchiveFoundation(predecessor);
@@ -332,7 +331,7 @@ test(
   "DEV-281 rejects missing controlled executor invocation evidence",
   () => {
     const predecessor = validPredecessor();
-    predecessor.controlledExecutorInvocationEvidence = [];
+    Reflect.set(predecessor, "controlledExecutorInvocationEvidence", []);
 
     const result =
       establishControlledExecutionArchiveFoundation(predecessor);
@@ -345,7 +344,7 @@ test(
   "DEV-281 rejects missing operation execution authorization evidence",
   () => {
     const predecessor = validPredecessor();
-    predecessor.operationExecutionAuthorizationEvidence = [];
+    Reflect.set(predecessor, "operationExecutionAuthorizationEvidence", []);
 
     const result =
       establishControlledExecutionArchiveFoundation(predecessor);
@@ -356,7 +355,7 @@ test(
 
 test("DEV-281 rejects missing execution evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecutionEvidence = [];
+  Reflect.set(predecessor, "controlledOperationExecutionEvidence", []);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -366,7 +365,7 @@ test("DEV-281 rejects missing execution evidence", () => {
 
 test("DEV-281 rejects missing receipt evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecutionReceiptEvidence = [];
+  Reflect.set(predecessor, "controlledOperationExecutionReceiptEvidence", []);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -376,7 +375,7 @@ test("DEV-281 rejects missing receipt evidence", () => {
 
 test("DEV-281 rejects missing lifecycle evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecutionLifecycleEvidence = [];
+  Reflect.set(predecessor, "controlledOperationExecutionLifecycleEvidence", []);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -386,7 +385,7 @@ test("DEV-281 rejects missing lifecycle evidence", () => {
 
 test("DEV-281 rejects missing completion evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledExecutionCompletionEvidence = [];
+  Reflect.set(predecessor, "controlledExecutionCompletionEvidence", []);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -396,7 +395,7 @@ test("DEV-281 rejects missing completion evidence", () => {
 
 test("DEV-281 rejects missing finalization evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledExecutionFinalizationEvidence = [];
+  Reflect.set(predecessor, "controlledExecutionFinalizationEvidence", []);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -406,7 +405,7 @@ test("DEV-281 rejects missing finalization evidence", () => {
 
 test("DEV-281 rejects missing closure evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledExecutionClosureEvidence = [];
+  Reflect.set(predecessor, "controlledExecutionClosureEvidence", []);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -416,7 +415,7 @@ test("DEV-281 rejects missing closure evidence", () => {
 
 test("DEV-281 rejects blocked predecessor", () => {
   const predecessor = validPredecessor();
-  predecessor.blockedReasons = ["blocked"];
+  Reflect.set(predecessor, "blockedReasons", ["blocked"]);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -425,8 +424,8 @@ test("DEV-281 rejects blocked predecessor", () => {
 });
 
 test("DEV-281 rejects predecessor with executor authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayInvokeExecutor = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayInvokeExecutor", true);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -435,8 +434,8 @@ test("DEV-281 rejects predecessor with executor authority", () => {
 });
 
 test("DEV-281 rejects predecessor with execution authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayExecuteOperation = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayExecuteOperation", true);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -445,8 +444,8 @@ test("DEV-281 rejects predecessor with execution authority", () => {
 });
 
 test("DEV-281 rejects predecessor with retry authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayRetryExecution = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayRetryExecution", true);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -457,8 +456,8 @@ test("DEV-281 rejects predecessor with retry authority", () => {
 test(
   "DEV-281 rejects predecessor with lifecycle persistence authority",
   () => {
-    const predecessor = validPredecessor() as any;
-    predecessor.mayPersistLifecycleState = true;
+    const predecessor = validPredecessor();
+    Reflect.set(predecessor, "mayPersistLifecycleState", true);
 
     const result =
       establishControlledExecutionArchiveFoundation(predecessor);
@@ -470,8 +469,8 @@ test(
 test(
   "DEV-281 rejects predecessor with repository mutation authority",
   () => {
-    const predecessor = validPredecessor() as any;
-    predecessor.mayModifyRepository = true;
+    const predecessor = validPredecessor();
+    Reflect.set(predecessor, "mayModifyRepository", true);
 
     const result =
       establishControlledExecutionArchiveFoundation(predecessor);
@@ -481,8 +480,8 @@ test(
 );
 
 test("DEV-281 rejects predecessor with commit authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayCommit = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayCommit", true);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -491,8 +490,8 @@ test("DEV-281 rejects predecessor with commit authority", () => {
 });
 
 test("DEV-281 rejects predecessor with push authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayPush = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayPush", true);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);
@@ -503,8 +502,8 @@ test("DEV-281 rejects predecessor with push authority", () => {
 test(
   "DEV-281 rejects predecessor with external side-effect authority",
   () => {
-    const predecessor = validPredecessor() as any;
-    predecessor.mayPerformExternalSideEffects = true;
+    const predecessor = validPredecessor();
+    Reflect.set(predecessor, "mayPerformExternalSideEffects", true);
 
     const result =
       establishControlledExecutionArchiveFoundation(predecessor);
@@ -514,10 +513,9 @@ test(
 );
 
 test("DEV-281 rejects missing future archive boundary", () => {
-  const predecessor = validPredecessor() as any;
+  const predecessor = validPredecessor();
 
-  predecessor.futureControlledExecutionArchiveBoundaryRequired =
-    false;
+  Reflect.set(predecessor, "futureControlledExecutionArchiveBoundaryRequired", false);
 
   const result =
     establishControlledExecutionArchiveFoundation(predecessor);

@@ -605,7 +605,7 @@ implements AuthorizedSeshProjectOperationService {
       Awaited<
         ReturnType<
           SeshProjectRepository[
-            "saveProject"
+            "updateProjectConditionally"
           ]
         >
       >;

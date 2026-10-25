@@ -118,11 +118,8 @@ function parseCommand(
     switch (value) {
 
         case "inspect":
-
         case "discover-repository":
-
         case "context":
-
         case "plan":
         case "generate-artifacts":
         case "create-execution-package":

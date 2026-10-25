@@ -64,6 +64,8 @@ implements SeshProjectPublicationRepository {
     SeshProjectPublicationRecord | null =
       null;
 
+  async listPublicProjectPublicationsForOwner() { return { ok: true as const, value: this.record ? [this.record] : [] }; }
+
   async saveProjectPublication(
     record: unknown,
   ) {

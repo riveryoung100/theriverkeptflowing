@@ -56,8 +56,8 @@ test("no alternate selection, caching or proxying; independent environments pres
     environment.TEST_SELECTED = second; const changed = acquire({ environment, bindingName: "TEST_SELECTED" }); assert(changed.ok && changed.value === second);
     const independent = acquire({ environment: { TEST_SELECTED: first }, bindingName: "TEST_SELECTED" }); assert(independent.ok && independent.value === first);
     // This inert method is invoked only by the test after acquisition, to verify receiver preservation.
-    let receiver: unknown; const db: FoodD1Database = { prepare() { receiver = this; return { bind() { return this; }, async all() { return { success: true, results: [] }; } }; }, batch() { assert.fail("Unexpected batch"); } };
-    const r = acquire({ environment: { TEST_SELECTED: db }, bindingName: "TEST_SELECTED" }); assert(r.ok); assert.equal(receiver, undefined); r.value.prepare("synthetic inert test"); assert.equal(receiver, db);
+    const receivers: unknown[] = []; const db: FoodD1Database = { prepare() { receivers.push(this); return { bind() { return this; }, async all() { return { success: true, results: [] }; } }; }, batch() { assert.fail("Unexpected batch"); } };
+    const r = acquire({ environment: { TEST_SELECTED: db }, bindingName: "TEST_SELECTED" }); assert(r.ok); assert.equal(receivers.length, 0); r.value.prepare("synthetic inert test"); assert.deepEqual(receivers, [db]);
 });
 
 test("acquired capability can be manually supplied to H without acquisition composing or authorizing", async () => {

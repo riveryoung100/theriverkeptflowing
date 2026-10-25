@@ -162,7 +162,8 @@ function assertValidCoreRecord(
         }
 
         throw new TypeError(
-            `Persisted assimilation ${label} record is structurally invalid.`
+            `Persisted assimilation ${label} record is structurally invalid.`,
+            { cause: error }
         );
     }
 }

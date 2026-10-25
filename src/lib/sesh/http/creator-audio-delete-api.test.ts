@@ -1,3 +1,4 @@
+import { parseSeshMusicProjectId as fixtureParseproject, parseSeshAudioAssetId as fixtureParseaudio } from "../identifiers";
 import assert from "node:assert/strict";
 import test from "node:test";
 
@@ -49,10 +50,10 @@ test(
           request(),
 
         projectId:
-          "sesh-project:one",
+          fixtureParseproject("sesh-project:one"),
 
         audioAssetId:
-          "sesh-audio:one",
+          fixtureParseaudio("sesh-audio:one"),
 
         deletes: {
           async deleteProjectAudio(
@@ -71,7 +72,7 @@ test(
 
               value: {
                 id:
-                  "sesh-audio:one",
+                  fixtureParseaudio("sesh-audio:one"),
 
                 deleted:
                   true as const,
@@ -88,12 +89,12 @@ test(
 
     assert.equal(
       receivedProject,
-      "sesh-project:one",
+      fixtureParseproject("sesh-project:one"),
     );
 
     assert.equal(
       receivedAudio,
-      "sesh-audio:one",
+      fixtureParseaudio("sesh-audio:one"),
     );
 
     assert.equal(
@@ -125,10 +126,10 @@ test(
             ),
 
           projectId:
-            "sesh-project:one",
+            fixtureParseproject("sesh-project:one"),
 
           audioAssetId:
-            "sesh-audio:one",
+            fixtureParseaudio("sesh-audio:one"),
 
           deletes: {
             async deleteProjectAudio() {
@@ -180,10 +181,10 @@ test(
             request(),
 
           projectId:
-            "sesh-project:one",
+            fixtureParseproject("sesh-project:one"),
 
           audioAssetId:
-            "sesh-audio:one",
+            fixtureParseaudio("sesh-audio:one"),
 
           deletes: {
             async deleteProjectAudio() {

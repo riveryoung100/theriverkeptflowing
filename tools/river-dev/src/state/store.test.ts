@@ -474,7 +474,7 @@ test(
 
             assert.match(
                 source,
-                /\n  "version":/
+                /\n {2}"version":/
             );
 
         }

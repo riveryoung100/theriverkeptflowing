@@ -32,7 +32,7 @@ const SUPPORTED_STAGES:
 
 function normalizedRequiredField(
     value:
-        FormDataEntryValue | null,
+        unknown,
     field:
         string
 ): string {
@@ -272,7 +272,7 @@ export function buildRiverCrmRelationshipFromForm(
 
 export function requireRiverCrmRelationshipId(
     value:
-        FormDataEntryValue | null
+        unknown
 ): string {
 
     const relationshipId =

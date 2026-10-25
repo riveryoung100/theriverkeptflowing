@@ -1,3 +1,4 @@
+import { transpileModule, ScriptTarget, ModuleKind } from "typescript";
 import assert from "node:assert/strict";
 import test from "node:test";
 import { readFileSync } from "node:fs";
@@ -40,7 +41,7 @@ function fakePage(kind: Kind, fetchResponse: () => Promise<unknown> = async () =
   const form = new Form(), email = new Input(), password = new Input(), fields = new Fields(), submit = new Button(), status = new Element(), uncertainty = new Element();
   const elements: Record<string, Element> = { "account-form": form, "account-email": email, "account-password": password, "account-fields": fields, "account-submit": submit, "account-status": status, "account-uncertainty": uncertainty };
   const forbidden = new Proxy({}, { get() { throw Error("forbidden browser side effect"); }, set() { throw Error("forbidden browser side effect"); } });
-  new vm.Script(script(kind), { filename: kind + "-isolated-client.js" }).runInNewContext({
+  new vm.Script(transpileModule(script(kind), { compilerOptions: { target: ScriptTarget.ES2022, module: ModuleKind.None } }).outputText, { filename: kind + "-isolated-client.js" }).runInNewContext({
     document: { getElementById(id: string) { return id === missing ? null : elements[id]; } },
     HTMLElement: Element, HTMLFormElement: Form, HTMLInputElement: Input, HTMLFieldSetElement: Fields, HTMLButtonElement: Button,
     Uint8Array, TextDecoder, JSON, console: forbidden, localStorage: forbidden, sessionStorage: forbidden, location: forbidden,
@@ -134,7 +135,7 @@ for (const kind of ["register", "login"] as const) {
   test(kind + " no storage, logs, redirects, analytics, authority or external security calls", () => {
     const source = sources[kind];
     assert(!/console\.|localStorage|sessionStorage|indexedDB|document\.cookie|location\.|window\.|MainLayout|ReadingLayout|Navbar|Footer|public\/script|gtag|googletag|analytics|https?:\/\/|cloudflare|Pwned|SHA-1|RIVER_|principalId|createSession|\.\.\/.*food|@gmail\.com/i.test(source));
-    assert.equal([...source.matchAll(/fetch\(/g)].length, 1); assert.match(source, /payload = undefined;\s*body = undefined;/);
+    assert.equal([...source.matchAll(/fetch\(/g)].length, 1); assert.match(source, /transient\.payload = undefined;\s*transient\.body = undefined;/);
     assert(!/innerHTML|response\.json\(|response\.text\(/.test(source));
   });
   test(kind + " actual installed Astro compiler/container renders isolated HTML and security headers", async () => {

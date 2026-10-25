@@ -1,3 +1,4 @@
+import { parseSeshCreatorId as fixtureParsecreator } from "../identifiers";
 import assert from "node:assert/strict";
 import test from "node:test";
 
@@ -201,6 +202,7 @@ test(
           }),
 
         projects: {
+          async listProjectsForOwner() { throw new Error("Unexpected owner listing"); },
           async getProject() {
             reads +=
               1;
@@ -519,7 +521,7 @@ test(
             "Allowed",
 
           collaboratorIds:
-            ["sesh-creator:other"],
+            [fixtureParsecreator("sesh-creator:other")],
         },
       );
 
@@ -565,6 +567,7 @@ test(
 
         projects: {
           ...repository,
+          listProjectsForOwner: repository.listProjectsForOwner.bind(repository),
 
           getProject:
             repository.getProject.bind(

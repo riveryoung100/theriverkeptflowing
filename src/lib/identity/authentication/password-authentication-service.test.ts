@@ -323,10 +323,7 @@ implements PasswordHasher {
   throwOnVerify =
     false;
 
-  async hashPassword(
-    _password:
-      string,
-  ): Promise<string> {
+  async hashPassword(): Promise<string> {
     return this.expectedHash;
   }
 

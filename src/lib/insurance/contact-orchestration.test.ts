@@ -149,6 +149,8 @@ function dependencies(){
         },
 
         attempts: {
+            async getAttemptByProviderReference(){ return undefined; },
+            async listAttemptsForRelationships(){ return []; },
             async insertAttempt(
                 attempt:
                     InsuranceContactAttempt

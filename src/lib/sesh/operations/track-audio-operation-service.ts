@@ -253,19 +253,7 @@ implements AuthorizedSeshTrackAudioOperationService {
           true;
 
         readonly project:
-          Awaited<
-            ReturnType<
-              SeshProjectRepository["getProjectSnapshot"]
-            >
-          > extends {
-            readonly ok:
-              true;
-
-            readonly value:
-              infer TValue;
-          }
-            ? TValue
-            : never;
+          Extract<Awaited<ReturnType<SeshProjectRepository["getProjectSnapshot"]>>, { readonly ok: true }>["value"];
       }
     | {
         readonly ok:

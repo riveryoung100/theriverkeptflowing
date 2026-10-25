@@ -223,7 +223,7 @@ function validateCreateInput(
 async function resolveCreator(
   resolver:
     AuthenticatedSeshCreatorResolver,
-) {
+): Promise<SeshProjectCollectionResult<Extract<Awaited<ReturnType<AuthenticatedSeshCreatorResolver["resolve"]>>, { readonly ok: true }>["value"]>> {
   try {
     const result =
       await resolver.resolve();

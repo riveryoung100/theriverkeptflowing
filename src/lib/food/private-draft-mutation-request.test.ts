@@ -109,7 +109,7 @@ test("stream cleanup, UTF-8 across chunks and body access failures are sanitized
     const f = fixture(); let next = 0, returned = 0;
     const request = f.request(encode(), { readBody: () => ({ [Symbol.asyncIterator]() { return { async next() { next++; return { done: false, value: new Uint8Array(65537) }; }, async return() { returned++; throw new Error("private cleanup"); } }; } }) });
     assert.equal(code(await f.boundary.submit(request)), "payload-too-large"); assert.equal(next, 1); assert.equal(returned, 1);
-    for (const readBody of [() => { throw new Error("private"); }, async function* () { throw new Error("private"); }]) {
+    for (const readBody of [() => { throw new Error("private"); }, async function* () { yield await Promise.reject(new Error("private")); }]) {
         assert.deepEqual(await f.boundary.submit(f.request(encode(), { readBody })), { ok: false, error: { code: "body-unavailable", message: FOOD_MUTATION_TRANSPORT_MESSAGES["body-unavailable"] } });
     }
     const bytes = encode("createInitialRecipe", JSON.stringify({ ...recipe(), ingredients: [{ kind: "simple", name: "é" }] }));

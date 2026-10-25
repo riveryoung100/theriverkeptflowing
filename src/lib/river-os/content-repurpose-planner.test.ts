@@ -31,7 +31,7 @@ function entry(
             "2025-06-26T16:27:59.000Z",
         sourceStatus:
             transcriptState === "available"
-                ? "ready"
+                ? "transcript-ready"
                 : "transcript-pending",
         transcriptState,
         ingestedAt:

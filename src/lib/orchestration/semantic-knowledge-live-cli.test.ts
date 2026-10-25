@@ -1,3 +1,5 @@
+import type { AuthorizedLiveSemanticProductionWorkflowExecutionOptions } from "./productionExecution";
+import { createWorkflowRunId } from "./identifiers";
 import assert from "node:assert/strict";
 import {
     Readable
@@ -416,13 +418,15 @@ test(
                             ) => ({
                                 run: {
                                     id:
-                                        request.workflow.id,
+                                        createWorkflowRunId(),
                                     workflowId:
                                         request.workflow.id,
                                     requestedAt:
-                                        request.workflow.requestedAt,
+                                        request.requestedAt,
                                     status:
-                                        "succeeded"
+                                        "completed",
+                                    startedAt: request.requestedAt,
+                                    steps: [], warnings: [], schemaVersion: "1.0.0"
                                 },
                                 steps:
                                     []
@@ -488,7 +492,7 @@ test(
                             ) => ({
                                 run: {
                                     id:
-                                        request.workflow.id,
+                                        createWorkflowRunId(),
                                     workflowId:
                                         request.workflow.id,
                                     status:
@@ -499,7 +503,8 @@ test(
                                         request.requestedAt,
                                     completedAt:
                                         request.requestedAt,
-                                    stepResults:
+                                    schemaVersion: "1.0.0",
+                                    steps:
                                         [],
                                     warnings:
                                         []

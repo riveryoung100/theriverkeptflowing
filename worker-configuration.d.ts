@@ -21,6 +21,7 @@ declare namespace Cloudflare {
 }
 interface Env extends __BaseEnv_Env {}
 
+// Keep HTMLRewriterElement distinct from the browser DOM Element when regenerating.
 // Begin runtime types
 /*! *****************************************************************************
 Copyright (c) Cloudflare. All rights reserved.
@@ -1547,7 +1548,7 @@ declare class HTMLRewriter {
     transform(response: Response): Response;
 }
 interface HTMLRewriterElementContentHandlers {
-    element?(element: Element): void | Promise<void>;
+    element?(element: HTMLRewriterElement): void | Promise<void>;
     comments?(comment: Comment): void | Promise<void>;
     text?(element: Text): void | Promise<void>;
 }
@@ -1562,23 +1563,23 @@ interface Doctype {
     readonly publicId: string | null;
     readonly systemId: string | null;
 }
-interface Element {
+interface HTMLRewriterElement {
     tagName: string;
     readonly attributes: IterableIterator<string[]>;
     readonly removed: boolean;
     readonly namespaceURI: string;
     getAttribute(name: string): string | null;
     hasAttribute(name: string): boolean;
-    setAttribute(name: string, value: string): Element;
-    removeAttribute(name: string): Element;
-    before(content: string | ReadableStream | Response, options?: ContentOptions): Element;
-    after(content: string | ReadableStream | Response, options?: ContentOptions): Element;
-    prepend(content: string | ReadableStream | Response, options?: ContentOptions): Element;
-    append(content: string | ReadableStream | Response, options?: ContentOptions): Element;
-    replace(content: string | ReadableStream | Response, options?: ContentOptions): Element;
-    remove(): Element;
-    removeAndKeepContent(): Element;
-    setInnerContent(content: string | ReadableStream | Response, options?: ContentOptions): Element;
+    setAttribute(name: string, value: string): HTMLRewriterElement;
+    removeAttribute(name: string): HTMLRewriterElement;
+    before(content: string | ReadableStream | Response, options?: ContentOptions): HTMLRewriterElement;
+    after(content: string | ReadableStream | Response, options?: ContentOptions): HTMLRewriterElement;
+    prepend(content: string | ReadableStream | Response, options?: ContentOptions): HTMLRewriterElement;
+    append(content: string | ReadableStream | Response, options?: ContentOptions): HTMLRewriterElement;
+    replace(content: string | ReadableStream | Response, options?: ContentOptions): HTMLRewriterElement;
+    remove(): HTMLRewriterElement;
+    removeAndKeepContent(): HTMLRewriterElement;
+    setInnerContent(content: string | ReadableStream | Response, options?: ContentOptions): HTMLRewriterElement;
     onEndTag(handler: (tag: EndTag) => void | Promise<void>): void;
 }
 interface EndTag {
@@ -10637,7 +10638,7 @@ type AIGatewayHeaders = {
     [key: string]: string | number | boolean | object;
 };
 type AIGatewayUniversalRequest = {
-    provider: AIGatewayProviders | string; // eslint-disable-line
+    provider: AIGatewayProviders | string;
     endpoint: string;
     headers: Partial<AIGatewayHeaders>;
     query: unknown;
@@ -10654,7 +10655,7 @@ declare abstract class AiGateway {
         extraHeaders?: object;
         signal?: AbortSignal;
     }): Promise<Response>;
-    getUrl(provider?: AIGatewayProviders | string): Promise<string>; // eslint-disable-line
+    getUrl(provider?: AIGatewayProviders | string): Promise<string>;
 }
 // Copyright (c) 2022-2025 Cloudflare, Inc.
 // Licensed under the Apache 2.0 license found in the LICENSE file or at:

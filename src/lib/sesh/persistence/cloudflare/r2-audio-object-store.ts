@@ -348,6 +348,7 @@ implements SeshAudioObjectStore {
         }
 
         if (
+          typeof metadata.size !== "number" ||
           !Number.isSafeInteger(
             metadata.size,
           ) ||

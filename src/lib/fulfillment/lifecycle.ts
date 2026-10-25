@@ -1,10 +1,10 @@
+export type { ProductRelease } from "./types";
 import type {
     DeliveryState,
     FulfillmentReadinessInput,
     FulfillmentReadinessResult,
     FulfillmentState,
-    FulfillmentTransitionInput,
-    FulfillmentTransitionResult
+    FulfillmentTransitionInput
 } from "./types";
 
 
@@ -190,12 +190,12 @@ export function canTransitionFulfillmentState(
 }
 
 
-export function transitionFulfillmentState(
+export function transitionFulfillmentState<T extends FulfillmentTransitionInput>(
     current:
-        FulfillmentTransitionInput,
+        T,
     next:
         FulfillmentState
-): FulfillmentTransitionResult {
+): T {
 
     if (
         !canTransitionFulfillmentState(
@@ -239,12 +239,12 @@ export function canTransitionDeliveryState(
 }
 
 
-export function transitionDeliveryState(
+export function transitionDeliveryState<T extends FulfillmentTransitionInput>(
     current:
-        FulfillmentTransitionInput,
+        T,
     next:
         DeliveryState
-): FulfillmentTransitionResult {
+): T {
 
     if (
         !canTransitionDeliveryState(

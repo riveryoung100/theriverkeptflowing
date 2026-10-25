@@ -134,7 +134,7 @@ implements SeshR2BucketLike {
 
   async head(
     key: string,
-  ): Promise<unknown | null> {
+  ): Promise<import("./types").SeshR2HeadObjectLike | null> {
     if (this.fail) {
       throw new Error("fake R2 failure");
     }

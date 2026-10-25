@@ -1,3 +1,4 @@
+export type { SemanticCandidateSet } from "./types";
 import type {
     ClaimTruthStatus,
     KnowledgeNodeType,

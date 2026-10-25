@@ -1,3 +1,4 @@
+import { parseSeshMusicProjectId, type SeshMusicProjectId } from "../identifiers";
 import type {
   AuthorizedSeshProjectOperationService,
   SeshProjectOperationFailureCode,
@@ -98,14 +99,8 @@ function operationResponse<T>(
   );
 }
 
-function projectIdOrInvalid(
-  projectId:
-    string | undefined,
-): string {
-  return typeof projectId ===
-    "string"
-    ? projectId
-    : "";
+function projectIdOrInvalid(projectId: string | undefined): SeshMusicProjectId | null {
+  try { return parseSeshMusicProjectId(projectId); } catch { return null; }
 }
 
 export function isSameOriginSeshWriteRequest(
@@ -143,12 +138,12 @@ export async function handleSeshProjectRead(
   input:
     SeshProjectApiInput,
 ): Promise<Response> {
+  const canonicalProjectId = projectIdOrInvalid(input.projectId);
+  if (canonicalProjectId === null) return jsonResponse({ ok: false, error: { code: "invalid-input", message: "Invalid Sesh project resource identifier." } }, 400);
   const result =
     await input.operations
       .readProject(
-        projectIdOrInvalid(
-          input.projectId,
-        ),
+        canonicalProjectId,
       );
 
   return operationResponse(
@@ -208,12 +203,12 @@ export async function handleSeshProjectUpdate(
     );
   }
 
+  const canonicalProjectId = projectIdOrInvalid(input.projectId);
+  if (canonicalProjectId === null) return jsonResponse({ ok: false, error: { code: "invalid-input", message: "Invalid Sesh project resource identifier." } }, 400);
   const result =
     await input.operations
       .updateProject(
-        projectIdOrInvalid(
-          input.projectId,
-        ),
+        canonicalProjectId,
         body,
       );
 
@@ -248,12 +243,12 @@ export async function handleSeshProjectDelete(
     );
   }
 
+  const canonicalProjectId = projectIdOrInvalid(input.projectId);
+  if (canonicalProjectId === null) return jsonResponse({ ok: false, error: { code: "invalid-input", message: "Invalid Sesh project resource identifier." } }, 400);
   const result =
     await input.operations
       .deleteProject(
-        projectIdOrInvalid(
-          input.projectId,
-        ),
+        canonicalProjectId,
       );
 
   return operationResponse(

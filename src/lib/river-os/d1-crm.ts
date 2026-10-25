@@ -1,3 +1,6 @@
+import type { RiverCrmD1Database } from "./d1-crm-growth";
+export type { RiverCrmD1Database } from "./d1-crm-growth";
+
 import {
     createRiverCrmRelationship
 } from "./crm-workspace";
@@ -532,7 +535,7 @@ implements RiverCrmPersistence {
 
     public constructor(
         private readonly database:
-            D1Database
+            RiverCrmD1Database
     ) {}
 
 
@@ -665,7 +668,7 @@ implements RiverCrmPersistence {
                 )
                 .all<RiverCrmRelationshipRow>();
 
-        return result.results.map(
+        return requireRows(result.results).map(
             rowToRelationship
         );
 
@@ -695,7 +698,7 @@ implements RiverCrmPersistence {
                 )
                 .all<RiverCrmRelationshipRow>();
 
-        return result.results.map(
+        return requireRows(result.results).map(
             rowToRelationship
         );
 
@@ -731,7 +734,7 @@ implements RiverCrmPersistence {
                 )
                 .all<RiverCrmRelationshipRow>();
 
-        return result.results.map(
+        return requireRows(result.results).map(
             rowToRelationship
         );
 
@@ -798,7 +801,7 @@ implements RiverCrmPersistence {
                     .all<RiverCrmRelationshipRow>();
 
         const pageRows =
-            result.results.slice(
+            requireRows(result.results).slice(
                 0,
                 validated.pageSize
             );
@@ -809,7 +812,7 @@ implements RiverCrmPersistence {
             );
 
         const hasMore =
-            result.results.length >
+            requireRows(result.results).length >
             validated.pageSize;
 
         if(!hasMore){
@@ -853,7 +856,7 @@ implements RiverCrmPersistence {
 
 export function createD1RiverCrmPersistence(
     database:
-        D1Database
+        RiverCrmD1Database
 ): RiverCrmPersistence &
     D1RiverCrmCreatedAtCohortPersistence &
     D1RiverCrmSearchPersistence {
@@ -862,4 +865,9 @@ export function createD1RiverCrmPersistence(
         database
     );
 
+}
+
+function requireRows<T>(rows: readonly T[] | undefined): readonly T[] {
+    if (!Array.isArray(rows)) throw new TypeError("River CRM query did not return rows.");
+    return rows;
 }

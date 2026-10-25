@@ -74,8 +74,7 @@ test(
               ok:
                 true as const,
 
-              value:
-                [],
+              value: { tracks: [] },
             };
           },
         },
@@ -134,8 +133,7 @@ test(
               ok:
                 true as const,
 
-              value:
-                [],
+              value: { tracks: [] },
             };
           },
         },
@@ -196,8 +194,7 @@ test(
               ok:
                 true as const,
 
-              value:
-                [],
+              value: { tracks: [] },
             };
           },
         },

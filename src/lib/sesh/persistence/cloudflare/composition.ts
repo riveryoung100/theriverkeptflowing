@@ -1,3 +1,4 @@
+import { D1SeshTrackRepository } from "./d1-track-repository";
 import {
   D1SeshAudioAssetRepository,
 } from "./d1-audio-asset-repository";
@@ -28,6 +29,7 @@ export interface SeshCloudflarePersistenceComposition {
   readonly projectRepository: D1SeshProjectRepository;
   readonly projectPublicationRepository: D1SeshProjectPublicationRepository;
   readonly audioAssetRepository: D1SeshAudioAssetRepository;
+  readonly trackRepository: D1SeshTrackRepository;
   readonly audioObjectStore: R2SeshAudioObjectStore;
 }
 
@@ -67,6 +69,7 @@ export function createSeshCloudflarePersistence(
   }
 
   return {
+    trackRepository: new D1SeshTrackRepository(bindings.SESH_DB),
     creatorProfileRepository:
       new D1SeshCreatorProfileRepository(bindings.SESH_DB),
 

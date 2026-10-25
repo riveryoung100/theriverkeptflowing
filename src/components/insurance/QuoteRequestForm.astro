@@ -321,56 +321,64 @@ const stateCodes = [
         form.dataset.insuranceQuoteReady =
             "true";
 
-        const status =
+        const statusElement =
             form.querySelector<HTMLElement>(
-                "[data-insurance-quote-status]"
+                "[data-insurance-quote-statusElement]"
             );
 
-        const submitButton =
+        const submitButtonElement =
             form.querySelector<HTMLButtonElement>(
                 "[data-insurance-quote-submit]"
             );
 
-        const emailInput =
+        const emailInputElement =
             form.elements.namedItem(
                 "email"
             ) as
                 HTMLInputElement |
                 null;
 
-        const phoneInput =
+        const phoneInputElement =
             form.elements.namedItem(
                 "phone"
             ) as
                 HTMLInputElement |
                 null;
 
-        const emailConsent =
+        const emailConsentElement =
             form.querySelector<HTMLInputElement>(
                 "[data-consent-email]"
             );
 
-        const phoneConsent =
+        const phoneConsentElement =
             form.querySelector<HTMLInputElement>(
                 "[data-consent-phone]"
             );
 
-        const smsConsent =
+        const smsConsentElement =
             form.querySelector<HTMLInputElement>(
                 "[data-consent-sms]"
             );
 
         if(
-            !status ||
-            !submitButton ||
-            !emailInput ||
-            !phoneInput ||
-            !emailConsent ||
-            !phoneConsent ||
-            !smsConsent
+            !statusElement ||
+            !submitButtonElement ||
+            !emailInputElement ||
+            !phoneInputElement ||
+            !emailConsentElement ||
+            !phoneConsentElement ||
+            !smsConsentElement
         ){
             return;
         }
+
+        const status = statusElement;
+        const submitButton = submitButtonElement;
+        const emailInput = emailInputElement;
+        const phoneInput = phoneInputElement;
+        const emailConsent = emailConsentElement;
+        const phoneConsent = phoneConsentElement;
+        const smsConsent = smsConsentElement;
 
         let activeKey:
             string |

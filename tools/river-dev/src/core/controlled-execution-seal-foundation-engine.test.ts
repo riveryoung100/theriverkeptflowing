@@ -40,25 +40,25 @@ const validPredecessor =
 
           executionVerificationState: "CONTROLLED_EXECUTION_VERIFIED",
 
-          controlledExecutionAttestation: {} as any,
-          controlledExecutionAudit: {} as any,
-          controlledExecutionArchive: {} as any,
-          controlledExecutionClosure: {} as any,
-          controlledExecutionFinalization: {} as any,
-          controlledExecutionCompletion: {} as any,
-          controlledOperationExecutionLifecycle: {} as any,
-          controlledOperationExecutionReceipt: {} as any,
-          controlledOperationExecution: {} as any,
-          operationExecutionAuthorization: {} as any,
-          controlledExecutorInvocation: {} as any,
-          controlledDispatch: {} as any,
-          dispatchAuthorization: {} as any,
-          activeAdmission: {} as any,
-          authorization: {} as any,
-          eligibility: {} as any,
-          consumption: {} as any,
-          receiptState: {} as any,
-          executedOperation: {} as any,
+          controlledExecutionAttestation: {} as unknown as import("../types").RiverDevControlledExecutionAttestationFoundationResult | null,
+          controlledExecutionAudit: {} as unknown as import("../types").RiverDevControlledExecutionAuditFoundationResult | null,
+          controlledExecutionArchive: {} as unknown as import("../types").RiverDevControlledExecutionArchiveFoundationResult | null,
+          controlledExecutionClosure: {} as unknown as import("../types").RiverDevControlledExecutionClosureFoundationResult | null,
+          controlledExecutionFinalization: {} as unknown as import("../types").RiverDevControlledExecutionFinalizationFoundationResult | null,
+          controlledExecutionCompletion: {} as unknown as import("../types").RiverDevControlledExecutionCompletionFoundationResult | null,
+          controlledOperationExecutionLifecycle: {} as unknown as import("../types").RiverDevControlledOperationExecutionLifecycleFoundationResult | null,
+          controlledOperationExecutionReceipt: {} as unknown as import("../types").RiverDevControlledOperationExecutionReceiptFoundationResult | null,
+          controlledOperationExecution: {} as unknown as import("../types").RiverDevControlledOperationExecutionBoundaryFoundationResult | null,
+          operationExecutionAuthorization: {} as unknown as import("../types").RiverDevOperationExecutionAuthorizationFoundationResult | null,
+          controlledExecutorInvocation: {} as unknown as import("../types").RiverDevControlledExecutorInvocationFoundationResult | null,
+          controlledDispatch: {} as unknown as import("../types").RiverDevControlledExecutorDispatchFoundationResult | null,
+          dispatchAuthorization: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationFoundationResult | null,
+          activeAdmission: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionFoundationResult | null,
+          authorization: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionAuthorizationFoundationResult | null,
+          eligibility: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionEligibilityFoundationResult | null,
+          consumption: {} as unknown as import("../types").RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionConsumptionFoundationResult | null,
+          receiptState: {} as unknown as string | null,
+          executedOperation: {} as unknown as string | null,
 
           approvedExecutionScope: ["operation:verified"],
           provenance: ["DEV-284:test-provenance"],
@@ -136,25 +136,25 @@ const validPredecessor =
 
 
 
-    controlledExecutionAttestation: {} as any,
-    controlledExecutionAudit: {} as any,
-    controlledExecutionArchive: {} as any,
-    controlledExecutionClosure: {} as any,
-    controlledExecutionFinalization: {} as any,
-    controlledExecutionCompletion: {} as any,
-    controlledOperationExecutionLifecycle: {} as any,
-    controlledOperationExecutionReceipt: {} as any,
-    controlledOperationExecution: {} as any,
-    operationExecutionAuthorization: {} as any,
-    controlledExecutorInvocation: {} as any,
-    controlledDispatch: {} as any,
-    dispatchAuthorization: {} as any,
-    activeAdmission: {} as any,
-    authorization: {} as any,
-    eligibility: {} as any,
-    consumption: {} as any,
-    receiptState: {} as any,
-    executedOperation: {} as any,
+    controlledExecutionAttestation: {} as unknown as import("../types").RiverDevControlledExecutionAttestationFoundationResult | null,
+    controlledExecutionAudit: {} as unknown as import("../types").RiverDevControlledExecutionAuditFoundationResult | null,
+    controlledExecutionArchive: {} as unknown as import("../types").RiverDevControlledExecutionArchiveFoundationResult | null,
+    controlledExecutionClosure: {} as unknown as import("../types").RiverDevControlledExecutionClosureFoundationResult | null,
+    controlledExecutionFinalization: {} as unknown as import("../types").RiverDevControlledExecutionFinalizationFoundationResult | null,
+    controlledExecutionCompletion: {} as unknown as import("../types").RiverDevControlledExecutionCompletionFoundationResult | null,
+    controlledOperationExecutionLifecycle: {} as unknown as import("../types").RiverDevControlledOperationExecutionLifecycleFoundationResult | null,
+    controlledOperationExecutionReceipt: {} as unknown as import("../types").RiverDevControlledOperationExecutionReceiptFoundationResult | null,
+    controlledOperationExecution: {} as unknown as import("../types").RiverDevControlledOperationExecutionBoundaryFoundationResult | null,
+    operationExecutionAuthorization: {} as unknown as import("../types").RiverDevOperationExecutionAuthorizationFoundationResult | null,
+    controlledExecutorInvocation: {} as unknown as import("../types").RiverDevControlledExecutorInvocationFoundationResult | null,
+    controlledDispatch: {} as unknown as import("../types").RiverDevControlledExecutorDispatchFoundationResult | null,
+    dispatchAuthorization: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationFoundationResult | null,
+    activeAdmission: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionFoundationResult | null,
+    authorization: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionAuthorizationFoundationResult | null,
+    eligibility: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionEligibilityFoundationResult | null,
+    consumption: {} as unknown as import("../types").RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionConsumptionFoundationResult | null,
+    receiptState: {} as unknown as string | null,
+    executedOperation: {} as unknown as string | null,
 
     approvedExecutionScope: ["operation:verified"],
     provenance: ["DEV-286:test-provenance"],
@@ -380,8 +380,8 @@ test(
 
 
 test("DEV-286 rejects wrong predecessor version", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.version = "DEV-283";
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "version", "DEV-283");
 
   expectDenied(predecessor, "INVALID_DEV_285_VERSION");
 });
@@ -389,7 +389,7 @@ test("DEV-286 rejects wrong predecessor version", () => {
 
 test("DEV-286 rejects untrusted predecessor", () => {
   const predecessor = validPredecessor();
-  predecessor.trusted = false;
+  Reflect.set(predecessor, "trusted", false);
 
   expectDenied(
     predecessor,
@@ -400,7 +400,7 @@ test("DEV-286 rejects untrusted predecessor", () => {
 
 test("DEV-286 rejects unready predecessor", () => {
   const predecessor = validPredecessor();
-  predecessor.ready = false;
+  Reflect.set(predecessor, "ready", false);
 
   expectDenied(
     predecessor,
@@ -411,7 +411,7 @@ test("DEV-286 rejects unready predecessor", () => {
 
 test("DEV-286 rejects unverified predecessor", () => {
   const predecessor = validPredecessor();
-  predecessor.executionCertified = false;
+  Reflect.set(predecessor, "executionCertified", false);
 
   expectDenied(
     predecessor,
@@ -423,8 +423,7 @@ test("DEV-286 rejects unverified predecessor", () => {
 test("DEV-286 rejects wrong certification state", () => {
   const predecessor = validPredecessor();
 
-  predecessor.executionCertificationState =
-    "CONTROLLED_EXECUTION_NOT_CERTIFIED";
+  Reflect.set(predecessor, "executionCertificationState", "CONTROLLED_EXECUTION_NOT_CERTIFIED");
 
   expectDenied(
     predecessor,
@@ -436,10 +435,9 @@ test("DEV-286 rejects wrong certification state", () => {
 test(
   "DEV-286 rejects non-deterministic certification result",
   () => {
-    const predecessor = validPredecessor() as any;
+    const predecessor = validPredecessor();
 
-    predecessor.executionCertificationResultIsDeterministicData =
-      false;
+    Reflect.set(predecessor, "executionCertificationResultIsDeterministicData", false);
 
     expectDenied(
       predecessor,
@@ -452,10 +450,9 @@ test(
 test(
   "DEV-286 rejects predecessor outside certification boundary",
   () => {
-    const predecessor = validPredecessor() as any;
+    const predecessor = validPredecessor();
 
-    predecessor.controlledExecutionCertificationBoundaryOnly =
-      false;
+    Reflect.set(predecessor, "controlledExecutionCertificationBoundaryOnly", false);
 
     expectDenied(
       predecessor,
@@ -550,8 +547,8 @@ const nullableCases: Array<[
 
 for (const [property, reason] of nullableCases) {
   test(`DEV-286 rejects missing ${String(property)}`, () => {
-    const predecessor = validPredecessor() as any;
-    predecessor[property] = null;
+    const predecessor = validPredecessor();
+    Reflect.set(predecessor, property, null);
 
     expectDenied(predecessor, reason);
   });
@@ -560,7 +557,7 @@ for (const [property, reason] of nullableCases) {
 
 test("DEV-286 rejects empty approved execution scope", () => {
   const predecessor = validPredecessor();
-  predecessor.approvedExecutionScope = [];
+  Reflect.set(predecessor, "approvedExecutionScope", []);
 
   expectDenied(
     predecessor,
@@ -571,7 +568,7 @@ test("DEV-286 rejects empty approved execution scope", () => {
 
 test("DEV-286 rejects empty provenance", () => {
   const predecessor = validPredecessor();
-  predecessor.provenance = [];
+  Reflect.set(predecessor, "provenance", []);
 
   expectDenied(
     predecessor,
@@ -645,8 +642,8 @@ const evidenceCases: Array<[
 
 for (const [property, reason] of evidenceCases) {
   test(`DEV-286 rejects empty ${String(property)}`, () => {
-    const predecessor = validPredecessor() as any;
-    predecessor[property] = [];
+    const predecessor = validPredecessor();
+    Reflect.set(predecessor, property, []);
 
     expectDenied(predecessor, reason);
   });
@@ -655,7 +652,7 @@ for (const [property, reason] of evidenceCases) {
 
 test("DEV-286 rejects blocked predecessor", () => {
   const predecessor = validPredecessor();
-  predecessor.blockedReasons = ["blocked"];
+  Reflect.set(predecessor, "blockedReasons", ["blocked"]);
 
   expectDenied(
     predecessor,
@@ -757,8 +754,8 @@ const authorityCases: Array<[
 
 for (const [property, reason] of authorityCases) {
   test(`DEV-286 rejects authority ${String(property)}`, () => {
-    const predecessor = validPredecessor() as any;
-    predecessor[property] = true;
+    const predecessor = validPredecessor();
+    Reflect.set(predecessor, property, true);
 
     expectDenied(predecessor, reason);
   });
@@ -768,10 +765,9 @@ for (const [property, reason] of authorityCases) {
 test(
   "DEV-286 rejects missing future seal boundary",
   () => {
-    const predecessor = validPredecessor() as any;
+    const predecessor = validPredecessor();
 
-    predecessor.futureControlledExecutionSealBoundaryRequired =
-      false;
+    Reflect.set(predecessor, "futureControlledExecutionSealBoundaryRequired", false);
 
     expectDenied(
       predecessor,

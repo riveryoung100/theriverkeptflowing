@@ -1,4 +1,4 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
@@ -152,8 +152,8 @@ test(
 );
 
 test("DEV-279 rejects wrong predecessor version", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.version = "DEV-277";
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "version", "DEV-277");
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -164,7 +164,7 @@ test("DEV-279 rejects wrong predecessor version", () => {
 
 test("DEV-279 rejects untrusted predecessor", () => {
   const predecessor = validPredecessor();
-  predecessor.trusted = false;
+  Reflect.set(predecessor, "trusted", false);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -174,7 +174,7 @@ test("DEV-279 rejects untrusted predecessor", () => {
 
 test("DEV-279 rejects unready predecessor", () => {
   const predecessor = validPredecessor();
-  predecessor.ready = false;
+  Reflect.set(predecessor, "ready", false);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -184,7 +184,7 @@ test("DEV-279 rejects unready predecessor", () => {
 
 test("DEV-279 rejects predecessor without completed execution", () => {
   const predecessor = validPredecessor();
-  predecessor.executionCompleted = false;
+  Reflect.set(predecessor, "executionCompleted", false);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -194,8 +194,7 @@ test("DEV-279 rejects predecessor without completed execution", () => {
 
 test("DEV-279 rejects wrong completion state", () => {
   const predecessor = validPredecessor();
-  predecessor.executionCompletionState =
-    "CONTROLLED_EXECUTION_NOT_COMPLETED";
+  Reflect.set(predecessor, "executionCompletionState", "CONTROLLED_EXECUTION_NOT_COMPLETED");
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -204,8 +203,8 @@ test("DEV-279 rejects wrong completion state", () => {
 });
 
 test("DEV-279 rejects non-deterministic completion predecessor", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.executionCompletionResultIsDeterministicData = false;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "executionCompletionResultIsDeterministicData", false);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -214,8 +213,8 @@ test("DEV-279 rejects non-deterministic completion predecessor", () => {
 });
 
 test("DEV-279 rejects predecessor outside completion boundary", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.controlledExecutionCompletionBoundaryOnly = false;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "controlledExecutionCompletionBoundaryOnly", false);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -225,7 +224,7 @@ test("DEV-279 rejects predecessor outside completion boundary", () => {
 
 test("DEV-279 rejects missing execution lifecycle", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecutionLifecycle = null;
+  Reflect.set(predecessor, "controlledOperationExecutionLifecycle", null);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -235,7 +234,7 @@ test("DEV-279 rejects missing execution lifecycle", () => {
 
 test("DEV-279 rejects missing execution receipt", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecutionReceipt = null;
+  Reflect.set(predecessor, "controlledOperationExecutionReceipt", null);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -245,7 +244,7 @@ test("DEV-279 rejects missing execution receipt", () => {
 
 test("DEV-279 rejects missing controlled operation execution", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecution = null;
+  Reflect.set(predecessor, "controlledOperationExecution", null);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -255,7 +254,7 @@ test("DEV-279 rejects missing controlled operation execution", () => {
 
 test("DEV-279 rejects missing executed operation", () => {
   const predecessor = validPredecessor();
-  predecessor.executedOperation = null;
+  Reflect.set(predecessor, "executedOperation", null);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -265,7 +264,7 @@ test("DEV-279 rejects missing executed operation", () => {
 
 test("DEV-279 rejects empty approved execution scope", () => {
   const predecessor = validPredecessor();
-  predecessor.approvedExecutionScope = [];
+  Reflect.set(predecessor, "approvedExecutionScope", []);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -275,7 +274,7 @@ test("DEV-279 rejects empty approved execution scope", () => {
 
 test("DEV-279 rejects empty provenance", () => {
   const predecessor = validPredecessor();
-  predecessor.provenance = [];
+  Reflect.set(predecessor, "provenance", []);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -285,7 +284,7 @@ test("DEV-279 rejects empty provenance", () => {
 
 test("DEV-279 rejects missing completion evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledExecutionCompletionEvidence = [];
+  Reflect.set(predecessor, "controlledExecutionCompletionEvidence", []);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -295,7 +294,7 @@ test("DEV-279 rejects missing completion evidence", () => {
 
 test("DEV-279 rejects missing lifecycle evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecutionLifecycleEvidence = [];
+  Reflect.set(predecessor, "controlledOperationExecutionLifecycleEvidence", []);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -305,7 +304,7 @@ test("DEV-279 rejects missing lifecycle evidence", () => {
 
 test("DEV-279 rejects missing receipt evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecutionReceiptEvidence = [];
+  Reflect.set(predecessor, "controlledOperationExecutionReceiptEvidence", []);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -315,7 +314,7 @@ test("DEV-279 rejects missing receipt evidence", () => {
 
 test("DEV-279 rejects missing execution evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecutionEvidence = [];
+  Reflect.set(predecessor, "controlledOperationExecutionEvidence", []);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -325,7 +324,7 @@ test("DEV-279 rejects missing execution evidence", () => {
 
 test("DEV-279 rejects blocked predecessor", () => {
   const predecessor = validPredecessor();
-  predecessor.blockedReasons = ["blocked"];
+  Reflect.set(predecessor, "blockedReasons", ["blocked"]);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -334,8 +333,8 @@ test("DEV-279 rejects blocked predecessor", () => {
 });
 
 test("DEV-279 rejects predecessor with executor authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayInvokeExecutor = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayInvokeExecutor", true);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -344,8 +343,8 @@ test("DEV-279 rejects predecessor with executor authority", () => {
 });
 
 test("DEV-279 rejects predecessor with execution authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayExecuteOperation = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayExecuteOperation", true);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -354,8 +353,8 @@ test("DEV-279 rejects predecessor with execution authority", () => {
 });
 
 test("DEV-279 rejects predecessor with retry authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayRetryExecution = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayRetryExecution", true);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -364,8 +363,8 @@ test("DEV-279 rejects predecessor with retry authority", () => {
 });
 
 test("DEV-279 rejects predecessor with lifecycle persistence authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayPersistLifecycleState = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayPersistLifecycleState", true);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -374,8 +373,8 @@ test("DEV-279 rejects predecessor with lifecycle persistence authority", () => {
 });
 
 test("DEV-279 rejects predecessor with repository mutation authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayModifyRepository = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayModifyRepository", true);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -384,8 +383,8 @@ test("DEV-279 rejects predecessor with repository mutation authority", () => {
 });
 
 test("DEV-279 rejects predecessor with commit authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayCommit = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayCommit", true);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -394,8 +393,8 @@ test("DEV-279 rejects predecessor with commit authority", () => {
 });
 
 test("DEV-279 rejects predecessor with push authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayPush = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayPush", true);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -404,8 +403,8 @@ test("DEV-279 rejects predecessor with push authority", () => {
 });
 
 test("DEV-279 rejects predecessor with external side-effect authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayPerformExternalSideEffects = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayPerformExternalSideEffects", true);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);
@@ -414,9 +413,8 @@ test("DEV-279 rejects predecessor with external side-effect authority", () => {
 });
 
 test("DEV-279 rejects missing future finalization boundary", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.futureControlledExecutionFinalizationBoundaryRequired =
-    false;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "futureControlledExecutionFinalizationBoundaryRequired", false);
 
   const result =
     establishControlledExecutionFinalizationFoundation(predecessor);

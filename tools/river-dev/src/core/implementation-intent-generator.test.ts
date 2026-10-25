@@ -195,9 +195,10 @@ test(
 
 
         const {
-            planningIntelligence: _planningIntelligence,
+            planningIntelligence: removedPlanningIntelligence,
             ...planWithoutPlanningIntelligence
         } = plan;
+        assert.equal(removedPlanningIntelligence, plan.planningIntelligence);
         await assert.rejects(
             generateImplementationIntent(
                 planWithoutPlanningIntelligence,

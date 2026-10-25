@@ -1,3 +1,6 @@
+import { parseFoodPhysicalOrderId } from "./physical-order-domain";
+import { parseFoodFulfillmentIntentId, parseFoodReservationRequestId } from "./fulfillment-capacity-reservation-domain";
+import { parseFoodSkuId } from "./package-sku-domain";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -46,22 +49,22 @@ function fixture():
     kind:
       "authoritative-capacity-reservation-mutation-receipt",
     reservationId:
-      "food-capacity-reservation:007y",
+      "food-capacity-reservation:007y" as import("./reservation-hold-command").FoodCapacityReservationId,
     order: {
       id:
-        "food-physical-order:007y",
+        parseFoodPhysicalOrderId("food-physical-order:007y"),
       version:
         1,
     },
     reservationRequest: {
       id:
-        "food-reservation-request:007y",
+        parseFoodReservationRequestId("food-reservation-request:007y"),
       version:
         1,
     },
     fulfillmentIntent: {
       id:
-        "food-fulfillment-intent:007y",
+        parseFoodFulfillmentIntentId("food-fulfillment-intent:007y"),
       version:
         1,
     },
@@ -69,7 +72,7 @@ function fixture():
       {
         sku: {
           id:
-            "food-sku:007y-a",
+            parseFoodSkuId("food-sku:007y-a"),
           version:
             1,
         },
@@ -81,7 +84,7 @@ function fixture():
       {
         sku: {
           id:
-            "food-sku:007y-b",
+            parseFoodSkuId("food-sku:007y-b"),
           version:
             2,
         },
@@ -103,7 +106,7 @@ function fixture():
       quantity:
         1,
     },
-  };
+  } as const;
 
   const acceptance =
     validateFoodReservationAcceptanceVersion({

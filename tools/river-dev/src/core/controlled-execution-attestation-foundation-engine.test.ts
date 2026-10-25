@@ -25,23 +25,23 @@ function validPredecessor():
 
     executionAuditState: "CONTROLLED_EXECUTION_AUDITED",
 
-    controlledExecutionArchive: {} as any,
-    controlledExecutionClosure: {} as any,
-    controlledExecutionFinalization: {} as any,
-    controlledExecutionCompletion: {} as any,
-    controlledOperationExecutionLifecycle: {} as any,
-    controlledOperationExecutionReceipt: {} as any,
-    controlledOperationExecution: {} as any,
-    operationExecutionAuthorization: {} as any,
-    controlledExecutorInvocation: {} as any,
-    controlledDispatch: {} as any,
-    dispatchAuthorization: {} as any,
-    activeAdmission: {} as any,
-    authorization: {} as any,
-    eligibility: {} as any,
-    consumption: {} as any,
-    receiptState: {} as any,
-    executedOperation: {} as any,
+    controlledExecutionArchive: {} as unknown as import("../types").RiverDevControlledExecutionArchiveFoundationResult | null,
+    controlledExecutionClosure: {} as unknown as import("../types").RiverDevControlledExecutionClosureFoundationResult | null,
+    controlledExecutionFinalization: {} as unknown as import("../types").RiverDevControlledExecutionFinalizationFoundationResult | null,
+    controlledExecutionCompletion: {} as unknown as import("../types").RiverDevControlledExecutionCompletionFoundationResult | null,
+    controlledOperationExecutionLifecycle: {} as unknown as import("../types").RiverDevControlledOperationExecutionLifecycleFoundationResult | null,
+    controlledOperationExecutionReceipt: {} as unknown as import("../types").RiverDevControlledOperationExecutionReceiptFoundationResult | null,
+    controlledOperationExecution: {} as unknown as import("../types").RiverDevControlledOperationExecutionBoundaryFoundationResult | null,
+    operationExecutionAuthorization: {} as unknown as import("../types").RiverDevOperationExecutionAuthorizationFoundationResult | null,
+    controlledExecutorInvocation: {} as unknown as import("../types").RiverDevControlledExecutorInvocationFoundationResult | null,
+    controlledDispatch: {} as unknown as import("../types").RiverDevControlledExecutorDispatchFoundationResult | null,
+    dispatchAuthorization: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationFoundationResult | null,
+    activeAdmission: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionFoundationResult | null,
+    authorization: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionAuthorizationFoundationResult | null,
+    eligibility: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionEligibilityFoundationResult | null,
+    consumption: {} as unknown as import("../types").RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionConsumptionFoundationResult | null,
+    receiptState: {} as unknown as string | null,
+    executedOperation: {} as unknown as string | null,
 
     approvedExecutionScope: ["controlled-operation"],
     provenance: ["DEV-282"],
@@ -162,8 +162,8 @@ test(
 );
 
 test("DEV-283 rejects wrong predecessor version", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.version = "DEV-281";
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "version", "DEV-281");
 
   const result = run(predecessor);
 
@@ -174,7 +174,7 @@ test("DEV-283 rejects wrong predecessor version", () => {
 
 test("DEV-283 rejects untrusted predecessor", () => {
   const predecessor = validPredecessor();
-  predecessor.trusted = false;
+  Reflect.set(predecessor, "trusted", false);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "UNTRUSTED_DEV_282_PREDECESSOR"
@@ -183,7 +183,7 @@ test("DEV-283 rejects untrusted predecessor", () => {
 
 test("DEV-283 rejects unready predecessor", () => {
   const predecessor = validPredecessor();
-  predecessor.ready = false;
+  Reflect.set(predecessor, "ready", false);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "UNREADY_DEV_282_PREDECESSOR"
@@ -192,7 +192,7 @@ test("DEV-283 rejects unready predecessor", () => {
 
 test("DEV-283 rejects unaudited predecessor", () => {
   const predecessor = validPredecessor();
-  predecessor.executionAudited = false;
+  Reflect.set(predecessor, "executionAudited", false);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "DEV_282_EXECUTION_NOT_AUDITED"
@@ -202,8 +202,7 @@ test("DEV-283 rejects unaudited predecessor", () => {
 test("DEV-283 rejects wrong audit state", () => {
   const predecessor = validPredecessor();
 
-  predecessor.executionAuditState =
-    "CONTROLLED_EXECUTION_NOT_AUDITED";
+  Reflect.set(predecessor, "executionAuditState", "CONTROLLED_EXECUTION_NOT_AUDITED");
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "INVALID_DEV_282_AUDIT_STATE"
@@ -211,8 +210,8 @@ test("DEV-283 rejects wrong audit state", () => {
 });
 
 test("DEV-283 rejects non-deterministic audit result", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.executionAuditResultIsDeterministicData = false;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "executionAuditResultIsDeterministicData", false);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "NON_DETERMINISTIC_DEV_282_AUDIT_RESULT"
@@ -220,8 +219,8 @@ test("DEV-283 rejects non-deterministic audit result", () => {
 });
 
 test("DEV-283 rejects predecessor outside audit boundary", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.controlledExecutionAuditBoundaryOnly = false;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "controlledExecutionAuditBoundaryOnly", false);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "INVALID_DEV_282_AUDIT_BOUNDARY"
@@ -230,7 +229,7 @@ test("DEV-283 rejects predecessor outside audit boundary", () => {
 
 test("DEV-283 rejects missing execution archive", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledExecutionArchive = null;
+  Reflect.set(predecessor, "controlledExecutionArchive", null);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_EXECUTION_ARCHIVE"
@@ -239,7 +238,7 @@ test("DEV-283 rejects missing execution archive", () => {
 
 test("DEV-283 rejects missing execution closure", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledExecutionClosure = null;
+  Reflect.set(predecessor, "controlledExecutionClosure", null);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_EXECUTION_CLOSURE"
@@ -248,7 +247,7 @@ test("DEV-283 rejects missing execution closure", () => {
 
 test("DEV-283 rejects missing execution finalization", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledExecutionFinalization = null;
+  Reflect.set(predecessor, "controlledExecutionFinalization", null);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_EXECUTION_FINALIZATION"
@@ -257,7 +256,7 @@ test("DEV-283 rejects missing execution finalization", () => {
 
 test("DEV-283 rejects missing execution completion", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledExecutionCompletion = null;
+  Reflect.set(predecessor, "controlledExecutionCompletion", null);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_EXECUTION_COMPLETION"
@@ -266,7 +265,7 @@ test("DEV-283 rejects missing execution completion", () => {
 
 test("DEV-283 rejects missing execution lifecycle", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecutionLifecycle = null;
+  Reflect.set(predecessor, "controlledOperationExecutionLifecycle", null);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_EXECUTION_LIFECYCLE"
@@ -275,7 +274,7 @@ test("DEV-283 rejects missing execution lifecycle", () => {
 
 test("DEV-283 rejects missing execution receipt", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecutionReceipt = null;
+  Reflect.set(predecessor, "controlledOperationExecutionReceipt", null);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_EXECUTION_RECEIPT"
@@ -284,7 +283,7 @@ test("DEV-283 rejects missing execution receipt", () => {
 
 test("DEV-283 rejects missing controlled operation execution", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecution = null;
+  Reflect.set(predecessor, "controlledOperationExecution", null);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_CONTROLLED_OPERATION_EXECUTION"
@@ -293,7 +292,7 @@ test("DEV-283 rejects missing controlled operation execution", () => {
 
 test("DEV-283 rejects missing operation execution authorization", () => {
   const predecessor = validPredecessor();
-  predecessor.operationExecutionAuthorization = null;
+  Reflect.set(predecessor, "operationExecutionAuthorization", null);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_OPERATION_EXECUTION_AUTHORIZATION"
@@ -302,7 +301,7 @@ test("DEV-283 rejects missing operation execution authorization", () => {
 
 test("DEV-283 rejects missing controlled executor invocation", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledExecutorInvocation = null;
+  Reflect.set(predecessor, "controlledExecutorInvocation", null);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_CONTROLLED_EXECUTOR_INVOCATION"
@@ -311,7 +310,7 @@ test("DEV-283 rejects missing controlled executor invocation", () => {
 
 test("DEV-283 rejects missing controlled dispatch", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledDispatch = null;
+  Reflect.set(predecessor, "controlledDispatch", null);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_CONTROLLED_DISPATCH"
@@ -320,7 +319,7 @@ test("DEV-283 rejects missing controlled dispatch", () => {
 
 test("DEV-283 rejects missing dispatch authorization", () => {
   const predecessor = validPredecessor();
-  predecessor.dispatchAuthorization = null;
+  Reflect.set(predecessor, "dispatchAuthorization", null);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_DISPATCH_AUTHORIZATION"
@@ -329,7 +328,7 @@ test("DEV-283 rejects missing dispatch authorization", () => {
 
 test("DEV-283 rejects missing active admission", () => {
   const predecessor = validPredecessor();
-  predecessor.activeAdmission = null;
+  Reflect.set(predecessor, "activeAdmission", null);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_ACTIVE_ADMISSION"
@@ -338,7 +337,7 @@ test("DEV-283 rejects missing active admission", () => {
 
 test("DEV-283 rejects missing authorization", () => {
   const predecessor = validPredecessor();
-  predecessor.authorization = null;
+  Reflect.set(predecessor, "authorization", null);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_AUTHORIZATION"
@@ -347,7 +346,7 @@ test("DEV-283 rejects missing authorization", () => {
 
 test("DEV-283 rejects missing eligibility", () => {
   const predecessor = validPredecessor();
-  predecessor.eligibility = null;
+  Reflect.set(predecessor, "eligibility", null);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_ELIGIBILITY"
@@ -356,7 +355,7 @@ test("DEV-283 rejects missing eligibility", () => {
 
 test("DEV-283 rejects missing consumption", () => {
   const predecessor = validPredecessor();
-  predecessor.consumption = null;
+  Reflect.set(predecessor, "consumption", null);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_CONSUMPTION"
@@ -365,7 +364,7 @@ test("DEV-283 rejects missing consumption", () => {
 
 test("DEV-283 rejects missing receipt state", () => {
   const predecessor = validPredecessor();
-  predecessor.receiptState = null;
+  Reflect.set(predecessor, "receiptState", null);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_RECEIPT_STATE"
@@ -374,7 +373,7 @@ test("DEV-283 rejects missing receipt state", () => {
 
 test("DEV-283 rejects missing executed operation", () => {
   const predecessor = validPredecessor();
-  predecessor.executedOperation = null;
+  Reflect.set(predecessor, "executedOperation", null);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_EXECUTED_OPERATION"
@@ -383,7 +382,7 @@ test("DEV-283 rejects missing executed operation", () => {
 
 test("DEV-283 rejects empty approved execution scope", () => {
   const predecessor = validPredecessor();
-  predecessor.approvedExecutionScope = [];
+  Reflect.set(predecessor, "approvedExecutionScope", []);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "EMPTY_DEV_282_APPROVED_EXECUTION_SCOPE"
@@ -392,7 +391,7 @@ test("DEV-283 rejects empty approved execution scope", () => {
 
 test("DEV-283 rejects empty provenance", () => {
   const predecessor = validPredecessor();
-  predecessor.provenance = [];
+  Reflect.set(predecessor, "provenance", []);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "EMPTY_DEV_282_PROVENANCE"
@@ -401,7 +400,7 @@ test("DEV-283 rejects empty provenance", () => {
 
 test("DEV-283 rejects missing controlled dispatch evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledDispatchEvidence = [];
+  Reflect.set(predecessor, "controlledDispatchEvidence", []);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_CONTROLLED_DISPATCH_EVIDENCE"
@@ -412,7 +411,7 @@ test(
   "DEV-283 rejects missing executor invocation authorization evidence",
   () => {
     const predecessor = validPredecessor();
-    predecessor.executorInvocationAuthorizationEvidence = [];
+    Reflect.set(predecessor, "executorInvocationAuthorizationEvidence", []);
 
     assert.deepEqual(run(predecessor).blockedReasons, [
       "MISSING_DEV_282_EXECUTOR_INVOCATION_AUTHORIZATION_EVIDENCE"
@@ -424,7 +423,7 @@ test(
   "DEV-283 rejects missing controlled executor invocation evidence",
   () => {
     const predecessor = validPredecessor();
-    predecessor.controlledExecutorInvocationEvidence = [];
+    Reflect.set(predecessor, "controlledExecutorInvocationEvidence", []);
 
     assert.deepEqual(run(predecessor).blockedReasons, [
       "MISSING_DEV_282_CONTROLLED_EXECUTOR_INVOCATION_EVIDENCE"
@@ -436,7 +435,7 @@ test(
   "DEV-283 rejects missing operation execution authorization evidence",
   () => {
     const predecessor = validPredecessor();
-    predecessor.operationExecutionAuthorizationEvidence = [];
+    Reflect.set(predecessor, "operationExecutionAuthorizationEvidence", []);
 
     assert.deepEqual(run(predecessor).blockedReasons, [
       "MISSING_DEV_282_OPERATION_EXECUTION_AUTHORIZATION_EVIDENCE"
@@ -448,7 +447,7 @@ test(
   "DEV-283 rejects missing controlled operation execution evidence",
   () => {
     const predecessor = validPredecessor();
-    predecessor.controlledOperationExecutionEvidence = [];
+    Reflect.set(predecessor, "controlledOperationExecutionEvidence", []);
 
     assert.deepEqual(run(predecessor).blockedReasons, [
       "MISSING_DEV_282_CONTROLLED_OPERATION_EXECUTION_EVIDENCE"
@@ -458,7 +457,7 @@ test(
 
 test("DEV-283 rejects missing execution receipt evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecutionReceiptEvidence = [];
+  Reflect.set(predecessor, "controlledOperationExecutionReceiptEvidence", []);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_CONTROLLED_OPERATION_EXECUTION_RECEIPT_EVIDENCE"
@@ -467,7 +466,7 @@ test("DEV-283 rejects missing execution receipt evidence", () => {
 
 test("DEV-283 rejects missing execution lifecycle evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecutionLifecycleEvidence = [];
+  Reflect.set(predecessor, "controlledOperationExecutionLifecycleEvidence", []);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_CONTROLLED_OPERATION_EXECUTION_LIFECYCLE_EVIDENCE"
@@ -476,7 +475,7 @@ test("DEV-283 rejects missing execution lifecycle evidence", () => {
 
 test("DEV-283 rejects missing execution completion evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledExecutionCompletionEvidence = [];
+  Reflect.set(predecessor, "controlledExecutionCompletionEvidence", []);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_EXECUTION_COMPLETION_EVIDENCE"
@@ -485,7 +484,7 @@ test("DEV-283 rejects missing execution completion evidence", () => {
 
 test("DEV-283 rejects missing execution finalization evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledExecutionFinalizationEvidence = [];
+  Reflect.set(predecessor, "controlledExecutionFinalizationEvidence", []);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_EXECUTION_FINALIZATION_EVIDENCE"
@@ -494,7 +493,7 @@ test("DEV-283 rejects missing execution finalization evidence", () => {
 
 test("DEV-283 rejects missing execution closure evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledExecutionClosureEvidence = [];
+  Reflect.set(predecessor, "controlledExecutionClosureEvidence", []);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_EXECUTION_CLOSURE_EVIDENCE"
@@ -503,7 +502,7 @@ test("DEV-283 rejects missing execution closure evidence", () => {
 
 test("DEV-283 rejects missing execution archive evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledExecutionArchiveEvidence = [];
+  Reflect.set(predecessor, "controlledExecutionArchiveEvidence", []);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_EXECUTION_ARCHIVE_EVIDENCE"
@@ -512,7 +511,7 @@ test("DEV-283 rejects missing execution archive evidence", () => {
 
 test("DEV-283 rejects missing execution audit evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledExecutionAuditEvidence = [];
+  Reflect.set(predecessor, "controlledExecutionAuditEvidence", []);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_EXECUTION_AUDIT_EVIDENCE"
@@ -521,7 +520,7 @@ test("DEV-283 rejects missing execution audit evidence", () => {
 
 test("DEV-283 rejects blocked predecessor", () => {
   const predecessor = validPredecessor();
-  predecessor.blockedReasons = ["blocked"];
+  Reflect.set(predecessor, "blockedReasons", ["blocked"]);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "BLOCKED_DEV_282_PREDECESSOR"
@@ -529,8 +528,8 @@ test("DEV-283 rejects blocked predecessor", () => {
 });
 
 test("DEV-283 rejects executor authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayInvokeExecutor = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayInvokeExecutor", true);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "DEV_282_EXECUTOR_AUTHORITY_PRESENT"
@@ -538,8 +537,8 @@ test("DEV-283 rejects executor authority", () => {
 });
 
 test("DEV-283 rejects execution authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayExecuteOperation = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayExecuteOperation", true);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "DEV_282_EXECUTION_AUTHORITY_PRESENT"
@@ -547,8 +546,8 @@ test("DEV-283 rejects execution authority", () => {
 });
 
 test("DEV-283 rejects retry authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayRetryExecution = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayRetryExecution", true);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "DEV_282_RETRY_AUTHORITY_PRESENT"
@@ -556,8 +555,8 @@ test("DEV-283 rejects retry authority", () => {
 });
 
 test("DEV-283 rejects lifecycle persistence authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayPersistLifecycleState = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayPersistLifecycleState", true);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "DEV_282_LIFECYCLE_PERSISTENCE_AUTHORITY_PRESENT"
@@ -565,8 +564,8 @@ test("DEV-283 rejects lifecycle persistence authority", () => {
 });
 
 test("DEV-283 rejects repository mutation authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayModifyRepository = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayModifyRepository", true);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "DEV_282_REPOSITORY_MUTATION_AUTHORITY_PRESENT"
@@ -574,8 +573,8 @@ test("DEV-283 rejects repository mutation authority", () => {
 });
 
 test("DEV-283 rejects commit authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayCommit = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayCommit", true);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "DEV_282_COMMIT_AUTHORITY_PRESENT"
@@ -583,8 +582,8 @@ test("DEV-283 rejects commit authority", () => {
 });
 
 test("DEV-283 rejects push authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayPush = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayPush", true);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "DEV_282_PUSH_AUTHORITY_PRESENT"
@@ -592,8 +591,8 @@ test("DEV-283 rejects push authority", () => {
 });
 
 test("DEV-283 rejects external side-effect authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayPerformExternalSideEffects = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayPerformExternalSideEffects", true);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "DEV_282_EXTERNAL_SIDE_EFFECT_AUTHORITY_PRESENT"
@@ -601,10 +600,9 @@ test("DEV-283 rejects external side-effect authority", () => {
 });
 
 test("DEV-283 rejects missing future attestation boundary", () => {
-  const predecessor = validPredecessor() as any;
+  const predecessor = validPredecessor();
 
-  predecessor.futureControlledExecutionAttestationBoundaryRequired =
-    false;
+  Reflect.set(predecessor, "futureControlledExecutionAttestationBoundaryRequired", false);
 
   assert.deepEqual(run(predecessor).blockedReasons, [
     "MISSING_DEV_282_FUTURE_ATTESTATION_BOUNDARY"

@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createPrivateFoodMenuMutationRequestAdapter } from "./private-menu-mutation-request-adapter";
 import { createPrivateFoodMenuMutationRequestBoundary, FOOD_MENU_MUTATION_TRANSPORT_MESSAGES, type FoodMenuMutationRequestBoundary, type FoodMenuMutationRequestEnvelope, type FoodMenuMutationRequestResult } from "./private-menu-mutation-request";
-import { SingleAdminFoodMenuService, type FoodMenuServiceErrorCode } from "./private-menu-service";
+import { SingleAdminFoodMenuService } from "./private-menu-service";
 import { createPrivateFoodMenuWorkspaceController, type FoodPrivateMenuWorkspaceController } from "./private-menu-workspace";
 import { InMemoryFoodMenuRepository } from "./menu-persistence";
 import { InMemoryFoodDraftRepository } from "./draft-persistence";
@@ -113,7 +113,7 @@ test("delayed native reads are awaited; stream/body errors are sanitized and loc
 
 test("early iterator return cancels/releases; cleanup failure cannot replace results", async () => {
     const f = native(); const expected = failure("callback-failed") as FoodMenuMutationRequestResult;
-    const boundary: FoodMenuMutationRequestBoundary = { async submit(envelope) { for await (const _chunk of envelope.readBody()) break; return expected; } };
+    const boundary: FoodMenuMutationRequestBoundary = { async submit(envelope) { for await (const chunk of envelope.readBody()) { assert(chunk instanceof Uint8Array); break; } return expected; } };
     assert.equal(await createPrivateFoodMenuMutationRequestAdapter({ boundary }).submit(f.request), expected); assert.equal(f.state.reads, 1); assert.equal(f.state.cancels, 1); assert.equal(f.state.releases, 1); assert(!f.stream.locked);
     const cleanup = native(); const get = cleanup.stream.getReader.bind(cleanup.stream); Object.defineProperty(cleanup.stream, "getReader", { value() { const reader = get(); reader.cancel = async () => { throw new Error("private cancel"); }; const original = reader.releaseLock.bind(reader); reader.releaseLock = () => { original(); throw new Error("private release"); }; return reader; } });
     assert.equal(await createPrivateFoodMenuMutationRequestAdapter({ boundary }).submit(cleanup.request), expected); assert(!cleanup.stream.locked);
@@ -144,7 +144,7 @@ test("real K/service/workspace reauthorize; malformed principals and revocation 
 
 test("boundary exceptions sanitize without retry; concurrent Requests preserve independent state", async () => {
     for (const submit of [() => { throw new Error("secret synchronous"); }, async () => { throw new Error("secret rejection"); }]) {
-        let calls = 0; const adapter = createPrivateFoodMenuMutationRequestAdapter({ boundary: { submit(envelope) { calls++; return submit() as never; } } });
+        let calls = 0; const adapter = createPrivateFoodMenuMutationRequestAdapter({ boundary: { submit() { calls++; return submit() as never; } } });
         const result = await adapter.submit(native().request); assert.deepEqual(result, failure("callback-failed")); assert.equal(calls, 1); assert(Object.isFrozen(result)); assert(!result.ok && Object.isFrozen(result.error));
     }
     const one = native([new Uint8Array([1])]), two = native([new Uint8Array([2])]);

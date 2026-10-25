@@ -25,20 +25,20 @@ function validPredecessor():
 
     executionFinalizationState: "CONTROLLED_EXECUTION_FINALIZED",
 
-    controlledExecutionCompletion: {} as any,
-    controlledOperationExecutionLifecycle: {} as any,
-    controlledOperationExecutionReceipt: {} as any,
-    controlledOperationExecution: {} as any,
-    operationExecutionAuthorization: {} as any,
-    controlledExecutorInvocation: {} as any,
-    controlledDispatch: {} as any,
-    dispatchAuthorization: {} as any,
-    activeAdmission: {} as any,
-    authorization: {} as any,
-    eligibility: {} as any,
-    consumption: {} as any,
-    receiptState: {} as any,
-    executedOperation: {} as any,
+    controlledExecutionCompletion: {} as unknown as import("../types").RiverDevControlledExecutionCompletionFoundationResult | null,
+    controlledOperationExecutionLifecycle: {} as unknown as import("../types").RiverDevControlledOperationExecutionLifecycleFoundationResult | null,
+    controlledOperationExecutionReceipt: {} as unknown as import("../types").RiverDevControlledOperationExecutionReceiptFoundationResult | null,
+    controlledOperationExecution: {} as unknown as import("../types").RiverDevControlledOperationExecutionBoundaryFoundationResult | null,
+    operationExecutionAuthorization: {} as unknown as import("../types").RiverDevOperationExecutionAuthorizationFoundationResult | null,
+    controlledExecutorInvocation: {} as unknown as import("../types").RiverDevControlledExecutorInvocationFoundationResult | null,
+    controlledDispatch: {} as unknown as import("../types").RiverDevControlledExecutorDispatchFoundationResult | null,
+    dispatchAuthorization: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionDispatchAuthorizationFoundationResult | null,
+    activeAdmission: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionFoundationResult | null,
+    authorization: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionAuthorizationFoundationResult | null,
+    eligibility: {} as unknown as import("../types").RiverDevControlledExecutorActiveAdmissionEligibilityFoundationResult | null,
+    consumption: {} as unknown as import("../types").RiverDevControlledExecutorVerifiedPackageDownstreamAdmissionConsumptionFoundationResult | null,
+    receiptState: {} as unknown as string | null,
+    executedOperation: {} as unknown as string | null,
 
     approvedExecutionScope: ["operation:test"],
     provenance: ["DEV-279"],
@@ -136,8 +136,8 @@ test(
 );
 
 test("DEV-280 rejects wrong predecessor version", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.version = "DEV-278";
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "version", "DEV-278");
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -148,7 +148,7 @@ test("DEV-280 rejects wrong predecessor version", () => {
 
 test("DEV-280 rejects untrusted predecessor", () => {
   const predecessor = validPredecessor();
-  predecessor.trusted = false;
+  Reflect.set(predecessor, "trusted", false);
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -158,7 +158,7 @@ test("DEV-280 rejects untrusted predecessor", () => {
 
 test("DEV-280 rejects unready predecessor", () => {
   const predecessor = validPredecessor();
-  predecessor.ready = false;
+  Reflect.set(predecessor, "ready", false);
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -168,7 +168,7 @@ test("DEV-280 rejects unready predecessor", () => {
 
 test("DEV-280 rejects predecessor without finalized execution", () => {
   const predecessor = validPredecessor();
-  predecessor.executionFinalized = false;
+  Reflect.set(predecessor, "executionFinalized", false);
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -179,8 +179,7 @@ test("DEV-280 rejects predecessor without finalized execution", () => {
 test("DEV-280 rejects wrong finalization state", () => {
   const predecessor = validPredecessor();
 
-  predecessor.executionFinalizationState =
-    "CONTROLLED_EXECUTION_NOT_FINALIZED";
+  Reflect.set(predecessor, "executionFinalizationState", "CONTROLLED_EXECUTION_NOT_FINALIZED");
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -189,8 +188,8 @@ test("DEV-280 rejects wrong finalization state", () => {
 });
 
 test("DEV-280 rejects non-deterministic finalization predecessor", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.executionFinalizationResultIsDeterministicData = false;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "executionFinalizationResultIsDeterministicData", false);
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -199,8 +198,8 @@ test("DEV-280 rejects non-deterministic finalization predecessor", () => {
 });
 
 test("DEV-280 rejects predecessor outside finalization boundary", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.controlledExecutionFinalizationBoundaryOnly = false;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "controlledExecutionFinalizationBoundaryOnly", false);
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -210,7 +209,7 @@ test("DEV-280 rejects predecessor outside finalization boundary", () => {
 
 test("DEV-280 rejects missing execution completion", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledExecutionCompletion = null;
+  Reflect.set(predecessor, "controlledExecutionCompletion", null);
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -220,7 +219,7 @@ test("DEV-280 rejects missing execution completion", () => {
 
 test("DEV-280 rejects missing execution lifecycle", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecutionLifecycle = null;
+  Reflect.set(predecessor, "controlledOperationExecutionLifecycle", null);
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -230,7 +229,7 @@ test("DEV-280 rejects missing execution lifecycle", () => {
 
 test("DEV-280 rejects missing execution receipt", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecutionReceipt = null;
+  Reflect.set(predecessor, "controlledOperationExecutionReceipt", null);
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -240,7 +239,7 @@ test("DEV-280 rejects missing execution receipt", () => {
 
 test("DEV-280 rejects missing controlled operation execution", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecution = null;
+  Reflect.set(predecessor, "controlledOperationExecution", null);
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -250,7 +249,7 @@ test("DEV-280 rejects missing controlled operation execution", () => {
 
 test("DEV-280 rejects missing executed operation", () => {
   const predecessor = validPredecessor();
-  predecessor.executedOperation = null;
+  Reflect.set(predecessor, "executedOperation", null);
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -260,7 +259,7 @@ test("DEV-280 rejects missing executed operation", () => {
 
 test("DEV-280 rejects empty approved execution scope", () => {
   const predecessor = validPredecessor();
-  predecessor.approvedExecutionScope = [];
+  Reflect.set(predecessor, "approvedExecutionScope", []);
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -270,7 +269,7 @@ test("DEV-280 rejects empty approved execution scope", () => {
 
 test("DEV-280 rejects empty provenance", () => {
   const predecessor = validPredecessor();
-  predecessor.provenance = [];
+  Reflect.set(predecessor, "provenance", []);
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -280,7 +279,7 @@ test("DEV-280 rejects empty provenance", () => {
 
 test("DEV-280 rejects missing finalization evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledExecutionFinalizationEvidence = [];
+  Reflect.set(predecessor, "controlledExecutionFinalizationEvidence", []);
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -290,7 +289,7 @@ test("DEV-280 rejects missing finalization evidence", () => {
 
 test("DEV-280 rejects missing completion evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledExecutionCompletionEvidence = [];
+  Reflect.set(predecessor, "controlledExecutionCompletionEvidence", []);
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -300,7 +299,7 @@ test("DEV-280 rejects missing completion evidence", () => {
 
 test("DEV-280 rejects missing lifecycle evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecutionLifecycleEvidence = [];
+  Reflect.set(predecessor, "controlledOperationExecutionLifecycleEvidence", []);
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -310,7 +309,7 @@ test("DEV-280 rejects missing lifecycle evidence", () => {
 
 test("DEV-280 rejects missing receipt evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecutionReceiptEvidence = [];
+  Reflect.set(predecessor, "controlledOperationExecutionReceiptEvidence", []);
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -320,7 +319,7 @@ test("DEV-280 rejects missing receipt evidence", () => {
 
 test("DEV-280 rejects missing execution evidence", () => {
   const predecessor = validPredecessor();
-  predecessor.controlledOperationExecutionEvidence = [];
+  Reflect.set(predecessor, "controlledOperationExecutionEvidence", []);
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -330,7 +329,7 @@ test("DEV-280 rejects missing execution evidence", () => {
 
 test("DEV-280 rejects blocked predecessor", () => {
   const predecessor = validPredecessor();
-  predecessor.blockedReasons = ["blocked"];
+  Reflect.set(predecessor, "blockedReasons", ["blocked"]);
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -339,8 +338,8 @@ test("DEV-280 rejects blocked predecessor", () => {
 });
 
 test("DEV-280 rejects predecessor with executor authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayInvokeExecutor = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayInvokeExecutor", true);
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -349,8 +348,8 @@ test("DEV-280 rejects predecessor with executor authority", () => {
 });
 
 test("DEV-280 rejects predecessor with execution authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayExecuteOperation = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayExecuteOperation", true);
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -359,8 +358,8 @@ test("DEV-280 rejects predecessor with execution authority", () => {
 });
 
 test("DEV-280 rejects predecessor with retry authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayRetryExecution = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayRetryExecution", true);
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -371,8 +370,8 @@ test("DEV-280 rejects predecessor with retry authority", () => {
 test(
   "DEV-280 rejects predecessor with lifecycle persistence authority",
   () => {
-    const predecessor = validPredecessor() as any;
-    predecessor.mayPersistLifecycleState = true;
+    const predecessor = validPredecessor();
+    Reflect.set(predecessor, "mayPersistLifecycleState", true);
 
     const result =
       establishControlledExecutionClosureFoundation(predecessor);
@@ -384,8 +383,8 @@ test(
 test(
   "DEV-280 rejects predecessor with repository mutation authority",
   () => {
-    const predecessor = validPredecessor() as any;
-    predecessor.mayModifyRepository = true;
+    const predecessor = validPredecessor();
+    Reflect.set(predecessor, "mayModifyRepository", true);
 
     const result =
       establishControlledExecutionClosureFoundation(predecessor);
@@ -395,8 +394,8 @@ test(
 );
 
 test("DEV-280 rejects predecessor with commit authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayCommit = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayCommit", true);
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -405,8 +404,8 @@ test("DEV-280 rejects predecessor with commit authority", () => {
 });
 
 test("DEV-280 rejects predecessor with push authority", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.mayPush = true;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "mayPush", true);
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);
@@ -417,8 +416,8 @@ test("DEV-280 rejects predecessor with push authority", () => {
 test(
   "DEV-280 rejects predecessor with external side-effect authority",
   () => {
-    const predecessor = validPredecessor() as any;
-    predecessor.mayPerformExternalSideEffects = true;
+    const predecessor = validPredecessor();
+    Reflect.set(predecessor, "mayPerformExternalSideEffects", true);
 
     const result =
       establishControlledExecutionClosureFoundation(predecessor);
@@ -428,9 +427,8 @@ test(
 );
 
 test("DEV-280 rejects missing future closure boundary", () => {
-  const predecessor = validPredecessor() as any;
-  predecessor.futureControlledExecutionClosureBoundaryRequired =
-    false;
+  const predecessor = validPredecessor();
+  Reflect.set(predecessor, "futureControlledExecutionClosureBoundaryRequired", false);
 
   const result =
     establishControlledExecutionClosureFoundation(predecessor);

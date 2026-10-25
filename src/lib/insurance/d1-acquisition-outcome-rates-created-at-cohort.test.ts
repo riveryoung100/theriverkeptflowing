@@ -41,7 +41,7 @@ implements InsuranceCreatedAtOutcomeAnalyticsApplication {
     async getCreatedAtAnalytics(
         input:
             GetInsuranceCreatedAtOutcomeAnalyticsInput
-    ){
+    ): ReturnType<InsuranceCreatedAtOutcomeAnalyticsApplication["getCreatedAtAnalytics"]> {
         this.calls +=
             1;
 
@@ -49,6 +49,7 @@ implements InsuranceCreatedAtOutcomeAnalyticsApplication {
             input;
 
         return {
+            cohort: { selection: "complete-range", relationshipCount: this.relationshipCount, pageCount: 1, isComplete: true, isTruncated: false },
             projectionVersion:
                 INSURANCE_ACQUISITION_OUTCOME_ANALYTICS_VERSION,
 

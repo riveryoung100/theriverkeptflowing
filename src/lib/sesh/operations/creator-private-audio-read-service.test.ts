@@ -1,3 +1,4 @@
+import { parseSeshMusicProjectId as fixtureParseproject, parseSeshAudioAssetId as fixtureParseaudio } from "../identifiers";
 import assert from "node:assert/strict";
 import test from "node:test";
 
@@ -10,10 +11,10 @@ import {
 } from "./creator-private-audio-read-service";
 
 const projectId =
-  "sesh-project:binary-project";
+  fixtureParseproject("sesh-project:binary-project");
 
 const audioAssetId =
-  "sesh-audio:binary-audio";
+  fixtureParseaudio("sesh-audio:binary-audio");
 
 const storageReference = {
   provider:
@@ -146,6 +147,7 @@ test(
                 true as const,
 
               value: {
+                reference: receivedReference,
                 bytes:
                   Uint8Array.from([
                     82,
@@ -341,7 +343,7 @@ test(
                 ...asset(),
 
                 projectId:
-                  "sesh-project:different",
+                  fixtureParseproject("sesh-project:different"),
               },
             };
           },
@@ -558,6 +560,7 @@ test(
                 true as const,
 
               value: {
+                reference: _reference,
                 bytes:
                   Uint8Array.from([
                     30,

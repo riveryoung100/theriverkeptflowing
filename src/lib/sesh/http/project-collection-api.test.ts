@@ -1,3 +1,4 @@
+import { parseSeshMusicProjectId as fixtureParseproject, parseSeshCreatorId as fixtureParsecreator } from "../identifiers";
 import assert from "node:assert/strict";
 import test from "node:test";
 
@@ -30,10 +31,10 @@ AuthenticatedSeshProjectCollectionService {
 
         value: {
           id:
-            "sesh-project:http-created",
+            fixtureParseproject("sesh-project:http-created"),
 
           ownerCreatorId:
-            "sesh-creator:http-owner",
+            fixtureParsecreator("sesh-creator:http-owner"),
 
           title:
             "HTTP Created",

@@ -53,7 +53,7 @@ implements InsuranceCreatedAtCostPerOutcomeCohortReader {
                     "listCreatedAtRangePage"
                 ]
             >[0]
-    ){
+    ): ReturnType<InsuranceCreatedAtCostPerOutcomeCohortReader["listCreatedAtRangePage"]> {
         this.calls +=
             1;
 
@@ -114,7 +114,7 @@ implements InsuranceAttributedEconomicsBatchApplication {
                     "getViews"
                 ]
             >[0]
-    ){
+    ): ReturnType<InsuranceAttributedEconomicsBatchApplication["getViews"]> {
         this.calls +=
             1;
 
@@ -133,6 +133,7 @@ implements InsuranceAttributedEconomicsBatchApplication {
 
                     currencies: [
                         {
+                            acquisitionCostFactCount: 1, premiumFactCount: 0, commissionFactCount: 0,
                             currency:
                                 "USD",
 
