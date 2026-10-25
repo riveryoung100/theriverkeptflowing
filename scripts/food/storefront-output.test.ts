@@ -11,8 +11,8 @@ test('built landing and every catalog route link consistently and preserve navig
     assert.ok(home.includes(`href="${product.path}"`));
     const html = await readFile(`dist/client${product.path}index.html`, 'utf8');
     assert.ok(html.includes(product.name)); assert.ok(html.includes(product.id)); assert.ok(html.includes('href="/the-table/"'));
-    assert.ok(html.includes('Allergen review is not complete')); assert.ok(html.includes('CONCEPTUAL PLACEHOLDER'));
-    assert.ok(html.includes('Not yet confirmed')); assert.ok(html.includes('Total')); assert.ok(html.includes('Not available yet'));
+    assert.ok(html.includes('Allergen review is not complete')); assert.ok(html.includes('Concept illustration'));
+    assert.ok(html.includes('Not yet confirmed')); assert.ok(html.includes('Ordering is not yet open.'));
     assert.equal((html.match(/<h1\b/g) ?? []).length, 1);
     for (const [, anchor] of html.matchAll(/href="#([^"]+)"/g)) assert.ok(html.includes(`id="${anchor}"`), `Broken fragment ${anchor}`);
   }
@@ -28,6 +28,7 @@ test('built pages expose no price/nutrition inventions, owner finances or live c
     for (const [button] of tableMain.matchAll(/<button\b[^>]*>/g)) assert.match(button, /\bdisabled\b/);
     for (const [input] of tableMain.matchAll(/<input\b[^>]*type="number"[^>]*>/g)) assert.match(input, /\bdisabled\b/);
     for (const [fieldset] of tableMain.matchAll(/<fieldset\b[^>]*>/g)) assert.match(fieldset, /\bdisabled\b/);
+    for (const [select] of tableMain.matchAll(/<select\b[^>]*>/g)) assert.match(select, /\bdisabled\b/);
     assert.doesNotMatch(tableMain, /<script\b|action=|data-checkout|<input[^>]*type="(?:email|tel|text)"/);
   }
 });
@@ -39,13 +40,30 @@ test('built CSS references exist and scoped accessibility/responsive rules survi
   }
   const css = cssSources.join('\n'); assert.match(css, /prefers-reduced-motion/); assert.match(css, /focus-visible/); assert.match(css, /tl-detail-grid/); assert.match(css, /minmax\(0/);
 });
-test('closed product journey exposes accessible quantity, honest windows and unavailable status only', async () => {
+test('prelaunch product journey restores disabled ordering preview before FAQs and explains outstanding approvals', async () => {
   for (const product of TABLE_PRODUCTS) {
     const html = await readFile(`dist/client${product.path}index.html`, 'utf8');
-    assert.match(html, /aria-label="Decrease quantity"/); assert.match(html, /aria-label="Increase quantity"/);
-    assert.match(html, /Minimum 1 when ordering opens/); assert.match(html, /maximum per order and available batch capacity are not yet confirmed/);
-    assert.match(html, /<select\b[^>]*\bdisabled\b/); assert.match(html, /No confirmed windows yet/);
-    assert.match(html, /role="status"/); assert.match(html, /aria-live="polite"/); assert.match(html, /data-order-stage="unavailable"/);
+    const main = html.match(/<main\b[\s\S]*?<\/main>/)![0];
+    assert.doesNotMatch(main, /<form\b|action=|data-checkout/);
+    assert.match(main, /A preview of ordering at The Table/);
+    assert.match(main, /class="tl-quantity"/);
+    assert.match(main, /id="bowl-quantity"[^>]*disabled/);
+    assert.match(main, /<fieldset[^>]*class="tl-fulfillment-options"[^>]*disabled/);
+    for (const kind of ['pickup', 'local-delivery', 'out-of-area']) assert.ok(main.includes(`value="${kind}"`));
+    assert.match(main, /<select[^>]*id="bowl-fulfillment-window"[^>]*disabled/);
+    assert.match(main, /class="tl-order-summary"/);
+    assert.match(main, /No order has been created/);
+    assert.match(main, /data-order-stage="unavailable"/);
+    assert.match(main, /No confirmed windows yet/);
+    assert.match(main, /Not selected/);
+    assert.match(main, /Not available yet/);
+    assert.match(main, /The maximum per order and available batch capacity are not yet confirmed/);
+    assert.match(main, /Final totals require verified prices, fulfillment charges, and applicable tax information/);
+    assert.ok(main.indexOf('id="opening-questions"') > main.indexOf('class="tl-order-summary"'));
+    assert.equal((main.match(/<details>/g) ?? []).length, 6);
+    assert.match(main, /A first look, not an offer for sale/);
+    assert.match(main, /operational and legal approval/);
+    assert.match(main, /Portion size, nutrition, shelf life, storage and reheating/);
     assert.doesNotMatch(html, /data-order-stage="(?:accepted|fulfilled|refunded)"|Paid and accepted|synthetic-integrated|SIMULATION\//);
     assert.match(html, /Final packaging and label details will be shared after testing and review/);
   }
@@ -95,4 +113,25 @@ test('browser-discovered focus and contrast regressions stay corrected',async()=
  for(const path of [homePath,...TABLE_PRODUCTS.map(p=>`dist/client${p.path}index.html`)]){
   const html=await readFile(path,'utf8');assert.match(html,/<body class="table-storefront"/);
  }
+});
+
+test('FOOD-033 routes retain SEO, truthful FAQ, one visual and a single featured product', async () => {
+ for (const path of [homePath,...TABLE_PRODUCTS.map(p=>`dist/client${p.path}index.html`)]) {
+  const html=await readFile(path,'utf8');
+  const route=path.slice('dist/client'.length).replace(/index\.html$/,'');
+  assert.ok(html.includes(`rel="canonical" href="https://theriverkeptflowing.com${route}"`));
+  assert.match(html, /name="description" content="[^"]{30,}"/);
+  assert.match(html, /data-table-availability="in-development"/);
+  assert.equal((html.match(/src="\/images\/table\/southwest-harvest-concept.svg"/g)??[]).length,1);
+  assert.equal((html.match(/<details>/g)??[]).length,6);
+  assert.match(html,/not a cooked meal, verified portion or final package/);
+  assert.doesNotMatch(html,/"@type"\s*:\s*"(?:Offer|Product|AggregateRating)"|coupon|redeem|referral/i);
+  const main=html.match(/<main\b[\s\S]*?<\/main>/)![0];
+  assert.doesNotMatch(main,/Mushrooms and greens|separate sauce to add after heating|<form\b/);
+ }
+ const home=await readFile(homePath,'utf8');
+ assert.equal((home.match(/class="tl-product-card"/g)??[]).length,1);
+ assert.equal((home.match(/class="tl-step-number"/g)??[]).length,3);
+ const sitemap=await readFile('dist/client/sitemap-0.xml','utf8');
+ for(const route of ['/the-table/',...TABLE_PRODUCTS.map(p=>p.path)])assert.ok(sitemap.includes(`https://theriverkeptflowing.com${route}`));
 });

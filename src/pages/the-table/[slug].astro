@@ -8,6 +8,8 @@ import ProductAvailability from '../../components/table/ProductAvailability.astr
 import QuantitySelector from '../../components/table/QuantitySelector.astro';
 import FulfillmentOptions from '../../components/table/FulfillmentOptions.astro';
 import OrderSummary from '../../components/table/OrderSummary.astro';
+import TableNavigation from '../../components/table/TableNavigation.astro';
+import OpeningQuestions from '../../components/table/OpeningQuestions.astro';
 import '../../styles/table-launch.css';
 import {currentTableDepartment,SOUTHWEST_PRELAUNCH_DESIGN} from '../../lib/food/table-menu-plan';
 export const prerender = true;
@@ -20,20 +22,20 @@ const workingDesign = product.concept && department ? SOUTHWEST_PRELAUNCH_DESIGN
 <MainLayout bodyClass="table-storefront" title={`${product.name} | The Table`} description={`${product.shortDescription} ${product.concept ? 'Recipe in development. ' : ''}Ordering is not yet open.`}>
   <a class="tl-skip-link" href="#table-content">Skip to The Table content</a>
   <main tabindex="-1" class="tl-page" id="table-content" data-pagefind-body data-table-product={product.id}>
-    <div class="tl-status"><span aria-hidden="true"></span> A first look at The Table. Ordering is not yet open.</div>
-    <nav class="tl-subnav" aria-label="The Table navigation"><a class="tl-wordmark" href="/the-table/">The Table<span>BY THE RIVER KEPT FLOWING</span></a><div><a href="/the-table/#first-bowl">Hot Food Bowls</a><a href="#bowl-details">Product details</a><a href="#ordering-preview">Ordering details</a></div></nav>
+    <TableNavigation detail />
     <div class="tl-detail-wrap">
       <nav class="tl-breadcrumb" aria-label="Breadcrumb"><a href="/the-table/">The Table</a><span aria-hidden="true">/</span><span aria-current="page">{product.name}</span></nav>
       <section class="tl-detail-grid" aria-labelledby="bowl-title">
         <ProductImage product={product} />
         <div class="tl-detail-intro">
-          <p class="tl-eyebrow">{department?.label ?? product.category} / The Table</p>
+          <p class="tl-eyebrow">{department?.label ?? product.category} / No. 001</p>
           <h1 id="bowl-title">{product.name}</h1>
           <ProductAvailability product={product} />
           <p class="tl-detail-lede">{product.shortDescription}</p>
           <p class="tl-product-description">{workingDesign?.description ?? product.description}</p>
           <dl class="tl-product-facts"><div><dt>Price</dt><dd>{formatTableMoney(product.price)}</dd></div><div><dt>Portion</dt><dd>{product.netGrams === null ? 'Final serving details to come' : `${product.netGrams} g`}</dd></div></dl>
           <p class="tl-disclaimer tl-packaging-note">Final packaging and label details will be shared after testing and review.</p>
+          <p class="tl-closed-note">A first look, not an offer for sale. No orders or reservations are being accepted.</p>
           {product.serving.state === 'specified' && <p class="tl-disclaimer">{product.serving.minimum === product.serving.maximum ? `${product.serving.minimum} serving${product.serving.minimum === 1 ? '' : 's'}` : `${product.serving.minimum}–${product.serving.maximum} servings`}</p>}
           <a class="tl-text-link" href="#bowl-details">Discover the details <span aria-hidden="true">&darr;</span></a>
         </div>
@@ -49,10 +51,12 @@ const workingDesign = product.concept && department ? SOUTHWEST_PRELAUNCH_DESIGN
         {product.nutrition && <article class="tl-detail-panel"><h3>Nutrition</h3><p>{product.nutrition.serving}</p><dl>{product.nutrition.facts.map(f => <div><dt>{f.label}</dt><dd>{f.value}</dd></div>)}</dl></article>}
       </section>
       <section class="tl-ordering-section" id="ordering-preview" aria-labelledby="ordering-heading">
-        <div><p class="tl-eyebrow">A preview of what comes next</p><h2 id="ordering-heading">A simpler way<br /><em>to mealtime.</em></h2><p>Recipe testing comes first. Price, availability, and fulfillment details will be published when verified.</p><QuantitySelector id="bowl-quantity" maxPerOrder={product.maxPerOrder} /><FulfillmentOptions id="bowl-fulfillment" /></div>
+        <div><p class="tl-eyebrow">Still taking shape</p><h2 id="ordering-heading">A preview of ordering at The Table</h2><p>Recipe testing comes first. Price, availability, and fulfillment details will be published when verified. These disabled controls show the intended experience; no order, payment or reservation can be made.</p><QuantitySelector id="bowl-quantity" maxPerOrder={product.maxPerOrder} /><FulfillmentOptions id="bowl-fulfillment" /></div>
         <OrderSummary product={product} />
+        <div class="tl-readiness"><h3>Ordering is not yet open.</h3><p>Payments and preorders remain unavailable.</p><dl class="tl-fulfillment"><div><dt>Before a first release</dt><dd>Verified ingredients and allergens, packaging, food safety, approved pricing and fulfillment capacity.</dd></div><div><dt>Still to be validated</dt><dd>Portion size, nutrition, shelf life, storage and reheating directions. No heating time is available yet.</dd></div><div><dt>Pickup &amp; delivery</dt><dd>Methods, locations, service areas, fees and windows require operational and legal approval.</dd></div></dl></div>
       </section>
-      <div class="tl-footer"><span>The Table</span><p>Thoughtfully developed, one detail at a time.</p><a href="/the-table/">Back to the collection <span aria-hidden="true">&larr;</span></a></div>
+      <OpeningQuestions />
+      <div class="tl-footer"><a class="tl-footer-brand" href="/the-table/">The Table</a><p>Thoughtfully developed, one detail at a time.</p><a href="/the-table/">Back to The Table <span aria-hidden="true">&larr;</span></a></div>
     </div>
   </main>
 </MainLayout>

@@ -1,59 +1,48 @@
 ﻿---
-import MainLayout from "../../layouts/MainLayout.astro";
-import "../../styles/table-launch.css";
-
+import MainLayout from '../../layouts/MainLayout.astro';
+import '../../styles/table-launch.css';
 import { TABLE_PRODUCTS } from '../../lib/food/table-catalog';
 import ProductImage from '../../components/table/ProductImage.astro';
 import ProductCard from '../../components/table/ProductCard.astro';
-import { TABLE_FIRST_DEPARTMENT } from '../../lib/food/table-menu-plan';
+import TableNavigation from '../../components/table/TableNavigation.astro';
+import OpeningQuestions from '../../components/table/OpeningQuestions.astro';
 const firstProduct = TABLE_PRODUCTS[0];
 const orderingSteps = [
-  { title: "Find your bowl", copy: "View the finished dish and review its verified ingredients and allergens." },
-  { title: "Make it yours", copy: "Choose a quantity, then select an available pickup or delivery option." },
-  { title: "Review & pay", copy: "See the price, any fulfillment fees, and your full total before paying." },
-  { title: "You're all set", copy: "Receive an order confirmation with your fulfillment details." },
+  { title: 'Find your favorite', copy: 'Browse the finished recipe, ingredients, allergens and portion details before deciding.' },
+  { title: 'Choose your way home', copy: 'Review any approved pickup or delivery options, with clear availability and costs.' },
+  { title: 'Make time for a meal', copy: 'Follow the validated storage and reheating directions supplied with the finished bowl.' },
 ];
 ---
-<MainLayout bodyClass="table-storefront" title="The Table | A first bowl for Big Spring, Texas" description="Meet The Table’s Southwest Harvest Bowl, a frozen meal concept for Big Spring, Texas. Recipe and packaging are in development. Ordering is not yet open.">
+<MainLayout bodyClass="table-storefront" title="The Table | A first bowl for Big Spring, Texas" description="A little comfort is taking shape. Explore The Table’s Southwest Harvest Bowl concept, a family-owned food project in development. No orders or preorders yet.">
   <a class="tl-skip-link" href="#table-content">Skip to The Table content</a>
   <main tabindex="-1" class="tl-page" id="table-content" data-pagefind-body>
-    <div class="tl-status"><span aria-hidden="true"></span> A first look at The Table. Ordering is not yet open.</div>
-    <nav class="tl-subnav" aria-label="The Table sections">
-      <a class="tl-wordmark" href="#table-content">The Table<span>BY THE RIVER KEPT FLOWING</span></a>
-      <div><a href="#first-bowl">Hot Food Bowls</a><a href="#our-process">Our approach</a><a href="#launch-status">Opening details</a></div>
-    </nav>
+    <TableNavigation />
     <section class="tl-hero" aria-labelledby="tl-hero-heading">
       <div class="tl-hero-copy">
-        <p class="tl-eyebrow">{TABLE_FIRST_DEPARTMENT.label} / A first look</p>
-        <h1 id="tl-hero-heading">Real food.<br /><em>Homestyle comfort.</em></h1>
-        <p class="tl-hero-description">Meet the Southwest Harvest Bowl. Roasted sweetness, hearty grains, and a bright cilantro-lime finish. A frozen meal concept for Big Spring, Texas — still thoughtfully in development.</p>
-        <a class="tl-button tl-button-primary" href="#first-bowl">Meet our first bowl <span aria-hidden="true">&rarr;</span></a>
-        <p class="tl-hero-note">One bowl to begin. No orders or preorders yet.<br />Final ingredients, pricing and fulfillment are still to come.</p>
+        <p class="tl-eyebrow">Family-owned · Big Spring, Texas</p>
+        <h1 id="tl-hero-heading">A little comfort.<br /><em>A place at<br class="tl-desktop-break" /> the table.</em></h1>
+        <p class="tl-hero-description">Our first dish is taking shape: the Southwest Harvest Bowl. Roasted sweetness, hearty grains, and a bright cilantro-lime finish.</p>
+        <a class="tl-button tl-button-primary" href={firstProduct.path}>Explore the Southwest Harvest Bowl <span aria-hidden="true">&rarr;</span></a>
+        <p class="tl-hero-note"><span class="tl-badge">In development</span> A first look, with care.<br />Ordering and preorders are not yet open.</p>
       </div>
-      {firstProduct && <ProductImage product={firstProduct} />}
+      <ProductImage product={firstProduct} />
     </section>
-    <div class="tl-editorial-strip"><span>Family-owned. Thoughtfully built.</span><p>Inspired by the comfort and care of grandmother-style cooking.</p><span>No. 001</span></div>
+    <div class="tl-editorial-strip"><span>Homestyle comfort</span><p>One bowl to begin. Every detail worth getting right.</p><span>The Table / No. 001</span></div>
     <section class="tl-product-section" id="first-bowl" aria-labelledby="tl-product-heading">
-      <nav class="tl-department-nav" aria-label="Current menu department"><a href="#tl-product-heading" aria-current="location">{TABLE_FIRST_DEPARTMENT.label}<span>In development</span></a><p>Our first bowl. More good things, when we're ready.</p></nav>
-      <div class="tl-section-heading"><p class="tl-eyebrow">The first dish</p><h2 id="tl-product-heading">A little comfort.<br /><em>A brighter kind of bowl.</em></h2><p>Our starting point: warm earth tones, hearty grains, and a bright finish. The recipe is still a work in progress.</p></div>
-      <div class="tl-product-grid">
-        {TABLE_PRODUCTS.map(product => <ProductCard product={product} />)}
-        <aside class="tl-information-card" aria-labelledby="tl-details-heading">
-          <p class="tl-eyebrow">A meal that fits your day</p><h3 id="tl-details-heading">Less planning.<br /><em>More to enjoy.</em></h3>
-          <p>We're planning a straightforward local ordering experience, with the details you need before you decide.</p>
-          <dl class="tl-fulfillment"><div><dt>Pickup &amp; delivery</dt><dd>Local options are being evaluated. Locations, delivery area, fees, and time windows are not confirmed.</dd></div><div><dt>The intended meal</dt><dd>A frozen bowl to reheat at home, with sauce inside and a removable dry pepita packet. Storage, packaging and reheating still need validation.</dd></div><div><dt>Before opening</dt><dd>Recipe testing, food safety requirements, packaging, and capacity must be verified. No sale date has been set.</dd></div></dl>
-          <a class="tl-text-link" href="#launch-status">See opening details <span aria-hidden="true">&rarr;</span></a>
-        </aside>
+      <div class="tl-feature-heading"><div><p class="tl-eyebrow">The first dish</p><h2 id="tl-product-heading">Rooted in comfort.<br /><em>Bright by nature.</em></h2></div><nav aria-label="Current menu department"><span class="tl-badge">Hot Food Bowls · In development</span></nav></div>
+      <div class="tl-feature-grid">
+        <div class="tl-composition" aria-label="Planned bowl composition"><p class="tl-eyebrow">A closer look / Working concept</p><p class="tl-composition-title">Roasted.<br />Hearty.<br /><em>A little bright.</em></p><ul><li><span>01 / The foundation</span>Rice &amp; black beans</li><li><span>02 / The color</span>Roasted sweet potatoes, peppers &amp; onions</li><li><span>03 / The finish</span>Cilantro-lime sauce &amp; a separate dry pepita packet</li></ul><p class="tl-disclaimer">Planned components, not a final ingredient label.</p></div>
+        <ProductCard product={firstProduct} />
       </div>
     </section>
+    <section class="tl-story" id="our-story" aria-labelledby="tl-story-heading"><div class="tl-story-mark" aria-hidden="true">The<br /><em>Table.</em><span>Food. Family. Care.</span></div><div><p class="tl-eyebrow">Our reason for gathering</p><h2 id="tl-story-heading">Good food.<br /><em>Thoughtfully shared.</em></h2><p>We're a family-owned food project, inspired by the comfort and care of grandmother-style cooking. The kind of hospitality that makes room for people.</p><p>That starts with one bowl. Our aim is generous flavor and consistent quality, with the recipe, packaging and reheated experience considered together. We're taking the time to test what we hope to share.</p><a class="tl-text-link" href="#launch-status">Where we are today <span aria-hidden="true">&rarr;</span></a></div></section>
     <section class="tl-process-section" id="our-process" aria-labelledby="tl-process-heading">
-      <div class="tl-process-heading"><div><p class="tl-eyebrow">The future ordering experience</p><h2 id="tl-process-heading">From our table<br /><em>to your everyday.</em></h2></div><p>A few simple steps, once we're ready.<br />This is a preview of the planned process.</p></div>
+      <div class="tl-process-heading"><div><p class="tl-eyebrow">How it will work / Our intention</p><h2 id="tl-process-heading">Less to plan.<br /><em>More to savor.</em></h2></div><p>A simple local food experience is the goal. These are future steps, subject to recipe, operational and legal approval.</p></div>
       <ol class="tl-steps">{orderingSteps.map((step, i) => <li><span class="tl-step-number">0{i + 1}</span><h3>{step.title}</h3><p>{step.copy}</p></li>)}</ol>
+      <p class="tl-process-note">Pickup and delivery methods, locations, service areas, fees and time windows are not confirmed.</p>
     </section>
-    <section class="tl-launch-section" id="launch-status" aria-labelledby="tl-launch-heading">
-      <div><p class="tl-eyebrow">An invitation to come back</p><h2 id="tl-launch-heading">We're making room<br /><em>for something good.</em></h2><p>First comes a recipe we're ready to share, packaging that works, and a clear plan for getting your meal to you. Then, the first release.</p></div>
-      <div class="tl-launch-side"><span class="tl-launch-state">IN DEVELOPMENT</span><h3>Ordering is not yet open.</h3><p>Price, final ingredients and allergens, sale dates, and fulfillment details will appear here when verified. Payments and preorders remain unavailable.</p><a class="tl-button tl-button-light" href="#first-bowl">Take another look <span aria-hidden="true">&uarr;</span></a></div>
-    </section>
-    <div class="tl-footer"><span>The Table</span><p>A family-owned food company in development. Building toward exceptional flavor, consistent quality, and meals you'll want to enjoy again.</p><a href="#table-content">Back to the table <span aria-hidden="true">&uarr;</span></a></div>
+    <section class="tl-launch-section" id="launch-status" aria-labelledby="tl-launch-heading"><div><p class="tl-eyebrow">We're preparing to open</p><h2 id="tl-launch-heading">Care comes first.<br /><em>Then, dinner.</em></h2><p>Recipe testing, packaging, safety review and a verified plan for local fulfillment come before a first release. No opening date has been set.</p></div><div class="tl-launch-side"><span class="tl-launch-state">IN DEVELOPMENT</span><h3>Ordering is not yet open.</h3><p>Payments and preorders remain unavailable.</p><a class="tl-button tl-button-light" href="#opening-questions">A few things to know <span aria-hidden="true">&darr;</span></a></div></section>
+    <OpeningQuestions />
+    <div class="tl-footer"><a class="tl-footer-brand" href="/the-table/">The Table</a><p>Thoughtfully developed. One dish at a time.</p><a href="#table-content">Back to the table <span aria-hidden="true">&uarr;</span></a></div>
   </main>
 </MainLayout>

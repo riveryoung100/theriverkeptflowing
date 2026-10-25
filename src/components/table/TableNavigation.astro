@@ -1,0 +1,9 @@
+---
+interface Props { detail?: boolean }
+const { detail = false } = Astro.props;
+---
+<div class="tl-status"><span aria-hidden="true"></span> A first look at The Table. Ordering is not yet open.</div>
+<nav class="tl-subnav" aria-label="The Table navigation">
+  <a class="tl-wordmark" href="/the-table/">The Table<span>BY THE RIVER KEPT FLOWING</span></a>
+  <div><a href={detail ? '#bowl-details' : '#first-bowl'}>{detail ? 'Inside the bowl' : 'Our first bowl'}</a><a href="/the-table/#our-story">Our story</a><a href={detail ? '#opening-questions' : '#our-process'}>{detail ? 'Opening questions' : 'How it will work'}</a></div>
+</nav>
